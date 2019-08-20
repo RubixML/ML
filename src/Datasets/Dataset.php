@@ -2,14 +2,43 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
+use InvalidArgumentException;
 use IteratorAggregate;
+use RuntimeException;
+use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
-interface Dataset extends ArrayAccess, IteratorAggregate, Countable
+/**
+ * Dataset
+ *
+ * In Rubix ML, data are passed in specialized in-memory containers called Dataset
+ * objects. Dataset objects are extended table-like data structures with an internal
+ * type system and many operations for wrangling. They can hold a heterogeneous mix
+ * of categorical and continuous data and they make it easy to transport data in a
+ * canonical way.
+ *
+ * > **Note:** By convention, categorical data are given as string type whereas
+ * continuous data are given as either integer or floating point numbers.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
+abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 {
+    /**
+     * The rows of samples and columns of features that make up the
+     * data table i.e. the fixed-length feature vectors.
+     *
+     * @var array[]
+     */
+    protected $samples;
+
     /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
@@ -17,14 +46,45 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param array $datasets
      * @return self
      */
-    public static function stack(array $datasets);
+    abstract public static function stack(array $datasets);
 
     /**
-     * Return the 2-dimensional sample matrix.
-     *
-     * @return array
+     * @param array $samples
+     * @param bool $validate
+     * @throws \InvalidArgumentException
      */
-    public function samples() : array;
+    public function __construct(array $samples = [], bool $validate = true)
+    {
+        if ($validate) {
+            $samples = array_values($samples);
+
+            $n = $samples ? is_array($samples[0]) ? count($samples[0]) : 1 : 0;
+
+            foreach ($samples as &$sample) {
+                $sample = is_array($sample)
+                    ? array_values($sample)
+                    : [$sample];
+
+                if (count($sample) !== $n) {
+                    throw new InvalidArgumentException('The number of feature'
+                        . " columns must be equal for all samples, $n expected "
+                        . count($sample) . ' given.');
+                }
+            }
+        }
+
+        $this->samples = $samples;
+    }
+
+    /**
+     * Return the sample matrix.
+     *
+     * @return array[]
+     */
+    public function samples() : array
+    {
+        return $this->samples;
+    }
 
     /**
      * Return the sample at the given row index.
@@ -32,14 +92,20 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $index
      * @return array
      */
-    public function row(int $index) : array;
+    public function row(int $index) : array
+    {
+        return $this->offsetGet($index);
+    }
 
     /**
      * Return the number of rows in the datasets.
      *
      * @return int
      */
-    public function numRows() : int;
+    public function numRows() : int
+    {
+        return count($this->samples);
+    }
 
     /**
      * Return the feature column at the given index.
@@ -47,75 +113,118 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $index
      * @return array
      */
-    public function column(int $index) : array;
+    public function column(int $index) : array
+    {
+        return array_column($this->samples, $index);
+    }
 
     /**
-     * Return an array of feature column datatypes autodectected using the first
-     * sample in the dataframe.
+     * Return the number of feature columns in the dataset.
      *
-     * @return array
+     * @return int
      */
-    public function types() : array;
+    public function numColumns() : int
+    {
+        return isset($this->samples[0]) ? count($this->samples[0]) : 0;
+    }
+
+    /**
+     * Return an array of feature column data types autodectected using the first
+     * sample in the dataset.
+     *
+     * @return int[]
+     */
+    public function types() : array
+    {
+        return array_map([DataType::class, 'determine'], $this->samples[0] ?? []);
+    }
 
     /**
      * Return the unique data types.
      *
      * @return int[]
      */
-    public function uniqueTypes() : array;
+    public function uniqueTypes() : array
+    {
+        return array_unique($this->types());
+    }
 
     /**
      * Does the dataset consist of data of a single type?
      *
      * @return bool
      */
-    public function homogeneous() : bool;
+    public function homogeneous() : bool
+    {
+        return count($this->uniqueTypes()) === 1;
+    }
 
     /**
      * Get the datatype for a feature column given a column index.
      *
      * @param int $index
-     * @return int|null
-     */
-    public function columnType(int $index) : ?int;
-
-    /**
-     * Return the number of feature columns in the datasets.
-     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return int
      */
-    public function numColumns() : int;
+    public function columnType(int $index) : int
+    {
+        if (empty($this->samples)) {
+            throw new RuntimeException('Cannot determine data type'
+                . ' of an empty dataset.');
+        }
+
+        if (!isset($this->samples[0][$index])) {
+            throw new InvalidArgumentException("Column $index does"
+                . ' not exist.');
+        }
+
+        return DataType::determine($this->samples[0][$index]);
+    }
 
     /**
-     * Return a tuple containing the shape of the dataframe i.e the number of
+     * Return a tuple containing the shape of the dataset i.e the number of
      * rows and columns.
      *
-     * @var array
+     * @var int[]
      */
-    public function shape() : array;
+    public function shape() : array
+    {
+        return [$this->numRows(), $this->numColumns()];
+    }
 
     /**
-     * Return the number of elements in the dataframe.
+     * Return the number of elements in the dataset.
      *
      * @return int
      */
-    public function size() : int;
+    public function size() : int
+    {
+        return $this->numRows() * $this->numColumns();
+    }
 
     /**
-     * Apply a tranformation to the sample matrix.
-     *
-     * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer);
-
-    /**
-     * Rotate the dataframe and return it in an array. i.e. rows become
+     * Rotate the dataset and return it in an array. i.e. rows become
      * columns and columns become rows.
      *
      * @return array
      */
-    public function columns() : array;
+    public function columns() : array
+    {
+        if ($this->numRows() > 1) {
+            return array_map(null, ...$this->samples);
+        }
+
+        $n = $this->numColumns();
+
+        $columns = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            $columns[] = array_column($this->samples, $i);
+        }
+
+        return $columns;
+    }
 
     /**
      * Return the columns that match a given data type.
@@ -123,7 +232,49 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $type
      * @return array
      */
-    public function columnsByType(int $type) : array;
+    public function columnsByType(int $type) : array
+    {
+        $n = $this->numColumns();
+
+        $columns = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            if ($this->columnType($i) === $type) {
+                $columns[$i] = $this->column($i);
+            }
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Apply a transformation to the dataset.
+     *
+     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @return self
+     */
+    public function apply(Transformer $transformer) : self
+    {
+        if ($transformer instanceof Stateful) {
+            if (!$transformer->fitted()) {
+                $transformer->fit($this);
+            }
+        }
+
+        $transformer->transform($this->samples);
+
+        return $this;
+    }
+
+    /**
+     * Is the dataset empty?
+     *
+     * @return bool
+     */
+    public function empty() : bool
+    {
+        return empty($this->samples);
+    }
 
     /**
      * Return a dataset containing only the first n samples.
@@ -131,7 +282,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function head(int $n = 10);
+    abstract public function head(int $n = 10);
 
     /**
      * Return a dataset containing only the last n samples.
@@ -139,7 +290,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function tail(int $n = 10);
+    abstract public function tail(int $n = 10);
 
     /**
      * Take n samples from the dataset and return them in a new dataset.
@@ -147,7 +298,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function take(int $n = 1);
+    abstract public function take(int $n = 1);
 
     /**
      * Leave n samples on the dataset and return the rest in a new dataset.
@@ -155,7 +306,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function leave(int $n = 1);
+    abstract public function leave(int $n = 1);
 
     /**
      * Return an n size portion of the dataset in a new dataset.
@@ -164,7 +315,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function slice(int $offset, int $n);
+    abstract public function slice(int $offset, int $n);
 
     /**
      * Remove a size n chunk of the dataset starting at offset and return it in
@@ -174,14 +325,14 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function splice(int $offset, int $n);
+    abstract public function splice(int $offset, int $n);
 
     /**
      * Randomize the dataset.
      *
      * @return self
      */
-    public function randomize();
+    abstract public function randomize();
 
     /**
      * Run a filter over the dataset using the values of a given column.
@@ -190,7 +341,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param callable $fn
      * @return self
      */
-    public function filterByColumn(int $index, callable $fn);
+    abstract public function filterByColumn(int $index, callable $fn);
 
     /**
      * Sort the dataset by a column in the sample matrix.
@@ -199,7 +350,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param bool $descending
      * @return self
      */
-    public function sortByColumn(int $index, bool $descending = false);
+    abstract public function sortByColumn(int $index, bool $descending = false);
 
     /**
      * Split the dataset into two subsets with a given ratio of samples.
@@ -207,7 +358,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param float $ratio
      * @return array
      */
-    public function split(float $ratio = 0.5) : array;
+    abstract public function split(float $ratio = 0.5) : array;
 
     /**
      * Fold the dataset k - 1 times to form k equal size datasets.
@@ -215,7 +366,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $k
      * @return array
      */
-    public function fold(int $k = 10) : array;
+    abstract public function fold(int $k = 10) : array;
 
     /**
      * Generate a collection of batches of size n from the dataset. If there are
@@ -225,7 +376,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return array
      */
-    public function batch(int $n = 50) : array;
+    abstract public function batch(int $n = 50) : array;
 
     /**
      * Partition the dataset into left and right subsets by a specified feature
@@ -235,7 +386,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param mixed $value
      * @return array
      */
-    public function partition(int $index, $value) : array;
+    abstract public function partition(int $index, $value) : array;
 
     /**
      * Partition the dataset into left and right subsets based on their distance
@@ -246,7 +397,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return array
      */
-    public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel);
+    abstract public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel);
 
     /**
      * Generate a random subset without replacement.
@@ -254,7 +405,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function randomSubset(int $n);
+    abstract public function randomSubset(int $n);
 
     /**
      * Generate a random subset of n samples with replacement.
@@ -262,7 +413,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function randomSubsetWithReplacement(int $n);
+    abstract public function randomSubsetWithReplacement(int $n);
 
     /**
      * Generate a random weighted subset with replacement.
@@ -271,7 +422,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param array $weights
      * @return self
      */
-    public function randomWeightedSubsetWithReplacement(int $n, array $weights);
+    abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
      * Prepend this dataset with another dataset.
@@ -279,7 +430,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function prepend(Dataset $dataset);
+    abstract public function prepend(Dataset $dataset);
 
     /**
      * Append this dataset with another dataset.
@@ -287,12 +438,65 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function append(Dataset $dataset);
+    abstract public function append(Dataset $dataset);
 
     /**
-     * Is the dataset empty?
+     * @return int
+     */
+    public function count() : int
+    {
+        return $this->numRows();
+    }
+
+    /**
+     * @param mixed $index
+     * @param array $values
+     * @throws \RuntimeException
+     */
+    public function offsetSet($index, $values) : void
+    {
+        throw new RuntimeException('Datasets cannot be mutated directly.');
+    }
+
+    /**
+     * Does a given row exist in the dataset.
      *
+     * @param mixed $index
      * @return bool
      */
-    public function empty() : bool;
+    public function offsetExists($index) : bool
+    {
+        return isset($this->samples[$index]);
+    }
+
+    /**
+     * @param mixed $index
+     * @throws \RuntimeException
+     */
+    public function offsetUnset($index) : void
+    {
+        throw new RuntimeException('Datasets cannot be mutated directly.');
+    }
+
+    /**
+     * Return a column from the dataset given by index.
+     *
+     * @param mixed $index
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function offsetGet($index) : array
+    {
+        return $this->samples[$index];
+    }
+
+    /**
+     * Get an iterator for the samples in the dataset.
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->samples);
+    }
 }

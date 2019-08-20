@@ -2,9 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
@@ -20,7 +18,7 @@ use const Rubix\ML\PHI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Unlabeled extends DataFrame implements Dataset
+class Unlabeled extends Dataset
 {
     /**
      * Build a new unlabeled dataset with validation.
@@ -82,25 +80,6 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return self::quick($samples);
-    }
-
-    /**
-     * Apply a transformation to the dataset.
-     *
-     * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        if ($transformer instanceof Stateful) {
-            if (!$transformer->fitted()) {
-                $transformer->fit($this);
-            }
-        }
-
-        $transformer->transform($this->samples);
-
-        return $this;
     }
 
     /**

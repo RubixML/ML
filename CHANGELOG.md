@@ -17,6 +17,8 @@
     - Added shrinkage parameter to Wild Guess strategy
     - Added additional methods to random Strategies
     - Renamed Popularity Contest strategy to Prior
+    - Datasets now inherit from abstract parent Dataset class
+    - Removed Dataset interface
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

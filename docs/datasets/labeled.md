@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">Source</a></span>
 
 # Labeled
-For *supervised* learners you will need to train it with a Labeled dataset consisting of samples and the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label as well.
+A Labeled dataset consists of samples with corresponding labels which represent the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset methods, the Labeled class can also sort and *stratify* the data by label.
 
 ### Parameters
 | # | Param | Default | Type | Description |

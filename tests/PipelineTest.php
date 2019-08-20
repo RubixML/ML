@@ -10,13 +10,15 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
-use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Transformers\PolynomialExpander;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -43,8 +45,10 @@ class PipelineTest extends TestCase
         ]);
 
         $this->estimator = new Pipeline([
-            new IntervalDiscretizer(6),
-        ], new NaiveBayes(1.0), true);
+            new VarianceThresholdFilter(),
+            new PolynomialExpander(2),
+            new ZScaleStandardizer(),
+        ], new SoftmaxClassifier(), true);
 
         $this->estimator->setLogger(new BlackHole());
 
@@ -65,8 +69,8 @@ class PipelineTest extends TestCase
 
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
 
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertNotContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_partial_predict()

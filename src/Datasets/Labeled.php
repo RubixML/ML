@@ -2,9 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 use RuntimeException;
@@ -15,17 +13,17 @@ use const Rubix\ML\PHI;
 /**
  * Labeled
  *
- * For *supervised* Estimators you will need to train it with a Labeled dataset
- * consisting of a sample matrix with the addition of an array of labels that
- * correspond to the observed outcome of each sample. Splitting, folding,
- * randomizing, sorting, and subsampling are all done while keeping the indices
- * of samples and labels aligned.
+ * For *supervised* learners you will need to train it with a Labeled dataset consisting
+ * of samples and the addition of labels that correspond to the observed outcome of each
+ * sample. Splitting, folding, randomizing, sorting, and subsampling are all done while
+ * keeping the indices of samples and labels aligned. In addition to the basic Dataset
+ * methods, the Labeled class can sort and *stratify* the data by label as well.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Labeled extends DataFrame implements Dataset
+class Labeled extends Dataset
 {
     /**
      * The observed outcomes for each sample in the dataset.
@@ -222,25 +220,6 @@ class Labeled extends DataFrame implements Dataset
     public function possibleOutcomes() : array
     {
         return array_values(array_unique($this->labels, SORT_REGULAR));
-    }
-
-    /**
-     * Apply a transformation to the dataset.
-     *
-     * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        if ($transformer instanceof Stateful) {
-            if (!$transformer->fitted()) {
-                $transformer->fit($this);
-            }
-        }
-
-        $transformer->transform($this->samples);
-
-        return $this;
     }
 
     /**

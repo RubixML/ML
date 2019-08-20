@@ -1,7 +1,7 @@
 # Dataset Objects
-In Rubix, data are passed around using specialized container structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way. 
+In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures with an internal type system and many operations for wrangling. They can hold a heterogeneous mix of categorical and continuous data and they make it easy to transport data in a canonical way.
 
-> **Note:** There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
+> **Note:** By convention, categorical data are given as string type whereas continuous data are given as either integer or floating point numbers.
 
 ### Selecting
 Return all the samples in the dataset:

@@ -70,9 +70,9 @@ class KMC2 implements Seeder
         for ($i = 1; $i < $k; $i++) {
             $candidates = $dataset->randomSubsetWithReplacement($this->m)->samples();
 
-            $x = array_pop($candidates);
+            $x = array_pop($candidates) ?? [];
 
-            $target = end($centroids);
+            $target = end($centroids) ?: [];
 
             $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 

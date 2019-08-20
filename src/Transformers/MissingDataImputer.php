@@ -132,11 +132,9 @@ class MissingDataImputer implements Transformer, Stateful
         }
 
         foreach ($samples as $row => &$sample) {
-            foreach ($sample as $column => &$feature) {
-                if ($feature === $this->placeholder) {
-                    $strategy = $this->strategies[$column];
-
-                    $feature = $strategy->guess();
+            foreach ($sample as $column => &$value) {
+                if ($value === $this->placeholder) {
+                    $value = $this->strategies[$column]->guess();
                 }
             }
         }

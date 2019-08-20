@@ -217,10 +217,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
             }
 
             $dataset->apply($transformer);
-
-            if ($this->logger) {
-                $this->logger->info('Applied ' . Params::shortName($transformer));
-            }
         }
     }
 
@@ -241,10 +237,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
             }
 
             $dataset->apply($transformer);
-
-            if ($this->logger) {
-                $this->logger->info('Applied ' . Params::shortName($transformer));
-            }
         }
     }
 

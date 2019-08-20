@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php">Source</a></span>
 
 # Unlabeled
-Unlabeled datasets can be used to train *unsupervised* Estimators and for feeding data into an Estimator to make predictions.
+Unlabeled datasets are used to train *unsupervised* learners and for feeding data into an estimator to make predictions during inference.
 
 ### Parameters
 | # | Param | Default | Type | Description |

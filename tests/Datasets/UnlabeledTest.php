@@ -3,11 +3,12 @@
 namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Helpers\DataType;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
+use ArrayAccess;
+use Countable;
 
 class UnlabeledTest extends TestCase
 {
@@ -44,8 +45,9 @@ class UnlabeledTest extends TestCase
     public function test_build_dataset()
     {
         $this->assertInstanceOf(Unlabeled::class, $this->dataset);
-        $this->assertInstanceOf(DataFrame::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
+        $this->assertInstanceOf(Countable::class, $this->dataset);
+        $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
     }
 
     public function test_stack_datasets()
@@ -71,6 +73,92 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Unlabeled::class, $dataset);
 
         $this->assertEquals(self::SAMPLES, $dataset->samples());
+    }
+
+    public function test_get_samples()
+    {
+        $this->assertEquals(self::SAMPLES, $this->dataset->samples());
+    }
+
+    public function test_get_row()
+    {
+        $this->assertEquals(self::SAMPLES[2], $this->dataset->row(2));
+        $this->assertEquals(self::SAMPLES[5], $this->dataset->row(5));
+    }
+
+    public function test_num_rows()
+    {
+        $this->assertEquals(6, $this->dataset->numRows());
+    }
+
+    public function test_get_column()
+    {
+        $expected = array_column(self::SAMPLES, 2);
+
+        $this->assertEquals($expected, $this->dataset->column(2));
+    }
+
+    public function test_get_num_columns()
+    {
+        $this->assertEquals(3, $this->dataset->numColumns());
+    }
+
+    public function test_column_types()
+    {
+        $this->assertEquals(self::TYPES, $this->dataset->types());
+    }
+
+    public function test_unique_types()
+    {
+        $this->assertCount(1, $this->dataset->uniqueTypes());
+    }
+
+    public function test_homogeneous()
+    {
+        $this->assertTrue($this->dataset->homogeneous());
+    }
+
+    public function test_shape()
+    {
+        $this->assertEquals([6, 3], $this->dataset->shape());
+    }
+
+    public function test_size()
+    {
+        $this->assertEquals(18, $this->dataset->size());
+    }
+
+    public function test_column_type()
+    {
+        $this->assertEquals(self::TYPES[0], $this->dataset->columnType(0));
+        $this->assertEquals(self::TYPES[1], $this->dataset->columnType(1));
+        $this->assertEquals(self::TYPES[2], $this->dataset->columnType(2));
+    }
+
+    public function test_columns()
+    {
+        $expected = array_map(null, ...self::SAMPLES);
+
+        $this->assertEquals($expected, $this->dataset->columns());
+    }
+
+    public function test_columns_by_type()
+    {
+        $expected = array_map(null, ...self::SAMPLES);
+
+        $columns = $this->dataset->columnsByType(DataType::CATEGORICAL);
+
+        $this->assertEquals($expected, $columns);
+    }
+
+    public function test_empty()
+    {
+        $this->assertFalse($this->dataset->empty());
+    }
+
+    public function test_count()
+    {
+        $this->assertEquals(6, $this->dataset->count());
     }
 
     public function test_randomize()
