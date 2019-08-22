@@ -1,7 +1,7 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/GaussianMLE.php">Source</a></span>
 
-# Gaussian KDE
-The Gaussian Kernel Density Estimator is able to spot outliers by computing a probability density function over the features assuming they are independent and normally (Gaussian) distributed. Assigning low probability density translates to a high anomaly score. The final anomaly score is given as the log likelihood of a sample being an outlier.
+# Gaussian MLE
+The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing a probability density function over the features assuming they are independent and normally (Gaussian) distributed. Assigning low probability density translates to a high anomaly score. The final anomaly score is given as the log likelihood of a sample being an outlier.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
@@ -26,10 +26,10 @@ public variances() : array
 
 ### Example
 ```php
-use Rubix\ML\AnomalyDetection\GaussianKDE;
+use Rubix\ML\AnomalyDetection\GaussianMLE;
 
-$estimator = new GaussianKDE(6.0, 0.1);
+$estimator = new GaussianMLE(6.0, 0.1);
 ```
 
 ### References
->- B. Iglewicz et al. (1993). How to Detect and Handle Outliers.
+>- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.

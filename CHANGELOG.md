@@ -1,6 +1,6 @@
 - Unreleased
     - Added Patreon funding support
-    - Added Gaussian KDE anomaly detector
+    - Added Gaussian MLE anomaly detector
     - Added early stopping window to Gradient Descent-based Learners
     - Changed early stopping behavior of MLP-based estimators
     - Added predict single sample method to Learner interface

@@ -19,13 +19,13 @@ use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
 
 /**
- * Gaussian KDE
+ * Gaussian MLE
  *
- * The Gaussian Kernel Density Estimator is able to spot outliers by computing a
- * probability density function over the features assuming they are independent
- * and normally (Gaussian) distributed. Assigning low probability density
- * translates to a high anomaly score. The final anomaly score is given as the
- * log likelihood of a sample being an outlier.
+ * The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by
+ * computing a probability density function over the features assuming they are
+ * independent and normally (Gaussian) distributed. Assigning low probability
+ * density translates to a high anomaly score. The final anomaly score is given
+ * as the log likelihood of a sample being an outlier.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
@@ -35,7 +35,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianKDE implements Estimator, Learner, Online, Ranking, Persistable
+class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 {
     use PredictsSingle;
 

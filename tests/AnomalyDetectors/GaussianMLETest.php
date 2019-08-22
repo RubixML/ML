@@ -11,14 +11,14 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
-use Rubix\ML\AnomalyDetectors\GaussianKDE;
+use Rubix\ML\AnomalyDetectors\GaussianMLE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class GaussianKDETest extends TestCase
+class GaussianMLETest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
@@ -39,7 +39,7 @@ class GaussianKDETest extends TestCase
             1 => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new GaussianKDE(3.5, 0.1);
+        $this->estimator = new GaussianMLE(3.5, 0.1);
 
         $this->metric = new FBeta();
 
@@ -48,7 +48,7 @@ class GaussianKDETest extends TestCase
 
     public function test_build_detector()
     {
-        $this->assertInstanceOf(GaussianKDE::class, $this->estimator);
+        $this->assertInstanceOf(GaussianMLE::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
