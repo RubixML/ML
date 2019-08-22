@@ -12,6 +12,7 @@ interface Optimizer
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor;
      */
-    public function step(Parameter $param, Tensor $gradient) : void;
+    public function step(Parameter $param, Tensor $gradient) : Tensor;
 }

@@ -81,15 +81,16 @@ class StepDecay implements Optimizer
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         $f = floor($this->t / $this->steps);
 
         $rate = $this->rate * (1. / (1. + $f * $this->decay));
 
-        $param->update($gradient->multiply($rate));
-
         $this->t++;
+
+        return $gradient->multiply($rate);
     }
 }

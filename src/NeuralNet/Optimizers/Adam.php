@@ -111,7 +111,7 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
-     * Warm the cache with a parameter.
+     * Warm the cache.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */
@@ -128,8 +128,9 @@ class Adam implements Optimizer, Adaptive
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
@@ -149,9 +150,7 @@ class Adam implements Optimizer, Adaptive
             $norm = $norm->divide(1. - $this->beta2 ** $this->t);
         }
 
-        $step = $velocity->multiply($this->rate)
+        return $velocity->multiply($this->rate)
             ->divide($norm->sqrt()->clipLower(EPSILON));
-
-        $param->update($step);
     }
 }

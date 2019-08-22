@@ -27,8 +27,9 @@ class AdaMax extends Adam
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
@@ -49,9 +50,6 @@ class AdaMax extends Adam
             $rate = $this->rate;
         }
 
-        $step = $velocity->divide($norm->clipLower(EPSILON))
-            ->multiply($rate);
-
-        $param->update($step);
+        return $velocity->divide($norm->clipLower(EPSILON))->multiply($rate);
     }
 }

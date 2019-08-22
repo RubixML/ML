@@ -43,8 +43,11 @@ To run the unit tests:
 $ composer test
 ```
 
+#### Class Organization
+In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, methods.
+
 #### Learner Testing Guidelines
-Rubix uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to the real world. Since not all learners offer the same performance, choose a generator and minimum validation score that is appropriate for a real world use case.
+Rubix ML uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to the real world. Since not all learners offer the same performance, choose a generator and minimum validation score that is appropriate for a real world use case.
 
 > **Note:** Be sure to seed the random number generator with a known constant value in your tests.
 

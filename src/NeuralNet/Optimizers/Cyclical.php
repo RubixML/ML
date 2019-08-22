@@ -111,8 +111,9 @@ class Cyclical implements Optimizer
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         $cycle = floor(1 + $this->t / (2 * $this->steps));
 
@@ -122,8 +123,8 @@ class Cyclical implements Optimizer
 
         $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
 
-        $param->update($gradient->multiply($rate));
-
         $this->t++;
+
+        return $gradient->multiply($rate);
     }
 }

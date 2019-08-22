@@ -30,8 +30,6 @@ class LeCun implements Initializer
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
-        $scale = sqrt(3 / $fanIn);
-
-        return Matrix::uniform($fanOut, $fanIn)->multiply($scale);
+        return Matrix::uniform($fanOut, $fanIn)->multiply(sqrt(3 / $fanIn));
     }
 }

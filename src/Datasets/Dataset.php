@@ -328,6 +328,22 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function splice(int $offset, int $n);
 
     /**
+     * Prepend this dataset with another dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    abstract public function prepend(Dataset $dataset);
+
+    /**
+     * Append this dataset with another dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    abstract public function append(Dataset $dataset);
+
+    /**
      * Randomize the dataset.
      *
      * @return self
@@ -423,22 +439,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
-
-    /**
-     * Prepend this dataset with another dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    abstract public function prepend(Dataset $dataset);
-
-    /**
-     * Append this dataset with another dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    abstract public function append(Dataset $dataset);
 
     /**
      * @return int

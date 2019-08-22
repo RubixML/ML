@@ -91,8 +91,9 @@ class RMSProp implements Optimizer, Adaptive
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         $norm = $this->cache[$param->id()];
 
@@ -101,9 +102,7 @@ class RMSProp implements Optimizer, Adaptive
 
         $this->cache[$param->id()] = $norm;
 
-        $step = $gradient->multiply($this->rate)
+        return $gradient->multiply($this->rate)
             ->divide($norm->sqrt()->clipLower(EPSILON));
-
-        $param->update($step);
     }
 }

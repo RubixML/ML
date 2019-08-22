@@ -284,8 +284,8 @@ class Binary implements Output
 
         $w = $this->weights->w();
 
-        $optimizer->step($this->weights, $dW);
-        $optimizer->step($this->biases, $dB);
+        $this->weights->update($optimizer->step($this->weights, $dW));
+        $this->biases->update($optimizer->step($this->biases, $dB));
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 

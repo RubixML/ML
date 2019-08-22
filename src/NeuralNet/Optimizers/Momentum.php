@@ -68,7 +68,7 @@ class Momentum implements Optimizer, Adaptive
     }
 
     /**
-     * Warm the cache with a parameter.
+     * Warm the cache.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */
@@ -82,8 +82,9 @@ class Momentum implements Optimizer, Adaptive
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
+     * @return \Rubix\Tensor\Tensor
      */
-    public function step(Parameter $param, Tensor $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         $velocity = $this->cache[$param->id()];
 
@@ -92,6 +93,6 @@ class Momentum implements Optimizer, Adaptive
 
         $this->cache[$param->id()] = $velocity;
 
-        $param->update($velocity);
+        return $velocity;
     }
 }

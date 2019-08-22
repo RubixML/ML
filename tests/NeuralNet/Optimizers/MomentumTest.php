@@ -2,12 +2,15 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
+use Rubix\Tensor\Tensor;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class MomentumTest extends TestCase
 {
@@ -25,30 +28,36 @@ class MomentumTest extends TestCase
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
-    public function test_initialize_step()
+    /**
+     * @dataProvider step_provider
+     */
+    public function test_warm_step(Parameter $param, Tensor $gradient, array $expected)
     {
-        $param = new MatrixParam(Matrix::quick([
-            [0.1, 0.6, -0.4],
-            [0.5, 0.6, -0.4],
-            [0.1, 0.1, -0.7],
-        ]));
-
-        $gradient = Matrix::quick([
-            [0.01, 0.05, -0.02],
-            [-0.01, 0.02, 0.03],
-            [0.04, -0.01, -0.5],
-        ]);
-
-        $expected = [
-            [0.09999000000000001, 0.59995, -0.39998],
-            [0.50001, 0.59998, -0.40003],
-            [0.09996000000000001, 0.10001, -0.6995],
-        ];
-
         $this->optimizer->warm($param);
 
-        $this->optimizer->step($param, $gradient);
+        $step = $this->optimizer->step($param, $gradient);
 
-        $this->assertEquals($expected, $param->w()->asArray());
+        $this->assertEquals($expected, $step->asArray());
+    }
+
+    public function step_provider() : Generator
+    {
+        yield [
+            new MatrixParam(Matrix::quick([
+                [0.1, 0.6, -0.4],
+                [0.5, 0.6, -0.4],
+                [0.1, 0.1, -0.7],
+            ])),
+            Matrix::quick([
+                [0.01, 0.05, -0.02],
+                [-0.01, 0.02, 0.03],
+                [0.04, -0.01, -0.5],
+            ]),
+            [
+                [1e-5, 5e-5, -2e-5],
+                [-1e-5, 2e-5, 3e-5],
+                [4e-5, -1e-5, -0.0005],
+            ],
+        ];
     }
 }

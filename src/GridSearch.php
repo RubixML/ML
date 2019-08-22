@@ -29,6 +29,9 @@ use ReflectionClass;
  * however, under the hood, Grid Search trains one estimator per combination
  * of parameters and the best model is selected as the base estimator.
  *
+ * > **Note:** You can choose the hyper-parameters manually or you can generate
+ * them randomly or in a grid using the Params helper.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -45,14 +48,12 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $base;
 
     /**
-     * The combinations of hyperparameters i.e. constructor arguments to be
-     * used to instantiate and train a base learner.
+     * An array of tuples where each tuple contains the possible values of each
+     * parameter in the order they are given to the base learner's constructor.
      *
      * @var array
      */
-    protected $combinations = [
-        //
-    ];
+    protected $grid;
 
     /**
      * The validation metric used to score the estimator.
@@ -76,13 +77,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $args = [
         //
     ];
-
-    /**
-     * The type of estimator this meta estimator wraps.
-     *
-     * @var int
-     */
-    protected $type;
 
     /**
      * A tuple containing the parameters with the highest validation score and
@@ -170,10 +164,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             }
         }
 
-        $combinations = $this->combineGrid($grid);
-
         $this->base = $base;
-        $this->combinations = $combinations;
+        $this->grid = $grid;
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
@@ -212,19 +204,35 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     }
 
     /**
-     * The combinations of parameters from the grid.
+     * Return an array of all possible combinations of parameters. i.e the
+     * Cartesian product of the user supplied parameter grid.
      *
      * @return array
      */
-    public function combinations() : array
+    protected function combinations() : array
     {
-        return $this->combinations;
+        $combinations = [[]];
+
+        foreach ($this->grid as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
     }
 
     /**
      * Return the parameters that had the highest validation score.
      *
-     * @return (float|array)[]|null
+     * @return array|null
      */
     public function best() : ?array
     {
@@ -266,9 +274,11 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             ]));
         }
 
+        $combinations = $this->combinations();
+
         $this->backend->flush();
 
-        foreach ($this->combinations as $params) {
+        foreach ($combinations as $params) {
             $estimator = new $this->base(...$params);
 
             $this->backend->enqueue(
@@ -301,23 +311,18 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
         foreach ($scores as $i => $score) {
             if ($score > $bestScore) {
-                $bestParams = $this->combinations[$i];
+                $bestParams = $combinations[$i];
                 $bestScore = $score;
             }
         }
 
-        $this->best = ['score' => $bestScore, 'params' => $bestParams];
-
-        if ($this->logger) {
-            $constructor = array_combine($this->args, $bestParams) ?: [];
-
-            $this->logger->info('Best: ' . Params::stringify($constructor));
-        }
+        $this->best = $bestParams;
 
         $estimator = new $this->base(...$bestParams);
 
         if ($this->logger) {
-            $this->logger->info('Training base on full dataset');
+            $this->logger->info('Training base learner with best'
+                . ' params on full dataset');
         }
 
         $estimator->train($dataset);
@@ -339,33 +344,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     public function predict(Dataset $dataset) : array
     {
         return $this->estimator->predict($dataset);
-    }
-
-    /**
-     * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the supplied parameter grid.
-     *
-     * @param array $grid
-     * @return array
-     */
-    protected function combineGrid(array $grid) : array
-    {
-        $combinations = [[]];
-
-        foreach ($grid as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
     }
 
     /**
