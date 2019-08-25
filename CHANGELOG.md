@@ -20,6 +20,7 @@
     - Datasets now inherit from abstract parent Dataset class
     - Removed Dataset interface
     - Neural net parameter update in Layer instead of Optimizer
+    - Changed order of distance-based clusterer hyperparameters
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

@@ -8,8 +8,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
@@ -42,7 +42,7 @@ class FuzzyCMeansTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 300, 1e-4, new Random());
+        $this->estimator = new FuzzyCMeans(3, 2.0, 300, 1e-4, new Euclidean(), new Random());
 
         $this->metric = new VMeasure();
 

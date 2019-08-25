@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Euclidean.php">Source</a></span>
 
 # Euclidean
-This is the ordinary straight line (bee line) distance between two points. The associated norm of the Euclidean distance is referred to as the L2 norm.
+This is the rotationally invariant straight line (*bee* line) distance between two points.
 
 ### Parameters
 This kernel does not have any parameters.

@@ -61,13 +61,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     protected $batchSize;
 
     /**
-     * The distance function to use when computing the distances.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * The maximum number of iterations to run until the algorithm
      * terminates.
      *
@@ -89,6 +82,13 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * @var int
      */
     protected $window;
+
+    /**
+     * The distance function to use when computing the distances.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
 
     /**
      * The cluster centroid seeder.
@@ -128,20 +128,20 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * @param int $k
      * @param int $batchSize
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
      * @param int $window
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $k,
         int $batchSize = 100,
-        ?Distance $kernel = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
+        ?Distance $kernel = null,
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
@@ -171,10 +171,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         $this->k = $k;
         $this->batchSize = $batchSize;
-        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
+        $this->kernel = $kernel ?? new Euclidean();
         $this->seeder = $seeder ?? new PlusPlus($kernel);
     }
 

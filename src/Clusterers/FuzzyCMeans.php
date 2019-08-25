@@ -64,13 +64,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     protected $rho;
 
     /**
-     * The distance kernel to use when computing the distances between samples.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
@@ -83,6 +76,13 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * @var float
      */
     protected $minChange;
+
+    /**
+     * The distance kernel to use when computing the distances between samples.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
 
     /**
      * The cluster centroid seeder.
@@ -112,18 +112,18 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * @param int $c
      * @param float $fuzz
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $c,
         float $fuzz = 2.0,
-        ?Distance $kernel = null,
         int $epochs = 300,
         float $minChange = 1e-4,
+        ?Distance $kernel = null,
         ?Seeder $seeder = null
     ) {
         if ($c < 1) {
@@ -149,9 +149,9 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $this->c = $c;
         $this->fuzz = $fuzz;
         $this->rho = 2. / ($fuzz - 1.);
-        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->kernel = $kernel ?? new Euclidean();
         $this->seeder = $seeder ?? new PlusPlus($kernel);
     }
 

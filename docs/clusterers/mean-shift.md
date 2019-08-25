@@ -11,10 +11,10 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
-| 2 | tree | BallTree | object | The spatial tree used for range queries. |
+| 2 | ratio | 0.1 | float | The ratio of samples from the training set to seed the algorithm with. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 4 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
-| 5 | ratio | 0.1 | float | The ratio of samples from the training set to seed the algorithm with. |
+| 5 | tree | BallTree | object | The spatial tree used for range queries. |
 | 6 | seeder | Random | object | The seeder used to initialize the cluster centroids. |
 
 ### Additional Methods
@@ -23,7 +23,7 @@ Estimate the radius of a cluster that encompasses a certain percentage of the to
 public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $distance = null) : float
 ```
 
-> **Note:** Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a sample subset of the training data.
+> **Note:** Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a smaller subset of the training data.
 
 Return the centroids computed from the training set:
 ```php
@@ -45,7 +45,7 @@ $radius = MeanShift::estimateRadius($dataset);
 
 $estimator = new MeanShift($radius); // Set radius automatically
 
-$estimator = new MeanShift(2.5, new BallTree(100), 2000, 1e-6, 0.05, new KMC2());
+$estimator = new MeanShift(2.5, 2000, 1e-6, 0.05, new BallTree(100), new KMC2());
 ```
 
 ### References

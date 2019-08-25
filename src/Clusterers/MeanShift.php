@@ -65,11 +65,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $delta;
 
     /**
-     * The spatial tree used for range searches.
+     * The ratio of samples from the training set to seed the algorithm with.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @var float
      */
-    protected $tree;
+    protected $ratio;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
@@ -86,11 +86,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $minChange;
 
     /**
-     * The ratio of samples from the training set to seed the algorithm with.
+     * The spatial tree used for range searches.
      *
-     * @var float
+     * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $ratio;
+    protected $tree;
 
     /**
      * The cluster centroid seeder.
@@ -123,7 +123,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * > **Note**: Since radius estimation scales quadratically in the number of
      * samples, for large datasets you can speed up the process by running it on
-     * a sample subset of the training data.
+     * a smaller subset of the training data.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param float $percentile
@@ -156,19 +156,19 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
     /**
      * @param float $radius
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param float $ratio
      * @param int $epochs
      * @param float $minChange
-     * @param float $ratio
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius,
-        ?Spatial $tree = null,
+        float $ratio = 0.1,
         int $epochs = 100,
         float $minChange = 1e-4,
-        float $ratio = 0.10,
+        ?Spatial $tree = null,
         ?Seeder $seeder = null
     ) {
         if ($radius <= 0.) {
@@ -176,8 +176,13 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " greater than 0, $radius given.");
         }
 
+        if ($ratio < 0.01 or $ratio > 1.) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0.01 and 1, $ratio given.");
+        }
+
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
+            throw new InvalidArgumentException('Learner must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
@@ -186,17 +191,12 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " than 0, $minChange given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
-        }
-
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
-        $this->tree = $tree ?? new BallTree();
+        $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->ratio = $ratio;
+        $this->tree = $tree ?? new BallTree();
         $this->seeder = $seeder ?? new Random();
     }
 

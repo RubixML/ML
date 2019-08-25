@@ -42,7 +42,7 @@ class MeanShiftTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new MeanShift(66, new BallTree(), 100, 1e-4, 0.10, new Random());
+        $this->estimator = new MeanShift(66, 0.1, 100, 1e-4, new BallTree(), new Random());
 
         $this->metric = new VMeasure();
 

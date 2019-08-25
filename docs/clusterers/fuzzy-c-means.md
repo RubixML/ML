@@ -12,9 +12,9 @@ A distance-based soft clustering algorithm that allows samples to belong to mult
 |---|---|---|---|---|
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-| 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 5 | min change | 10. | float | The minimum change in the inertia for the algorithm to continue training. |
+| 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 4 | min change | 10. | float | The minimum change in the inertia for the algorithm to continue training. |
+| 5 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 ### Additional Methods
@@ -34,7 +34,7 @@ use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\Random;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 400, 1., new Random());
+$estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
 ```
 
 ### References

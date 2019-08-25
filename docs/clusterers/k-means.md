@@ -12,10 +12,10 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
 | 2 | batch size | 100 | int | The size of each mini batch in samples. |
-| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-| 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 5 | min change | 10.0 | float | The minimum change in the inertia for training to continue. |
-| 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 4 | min change | 10.0 | float | The minimum change in the inertia for training to continue. |
+| 5 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 6 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 7 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 ### Additional Methods
@@ -37,10 +37,10 @@ public steps() : array
 ### Example
 ```php
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
 
-$estimator = new KMeans(3, 100, new Euclidean(), 300, 10.0, 10, new PlusPlus());
+$estimator = new KMeans(3, 100, 300, 10.0, 10, new Euclidean(), new PlusPlus());
 ```
 
 ### References
