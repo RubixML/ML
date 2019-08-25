@@ -74,7 +74,7 @@ class MeanShiftTest extends TestCase
 
         $radius = MeanShift::estimateRadius($subset, 30.);
 
-        $this->assertEquals(66.96148136908327, $radius);
+        $this->assertEquals(68.35439187218562, $radius);
     }
 
     public function test_train_predict()

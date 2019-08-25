@@ -119,39 +119,41 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
     /**
      * Estimate the radius of a cluster that encompasses a certain percentage of
-     * the total training samples.
+     * the training samples.
      *
      * > **Note**: Since radius estimation scales quadratically in the number of
      * samples, for large datasets you can speed up the process by running it on
      * a smaller subset of the training data.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param float $percentile
+     * @param float $p
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      * @return float
      */
     public static function estimateRadius(
         Dataset $dataset,
-        float $percentile = 30.,
+        float $p = 30.,
         ?Distance $kernel = null
     ) : float {
-        if ($percentile < 0. or $percentile > 100.) {
+        if ($p < 0. or $p > 100.) {
             throw new InvalidArgumentException('Percentile must be between'
-                . " 0 and 100, $percentile given.");
+                . " 0 and 100, $p given.");
         }
 
         $kernel = $kernel ?? new Euclidean();
 
         $distances = [];
 
-        foreach ($dataset as  $sampleA) {
-            foreach ($dataset as $sampleB) {
-                $distances[] = $kernel->compute($sampleA, $sampleB);
+        foreach ($dataset as $i => $sampleA) {
+            foreach ($dataset as $j => $sampleB) {
+                if ($i !== $j) {
+                    $distances[] = $kernel->compute($sampleA, $sampleB);
+                }
             }
         }
 
-        return Stats::percentile($distances, $percentile);
+        return Stats::percentile($distances, $p);
     }
 
     /**
@@ -265,11 +267,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
                 'radius' => $this->radius,
-                'tree' => $this->tree,
-                'kernel' => $this->tree->kernel(),
+                'ratio' => $this->ratio,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
-                'ratio' => $this->ratio,
+                'tree' => $this->tree,
+                'kernel' => $this->tree->kernel(),
                 'seeder' => $this->seeder,
             ]));
         }
