@@ -126,19 +126,19 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * a smaller subset of the training data.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param float $p
+     * @param float $percentile
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      * @return float
      */
     public static function estimateRadius(
         Dataset $dataset,
-        float $p = 30.,
+        float $percentile = 30.,
         ?Distance $kernel = null
     ) : float {
-        if ($p < 0. or $p > 100.) {
+        if ($percentile < 0. or $percentile > 100.) {
             throw new InvalidArgumentException('Percentile must be between'
-                . " 0 and 100, $p given.");
+                . " 0 and 100, $percentile given.");
         }
 
         $kernel = $kernel ?? new Euclidean();
@@ -153,7 +153,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             }
         }
 
-        return Stats::percentile($distances, $p);
+        return Stats::percentile($distances, $percentile);
     }
 
     /**
