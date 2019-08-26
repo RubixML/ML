@@ -27,7 +27,7 @@ use const Rubix\ML\LOG_EPSILON;
  *
  * A variate of the Naive Bayes classifier that uses a probability density
  * function over continuous features which are assumed to be normally
- * distributed.
+ * (Gaussian) distributed.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
@@ -200,15 +200,14 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->classes = $classes;
         $this->weights = array_fill_keys($classes, 0);
 
         $this->means = $this->variances = array_fill_keys($classes, []);
@@ -255,19 +254,17 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            $means = $this->means[$class];
-            $variances = $this->variances[$class];
+            $means = $oldMeans = $this->means[$class] ?? [];
+            $variances = $oldVariances = $this->variances[$class] ?? [];
 
-            $oldWeight = $this->weights[$class];
-            $oldMeans = $this->means[$class];
-            $oldVariances = $this->variances[$class];
+            $oldWeight = $this->weights[$class] ?? 0;
 
             $n = $stratum->numRows();
 
@@ -290,7 +287,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->means[$class] = $means;
             $this->variances[$class] = $variances;
             
-            $this->weights[$class] += $n;
+            $this->weights[$class] = $oldWeight + $n;
         }
 
         if ($this->fitPriors) {

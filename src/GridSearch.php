@@ -259,8 +259,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

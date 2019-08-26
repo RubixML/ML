@@ -20,7 +20,7 @@ use RuntimeException;
 use const Rubix\ML\EPSILON;
 
 /**
- * Local outlier Factor
+ * Local Outlier Factor
  *
  * Local Outlier Factor (LOF) measures the local deviation of density of a given
  * sample with respect to its *k* nearest neighbors. As such, LOF only considers

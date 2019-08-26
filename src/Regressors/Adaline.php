@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Estimator, Online, Verbose, Persistable
+class Adaline implements Estimator, Learner, Online, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -223,7 +224,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 
@@ -254,7 +255,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
         }
 
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 

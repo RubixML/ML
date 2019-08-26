@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Persistable
+class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
     
@@ -231,7 +232,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Pe
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 
@@ -264,7 +265,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Pe
         }
 
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 

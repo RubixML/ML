@@ -1,33 +1,33 @@
 # What is Machine Learning?
-Machine learning (ML) is when a computer program is able to progressively improve performance on a task through *training* and data without explicitly being programmed. It is a way of programming with data. Once a learner has been trained, we can use it to make *predictions* about future outcomes (referred to as *inference*). There are two types of machine learning that Rubix supports out of the box - Supervised and Unsupervised.
+Machine learning (ML) is when a program is able to progressively improve performance on a task through *training* and data without explicitly being programmed. It is a way of programming with data. Once a learner has been trained, we can use it to make predictions about future outcomes (referred to as *inference*). There are two types of machine learning that Rubix ML supports out of the box - Supervised and Unsupervised.
 
 ## Supervised Learning
-Supervised learning is a type of machine learning that uses a separate training signal in the form of human annotations called *labels* along with the training samples. There are two types of supervised learning to consider in Rubix ML.
+Supervised learning is a type of ML that incorporates a training signal in the form of human annotations called *labels* along with the training samples. There are two types of supervised learning to consider in Rubix ML.
 
 ### Classification
-For classification problems, a learner is trained to differentiate samples among a set of k possible discrete classes. In this type of problem, the labels are the classes that each sample belongs to. Examples of class labels include "cat", "dog", "ship", "human", etc. Classification problems range from simple to very complex and include [image recognition](https://github.com/RubixML/CIFAR-10), [text sentiment analysis](https://github.com/RubixML/Sentiment), and [Iris flower classification](https://github.com/RubixML/Iris).
+For classification problems, a supervised learner is trained to differentiate samples among a set of k possible discrete classes. In this type of problem, the training labels are the classes that each sample belongs to. Examples of class labels include "cat", "dog", "ship", "human", etc. Classification problems range from simple to very complex and include [image recognition](https://github.com/RubixML/CIFAR-10), [text sentiment analysis](https://github.com/RubixML/Sentiment), and [Iris flower classification](https://github.com/RubixML/Iris).
 
 ### Regression
-Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the labels are the desired output values of the learner given each training sample as input. Unlike classifiers, a regressor can predict infinitely many real values. Regression problems include determining the angle of an automobile steering wheel, [estimating the sale price of a home](https://github.com/RubixML/Housing), and credit scoring.
+Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are the desired output values of the learner given each training sample as input. Unlike classifiers, a regressor can predict infinitely many real values. Regression problems include determining the angle of an automobile steering wheel, [estimating the sale price of a home](https://github.com/RubixML/Housing), and credit scoring.
 
-> **Note:** By convention throughout Rubix ML, discrete (referred to as *categorical*) variables are always denoted by a string, whereas *continuous* variables are given as either integers or floating point numbers.
+> **Note:** By convention in Rubix ML, discrete (referred to as *categorical*) variables are always denoted by a string, whereas *continuous* variables are given as either integers or floating point numbers.
 
 ## Unsupervised Learning
-A form of learning that does not require training labels is called Unsupervised learning. Unsupervised learners aim to detect patterns in raw data. Since it is not always easy or possible to obtain labeled data, an unsupervised method is often the first step in discovering information about your data. There are three types of unsupervised learning to consider in Rubix ML.
+A form of learning that does not require training labels is called Unsupervised learning. Unsupervised learners aim to detect patterns using just raw data. Since it is not always easy or possible to obtain labeled data, an unsupervised method is often the first step in discovering information about your data. There are three types of unsupervised learning to consider in Rubix ML.
 
 ### Clustering
-Clustering takes a dataset of unlabeled samples and assigns each sample a categorical label based on its similarity to other samples in the training set. Clustering is used is in tissue differentiation from PET scan images, customer database market segmentation, or to discover communities within social networks.
+Clustering takes a dataset of unlabeled samples and assigns each sample a cluster number based on its similarity to other samples in the training set. Samples that are most similar will be assigned to the same cluster. Clustering is used is in tissue differentiation from PET scan images, customer database market segmentation, and to discover communities within social networks.
 
 ### Anomaly Detection
-Anomalies are samples that have been generated by a different means than normal or those that do not conform to the expected distribution of the training dataset. Anomaly detection is used in security for intrusion and denial of service detection, and in the financial industry to detect fraud.
+Anomalies are samples that have been generated by a different process than normal or those that do not conform to the expected distribution of the training data. Samples can either be flagged or ranked based on their anomaly score. Anomaly detection is used in security for intrusion and denial of service detection, and in the financial industry to detect fraud.
 
 ### Manifold Learning
-Manifold learning is a type of unsupervised non-linear dimensionality reduction used for embedding dense feature representations. Embedders are used for visualizing high dimensional datasets in low (1 to 3) dimensions, and for compressing large sparse feature vectors for inputs to a learning algorithm.
+Manifold learning is a type of unsupervised non-linear dimensionality reduction used for embedding datasets into dense feature representations. Embedders are used for visualizing high dimensional datasets in low (1 to 3) dimensions, and for compressing samples before input to a learning algorithm.
 
 # Obtaining Data
 Machine learning projects typically begin with a question. For example, you might want to answer the question of "who of my friends are most likely to stay married to their partner?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model to predict successful relationships based on the answers they gave you. In ML terms, the answers you collect are the values of the *features* that constitute measurements of the phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*.
 
-An alternative to collecting data yourself is downloading one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that, usually, the data has already been cleaned for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open source datasets.
+As an alternative to collecting data yourself, one may access one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that the data has most likely already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open source datasets.
 
 ## Extracting Data
 Before our data can become useful, we need to load it into our script from its stored format. There are many PHP libraries that help make extracting data from various sources easy and intuitive, and we recommend checking them out as a great place to start.
@@ -38,7 +38,7 @@ Before our data can become useful, we need to load it into our script from its s
 In addition, PHP has a number of built-in functions and extensions that allow you to access data stored in various formats including [CSV](https://www.php.net/manual/en/function.str-getcsv.php) and [Database](https://www.php.net/manual/en/book.pdo.php).
 
 ## The Dataset Object
-In Rubix ML, data is passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle all the selecting, splitting, folding, transforming, randomizing, and sorting of the samples and labels while keeping their indices aligned. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
+In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle all the selecting, splitting, folding, transforming, randomizing, and sorting of the samples and labels while keeping their indices aligned. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
 
 Suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled](datasets/labeled.md) dataset from this data by passing the samples and labels into the constructor.
 

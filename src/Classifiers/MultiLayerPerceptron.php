@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
@@ -35,15 +36,15 @@ use const Rubix\ML\EPSILON;
 /**
  * Multi Layer Perceptron
  *
- * A multiclass feedforward Neural Network classifier that uses a series of
+ * A multiclass feedforward neural network classifier that uses a series of
  * user-defined hidden layers as intermediate computational units. Multiple
  * layers and non-linear activation functions allow the Multi Layer Perceptron
  * to handle complex non-linear problems.
  *
- * > **Note**: The MLP features progress monitoring which stops training when it can
- * no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure
- * that it always uses the best parameters even if progress may have declined during
- * training.
+ * > **Note:** The MLP features progress monitoring which stops training when
+ * it can no longer make progress. It also utilizes snapshotting to make sure
+ * that it always uses the best parameters even if progress may have declined
+ * during training.
  *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.
@@ -53,7 +54,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose, Persistable
+class MultiLayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -306,7 +307,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 
@@ -339,7 +340,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         }
 
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 

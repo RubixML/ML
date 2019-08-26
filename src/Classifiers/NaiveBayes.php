@@ -23,11 +23,15 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Naive Bayes
  *
- * Probability-based classifier that uses inference to derive the predicted class.
- * The posterior probabilities are calculated using Bayes' Theorem and the naive
- * part relates to the fact that it assumes that all features are independent. In
- * practice, the independent assumption tends to work out most of the time despite
- * most features being correlated in the real world.
+ * Probability-based classifier that uses Bayes' Theorem and the strong assumption
+ * that all features are independent. In practice, the independent assumption tends
+ * to work out most of the time despite most features being correlated in the real
+ * world. This particular implementation is based on a multinomial (categorical)
+ * distribution of input features.
+ *
+ * **Note:** Each partial train has the overhead of recomputing the probability
+ * mass function for each class and feature. As such, it is better to train with
+ * fewer but larger training sets.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -160,9 +164,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function trained() : bool
     {
-        return $this->weights
-            and $this->counts
-            and $this->probs;
+        return $this->weights and $this->counts and $this->probs;
     }
 
     /**
@@ -204,21 +206,13 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $classes = $dataset->possibleOutcomes();
-
-        $this->counts = $this->probs = array_fill_keys(
-            $classes,
-            array_fill(0, $dataset->numColumns(), [])
-        );
-
-        $this->classes = $classes;
-        $this->weights = array_fill_keys($classes, 0);
+        $this->weights = $this->counts = $this->probs = [];
 
         $this->partial($dataset);
     }
@@ -231,22 +225,23 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function partial(Dataset $dataset) : void
     {
-        if (empty($this->weights) or empty($this->counts) or empty($this->probs)) {
-            $this->train($dataset);
-
-            return;
-        }
-
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            $classCounts = $this->counts[$class];
-            $classProbs = $this->probs[$class];
+            if (isset($this->counts[$class])) {
+                $classCounts = $this->counts[$class];
+                $classProbs = $this->probs[$class];
+            } else {
+                $classCounts = $classProbs = array_fill(0, $stratum->numColumns(), []);
+
+                $this->classes[] = $class;
+                $this->weights[$class] = 0;
+            }
 
             foreach ($stratum->columns() as $column => $values) {
                 $columnCounts = $classCounts[$column];

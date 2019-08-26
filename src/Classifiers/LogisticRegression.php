@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
@@ -39,7 +40,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, Persistable
+class LogisticRegression implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -232,7 +233,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 
@@ -265,7 +266,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
         }
 
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 

@@ -1,7 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php">Source</a></span>
 
 # Naive Bayes
-Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated), which is not often the case in the real world but works well in practice.
+Probability-based classifier that uses Bayes' Theorem and the strong assumption that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world. This particular implementation is based on a multinomial (categorical) distribution of input features.
+
+**Note:** Each partial train has the overhead of recomputing the probability mass function for each class and feature. As such, it is better to train with fewer but larger training sets.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

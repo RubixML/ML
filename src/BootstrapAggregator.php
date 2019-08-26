@@ -138,7 +138,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     {
         if ($this->type() === self::CLASSIFIER or $this->type() === self::REGRESSOR) {
             if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('This estimator requires a'
+                throw new InvalidArgumentException('Learner requires a'
                     . ' labeled training set.');
             }
         }

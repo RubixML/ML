@@ -139,7 +139,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 

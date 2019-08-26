@@ -160,7 +160,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     public function partial(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
 
