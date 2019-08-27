@@ -28,9 +28,9 @@ class RelativeEntropyTest extends TestCase
     /**
      * @dataProvider compute_provider
      */
-    public function test_compute(Tensor $output, Tensor $target, array $expected)
+    public function test_compute(Tensor $output, Tensor $target, float $expected)
     {
-        $loss = $this->costFn->compute($output, $target)->asArray();
+        $loss = $this->costFn->compute($output, $target);
 
         $this->assertEquals($expected, $loss);
     }
@@ -38,21 +38,21 @@ class RelativeEntropyTest extends TestCase
     public function compute_provider() : Generator
     {
         yield [
-            Vector::quick([0.99, 0.01, 0.]),
-            Vector::quick([1., 0., 0.]),
-            [0.010050335853501506, -1.3815510557964274E-7, 0.],
+            Matrix::quick([[0.99, 0.01, 0.]]),
+            Matrix::quick([[1., 0., 0.]]),
+            0.003350065899465309,
         ];
 
         yield [
-            Vector::quick([0.2, 0.4, 0.4]),
-            Vector::quick([0., 1., 0.]),
-            [-1.6811242831518263E-7, 0.9162907318741551, -1.750439001207821E-7],
+            Matrix::quick([[0.2, 0.4, 0.4]]),
+            Matrix::quick([[0., 1., 0.]]),
+            0.3054301295726089,
         ];
 
         yield [
-            Vector::quick([0.0, 0.1, 0.9]),
-            Vector::quick([1., 0., 0.]),
-            [18.420680743952367, -1.6118095650958322E-7, -1.831532022829454E-7],
+            Matrix::quick([[0.0, 0.1, 0.9]]),
+            Matrix::quick([[1., 0., 0.]]),
+            6.140226799872736,
         ];
 
         yield [
@@ -66,11 +66,7 @@ class RelativeEntropyTest extends TestCase
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
             ]),
-            [
-                [-1.6811242831518263E-7, -1.6118095650958322E-7, 0.3566749439387324],
-                [0., 0.10536051565782635, -1.6118095650958322E-7],
-                [-1.6118095650958322E-7, -1.7216707939626428E-7, 0.5108256237659907],
-            ],
+            0.10809558439335247,
         ];
     }
 

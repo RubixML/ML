@@ -28,9 +28,9 @@ class HuberLossTest extends TestCase
     /**
      * @dataProvider compute_provider
      */
-    public function test_compute(Tensor $output, Tensor $target, array $expected)
+    public function test_compute(Tensor $output, Tensor $target, float $expected)
     {
-        $loss = $this->costFn->compute($output, $target)->asArray();
+        $loss = $this->costFn->compute($output, $target);
 
         $this->assertEquals($expected, $loss);
     }
@@ -38,27 +38,21 @@ class HuberLossTest extends TestCase
     public function compute_provider() : Generator
     {
         yield [
-            Vector::quick([0.99]),
-            Vector::quick([1.0]),
-            [4.9998750062396624E-5],
+            Matrix::quick([[0.99]]),
+            Matrix::quick([[1.0]]),
+            4.9998750062396624E-5,
         ];
 
         yield [
-            Vector::quick([1000.]),
-            Vector::quick([1.]),
-            [998.0005005003751],
+            Matrix::quick([[1000.]]),
+            Matrix::quick([[1.]]),
+            998.0005005003751,
         ];
-        
+
         yield [
             Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]),
             Matrix::quick([[36.], [22.], [18.], [41.5], [38.]]),
-            [
-                [1.2539742678211772],
-                [1.2360679774997898],
-                [12.43726162579266],
-                [1.8792360097775962],
-                [0.1180339887498949],
-            ],
+            3.384914773928223,
         ];
     }
 

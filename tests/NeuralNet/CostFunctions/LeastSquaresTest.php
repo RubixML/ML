@@ -28,9 +28,9 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider compute_provider
      */
-    public function test_compute(Tensor $output, Tensor $target, array $expected)
+    public function test_compute(Tensor $output, Tensor $target, float $expected)
     {
-        $loss = $this->costFn->compute($output, $target)->asArray();
+        $loss = $this->costFn->compute($output, $target);
 
         $this->assertEquals($expected, $loss);
     }
@@ -38,27 +38,21 @@ class LeastSquaresTest extends TestCase
     public function compute_provider() : Generator
     {
         yield [
-            Vector::quick([0.99]),
-            Vector::quick([1.0]),
-            [0.00010000000000000018],
+            Matrix::quick([[0.99]]),
+            Matrix::quick([[1.0]]),
+            0.00010000000000000018,
         ];
 
         yield [
-            Vector::quick([1000.]),
-            Vector::quick([1.]),
-            [998001.0],
+            Matrix::quick([[1000.]]),
+            Matrix::quick([[1.]]),
+            998001.0,
         ];
 
         yield [
             Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]),
             Matrix::quick([[36.], [22.], [18.], [41.5], [38.]]),
-            [
-                [4.0804000000000125],
-                [4.0],
-                [179.56],
-                [7.290000000000015],
-                [0.25],
-            ],
+            39.036080000000005,
         ];
     }
 

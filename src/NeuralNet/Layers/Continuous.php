@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
 use Rubix\Tensor\Matrix;
-use Rubix\Tensor\Vector;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -212,7 +211,7 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $target = Vector::quick($labels);
+        $target = Matrix::quick([$labels]);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
@@ -232,7 +231,7 @@ class Continuous implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
 
-        $loss = $this->costFn->compute($this->z, $target)->sum()->mean();
+        $loss = $this->costFn->compute($this->z, $target);
 
         unset($this->input, $this->z);
 

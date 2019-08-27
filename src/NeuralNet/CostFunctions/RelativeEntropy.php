@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Rubix\Tensor\Tensor;
+use Rubix\Tensor\Matrix;
 
 use const Rubix\ML\EPSILON;
 
@@ -31,17 +32,19 @@ class RelativeEntropy implements ClassificationLoss
     /**
      * Compute the loss.
      *
-     * @param \Rubix\Tensor\Tensor $output
-     * @param \Rubix\Tensor\Tensor $target
-     * @return \Rubix\Tensor\Tensor
+     * @param \Rubix\Tensor\Matrix $output
+     * @param \Rubix\Tensor\Matrix $target
+     * @return float
      */
-    public function compute(Tensor $output, Tensor $target) : Tensor
+    public function compute(Matrix $output, Matrix $target) : float
     {
         $target = $target->clip(EPSILON, 1.);
         $output = $output->clip(EPSILON, 1.);
 
         return $target->divide($output)->log()
-            ->multiply($target);
+            ->multiply($target)
+            ->mean()
+            ->mean();
     }
 
     /**

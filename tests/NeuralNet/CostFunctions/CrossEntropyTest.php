@@ -28,9 +28,9 @@ class CrossEntropyTest extends TestCase
     /**
      * @dataProvider compute_provider
      */
-    public function test_compute(Tensor $output, Tensor $target, array $expected)
+    public function test_compute(Tensor $output, Tensor $target, float $expected)
     {
-        $loss = $this->costFn->compute($output, $target)->asArray();
+        $loss = $this->costFn->compute($output, $target);
 
         $this->assertEquals($expected, $loss);
     }
@@ -38,21 +38,21 @@ class CrossEntropyTest extends TestCase
     public function compute_provider() : Generator
     {
         yield [
-            Vector::quick([0.99, 0.01, 0.]),
-            Vector::quick([1., 0., 0.]),
-            [0.01005033585350145, 0., 0.],
+            Matrix::quick([[0.99, 0.01, 0.]]),
+            Matrix::quick([[1., 0., 0.]]),
+            0.00335011195116715,
         ];
 
         yield [
-            Vector::quick([0.2, 0.4, 0.4]),
-            Vector::quick([0., 1., 0.]),
-            [0., 0.916290731874155, 0.],
+            Matrix::quick([[0.2, 0.4, 0.4]]),
+            Matrix::quick([[0., 1., 0.]]),
+            0.3054302439580517,
         ];
 
         yield [
-            Vector::quick([0.0, 0.1, 0.9]),
-            Vector::quick([1., 0., 0.]),
-            [18.420680743952367, 0., 0.],
+            Matrix::quick([[0.0, 0.1, 0.9]]),
+            Matrix::quick([[1., 0., 0.]]),
+            6.140226914650789,
         ];
 
         yield [
@@ -66,11 +66,7 @@ class CrossEntropyTest extends TestCase
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
             ]),
-            [
-                [0., 0., 0.35667494393873245],
-                [0., 0.10536051565782628, 0.],
-                [0., 0., 0.5108256237659907],
-            ],
+            0.10809567592917217,
         ];
     }
 
