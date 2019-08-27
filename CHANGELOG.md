@@ -1,5 +1,4 @@
-- Unreleased
-    - Added Patreon funding support
+- 0.0.15-beta
     - Added Gaussian MLE anomaly detector
     - Added early stopping window to Gradient Descent-based Learners
     - Changed early stopping behavior of MLP-based estimators
@@ -10,7 +9,7 @@
     - Cross validators now stratify dataset automatically
     - Changed default k in K Fold validator
     - Changed order of Loda hyperparameters
-    - Changed hyperparamter order of KNN-based learners
+    - Changed hyperparameter order of KNN-based learners
     - Added method to return categories from One Hot Encoder
     - Removed Lottery and Blurry Percentile guessing strategy
     - Added Percentile guessing strategy
@@ -23,6 +22,10 @@
     - Changed order of distance-based clusterer hyperparameters
     - Improved cluster radius estimation in Mean Shift
     - Naive Bayes now adaptive to new class labels
+    - Changed order of neural network learner hyperparameters
+    - Added safety switch to AdaBoost if weak learner worse than random
+    - Added min change early stopping to AdaBoost
+    - Added Patreon funding support
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

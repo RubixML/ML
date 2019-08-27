@@ -20,7 +20,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 ### Additional Methods
 Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
 ```php
-public static estimateRadius(Dataset $dataset, float $p = 30., ?Distance $kernel = null) : float
+public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $kernel = null) : float
 ```
 
 > **Note:** Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a smaller subset of the training data.

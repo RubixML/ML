@@ -50,14 +50,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected $base;
 
     /**
-     * The number of estimators to train in the ensemble.
+     * The maximum number of estimators to train in the ensemble.
      *
      * @var int
      */
     protected $estimators;
 
     /**
-     * The learning rate i.e the step size.
+     * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
      */
@@ -69,18 +69,16 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @var float
      */
     protected $ratio;
-    
-    /**
-     * The class labels of the training set.
-     *
-     * @var array
-     */
-    protected $classes = [
-        //
-    ];
 
     /**
-     * The ensemble of "weak" classifiers.
+     * The minimum change in the training loss necessary to continue training.
+     *
+     * @var float
+     */
+    protected $minChange;
+
+    /**
+     * The ensemble of *weak* classifiers.
      *
      * @var array
      */
@@ -108,7 +106,16 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     ];
 
     /**
-     * The average error of a training sample at each epoch.
+     * The unique class labels from the training set.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
+
+    /**
+     * The average training loss at each epoch.
      *
      * @var array
      */
@@ -121,13 +128,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param int $estimators
      * @param float $rate
      * @param float $ratio
+     * @param float $minChange
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Learner $base = null,
         int $estimators = 100,
         float $rate = 1.,
-        float $ratio = 0.8
+        float $ratio = 0.8,
+        float $minChange = 1e-4
     ) {
         if ($base and $base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
@@ -144,15 +153,21 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than 0, $rate given.");
         }
 
-        if ($ratio <= 0 or $ratio > 1.) {
+        if ($ratio <= 0. or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
+        }
+
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
+                . " than 0, $minChange given.");
         }
 
         $this->base = $base ?? new ClassificationTree(1);
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
+        $this->minChange = $minChange;
     }
 
     /**
@@ -249,9 +264,12 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $p = (int) round($this->ratio * $n);
         $k = count($this->classes);
 
-        $this->weights = array_fill(0, $n, 1 / $n);
+        $threshold = 1. - (1. / $k);
+        $prevLoss = INF;
 
         $this->ensemble = $this->influences = $this->steps = [];
+
+        $this->weights = array_fill(0, $n, 1 / $n);
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $estimator = clone $this->base;
@@ -261,7 +279,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $estimator->train($subset);
 
             $predictions = $estimator->predict($dataset);
-
+            
             $loss = 0.;
 
             foreach ($predictions as $i => $prediction) {
@@ -274,25 +292,45 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $loss /= $total;
 
-            $influence = $this->rate
-                * (log((1. - $loss) / ($loss ?: EPSILON))
-                + log($k - 1));
-
-            $this->ensemble[] = $estimator;
             $this->steps[] = $loss;
-            $this->influences[] = $influence;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
+            if ($loss >= $threshold) {
+                if ($this->logger) {
+                    $this->logger->info('Estimator dropped due'
+                        . ' to high training loss');
+                }
+
+                continue 1;
+            }
+
+            $influence = $this->rate
+                * (log((1. - $loss) / ($loss ?: EPSILON))
+                + log($k - 1));
+
+            $this->ensemble[] = $estimator;
+            $this->influences[] = $influence;
+
+            if ($loss < EPSILON) {
+                break 1;
+            }
+
+            if (abs($prevLoss - $loss) < $this->minChange) {
+                break 1;
+            }
+
+            $step = exp($influence);
+
             foreach ($predictions as $i => $prediction) {
                 if ($prediction !== $labels[$i]) {
-                    $this->weights[$i] *= exp($influence);
+                    $this->weights[$i] *= $step;
                 }
             }
 
@@ -301,6 +339,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             foreach ($this->weights as &$weight) {
                 $weight /= $total;
             }
+
+            $prevLoss = $loss;
         }
 
         if ($this->logger) {

@@ -56,7 +56,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     use PredictsSingle, LoggerAware;
 
     /**
-     * The user-specified hidden layers of the network.
+     * An array composing the user-specified hidden layers of the network in order.
      *
      * @var array
      */
@@ -65,21 +65,21 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     ];
 
     /**
-     * The number of training samples to consider per iteholdoutn of gradient descent.
+     * The number of training samples to process at a time.
      *
      * @var int
      */
     protected $batchSize;
 
     /**
-     * The gradient descent optimizer used to train the network.
+     * The gradient descent optimizer used to update the network parameters.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
     /**
-     * The L2 regularization parameter.
+     * The amount of L2 regularization to apply to the parameters of the network.
      *
      * @var float
      */
@@ -87,34 +87,18 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before the algorithm terminates.
+     * over the entire training set before terminating.
      *
      * @var int
      */
     protected $epochs;
 
     /**
-     * The minimum change in the cost function necessary to continue training.
+     * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
     protected $minChange;
-
-    /**
-     * The function that computes the cost of an erroneous activation during
-     * training.
-     *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
-     */
-    protected $costFn;
-
-    /**
-     * The holdout of training samples to use for validation. i.e. the holdout
-     * holdout.
-     *
-     * @var float
-     */
-    protected $holdout;
 
     /**
      * The number of epochs without improvement in the validation score to wait
@@ -123,6 +107,22 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @var int
      */
     protected $window;
+
+    /**
+     * The proportion of training samples to use for validation and progress
+     * monitoring.
+     *
+     * @var float
+     */
+    protected $holdout;
+
+    /**
+     * The function that computes the loss associated with an erroneous
+     * activation during training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
+     */
+    protected $costFn;
 
     /**
      * The metric used to score the generalization performance of the model
@@ -149,7 +149,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     ];
 
     /**
-     * The average cost of a training sample at each epoch.
+     * The average training loss at each epoch.
      *
      * @var array
      */
@@ -164,9 +164,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @param float $holdout
      * @param int $window
+     * @param float $holdout
+     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @throws \InvalidArgumentException
      */
@@ -177,23 +177,23 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?RegressionLoss $costFn = null,
-        float $holdout = 0.1,
         int $window = 3,
+        float $holdout = 0.1,
+        ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Cannot have less than 1 sample'
-                . " per batch, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be at least'
+                . " 1 sample, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization amount must'
-                . " be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be 0 or greater'
+                . ", $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
+            throw new InvalidArgumentException('Learner must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
@@ -202,14 +202,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . " than 0, $minChange given.");
         }
 
-        if ($holdout < 0.01 or $holdout > 0.5) {
-            throw new InvalidArgumentException('Holdout ratio must be between'
-                . " 0.01 and 0.5, $holdout given.");
-        }
-
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be at least 1'
                 . " epoch, $window given.");
+        }
+
+        if ($holdout < 0.01 or $holdout > 0.5) {
+            throw new InvalidArgumentException('Holdout ratio must be between'
+                . " 0.01 and 0.5, $holdout given.");
         }
 
         if ($metric) {
@@ -222,9 +222,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?? new LeastSquares();
-        $this->holdout = $holdout;
         $this->window = $window;
+        $this->holdout = $holdout;
+        $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RSquared();
     }
 
@@ -261,7 +261,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
-     * Return the validation scores at each epoch.
+     * Return the validation score at each epoch.
      *
      * @return array
      */
@@ -271,7 +271,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
-     * Return the average cost at every epoch.
+     * Return the training loss at each epoch.
      *
      * @return array
      */
@@ -338,14 +338,15 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
+                'hidden' => $this->hidden,
                 'batch_size' => $this->batchSize,
                 'optimizer' => $this->optimizer,
                 'alpha' => $this->alpha,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
-                'cost_fn' => $this->costFn,
-                'hold_out' => $this->holdout,
                 'window' => $this->window,
+                'hold_out' => $this->holdout,
+                'cost_fn' => $this->costFn,
                 'metric' => $this->metric,
             ]));
         }

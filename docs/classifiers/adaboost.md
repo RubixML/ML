@@ -12,10 +12,11 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
-| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 1 | base | ClassificationTree | object | The base *weak* classifier to be boosted. |
+| 2 | estimators | 100 | int | The maximum number of estimators to train in the ensemble. |
 | 3 | rate | 1.0 | float | The learning rate i.e step size. |
-| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set for each *weak* learner. |
+| 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 
 ### Additional Methods
 Return the calculated weight values of the last trained dataset:
@@ -38,7 +39,7 @@ public steps() : array
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5);
+$estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-3);
 ```
 
 ### References

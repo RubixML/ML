@@ -47,7 +47,7 @@ class MLPRegressorTest extends TestCase
             new Activation(new LeakyReLU()),
             new Dense(10),
             new Activation(new LeakyReLU()),
-        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new LeastSquares(), 0.1, 3, new MeanSquaredError());
+        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, 3, 0.1, new LeastSquares(), new MeanSquaredError());
 
         $this->metric = new RSquared();
 

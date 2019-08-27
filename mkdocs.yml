@@ -223,12 +223,11 @@ nav:
     - Screen: other/loggers/screen.md
   - Strategies:
     - API Reference: other/strategies/api.md
-    - Blurry Percentile: other/strategies/blurry-percentile.md
     - Constant: other/strategies/constant.md
     - K Most Frequent: other/strategies/k-most-frequent.md
-    - Lottery: other/strategies/lottery.md
     - Mean: other/strategies/mean.md
-    - Popularity Contest: other/strategies/popularity-contest.md
+    - Percentile: other/strategies/percentile.md
+    - Prior: other/strategies/prior.md
     - Wild Guess: other/strategies/wild-guess.md
   - Tokenizers:
     - API Reference: other/tokenizers/api.md

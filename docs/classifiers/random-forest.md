@@ -12,7 +12,7 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](classific
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | object | The base tree estimator. The default is a fully grown Classification Tree. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each base learner with. |
+| 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each base learner on. |
 
 ### Additional Methods
 Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:

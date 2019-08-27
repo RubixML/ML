@@ -26,11 +26,11 @@ use const Rubix\ML\EPSILON;
  * Gradient Boost
  *
  * Gradient Boost is a stage-wise additive ensemble that uses a Gradient
- * Descent boosting paradigm for training *weak* regressors (using
+ * Descent boosting paradigm for training *weak* regressors (usually
  * Regression Trees) to correct the error residuals of a base learner.
  *
  * > **Note**: The default base classifier is a Dummy Classifier using the
- * *Mean* Strategy and the default booster is a Regression Tree with a max
+ * Mean strategy and the default booster is a Regression Tree with a max
  * depth of 3.
  *
  * References:
@@ -54,7 +54,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     ];
 
     /**
-     * The weak regressor that will fix up the error residuals of the base
+     * The regressor that will fix up the error residuals of the *weak* base
      * learner.
      *
      * @var \Rubix\ML\Learner
@@ -69,33 +69,25 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $estimators;
 
     /**
-     * The learning rate i.e the step size.
+     * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
      */
     protected $rate;
 
     /**
-     * The ratio of samples to train each weak learner on.
+     * The ratio of samples to subsample from the training set for each booster.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     * The minimum change in the cost function necessary to continue training.
+     * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
     protected $minChange;
-
-    /**
-     * The holdout of training samples to use for validation. i.e. the holdout
-     * holdout.
-     *
-     * @var float
-     */
-    protected $holdout;
 
     /**
      * The number of epochs without improvement in the validation score to wait
@@ -106,6 +98,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $window;
 
     /**
+     * The proportion of training samples to use for validation and progress
+     * monitoring.
+     *
+     * @var float
+     */
+    protected $holdout;
+
+    /**
      * The metric used to score the generalization performance of the model
      * during training.
      *
@@ -114,7 +114,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $metric;
 
     /**
-     * The base regressor to be boosted.
+     * The *weak* base regressor to be boosted.
      *
      * @var \Rubix\ML\Learner
      */
@@ -146,7 +146,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     ];
 
     /**
-     * The average cost of a training sample at each epoch.
+     * The average training loss at each epoch.
      *
      * @var array
      */
@@ -160,8 +160,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * @param int $estimators
      * @param float $ratio
      * @param float $minChange
-     * @param float $holdout
      * @param int $window
+     * @param float $holdout
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
@@ -172,14 +172,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         int $estimators = 1000,
         float $ratio = 0.5,
         float $minChange = 1e-4,
-        float $holdout = 0.1,
         int $window = 10,
+        float $holdout = 0.1,
         ?Metric $metric = null,
         ?Learner $base = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
-            throw new InvalidArgumentException('Booster learner is not'
-                . ' compatible with the ensemble.');
+            throw new InvalidArgumentException('Booster is not compatible'
+                . ' with the ensemble.');
         }
 
         if ($rate <= 0. or $rate > 1.) {
@@ -193,8 +193,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($ratio <= 0. or $ratio > 1.) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be between 0 and 1,'
+                . " $ratio given.");
         }
 
         if ($minChange < 0.) {
@@ -202,14 +202,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " greater than 0, $minChange given.");
         }
 
-        if ($holdout < 0.01 or $holdout > 0.5) {
-            throw new InvalidArgumentException('Holdout ratio must be between'
-                . " 0.01 and 0.5, $holdout given.");
-        }
-
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be at least 1'
                 . " epoch, $window given.");
+        }
+
+        if ($holdout < 0.01 or $holdout > 0.5) {
+            throw new InvalidArgumentException('Holdout ratio must be between'
+                . " 0.01 and 0.5, $holdout given.");
         }
 
         if ($metric) {
@@ -226,8 +226,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->minChange = $minChange;
-        $this->holdout = $holdout;
         $this->window = $window;
+        $this->holdout = $holdout;
         $this->metric = $metric ?? new RSquared();
         $this->base = $base ?? new DummyRegressor(new Mean());
     }
@@ -309,8 +309,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
-                'hold_out' => $this->holdout,
                 'window' => $this->window,
+                'hold_out' => $this->holdout,
                 'metric' => $this->metric,
                 'base' => $this->base,
             ]));
@@ -452,7 +452,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     public function featureImportances() : array
     {
         if (!$this->ensemble or !$this->featureCount) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         $importances = array_fill(0, $this->featureCount, 0.);

@@ -31,7 +31,7 @@ use const Rubix\ML\EPSILON;
 /**
  * Softmax Classifier
  *
- * A generalization of logistic regression for multiple class outcomes using a
+ * A generalization of logistic regression for the multiclass case using a
  * single layer neural network with a softmax output layer.
  *
  * @category    Machine Learning
@@ -43,22 +43,21 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     use PredictsSingle, LoggerAware;
     
     /**
-     * The number of training samples to consider per iteration of gradient
-     * descent.
+     * The number of training samples to process at a time.
      *
      * @var int
      */
     protected $batchSize;
 
     /**
-     * The gradient descent optimizer.
+     * The gradient descent optimizer used to update the network parameters.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
     /**
-     * The L2 regularization parameter.
+     * The amount of L2 regularization to apply to the parameters of the network.
      *
      * @var float
      */
@@ -66,26 +65,18 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
+     * over the entire training set before terminating.
      *
      * @var int
      */
     protected $epochs;
 
     /**
-     * The minimum change in the weights necessary to continue training.
+     * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
     protected $minChange;
-
-    /**
-     * The function that computes the cost of an erroneous activation during
-     * training.
-     *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
-     */
-    protected $costFn;
 
     /**
      * The number of epochs without improvement in the training loss to wait
@@ -94,6 +85,14 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @var int
      */
     protected $window;
+
+    /**
+     * The function that computes the loss associated with an erroneous
+     * activation during training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
+     */
+    protected $costFn;
 
     /**
      * The underlying neural network instance.
@@ -110,7 +109,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected $classes;
 
     /**
-     * The average cost of a training sample at each epoch.
+     * The average training loss at each epoch.
      *
      * @var array
      */
@@ -124,8 +123,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param int $window
+     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -134,21 +133,21 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?ClassificationLoss $costFn = null,
-        int $window = 5
+        int $window = 5,
+        ?ClassificationLoss $costFn = null
     ) {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Cannot have less than 1 sample'
-                . " per batch, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be at least'
+                . " 1 sample, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization amount must'
-                . " be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be 0 or greater'
+                . ", $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
+            throw new InvalidArgumentException('Learner must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
@@ -167,8 +166,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?? new CrossEntropy();
         $this->window = $window;
+        $this->costFn = $costFn ?? new CrossEntropy();
     }
 
     /**
@@ -204,7 +203,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
-     * Return the average cost at every epoch.
+     * Return the training loss at each epoch.
      *
      * @return array
      */
@@ -278,6 +277,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 'alpha' => $this->alpha,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
+                'window' => $this->window,
                 'cost_fn' => $this->costFn,
             ]));
         }

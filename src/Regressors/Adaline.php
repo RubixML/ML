@@ -30,8 +30,8 @@ use const Rubix\ML\EPSILON;
 /**
  * Adaline
  *
- * *Adaptive Linear Neuron* is a type of single layer neural network
- * with a linear output neuron. Training is equivalent to solving Ridge regression
+ * *Adaptive Linear Neuron* is a type of single layer neural network with a
+ * linear output neuron. Training is equivalent to solving Ridge regression
  * iteratively using mini batch Gradient Descent.
  *
  * @category    Machine Learning
@@ -43,21 +43,21 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     use PredictsSingle, LoggerAware;
 
     /**
-     * The number of training samples to consider per iteration of gradient descent.
+     * The number of training samples to process at a time.
      *
      * @var int
      */
     protected $batchSize;
 
     /**
-     * The gradient descent optimizer.
+     * The gradient descent optimizer used to update the network parameters.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
     /**
-     * The L2 regularization parameter.
+     * The amount of L2 regularization to apply to the parameters of the network.
      *
      * @var float
      */
@@ -65,26 +65,18 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
+     * over the entire training set before terminating.
      *
      * @var int
      */
     protected $epochs;
 
     /**
-     * The minimum change in the weights necessary to continue training.
+     * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
     protected $minChange;
-
-    /**
-     * The function that computes the cost of an erroneous activation during
-     * training.
-     *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
-     */
-    protected $costFn;
 
     /**
      * The number of epochs without improvement in the training loss to wait
@@ -95,6 +87,14 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     protected $window;
 
     /**
+     * The function that computes the loss associated with an erroneous
+     * activation during training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
+     */
+    protected $costFn;
+
+    /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
@@ -102,7 +102,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     protected $network;
 
     /**
-     * The average cost of a training sample at each epoch.
+     * The average training loss at each epoch.
      *
      * @var array
      */
@@ -116,8 +116,8 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param int $window
+     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -126,21 +126,21 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?RegressionLoss $costFn = null,
-        int $window = 5
+        int $window = 5,
+        ?RegressionLoss $costFn = null
     ) {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Cannot have less than 1 sample'
-                . " per batch, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be at least'
+                . " 1 sample, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization amount must'
-                . " be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be 0 or greater'
+                . ", $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
+            throw new InvalidArgumentException('Learner must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
@@ -159,8 +159,8 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?? new LeastSquares();
         $this->window = $window;
+        $this->costFn = $costFn ?? new LeastSquares();
     }
 
     /**
@@ -196,7 +196,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
-     * Return the average cost at every epoch.
+     * Return the training loss at each epoch.
      *
      * @return array
      */
@@ -268,6 +268,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
                 'alpha' => $this->alpha,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
+                'window' => $this->window,
                 'cost_fn' => $this->costFn,
             ]));
         }
