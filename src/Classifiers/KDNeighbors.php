@@ -161,8 +161,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function predict(Dataset $dataset) : array
     {
         if ($this->tree->bare()) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -199,8 +198,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function proba(Dataset $dataset) : array
     {
         if ($this->tree->bare()) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

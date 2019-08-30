@@ -167,6 +167,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->classes = array_unique(array_merge($this->classes, $dataset->possibleOutcomes()));
+
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
     }
@@ -182,8 +183,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->samples) or empty($this->labels)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -220,8 +220,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->samples) or empty($this->labels)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

@@ -189,8 +189,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (!$this->medians or !$this->mads) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

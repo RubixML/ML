@@ -236,7 +236,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (!$this->means or !$this->variances) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

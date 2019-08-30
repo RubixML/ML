@@ -358,8 +358,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
         
         return array_map('Rubix\ML\argmax', $this->score($dataset));
@@ -375,8 +374,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         $scores = $this->score($dataset);

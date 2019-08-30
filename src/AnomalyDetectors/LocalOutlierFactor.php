@@ -220,7 +220,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if ($this->tree->bare() or empty($this->lrds)) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -229,7 +229,8 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Calculate the local outlier factor of a given sample.
+     * Calculate the local outlier factor of a given sample given its k
+     * nearest neighbors.
      *
      * @param array $sample
      * @throws \RuntimeException

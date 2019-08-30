@@ -298,8 +298,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->weights) or empty($this->probs)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -320,8 +319,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->weights) or empty($this->probs)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

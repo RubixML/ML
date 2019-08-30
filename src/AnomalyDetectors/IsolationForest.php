@@ -198,10 +198,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->threshold === null) {
-            throw new RuntimeException('The estimator has not been trained.');
-        }
-
         return array_map([self::class, 'decide'], $this->rank($dataset));
     }
 
@@ -216,7 +212,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (empty($this->trees)) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

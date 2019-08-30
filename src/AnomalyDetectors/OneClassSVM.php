@@ -160,8 +160,7 @@ class OneClassSVM implements Estimator, Learner
     public function predict(Dataset $dataset) : array
     {
         if (!$this->model) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
