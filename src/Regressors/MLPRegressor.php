@@ -416,7 +416,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
                 if ($this->logger) {
                     $this->logger->info('Network restored from'
-                        . 'previous snapshot');
+                        . ' previous snapshot');
                 }
             }
         }

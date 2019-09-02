@@ -424,7 +424,7 @@ class MultiLayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
                 if ($this->logger) {
                     $this->logger->info('Network restored from'
-                        . 'previous snapshot');
+                        . ' previous snapshot');
                 }
             }
         }
