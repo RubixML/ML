@@ -22,6 +22,9 @@ public weights() : array
 ### Example
 ```php
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\Datasets\Generators\Circle;
 
 $generator = new Agglomerate([
 	'foo' => new Blob([5, 2], 1.0),

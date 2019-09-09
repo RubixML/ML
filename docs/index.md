@@ -27,10 +27,10 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Getting Started
-If you are new to machine learning, we recommend the [basic introduction](basic-introduction.md) to get started. From there, you can browse the [example projects](https://github.com/RubixML) and tutorials listed below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend the [basic introduction](https://docs.rubixml.com/en/latest/basic-introduction.html) to get started. From there, you can browse the example projects and tutorials below which range from beginner to advanced skill level.
 
-### Example Projects
-Check out these example projects using the Rubix ML library. Most come with a tutorial and a pre-cleaned dataset.
+### Tutorials & Example Projects
+Check out these example projects using the Rubix ML library. Most come with instructions and a pre-cleaned dataset.
 
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 - [Color Clusterer](https://github.com/RubixML/Colors)
