@@ -31,7 +31,7 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->embedder = new TSNE(1, 10, 12., 10., 500, 1e-7, 10, new Euclidean());
+        $this->embedder = new TSNE(1, 10., 10, 12., 500, 1e-7, 10, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
 

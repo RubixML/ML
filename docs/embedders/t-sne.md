@@ -11,9 +11,9 @@
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
-| 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
-| 3 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
-| 4 | rate | 100.0 | float | The learning rate that controls the step size. |
+| 2 | rate | 100.0 | float | The learning rate that controls the step size. |
+| 3 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the distribution over that sample. |
+| 4 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of embedding. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
 | 6 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
 | 7 | window | 10 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
@@ -30,7 +30,7 @@ public steps() : array
 use Rubi\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(3, 30, 12., 10., 500, 1e-6, 10, new Manhattan());
+$embedder = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());
 ```
 
 ### References

@@ -1,3 +1,6 @@
+- Unreleased
+    - Changed the order of t-SNE hyperparameters
+
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector
     - Added early stopping window to Gradient Descent-based Learners

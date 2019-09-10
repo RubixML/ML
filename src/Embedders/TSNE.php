@@ -64,8 +64,15 @@ class TSNE implements Embedder, Verbose
     protected $degrees;
 
     /**
+     * The learning rate that controls the step size.
+     *
+     * @var float
+     */
+    protected $rate;
+
+    /**
      * The number of effective nearest neighbors to refer to when computing
-     * the variance of the gaussian over that sample.
+     * the variance of the distribution over that sample.
      *
      * @var float
      */
@@ -103,13 +110,6 @@ class TSNE implements Embedder, Verbose
     protected $early;
 
     /**
-     * The learning rate.
-     *
-     * @var float
-     */
-    protected $rate;
-
-    /**
      * The minimum gradient necessary to continue fitting.
      *
      * @var float
@@ -143,19 +143,20 @@ class TSNE implements Embedder, Verbose
 
     /**
      * @param int $dimensions
+     * @param float $rate
      * @param int $perplexity
      * @param float $exaggeration
-     * @param float $rate
      * @param int $epochs
      * @param float $minGradient
+     * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $dimensions = 2,
+        float $rate = 100.,
         int $perplexity = 30,
         float $exaggeration = 12.,
-        float $rate = 100.,
         int $epochs = 1000,
         float $minGradient = 1e-7,
         int $window = 10,
@@ -164,6 +165,11 @@ class TSNE implements Embedder, Verbose
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Cannot embed into less than 1'
                 . " dimension, $dimensions given.");
+        }
+
+        if ($rate <= 0.) {
+            throw new InvalidArgumentException('Learning rate must be greater'
+                . " than 0, $rate given.");
         }
 
         if ($perplexity < 1) {
@@ -181,11 +187,6 @@ class TSNE implements Embedder, Verbose
                 . " least 1 epoch, $epochs given.");
         }
 
-        if ($rate <= 0.) {
-            throw new InvalidArgumentException('Learning rate must be greater'
-                . " than 0, $rate given.");
-        }
-
         if ($minGradient < 0.) {
             throw new InvalidArgumentException('The minimum magnitude of the'
                 . " gradient must be 0 or greater, $minGradient given.");
@@ -198,10 +199,10 @@ class TSNE implements Embedder, Verbose
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
+        $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
-        $this->rate = $rate;
         $this->epochs = $epochs;
         $this->early = min(250, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
@@ -246,9 +247,9 @@ class TSNE implements Embedder, Verbose
         if ($this->logger) {
             $this->logger->info('Embedder init w/ ' . Params::stringify([
                 'dimensions' => $this->dimensions,
+                'rate' => $this->rate,
                 'perplexity' => $this->perplexity,
                 'exaggeration' => $this->exaggeration,
-                'rate' => $this->rate,
                 'epochs' => $this->epochs,
                 'min_gradient' => $this->minGradient,
                 'window' => $this->window,
