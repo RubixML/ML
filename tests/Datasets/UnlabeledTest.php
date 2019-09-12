@@ -13,18 +13,19 @@ use Countable;
 class UnlabeledTest extends TestCase
 {
     protected const SAMPLES = [
-        ['nice', 'furry', 'friendly'],
-        ['mean', 'furry', 'loner'],
-        ['nice', 'rough', 'friendly'],
-        ['mean', 'rough', 'friendly'],
-        ['nice', 'rough', 'friendly'],
-        ['nice', 'furry', 'loner'],
+        ['nice', 'furry', 'friendly', 4.0],
+        ['mean', 'furry', 'loner', -1.5],
+        ['nice', 'rough', 'friendly', 2.6],
+        ['mean', 'rough', 'friendly', -1.0],
+        ['nice', 'rough', 'friendly', 2.9],
+        ['nice', 'furry', 'loner', -5.0],
     ];
 
     protected const TYPES = [
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
+        DataType::CONTINUOUS,
     ];
 
     protected const WEIGHTS = [
@@ -100,7 +101,7 @@ class UnlabeledTest extends TestCase
 
     public function test_get_num_columns()
     {
-        $this->assertEquals(3, $this->dataset->numColumns());
+        $this->assertEquals(4, $this->dataset->numColumns());
     }
 
     public function test_column_types()
@@ -110,22 +111,22 @@ class UnlabeledTest extends TestCase
 
     public function test_unique_types()
     {
-        $this->assertCount(1, $this->dataset->uniqueTypes());
+        $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
     public function test_homogeneous()
     {
-        $this->assertTrue($this->dataset->homogeneous());
+        $this->assertFalse($this->dataset->homogeneous());
     }
 
     public function test_shape()
     {
-        $this->assertEquals([6, 3], $this->dataset->shape());
+        $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
     public function test_size()
     {
-        $this->assertEquals(18, $this->dataset->size());
+        $this->assertEquals(24, $this->dataset->size());
     }
 
     public function test_column_type()
@@ -144,7 +145,7 @@ class UnlabeledTest extends TestCase
 
     public function test_columns_by_type()
     {
-        $expected = array_map(null, ...self::SAMPLES);
+        $expected = array_slice(array_map(null, ...self::SAMPLES), 0, 3);
 
         $columns = $this->dataset->columnsByType(DataType::CATEGORICAL);
 
@@ -178,14 +179,14 @@ class UnlabeledTest extends TestCase
 
         $filtered = $this->dataset->filterByColumn(2, $isFriendly);
 
-        $outcome = [
-            ['nice', 'furry', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['mean', 'rough', 'friendly'],
-            ['nice', 'rough', 'friendly'],
+        $expected = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
         ];
 
-        $this->assertEquals($outcome, $filtered->samples());
+        $this->assertEquals($expected, $filtered->samples());
     }
 
     public function test_sort_by_column()
@@ -344,5 +345,46 @@ class UnlabeledTest extends TestCase
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
+    }
+
+    public function test_describe_dataset()
+    {
+        $stats = $this->dataset->describe();
+
+        $expected = [
+           [
+                'type' => 'categorical',
+                'top' => 'nice',
+                'bottom' => 'mean',
+                'num_categories' => 2,
+            ],
+            [
+                'type' => 'categorical',
+                'top' => 'furry',
+                'bottom' => 'furry',
+                'num_categories' => 2,
+            ],
+            [
+                'type' => 'categorical',
+                'top' => 'friendly',
+                'bottom' => 'loner',
+                'num_categories' => 2,
+            ],
+            [
+                'type' => 'continuous',
+                'mean' => 0.3333333333333333,
+                'variance' => 9.792222222222222,
+                'std_dev' => 3.129252661934191,
+                'skewness' => -0.4481030843690633,
+                'kurtosis' => -1.1330702741786107,
+                'min' => -5.0,
+                '25%' => -1.375,
+                'median' => 0.8,
+                '75%' => 2.825,
+                'max' => 4.0,
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats);
     }
 }

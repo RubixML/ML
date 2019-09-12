@@ -1,4 +1,5 @@
 - Unreleased
+    - Added describe method to dataset object
     - Changed the order of t-SNE hyperparameters
 
 - 0.0.15-beta

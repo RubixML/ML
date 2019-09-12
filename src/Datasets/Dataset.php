@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Transformers\Transformer;
@@ -12,6 +13,9 @@ use RuntimeException;
 use ArrayIterator;
 use ArrayAccess;
 use Countable;
+
+use function Rubix\ML\argmin;
+use function Rubix\ML\argmax;
 
 /**
  * Dataset
@@ -264,6 +268,73 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         $transformer->transform($this->samples);
 
         return $this;
+    }
+
+    /**
+     * Return an array of statistics regarding each feature column of
+     * the dataset.
+     *
+     * @return array
+     */
+    public function describe() : array
+    {
+        $stats = [];
+
+        foreach ($this->columns() as $column => $values) {
+            $type = $this->columnType($column);
+
+            $desc = [];
+
+            switch ($type) {
+                case DataType::CONTINUOUS:
+                    $desc['type'] = DataType::TYPES[DataType::CONTINUOUS];
+
+                    [$mean, $variance] = Stats::meanVar($values);
+
+                    $desc['mean'] = $mean;
+                    $desc['variance'] = $variance;
+                    $desc['std_dev'] = sqrt($variance);
+
+                    $desc['skewness'] = Stats::skewness($values, $mean);
+                    $desc['kurtosis'] = Stats::kurtosis($values, $mean);
+
+                    $percentiles = Stats::percentiles($values, [
+                        0, 25, 50, 75, 100,
+                    ]);
+
+                    $desc['min'] = $percentiles[0];
+                    $desc['25%'] = $percentiles[1];
+                    $desc['median'] = $percentiles[2];
+                    $desc['75%'] = $percentiles[3];
+                    $desc['max'] = $percentiles[4];
+
+                    break 1;
+
+                case DataType::CATEGORICAL:
+                    $desc['type'] = DataType::TYPES[DataType::CATEGORICAL];
+
+                    $counts = array_count_values($values);
+
+                    $desc['top'] = argmax($counts);
+                    $desc['bottom'] = argmin($counts);
+                    $desc['num_categories'] = count($counts);
+
+                    break 1;
+
+                case DataType::RESOURCE:
+                    $desc['type'] = DataType::TYPES[DataType::RESOURCE];
+                    $desc['php_type'] = get_resource_type(reset($values));
+
+                    break 1;
+
+                default:
+                    $desc['type'] = DataType::TYPES[DataType::OTHER];
+            }
+
+            $stats[] = $desc;
+        }
+
+        return $stats;
     }
 
     /**

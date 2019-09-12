@@ -13,12 +13,12 @@ use Countable;
 class LabeledTest extends TestCase
 {
     protected const SAMPLES = [
-        ['nice', 'furry', 'friendly'],
-        ['mean', 'furry', 'loner'],
-        ['nice', 'rough', 'friendly'],
-        ['mean', 'rough', 'friendly'],
-        ['nice', 'rough', 'friendly'],
-        ['nice', 'furry', 'loner'],
+        ['nice', 'furry', 'friendly', 4.0],
+        ['mean', 'furry', 'loner', -1.5],
+        ['nice', 'rough', 'friendly', 2.6],
+        ['mean', 'rough', 'friendly', -1.0],
+        ['nice', 'rough', 'friendly', 2.9],
+        ['nice', 'furry', 'loner', -5.0],
     ];
 
     protected const LABELS = [
@@ -30,6 +30,7 @@ class LabeledTest extends TestCase
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
+        DataType::CONTINUOUS,
     ];
 
     protected const WEIGHTS = [
@@ -107,7 +108,7 @@ class LabeledTest extends TestCase
 
     public function test_get_num_columns()
     {
-        $this->assertEquals(3, $this->dataset->numColumns());
+        $this->assertEquals(4, $this->dataset->numColumns());
     }
 
     public function test_column_types()
@@ -117,22 +118,22 @@ class LabeledTest extends TestCase
 
     public function test_unique_types()
     {
-        $this->assertCount(1, $this->dataset->uniqueTypes());
+        $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
     public function test_homogeneous()
     {
-        $this->assertTrue($this->dataset->homogeneous());
+        $this->assertFalse($this->dataset->homogeneous());
     }
 
     public function test_shape()
     {
-        $this->assertEquals([6, 3], $this->dataset->shape());
+        $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
     public function test_size()
     {
-        $this->assertEquals(18, $this->dataset->size());
+        $this->assertEquals(24, $this->dataset->size());
     }
 
     public function test_column_type()
@@ -151,7 +152,7 @@ class LabeledTest extends TestCase
 
     public function test_columns_by_type()
     {
-        $expected = array_map(null, ...self::SAMPLES);
+        $expected = array_slice(array_map(null, ...self::SAMPLES), 0, 3);
 
         $columns = $this->dataset->columnsByType(DataType::CATEGORICAL);
 
@@ -176,12 +177,12 @@ class LabeledTest extends TestCase
     public function test_zip()
     {
         $outcome = [
-            ['nice', 'furry', 'friendly', 'not monster'],
-            ['mean', 'furry', 'loner', 'monster'],
-            ['nice', 'rough', 'friendly', 'not monster'],
-            ['mean', 'rough', 'friendly', 'monster'],
-            ['nice', 'rough', 'friendly', 'not monster'],
-            ['nice', 'furry', 'loner', 'not monster'],
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
         ];
         
         $this->assertEquals($outcome, iterator_to_array($this->dataset->zip()));
@@ -241,10 +242,10 @@ class LabeledTest extends TestCase
         $filtered = $this->dataset->filterByColumn(2, $isFriendly);
 
         $samples = [
-            ['nice', 'furry', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['mean', 'rough', 'friendly'],
-            ['nice', 'rough', 'friendly'],
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
         ];
 
         $labels = ['not monster', 'not monster', 'monster', 'not monster'];
@@ -262,10 +263,10 @@ class LabeledTest extends TestCase
         $filtered = $this->dataset->filterByLabel($notMonster);
 
         $samples = [
-            ['nice', 'furry', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['nice', 'furry', 'loner'],
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'loner', -5.0],
         ];
 
         $labels = ['not monster', 'not monster', 'not monster', 'not monster'];
@@ -469,5 +470,46 @@ class LabeledTest extends TestCase
 
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
         $this->assertEquals('not monster', $merged->label(6));
+    }
+
+    public function test_describe_dataset()
+    {
+        $stats = $this->dataset->describe();
+
+        $expected = [
+            [
+                 'type' => 'categorical',
+                 'top' => 'nice',
+                 'bottom' => 'mean',
+                 'num_categories' => 2,
+             ],
+             [
+                 'type' => 'categorical',
+                 'top' => 'furry',
+                 'bottom' => 'furry',
+                 'num_categories' => 2,
+             ],
+             [
+                 'type' => 'categorical',
+                 'top' => 'friendly',
+                 'bottom' => 'loner',
+                 'num_categories' => 2,
+             ],
+             [
+                 'type' => 'continuous',
+                 'mean' => 0.3333333333333333,
+                 'variance' => 9.792222222222222,
+                 'std_dev' => 3.129252661934191,
+                 'skewness' => -0.4481030843690633,
+                 'kurtosis' => -1.1330702741786107,
+                 'min' => -5.0,
+                 '25%' => -1.375,
+                 'median' => 0.8,
+                 '75%' => 2.825,
+                 'max' => 4.0,
+             ],
+         ];
+
+        $this->assertEquals($expected, $stats);
     }
 }

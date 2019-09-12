@@ -269,3 +269,49 @@ array(3) {
     }
 }
 ```
+
+### Statistics
+Return an array of statistics regarding each feature column of the dataset:
+```php
+public describe() : array
+```
+
+**Example**
+
+```php
+$stats = $dataset->describe();
+
+print_r($stats);
+```
+
+**Output**
+
+```sh
+Array
+(
+	...
+
+    [2] => Array
+        (
+            [type] => categorical
+            [top] => friendly
+            [bottom] => loner
+            [num_categories] => 2
+        )
+
+    [3] => Array
+        (
+            [type] => continuous
+            [mean] => 0.33333333333333
+            [variance] => 9.7922222222222
+            [std_dev] => 3.1292526619342
+            [skewness] => -0.44810308436906
+            [kurtosis] => -1.1330702741786
+            [min] => -5
+            [25%] => -1.375
+            [median] => 0.8
+            [75%] => 2.825
+            [max] => 4
+        )
+)
+```
