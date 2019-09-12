@@ -3,7 +3,7 @@
 # Naive Bayes
 Probability-based classifier that uses Bayes' Theorem and the strong assumption that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world. This particular implementation is based on a multinomial (categorical) distribution of input features.
 
-**Note:** Each partial train has the overhead of recomputing the probability mass function for each class and feature. As such, it is better to train with fewer but larger training sets.
+> **Note:** Each partial train has the overhead of recomputing the probability mass function for each feature per class. As such, it is better to train with fewer but larger training sets.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

@@ -29,8 +29,8 @@ use const Rubix\ML\LOG_EPSILON;
  * world. This particular implementation is based on a multinomial (categorical)
  * distribution of input features.
  *
- * **Note:** Each partial train has the overhead of recomputing the probability
- * mass function for each class and feature. As such, it is better to train with
+ * > **Note:** Each partial train has the overhead of recomputing the probability
+ * mass function for each feature per class. As such, it is better to train with
  * fewer but larger training sets.
  *
  * @category    Machine Learning

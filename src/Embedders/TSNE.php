@@ -40,14 +40,14 @@ class TSNE implements Embedder, Verbose
     protected const INIT_MOMENTUM = 0.5;
     protected const MOMENTUM_BOOST = 0.3;
 
+    protected const MAX_BINARY_PRECISION = 100;
+    protected const PERPLEXITY_TOLERANCE = 1e-5;
+
+    protected const Y_INIT = 1e-4;
+
     protected const GAIN_ACCELERATE = 0.2;
     protected const GAIN_BRAKE = 0.8;
     protected const MIN_GAIN = 0.01;
-
-    protected const BINARY_PRECISION = 100;
-    protected const SEARCH_TOLERANCE = 1e-5;
-
-    protected const Y_INIT = 1e-4;
 
     /**
      * The number of dimensions of the embedding.
@@ -62,6 +62,13 @@ class TSNE implements Embedder, Verbose
      * @var int
      */
     protected $degrees;
+
+    /**
+     * The precomputed c constant of the gradient computation.
+     *
+     * @var float
+     */
+    protected $c;
 
     /**
      * The learning rate that controls the step size.
@@ -79,8 +86,8 @@ class TSNE implements Embedder, Verbose
     protected $perplexity;
 
     /**
-     * The desired entropy of the Gaussian over each sample i.e the log
-     * perplexity.
+     * The desired entropy of the Gaussian component over each sample i.e the
+     * log perplexity.
      *
      * @var float
      */
@@ -159,11 +166,11 @@ class TSNE implements Embedder, Verbose
         float $exaggeration = 12.,
         int $epochs = 1000,
         float $minGradient = 1e-7,
-        int $window = 10,
+        int $window = 5,
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Cannot embed into less than 1'
+            throw new InvalidArgumentException('Cannot target less than 1'
                 . " dimension, $dimensions given.");
         }
 
@@ -173,13 +180,13 @@ class TSNE implements Embedder, Verbose
         }
 
         if ($perplexity < 1) {
-            throw new InvalidArgumentException('Perplexity cannot be less than'
-                . " 1, $perplexity given.");
+            throw new InvalidArgumentException('Perplexity cannot be less'
+                . " than 1, $perplexity given.");
         }
 
         if ($exaggeration < 1.) {
-            throw new InvalidArgumentException('Early exaggeration must be 1 or'
-             . " greater, $exaggeration given.");
+            throw new InvalidArgumentException('Early exaggeration must be 1'
+             . " or greater, $exaggeration given.");
         }
 
         if ($epochs < 1) {
@@ -188,8 +195,8 @@ class TSNE implements Embedder, Verbose
         }
 
         if ($minGradient < 0.) {
-            throw new InvalidArgumentException('The minimum magnitude of the'
-                . " gradient must be 0 or greater, $minGradient given.");
+            throw new InvalidArgumentException('Mminimum gradient must be'
+                . " 0 or greater, $minGradient given.");
         }
 
         if ($window < 1) {
@@ -199,6 +206,7 @@ class TSNE implements Embedder, Verbose
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
+        $this->c = 2. * (1. + $this->degrees) / $this->degrees;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
@@ -260,19 +268,20 @@ class TSNE implements Embedder, Verbose
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing pairwise affinities');
+            $this->logger->info('Computing high-dimensional'
+                . ' pairwise affinities');
         }
 
         $distances = $this->pairwiseDistances($x);
 
-        $p = $this->highAffinities($distances)
+        $p = $this->affinities($distances)
             ->multiply($this->exaggeration);
 
-        $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
+        $y = $yHat = Matrix::gaussian($x->m(), $this->dimensions)
             ->multiply(self::Y_INIT);
 
-        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
-        $gains = Matrix::ones($dataset->numRows(), $this->dimensions)->asArray();
+        $velocity = Matrix::zeros($x->m(), $this->dimensions);
+        $gains = Matrix::ones($x->m(), $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
@@ -322,7 +331,7 @@ class TSNE implements Embedder, Verbose
                 $nu++;
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
@@ -362,50 +371,54 @@ class TSNE implements Embedder, Verbose
     {
         $distances = [];
 
-        foreach ($samples as $a) {
-            $temp = [];
+        foreach ($samples as $i => $sampleA) {
+            $vector = [];
 
-            foreach ($samples as $b) {
-                $temp[] = $this->kernel->compute($a, $b);
+            foreach ($samples as $j => $sampleB) {
+                if ($i !== $j) {
+                    $vector[] = $this->kernel->compute($sampleA, $sampleB);
+                } else {
+                    $vector[] = 0.;
+                }
             }
 
-            $distances[] = $temp;
+            $distances[] = $vector;
         }
 
         return Matrix::quick($distances);
     }
 
     /**
-     * Calculate the joint likelihood of each sample in the high dimensional
-     * space as being nearest neighbor to each other sample.
+     * Compute the conditional probabilities from the distance matrix such that
+     * they approximately match the desired perplexity.
      *
      * @param \Rubix\Tensor\Matrix $distances
      * @return \Rubix\Tensor\Matrix
      */
-    protected function highAffinities(Matrix $distances) : Matrix
+    protected function affinities(Matrix $distances) : Matrix
     {
         $zeros = array_fill(0, count($distances), 0);
-
-        $p = [];
+        
+        $affinities = [];
 
         foreach ($distances as $i => $row) {
-            $affinities = $zeros;
             $minBeta = -INF;
             $maxBeta = INF;
             $beta = 1.;
 
-            for ($l = 0; $l < self::BINARY_PRECISION; $l++) {
-                $affinities = [];
+            for ($j = 0; $j < self::MAX_BINARY_PRECISION; $j++) {
+                $temp = [];
                 $pSigma = 0.;
 
-                foreach ($row as $j => $distance) {
-                    if ($i !== $j) {
+                foreach ($row as $k => $distance) {
+                    if ($i !== $k) {
                         $affinity = exp(-$distance * $beta);
                     } else {
                         $affinity = 0.;
                     }
 
-                    $affinities[] = $affinity;
+                    $temp[] = $affinity;
+
                     $pSigma += $affinity;
                 }
 
@@ -415,20 +428,21 @@ class TSNE implements Embedder, Verbose
 
                 $distSigma = 0.;
 
-                foreach ($affinities as $j => &$prob) {
-                    $prob /= $pSigma;
-                    $distSigma += $row[$j] * $prob;
+                foreach ($temp as $k => &$affinity) {
+                    $affinity /= $pSigma;
+
+                    $distSigma += $row[$k] * $affinity;
                 }
 
                 $entropy = log($pSigma) + $beta * $distSigma;
 
-                $diff = $entropy - $this->entropy;
+                $diff = $this->entropy - $entropy;
 
-                if (abs($diff) < self::SEARCH_TOLERANCE) {
+                if (abs($diff) < self::PERPLEXITY_TOLERANCE) {
                     break 1;
                 }
 
-                if ($diff > 0.) {
+                if ($diff < 0.) {
                     $minBeta = $beta;
 
                     if ($maxBeta === INF) {
@@ -447,16 +461,10 @@ class TSNE implements Embedder, Verbose
                 }
             }
 
-            $p[] = $affinities;
+            $affinities[] = $temp ?? $zeros;
         }
 
-        $p = Matrix::quick($p);
-
-        $pHat = $p->add($p->transpose());
-
-        $sigma = $pHat->sum()->clipLower(EPSILON);
-
-        return $pHat->divide($sigma);
+        return Matrix::quick($affinities);
     }
 
     /**
@@ -470,29 +478,24 @@ class TSNE implements Embedder, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $q = $distances->square()
-            ->divide($this->degrees)
+        $q = $distances->divide($this->degrees)
             ->add(1.)
             ->pow((1. + $this->degrees) / -2.);
 
-        $qSigma = $q->sum()->multiply(2.);
-
-        $q = $q->divide($qSigma)->clipLower(EPSILON);
+        $q = $q->divide($q->sum()->multiply(2.))
+            ->clipLower(EPSILON);
 
         $pqd = $p->subtract($q)->multiply($distances);
-
-        $c = 2. * (1. + $this->degrees) / $this->degrees;
 
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
             $yHat = $y->rowAsVector($i)->subtract($y);
             
-            $gradient[] = $row->matmul($yHat)
-                ->multiply($c)
-                ->row(0);
+            $gradient[] = $row->matmul($yHat)->row(0);
         }
 
-        return Matrix::quick($gradient);
+        return Matrix::quick($gradient)
+            ->multiply($this->c);
     }
 }
