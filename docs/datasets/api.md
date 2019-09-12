@@ -293,6 +293,7 @@ Array
 
     [2] => Array
         (
+            [column] => 2
             [type] => categorical
             [top] => friendly
             [bottom] => loner
@@ -301,6 +302,7 @@ Array
 
     [3] => Array
         (
+            [column] => 3
             [type] => continuous
             [mean] => 0.33333333333333
             [variance] => 9.7922222222222

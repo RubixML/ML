@@ -353,24 +353,28 @@ class UnlabeledTest extends TestCase
 
         $expected = [
            [
+                'column' => 0,
                 'type' => 'categorical',
                 'top' => 'nice',
                 'bottom' => 'mean',
                 'num_categories' => 2,
             ],
             [
+                'column' => 1,
                 'type' => 'categorical',
                 'top' => 'furry',
                 'bottom' => 'furry',
                 'num_categories' => 2,
             ],
             [
+                'column' => 2,
                 'type' => 'categorical',
                 'top' => 'friendly',
                 'bottom' => 'loner',
                 'num_categories' => 2,
             ],
             [
+                'column' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
                 'variance' => 9.792222222222222,

@@ -285,10 +285,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
             $desc = [];
 
+            $desc['column'] = $column;
+            $desc['type'] = DataType::TYPES[$type];
+
             switch ($type) {
                 case DataType::CONTINUOUS:
-                    $desc['type'] = DataType::TYPES[DataType::CONTINUOUS];
-
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $desc['mean'] = $mean;
@@ -311,8 +312,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     break 1;
 
                 case DataType::CATEGORICAL:
-                    $desc['type'] = DataType::TYPES[DataType::CATEGORICAL];
-
                     $counts = array_count_values($values);
 
                     $desc['top'] = argmax($counts);
@@ -322,13 +321,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     break 1;
 
                 case DataType::RESOURCE:
-                    $desc['type'] = DataType::TYPES[DataType::RESOURCE];
                     $desc['php_type'] = get_resource_type(reset($values));
 
                     break 1;
-
-                default:
-                    $desc['type'] = DataType::TYPES[DataType::OTHER];
             }
 
             $stats[] = $desc;
