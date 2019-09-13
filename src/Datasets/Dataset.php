@@ -14,8 +14,7 @@ use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
-use function Rubix\ML\argmin;
-use function Rubix\ML\argmax;
+use const Rubix\ML\EPSILON;
 
 /**
  * Dataset
@@ -314,9 +313,16 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                 case DataType::CATEGORICAL:
                     $counts = array_count_values($values);
 
-                    $desc['top'] = argmax($counts);
-                    $desc['bottom'] = argmin($counts);
+                    $total = count($values) ?: EPSILON;
+
+                    $probabilities = [];
+
+                    foreach ($counts as $category => $count) {
+                        $probabilities[$category] = $count / $total;
+                    }
+
                     $desc['num_categories'] = count($counts);
+                    $desc['probabilities'] = $probabilities;
 
                     break 1;
 

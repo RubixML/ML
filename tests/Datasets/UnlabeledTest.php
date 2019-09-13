@@ -352,26 +352,32 @@ class UnlabeledTest extends TestCase
         $stats = $this->dataset->describe();
 
         $expected = [
-           [
+            [
                 'column' => 0,
                 'type' => 'categorical',
-                'top' => 'nice',
-                'bottom' => 'mean',
                 'num_categories' => 2,
+                'probabilities' => [
+                    'nice' => 0.6666666666666666,
+                    'mean' => 0.3333333333333333,
+                ],
             ],
             [
                 'column' => 1,
                 'type' => 'categorical',
-                'top' => 'furry',
-                'bottom' => 'furry',
                 'num_categories' => 2,
+                'probabilities' => [
+                    'furry' => 0.5,
+                    'rough' => 0.5,
+                ],
             ],
             [
                 'column' => 2,
                 'type' => 'categorical',
-                'top' => 'friendly',
-                'bottom' => 'loner',
                 'num_categories' => 2,
+                'probabilities' => [
+                    'friendly' => 0.6666666666666666,
+                    'loner' => 0.3333333333333333,
+                ],
             ],
             [
                 'column' => 3,

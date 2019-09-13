@@ -295,9 +295,13 @@ Array
         (
             [column] => 2
             [type] => categorical
-            [top] => friendly
-            [bottom] => loner
             [num_categories] => 2
+            [probabilities] => Array
+                (
+                    [friendly] => 0.66666666666667
+                    [loner] => 0.33333333333333
+                )
+
         )
 
     [3] => Array
@@ -315,5 +319,6 @@ Array
             [75%] => 2.825
             [max] => 4
         )
+
 )
 ```
