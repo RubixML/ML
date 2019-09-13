@@ -4,6 +4,7 @@
     - Added unzip static factory for Labeled datasets from data table
     - Changed the order of t-SNE hyperparameters
     - Added global transpose array helper function
+    - Renamed label key to classes in Multiclass Breakdown report
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

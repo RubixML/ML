@@ -158,7 +158,7 @@ class MulticlassBreakdown implements Report
 
         return [
             'overall' => $overall,
-            'label' => $table,
+            'classes' => $table,
         ];
     }
 }

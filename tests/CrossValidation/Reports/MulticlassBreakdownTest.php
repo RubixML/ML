@@ -58,7 +58,7 @@ class MulticlassBreakdownTest extends TestCase
                     'false_negatives' => 2,
                     'cardinality' => 5,
                 ],
-                'label' => [
+                'classes' => [
                     'wolf' => [
                         'accuracy' => 0.6,
                         'precision' => 0.6666666666666666,

@@ -22,7 +22,8 @@ var_dump($result);
 **Output**
 
 ```sh
-['label']=> array(2) {
+...
+['classes']=> array(2) {
 	['wolf']=> array(19) {
       	['accuracy']=> float(0.6)
       	['precision']=> float(0.66666666666667)
