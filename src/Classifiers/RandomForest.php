@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\argmax;
+use function Rubix\ML\transpose;
 
 /**
  * Random Forest
@@ -202,9 +203,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
             ));
         }
 
-        $aggregate = $this->backend->process();
-
-        $aggregate = array_map(null, ...$aggregate);
+        $aggregate = transpose($this->backend->process());
 
         $predictions = [];
 

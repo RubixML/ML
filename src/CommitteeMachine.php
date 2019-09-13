@@ -279,9 +279,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             ));
         }
 
-        $aggregate = $this->backend->process();
-
-        $aggregate = array_map(null, ...$aggregate);
+        $aggregate = transpose($this->backend->process());
 
         switch ($this->type) {
             case self::CLASSIFIER:

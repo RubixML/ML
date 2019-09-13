@@ -3,10 +3,12 @@
 namespace Rubix\ML\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function Rubix\ML\transpose;
 
 class FunctionsTest extends TestCase
 {
@@ -29,5 +31,45 @@ class FunctionsTest extends TestCase
         $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
 
         $this->assertEquals(2.8194175400311074, $value);
+    }
+
+    /**
+     * @dataProvider transpose_provider
+     */
+    public function test_transpose(array $table, array $expected)
+    {
+        $this->assertEquals($expected, transpose($table));
+    }
+
+    public function transpose_provider() : Generator
+    {
+        yield [
+            [
+                [1, 2, 3, 4],
+                [2, 2, 3, 0],
+                [3, 3, 0, 0],
+                [4, 0, 0, 0],
+                [0, 0, 0, 0],
+            ],
+            [
+                [1, 2, 3, 4, 0],
+                [2, 2, 3, 0, 0],
+                [3, 3, 0, 0, 0],
+                [4, 0, 0, 0, 0],
+            ],
+        ];
+
+        yield [
+            [
+                [1, 0, 0, 0, 0],
+            ],
+            [
+                [1],
+                [0],
+                [0],
+                [0],
+                [0],
+            ],
+        ];
     }
 }

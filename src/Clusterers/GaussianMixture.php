@@ -21,6 +21,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\logsumexp;
+use function Rubix\ML\transpose;
 
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
@@ -457,9 +458,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         foreach ($clusters as $cluster => $samples) {
             $mHat = $vHat = [];
 
-            $columns = array_map(null, ...$samples);
-
-            foreach ($columns as $values) {
+            foreach (transpose($samples) as $values) {
                 [$mean, $variance] = Stats::meanVar($values);
 
                 $mHat[] = $mean;
