@@ -204,32 +204,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     }
 
     /**
-     * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the user supplied parameter grid.
-     *
-     * @return array
-     */
-    protected function combinations() : array
-    {
-        $combinations = [[]];
-
-        foreach ($this->grid as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
-    }
-
-    /**
      * Return the parameters that had the highest validation score.
      *
      * @return array|null
@@ -332,6 +306,32 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         if ($this->logger) {
             $this->logger->info('Training complete');
         }
+    }
+
+    /**
+     * Return an array of all possible combinations of parameters. i.e the
+     * Cartesian product of the user supplied parameter grid.
+     *
+     * @return array
+     */
+    public function combinations() : array
+    {
+        $combinations = [[]];
+
+        foreach ($this->grid as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
     }
 
     /**

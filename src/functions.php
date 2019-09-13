@@ -41,7 +41,7 @@ namespace Rubix\ML
      * @param array $table
      * @return array
      */
-    function transpose(array $table) : array
+    function array_transpose(array $table) : array
     {
         if (count($table) > 1) {
             return array_map(null, ...$table);

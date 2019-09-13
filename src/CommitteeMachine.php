@@ -35,7 +35,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 
-    protected const COMPATIBLE_ESTIMATORS = [
+    protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
         self::ANOMALY_DETECTOR,
@@ -103,7 +103,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         $type = $prototype->type();
 
-        if (!in_array($type, self::COMPATIBLE_ESTIMATORS)) {
+        if (!in_array($type, self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
                 . ' only supports classifiers, regressors, and anomaly'
                 . ' detectors, ' . self::TYPES[$type] . ' given.');
@@ -279,7 +279,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             ));
         }
 
-        $aggregate = transpose($this->backend->process());
+        $aggregate = array_transpose($this->backend->process());
 
         switch ($this->type) {
             case self::CLASSIFIER:

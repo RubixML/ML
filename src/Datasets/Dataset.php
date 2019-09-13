@@ -14,7 +14,7 @@ use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
-use function Rubix\ML\transpose;
+use function Rubix\ML\array_transpose;
 
 use const Rubix\ML\EPSILON;
 
@@ -216,7 +216,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function columns() : array
     {
-        return transpose($this->samples);
+        return array_transpose($this->samples);
     }
 
     /**

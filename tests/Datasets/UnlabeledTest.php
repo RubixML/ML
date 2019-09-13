@@ -10,6 +10,8 @@ use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
+use function Rubix\ML\array_transpose;
+
 class UnlabeledTest extends TestCase
 {
     protected const SAMPLES = [
@@ -138,14 +140,14 @@ class UnlabeledTest extends TestCase
 
     public function test_columns()
     {
-        $expected = array_map(null, ...self::SAMPLES);
+        $expected = array_transpose(self::SAMPLES);
 
         $this->assertEquals($expected, $this->dataset->columns());
     }
 
     public function test_columns_by_type()
     {
-        $expected = array_slice(array_map(null, ...self::SAMPLES), 0, 3);
+        $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
         $columns = $this->dataset->columnsByType(DataType::CATEGORICAL);
 

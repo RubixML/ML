@@ -8,7 +8,7 @@ use Generator;
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
-use function Rubix\ML\transpose;
+use function Rubix\ML\array_transpose;
 
 class FunctionsTest extends TestCase
 {
@@ -38,7 +38,7 @@ class FunctionsTest extends TestCase
      */
     public function test_transpose(array $table, array $expected)
     {
-        $this->assertEquals($expected, transpose($table));
+        $this->assertEquals($expected, array_transpose($table));
     }
 
     public function transpose_provider() : Generator

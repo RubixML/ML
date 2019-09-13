@@ -185,7 +185,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             ));
         }
 
-        $aggregate = transpose($this->backend->process());
+        $aggregate = array_transpose($this->backend->process());
         
         switch ($this->type()) {
             case self::CLASSIFIER:
