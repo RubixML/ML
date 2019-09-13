@@ -15,7 +15,7 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 | 1 | booster | RegressionTree | object | The regressor that will fix up the error residuals of the *weak* base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | estimators | 1000 | int | The number of estimators to train in the ensemble. |
-| 4 | ratio | 0.5 | float | The ratio of samples to subsample from the training set for each booster. |
+| 4 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 7 | holdout | 0.1 | float | The proportion of training samples to use for validation and progress monitoring. |

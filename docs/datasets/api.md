@@ -322,3 +322,9 @@ Array
 
 )
 ```
+
+### Deduplication
+Return a dataset with all duplicate rows removed:
+```php
+public deduplicate() : self
+```

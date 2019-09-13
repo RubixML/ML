@@ -24,7 +24,7 @@ use InvalidArgumentException;
 class Momentum implements Optimizer, Adaptive
 {
     /**
-     * The learning rate. i.e. the master step size.
+     * The learning rate that controls the global step size.
      *
      * @var float
      */

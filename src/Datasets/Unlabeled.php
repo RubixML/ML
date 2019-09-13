@@ -490,4 +490,14 @@ class Unlabeled extends Dataset
 
         return self::quick($subset);
     }
+
+    /**
+     * Return a dataset with all duplicate rows removed.
+     *
+     * @return self
+     */
+    public function deduplicate() : self
+    {
+        return self::quick(array_unique($this->samples, SORT_REGULAR));
+    }
 }

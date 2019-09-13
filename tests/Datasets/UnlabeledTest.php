@@ -397,4 +397,11 @@ class UnlabeledTest extends TestCase
 
         $this->assertEquals($expected, $stats);
     }
+
+    public function test_deduplicate()
+    {
+        $dataset = $this->dataset->deduplicate();
+
+        $this->assertCount(6, $dataset);
+    }
 }

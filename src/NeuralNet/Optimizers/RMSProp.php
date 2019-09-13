@@ -25,7 +25,7 @@ use const Rubix\ML\EPSILON;
 class RMSProp implements Optimizer, Adaptive
 {
     /**
-     * The learning rate. i.e. the master step size.
+     * The learning rate that controls the global step size.
      *
      * @var float
      */

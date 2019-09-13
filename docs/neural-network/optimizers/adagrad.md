@@ -8,7 +8,7 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
+| 1 | rate | 0.01 | float | The learning rate that controls the global step size. |
 
 ### Example
 ```php

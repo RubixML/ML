@@ -17,7 +17,7 @@ use const Rubix\ML\PHI;
  * of samples and the addition of labels that correspond to the observed outcome of each
  * sample. Splitting, folding, randomizing, sorting, and subsampling are all done while
  * keeping the indices of samples and labels aligned. In addition to the basic Dataset
- * methods, the Labeled class can sort and *stratify* the data by label as well.
+ * methods, the Labeled class can sort and *stratify* the dataset by label as well.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -99,6 +99,25 @@ class Labeled extends Dataset
 
             $samples = array_merge($samples, $dataset->samples());
             $labels = array_merge($labels, $dataset->labels());
+        }
+
+        return self::quick($samples, $labels);
+    }
+
+    /**
+     * Build a labeled dataset from a data table with the last column
+     * containing the label.
+     *
+     * @param iterable $table
+     * @return self
+     */
+    public static function unzip(iterable $table) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($table as $row) {
+            $samples[] = array_slice($row, 0, -1);
+            $labels[] = end($row);
         }
 
         return self::quick($samples, $labels);
@@ -827,5 +846,17 @@ class Labeled extends Dataset
         }
 
         return self::quick($samples, $labels);
+    }
+
+    /**
+     * Return a dataset with all duplicate rows removed.
+     *
+     * @return self
+     */
+    public function deduplicate() : self
+    {
+        $table = array_unique(iterator_to_array($this->zip()), SORT_REGULAR);
+
+        return self::unzip($table);
     }
 }

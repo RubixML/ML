@@ -513,6 +513,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
+     * Return a dataset with all duplicate rows removed.
+     *
+     * @return self
+     */
+    abstract public function deduplicate();
+
+    /**
      * @return int
      */
     public function count() : int

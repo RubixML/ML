@@ -3,6 +3,8 @@
 # t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent that seeks to maintain the distances between samples in low dimensional space. During the first stage (*early exaggeration*) the distances are exaggerated to encourage more pronounced clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, additional momentum is employed to help escape bad local minima.
 
+> **Note:** T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
+
 **Interfaces:** [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Continuous
@@ -11,11 +13,11 @@
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
-| 2 | rate | 100.0 | float | The learning rate that controls the step size. |
+| 2 | rate | 100.0 | float | The learning rate that controls the global step size. |
 | 3 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the distribution over that sample. |
 | 4 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of embedding. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
-| 6 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
+| 6 | min gradient | 1e-7 | float | The minimum norm of the gradient necessary to continue embedding. |
 | 7 | window | 10 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 | 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 

@@ -14,12 +14,12 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | object | The base *weak* classifier to be boosted. |
 | 2 | estimators | 100 | int | The maximum number of estimators to train in the ensemble. |
-| 3 | rate | 1.0 | float | The learning rate i.e step size. |
-| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set for each *weak* learner. |
+| 3 | rate | 1.0 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set to train each *weak* learner. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 
 ### Additional Methods
-Return the calculated weight values of the last trained dataset:
+Return the calculated weight values of the samples in the last training set:
 ```php
 public weights() : array
 ```
@@ -29,7 +29,7 @@ Return the influence scores for each boosted classifier:
 public influences() : array
 ```
 
-Return the training error at each epoch:
+Return the training loss at each epoch:
 ```php
 public steps() : array
 ```

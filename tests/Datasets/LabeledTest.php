@@ -83,6 +83,18 @@ class LabeledTest extends TestCase
         $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
+    public function test_unzip()
+    {
+        $table = iterator_to_array($this->dataset->zip());
+
+        $dataset = Labeled::unzip($table);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+        $this->assertEquals(self::LABELS, $dataset->labels());
+    }
+
     public function test_get_samples()
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());
@@ -521,5 +533,12 @@ class LabeledTest extends TestCase
         ];
 
         $this->assertEquals($expected, $stats);
+    }
+
+    public function test_deduplicate()
+    {
+        $dataset = $this->dataset->deduplicate();
+
+        $this->assertCount(6, $dataset);
     }
 }

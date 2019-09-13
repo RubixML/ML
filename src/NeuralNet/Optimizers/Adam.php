@@ -30,7 +30,7 @@ class Adam implements Optimizer, Adaptive
     protected const WARM_UP_STEPS = 50;
 
     /**
-     * The learning rate. i.e. the master step size.
+     * The learning rate that controls the global step size.
      *
      * @var float
      */

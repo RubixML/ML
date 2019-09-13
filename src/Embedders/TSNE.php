@@ -24,6 +24,10 @@ use const Rubix\ML\EPSILON;
  * clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient,
  * momentum is employed to help escape bad local minima.
  *
+ * > **Note:** T-SNE is implemented using the *exact* method which scales quadratically
+ * in the number of samples. Therefore, it is recommended to subsample datasets larger
+ * than a few thousand samples.
+ *
  * References:
  * [1] L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
  * [2] L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving
@@ -50,28 +54,28 @@ class TSNE implements Embedder, Verbose
     protected const MIN_GAIN = 0.01;
 
     /**
-     * The number of dimensions of the embedding.
+     * The number of dimensions of the target embedding.
      *
      * @var int
      */
     protected $dimensions;
 
     /**
-     * The number of degrees of freedom for the student t distribution.
+     * The number of degrees of freedom for the student's t distribution.
      *
      * @var int
      */
     protected $degrees;
 
     /**
-     * The precomputed c constant of the gradient computation.
+     * The precomputed c factor of the gradient computation.
      *
      * @var float
      */
     protected $c;
 
     /**
-     * The learning rate that controls the step size.
+     * The learning rate that controls the global step size.
      *
      * @var float
      */
@@ -117,7 +121,7 @@ class TSNE implements Embedder, Verbose
     protected $early;
 
     /**
-     * The minimum gradient necessary to continue fitting.
+     * The minimum norm of the gradient necessary to continue embedding.
      *
      * @var float
      */
@@ -140,7 +144,7 @@ class TSNE implements Embedder, Verbose
     protected $kernel;
 
     /**
-     * The magnitudes of the gradient at each epoch since the last embedding.
+     * The training loss at each epoch since the last embedding.
      *
      * @var float[]
      */

@@ -6,7 +6,7 @@ A version of [Adam](adam.md) that replaces the RMS property with the infinity no
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | norm decay | 0.001 | float | The decay rate of the infinity norm. |
 

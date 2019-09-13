@@ -201,7 +201,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the weights associated with each training sample.
+     * Return the calculated weight values of the samples in the last training set.
      *
      * @return array
      */
@@ -221,7 +221,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the average error at every epoch.
+     * Return the training loss at each epoch.
      *
      * @return array
      */
@@ -253,6 +253,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 'estimators' => $this->estimators,
                 'rate' => $this->rate,
                 'ratio' => $this->ratio,
+                'min_change' => $this->minChange,
             ]));
         }
 

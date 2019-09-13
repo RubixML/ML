@@ -18,7 +18,7 @@ use InvalidArgumentException;
 class Stochastic implements Optimizer
 {
     /**
-     * The learning rate. i.e. the master step size.
+     * The learning rate that controls the global step size.
      *
      * @var float
      */

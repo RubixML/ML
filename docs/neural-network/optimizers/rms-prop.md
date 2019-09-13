@@ -6,7 +6,7 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the rms property. |
 
 ### Example

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">Source</a></span>
 
 # Labeled
-A Labeled dataset consists of samples with corresponding labels which represent the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset methods, the Labeled class can also sort and *stratify* the data by label.
+A Labeled dataset consists of samples with corresponding labels which represent the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset methods, the Labeled class can also sort and *stratify* the dataset by label.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -28,6 +28,11 @@ Build a dataset using a pair of iterators:
 public static fromIterator(iterable $samples, iterable $labels) : self
 ```
 
+Build a labeled dataset from a data table with the last column containing the label:
+```php
+public static unzip(array $table) : self
+```
+
 **Example**
 
 ```php
@@ -42,6 +47,8 @@ $dataset = Labeled::build($samples, $labels);  // Build a new dataset with valid
 $dataset = Labeled::quick($samples, $labels);  // Build a new dataset without validation
 
 $dataset = Labeled::fromItertor($samples, $labels); // From a pair of iterators
+
+$dataset = Labeled::unzip($table); // From a data table
 ```
 
 #### Selectors
