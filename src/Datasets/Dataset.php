@@ -94,12 +94,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param int $index
+     * @param int $row
      * @return array
      */
-    public function row(int $index) : array
+    public function row(int $row) : array
     {
-        return $this->offsetGet($index);
+        return $this->offsetGet($row);
     }
 
     /**
@@ -115,12 +115,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature column at the given index.
      *
-     * @param int $index
+     * @param int $column
      * @return array
      */
-    public function column(int $index) : array
+    public function column(int $column) : array
     {
-        return array_column($this->samples, $index);
+        return array_column($this->samples, $column);
     }
 
     /**
@@ -167,24 +167,24 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Get the datatype for a feature column given a column index.
      *
-     * @param int $index
+     * @param int $column
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return int
      */
-    public function columnType(int $index) : int
+    public function columnType(int $column) : int
     {
         if (empty($this->samples)) {
             throw new RuntimeException('Cannot determine data type'
                 . ' of an empty dataset.');
         }
 
-        if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException("Column $index does"
+        if (!isset($this->samples[0][$column])) {
+            throw new InvalidArgumentException("Column $column does"
                 . ' not exist.');
         }
 
-        return DataType::determine($this->samples[0][$index]);
+        return DataType::determine($this->samples[0][$column]);
     }
 
     /**
@@ -241,6 +241,29 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Transform a feature column with a callback function.
+     *
+     * @param int $column
+     * @param callable $fn
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function transformColumn(int $column, callable $fn) : self
+    {
+        if ($column < 0 or $column > $this->numColumns()) {
+            throw new InvalidArgumentException('Column number must'
+                . " be between 0 and {$this->numColumns()}, $column"
+                . ' given.');
+        }
+
+        foreach ($this->samples as &$sample) {
+            $sample[$column] = $fn($sample[$column]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Apply a transformation to the dataset.
      *
      * @param \Rubix\ML\Transformers\Transformer $transformer
@@ -260,8 +283,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return an array of statistics regarding each feature column of
-     * the dataset.
+     * Return an array of statistics such as the central tendency, dispersion
+     * and shape of each continuous feature column and the joint probabilities
+     * of every categorical feature column.
      *
      * @return array
      */

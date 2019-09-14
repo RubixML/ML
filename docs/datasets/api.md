@@ -41,7 +41,7 @@ public columnType(int $index) : int
 ```
 
 ### Applying Transformations
-You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the apply method on the Dataset.
+You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object.
 
 ```php
 public apply(Transformer $transformer) : void
@@ -55,10 +55,38 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $dataset->apply(new OneHotEncoder());
 ```
 
+You can also transform a single feature column using a callback function with the `transformColumn()` method.
+
+```php
+public transformColumn(int $column, callable $fn) : self
+```
+
+**Example**
+
+```php
+$dataset = $dataset->transformColumn(3, 'log1p'); // Log transform
+
+$dataset = $dataset->transformColumn(15, function ($value) {
+    return $value === '?' ? 'other' : $value; // Replace '?' with 'other'
+});
+```
+
 ### Stacking
-Stack a number of dataset objects on top of each other to form a single dataset:
+Stack any number of dataset objects on top of each other to form a single dataset:
 ```php
 public static stack(array $datasets) : self
+```
+
+**Example**
+
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$dataset = Labeled::stack([
+    $training1,
+    $training2,
+    $testing,
+]);
 ```
 
 ### Prepending and Appending
@@ -270,8 +298,8 @@ array(3) {
 }
 ```
 
-### Statistics
-Return an array of statistics regarding each feature column of the dataset:
+### Descriptive Statistics
+Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of every categorical feature column:
 ```php
 public describe() : array
 ```
@@ -323,7 +351,7 @@ Array
 )
 ```
 
-### Deduplication
+### De-duplication
 Return a dataset with all duplicate rows removed:
 ```php
 public deduplicate() : self

@@ -406,4 +406,13 @@ class UnlabeledTest extends TestCase
 
         $this->assertCount(6, $dataset);
     }
+
+    public function test_transform_column()
+    {
+        $dataset = $this->dataset->transformColumn(3, 'abs');
+
+        $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
+
+        $this->assertEquals($expected, $dataset->column(3));
+    }
 }
