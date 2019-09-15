@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Noise.php">Source</a></span>
 
 # Noise
-This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
+This layer adds random Gaussian noise to the inputs to the layer with a given standard deviation. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -12,7 +12,7 @@ This layer adds random Gaussian noise to the inputs to the layer with a standard
 ```php
 use Rubix\ML\NeuralNet\Layers\Noise;
 
-$layer = new Noise(2.0);
+$layer = new Noise(1e-3);
 ```
 
 ### References

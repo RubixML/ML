@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dropout.php">Source</a></span>
 
 # Dropout
-Dropout layers temporarily disable neuron activations during each training pass. It is a regularization and model averaging technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data.
+Dropout is a regularization technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data. It works by temporarily disabling neurons during each training pass. It also is a very efficient way of performing model averaging with neural networks.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -12,7 +12,7 @@ Dropout layers temporarily disable neuron activations during each training pass.
 ```php
 use Rubix\ML\NeuralNet\Layers\Dropout;
 
-$layer = new Dropout(0.5);
+$layer = new Dropout(0.2);
 ```
 
 ### References

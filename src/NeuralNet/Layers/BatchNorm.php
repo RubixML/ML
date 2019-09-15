@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\Deferred;
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\ColumnVector;
-use Rubix\ML\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -20,10 +20,9 @@ use const Rubix\ML\EPSILON;
  * Batch Norm
  *
  * Normalize the activations of the previous layer such that the mean activation
- * is close to 0 and the activation standard deviation is close to 1. Batch Norm
- * can be used to reduce the amount of covariate shift within the network
- * making it possible to use higher learning rates and converge faster under
- * some circumstances.
+ * is close to 0 and the standard deviation is close to 1. Batch Norm can reduce
+ * the amount of covariate shift within the network which makes it possible to use
+ * higher learning rates and converge faster under some circumstances.
  *
  * References:
  * [1] S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network
@@ -169,8 +168,11 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
-        $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
+        $beta = $this->betaInitializer->initialize(1, $fanOut)
+            ->columnAsVector(0);
+
+        $gamma = $this->gammaInitializer->initialize(1, $fanOut)
+            ->columnAsVector(0);
 
         $this->beta = new VectorParam($beta);
         $this->gamma = new VectorParam($gamma);
@@ -193,26 +195,26 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized.');
         }
 
-        $means = $variances = [];
+        $means = $variances = $stdInvs = [];
 
         foreach ($input as $row) {
-            $means[] = $mean = Stats::mean($row);
-            $variances[] = Stats::variance($row, $mean);
+            [$mean, $variance] = Stats::meanVar($row);
+
+            $means[] = $mean;
+            $variances[] = $variance;
+            $stdInvs[] = 1. / sqrt($variance ?: EPSILON);
         }
 
         $mean = ColumnVector::quick($means);
         $variance = ColumnVector::quick($variances);
+        $stdInv = ColumnVector::quick($stdInvs);
+
+        $xHat = $stdInv->multiply($input->subtract($mean));
 
         if (!$this->mean or !$this->variance) {
             $this->mean = $mean;
             $this->variance = $variance;
         }
-
-        $stdDev = $variance->clipLower(EPSILON)->sqrt();
-
-        $stdInv = $stdDev->reciprocal();
-
-        $xHat = $stdInv->multiply($input->subtract($mean));
 
         $this->mean = $this->mean->multiply(1. - $this->decay)
             ->add($mean->multiply($this->decay));

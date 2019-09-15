@@ -43,18 +43,27 @@ namespace Rubix\ML
      */
     function array_transpose(array $table) : array
     {
-        if (count($table) > 1) {
-            return array_map(null, ...$table);
+        $m = count($table);
+
+        switch (true) {
+            case $m > 1:
+                return array_map(null, ...$table);
+
+            case $m === 1:
+                $row = reset($table);
+
+                $n = count($row);
+
+                $columns = [];
+
+                for ($i = 0; $i < $n; $i++) {
+                    $columns[] = [$row[$i]];
+                }
+
+                return $columns;
+            
+            case $m < 1:
+                return $table;
         }
-
-        $n = count(reset($table));
-
-        $columns = [];
-
-        for ($i = 0; $i < $n; $i++) {
-            $columns[] = array_column($table, $i);
-        }
-
-        return $columns;
     }
 }

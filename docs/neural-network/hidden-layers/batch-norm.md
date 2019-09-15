@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/BatchNorm.php">Source</a></span>
 
 # Batch Norm
-Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of *covariate shift* within the network making it possible to use higher learning rates and converge faster under some circumstances.
+Normalize the activations of the previous layer such that the mean activation is close to 0 and the standard deviation is close to 1. Batch Norm can reduce the amount of covariate shift within the network which makes it possible to use higher learning rates and converge faster under some circumstances.
 
 ### Parameters
 | # | Param | Default | Type | Description |

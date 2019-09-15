@@ -244,11 +244,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Transform a feature column with a callback function.
      *
      * @param int $column
-     * @param callable $fn
+     * @param callable $callback
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function transformColumn(int $column, callable $fn) : self
+    public function transformColumn(int $column, callable $callback) : self
     {
         if ($column < 0 or $column > $this->numColumns()) {
             throw new InvalidArgumentException('Column number must'
@@ -257,7 +257,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         }
 
         foreach ($this->samples as &$sample) {
-            $sample[$column] = $fn($sample[$column]);
+            $sample[$column] = $callback($sample[$column]);
         }
 
         return $this;

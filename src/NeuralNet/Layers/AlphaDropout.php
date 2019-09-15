@@ -26,14 +26,14 @@ class AlphaDropout extends Dropout
     protected const ALPHA_P = -SELU::ALPHA * SELU::SCALE;
 
     /**
-     * The scaling coefficient.
+     * The affine transformation scaling coefficient.
      *
      * @var float
      */
     protected $alpha;
 
     /**
-     * The centering coefficient.
+     * The affine transformation centering coefficient.
      *
      * @var float
      */
@@ -74,11 +74,11 @@ class AlphaDropout extends Dropout
     /**
      * Boost dropped neurons by a factor of alpha p.
      *
-     * @param float $value
+     * @param int $value
      * @return float
      */
-    public function saturate(float $value) : float
+    public function saturate(int $value) : float
     {
-        return $value === 0. ? self::ALPHA_P : 0.;
+        return $value === 0 ? self::ALPHA_P : 0.;
     }
 }

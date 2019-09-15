@@ -11,7 +11,8 @@ use RuntimeException;
 /**
  * Activation
  *
- * Activation layers apply a nonlinear activation function to their inputs.
+ * Activation layers apply a user-defined non-linear activation function to their
+ * inputs.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -20,7 +21,7 @@ use RuntimeException;
 class Activation implements Hidden
 {
     /**
-     * The function computes the activation of the layer.
+     * The function that computes the output of the layer.
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */

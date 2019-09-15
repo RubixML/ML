@@ -1,12 +1,12 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Activation.php">Source</a></span>
 
 # Activation
-Activation layers apply a nonlinear activation function to their inputs.
+Activation layers apply a user-defined non-linear activation function to their inputs. They often work in conjunction with [Dense](https://docs.rubixml.com/en/latest/neural-network/hidden-layers/dense.html) layers as a way to transform their output.
 
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | activation fn | None | object | The function computes the activation of the layer. |
+| 1 | activation fn | | object | The function that computes the output of the layer. |
 
 ### Example
 ```php

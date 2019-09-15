@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -17,8 +17,10 @@ use Generator;
 /**
  * Dense
  *
- * Dense layers are fully connected hidden layers, meaning each neuron is
- * connected to each other neuron in the previous layer by a weighted *synapse*.
+ * Dense layers are fully connected layers of *neurons*, meaning each neuron is
+ * connected to each other in the previous layer by a weighted *synapse*. The
+ * majority of the parameters in a standard feedforward network are contained
+ * within Dense layers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -127,7 +129,9 @@ class Dense implements Hidden, Parametric
         $fanOut = $this->neurons;
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
+
+        $b = $this->biasInitializer->initialize(1, $fanOut)
+            ->columnAsVector(0);
 
         $this->weights = new MatrixParam($w);
         $this->biases = new VectorParam($b);

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -11,10 +11,10 @@ use RuntimeException;
 /**
  * Dropout
  *
- * Dropout layers temporarily disable neurons during each training pass. Dropout
- * is a regularization technique for reducing overfitting in neural networks
- * by preventing complex co-adaptations on training data. It is a very efficient
- * way of performing model averaging with neural networks.
+ * Dropout is a regularization technique for reducing overfitting in neural
+ * networks by preventing complex co-adaptations on training data. It works
+ * by temporarily disabling neurons during each training pass. It also is a
+ * very efficient way of performing model averaging with neural networks.
  *
  * References:
  * [1] N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural

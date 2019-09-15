@@ -117,8 +117,10 @@ class Adam implements Optimizer, Adaptive
      */
     public function warm(Parameter $param) : void
     {
-        $velocity = get_class($param->w())::zeros(...$param->w()->shape());
-        $norm = clone $velocity;
+        $zeros = get_class($param->w())::zeros(...$param->w()->shape());
+
+        $velocity = clone $zeros;
+        $norm = clone $zeros;
 
         $this->cache[$param->id()] = [$velocity, $norm];
     }

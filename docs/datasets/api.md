@@ -58,7 +58,7 @@ $dataset->apply(new OneHotEncoder());
 You can also transform a single feature column using a callback function with the `transformColumn()` method.
 
 ```php
-public transformColumn(int $column, callable $fn) : self
+public transformColumn(int $column, callable $callback) : self
 ```
 
 **Example**
