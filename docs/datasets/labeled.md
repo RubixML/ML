@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">Source</a></span>
 
 # Labeled
-A Labeled dataset consists of samples with corresponding labels which represent the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset methods, the Labeled class can also sort and *stratify* the dataset by label.
+A Labeled dataset is used to train supervised learners and for testing a model using cross validation. In addition to the standard dataset object methods, a Labeled dataset can perform operations such as stratification and sorting the dataset by label.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -197,4 +197,35 @@ $folds = $dataset->stratifiedFold(5);
 
 // Split the dataset into two stratified subsets
 [$left, $right] = $dataset->stratifiedSplit(0.8);
+```
+
+### Describe the Labels
+Return an array of descriptive statistics about the labels in the dataset.
+```php
+public describeLabels() : array
+```
+
+**Example**
+
+```php
+$desc = $dataset->describeLabels();
+
+print_r($desc);
+```
+
+**Output**
+
+```sh
+Array
+(
+    [type] => categorical
+    [num_categories] => 2
+    [probabilities] => Array
+        (
+            [monster] => 0.33333333333333
+            [not monster] => 0.66666666666667
+        )
+
+)
+
 ```

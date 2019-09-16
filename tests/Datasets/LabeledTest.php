@@ -552,4 +552,20 @@ class LabeledTest extends TestCase
 
         $this->assertEquals($expected, $dataset->column(3));
     }
+
+    public function test_describe_labels()
+    {
+        $desc = $this->dataset->describeLabels();
+
+        $expected = [
+            'type' => 'categorical',
+            'num_categories' => 2,
+            'probabilities' => [
+                'monster' => 0.3333333333333333,
+                'not monster' => 0.6666666666666666,
+            ],
+        ];
+
+        $this->assertEquals($expected, $desc);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
@@ -9,15 +10,15 @@ use RuntimeException;
 use Generator;
 
 use const Rubix\ML\PHI;
+use const Rubix\ML\EPSILON;
 
 /**
  * Labeled
  *
- * For *supervised* learners you will need to train it with a Labeled dataset consisting
- * of samples and the addition of labels that correspond to the observed outcome of each
- * sample. Splitting, folding, randomizing, sorting, and subsampling are all done while
- * keeping the indices of samples and labels aligned. In addition to the basic Dataset
- * methods, the Labeled class can sort and *stratify* the dataset by label as well.
+ * A Labeled dataset is used to train supervised learners and for testing a
+ * model using cross validation. In addition to the standard dataset object
+ * methods, a Labeled dataset can perform operations such as stratification
+ * and sorting the dataset by label.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -93,7 +94,7 @@ class Labeled extends Dataset
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof self) {
                 throw new InvalidArgumentException('Dataset must be'
-                    . ' an instance of Labeled, ' . get_class($dataset)
+                    . ' a instance of Labeled, ' . get_class($dataset)
                     . ' given.');
             }
 
@@ -164,20 +165,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Zip the samples and labels together in a Generator.
-     *
-     * @return \Generator
-     */
-    public function zip() : Generator
-    {
-        foreach ($this->samples as $i => $sample) {
-            $sample[] = $this->labels[$i];
-
-            yield $sample;
-        }
-    }
-
-    /**
      * Return a label given by row index.
      *
      * @param int $index
@@ -232,13 +219,84 @@ class Labeled extends Dataset
     }
 
     /**
+     * Return an array of descriptive statistics about the labels in the
+     * dataset.
+     *
+     * @return array
+     */
+    public function describeLabels() : array
+    {
+        $type = $this->labelType();
+
+        $desc = [];
+        $desc['type'] = DataType::TYPES[$type];
+
+        switch ($type) {
+            case DataType::CONTINUOUS:
+                [$mean, $variance] = Stats::meanVar($this->labels);
+
+                $desc['mean'] = $mean;
+                $desc['variance'] = $variance;
+                $desc['std_dev'] = sqrt($variance ?: EPSILON);
+
+                $desc['skewness'] = Stats::skewness($this->labels, $mean);
+                $desc['kurtosis'] = Stats::kurtosis($this->labels, $mean);
+
+                $percentiles = Stats::percentiles($this->labels, [
+                    0, 25, 50, 75, 100,
+                ]);
+
+                $desc['min'] = $percentiles[0];
+                $desc['25%'] = $percentiles[1];
+                $desc['median'] = $percentiles[2];
+                $desc['75%'] = $percentiles[3];
+                $desc['max'] = $percentiles[4];
+
+                break 1;
+
+            case DataType::CATEGORICAL:
+                $counts = array_count_values($this->labels);
+
+                $total = count($this->labels) ?: EPSILON;
+
+                $probabilities = [];
+
+                foreach ($counts as $class => $count) {
+                    $probabilities[$class] = $count / $total;
+                }
+
+                $desc['num_categories'] = count($counts);
+                $desc['probabilities'] = $probabilities;
+
+                break 1;
+        }
+
+        return $desc;
+    }
+
+    /**
+     * Combine the samples and labels together into a table on the fly
+     * using a generator.
+     *
+     * @return \Generator
+     */
+    public function zip() : Generator
+    {
+        foreach ($this->samples as $i => $sample) {
+            $sample[] = $this->labels[$i];
+
+            yield $sample;
+        }
+    }
+
+    /**
      * The set of all possible labeled outcomes.
      *
      * @return array
      */
     public function possibleOutcomes() : array
     {
-        return array_values(array_unique($this->labels, SORT_REGULAR));
+        return array_values(array_unique($this->labels));
     }
 
     /**

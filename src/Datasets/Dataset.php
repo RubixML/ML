@@ -307,7 +307,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
                     $desc['mean'] = $mean;
                     $desc['variance'] = $variance;
-                    $desc['std_dev'] = sqrt($variance);
+                    $desc['std_dev'] = sqrt($variance ?: EPSILON);
 
                     $desc['skewness'] = Stats::skewness($values, $mean);
                     $desc['kurtosis'] = Stats::kurtosis($values, $mean);

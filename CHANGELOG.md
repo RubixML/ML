@@ -1,6 +1,7 @@
 - Unreleased
     - Added transform column method to dataset object
     - Added describe method to dataset object
+    - Added describe labels method to Labeled dataset
     - Added deduplicate method to dataset object
     - Added unzip static factory for Labeled datasets from data table
     - Changed the order of t-SNE hyperparameters
