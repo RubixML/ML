@@ -41,7 +41,7 @@ class AdaBoostTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new AdaBoost(new ClassificationTree(1), 100, 1., 0.8, 1e-4);
+        $this->estimator = new AdaBoost(new ClassificationTree(1), 1., 0.8, 100, 1e-4);
 
         $this->metric = new Accuracy();
 

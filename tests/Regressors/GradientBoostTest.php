@@ -34,7 +34,7 @@ class GradientBoostTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 300, 0.3, 1e-4, 10, 0.1, new RSquared());
+        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RSquared());
     
         $this->metric = new RSquared();
 

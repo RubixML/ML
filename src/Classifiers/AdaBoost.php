@@ -50,13 +50,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected $base;
 
     /**
-     * The maximum number of estimators to train in the ensemble.
-     *
-     * @var int
-     */
-    protected $estimators;
-
-    /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
@@ -69,6 +62,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @var float
      */
     protected $ratio;
+
+    /**
+     * The maximum number of estimators to train in the ensemble.
+     *
+     * @var int
+     */
+    protected $estimators;
 
     /**
      * The minimum change in the training loss necessary to continue training.
@@ -125,27 +125,22 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
     /**
      * @param \Rubix\ML\Learner|null $base
-     * @param int $estimators
      * @param float $rate
      * @param float $ratio
+     * @param int $estimators
      * @param float $minChange
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Learner $base = null,
-        int $estimators = 100,
         float $rate = 1.,
         float $ratio = 0.8,
+        int $estimators = 100,
         float $minChange = 1e-4
     ) {
         if ($base and $base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
                 . ' classifier, ' . self::TYPES[$base->type()] . ' given.');
-        }
-
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
@@ -158,15 +153,20 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " 0 and 1, $ratio given.");
         }
 
+        if ($estimators < 1) {
+            throw new InvalidArgumentException('Ensemble must contain at least'
+                . " 1 estimator, $estimators given.");
+        }
+
         if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 
         $this->base = $base ?? new ClassificationTree(1);
-        $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
+        $this->estimators = $estimators;
         $this->minChange = $minChange;
     }
 

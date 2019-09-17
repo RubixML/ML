@@ -283,10 +283,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             $this->logger->info('Learner init ' . Params::stringify([
                 'k' => $this->k,
                 'batch_size' => $this->batchSize,
-                'kernel' => $this->kernel,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
                 'window' => $this->window,
+                'kernel' => $this->kernel,
                 'seeder' => $this->seeder,
             ]));
         }

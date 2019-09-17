@@ -62,13 +62,6 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $booster;
 
     /**
-     *  The max number of estimators to train in the ensemble.
-     *
-     * @var int
-     */
-    protected $estimators;
-
-    /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
@@ -81,6 +74,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * @var float
      */
     protected $ratio;
+
+    /**
+     *  The max number of estimators to train in the ensemble.
+     *
+     * @var int
+     */
+    protected $estimators;
 
     /**
      * The minimum change in the training loss necessary to continue training.
@@ -157,8 +157,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
-     * @param int $estimators
      * @param float $ratio
+     * @param int $estimators
      * @param float $minChange
      * @param int $window
      * @param float $holdout
@@ -169,8 +169,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     public function __construct(
         ?Learner $booster = null,
         float $rate = 0.1,
-        int $estimators = 1000,
         float $ratio = 0.5,
+        int $estimators = 1000,
         float $minChange = 1e-4,
         int $window = 10,
         float $holdout = 0.1,
@@ -187,14 +187,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " 0 and 1, $rate given.");
         }
 
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . " 1 estimator, $estimators given.");
-        }
-
         if ($ratio <= 0. or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between 0 and 1,'
                 . " $ratio given.");
+        }
+
+        if ($estimators < 1) {
+            throw new InvalidArgumentException('Ensemble must contain at least'
+                . " 1 estimator, $estimators given.");
         }
 
         if ($minChange < 0.) {
@@ -223,8 +223,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
         $this->booster = $booster ?? new RegressionTree(3);
         $this->rate = $rate;
-        $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->estimators = $estimators;
         $this->minChange = $minChange;
         $this->window = $window;
         $this->holdout = $holdout;
@@ -306,8 +306,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             $this->logger->info('Learner init ' . Params::stringify([
                 'booster' => $this->booster,
                 'rate' => $this->rate,
-                'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
+                'estimators' => $this->estimators,
                 'min_change' => $this->minChange,
                 'window' => $this->window,
                 'hold_out' => $this->holdout,

@@ -7,6 +7,7 @@
     - Changed the order of t-SNE hyperparameters
     - Added global transpose array helper function
     - Renamed label key to classes in Multiclass Breakdown report
+    - Changed order of Gradient Boost and AdaBoost hyper-parameters
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector
