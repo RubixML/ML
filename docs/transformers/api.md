@@ -53,8 +53,6 @@ $transformer->fit($dataset);
 var_dump($transformer->fitted());
 ```
 
-**Output**
-
 ```sh
 bool(true)
 ```

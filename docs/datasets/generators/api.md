@@ -19,8 +19,6 @@ $dataset = $generator->generate(3);
 var_dump($dataset);
 ```
 
-**Output**
-
 ```sh
 object(Rubix\ML\Datasets\Unlabeled) {
   ["samples":protected]=>
@@ -55,8 +53,6 @@ public dimensions() : int
 ```php
 var_dump($generator->dimensions());
 ```
-
-**Output**
 
 ```sh
 int(2)

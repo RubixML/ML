@@ -33,8 +33,6 @@ var_dump($floats);
 var_dump($grid);
 ```
 
-**Output**
-
 ```sh
 array(5) {
   [0]=> int(88)

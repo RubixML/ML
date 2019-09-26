@@ -19,8 +19,6 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-**Output**
-
 ```sh
 ...
 ['classes']=> array(2) {

@@ -25,8 +25,6 @@ public guess() : mixed
 var_dump($strategy->guess());
 ```
 
-**Output**
-
 ```sh
 string(3) "cat"
 ```

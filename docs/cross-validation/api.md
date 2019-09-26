@@ -22,7 +22,6 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 var_dump($score);
 ```
 
-**Output**
 ```sh
 float(0.869)
 ```

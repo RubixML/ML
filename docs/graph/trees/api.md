@@ -37,8 +37,6 @@ var_dump($tree->height());
 var_dump($tree->bare());
 ```
 
-**Output**
-
 ```sh
 int(10)
 
@@ -66,8 +64,6 @@ public balance() : int
 ```php
 var_dump($tree->balance());
 ```
-
-**Output**
 
 ```sh
 int(-1)
@@ -136,8 +132,6 @@ public featureImportances() : array
 var_dump($tree->featureImpartances());
 ```
 
-**Output**
-
 ```sh
 array(3) {
   [0]=> float(0)
@@ -156,8 +150,6 @@ public printRules() : void
 ```php
 $tree->printRules();
 ```
-
-**Output**
 
 ```sh
 |--- Column_2 < 143.69695373

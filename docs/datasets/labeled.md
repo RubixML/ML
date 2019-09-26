@@ -94,8 +94,6 @@ var_dump($label);
 var_dump($outcomes);
 ```
 
-**Output**
-
 ```sh
 array(4) {
     [0]=> string(5) "female"
@@ -212,8 +210,6 @@ $desc = $dataset->describeLabels();
 
 print_r($desc);
 ```
-
-**Output**
 
 ```sh
 Array

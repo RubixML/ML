@@ -15,8 +15,6 @@ $scores = $estimator->rank($dataset);
 var_dump($scores);
 ```
 
-**Output**
-
 ```sh
 array(3) {
   [0]=> float(1.80)

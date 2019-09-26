@@ -55,8 +55,6 @@ $estimator->train($dataset);
 var_dump($estimator->best());
 ```
 
-**Output**
-
 ```sh
 array(3) {
   [0]=> int(3)

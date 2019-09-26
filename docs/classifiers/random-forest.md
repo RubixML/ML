@@ -34,8 +34,6 @@ $importances = $estimator->featureImportances();
 var_dump($importances);
 ```
 
-**Output**
-
 ```sh
 array(3) {
   [0]=> float(0.39250395133811)

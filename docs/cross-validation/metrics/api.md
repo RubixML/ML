@@ -22,8 +22,6 @@ $score = $metric->score($predictions, $labels);
 var_dump($score);
 ```
 
-**Output**
-
 ```sh
 float(-0.99846070553066)
 ```
@@ -45,8 +43,6 @@ var_dump($min);
 var_dump($max);
 ```
 
-**Output**
-
 ```sh
 float(-INF)
 
@@ -63,8 +59,6 @@ public compatibility() : array
 ```php
 var_dump($metric->compatibility());
 ```
-
-**Output**
 
 ```sh
 array(1) {

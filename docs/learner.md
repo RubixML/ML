@@ -27,8 +27,6 @@ public trained() : bool
 var_dump($estimator->trained());
 ```
 
-**Output**
-
 ```sh
 bool(true)
 ```
@@ -50,8 +48,6 @@ $prediction = $estimator->predictSample($dataset[2]); // Predict the third sampl
 
 var_dump($prediction);
 ```
-
-**Output**
 
 ```sh
 string(3) "cat"

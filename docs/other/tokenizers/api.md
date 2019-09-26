@@ -19,8 +19,6 @@ $tokens = $tokenizer->tokenize('I would like to die on Mars, just not on impact.
 var_dump($tokens);
 ```
 
-**Output**
-
 ```sh
 array(10) {
     [0]=> string(5) "would"

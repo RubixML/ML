@@ -14,8 +14,6 @@ $probabilities = $estimator->proba($dataset);
 var_dump($probabilities);
 ```
 
-**Output**
-
 ```sh
 array(2) {
 	[0] => array(2) {

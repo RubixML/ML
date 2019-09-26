@@ -84,8 +84,6 @@ We can verify that the learner has been trained by calling the `trained()` metho
 var_dump($estimator->trained());
 ```
 
-**Output**
-
 ```sh
 bool(true)
 ```
@@ -107,8 +105,6 @@ $predictions = $estimator->predict($dataset);
 
 var_dump($predictions);
 ```
-
-**Output**
 
 ```sh
 array(5) {
@@ -139,8 +135,6 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 
 var_dump($score);
 ```
-
-**Output**
 
 ```sh
 float(0.945)

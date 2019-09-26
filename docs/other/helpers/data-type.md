@@ -15,8 +15,6 @@ use Rubix\ML\Other\Helpers\DataType;
 var_dump(DataType::determine('adventure'));
 ```
 
-**Output**
-
 ```sh
 int(2)
 ```
@@ -57,8 +55,6 @@ var_dump(DataType::isCategorical('outdoors'));
 
 var_dump(DataType::isCategorical('16'));
 ```
-
-**Output**
 
 ```sh
 bool(true)

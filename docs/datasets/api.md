@@ -179,8 +179,6 @@ $folds = $dataset->fold(8);
 var_dump(count($folds));
 ```
 
-**Output**
-
 ```sh
 int(8)
 ```
@@ -258,8 +256,6 @@ $dataset->sortByColumn(2, false);
 var_dump($dataset->samples());
 ```
 
-**Output**
-
 ```sh
 array(3) {
     [0]=> array(3) {
@@ -311,8 +307,6 @@ $stats = $dataset->describe();
 
 print_r($stats);
 ```
-
-**Output**
 
 ```sh
 Array

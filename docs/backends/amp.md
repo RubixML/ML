@@ -29,8 +29,6 @@ $backend = new Amp(16);
 var_dump($backend->workers());
 ```
 
-**Output**
-
 ```sh
 int(16)
 ```

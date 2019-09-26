@@ -19,8 +19,6 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-**Output**
-
 ```sh
 array(18) {
     ['mean_absolute_error']=> float(0.18220216502615122)

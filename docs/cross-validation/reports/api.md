@@ -21,8 +21,6 @@ $result = $report->generate($predictions, $labels);
 var_dump($result);
 ```
 
-**Output**
-
 ```sh
   array(2) {
     ["dog"]=> array(2) {
@@ -46,8 +44,6 @@ public compatibility() : array
 ```php
 var_dump($report->compatibility());
 ```
-
-**Output**
 
 ```sh
 array(2) {

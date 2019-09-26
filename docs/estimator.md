@@ -15,8 +15,6 @@ $predictions = $estimator->predict($dataset);
 var_dump($predictions);
 ```
 
-**Output**
-
 ```sh
 array(3) {
   [0]=>
@@ -47,8 +45,6 @@ var_dump($type); // Output integer encoded type
 
 var_dump(Estimator::TYPES[$type]); // Output human readable type
 ```
-
-**Output**
 
 ```sh
 int(1)

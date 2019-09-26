@@ -37,8 +37,6 @@ $results = $backend->process();
 var_dump($results);
 ```
 
-**Output**
-
 ```sh
 array(1) {
     [0]=> float(6.25)
