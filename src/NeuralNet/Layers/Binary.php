@@ -259,18 +259,18 @@ class Binary implements Output
 
         $target = Matrix::quick([$expected]);
 
-        $penalties = $this->weights->w()->sum()
+        $dPenalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
             $dA = $this->computed
                 ->subtract($target)
-                ->add($penalties)
+                ->add($dPenalties)
                 ->divide($this->computed->n());
         } else {
             $dL = $this->costFn
                 ->differentiate($this->computed, $target)
-                ->add($penalties)
+                ->add($dPenalties)
                 ->divide($this->computed->n());
 
             $dA = $this->activationFn
