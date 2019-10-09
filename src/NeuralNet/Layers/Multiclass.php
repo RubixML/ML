@@ -264,7 +264,7 @@ class Multiclass implements Output
 
         $target = Matrix::quick($expected);
 
-        $penalties = $this->weights->w()->square()->sum()
+        $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {

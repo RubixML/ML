@@ -213,7 +213,7 @@ class Continuous implements Output
 
         $target = Matrix::quick([$labels]);
 
-        $penalties = $this->weights->w()->square()->sum()
+        $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn

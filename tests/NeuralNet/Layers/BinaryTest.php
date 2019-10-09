@@ -85,7 +85,7 @@ class BinaryTest extends TestCase
         $this->assertEquals($expected, $back->result()->asArray(), '', 1e-4);
 
         $expected = [
-            [0.5431401281118892, 0.23113364087655675, 0.808683095975145],
+            [0.5431400980394667, 0.23113347851058044, 0.8086830533932138],
         ];
 
         $infer = $this->layer->infer($this->input);
