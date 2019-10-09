@@ -259,7 +259,7 @@ class Binary implements Output
 
         $target = Matrix::quick([$expected]);
 
-        $penalties = $this->weights->w()->sum()
+        $penalties = $this->weights->w()->square()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
