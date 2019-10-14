@@ -31,6 +31,7 @@ class Cell implements BinaryNode, Leaf
      * Terminate a branch with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param int $depth
      * @return self
      */
     public static function terminate(Dataset $dataset, int $depth) : self

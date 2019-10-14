@@ -222,8 +222,11 @@ $subset = $dataset->randomSubset(50);
 // Generate a 'bootstrap' dataset of 500 random samples
 $subset = $dataset->randomSubsetWithReplacement(500);
 
-// Sample a random subset according to a given weight distribution
+// Sample a random subset according to a user-defined weight distribution
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
+
+// Sample a random subset using a column as sample weights
+$subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(1));
 ```
 
 ### Filtering
@@ -346,7 +349,7 @@ Array
 ```
 
 ### De-duplication
-Return a dataset with all duplicate rows removed:
+Return a dataset with duplicate rows removed:
 ```php
 public deduplicate() : self
 ```
