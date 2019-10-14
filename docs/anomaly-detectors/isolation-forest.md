@@ -29,3 +29,4 @@ $estimator = new IsolationForest(100); // Default sample size and threshold
 ### References
 >- F. T. Liu et al. (2008). Isolation Forest.
 >- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
+>- M. Garchery et al. (2018). On the influence of categorical features in ranking anomalies using mixed data.

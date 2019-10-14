@@ -58,8 +58,8 @@ class Isolator implements BinaryNode
         $values = $dataset->column($column);
 
         if ($dataset->columnType($column) === DataType::CONTINUOUS) {
-            $min = (int) round(min($values) * PHI);
-            $max = (int) round(max($values) * PHI);
+            $min = (int) floor(min($values) * PHI);
+            $max = (int) ceil(max($values) * PHI);
 
             $value = rand($min, $max) / PHI;
         } else {

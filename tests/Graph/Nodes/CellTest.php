@@ -14,10 +14,11 @@ class CellTest extends TestCase
     protected const SAMPLES = [
         [5., 2., -3],
         [6., 4., -5],
+        [-0.01, 0.1, -7],
     ];
 
     protected const DEPTH = 8;
-    protected const C = 7.1544313298030655;
+    protected const C = 8.207392357589622;
 
     public function test_build_node()
     {

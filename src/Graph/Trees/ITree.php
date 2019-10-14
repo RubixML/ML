@@ -46,11 +46,16 @@ class ITree implements BST
      */
     public static function c(int $n) : float
     {
-        if ($n <= 1) {
-            return 1.;
+        switch (true) {
+            case $n > 2:
+                return 2. * (log($n - 1.) + M_EULER) - 2. * ($n - 1.) / $n;
+
+            case $n === 2:
+                return 1.;
+
+            default:
+                return 0.;
         }
-        
-        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 
     /**

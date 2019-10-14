@@ -27,6 +27,8 @@ use const Rubix\ML\EPSILON;
  * References:
  * [1] F. T. Liu et al. (2008). Isolation Forest.
  * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
+ * [3] M. Garchery et al. (2018). On the influence of categorical features in
+ * ranking anomalies using mixed data.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -168,7 +170,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         for ($i = 0; $i < $this->estimators; $i++) {
             $tree = new ITree($maxDepth);
 
-            $subset = $dataset->randomize()->head($k);
+            $subset = $dataset->randomSubset($k);
 
             $tree->grow($subset);
 
@@ -236,9 +238,9 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
             $depth += $node ? $node->depth() : EPSILON;
         }
 
-        $depth /= $this->estimators;
+        $depth /= $this->estimators * $this->delta;
 
-        return 2. ** -($depth / $this->delta);
+        return 2. ** -$depth;
     }
 
     /**
