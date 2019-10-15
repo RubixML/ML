@@ -50,7 +50,7 @@ class PlusPlus implements Seeder
     {
         $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
 
-        for ($i = 1; $i < $k; $i++) {
+        while (count($centroids) < $k) {
             $weights = [];
 
             foreach ($dataset as $sample) {

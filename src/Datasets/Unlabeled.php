@@ -287,7 +287,7 @@ class Unlabeled extends Dataset
 
         $folds = [];
 
-        for ($i = 0; $i < $k; $i++) {
+        while (count($folds) < $k) {
             $folds[] = self::quick(array_splice($samples, 0, $n));
         }
 
@@ -440,7 +440,7 @@ class Unlabeled extends Dataset
 
         $subset = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($subset) < $n) {
             $subset[] = $this->samples[rand(0, $maxIndex)];
         }
 
@@ -474,7 +474,7 @@ class Unlabeled extends Dataset
 
         $subset = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($subset) < $n) {
             $delta = rand(0, $max) / PHI;
 
             foreach ($weights as $index => $weight) {

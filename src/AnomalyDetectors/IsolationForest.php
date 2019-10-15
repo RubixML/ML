@@ -57,15 +57,15 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     protected $ratio;
 
     /**
-     * The amount of contamination (outliers) that is presumed to be in
-     * the training set as a percentage.
+     * The proportion of outliers that are presumed to be present in the
+     * training set.
      *
      * @var float|null
      */
     protected $contamination;
 
     /**
-     * The average depth of an isolation tree.
+     * The sum of the average depth of all the isolation trees in the ensemble.
      *
      * @var float|null
      */
@@ -167,7 +167,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $this->trees = [];
 
-        for ($i = 0; $i < $this->estimators; $i++) {
+        while (count($this->trees) < $this->estimators) {
             $tree = new ITree($maxDepth);
 
             $subset = $dataset->randomSubset($k);
@@ -177,17 +177,15 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
             $this->trees[] = $tree;
         }
 
-        $this->delta = ITree::c($k);
+        $this->delta = $this->estimators * ITree::c($k);
 
-        if ($this->contamination) {
+        if (isset($this->contamination)) {
             $scores = array_map([self::class, 'isolationScore'], $dataset->samples());
 
             $threshold = Stats::percentile($scores, 100. - (100. * $this->contamination));
-        } else {
-            $threshold = self::DEFAULT_THRESHOLD;
         }
 
-        $this->threshold = $threshold;
+        $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
     }
 
     /**
@@ -238,7 +236,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
             $depth += $node ? $node->depth() : EPSILON;
         }
 
-        $depth /= $this->estimators * $this->delta;
+        $depth /= $this->delta;
 
         return 2. ** -$depth;
     }

@@ -86,7 +86,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $minChange;
 
     /**
-     * The spatial tree used for range searches.
+     * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */

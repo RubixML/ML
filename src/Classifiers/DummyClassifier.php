@@ -116,7 +116,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
 
         $predictions = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($predictions) < $n) {
             $predictions[] = $this->strategy->guess();
         }
 

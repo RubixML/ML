@@ -12,7 +12,7 @@ An ensemble anomaly detector comprised of Isolation Trees (*ITrees*) trained on 
 |---|---|---|---|---|
 | 1 | estimators | 100 | int | The number of isolation trees to train in the ensemble. |
 | 2 | ratio | Auto | float | The ratio of samples to train each estimator with. If *null* then subsample size is 256. |
-| 3 | contamination | Auto | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | contamination | Auto | float | The proportion of outliers that are presumed to be present in the training set. |
 
 ### Additional Methods
 This estimator does not have any additional methods.

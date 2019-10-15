@@ -58,7 +58,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $weighted;
 
     /**
-     * The spatial tree used for range queries.
+     * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */

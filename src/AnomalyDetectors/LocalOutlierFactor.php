@@ -187,7 +187,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 
         $this->lrds = array_map([self::class, 'localReachabilityDensity'], $iHat, $dHat);
         
-        if ($this->contamination) {
+        if (isset($this->contamination)) {
             $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
             $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));

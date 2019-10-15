@@ -12,7 +12,7 @@ A fast and efficient k nearest neighbors algorithm that uses a binary tree to di
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 3 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
+| 3 | tree | KDTree | object | The spatial tree used to run nearest neighbor searches. |
 
 ### Additional Methods
 Return the base spatial tree instance:

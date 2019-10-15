@@ -55,7 +55,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $weighted;
 
     /**
-     * The spatial tree used for nearest neighbor queries.
+     * The spatial tree used to run nearest neighbor searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */

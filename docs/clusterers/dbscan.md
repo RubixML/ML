@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| 3 | tree | BallTree | object | The spatial tree used for range queries. |
+| 3 | tree | BallTree | object | The spatial tree used to run range searches. |
 
 ### Additional Methods
 This estimator does not have any additional methods.

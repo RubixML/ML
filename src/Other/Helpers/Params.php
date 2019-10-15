@@ -46,17 +46,17 @@ class Params
                 . ' unique integers than within range.');
         }
 
-        $distribution = [];
+        $dist = [];
 
-        while (count($distribution) < $n) {
+        while (count($dist) < $n) {
             $r = rand($min, $max);
 
-            if (!in_array($r, $distribution)) {
-                $distribution[] = $r;
+            if (!in_array($r, $dist)) {
+                $dist[] = $r;
             }
         }
 
-        return $distribution;
+        return $dist;
     }
 
     /**
@@ -83,13 +83,13 @@ class Params
         $min = (int) round($min * PHI);
         $max = (int) round($max * PHI);
 
-        $distribution = [];
+        $dist = [];
 
-        for ($i = 0; $i < $n; $i++) {
-            $distribution[] = rand($min, $max) / PHI;
+        while (count($dist) < $n) {
+            $dist[] = rand($min, $max) / PHI;
         }
 
-        return $distribution;
+        return $dist;
     }
 
     /**

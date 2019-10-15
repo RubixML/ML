@@ -46,10 +46,10 @@ class SparseRandomProjector extends GaussianRandomProjector
 
         $r = [];
 
-        for ($i = 0; $i < $columns; $i++) {
+        while (count($r) < $columns) {
             $row = [];
 
-            for ($j = 0; $j < $this->dimensions; $j++) {
+            while (count($row) < $this->dimensions) {
                 $row[] = static::DISTRIBUTION[rand(0, $p)];
             }
 

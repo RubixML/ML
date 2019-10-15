@@ -51,7 +51,7 @@ class DBSCAN implements Estimator
     protected $minDensity;
 
     /**
-     * The spatial tree used for range searches.
+     * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */

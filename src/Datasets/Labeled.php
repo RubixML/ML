@@ -631,15 +631,16 @@ class Labeled extends Dataset
 
         $n = (int) floor($this->numRows() / $k);
 
+        $samples = $this->samples;
+        $labels = $this->labels;
+
         $folds = [];
 
-        for ($i = 0; $i < $k; $i++) {
-            $offset = $i * $n;
-
-            $samples = array_slice($this->samples, $offset, $n);
-            $labels = array_slice($this->labels, $offset, $n);
-
-            $folds[] = self::quick($samples, $labels);
+        while (count($folds) < $k) {
+            $folds[] = self::quick(
+                array_splice($samples, 0, $n),
+                array_splice($labels, 0, $n)
+            );
         }
 
         return $folds;
@@ -851,7 +852,7 @@ class Labeled extends Dataset
 
         $samples = $labels = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($samples) < $n) {
             $index = rand(0, $maxIndex);
 
             $samples[] = $this->samples[$index];
@@ -888,7 +889,7 @@ class Labeled extends Dataset
 
         $samples = $labels = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($samples) < $n) {
             $delta = rand(0, $max) / PHI;
 
             foreach ($weights as $index => $weight) {
