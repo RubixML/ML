@@ -2,13 +2,11 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use function is_nan;
-
 /**
- * NaN Euclidean
+ * Safe Euclidean
  *
  * An Euclidean distance metric suitable for samples that may contain NaN
- * (not a number) values i.e. missing data. The NaN Euclidean metric approximates
+ * (not a number) values i.e. missing data. The Safe Euclidean metric approximates
  * the Euclidean distance function by dropping NaN values and scaling the distance
  * according to the proportion of non-NaNs (in either a or b or both) to compensate.
  *
@@ -19,7 +17,7 @@ use function is_nan;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NaNEuclidean implements Distance
+class SafeEuclidean implements Distance, NaNSafe
 {
     /**
      * Compute the distance between two vectors.

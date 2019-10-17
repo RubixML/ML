@@ -7,10 +7,9 @@ use InvalidArgumentException;
 /**
  * Minkowski
  *
- * The Minkowski distance is a metric in a normed vector space which can be
- * considered as a generalization of both the Euclidean and Manhattan distances.
- * When the lambda parameter is set to 1 or 2, the distance is equivalent to
- * Manhattan and Euclidean respectively.
+ * The Minkowski distance can be considered as a generalization of both the
+ * Euclidean and Manhattan distances. When the lambda parameter is set to 1
+ * or 2, the distance is equivalent to Manhattan and Euclidean respectively.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

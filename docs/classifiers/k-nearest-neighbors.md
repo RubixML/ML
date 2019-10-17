@@ -3,7 +3,7 @@
 # K Nearest Neighbors
 A distance-based algorithm that locates the k nearest neighbors (data points) from the training set and uses a weighted vote to classify unknown samples during inference. A *kernelized* distance function allows the user to specify different concepts of distance to the estimator. 
 
-> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-based version, see [KD Neighbors](kd-neighbors.md).
+> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-accelerated version, see [KD Neighbors](kd-neighbors.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

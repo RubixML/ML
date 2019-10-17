@@ -15,7 +15,7 @@ use RuntimeException;
  * Missing Data Imputer
  *
  * The Missing Data Imputer replaces missing values denoted by a placeholder
- * with a guess based on user-defined strategy.
+ * variable with a guess based on user-defined strategy.
  *
  * > **Note:** Due to IEEE754 specifications, NaN cannot be used as a
  * placeholder variable.

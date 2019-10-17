@@ -3,22 +3,22 @@
 namespace Rubix\ML\Tests\Kernels\Distance;
 
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\NaNEuclidean;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-class NaNEuclideanTest extends TestCase
+class SafeEuclideanTest extends TestCase
 {
     protected $kernel;
 
     public function setUp()
     {
-        $this->kernel = new NaNEuclidean();
+        $this->kernel = new SafeEuclidean();
     }
 
     public function test_build_distance_kernel()
     {
-        $this->assertInstanceOf(NaNEuclidean::class, $this->kernel);
+        $this->assertInstanceOf(SafeEuclidean::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 

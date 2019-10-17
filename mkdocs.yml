@@ -181,6 +181,7 @@ nav:
     - Jaccard: kernels/distance/jaccard.md
     - Manhattan: kernels/distance/manhattan.md
     - Minkowski: kernels/distance/minkowski.md
+    - Safe Euclidean: kernels/distance/safe-euclidean.md
   - SVM:
     - Linear: kernels/svm/linear.md
     - Polynomial: kernels/svm/polynomial.md

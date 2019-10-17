@@ -3,7 +3,7 @@
 # KNN Regressor
 A version of the K Nearest Neighbors algorithm that uses the average (mean) outcome of the k nearest data points to make continuous valued predictions suitable for regression problems.
 
-> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-based version, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
+> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-accelerated version, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Persistable](../persistable.md)
 
@@ -22,7 +22,7 @@ This estimator does not have any additional methods.
 ### Example
 ```php
 use Rubix\ML\Regressors\KNNRegressor;
-use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$estimator = new KNNRegressor(2, false, new Minkowski(3.0));
+$estimator = new KNNRegressor(2, false, new SafeEuclidean());
 ```
