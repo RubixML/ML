@@ -130,6 +130,7 @@ class MissingDataImputer implements Transformer, Stateful
      * Transform the dataset in place.
      *
      * @param array $samples
+     * @throws \RuntimeException
      */
     public function transform(array &$samples) : void
     {
@@ -137,7 +138,7 @@ class MissingDataImputer implements Transformer, Stateful
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        foreach ($samples as $row => &$sample) {
+        foreach ($samples as &$sample) {
             foreach ($sample as $column => &$value) {
                 if ($value === $this->placeholder) {
                     $value = $this->strategies[$column]->guess();

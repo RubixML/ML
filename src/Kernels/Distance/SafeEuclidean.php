@@ -45,6 +45,10 @@ class SafeEuclidean implements Distance, NaNSafe
             $distance += ($valueA - $valueB) ** 2;
         }
 
+        if ($nn === $n) {
+            return NAN;
+        }
+
         $scale = $n / ($n - $nn);
 
         return sqrt($scale * $distance);

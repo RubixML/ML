@@ -1,4 +1,6 @@
 - Unreleased
+    - Added KNN Imputer
+    - Added NaN safe Euclidean distance kernel
     - Added transform column method to dataset object
     - Added describe method to dataset object
     - Added describe labels method to Labeled dataset
@@ -8,7 +10,6 @@
     - Added global transpose array helper function
     - Renamed label key to classes in Multiclass Breakdown report
     - Changed order of Gradient Boost and AdaBoost hyper-parameters
-    - Added NaN Euclidean distance kernel
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

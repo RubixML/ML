@@ -106,6 +106,7 @@ nav:
   - Image Resizer: transformers/image-resizer.md
   - Image Vectorizer: transformers/image-vectorizer.md
   - Interval Discretizer: transformers/interval-discretizer.md
+  - KNN Imputer: transformers/knn-imputer.md
   - L1 Normalizer: transformers/l1-normalizer.md
   - L2 Normalizer: transformers/l2-normalizer.md
   - Lambda Function: transformers/lambda-function.md
