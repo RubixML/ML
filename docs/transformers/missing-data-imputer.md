@@ -1,7 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MissingDataImputer.php">Source</a></span>
 
 # Missing Data Imputer
-In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given guessing [Strategy](../other/strategies/api.md).
+The Missing Data Imputer replaces missing values denoted by a placeholder with a guess based on user-defined [Strategy](../other/strategies/api.md).
+
+> **Note:** Due to IEEE754 specifications, NaN cannot be used as a placeholder variable.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful)
 

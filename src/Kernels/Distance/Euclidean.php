@@ -5,8 +5,8 @@ namespace Rubix\ML\Kernels\Distance;
 /**
  * Euclidean
  *
- * This is the rotationally invariant straight line (*bee* line) distance
- * between two points.
+ * Standard straight line (*bee* line) distance between two points. The Euclidean
+ * distance has the nice property of being invariant under any rotation.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

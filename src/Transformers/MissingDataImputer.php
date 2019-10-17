@@ -14,9 +14,11 @@ use RuntimeException;
 /**
  * Missing Data Imputer
  *
- * In the real world, it is common to have data with missing values here and
- * there. The Missing Data Imputer replaces missing value placeholders with a
- * guess based on a given imputer Strategy.
+ * The Missing Data Imputer replaces missing values denoted by a placeholder
+ * with a guess based on user-defined strategy.
+ *
+ * > **Note:** Due to IEEE754 specifications, NaN cannot be used as a
+ * placeholder variable.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -32,14 +34,14 @@ class MissingDataImputer implements Transformer, Stateful
     protected $placeholder;
 
     /**
-     * The imputer to use when imputing continuous values.
+     * The guessing strategy to use when imputing continuous values.
      *
      * @var \Rubix\ML\Other\Strategies\Continuous
      */
     protected $continuous;
 
     /**
-     * The imputer to use when imputing categorical values.
+     * The guessing strategy to use when imputing categorical values.
      *
      * @var \Rubix\ML\Other\Strategies\Categorical
      */
@@ -61,8 +63,12 @@ class MissingDataImputer implements Transformer, Stateful
     public function __construct($placeholder = '?', ?Continuous $continuous = null, ?Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
-            throw new InvalidArgumentException('Placeholder1D must be a string or'
-                . ' numeric type, ' . gettype($placeholder) . ' found.');
+            throw new InvalidArgumentException('Placeholder must be a string or'
+                . ' numeric type, ' . gettype($placeholder) . ' given.');
+        }
+
+        if (is_float($placeholder) and is_nan($placeholder)) {
+            throw new InvalidArgumentException('Placeholder cannot be NaN.');
         }
 
         $this->placeholder = $placeholder;

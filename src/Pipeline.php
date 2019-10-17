@@ -190,14 +190,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     {
         $base = $this->base();
 
-        if ($base instanceof Probabilistic) {
-            $this->preprocess($dataset);
-            
-            return $base->proba($dataset);
+        if (!$base instanceof Probabilistic) {
+            throw new RuntimeException('Base estimator must'
+                . ' implement the probabilistic interface.');
         }
 
-        throw new RuntimeException('Base estimator must'
-            . ' implement the probabilistic interface.');
+        $this->preprocess($dataset);
+            
+        return $base->proba($dataset);
     }
 
     /**
