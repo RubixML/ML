@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * In addition, DBSCAN also has the ability to mark outliers as *noise* and thus
  * can be used as a quasi Anomaly Detector.
  *
- * > **Note**: Noise samples are assigned the cluster number *-1*.
+ * > **Note**: Noise samples are assigned to the cluster number *-1*.
  *
  * References:
  * [1] M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.

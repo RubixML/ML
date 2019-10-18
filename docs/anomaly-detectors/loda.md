@@ -10,9 +10,9 @@
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | threshold | 10.0 | float | The minimum negative log likelihood to be flagged as an anomaly. |
-| 2 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
-| 3 | bins | Auto | int | The number of equi-width bins for each histogram. |
+| 1 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
+| 2 | bins | Auto | int | The number of equi-width bins for each histogram. |
+| 3 | threshold | 10.0 | float | The minimum negative log likelihood to be flagged as an anomaly. |
 
 ### Additional Methods
 To estimate the number of histogram bins from the number of samples in a dataset:
@@ -24,9 +24,11 @@ public static estimateBins(int $n) : int
 ```php
 use Rubix\ML\AnomalyDetection\Loda;
 
-$estimator = new Loda(3.5, 250, Loda::estimateBins(1000)); // Automatically choose bin count
+$bins = Loda::estimateBins(1000);
 
-$estimator = new Loda(3.5, 250, 8); // Specifying 8 bins
+$estimator = new Loda(250, $bins, 3.5); // Automatically choose number of bins
+
+$estimator = new Loda(250, 8, 3.5); // Specifying 8 bins
 ```
 
 ### References

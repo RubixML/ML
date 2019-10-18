@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">Source</a></span>
 
 # KNN Imputer
-An unsupervised *hot deck* imputer that replaces NaN values in numerical datasets with the weighted average of the sample's k nearest neighbors.
+An unsupervised imputer that replaces NaN values in numerical datasets with the weighted average of the sample's k nearest neighbors.
 
 **Note:** This transformer is only compatible with NaN safe distance kernels such as [Safe Euclidean](../kernels/distance/safe-euclidean.md).
 

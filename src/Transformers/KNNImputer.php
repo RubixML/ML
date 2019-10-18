@@ -13,8 +13,8 @@ use RuntimeException;
 /**
  * KNN Imputer
  *
- * An unsupervised *hot deck* imputer that replaces NaN values in numerical
- * datasets with the weighted average of the sample's k nearest neighbors.
+ * An unsupervised imputer that replaces NaN values in numerical datasets
+ * with the weighted average of the sample's k nearest neighbors.
  *
  * References:
  * [1] O. Troyanskaya et al. (2001). Missing value estimation methods for

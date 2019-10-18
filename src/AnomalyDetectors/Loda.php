@@ -43,13 +43,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
     /**
-     * The minimum negative log likelihood score necessary to flag an anomaly.
-     *
-     * @var float
-     */
-    protected $threshold;
-
-    /**
      * The number of projection/histogram pairs in the ensemble.
      *
      * @var int
@@ -69,6 +62,13 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * @var bool
      */
     protected $fitBins;
+
+    /**
+     * The minimum negative log likelihood score necessary to flag an anomaly.
+     *
+     * @var float
+     */
+    protected $threshold;
 
     /**
      * The sparse random projection matrix.
@@ -103,18 +103,13 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * @param float $threshold
      * @param int $estimators
      * @param int|null $bins
+     * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $threshold = 10., int $estimators = 100, ?int $bins = null)
+    public function __construct(int $estimators = 100, ?int $bins = null, float $threshold = 10.)
     {
-        if ($threshold < 0.) {
-            throw new InvalidArgumentException('Threshold must be'
-                . " greater than 0, $threshold given.");
-        }
-
         if ($estimators < 1) {
             throw new InvalidArgumentException('At least 1 histogram is'
                 . " requied to make a prediction, $estimators given.");
@@ -125,10 +120,15 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
                 . " be less than 1, $bins given.");
         }
 
-        $this->threshold = $threshold;
+        if ($threshold < 0.) {
+            throw new InvalidArgumentException('Threshold must be'
+                . " greater than 0, $threshold given.");
+        }
+
         $this->estimators = $estimators;
         $this->bins = $bins;
         $this->fitBins = is_null($bins);
+        $this->threshold = $threshold;
     }
 
     /**
