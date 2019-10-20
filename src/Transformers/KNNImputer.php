@@ -115,12 +115,18 @@ class KNNImputer implements Transformer, Stateful, Elastic
      * Fit the transformer to the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
      */
     public function fit(Dataset $dataset) : void
     {
         $this->samples = [];
 
         $this->update($dataset);
+
+        if (empty($this->samples)) {
+            throw new RuntimeException('No complete donor samples'
+                . ' could be found.');
+        }
     }
 
     /**

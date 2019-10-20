@@ -100,32 +100,39 @@ nav:
     - Native: persisters/serializers/native.md
 - Transformers:
   - API Reference: transformers/api.md
-  - Dense Random Projector: transformers/dense-random-projector.md
-  - Gaussian Random Projector: transformers/gaussian-random-projector.md
-  - HTML Stripper: transformers/html-stripper.md
-  - Image Resizer: transformers/image-resizer.md
-  - Image Vectorizer: transformers/image-vectorizer.md
-  - Interval Discretizer: transformers/interval-discretizer.md
-  - KNN Imputer: transformers/knn-imputer.md
-  - L1 Normalizer: transformers/l1-normalizer.md
-  - L2 Normalizer: transformers/l2-normalizer.md
-  - Lambda Function: transformers/lambda-function.md
-  - Linear Disciminant Analysis: transformers/linear-discriminant-analysis.md
-  - Max Absolute Scaler: transformers/max-absolute-scaler.md
-  - Min Max Normalizer: transformers/min-max-normalizer.md
-  - Missing Data Imputer: transformers/missing-data-imputer.md
-  - Numeric String Converter: transformers/numeric-string-converter.md
-  - One Hot Encoder: transformers/one-hot-encoder.md
-  - Polynomial Expander: transformers/polynomial-expander.md
-  - Principal Component Analysis: transformers/principal-component-analysis.md
-  - Robust Standardizer: transformers/robust-standardizer.md
-  - Sparse Random Projector: transformers/sparse-random-projector.md
-  - Stop Word Filter: transformers/stop-word-filter.md
-  - Text Normalizer: transformers/text-normalizer.md
-  - TF-IDF Transformer: transformers/tf-idf-transformer.md
-  - Variance Threshold Filter: transformers/variance-threshold-filter.md
-  - Word Count Vectorizer: transformers/word-count-vectorizer.md
-  - Z Scale Standardizer: transformers/z-scale-standardizer.md
+  - Dimensionality Reduction:
+    - Dense Random Projector: transformers/dense-random-projector.md
+    - Gaussian Random Projector: transformers/gaussian-random-projector.md
+    - Linear Disciminant Analysis: transformers/linear-discriminant-analysis.md
+    - Principal Component Analysis: transformers/principal-component-analysis.md
+    - Sparse Random Projector: transformers/sparse-random-projector.md
+  - Feature Extraction:
+    - Image Vectorizer: transformers/image-vectorizer.md
+    - Word Count Vectorizer: transformers/word-count-vectorizer.md
+    - TF-IDF Transformer: transformers/tf-idf-transformer.md
+  - Feature Selection:
+    - Variance Threshold Filter: transformers/variance-threshold-filter.md
+  - Imputation:
+    - KNN Imputer: transformers/knn-imputer.md
+    - Missing Data Imputer: transformers/missing-data-imputer.md
+  - Other:
+    - Image Resizer: transformers/image-resizer.md
+    - Interval Discretizer: transformers/interval-discretizer.md
+    - Lambda Function: transformers/lambda-function.md
+    - Numeric String Converter: transformers/numeric-string-converter.md
+    - One Hot Encoder: transformers/one-hot-encoder.md
+    - Polynomial Expander: transformers/polynomial-expander.md
+  - Standardization and Normalization:
+    - L1 Normalizer: transformers/l1-normalizer.md
+    - L2 Normalizer: transformers/l2-normalizer.md
+    - Max Absolute Scaler: transformers/max-absolute-scaler.md
+    - Min Max Normalizer: transformers/min-max-normalizer.md
+    - Robust Standardizer: transformers/robust-standardizer.md
+    - Z Scale Standardizer: transformers/z-scale-standardizer.md
+  - Text Cleaning:
+    - HTML Stripper: transformers/html-stripper.md
+    - Text Normalizer: transformers/text-normalizer.md
+    - Stop Word Filter: transformers/stop-word-filter.md
 - Neural Network:
   - Activation Functions:
     - ELU: neural-network/activation-functions/elu.md

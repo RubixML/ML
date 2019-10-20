@@ -7,9 +7,9 @@ use Rubix\ML\DataType;
 /**
  * Numeric String Converter
  *
- * Convert all numeric strings into their integer and floating point
- * countertypes. Useful for when extracting from a source that only recognizes
- * data as string types.
+ * Convert all numeric strings into their integer and floating point Countertypes.
+ * Useful for when extracting from a source that only recognizes data as string
+ * types such as CSV.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -17,6 +17,21 @@ use Rubix\ML\DataType;
  */
 class NumericStringConverter implements Transformer
 {
+    /**
+     * The placeholder string for NaN values.
+     *
+     * @var string
+     */
+    protected $placeholder;
+
+    /**
+     * @param string $placeholder
+     */
+    public function __construct(string $placeholder = 'NaN')
+    {
+        $this->placeholder = $placeholder;
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -35,11 +50,19 @@ class NumericStringConverter implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                if (is_string($feature) and is_numeric($feature)) {
-                    $feature = (int) $feature == $feature
-                        ? (int) $feature
-                        : (float) $feature;
+            foreach ($sample as &$value) {
+                switch (true) {
+                    case is_string($value) and is_numeric($value):
+                        $value = (int) $value == $value
+                            ? (int) $value
+                            : (float) $value;
+
+                        break 1;
+
+                    case $value === $this->placeholder:
+                        $value = NAN;
+
+                        break 1;
                 }
             }
         }
