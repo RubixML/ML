@@ -179,6 +179,8 @@ nav:
     - Cosine: kernels/distance/cosine.md
     - Diagonal: kernels/distance/diagonal.md
     - Euclidean: kernels/distance/euclidean.md
+    - Gower: kernels/distance/gower.md
+    - Hamming: kernels/distance/hamming.md
     - Jaccard: kernels/distance/jaccard.md
     - Manhattan: kernels/distance/manhattan.md
     - Minkowski: kernels/distance/minkowski.md

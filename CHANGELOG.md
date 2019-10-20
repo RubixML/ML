@@ -3,6 +3,8 @@
     - Missing Data Imputer now handles NaNs by default
     - Added NaN safe Euclidean distance kernel
     - Added Gower distance kernel
+    - Added Hamming distance kernel
+    - KNN now compatible with categorical features
     - Added transform column method to dataset object
     - Added describe method to dataset object
     - Added describe labels method to Labeled dataset
