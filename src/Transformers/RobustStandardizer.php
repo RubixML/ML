@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use RuntimeException;
 

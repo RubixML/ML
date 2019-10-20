@@ -3,11 +3,11 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;

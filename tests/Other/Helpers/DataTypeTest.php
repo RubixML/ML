@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Other\Helpers;
 
-use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\DataType;
 use PHPUnit\Framework\TestCase;
 
 class DataTypeTest extends TestCase

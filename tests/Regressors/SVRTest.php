@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Transformers\ZScaleStandardizer;

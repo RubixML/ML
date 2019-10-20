@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\DataType;
 use Closure;
 
 use function call_user_func;

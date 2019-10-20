@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\DataType;
 use InvalidArgumentException;
 
 /**

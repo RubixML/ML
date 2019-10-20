@@ -4,13 +4,13 @@ Determine the data type of a variable according to Rubix ML's type system.
 ### Determining Data Type
 To determine the integer-encoded data type of a variable:
 ```php
-public determine($variable) : int
+public static determine($variable) : int
 ```
 
 **Example**
 
 ```php
-use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\DataType;
 
 var_dump(DataType::determine('adventure'));
 ```
@@ -24,22 +24,22 @@ int(2)
 ### Is Type?
 Return true if the variable is categorical:
 ```php
-public isCategorical($variable) : bool
+public static isCategorical($variable) : bool
 ```
 
 Return true if the variable is categorical:
 ```php
-public isContinuous($variable) : bool
+public static isContinuous($variable) : bool
 ```
 
 Return true if the variable is a PHP resource:
 ```php
-public isResource($variable) : bool
+public static isResource($variable) : bool
 ```
 
 Return true if the variable is an unrecognized data type:
 ```php
-public isOther($variable) : bool
+public static isOther($variable) : bool
 ```
 
 **Example**
@@ -66,4 +66,20 @@ bool(false)
 bool(true)
 
 bool(true)
+```
+
+### Convert Type to String
+To return a string representation of an integer encoded data type:
+```php
+public static asString(int $type) : string
+```
+
+**Example**
+
+```php
+var_dump(DataType::asString(DataType::CATEGORIAL));
+```
+
+```sh
+string(11) "categorical"
 ```

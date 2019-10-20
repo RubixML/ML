@@ -3,9 +3,9 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;

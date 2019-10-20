@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\DataType;
 use Intervention\Image\ImageManager;
-use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**

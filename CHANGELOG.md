@@ -17,6 +17,7 @@
     - Changed order of Loda hyper-parameters
     - Added asString method to the Data Type helper class
     - Added check for NaN labels in Labeled dataset
+    - Changed namespace of Data Type helper
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

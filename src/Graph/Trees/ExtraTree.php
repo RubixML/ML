@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Comparison;
-use Rubix\ML\Other\Helpers\DataType;
 
 use const Rubix\ML\PHI;
 

@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Other\Specifications;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 class DatasetIsCompatibleWithEstimator

@@ -3,11 +3,11 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;

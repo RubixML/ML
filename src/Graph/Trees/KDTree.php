@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;

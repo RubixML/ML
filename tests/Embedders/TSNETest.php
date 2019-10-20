@@ -3,10 +3,10 @@
 namespace Rubix\ML\Tests\Embedders;
 
 use Rubix\ML\Verbose;
+use Rubix\ML\DataType;
 use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;

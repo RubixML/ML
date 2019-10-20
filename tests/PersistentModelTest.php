@@ -3,11 +3,11 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Wrapper;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\DummyClassifier;
 use PHPUnit\Framework\TestCase;
 

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use Rubix\ML\DataType;
 use Rubix\Tensor\Vector;
-use Rubix\ML\Other\Helpers\DataType;
 
 use const Rubix\ML\EPSILON;
 

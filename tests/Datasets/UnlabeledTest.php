@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Datasets;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
 use ArrayAccess;
