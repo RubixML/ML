@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
+
 /**
  * Text Normalizer
  *
@@ -30,6 +32,16 @@ class TextNormalizer implements Transformer
     public function __construct(bool $trim = false)
     {
         $this->trim = $trim;
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
     }
 
     /**

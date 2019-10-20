@@ -9,7 +9,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -110,9 +109,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::CONTINUOUS,
-        ];
+        return $this->kernel->compatibility();
     }
 
     /**
@@ -186,7 +183,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
             if ($this->weighted) {
                 $weights = [];
 
-                foreach ($distances as $i => $distance) {
+                foreach ($distances as $distance) {
                     $weights[] = 1. / (1. + $distance);
                 }
 

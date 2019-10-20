@@ -7,7 +7,7 @@ A version of the K Nearest Neighbors algorithm that uses the average (mean) outc
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on the distance kernel
 
 ### Parameters
 | # | Param | Default | Type | Description |

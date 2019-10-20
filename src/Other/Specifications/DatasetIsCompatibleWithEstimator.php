@@ -18,26 +18,23 @@ class DatasetIsCompatibleWithEstimator
      */
     public static function check(Dataset $dataset, Estimator $estimator) : void
     {
-        $types = $dataset->uniqueTypes();
         $compatibility = $estimator->compatibility();
+
+        $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
 
         if (count($same) < count($types)) {
             $different = array_diff($types, $compatibility);
 
-            $diff = implode(', ', array_map(function ($type) {
-                return DataType::TYPES[$type];
-            }, $different));
+            $diffString = implode(', ', array_map([DataType::class, 'asString'], $different));
 
-            $compat = implode(', ', array_map(function ($type) {
-                return DataType::TYPES[$type];
-            }, $compatibility));
+            $compatString = implode(', ', array_map([DataType::class, 'asString'], $compatibility));
 
             throw new InvalidArgumentException('Estimator is not'
-                . " compatible with $diff data type"
+                . " compatible with $diffString data type"
                 . (count($different) > 1 ? 's.' : '.')
-                . " Compatible data types are $compat.");
+                . " Compatible data types are $compatString.");
         }
     }
 }

@@ -4,8 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\DataType;
-use InvalidArgumentException;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 
 /**
  * Sparse Random Projector
@@ -35,10 +34,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function fit(Dataset $dataset) : void
     {
-        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
 
         $columns = $dataset->numColumns();
 

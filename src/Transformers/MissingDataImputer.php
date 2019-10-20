@@ -8,17 +8,16 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\KMostFrequent;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Missing Data Imputer
  *
- * The Missing Data Imputer replaces missing values denoted by a placeholder
- * variable with a guess based on user-defined strategy.
- *
- * > **Note:** Due to IEEE754 specifications, NaN cannot be used as a
- * placeholder variable.
+ * The Missing Data Imputer replaces missing values denoted by NaN for
+ * continuous features or a placeholder variable for categorical ones
+ * with a guess based on user-defined strategy.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -27,7 +26,8 @@ use RuntimeException;
 class MissingDataImputer implements Transformer, Stateful
 {
     /**
-     * The placeholder of a missing value.
+     * The categorical placeholder variable denoting the category that
+     * contains missing values.
      *
      * @var mixed
      */
@@ -48,32 +48,39 @@ class MissingDataImputer implements Transformer, Stateful
     protected $categorical;
 
     /**
-     * The guessing strategy per feature column.
+     * The fitted guessing strategy for each feature column.
      *
      * @var array|null
      */
     protected $strategies;
 
     /**
-     * @param mixed $placeholder
+     * @param string $placeholder
      * @param \Rubix\ML\Other\Strategies\Continuous|null $continuous
      * @param \Rubix\ML\Other\Strategies\Categorical|null $categorical
      * @throws \InvalidArgumentException
      */
-    public function __construct($placeholder = '?', ?Continuous $continuous = null, ?Categorical $categorical = null)
-    {
-        if (!is_numeric($placeholder) and !is_string($placeholder)) {
-            throw new InvalidArgumentException('Placeholder must be a string or'
-                . ' numeric type, ' . gettype($placeholder) . ' given.');
-        }
-
-        if (is_float($placeholder) and is_nan($placeholder)) {
-            throw new InvalidArgumentException('Placeholder cannot be NaN.');
-        }
-
+    public function __construct(
+        string $placeholder = '?',
+        ?Continuous $continuous = null,
+        ?Categorical $categorical = null
+    ) {
         $this->placeholder = $placeholder;
         $this->continuous = $continuous ?? new Mean();
         $this->categorical = $categorical ?? new KMostFrequent();
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+            DataType::CATEGORICAL,
+        ];
     }
 
     /**
@@ -93,34 +100,45 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        
         $this->strategies = [];
 
         foreach ($dataset->types() as $column => $type) {
-            $values = [];
+            $donors = [];
 
             foreach ($dataset->column($column) as $value) {
-                if ($value !== $this->placeholder) {
-                    $values[] = $value;
+                switch (true) {
+                    case is_float($value) and is_nan($value):
+                        continue 2;
+
+                    case $value === $this->placeholder:
+                        continue 2;
+
+                    default:
+                        $donors[] = $value;
                 }
             }
 
             switch ($type) {
                 case DataType::CATEGORICAL:
                     $strategy = clone $this->categorical;
+
                     break 1;
 
                 case DataType::CONTINUOUS:
                     $strategy = clone $this->continuous;
+
                     break 1;
 
                 default:
                     throw new InvalidArgumentException('This transformer'
                         . ' only handles categorical and continuous'
                         . ' features, ' . DataType::TYPES[$type]
-                        . ' found.');
+                        . ' given.');
             }
 
-            $strategy->fit($values);
+            $strategy->fit($donors);
 
             $this->strategies[$column] = $strategy;
         }
@@ -140,7 +158,7 @@ class MissingDataImputer implements Transformer, Stateful
 
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$value) {
-                if ($value === $this->placeholder) {
+                if ((is_float($value) and is_nan($value)) or $value === $this->placeholder) {
                     $value = $this->strategies[$column]->guess();
                 }
             }

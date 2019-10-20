@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -55,6 +56,16 @@ class ImageVectorizer implements Transformer
     }
 
     /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
+    }
+
+    /**
      * Transform the dataset in place.
      *
      * @param array $samples
@@ -65,7 +76,7 @@ class ImageVectorizer implements Transformer
             $vectors = [];
 
             foreach ($sample as $column => $image) {
-                if (is_resource($image) ? get_resource_type($image) === 'gd' : false) {
+                if (is_resource($image) and get_resource_type($image) === 'gd') {
                     $width = imagesx($image);
                     $height = imagesy($image);
 

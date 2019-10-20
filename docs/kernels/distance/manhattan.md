@@ -3,6 +3,8 @@
 # Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example of a game that uses this type of movement is a checkers board.
 
+**Data Type Compatibility:** Continuous
+
 ### Parameters
 This kernel does not have any parameters.
 

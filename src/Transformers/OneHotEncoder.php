@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use RuntimeException;
 
 /**
@@ -29,6 +30,16 @@ class OneHotEncoder implements Transformer, Stateful
      * @var array|null
      */
     protected $categories;
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
+    }
 
     /**
      * Is the transformer fitted?
@@ -57,6 +68,8 @@ class OneHotEncoder implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        
         $n = $dataset->numColumns();
 
         $this->categories = [];

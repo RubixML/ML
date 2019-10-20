@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use Rubix\ML\Other\Helpers\DataType;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -22,6 +24,18 @@ use const Rubix\ML\EPSILON;
  */
 class Canberra implements Distance
 {
+    /**
+     * Return the data types that this kernel is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
+    }
+
     /**
      * Compute the distance between two vectors.
      *

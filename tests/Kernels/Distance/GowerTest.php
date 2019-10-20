@@ -2,24 +2,24 @@
 
 namespace Rubix\ML\Tests\Kernels\Distance;
 
+use Rubix\ML\Kernels\Distance\Gower;
 use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-class SafeEuclideanTest extends TestCase
+class GowerTest extends TestCase
 {
     protected $kernel;
 
     public function setUp()
     {
-        $this->kernel = new SafeEuclidean();
+        $this->kernel = new Gower(1.);
     }
 
     public function test_build_distance_kernel()
     {
-        $this->assertInstanceOf(SafeEuclidean::class, $this->kernel);
+        $this->assertInstanceOf(Gower::class, $this->kernel);
         $this->assertInstanceOf(NaNSafe::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
@@ -27,7 +27,7 @@ class SafeEuclideanTest extends TestCase
     /**
      * @dataProvider compute_provider
      */
-    public function test_compute(array $a, array $b, float $expected)
+    public function test_compute(array $a, array $b, $expected)
     {
         $distance = $this->kernel->compute($a, $b);
 
@@ -37,8 +37,8 @@ class SafeEuclideanTest extends TestCase
 
     public function compute_provider() : Generator
     {
-        yield [[2, 1, 4, NAN], [-2, 1, 8, -2],  6.531972647421808];
-        yield [[7.4, -2.5, 0.001], [NAN, -1, 0.075], 1.8393515161599752];
-        yield [[1000, NAN, 3000], [1000, NAN, 3000], 0.0];
+        yield [['toast', 1., 0.5, NAN], ['pretzels', 1., 0.2, 0.1], 0.43333333333333335];
+        yield [[0., 1., 0.5, 'ham'], [0.1, 0.9, 0.4, 'ham'], 0.07499999999999998];
+        yield [[1, NAN, 1], [1, NAN, 1], 0.0];
     }
 }

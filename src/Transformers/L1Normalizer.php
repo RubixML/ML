@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -17,6 +19,18 @@ use const Rubix\ML\EPSILON;
  */
 class L1Normalizer implements Transformer
 {
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
+    }
+
     /**
      * Transform the dataset in place.
      *

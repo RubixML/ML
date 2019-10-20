@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use RuntimeException;
 
 use const Rubix\ML\EPSILON;
@@ -26,6 +27,16 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
      * @var array|null
      */
     protected $maxabs;
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
+    }
 
     /**
      * Is the transformer fitted?
@@ -54,6 +65,8 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        
         $this->maxabs = [];
 
         foreach ($dataset->types() as $column => $type) {

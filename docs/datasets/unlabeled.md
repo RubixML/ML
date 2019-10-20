@@ -32,13 +32,16 @@ public static fromIterator(iterable $samples) : self
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-// Import samples
+$samples = [
+    [0.1, 20, 'furry'],
+    [2.0, -5, 'rough'],
+];
 
-$dataset = new Unlabeled($samples, true);  // Using the constructor
+$dataset = new Unlabeled($samples, true);
 
-$dataset = Unlabeled::build($samples);  // Build a dataset with validation
+$dataset = Unlabeled::build($samples);  // With validation
 
-$dataset = Unlabeled::quick($samples);  // Build a dataset without validation
+$dataset = Unlabeled::quick($samples);  // Without validation
 
 $dataset = Unlabeled::fromIterator($samples); // From an iterator
 ```

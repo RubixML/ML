@@ -6,6 +6,7 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -60,6 +61,11 @@ class KDTree implements BST, Spatial
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
                 . " to form a neighborhood, $maxLeafSize given.");
+        }
+
+        if (isset($kernel) and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+            throw new InvalidArgumentException('Distance kernel must be'
+                . ' compatible with continuous features.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -121,6 +127,11 @@ class KDTree implements BST, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
+        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
+            throw new InvalidArgumentException('This tree only works with'
+                . ' continuous features.');
+        }
+
         $this->root = Box::split($dataset);
 
         $stack = [$this->root];
@@ -163,12 +174,14 @@ class KDTree implements BST, Spatial
     public function search(array $sample) : ?Neighborhood
     {
         $path = $this->path($sample);
+        
+        $leaf = end($path);
 
-        if (!end($path) instanceof Neighborhood) {
-            return null;
+        if ($leaf instanceof Neighborhood) {
+            return $leaf;
         }
 
-        return end($path);
+        return null;
     }
 
     /**

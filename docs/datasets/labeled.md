@@ -3,11 +3,13 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model using cross validation. In addition to the standard dataset object methods, a Labeled dataset can perform operations such as stratification and sorting the dataset by label.
 
+> **Note:** Labels can be of categorical or continuous data type but NaN is not allowed.
+
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
-| 2 | labels | | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
+| 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
 
 ### Additional Methods
@@ -38,17 +40,21 @@ public static unzip(array $table) : self
 ```php
 use Rubix\ML\Datasets\Labeled;
 
-// Import samples and labels
+$samples = [
+    [0.1, 20, 'furry'],
+    [2.0, -5, 'rough'],
+];
 
-$dataset = new Labeled($samples, $labels, true);  // Using the constructor
+$labels = ['not monster', 'monster'];
 
-$dataset = Labeled::build($samples, $labels);  // Build a new dataset with validation
 
-$dataset = Labeled::quick($samples, $labels);  // Build a new dataset without validation
+$dataset = new Labeled($samples, $labels, true);
+
+$dataset = Labeled::build($samples, $labels);  // With validation
+
+$dataset = Labeled::quick($samples, $labels);  // Without validation
 
 $dataset = Labeled::fromItertor($samples, $labels); // From a pair of iterators
-
-$dataset = Labeled::unzip($table); // From a data table
 ```
 
 #### Selectors

@@ -3,24 +3,24 @@
 namespace Rubix\ML\Other\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Embedders\Embedder;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
-class DatasetIsCompatibleWithEmbedder
+class DatasetIsCompatibleWithTransformer
 {
     /**
      * Perform a check.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Embedders\Embedder $embedder
+     * @param \Rubix\ML\Transformers\Transformer $transformer
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Embedder $embedder) : void
+    public static function check(Dataset $dataset, Transformer $transformer) : void
     {
         $types = $dataset->uniqueTypes();
 
-        $compatibility = $embedder->compatibility();
+        $compatibility = $transformer->compatibility();
 
         $same = array_intersect($types, $compatibility);
 
@@ -31,7 +31,7 @@ class DatasetIsCompatibleWithEmbedder
 
             $compatString = implode(', ', array_map([DataType::class, 'asString'], $compatibility));
 
-            throw new InvalidArgumentException('Embedder is not'
+            throw new InvalidArgumentException('Transformer is not'
                 . " compatible with $diffString data type"
                 . (count($different) > 1 ? 's.' : '.')
                 . " Compatible data types are $compatString.");

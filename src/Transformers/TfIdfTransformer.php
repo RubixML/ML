@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -51,6 +52,18 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     protected $n;
 
     /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Is the transformer fitted?
      *
      * @return bool
@@ -78,6 +91,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        
         $this->dfs = array_fill(0, $dataset->numColumns(), 1);
         $this->n = 1;
 

@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -190,6 +191,10 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      */
     public function compatibility() : array
     {
+        if (!$this->trained()) {
+            return DataType::ALL;
+        }
+
         return $this->estimator->compatibility();
     }
 

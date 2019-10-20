@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -64,6 +65,16 @@ class IntervalDiscretizer implements Transformer, Stateful
     }
 
     /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
+    }
+
+    /**
      * Is the transformer fitted?
      *
      * @return bool
@@ -102,6 +113,8 @@ class IntervalDiscretizer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        
         $n = $dataset->numColumns();
         
         $this->intervals = [];

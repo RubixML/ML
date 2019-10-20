@@ -3,6 +3,8 @@
 # Euclidean
 Standard straight line (*bee* line) distance between two points. The Euclidean distance has the nice property of being invariant under any rotation.
 
+**Data Type Compatibility:** Continuous
+
 ### Parameters
 This kernel does not have any parameters.
 

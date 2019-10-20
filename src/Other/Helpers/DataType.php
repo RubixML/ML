@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+use InvalidArgumentException;
+
 use function gettype;
 use function is_string;
 use function is_int;
@@ -100,5 +102,21 @@ class DataType
         return !is_string($data)
             and !is_numeric($data)
             and !is_resource($data);
+    }
+
+    /**
+     * Return the integer type as a string.
+     *
+     * @param int $type
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public static function asString(int $type) : string
+    {
+        if (!in_array($type, self::ALL)) {
+            throw new InvalidArgumentException('Unkown type given.');
+        }
+
+        return self::TYPES[$type];
     }
 }

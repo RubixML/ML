@@ -19,7 +19,7 @@ class MissingDataImputerTest extends TestCase
     {
         $this->dataset = new Unlabeled([
             [30, 'friendly'],
-            ['?', 'mean'],
+            [NAN, 'mean'],
             [50, 'friendly'],
             [60, '?'],
             [10, 'mean'],

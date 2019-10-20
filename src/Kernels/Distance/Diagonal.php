@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use Rubix\ML\Other\Helpers\DataType;
+
 /**
  * Diagonal
  *
@@ -15,6 +17,18 @@ namespace Rubix\ML\Kernels\Distance;
  */
 class Diagonal implements Distance
 {
+    /**
+     * Return the data types that this kernel is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
+    }
+
     /**
      * Compute the distance between two vectors.
      *

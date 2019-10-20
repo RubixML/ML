@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Intervention\Image\ImageManager;
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**
@@ -55,6 +56,16 @@ class ImageResizer implements Transformer
         $this->width = $width;
         $this->height = $height;
         $this->intervention = new ImageManager(['driver' => $driver]);
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
     }
 
     /**

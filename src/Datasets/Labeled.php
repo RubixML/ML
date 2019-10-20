@@ -68,13 +68,13 @@ class Labeled extends Dataset
      */
     public static function fromIterator(iterable $samples, iterable $labels) : self
     {
-        $samples = is_array($samples)
-            ? $samples
-            : iterator_to_array($samples, false);
+        if (!is_array($samples)) {
+            $samples = iterator_to_array($samples, false);
+        }
 
-        $labels = is_array($labels)
-            ? $labels
-            : iterator_to_array($labels, false);
+        if (!is_array($labels)) {
+            $labels = iterator_to_array($labels, false);
+        }
 
         return self::build($samples, $labels);
     }
@@ -145,6 +145,11 @@ class Labeled extends Dataset
                 if (!is_string($label) and !is_numeric($label)) {
                     throw new InvalidArgumentException('Label must be a string'
                         . ' or numeric type, ' . gettype($label) . ' found.');
+                }
+
+                if (is_float($label) and is_nan($label)) {
+                    throw new InvalidArgumentException('NaN values are not'
+                        . ' allowed as labels.');
                 }
             }
         }

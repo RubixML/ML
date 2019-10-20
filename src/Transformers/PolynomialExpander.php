@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**
@@ -39,6 +40,18 @@ class PolynomialExpander implements Transformer
         }
 
         $this->degree = $degree;
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**

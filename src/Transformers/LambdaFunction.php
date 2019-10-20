@@ -2,7 +2,10 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
 use Closure;
+
+use function call_user_func;
 
 /**
  * Lambda Function
@@ -30,6 +33,16 @@ class LambdaFunction implements Transformer
     public function __construct(Closure $lambda)
     {
         $this->lambda = $lambda;
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
     }
 
     /**

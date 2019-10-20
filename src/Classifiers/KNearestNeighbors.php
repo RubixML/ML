@@ -9,7 +9,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -124,9 +123,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function compatibility() : array
     {
-        return [
-            DataType::CONTINUOUS,
-        ];
+        return $this->kernel->compatibility();
     }
 
     /**
@@ -196,8 +193,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
 
-                foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                foreach ($distances as $i => $distance) {
+                    $weights[$labels[$i]] += 1. / (1. + $distance);
                 }
             } else {
                 $weights = array_count_values($labels);

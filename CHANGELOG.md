@@ -1,6 +1,8 @@
 - Unreleased
     - Added KNN Imputer
+    - Missing Data Imputer now handles NaNs by default
     - Added NaN safe Euclidean distance kernel
+    - Added Gower distance kernel
     - Added transform column method to dataset object
     - Added describe method to dataset object
     - Added describe labels method to Labeled dataset
@@ -11,6 +13,8 @@
     - Renamed label key to classes in Multiclass Breakdown report
     - Changed order of Gradient Boost and AdaBoost hyper-parameters
     - Changed order of Loda hyper-parameters
+    - Added asString method to the Data Type helper class
+    - Added check for NaN labels in Labeled dataset
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

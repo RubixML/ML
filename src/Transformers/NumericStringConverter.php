@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
+
 /**
  * Numeric String Converter
  *
@@ -15,6 +17,16 @@ namespace Rubix\ML\Transformers;
  */
 class NumericStringConverter implements Transformer
 {
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
+    }
+
     /**
      * Transform the dataset in place.
      *

@@ -3,6 +3,8 @@
 # Canberra
 A weighted version of the [Manhattan](manhattan.md) distance, Canberra examines the sum of a series of fractional differences between two samples. Canberra can be very sensitive when both coordinates are near zero.
 
+**Data Type Compatibility:** Continuous
+
 ### Parameters
 This kernel does not have any parameters.
 

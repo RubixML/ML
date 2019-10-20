@@ -2,6 +2,12 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use Rubix\ML\Other\Helpers\DataType;
+
+use function is_float;
+use function is_nan;
+use function count;
+
 /**
  * Safe Euclidean
  *
@@ -20,6 +26,18 @@ namespace Rubix\ML\Kernels\Distance;
 class SafeEuclidean implements Distance, NaNSafe
 {
     /**
+     * Return the data types that this kernel is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Compute the distance between two vectors.
      *
      * @param array $a
@@ -36,13 +54,20 @@ class SafeEuclidean implements Distance, NaNSafe
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
 
-            if (is_nan($valueA) or is_nan($valueB)) {
-                $nn++;
+            switch (true) {
+                case is_float($valueA) and is_nan($valueA):
+                    $nn++;
 
-                continue 1;
+                    break 1;
+
+                case is_float($valueB) and is_nan($valueB):
+                    $nn++;
+
+                    break 1;
+
+                default:
+                    $distance += ($valueA - $valueB) ** 2;
             }
-
-            $distance += ($valueA - $valueB) ** 2;
         }
 
         if ($nn === $n) {

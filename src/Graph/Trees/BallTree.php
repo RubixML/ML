@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Cluster;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -63,6 +64,11 @@ class BallTree implements BST, Spatial
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
                 . " to form a leaf node, $maxLeafSize given.");
+        }
+
+        if (isset($kernel) and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+            throw new InvalidArgumentException('Distance kernel must be'
+                . ' compatible with continuous features.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -124,6 +130,11 @@ class BallTree implements BST, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
+        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
+            throw new InvalidArgumentException('This tree only works with'
+                . ' continuous features.');
+        }
+
         $this->root = Ball::split($dataset, $this->kernel);
 
         $stack = [$this->root];
@@ -166,12 +177,14 @@ class BallTree implements BST, Spatial
     public function search(array $sample) : ?Cluster
     {
         $path = $this->path($sample);
+        
+        $leaf = end($path);
 
-        if (!end($path) instanceof Cluster) {
-            return null;
+        if ($leaf instanceof Cluster) {
+            return $leaf;
         }
 
-        return end($path);
+        return null;
     }
 
     /**

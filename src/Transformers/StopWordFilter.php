@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**
@@ -41,6 +42,16 @@ class StopWordFilter implements Transformer
         }
 
         $this->stopWords = array_combine($stopWords, $regexs) ?: [];
+    }
+
+    /**
+     * Return the data types that this transformer is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return DataType::ALL;
     }
 
     /**
