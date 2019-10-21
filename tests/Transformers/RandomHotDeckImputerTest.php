@@ -5,14 +5,14 @@ namespace Rubix\ML\Tests\Transformers;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\KNNImputer;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
+use Rubix\ML\Transformers\RandomHotDeckImputer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class KNNImputerTest extends TestCase
+class RandomHotDeckImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
@@ -35,14 +35,14 @@ class KNNImputerTest extends TestCase
 
         $this->generator = new Blob([30., 0.]);
 
-        $this->transformer = new KNNImputer(5, true, new SafeEuclidean(), '?');
+        $this->transformer = new RandomHotDeckImputer(5, true, new SafeEuclidean(), '?');
 
         srand(self::RANDOM_SEED);
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(KNNImputer::class, $this->transformer);
+        $this->assertInstanceOf(RandomHotDeckImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
@@ -58,8 +58,8 @@ class KNNImputerTest extends TestCase
 
         $this->dataset->apply($this->transformer);
 
-        $this->assertEquals(30.1161413983789, $this->dataset[1][0]);
-        $this->assertEquals(-0.6514400548002053, $this->dataset[3][1]);
+        $this->assertEquals(29.613723518670785, $this->dataset[1][0]);
+        $this->assertEquals(-2.0, $this->dataset[3][1]);
     }
 
     public function test_transform_unfitted()

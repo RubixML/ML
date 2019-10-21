@@ -1,5 +1,6 @@
 - Unreleased
     - Added KNN Imputer
+    - Added Random Hot Deck Imputer
     - Missing Data Imputer now handles NaNs by default
     - Added NaN safe Euclidean distance kernel
     - Added Gower distance kernel

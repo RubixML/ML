@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">Source</a></span>
 
-# KNN Imputer
-An unsupervised imputer that replaces missing values in datasets with the weighted average according to the sample's k nearest neighbors.
+# Random Hot Deck Imputer
+A method of imputation similiar to [KNN Imputer](knn-imputer.md) but instead of computing a weighted average of the neighbors' features, Random Hot Deck picks a value from the neighborhood at random. This makes Random Hot Deck Imputer slightly less computationally complex while satisfying some balancing equations at the same time.
 
 **Note:** NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), are required for continuous features.
 
@@ -22,11 +22,11 @@ This transformer does not have any additional methods.
 
 ### Example
 ```php
-use Rubix\ML\Transformers\KNNImputer;
-use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$transformer = new KNNImputer(10, false, new Gower(), '?');
+$transformer = new KNNImputer(20, true, new SafeEuclidean(), '?');
 ```
 
 ### References
->- O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.
+>- C. Hasler et al. (2015). Balanced k-Nearest Neighbor Imputation.

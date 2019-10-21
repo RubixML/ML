@@ -108,16 +108,11 @@ class MissingDataImputer implements Transformer, Stateful
             $donors = [];
 
             foreach ($dataset->column($column) as $value) {
-                switch (true) {
-                    case is_float($value) and is_nan($value):
-                        continue 2;
-
-                    case $value === $this->placeholder:
-                        continue 2;
-
-                    default:
-                        $donors[] = $value;
+                if ((is_float($value) and is_nan($value)) or $value === $this->placeholder) {
+                    continue 1;
                 }
+
+                $donors[] = $value;
             }
 
             switch ($type) {

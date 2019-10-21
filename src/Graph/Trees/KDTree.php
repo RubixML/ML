@@ -63,7 +63,7 @@ class KDTree implements BST, Spatial
                 . " to form a neighborhood, $maxLeafSize given.");
         }
 
-        if (isset($kernel) and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+        if ($kernel and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
             throw new InvalidArgumentException('Distance kernel must be'
                 . ' compatible with continuous features.');
         }
@@ -127,7 +127,7 @@ class KDTree implements BST, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
-        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
+        if ($dataset->columnType(0) !== DataType::CONTINUOUS or !$dataset->homogeneous()) {
             throw new InvalidArgumentException('This tree only works with'
                 . ' continuous features.');
         }

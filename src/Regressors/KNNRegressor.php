@@ -187,7 +187,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
                     $weights[] = 1. / (1. + $distance);
                 }
 
-                $outcome = Stats::weightedMean($labels, $weights);
+                $outcome = Stats::weightedMean(array_values($labels), $weights);
             } else {
                 $outcome = Stats::mean($labels);
             }
@@ -217,7 +217,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         $distances = array_slice($distances, 0, $this->k, true);
 
-        $labels = array_values(array_intersect_key($this->labels, $distances));
+        $labels = array_intersect_key($this->labels, $distances);
 
         return [$labels, $distances];
     }

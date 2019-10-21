@@ -115,6 +115,7 @@ nav:
   - Imputation:
     - KNN Imputer: transformers/knn-imputer.md
     - Missing Data Imputer: transformers/missing-data-imputer.md
+    - Random Hot Deck Imputer: transformers/random-hot-deck-imputer.md
   - Other:
     - Image Resizer: transformers/image-resizer.md
     - Interval Discretizer: transformers/interval-discretizer.md

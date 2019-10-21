@@ -20,6 +20,9 @@ use function Rubix\ML\argmax;
  * An unsupervised imputer that replaces missing values in datasets with the
  * weighted average according to the sample's k nearest neighbors.
  *
+ * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required
+ * for continuous features.
+ *
  * References:
  * [1] O. Troyanskaya et al. (2001). Missing value estimation methods for
  * DNA microarrays.
@@ -87,7 +90,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
                 . " to make a prediction, $k given.");
         }
 
-        if (isset($kernel) and in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+        if ($kernel and in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
             if (!$kernel instanceof NaNSafe) {
                 throw new InvalidArgumentException('Continuous distance kernels'
                     . ' must be NaN safe.');
@@ -186,34 +189,53 @@ class KNNImputer implements Transformer, Stateful, Elastic
 
                     $values = array_column($neighbors, $column);
 
-                    if (is_string($value)) {
-                        if ($this->weighted) {
-                            $weights = array_fill_keys($values, 0.);
-            
-                            foreach ($distances as $i => $distance) {
-                                $weights[$values[$i]] += 1. / (1. + $distance);
-                            }
-                        } else {
-                            $weights = array_count_values($neighbors);
-                        }
-
-                        $value = argmax($weights);
-                    } else {
-                        if ($this->weighted) {
-                            $weights = [];
-        
-                            foreach ($distances as $distance) {
-                                $weights[] = 1. / (1. + $distance);
-                            }
-    
-                            $value = Stats::weightedMean($values, $weights);
-                        } else {
-                            $value = Stats::mean($values);
-                        }
-                    }
+                    $value = $this->impute($values, $distances);
                 }
             }
         }
+    }
+
+    /**
+     * Choose a value to impute from a given set of values.
+     *
+     * @param (string|int|float)[] $values
+     * @param float[] $distances
+     * @throws \RuntimeException
+     * @return string|int|float
+     */
+    protected function impute(array $values, array $distances)
+    {
+        if (empty($values)) {
+            throw new RuntimeException('Cannot impute because of 0 donors.');
+        }
+
+        if (is_string($values[0])) {
+            if ($this->weighted) {
+                $weights = array_fill_keys($values, 0.);
+
+                foreach ($distances as $i => $distance) {
+                    $weights[$values[$i]] += 1. / (1. + $distance);
+                }
+            } else {
+                $weights = array_count_values($values);
+            }
+
+            $value = argmax($weights);
+        } else {
+            if ($this->weighted) {
+                $weights = [];
+
+                foreach ($distances as $distance) {
+                    $weights[] = 1. / (1. + $distance);
+                }
+
+                $value = Stats::weightedMean(array_values($values), $weights);
+            } else {
+                $value = Stats::mean($values);
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -235,7 +257,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
 
         $distances = array_slice($distances, 0, $this->k, true);
 
-        $neighbors = array_values(array_intersect_key($this->samples, $distances));
+        $neighbors = array_intersect_key($this->samples, $distances);
 
         return [$neighbors, $distances];
     }
