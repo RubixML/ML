@@ -17,8 +17,8 @@ class NumericStringConverterTest extends TestCase
     {
         $this->dataset = new Unlabeled([
             ['1', '2', '3', 4],
-            ['4.0', '2.0', 3.0, 1.0],
-            ['100', '3.0', '200', 1.0],
+            ['4.0', '2.0', '3.0', 1.0],
+            ['100', '3.0', '200', 2.5],
         ]);
 
         $this->transformer = new NumericStringConverter('NaN');
@@ -37,7 +37,7 @@ class NumericStringConverterTest extends TestCase
         $this->assertEquals([
             [1, 2, 3, 4],
             [4.0, 2.0, 3.0, 1.0],
-            [100, 3.0, 200, 1.0],
+            [100, 3.0, 200, 2.5],
         ], $this->dataset->samples());
     }
 }

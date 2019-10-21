@@ -63,7 +63,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         if ($validate) {
             $samples = array_values($samples);
 
-            $n = $samples ? is_array($samples[0]) ? count($samples[0]) : 1 : 0;
+            $proto = $samples ? $samples[0] : [];
+
+            $n = is_array($proto) ? count($proto) : 1;
+
+            $types = array_map([DataType::class, 'determine'], $proto);
 
             foreach ($samples as &$sample) {
                 $sample = is_array($sample)
@@ -74,6 +78,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     throw new InvalidArgumentException('The number of feature'
                         . " columns must be equal for all samples, $n expected "
                         . count($sample) . ' given.');
+                }
+
+                foreach ($sample as $column => $value) {
+                    if (DataType::determine($value) !== $types[$column]) {
+                        throw new InvalidArgumentException('Columns must contain'
+                            . ' feature values of the same data type.');
+                    }
                 }
             }
         }

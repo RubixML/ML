@@ -1,5 +1,7 @@
 # Dataset Objects
-In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of categorical and continuous data types and they make it easy to transport data in a canonical way. Each dataset requires (at least) a table of samples where each row constitues a single sample and each column represents the value of the feature indexed at that column.
+In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires (at least) a table of samples where each row constitues a single sample and each column represents the value of the feature indexed at that column.
+
+Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same data type. For example, a continuous feature column's value for height must be either an integer or floating point number. A stray string or other data type will throw an exception upon validation.
 
 **Example**
 
@@ -14,19 +16,16 @@ $samples = [
 $dataset = new Unabeled($samples);
 ```
 
-### Data Types
-In addition to PHP's type system, Rubix ML adds a layer on top to distinguish types that are continuous (numerical), categorical (discrete), or some other type such as resource. Continuous features represent some *quantitative* property of the sample such as velocity whereas categorical features signal a *qualitative* property such as rough or furry. It is necessary to make the distinction between these data types in the context of machine learning because different learners are compatible with different data types. For example, the [Naive Bayes](../classifiers/naive-bayes.md) classifier is compatible with categorical features while [Gaussian Naive Bayes](../classifiers/gaussian-naive-bayes.md) is compatible with continuous ones - and [Random Forest](../classifiers/random-forest.md) is compatible with both.
-
 ### Missing Values
-By convention continuous missing values are denoted by NaN and categorical ones are denoted by a special placeholder category (ex. the '?' category).
+By convention, continuous missing values are denoted by NaN and categorical values are denoted by a special placeholder category (ex. the '?' category). Dataset objects do not allow missing values of resource or other types.
 
 **Example**
 
 ```php
 $samples = [
-    [0.001, NAN, 'professor'], // Missing a continuous value
+    [0.001, NAN, 'rough'], // Missing a continuous value
     [0.25, -1000, '?'], // Missing a categorical value
-    [0.01, -500, 'student'], // Complete sample
+    [0.01, -500, 'furry'], // Complete sample
 ];
 ```
 
@@ -68,18 +67,20 @@ public columnType(int $index) : int
 ```
 
 ### Applying Transformations
-You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object.
+You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object. The method returns self for chaining.
 
 ```php
-public apply(Transformer $transformer) : void
+public apply(Transformer $transformer) : self
 ```
 
 **Example**
 
 ```php
+use Rubix\ML\Transformers\RandomHotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$dataset->apply(new OneHotEncoder());
+$dataset->apply(new RandomHotDeckImputer())
+    ->apply(new OneHotEncoder());
 ```
 
 You can also transform a single feature column using a callback function with the `transformColumn()` method.
@@ -273,7 +274,7 @@ public filterByColumn(int $index, callable $fn) : self
 **Example**
 
 ```php
-$tallPeople = $dataset->filterByColumn(2, function ($value) {
+$tallPeople = $dataset->filterByColumn(3, function ($value) {
 	return $value > 178.5;
 });
 ```
@@ -333,7 +334,7 @@ array(3) {
 ```
 
 ### Descriptive Statistics
-Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of every categorical feature column:
+Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
 ```php
 public describe() : array
 ```
@@ -387,4 +388,10 @@ Array
 Return a dataset with duplicate rows removed:
 ```php
 public deduplicate() : self
+```
+
+**Example**
+
+```php
+$deduped = $dataset->deduplicate();
 ```

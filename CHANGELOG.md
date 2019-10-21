@@ -5,6 +5,7 @@
     - Added NaN safe Euclidean distance kernel
     - Added Gower distance kernel
     - Added Hamming distance kernel
+    - Dataset now requires homogenous feature columns
     - KNN now compatible with categorical features
     - Added transform column method to dataset object
     - Added describe method to dataset object

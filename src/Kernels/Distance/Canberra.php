@@ -13,7 +13,6 @@ use const Rubix\ML\EPSILON;
  * a series of fractional differences between two samples. Canberra can be
  * very sensitive when both coordinates are near zero.
  *
- *
  * References:
  * [1] G. N. Lance et al. (1967). Mixed-data classificatory programs I.
  * Agglomerative Systems.

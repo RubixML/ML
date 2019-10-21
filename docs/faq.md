@@ -32,15 +32,8 @@ Training time depends on a number of factors including size of the dataset and c
 - [Xdebug](https://xdebug.org/) or other debuggers are not enabled.
 - You have enough RAM to hold the dataset and model in memory without swapping to disk.
 
-### What is the difference between categorical and continuous data types?
-In general, there are 2 classes of data types that Rubix ML distinguishes by convention.
-
-Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as gender, city, or product category and can be 1 of k possible values. Categorical feature types are always represented as string internal types.
-
-Continuous data are *quantitative* properties of samples such as age, speed, or temperature and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
-
 ### What is a Tuple?
-A *tuple* is a way to denote an immutable sequential hetorogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, however in PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
+A *tuple* is a way to denote an immutable sequential hetorogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
 
 **Example**
 
