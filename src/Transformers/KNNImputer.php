@@ -2,9 +2,11 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\NaNSafe;
+use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
@@ -15,8 +17,8 @@ use function Rubix\ML\argmax;
 /**
  * KNN Imputer
  *
- * An unsupervised imputer that replaces NaN values in datasets with the weighted
- * average of the sample's k nearest neighbors.
+ * An unsupervised imputer that replaces missing values in datasets with the
+ * weighted average according to the sample's k nearest neighbors.
  *
  * References:
  * [1] O. Troyanskaya et al. (2001). Missing value estimation methods for
@@ -44,9 +46,9 @@ class KNNImputer implements Transformer, Stateful, Elastic
     protected $weighted;
 
     /**
-     * The NaN safe distance kernel to use when computing the distances.
+     * The distance kernel to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\NaNSafe
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
@@ -70,19 +72,26 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * @param int $k
      * @param bool $weighted
-     * @param \Rubix\ML\Kernels\Distance\NaNSafe|null $kernel
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param string $placeholder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $k = 5,
         bool $weighted = true,
-        ?NaNSafe $kernel = null,
+        ?Distance $kernel = null,
         string $placeholder = '?'
     ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");
+        }
+
+        if (isset($kernel) and in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+            if (!$kernel instanceof NaNSafe) {
+                throw new InvalidArgumentException('Continuous distance kernels'
+                    . ' must be NaN safe.');
+            }
         }
 
         $this->k = $k;

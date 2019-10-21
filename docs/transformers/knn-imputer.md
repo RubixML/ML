@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">Source</a></span>
 
 # KNN Imputer
-An unsupervised imputer that replaces NaN values in numerical datasets with the weighted average of the sample's k nearest neighbors.
+An unsupervised imputer that replaces missing values in datasets with the weighted average according to the sample's k nearest neighbors.
 
-**Note:** This transformer is only compatible with NaN safe distance kernels such as [Safe Euclidean](../kernels/distance/safe-euclidean.md).
+**Note:** NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), are required for continuous features.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
 
@@ -14,7 +14,7 @@ An unsupervised imputer that replaces NaN values in numerical datasets with the 
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when imputing a value. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores imputing values? |
-| 3 | kernel | Safe Euclidean | object | The NaN safe distance kernel used to compute the distance between sample points. |
+| 3 | kernel | Safe Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | placeholder | '?' | string | The categorical placeholder variable denoting the category that contains missing values. |
 
 ### Additional Methods
