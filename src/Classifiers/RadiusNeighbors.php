@@ -27,10 +27,9 @@ use const Rubix\ML\EPSILON;
  * Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
  * of each neighbor within a fixed user-defined radius measured by a kernelized
  * distance function. Since the radius of the search can be constrained, Radius
- * Neighbors is more robust to outliers than K Nearest Neighbors.
- *
- * > **Note**: Unknown samples with no training samples within radius are labeled
- * *-1*. As such, Radius Neighbors is also a quasi anomaly detector.
+ * Neighbors is more robust to outliers than K Nearest Neighbors.In addition, Radius
+ * Neighbors acts as a quasi anomaly detector by flagging samples that have 0
+ * neighbors within radius.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -39,8 +38,6 @@ use const Rubix\ML\EPSILON;
 class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     use PredictsSingle;
-    
-    public const OUTLIER = -1;
 
     /**
      * The radius within which points are considered neighboors.
@@ -65,6 +62,14 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $tree;
 
     /**
+     * The class label for any samples that have no neighbors within the
+     * specified radius.
+     *
+     * @var string
+     */
+    protected $anomalyClass;
+
+    /**
      * The unique class outcomes.
      *
      * @var array
@@ -79,8 +84,12 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
-    {
+    public function __construct(
+        float $radius = 1.0,
+        bool $weighted = true,
+        ?Spatial $tree = null,
+        string $anomalyClass = 'outlier'
+    ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
@@ -89,6 +98,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         $this->radius = $radius;
         $this->weighted = $weighted;
         $this->tree = $tree ?? new BallTree();
+        $this->anomalyClass = trim($anomalyClass);
     }
 
     /**
@@ -149,6 +159,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
+        $this->classes[] = $this->anomalyClass;
 
         $this->tree->grow($dataset);
     }
@@ -175,7 +186,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
-                $predictions[] = self::OUTLIER;
+                $predictions[] = $this->anomalyClass;
 
                 continue 1;
             }
@@ -220,8 +231,12 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         foreach ($dataset as $sample) {
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
+            $dist = $template;
+
             if (empty($labels)) {
-                $probabilities[] = null;
+                $dist[$this->anomalyClass] = 1.;
+
+                $probabilities[] = $dist;
 
                 continue 1;
             }
@@ -237,8 +252,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             }
 
             $total = array_sum($weights) ?: EPSILON;
-
-            $dist = $template;
 
             foreach ($weights as $class => $weight) {
                 $dist[$class] = $weight / $total;

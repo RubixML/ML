@@ -1,4 +1,5 @@
 - Unreleased
+    - Radius Neighbors allows user-definable anomaly class
     - Added KNN Imputer
     - Added Random Hot Deck Imputer
     - Missing Data Imputer now handles NaNs by default

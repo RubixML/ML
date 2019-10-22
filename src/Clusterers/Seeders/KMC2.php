@@ -12,9 +12,9 @@ use const Rubix\ML\EPSILON;
 /**
  * K-MC2
  *
- * This is a fast Plus Plus approximator that replaces the brute force
- * method with substantially faster Markov Chain Monte Carlo (MCMC)
- * sampling with comparable performance.
+ * A fast Plus Plus approximator that replaces the brute force method with
+ * substantially faster Markov Chain Monte Carlo (MCMC) sampling with comparable
+ * performance.
  *
  * References:
  * [1] O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.
