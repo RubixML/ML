@@ -23,6 +23,7 @@
     - Changed namespace of Data Type helper
     - Numeric String Converter now handles NaN strings
     - Added predict probabilities of a single sample method
+    - Added rank single sample trait
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

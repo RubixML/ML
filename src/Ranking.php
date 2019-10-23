@@ -7,10 +7,17 @@ use Rubix\ML\Datasets\Dataset;
 interface Ranking extends Estimator
 {
     /**
-     * Apply an arbitrary unnormalized scoring function over the dataset
-     * such that the rows can be sorted according to the value.
+     * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function rank(Dataset $dataset) : array;
+
+    /**
+     * Return the score given to a single sample.
+     *
+     * @param array $sample
+     * @return float
+     */
+    public function rankSample(array $sample) : float;
 }

@@ -10,7 +10,7 @@ nav:
 - Home: index.md
 - Basic Introduction: basic-introduction.md
 - System Architecture: system-architecture.md
-- Data Types: data-types.md
+- Representing Your Data: representing-your-data.md
 - FAQ: faq.md
 - Dataset Objects:
   - API Reference: datasets/api.md

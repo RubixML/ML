@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, RankSingle;
 
     /**
      * The minimum log likelihood score necessary to flag an anomaly.

@@ -9,6 +9,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  */
 class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, RankSingle;
     
     protected const ETA = 0.6745;
 
