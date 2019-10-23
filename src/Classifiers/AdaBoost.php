@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -40,7 +41,7 @@ use const Rubix\ML\EPSILON;
  */
 class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, LoggerAware;
     
     /**
      * The base classifier to be boosted.

@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  */
 class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, ProbaSingle;
     
     /**
      * The number of neighbors to consider when making a prediction.

@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  */
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, ProbaSingle;
     
     /**
      * The number of neighbors to consider when making a prediction.

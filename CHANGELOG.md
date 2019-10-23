@@ -22,6 +22,7 @@
     - Added check for NaN labels in Labeled dataset
     - Changed namespace of Data Type helper
     - Numeric String Converter now handles NaN strings
+    - Added predict probabilities of a single sample method
 
 - 0.0.15-beta
     - Added Gaussian MLE anomaly detector

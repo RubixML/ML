@@ -11,6 +11,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -37,7 +38,7 @@ use function Rubix\ML\array_transpose;
  */
 class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persistable
 {
-    use Multiprocessing, PredictsSingle;
+    use Multiprocessing, PredictsSingle, ProbaSingle;
 
     public const COMPATIBLE_LEARNERS = [
         ClassificationTree::class,

@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -38,7 +39,7 @@ use function Rubix\ML\argmax;
  */
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, ProbaSingle;
     
     /**
      * The memoized class outcomes.

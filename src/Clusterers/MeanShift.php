@@ -16,6 +16,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
@@ -45,7 +46,7 @@ use const Rubix\ML\EPSILON;
  */
 class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, LoggerAware;
 
     protected const MIN_SEEDS = 15;
 

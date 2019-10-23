@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
@@ -40,7 +41,7 @@ use const Rubix\ML\EPSILON;
  */
 class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, LoggerAware;
     
     /**
      * The number of training samples to process at a time.

@@ -31,7 +31,7 @@ var_dump($estimator->trained());
 bool(true)
 ```
 
-### Predict Single Sample
+### Predict a Single Sample
 Predict a single sample and return the result:
 ```php
 public predictSample(array $sample) : mixed
@@ -40,6 +40,8 @@ public predictSample(array $sample) : mixed
 **Example**
 
 ```php
+use Rubix\ML\Datasets\Unlabeled;
+
 // Import samples
 
 $dataset = new Unlabeled($samples);

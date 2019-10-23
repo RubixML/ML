@@ -13,4 +13,12 @@ interface Probabilistic extends Estimator
      * @return array
      */
     public function proba(Dataset $dataset) : array;
+
+    /**
+     * Return the probabilities of a single sample.
+     *
+     * @param array $sample
+     * @return array
+     */
+    public function probaSample(array $sample) : array;
 }

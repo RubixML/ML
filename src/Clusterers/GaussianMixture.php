@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -47,7 +48,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the

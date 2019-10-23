@@ -10,6 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -39,7 +40,7 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use PredictsSingle;
+    use PredictsSingle, ProbaSingle;
     
     /**
      * The amount of additive (Laplace) smoothing to apply to the probabilities.

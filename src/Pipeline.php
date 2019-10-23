@@ -8,6 +8,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
 use RuntimeException;
@@ -37,12 +38,12 @@ use RuntimeException;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 {
-    use PredictsSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
      * The transformer middleware that preprocesses the data for the estimator.
      *
-     * @var array
+     * @var \Rubix\ML\Transformers\Transformer[]
      */
     protected $transformers = [
         //

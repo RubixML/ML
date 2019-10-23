@@ -9,6 +9,12 @@ public proba(Dataset $dataset) : array
 
 **Example**
 ```php
+use Rubix\ML\Datasets\Unlabeled;
+
+// Import samples
+
+$dataset = new Unlabeled($samples);
+
 $probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
@@ -21,8 +27,33 @@ array(2) {
 		['not monster'] => 0.025,
 	}
 	[1] => array(2) {
-		['monster'] => 0.200,
-		['not monster'] => 0.800,
+		['monster'] => 0.2,
+		['not monster'] => 0.8,
 	}
+	[2] => array(2) {
+		['monster'] => 0.6,
+		['not monster'] => 0.4,
+	}
+}
+```
+
+### Predict Probabilities of a Single Sample
+Predict the probabilities of a single sample and return the result:
+```php
+public probaSample(array $sample) : array
+```
+
+**Example**
+
+```php
+$probabilities = $estimator->probaSample($dataset[2]);
+
+var_dump($probabilities);
+```
+
+```sh
+array(2) {
+	['monster'] => 0.6,
+	['not monster'] => 0.4,
 }
 ```
