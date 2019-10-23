@@ -138,18 +138,26 @@ class Labeled extends Dataset
              . count($labels) . ' labels given.');
         }
 
-        if ($validate) {
+        if ($validate and $labels) {
             $labels = array_values($labels);
 
+            $type = DataType::determine($labels[0]);
+
+            if ($type !== DataType::CATEGORICAL and $type !== DataType::CONTINUOUS) {
+                throw new InvalidArgumentException('Label type must be'
+                    . ' categorical or continuous, ' . DataType::asString($type)
+                    . ' given.');
+            }
+
             foreach ($labels as $label) {
-                if (!is_string($label) and !is_numeric($label)) {
-                    throw new InvalidArgumentException('Label must be a string'
-                        . ' or numeric type, ' . gettype($label) . ' found.');
+                if (DataType::determine($label) !== $type) {
+                    throw new InvalidArgumentException('Labels must all be'
+                        . ' of the same data type.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
-                    throw new InvalidArgumentException('NaN values are not'
-                        . ' allowed as labels.');
+                    throw new InvalidArgumentException('Labels must not'
+                        . ' contain NaN values.');
                 }
             }
         }

@@ -60,7 +60,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function __construct(array $samples = [], bool $validate = true)
     {
-        if ($validate) {
+        if ($validate and $samples) {
             $samples = array_values($samples);
 
             $proto = $samples ? array_values($samples[0]) : [];
