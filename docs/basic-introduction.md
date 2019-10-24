@@ -117,9 +117,9 @@ array(5) {
 ```
 
 # Model Evaluation
-To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset as to produce a validation score. For the purposes of this introduction, we will use the [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
+To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in  order to produce a validation score. For the purposes of the introduction, we will use the [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
 
-The Hold Out validator requires you to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
+The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
 > **Note:** Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
@@ -140,7 +140,5 @@ var_dump($score);
 float(0.945)
 ```
 
-Congratulations! You're done with the basic introduction to machine learning in Rubix ML.
-
-# Next Steps
-For a more in-depth tutorial using the K Nearest Neighbors classifier, check out the [Iris Flower](https://github.com/RubixML/Iris) example project. We highly recommend browsing the rest of the documentation and the other [example projects](https://github.com/RubixML) which range from beginner to advanced skill level.
+### Next Steps
+Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier, check out the [Iris Flower](https://github.com/RubixML/Iris) example project. We highly recommend browsing the rest of the documentation and the other [example projects](https://github.com/RubixML) which range from beginner to advanced skill level. Have fun and stay curious!

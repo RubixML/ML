@@ -16,6 +16,14 @@
             "email": "me@andrewdalpino.com",
             "homepage": "https://andrewdalpino.com",
             "role": "Lead Engineer"
+        },
+        {
+            "name": "Core Team",
+            "homepage": "https://github.com/orgs/RubixML/teams/core"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/RubixML/RubixML/graphs/contributors"
         }
     ],
     "require": {
@@ -72,6 +80,10 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "support": {
+        "email": "contact@rubixml.com",
+        "issues": "https://github.com/RubixML/RubixML/issues",
+        "source": "https://github.com/RubixML/RubixML",
+        "docs": "https://docs.rubixml.com/en/latest"
+    }
 }

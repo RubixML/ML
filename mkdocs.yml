@@ -9,8 +9,9 @@ site_description: 'A high-level machine learning and deep learning library for t
 nav:
 - Home: index.md
 - Basic Introduction: basic-introduction.md
-- System Architecture: system-architecture.md
 - Representing Your Data: representing-your-data.md
+- Model Persistence: model-persistence.md
+- System Architecture: system-architecture.md
 - FAQ: faq.md
 - Dataset Objects:
   - API Reference: datasets/api.md
@@ -207,20 +208,23 @@ nav:
   - Monte Carlo: cross-validation/monte-carlo.md
   - Metrics:
     - API Reference: cross-validation/metrics/api.md
-    - Accuracy: cross-validation/metrics/accuracy.md
-    - Completeness: cross-validation/metrics/completeness.md
-    - F Beta: cross-validation/metrics/f-beta.md
-    - Homogeneity: cross-validation/metrics/homogeneity.md
-    - Informedness: cross-validation/metrics/informedness.md
-    - MCC: cross-validation/metrics/mcc.md
-    - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
-    - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
-    - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
-    - Rand Index: cross-validation/metrics/rand-index.md
-    - RMSE: cross-validation/metrics/rmse.md
-    - R Squared: cross-validation/metrics/r-squared.md
-    - SMAPE: cross-validation/metrics/smape.md
-    - V Measure: cross-validation/metrics/v-measure.md
+    - Classification and Anomaly Detection:
+      - Accuracy: cross-validation/metrics/accuracy.md
+      - F Beta: cross-validation/metrics/f-beta.md
+      - Informedness: cross-validation/metrics/informedness.md
+      - MCC: cross-validation/metrics/mcc.md
+    - Clustering:
+      - Completeness: cross-validation/metrics/completeness.md
+      - Homogeneity: cross-validation/metrics/homogeneity.md
+      - Rand Index: cross-validation/metrics/rand-index.md
+      - V Measure: cross-validation/metrics/v-measure.md
+    - Regression:
+      - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
+      - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
+      - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
+      - RMSE: cross-validation/metrics/rmse.md
+      - R Squared: cross-validation/metrics/r-squared.md
+      - SMAPE: cross-validation/metrics/smape.md
   - Reports:
     - API Reference: cross-validation/reports/api.md
     - Aggregate Report: cross-validation/reports/aggregate-report.md

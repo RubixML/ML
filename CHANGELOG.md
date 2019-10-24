@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.16-beta
     - Radius Neighbors allows user-definable anomaly class
     - Added KNN Imputer
     - Added Random Hot Deck Imputer

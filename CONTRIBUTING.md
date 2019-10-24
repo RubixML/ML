@@ -1,8 +1,8 @@
 # Contributing Guidelines
-Thank you for considering a code contribution to Rubix ML. We strongly believe that our contributors play the most important role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can continue to provide a high quality product that our users love.
+Thank you for considering a code contribution to Rubix ML. We strongly believe that our contributors play the most important role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can continue to provide high quality machine learning tools that our users love.
 
 ### Pull Request Checklist
-Here are some things to check off before sending in a pull request
+Here are a few things to check off before sending in a pull request ...
 
 - The change provides high value to Rubix ML engineers
 - The change does not introduce unnecessary complexity
@@ -55,7 +55,7 @@ Rubix ML uses a unique end-to-end testing schema for all learners that involves 
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
 
 ### Mutability Policy
-Objects implemented in Rubix have a mutability policy of *generally* immutable which means properties are kept protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
+Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are kept protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
 
 ### Anti Plagiarism Policy
 Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.
