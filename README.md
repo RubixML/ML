@@ -49,6 +49,9 @@ Rubix ML is funded entirely by donations from the open source software community
 
 - [Patreon](https://www.patreon.com/rubixml)
 
+## Top Contributors
+[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/0)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/0)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/1)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/1)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/2)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/2)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/3)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/3)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/4)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/4)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/5)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/5)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/6)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/6)[![](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/images/7)](https://sourcerer.io/fame/andrewdalpino/RubixML/RubixML/links/7)
+
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
 

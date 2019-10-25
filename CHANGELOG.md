@@ -6,14 +6,14 @@
     - Added NaN safe Euclidean distance kernel
     - Added Gower distance kernel
     - Added Hamming distance kernel
-    - Dataset now requires homogenous feature columns
+    - Dataset now requires homogeneous feature columns
     - KNN now compatible with categorical features
     - Added transform column method to dataset object
     - Added describe method to dataset object
     - Added describe labels method to Labeled dataset
     - Added deduplicate method to dataset object
     - Added unzip static factory for Labeled datasets from data table
-    - Changed the order of t-SNE hyperparameters
+    - Changed the order of t-SNE hyper-parameters
     - Added global transpose array helper function
     - Renamed label key to classes in Multiclass Breakdown report
     - Changed order of Gradient Boost and AdaBoost hyper-parameters

@@ -31,7 +31,7 @@
         "amphp/amp": "^2.1",
         "amphp/parallel": "^1.1",
         "intervention/image": "^2.4",
-        "psr/log": "^1.0",
+        "psr/log": "^1.1",
         "rubix/tensor": "^1.0.4"
     },
     "require-dev": {
