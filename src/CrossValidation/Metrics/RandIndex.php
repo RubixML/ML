@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Tensor\Matrix;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Other\Functions\Comb;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Rubix\Tensor\Tensor;
-use Rubix\Tensor\Matrix;
+use Tensor\Tensor;
+use Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -64,8 +64,8 @@ class HuberLoss implements RegressionLoss
     /**
      * Compute the loss score.
      *
-     * @param \Rubix\Tensor\Matrix $output
-     * @param \Rubix\Tensor\Matrix $target
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
      * @return float
      */
     public function compute(Matrix $output, Matrix $target) : float
@@ -76,9 +76,9 @@ class HuberLoss implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Tensor $output
-     * @param \Rubix\Tensor\Tensor $target
-     * @return \Rubix\Tensor\Tensor
+     * @param \Tensor\Tensor $output
+     * @param \Tensor\Tensor $target
+     * @return \Tensor\Tensor
      */
     public function differentiate(Tensor $output, Tensor $target) : Tensor
     {

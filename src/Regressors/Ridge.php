@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Regressors;
 
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -49,7 +49,7 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * The computed coefficients of the regression line.
      *
-     * @var \Rubix\Tensor\Vector|null
+     * @var \Tensor\Vector|null
      */
     protected $weights;
 

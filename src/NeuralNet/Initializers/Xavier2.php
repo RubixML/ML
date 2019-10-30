@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 
 /**
  * Xavier 1
@@ -27,7 +27,7 @@ class Xavier2 implements Initializer
      *
      * @param int $fanIn
      * @param int $fanOut
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {

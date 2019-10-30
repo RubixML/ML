@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Tensor\Vector;
 use Rubix\ML\DataType;
-use Rubix\Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;

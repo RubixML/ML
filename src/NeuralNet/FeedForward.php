@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Rubix\Tensor\Tensor;
-use Rubix\Tensor\Matrix;
+use Tensor\Tensor;
+use Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
@@ -200,8 +200,8 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function feed(Matrix $input) : Matrix
     {
@@ -219,8 +219,8 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Tensor
     {

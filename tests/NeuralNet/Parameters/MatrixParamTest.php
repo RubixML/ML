@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Parameters;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -61,9 +61,9 @@ class Placeholder1D implements Input
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
+     * @param \Tensor\Matrix $input
      * @throws \InvalidArgumentException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -79,8 +79,8 @@ class Placeholder1D implements Input
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

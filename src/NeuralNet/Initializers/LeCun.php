@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 
 /**
  * Le Cun
@@ -26,7 +26,7 @@ class LeCun implements Initializer
      *
      * @param int $fanIn
      * @param int $fanOut
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {

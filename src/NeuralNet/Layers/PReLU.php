@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
@@ -51,7 +51,7 @@ class PReLU implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $input;
 
@@ -116,8 +116,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -129,8 +129,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -174,9 +174,9 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Rubix\Tensor\Matrix $z
-     * @param \Rubix\Tensor\Matrix $dOut
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $dOut
+     * @return \Tensor\Matrix
      */
     public function gradient($z, $dOut) : Matrix
     {
@@ -186,9 +186,9 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param \Rubix\Tensor\Matrix $z
+     * @param \Tensor\Matrix $z
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     protected function compute(Matrix $z) : Matrix
     {
@@ -220,9 +220,9 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the partial derivatives of the activation function.
      *
-     * @param \Rubix\Tensor\Matrix $z
+     * @param \Tensor\Matrix $z
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     protected function differentiate(Matrix $z) : Matrix
     {

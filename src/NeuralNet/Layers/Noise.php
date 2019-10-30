@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -87,8 +87,8 @@ class Noise implements Hidden
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -101,8 +101,8 @@ class Noise implements Hidden
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

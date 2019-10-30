@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 
 /**
  * SELU
@@ -40,8 +40,8 @@ class SELU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param \Rubix\Tensor\Matrix $z
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $z
+     * @return \Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {
@@ -51,9 +51,9 @@ class SELU implements ActivationFunction
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param \Rubix\Tensor\Matrix $z
-     * @param \Rubix\Tensor\Matrix $computed
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $computed
+     * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {

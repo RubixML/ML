@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -50,7 +50,7 @@ class Dropout implements Hidden
     /**
      * The memoized dropout mask.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $mask;
 
@@ -103,8 +103,8 @@ class Dropout implements Hidden
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -117,8 +117,8 @@ class Dropout implements Hidden
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -151,8 +151,8 @@ class Dropout implements Hidden
      * Calculate the gradient for the previous layer.
      *
      * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Rubix\Tensor\Matrix $mask
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $mask
+     * @return \Tensor\Matrix
      */
     public function gradient(Deferred $prevGradient, Matrix $mask)
     {

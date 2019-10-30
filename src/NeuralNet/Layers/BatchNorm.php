@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\Tensor\Matrix;
-use Rubix\Tensor\ColumnVector;
+use Tensor\ColumnVector;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -80,28 +80,28 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The running mean of each input dimension.
      *
-     * @var \Rubix\Tensor\ColumnVector|null
+     * @var \Tensor\ColumnVector|null
      */
     protected $mean;
 
     /**
      * The running variance of each input dimension.
      *
-     * @var \Rubix\Tensor\ColumnVector|null
+     * @var \Tensor\ColumnVector|null
      */
     protected $variance;
 
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $stdInv;
 
     /**
      * A cache of normalized inputs to the layer.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $xHat;
 
@@ -185,9 +185,9 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
+     * @param \Tensor\Matrix $input
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -233,9 +233,9 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
+     * @param \Tensor\Matrix $input
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -294,11 +294,11 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Rubix\Tensor\Matrix $dOut
-     * @param \Rubix\Tensor\ColumnVector $gamma
-     * @param \Rubix\Tensor\ColumnVector $stdInv
-     * @param \Rubix\Tensor\Matrix $xHat
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $dOut
+     * @param \Tensor\ColumnVector $gamma
+     * @param \Tensor\ColumnVector $stdInv
+     * @param \Tensor\Matrix $xHat
+     * @return \Tensor\Matrix
      */
     public function gradient(Matrix $dOut, ColumnVector $gamma, ColumnVector $stdInv, Matrix $xHat) : Matrix
     {

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Dense;

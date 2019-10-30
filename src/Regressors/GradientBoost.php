@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\Regressors;
 
+use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;

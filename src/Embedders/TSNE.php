@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Embedders;
 
+use Tensor\Matrix;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -368,8 +368,8 @@ class TSNE implements Embedder, Verbose
     /**
      * Calculate the pairwise distances for each sample.
      *
-     * @param \Rubix\Tensor\Matrix $samples
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $samples
+     * @return \Tensor\Matrix
      */
     protected function pairwiseDistances(Matrix $samples) : Matrix
     {
@@ -396,8 +396,8 @@ class TSNE implements Embedder, Verbose
      * Compute the conditional probabilities from the distance matrix such that
      * they approximately match the desired perplexity.
      *
-     * @param \Rubix\Tensor\Matrix $distances
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $distances
+     * @return \Tensor\Matrix
      */
     protected function affinities(Matrix $distances) : Matrix
     {
@@ -475,10 +475,10 @@ class TSNE implements Embedder, Verbose
      * Compute the gradient of the KL Divergence cost function with respect to
      * the embedding.
      *
-     * @param \Rubix\Tensor\Matrix $p
-     * @param \Rubix\Tensor\Matrix $y
-     * @param \Rubix\Tensor\Matrix $distances
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $p
+     * @param \Tensor\Matrix $y
+     * @param \Tensor\Matrix $distances
+     * @return \Tensor\Matrix
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
