@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
@@ -37,14 +37,14 @@ class Activation implements Hidden
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $computed;
 
@@ -90,8 +90,8 @@ class Activation implements Hidden
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -105,8 +105,8 @@ class Activation implements Hidden
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $input
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -142,10 +142,10 @@ class Activation implements Hidden
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
-     * @param \Rubix\Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $computed
      * @param \Rubix\ML\Deferred $prevGradient
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function gradient(Matrix $input, Matrix $computed, Deferred $prevGradient) : Matrix
     {

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
@@ -28,7 +28,7 @@ class SwissRoll implements Generator
     /**
      * The center vector of the swiss roll.
      *
-     * @var \Rubix\Tensor\Vector
+     * @var \Tensor\Vector
      */
     protected $center;
 

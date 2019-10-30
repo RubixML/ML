@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -66,7 +66,7 @@ class Dense implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $input;
 
@@ -142,9 +142,9 @@ class Dense implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
+     * @param \Tensor\Matrix $input
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -161,9 +161,9 @@ class Dense implements Hidden, Parametric
     /**
      * Compute an inference pass through the layer.
      *
-     * @param \Rubix\Tensor\Matrix $input
+     * @param \Tensor\Matrix $input
      * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -212,9 +212,9 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Rubix\Tensor\Matrix $w
-     * @param \Rubix\Tensor\Matrix $dOut
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $w
+     * @param \Tensor\Matrix $dOut
+     * @return \Tensor\Matrix
      */
     public function gradient(Matrix $w, Matrix $dOut) : Matrix
     {

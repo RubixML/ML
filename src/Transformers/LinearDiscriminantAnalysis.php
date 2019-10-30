@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Tensor\Matrix;
 use Rubix\ML\DataType;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
@@ -35,7 +35,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     /**
      * The matrix of eigenvectors computed at fitting.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $eigenvectors;
 

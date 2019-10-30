@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use InvalidArgumentException;
@@ -25,14 +25,14 @@ class Blob implements Generator
     /**
      * The center vector of the blob.
      *
-     * @var \Rubix\Tensor\Vector
+     * @var \Tensor\Vector
      */
     protected $center;
 
     /**
      * The standard deviations of each dimension of the blob.
      *
-     * @var \Rubix\Tensor\Vector
+     * @var \Tensor\Vector
      */
     protected $stddev;
 

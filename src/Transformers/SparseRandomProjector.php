@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 

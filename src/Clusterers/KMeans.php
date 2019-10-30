@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;

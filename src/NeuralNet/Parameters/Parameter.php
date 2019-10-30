@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Parameters;
 
-use Rubix\Tensor\Tensor;
+use Tensor\Tensor;
 
 abstract class Parameter
 {
@@ -35,7 +35,7 @@ abstract class Parameter
     /**
      * Update the parameter tensor.
      *
-     * @param \Rubix\Tensor\Tensor $step
+     * @param \Tensor\Tensor $step
      */
     abstract public function update(Tensor $step) : void;
 

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
@@ -24,7 +24,7 @@ class Circle implements Generator
     /**
      * The center vector of the circle.
      *
-     * @var \Rubix\Tensor\Vector
+     * @var \Tensor\Vector
      */
     protected $center;
 
@@ -99,7 +99,7 @@ class Circle implements Generator
             ->add($this->center)
             ->asArray();
 
-        $labels = $r->degrees()->asArray();
+        $labels = $r->rad2deg()->asArray();
 
         return Labeled::quick($samples, $labels);
     }

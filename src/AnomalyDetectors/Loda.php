@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Matrix;
-use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Traits\RankSingle;
@@ -74,7 +74,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * The sparse random projection matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $r;
 

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
-use Rubix\Tensor\Tensor;
-use Rubix\Tensor\Matrix;
+use Tensor\Tensor;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;

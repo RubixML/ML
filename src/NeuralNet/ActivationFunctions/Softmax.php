@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 
 use const Rubix\ML\EPSILON;
 
@@ -21,8 +21,8 @@ class Softmax extends Sigmoid
     /**
      * Compute the output value.
      *
-     * @param \Rubix\Tensor\Matrix $z
-     * @return \Rubix\Tensor\Matrix
+     * @param \Tensor\Matrix $z
+     * @return \Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Parameters;
 
-use Rubix\Tensor\Matrix;
-use Rubix\Tensor\Tensor;
+use Tensor\Matrix;
+use Tensor\Tensor;
 
 /**
  * Parameter
@@ -21,12 +21,12 @@ class MatrixParam extends Parameter
     /**
      * The parameter matrix.
      *
-     * @var \Rubix\Tensor\Matrix
+     * @var \Tensor\Matrix
      */
     protected $w;
 
     /**
-     * @param \Rubix\Tensor\Matrix $w
+     * @param \Tensor\Matrix $w
      */
     public function __construct(Matrix $w)
     {
@@ -38,7 +38,7 @@ class MatrixParam extends Parameter
     /**
      * Return the parameter matrix.
      *
-     * @return \Rubix\Tensor\Matrix
+     * @return \Tensor\Matrix
      */
     public function w() : Matrix
     {
@@ -48,7 +48,7 @@ class MatrixParam extends Parameter
     /**
      * Update the parameter.
      *
-     * @param \Rubix\Tensor\Tensor $step
+     * @param \Tensor\Tensor $step
      */
     public function update(Tensor $step) : void
     {

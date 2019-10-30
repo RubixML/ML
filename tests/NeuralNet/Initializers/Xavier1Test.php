@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
-use Rubix\Tensor\Matrix;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\TestCase;

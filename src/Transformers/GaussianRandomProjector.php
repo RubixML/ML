@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Tensor\Matrix;
 use Rubix\ML\DataType;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
@@ -35,7 +35,7 @@ class GaussianRandomProjector implements Transformer, Stateful
     /**
      * The random matrix.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var \Tensor\Matrix|null
      */
     protected $r;
 

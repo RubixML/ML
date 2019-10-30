@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
-use Rubix\Tensor\Tensor;
-use Rubix\Tensor\Matrix;
+use Tensor\Tensor;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\StepDecay;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameters\Parameter;

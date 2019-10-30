@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use Rubix\Tensor\Tensor;
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
+use Tensor\Tensor;
+use Tensor\Vector;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
