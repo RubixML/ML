@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php">Source</a></span>
 
 # Unlabeled
-Unlabeled datasets are used to train *unsupervised* learners and for feeding data into an estimator to make predictions during inference.
+Unlabeled datasets are used to train unsupervised learners and for feeding data into an estimator to make predictions during inference. As their name implies, they do not require a corresponding label for each sample.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -38,7 +38,9 @@ $samples = [
     [0.001, -10, 'rough'],
 ];
 
-$dataset = new Unlabeled($samples, true);
+$dataset = new Unlabeled($samples); // With validation
+
+$dataset = new Unlabeled($samples, false); // Without validation
 
 $dataset = Unlabeled::build($samples);  // With validation
 

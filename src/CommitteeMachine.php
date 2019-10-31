@@ -146,7 +146,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         }, $experts));
 
         if (count($compatibility) < 1) {
-            throw new InvalidArgumentException('Incompatible committee.');
+            throw new InvalidArgumentException('Committee must have at least'
+                . ' 1 data type that they are compatible with in common.');
         }
 
         $this->experts = $experts;

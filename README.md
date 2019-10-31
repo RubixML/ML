@@ -20,10 +20,11 @@ $ composer require rubix/ml
 
 #### Optional
 
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computation
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
-- [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
+- [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## Documentation
 Read the latest documentation [here](https://docs.rubixml.com/en/latest/).

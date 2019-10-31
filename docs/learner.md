@@ -1,8 +1,8 @@
 # Learner
-Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can form a generalized internal function that maps future unknown samples to good predictions.
+Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can form a generalized internal function that maps future unknown samples to good predictions. 
 
 ### Train a Learner
-To train a learner pass it a training dataset:
+To train a learner pass a training dataset to the `train()` method:
 ```php
 public train(Dataset $training) : void
 ```
@@ -13,7 +13,7 @@ public train(Dataset $training) : void
 $estimator->train($dataset);
 ```
 
-> **Note:** Calling the `train()` method on an already trained learner will erase the previous training. If you would like to train a model incrementally, refer to the [Online](online.md) interface.
+> **Note:** Calling the `train()` method on an already trained learner will erase its previous training. If you would like to train a model incrementally, you can do so with learners implementing the [Online](online.md) interface.
 
 ### Is the Learner Trained?
 Return whether or not the learner has been trained:
@@ -32,7 +32,7 @@ bool(true)
 ```
 
 ### Predict a Single Sample
-Predict a single sample and return the result:
+Pass a single sample and return the prediction:
 ```php
 public predictSample(array $sample) : mixed
 ```

@@ -3,7 +3,7 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model using cross validation. In addition to the standard dataset object methods, a Labeled dataset can perform operations such as stratification and sorting the dataset by label.
 
-> **Note:** Labels can be of categorical or continuous data type but NaN is not allowed.
+> **Note:** Labels can be of categorical or continuous data type but NaN values are not allowed.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -43,12 +43,15 @@ use Rubix\ML\Datasets\Labeled;
 $samples = [
     [0.1, 20, 'furry'],
     [2.0, -5, 'rough'],
+    [0.01, 5, 'furry'],
 ];
 
-$labels = ['not monster', 'monster'];
+$labels = ['not monster', 'monster', 'not monster'];
 
 
-$dataset = new Labeled($samples, $labels, true);
+$dataset = new Labeled($samples, $labels); // With validation
+
+$dataset = new Labeled($samples, $labels, false); // Without validation
 
 $dataset = Labeled::build($samples, $labels);  // With validation
 
@@ -63,12 +66,12 @@ Return an array of labels:
 public labels() : array
 ```
 
-Zip the samples and labels together in a Generator:
+Zip the samples and labels together and return a Generator for the table:
 ```php
 public zip() : Generator
 ```
 
-Return the label at the given row offset:
+Return a single label at the given row offset:
 ```php
 public label(int $index) : mixed
 ```
@@ -78,7 +81,7 @@ Return the type of the label encoded as an integer:
 public labelType() : int
 ```
 
-Return all of the possible outcomes i.e. the unique labels:
+Return all of the possible outcomes i.e. the unique labels in an array:
 ```php
 public possibleOutcomes() : array
 ```
@@ -175,7 +178,7 @@ public sortByLabel(bool $descending = false) : self
 ```
 
 #### Stratification
-Group the samples by label and return them in their own dataset:
+Group samples by their label and return them in their own datasets:
 ```php
 public stratify() : array
 ```
@@ -193,18 +196,21 @@ public stratifiedFold($k = 10) : array
 **Example**
 
 ```php
-// Put each sample with label 'x' into its own dataset
+// Put each sample with a given label into its own dataset
 $strata = $dataset->stratify();
 
-// Fold the dataset into 5 equal size stratified subsets
+// Fold the dataset into 5 equal-sized stratified subsets
 $folds = $dataset->stratifiedFold(5);
 
-// Split the dataset into two stratified subsets
-[$left, $right] = $dataset->stratifiedSplit(0.8);
+// Split the dataset into two 50/50 stratified subsets
+[$left, $right] = $dataset->stratifiedSplit(0.5);
+
+// Split the dataset into two stratified training and testing sets
+[$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
 ### Describe the Labels
-Return an array of descriptive statistics about the labels in the dataset.
+Return an array of descriptive statistics about the labels in the dataset:
 ```php
 public describeLabels() : array
 ```

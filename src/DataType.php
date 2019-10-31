@@ -10,6 +10,7 @@ use function is_int;
 use function is_float;
 use function is_numeric;
 use function is_resource;
+use function in_array;
 
 class DataType
 {
@@ -41,14 +42,14 @@ class DataType
     public static function determine($data) : int
     {
         switch (gettype($data)) {
-            case 'string':
-                return self::CATEGORICAL;
-
             case 'double':
                 return self::CONTINUOUS;
 
             case 'integer':
                 return self::CONTINUOUS;
+
+            case 'string':
+                return self::CATEGORICAL;
 
             case 'resource':
                 return self::RESOURCE;
@@ -56,17 +57,6 @@ class DataType
             default:
                 return self::OTHER;
         }
-    }
-
-    /**
-     * Is the data categorical?
-     *
-     * @param mixed $data
-     * @return bool
-     */
-    public static function isCategorical($data) : bool
-    {
-        return is_string($data);
     }
 
     /**
@@ -78,6 +68,17 @@ class DataType
     public static function isContinuous($data) : bool
     {
         return is_int($data) or is_float($data);
+    }
+
+    /**
+     * Is the data categorical?
+     *
+     * @param mixed $data
+     * @return bool
+     */
+    public static function isCategorical($data) : bool
+    {
+        return is_string($data);
     }
 
     /**

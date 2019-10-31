@@ -54,4 +54,4 @@ Yes. A number of learners in Rubix ML support Deep Learning including the [Multi
 Not currently. Rubix ML is for supervised and unsupervised learning only.
 
 ### Does Rubix ML support time series data?
-Yes and no. Currently, Rubix ML treats time series data like any other continuous feature. In the future, we may add algorithms that work specifically with a time component.
+Yes and no. Currently, Rubix ML treats time series data like any other continuous feature. In the future, we may add algorithms that work specifically with a separate time component.

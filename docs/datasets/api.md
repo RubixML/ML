@@ -1,5 +1,5 @@
 # Dataset Objects
-In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires (at least) a table of samples where each row constitues a single sample and each column represents the value of the feature indexed at that column.
+In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples where each row constitues a single sample and each column represents the value of the feature indexed at that column.
 
 Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same data type. For example, a continuous feature column's value for height must be either an integer or floating point number. A stray string or other data type will throw an exception upon validation.
 
@@ -17,7 +17,7 @@ $dataset = new Unabeled($samples);
 ```
 
 ### Missing Values
-By convention, continuous missing values are denoted by NaN and categorical values are denoted by a special placeholder category (ex. the '?' category). Dataset objects do not allow missing values of resource or other types.
+By convention, continuous missing values are denoted by `NaN` and categorical values are denoted by a special placeholder category (ex. the `'?'` category). Dataset objects do not allow missing values of resource or other data types.
 
 **Example**
 
@@ -30,17 +30,17 @@ $samples = [
 ```
 
 ### Selecting
-Return all the samples in the dataset:
+Return all the samples in the dataset in a 2-dimensional array:
 ```php
 public samples() : array
 ```
 
-Select the *sample* at row offset:
+Select a single row containing the sample at a given offset (offsets begin at 0):
 ```php
 public row(int $index) : array
 ```
 
-Select the *values* of a feature column at given offset (offsets begin at 0):
+Select the values of a feature column at a given offset (offsets begin at 0):
 ```php
 public column(int $index) : array
 ```
@@ -113,6 +113,8 @@ Stack any number of dataset objects on top of each other to form a single datase
 public static stack(array $datasets) : self
 ```
 
+> **Note:** Datasets must have the same number of feature columns.
+
 **Example**
 
 ```php
@@ -134,6 +136,16 @@ public prepend(Dataset $dataset) : self
 To append a given dataset onto the end of another dataset:
 ```php
 public append(Dataset $dataset) : self
+```
+
+> **Note:** Datasets must have the same number of feature columns.
+
+**Example**
+
+```php
+$dataset = $training->append($testing); // Append the testing set to the training set
+
+$dataset = $dataset->prepend($new); // Prepend a new dataset to the current dataset
 ```
 
 ### Head and Tail
@@ -193,18 +205,23 @@ public partition(int $index, mixed $value) : array
 **Example**
 
 ```php
-// Split the dataset into left and right subsets
+// Split the dataset 50/50 into left and right subsets
 [$left, $right] = $dataset->split(0.5);
+
+// Split the dataset into training and testing sets 80/20.
+[$training, $testing] = $dataset->split(0.8);
 
 // Partition the dataset by the feature column at index 4 by value '50'
 [$left, $right] = $dataset->partition(4, 50);
 ```
 
 ### Folding
-Fold the dataset *k* - 1 times to form *k* equal size datasets:
+Fold the dataset to form *k* equal size datasets:
 ```php
 public fold(int $k = 10) : array
 ```
+
+> **Note:** If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest.
 
 **Example**
 
@@ -225,18 +242,24 @@ Batch the dataset into subsets containing a maximum of *n* rows per batch:
 public batch(int $n = 50) : array
 ```
 
+**Example**
+
+```php
+$batches = $dataset->batch(1000); // Create batches of 1000 samples each 
+```
+
 ### Randomization
 Randomize the order of the Dataset and return it for method chaining:
 ```php
 public randomize() : self
 ```
 
-Generate a random subset without replacement:
+Generate a random subset of the dataset without replacement of size *n*:
 ```php
 public randomSubset(int $n) : self
 ```
 
-Generate a random subset with replacement of size *n*:
+Generate a random subset with replacement:
 ```php
 public randomSubsetWithReplacement($n) : self
 ```
@@ -249,8 +272,8 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 **Example**
 
 ```php
-// Randomize and split the dataset and split into two subsets
-[$left, $right] = $dataset->randomize()->split(0.8);
+// Randomize and split the dataset into two subsets
+[$left, $right] = $dataset->randomize()->split(0.6);
 
 // Generate a random unique subset of 50 random samples
 $subset = $dataset->randomSubset(50);
@@ -261,7 +284,7 @@ $subset = $dataset->randomSubsetWithReplacement(500);
 // Sample a random subset according to a user-defined weight distribution
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 
-// Sample a random subset using a column as sample weights
+// Sample a random subset using the values of a column as sample weights
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(1));
 ```
 

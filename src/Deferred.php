@@ -17,11 +17,11 @@ use function is_null;
 class Deferred
 {
     /**
-     * The function containing the computation.
+     * The callable function containing the computation.
      *
      * @var callable
      */
-    protected $function;
+    protected $fn;
 
     /**
      * The arguments to the function.
@@ -38,12 +38,12 @@ class Deferred
     protected $result;
 
     /**
-     * @param callable $function
+     * @param callable $fn
      * @param array $args
      */
-    public function __construct(callable $function, array $args = [])
+    public function __construct(callable $fn, array $args = [])
     {
-        $this->function = $function;
+        $this->fn = $fn;
         $this->args = $args;
     }
 
@@ -54,7 +54,7 @@ class Deferred
      */
     public function compute()
     {
-        return ($this->function)(...$this->args);
+        return ($this->fn)(...$this->args);
     }
 
     /**
