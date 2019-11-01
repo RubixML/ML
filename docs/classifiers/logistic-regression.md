@@ -31,7 +31,7 @@ public network() : Network|null
 
 ### Example
 ```php
-use Rubix\ML\Classifers\LogisticRegression;
+use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
