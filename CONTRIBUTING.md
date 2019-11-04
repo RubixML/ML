@@ -43,9 +43,6 @@ To run the unit tests:
 $ composer test
 ```
 
-#### Class Organization
-In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, methods.
-
 #### Learner Testing Guidelines
 Rubix ML uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to the real world. Since not all learners offer the same performance, choose a generator and minimum validation score that is appropriate for a real world use case.
 
@@ -54,8 +51,11 @@ Rubix ML uses a unique end-to-end testing schema for all learners that involves 
 #### Bugfix Testing Guidelines
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
 
+### Class Organization
+In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, regular methods.
+
 ### Mutability Policy
-Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are kept protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
+Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
 
 ### Anti Plagiarism Policy
 Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.

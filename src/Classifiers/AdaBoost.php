@@ -273,7 +273,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->weights = array_fill(0, $n, 1 / $n);
 
-        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $estimator = clone $this->base;
 
             $subset = $dataset->randomWeightedSubsetWithReplacement($p, $this->weights);

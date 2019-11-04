@@ -123,7 +123,7 @@ class ITree implements BST
 
             $current->cleanup();
 
-            $depth++;
+            ++$depth;
 
             if ($depth >= $this->maxDepth) {
                 $current->attachLeft(Cell::terminate($left, $depth));

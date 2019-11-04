@@ -208,13 +208,13 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
                     if ($value < $edge) {
-                        $counts[$k]++;
+                        ++$counts[$k];
 
                         continue 2;
                     }
                 }
 
-                $counts[$this->bins]++;
+                ++$counts[$this->bins];
             }
 
             $this->histograms[] = [$edges, $counts];
@@ -251,13 +251,13 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
                     if ($value < $edge) {
-                        $counts[$k]++;
+                        ++$counts[$k];
 
                         continue 2;
                     }
                 }
 
-                $counts[$this->bins]++;
+                ++$counts[$this->bins];
             }
 
             $this->histograms[$i] = [$edges, $counts];

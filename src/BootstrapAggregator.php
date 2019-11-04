@@ -149,7 +149,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         $this->backend->flush();
 
-        for ($i = 0; $i < $this->estimators; $i++) {
+        for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
 
             $subset = $dataset->randomSubsetWithReplacement($p);

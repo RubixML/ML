@@ -82,8 +82,8 @@ class ImageVectorizer implements Transformer
 
                     $vector = [];
 
-                    for ($x = 0; $x < $width; $x++) {
-                        for ($y = 0; $y < $height; $y++) {
+                    for ($x = 0; $x < $width; ++$x) {
+                        for ($y = 0; $y < $height; ++$y) {
                             $pixel = imagecolorat($image, $x, $y);
 
                             $vector[] = $pixel & 0xFF;

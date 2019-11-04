@@ -44,7 +44,7 @@ class Hamming implements Distance
 
         foreach ($a as $i => $value) {
             if ($value !== $b[$i]) {
-                $distance++;
+                ++$distance;
             }
         }
 

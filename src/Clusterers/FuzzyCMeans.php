@@ -237,7 +237,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         $prevLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $memberships = array_map([self::class, 'membership'], $dataset->samples());
 
             foreach ($this->centroids as $cluster => &$centroid) {

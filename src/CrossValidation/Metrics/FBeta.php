@@ -119,10 +119,10 @@ class FBeta implements Metric
             $label = $labels[$i];
 
             if ($prediction === $label) {
-                $truePos[$prediction]++;
+                ++$truePos[$prediction];
             } else {
-                $falsePos[$prediction]++;
-                $falseNeg[$label]++;
+                ++$falsePos[$prediction];
+                ++$falseNeg[$label];
             }
         }
 

@@ -56,7 +56,7 @@ namespace Rubix\ML
 
                 $columns = [];
 
-                for ($i = 0; $i < $n; $i++) {
+                for ($i = 0; $i < $n; ++$i) {
                     $columns[] = [$row[$i]];
                 }
 

@@ -286,7 +286,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
             $loss = 0.;
@@ -308,7 +308,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss) or $loss < EPSILON) {

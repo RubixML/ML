@@ -158,7 +158,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
 
         $n = $dataset->numColumns();
 
-        for ($column = 0; $column < $n; $column++) {
+        for ($column = 0; $column < $n; ++$column) {
             if ($dataset->columnType($column) === DataType::CONTINUOUS) {
                 $values = $dataset->column($column);
                 

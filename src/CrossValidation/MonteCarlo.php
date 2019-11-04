@@ -82,7 +82,7 @@ class MonteCarlo implements Validator, Parallel
 
         $this->backend->flush();
 
-        for ($i = 0; $i < $this->simulations; $i++) {
+        for ($i = 0; $i < $this->simulations; ++$i) {
             $dataset->randomize();
 
             [$testing, $training] = $dataset->labelType() === DataType::CATEGORICAL

@@ -263,7 +263,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $prevLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $memberships = [];
 
             foreach ($dataset as $sample) {
@@ -274,7 +274,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
             $loss = 0.;
 
-            for ($cluster = 0; $cluster < $this->k; $cluster++) {
+            for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
 
                 $means = $variances = [];

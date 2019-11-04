@@ -43,7 +43,7 @@ class AdaMax extends Adam
         $this->cache[$param->id()] = [$velocity, $norm];
 
         if ($this->t < self::WARM_UP_STEPS) {
-            $this->t++;
+            ++$this->t;
 
             $rate = $this->rate / (1. - $this->beta1 ** $this->t);
         } else {

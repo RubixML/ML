@@ -301,7 +301,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             shuffle($order);
 
             array_multisort($order, $samples, $clusters);
@@ -321,8 +321,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                         $clusters[$j] = $cluster;
                         $labels[$j] = $cluster;
 
-                        $this->sizes[$expected]--;
-                        $this->sizes[$cluster]++;
+                        --$this->sizes[$expected];
+                        ++$this->sizes[$cluster];
                     }
                 }
 
@@ -359,7 +359,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss) or $loss < EPSILON) {

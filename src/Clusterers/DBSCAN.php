@@ -158,7 +158,7 @@ class DBSCAN implements Estimator
                 }
             }
 
-            $cluster++;
+            ++$cluster;
         }
 
         $this->tree->destroy();

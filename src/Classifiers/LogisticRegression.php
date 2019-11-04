@@ -288,7 +288,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
             $loss = 0.;
@@ -310,7 +310,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
                 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss) or $loss < EPSILON) {

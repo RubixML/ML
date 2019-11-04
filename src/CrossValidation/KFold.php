@@ -75,7 +75,7 @@ class KFold implements Validator, Parallel
 
         $this->backend->flush();
 
-        for ($i = 0; $i < $this->k; $i++) {
+        for ($i = 0; $i < $this->k; ++$i) {
             $training = Labeled::quick();
             $testing = Labeled::quick();
     

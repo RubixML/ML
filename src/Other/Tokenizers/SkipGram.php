@@ -81,13 +81,13 @@ class SkipGram implements Tokenizer
 
             $length = count($words) - ($this->n + $this->skip);
 
-            for ($i = 0; $i <= $length; $i++) {
+            for ($i = 0; $i <= $length; ++$i) {
                 $first = $words[$i];
 
-                for ($j = 0; $j <= $this->skip; $j++) {
+                for ($j = 0; $j <= $this->skip; ++$j) {
                     $skipGram = $first;
 
-                    for ($k = 1; $k < $this->n; $k++) {
+                    for ($k = 1; $k < $this->n; ++$k) {
                         $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
                     }
 

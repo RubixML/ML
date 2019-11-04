@@ -293,7 +293,7 @@ class TSNE implements Embedder, Verbose
 
         $this->steps = [];
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $distances = $this->pairwiseDistances($y);
 
             $gradient = $this->gradient($p, $y, $distances);
@@ -332,7 +332,7 @@ class TSNE implements Embedder, Verbose
                 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss)) {
@@ -410,7 +410,7 @@ class TSNE implements Embedder, Verbose
             $maxBeta = INF;
             $beta = 1.;
 
-            for ($j = 0; $j < self::MAX_BINARY_PRECISION; $j++) {
+            for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
                 $temp = [];
                 $pSigma = 0.;
 

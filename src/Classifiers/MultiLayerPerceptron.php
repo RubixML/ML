@@ -369,7 +369,7 @@ class MultiLayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $prevLoss = INF;
         $nu = 0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.;
@@ -397,7 +397,7 @@ class MultiLayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss) or is_nan($score)) {

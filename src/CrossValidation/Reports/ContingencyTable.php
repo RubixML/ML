@@ -51,7 +51,7 @@ class ContingencyTable implements Report
         $table = array_fill_keys($clusters, array_fill_keys($classes, 0));
 
         foreach ($labels as $i => $class) {
-            $table[$predictions[$i]][$class]++;
+            ++$table[$predictions[$i]][$class];
         }
 
         return $table;

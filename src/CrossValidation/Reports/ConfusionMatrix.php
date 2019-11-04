@@ -52,7 +52,7 @@ class ConfusionMatrix implements Report
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
         foreach ($predictions as $i => $prediction) {
-            $matrix[$prediction][$labels[$i]]++;
+            ++$matrix[$prediction][$labels[$i]];
         }
 
         return $matrix;

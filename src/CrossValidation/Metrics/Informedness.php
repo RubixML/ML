@@ -91,16 +91,16 @@ class Informedness implements Metric
             $label = $labels[$i];
 
             if ($prediction === $label) {
-                $truePos[$prediction]++;
+                ++$truePos[$prediction];
 
                 foreach ($classes as $class) {
                     if ($class !== $prediction) {
-                        $trueNeg[$class]++;
+                        ++$trueNeg[$class];
                     }
                 }
             } else {
-                $falsePos[$prediction]++;
-                $falseNeg[$label]++;
+                ++$falsePos[$prediction];
+                ++$falseNeg[$label];
             }
         }
 

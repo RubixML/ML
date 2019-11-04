@@ -242,7 +242,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
         $columns = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        for ($i = 0; $i < $n; ++$i) {
             if ($this->columnType($i) === $type) {
                 $columns[$i] = $this->column($i);
             }

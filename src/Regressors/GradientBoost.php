@@ -341,7 +341,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $bestEpoch = $nu = 0;
         $prevLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $gradient = $target->subtract($out);
     
             $training = Labeled::quick($training->samples(), $gradient->asArray());
@@ -378,7 +378,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
                 $nu = 0;
             } else {
-                $nu++;
+                ++$nu;
             }
 
             if (is_nan($loss) or is_nan($score)) {

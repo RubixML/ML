@@ -675,7 +675,7 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        for ($i = 0; $i < $k; $i++) {
+        for ($i = 0; $i < $k; ++$i) {
             $samples = $labels = [];
 
             foreach ($this->_stratify() as $label => $stratum) {

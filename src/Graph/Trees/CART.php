@@ -213,7 +213,7 @@ abstract class CART implements DecisionTree
 
             $current->cleanup();
 
-            $depth++;
+            ++$depth;
 
             if ($left->empty() or $right->empty()) {
                 $node = $this->terminate($left->append($right));
@@ -355,7 +355,7 @@ abstract class CART implements DecisionTree
      */
     protected function _printRules(BinaryNode $node, int $depth = 0) : void
     {
-        $depth++;
+        ++$depth;
 
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
