@@ -1,6 +1,7 @@
 - Unreleased
     - Added Tensor extension compatibility
-    - Migrated to new Tensor namespace
+    - Migrated to new Tensor library namespace
+    - Anomaly detector predictions now categorical
 
 - 0.0.16-beta
     - Radius Neighbors allows user-definable anomaly class

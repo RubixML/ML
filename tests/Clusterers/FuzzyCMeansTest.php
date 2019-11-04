@@ -22,7 +22,7 @@ use RuntimeException;
 
 class FuzzyCMeansTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 3000;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 

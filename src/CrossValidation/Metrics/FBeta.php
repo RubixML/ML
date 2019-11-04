@@ -118,7 +118,7 @@ class FBeta implements Metric
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
-            if ($prediction === $label) {
+            if ($prediction == $label) {
                 ++$truePos[$prediction];
             } else {
                 ++$falsePos[$prediction];

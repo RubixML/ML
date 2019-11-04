@@ -35,8 +35,8 @@ class GaussianMLETest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0., 0.], 1.0),
-            1 => new Circle(0., 0., 6., 0.1),
+            '0' => new Blob([0., 0.], 1.0),
+            '1' => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new GaussianMLE(3.5, 0.1);

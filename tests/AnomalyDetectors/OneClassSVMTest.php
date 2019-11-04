@@ -33,8 +33,8 @@ class OneClassSVMTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0., 0.], 0.5),
-            1 => new Circle(0., 0., 8., 0.1),
+            '0' => new Blob([0., 0.], 0.5),
+            '1' => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new OneClassSVM(0.01, new Polynomial(4, 1e-3), true, 1e-4);

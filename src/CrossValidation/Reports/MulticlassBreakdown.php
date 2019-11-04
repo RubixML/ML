@@ -59,11 +59,11 @@ class MulticlassBreakdown implements Report
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
-            if ($prediction === $label) {
+            if ($prediction == $label) {
                 ++$truePos[$prediction];
                 
                 foreach ($classes as $class) {
-                    if ($class !== $prediction) {
+                    if ($class != $prediction) {
                         ++$trueNeg[$class];
                     }
                 }

@@ -64,7 +64,7 @@ class Accuracy implements Metric
         $score = 0.;
 
         foreach ($predictions as $i => $prediction) {
-            if ($prediction === $labels[$i]) {
+            if ($prediction == $labels[$i]) {
                 ++$score;
             }
         }

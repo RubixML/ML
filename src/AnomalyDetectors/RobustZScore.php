@@ -223,10 +223,10 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      * The decision function.
      *
      * @param float $score
-     * @return int
+     * @return string
      */
-    protected function decide(float $score) : int
+    protected function decide(float $score) : string
     {
-        return $score > $this->threshold ? 1 : 0;
+        return $score > $this->threshold ? '1' : '0';
     }
 }
