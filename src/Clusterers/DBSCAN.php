@@ -31,7 +31,7 @@ use InvalidArgumentException;
  */
 class DBSCAN implements Estimator
 {
-    public const START_CLUSTER = 0;
+    public const START_CLUSTER = '0';
     
     public const NOISE = -1;
 

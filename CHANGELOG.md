@@ -2,6 +2,7 @@
     - Added Tensor extension compatibility
     - Migrated to new Tensor library namespace
     - Anomaly detector predictions now categorical
+    - Clusterers now predict categorical cluster labels
 
 - 0.0.16-beta
     - Radius Neighbors allows user-definable anomaly class

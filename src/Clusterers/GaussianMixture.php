@@ -352,7 +352,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $jlls = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
-        return array_map('Rubix\ML\argmax', $jlls);
+        return array_map('strval', array_map('Rubix\ML\argmax', $jlls));
     }
 
     /**

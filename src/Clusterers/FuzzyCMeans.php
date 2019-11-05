@@ -287,7 +287,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('Rubix\ML\argmax', $this->proba($dataset));
+        return array_map('strval', array_map('Rubix\ML\argmax', $this->proba($dataset)));
     }
 
     /**

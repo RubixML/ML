@@ -364,7 +364,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map([self::class, 'assign'], $dataset->samples());
+        return array_map('strval', array_map([self::class, 'assign'], $dataset->samples()));
     }
 
     /**

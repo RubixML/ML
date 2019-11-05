@@ -398,7 +398,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map([self::class, 'assign'], $dataset->samples());
+        return array_map('strval', array_map([self::class, 'assign'], $dataset->samples()));
     }
 
     /**
