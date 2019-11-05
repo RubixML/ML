@@ -21,6 +21,8 @@ $persister->save($estimator);
 ### Serialization
 Very often a model will need to be serialized, or packaged into a discrete chunk of data, before it can be persisted. The same is true for loading a model which is serialization in reverse. Rubix ML is compatible with a number of portable serialization formats including the Native PHP format as well as the Igbinary format. By knowing the format, you can easily transport models between systems.
 
+> **Note:** Due to a limitation in PHP, anonymous classes and functions are not able to be deserialized. If your model object uses anonymous classes or functions, they must be given formal definitions before they can be persisted.
+
 ### The Persistent Model Meta-estimator
 The [Persistent Model](persistent-model.md) meta-estimator is a model wrapper that uses the persistence subsystem under the hood. It provides `save()` and `load()` methods for the persistable learner that it wraps.
 
