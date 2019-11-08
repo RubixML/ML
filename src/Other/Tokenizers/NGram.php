@@ -24,14 +24,14 @@ class NGram implements Tokenizer
     protected const SEPARATOR = ' ';
 
     /**
-     * The minimum number of contiguous words to a single token.
+     * The minimum number of contiguous words in a single token.
      *
      * @var int
      */
     protected $min;
 
     /**
-     * The maximum number of contiguous words to a single token.
+     * The maximum number of contiguous words in a single token.
      *
      * @var int
      */
@@ -68,7 +68,7 @@ class NGram implements Tokenizer
     {
         $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
 
-        $nGrams = [];
+        $tokens = [];
 
         foreach ($sentences as $sentence) {
             $words = [];
@@ -89,11 +89,11 @@ class NGram implements Tokenizer
                         $nGram .= self::SEPARATOR . $words[$i + $k];
                     }
 
-                    $nGrams[] = $nGram;
+                    $tokens[] = $nGram;
                 }
             }
         }
 
-        return $nGrams;
+        return $tokens;
     }
 }

@@ -23,10 +23,10 @@ class Word implements Tokenizer
      */
     public function tokenize(string $string) : array
     {
-        $words = [];
+        $tokens = [];
 
-        preg_match_all(self::WORD_REGEX, $string, $words);
+        preg_match_all(self::WORD_REGEX, $string, $tokens);
 
-        return $words[0];
+        return $tokens[0];
     }
 }

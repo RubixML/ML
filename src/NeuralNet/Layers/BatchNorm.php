@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Tensor\ColumnVector;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
@@ -80,21 +79,21 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The running mean of each input dimension.
      *
-     * @var \Tensor\ColumnVector|null
+     * @var \Tensor\Vector|null
      */
     protected $mean;
 
     /**
      * The running variance of each input dimension.
      *
-     * @var \Tensor\ColumnVector|null
+     * @var \Tensor\Vector|null
      */
     protected $variance;
 
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
      *
-     * @var \Tensor\Matrix|null
+     * @var \Tensor\Vector|null
      */
     protected $stdInv;
 
@@ -195,19 +194,9 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized.');
         }
 
-        $means = $variances = $stdInvs = [];
-
-        foreach ($input as $row) {
-            [$mean, $variance] = Stats::meanVar($row);
-
-            $means[] = $mean;
-            $variances[] = $variance;
-            $stdInvs[] = 1. / sqrt($variance ?: EPSILON);
-        }
-
-        $mean = ColumnVector::quick($means);
-        $variance = ColumnVector::quick($variances);
-        $stdInv = ColumnVector::quick($stdInvs);
+        $mean = $input->mean();
+        $variance = $input->variance($mean)->clipLower(EPSILON);
+        $stdInv = $variance->sqrt()->reciprocal();
 
         $xHat = $stdInv->multiply($input->subtract($mean));
 
@@ -244,7 +233,7 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $xHat = $input->subtract($this->mean)
-            ->divide($this->variance->clipLower(EPSILON)->sqrt());
+            ->divide($this->variance->sqrt());
 
         return $this->gamma->w()
             ->multiply($xHat)

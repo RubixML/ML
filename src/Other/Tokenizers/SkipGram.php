@@ -70,7 +70,7 @@ class SkipGram implements Tokenizer
     {
         $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
 
-        $skipGrams = [];
+        $tokens = [];
 
         foreach ($sentences as $sentence) {
             $words = [];
@@ -91,15 +91,15 @@ class SkipGram implements Tokenizer
                         $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
                     }
 
-                    $skipGrams[] = $skipGram;
+                    $tokens[] = $skipGram;
                 }
             }
 
             $last = array_slice($words, -$this->n);
 
-            $skipGrams[] = implode(self::SEPARATOR, $last);
+            $tokens[] = implode(self::SEPARATOR, $last);
         }
 
-        return $skipGrams;
+        return $tokens;
     }
 }
