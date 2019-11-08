@@ -29,13 +29,7 @@ Machine learning projects typically begin with a question. For example, you migh
 
 As an alternative to collecting data yourself, you can access one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that the data has most likely already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open datasets.
 
-## Extracting Data
-Before our data can become useful, we need to load it into our script from its stored format. There are many PHP libraries that help make extracting data from various sources easy and intuitive, and we recommend checking them out as a great place to start.
-
-- [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV reader/writer
-- [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstraction layer
-
-In addition, PHP has a number of built-in functions and extensions that allow you to access data stored in various formats including [CSV](https://www.php.net/manual/en/function.str-getcsv.php) and from a [Database](https://www.php.net/manual/en/book.pdo.php).
+> See the ['Extracting Data'](extracting-data.md) section to learn more about extracting data from different storage formats.
 
 ## The Dataset Object
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, transforming, randomizing, and sorting of the samples and labels for you. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
@@ -53,6 +47,8 @@ $labels = ['married', 'divorced', 'married', 'divorced'];
 
 $dataset = new Labeled($samples, $labels);
 ```
+
+> See the ['Representing your Data'](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
 
 # Choosing an Estimator
 [Estimators](https://docs.rubixml.com/en/latest/estimator.html) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](https://docs.rubixml.com/en/latest/learner.html) and must be trained before making predictions.
@@ -114,9 +110,9 @@ array(4) {
 ```
 
 # Model Evaluation
-To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in  order to produce a validation score. For the purposes of the introduction, we will use the [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
+To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in  order to produce a validation score. For the purposes of the introduction, we will use the Hold Out validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
 
-The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
+The [Hold Out](cross-validation/hold-out.md) validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
 > **Note:** Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 

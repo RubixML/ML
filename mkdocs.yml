@@ -9,6 +9,7 @@ site_description: 'A high-level machine learning and deep learning library for t
 nav:
 - Home: index.md
 - Basic Introduction: basic-introduction.md
+- Extracting Data: extracting-data.md
 - Representing Your Data: representing-your-data.md
 - Model Persistence: model-persistence.md
 - System Architecture: system-architecture.md
