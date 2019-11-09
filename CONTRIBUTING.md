@@ -14,19 +14,6 @@ Here are a few things to check off before sending in a pull request ...
 
 > New to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
 
-### Coding Style
-Rubix ML follows the PSR-2 coding style with additional rules. For any new class, include a class header that contains a title, a short description of what the class does, any references, and the author and package name. If you are making changes to an existing class, you may add your name to the author list under the last entry if you want.
-
-To run the style checker:
-```sh
-$ composer check
-```
-
-To run the style fixer:
-```sh
-$ composer fix
-```
-
 ### Static Analysis
 Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
 
@@ -34,6 +21,15 @@ To run static analysis:
 ```sh
 $ composer analyze
 ```
+
+In addition, we use code quality metrics to provide us a high-level view of the complexity, dependencies, and size of the code base. We use the report generated from secondary static analysis to identify modules that need refactoring.
+
+To generate the HTML report:
+```sh
+$ composer metrics
+```
+
+> The generated report will be located in the `metrics` folder in the project root.
   
 ### Unit Testing
 All new code *requires* an accompanying unit test whether it be a new feature or a bug fix. What to test depends on the type of change you are making. See the individual unit testing guidelines below.
@@ -50,6 +46,19 @@ Rubix ML uses a unique end-to-end testing schema for all learners that involves 
 
 #### Bugfix Testing Guidelines
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
+
+### Coding Style
+Rubix ML follows the PSR-2 coding style with additional rules. For any new class, include a class header that contains a title, a short description of what the class does, any references, and the author and package name. If you are making changes to an existing class, you may add your name to the author list under the last entry if you want.
+
+To run the style checker:
+```sh
+$ composer check
+```
+
+To run the style fixer:
+```sh
+$ composer fix
+```
 
 ### Class Organization
 In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, regular methods.
