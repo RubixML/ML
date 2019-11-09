@@ -200,13 +200,13 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
 
         foreach ($samples as &$sample) {
             foreach ($this->stddevs as $column => $stddev) {
-                $feature = $sample[$column];
+                $value = &$sample[$column];
 
                 if ($this->center) {
-                    $feature -= $this->means[$column];
+                    $value -= $this->means[$column];
                 }
 
-                $sample[$column] = $feature / $stddev;
+                $value /= $stddev;
             }
         }
     }

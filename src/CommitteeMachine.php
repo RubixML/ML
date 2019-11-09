@@ -111,9 +111,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         foreach ($experts as $expert) {
             if ($expert->type() !== $type) {
-                throw new InvalidArgumentException('Experts must be of the'
-                    . ' same type, ' . self::TYPES[$type] . ' expected but'
-                    . ' found ' . self::TYPES[$expert->type()] . '.');
+                throw new InvalidArgumentException('Experts must all be of'
+                    . ' the same type, ' . self::TYPES[$type] . ' expected'
+                    . ' but found ' . self::TYPES[$expert->type()] . '.');
             }
         }
 
@@ -127,12 +127,17 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             foreach ($influences as $weight) {
                 if (!is_int($weight) and !is_float($weight)) {
                     throw new InvalidArgumentException('Influence must be'
-                        . ' an integer or float, ' . gettype($weight)
-                        . ' found.');
+                        . ' an integer or floating point number, '
+                        . gettype($weight) . ' given.');
                 }
             }
 
-            $total = array_sum($influences) ?: EPSILON;
+            $total = array_sum($influences);
+
+            if ($total <= 0) {
+                throw new InvalidArgumentException('Total influence must'
+                    . "be greater than 0, $total given.");
+            }
 
             foreach ($influences as &$weight) {
                 $weight /= $total;

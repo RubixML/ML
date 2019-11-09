@@ -153,9 +153,9 @@ class IntervalDiscretizer implements Transformer, Stateful
             foreach ($this->intervals as $column => $interval) {
                 $value = &$sample[$column];
 
-                foreach ($interval as $i => $edge) {
+                foreach ($interval as $k => $edge) {
                     if ($value < $edge) {
-                        $value = $this->categories[$i];
+                        $value = $this->categories[$k];
 
                         continue 2;
                     }

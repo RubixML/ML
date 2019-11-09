@@ -64,9 +64,11 @@ class PolynomialExpander implements Transformer
         foreach ($samples as &$sample) {
             $vector = [];
 
-            foreach ($sample as $feature) {
-                for ($i = 1; $i <= $this->degree; ++$i) {
-                    $vector[] = $feature ** $i;
+            foreach ($sample as $value) {
+                $vector[] = $value;
+
+                for ($i = 2; $i <= $this->degree; ++$i) {
+                    $vector[] = $value ** $i;
                 }
             }
 

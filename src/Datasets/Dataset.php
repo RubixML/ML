@@ -268,7 +268,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         }
 
         foreach ($this->samples as &$sample) {
-            $sample[$column] = $callback($sample[$column]);
+            $value = &$sample[$column];
+
+            $value = $callback($value);
         }
 
         return $this;

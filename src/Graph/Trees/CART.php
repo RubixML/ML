@@ -87,13 +87,11 @@ abstract class CART implements DecisionTree
     protected $featureCount;
 
     /**
-     * The memoized random column indices.
+     * The memoized column indices of the dataset.
      *
      * @var array
      */
-    protected $columns = [
-        //
-    ];
+    protected $columns = [];
 
     /**
      * @param int $maxDepth

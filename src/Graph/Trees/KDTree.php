@@ -175,10 +175,10 @@ class KDTree implements BST, Spatial
     {
         $path = $this->path($sample);
         
-        $leaf = end($path);
+        $node = end($path);
 
-        if ($leaf instanceof Neighborhood) {
-            return $leaf;
+        if ($node instanceof Neighborhood) {
+            return $node;
         }
 
         return null;

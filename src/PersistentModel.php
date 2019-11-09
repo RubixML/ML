@@ -49,8 +49,9 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
         $learner = $persister->load();
 
         if (!$learner instanceof Learner) {
-            throw new InvalidArgumentException('Peristable must be an'
-                . ' instance of a learner.');
+            throw new InvalidArgumentException('Peristable object must'
+                . ' be an instance of a learner, ' . gettype($learner)
+                . ' found.');
         }
 
         return new self($learner, $persister);
@@ -64,8 +65,8 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     public function __construct(Learner $base, Persister $persister)
     {
         if (!$base instanceof Persistable) {
-            throw new InvalidArgumentException('Base estimator must'
-                . ' be persistable.');
+            throw new InvalidArgumentException('Base estimator implement'
+                . ' the persistable interface.');
         }
 
         $this->base = $base;

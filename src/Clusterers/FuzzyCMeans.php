@@ -348,7 +348,9 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     protected function inertia(array $samples, array $memberships) : float
     {
-        if (empty($samples)) {
+        $n = count($samples);
+
+        if ($n < 1) {
             return 0.;
         }
 
@@ -363,6 +365,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             }
         }
 
-        return $inertia / count($samples);
+        return $inertia / $n;
     }
 }

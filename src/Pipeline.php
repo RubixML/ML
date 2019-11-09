@@ -80,9 +80,9 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
-                throw new InvalidArgumentException('Pipeline only accepts'
-                    . ' transformer middleware, ' . gettype($transformer)
-                    . ' found.');
+                throw new InvalidArgumentException('Transformer must implement'
+                    . ' the Transformer interface, ' . gettype($transformer)
+                    . ' given.');
             }
         }
 

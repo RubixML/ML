@@ -110,7 +110,8 @@ class Filesystem implements Persister
         $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Model could not be reconstituted.');
+            throw new RuntimeException('Persistable object could not'
+                . ' be reconstituted.');
         }
 
         return $persistable;

@@ -125,7 +125,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
         $grid = array_values($grid);
 
-        foreach ($grid as $position => &$options) {
+        foreach ($grid as &$options) {
             if (!is_array($options)) {
                 $options = [$options];
 
@@ -145,18 +145,22 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             switch ($proxy->type()) {
                 case self::CLASSIFIER:
                     $metric = new FBeta();
+
                     break 1;
     
                 case self::REGRESSOR:
                     $metric = new RSquared();
+
                     break 1;
                 
                 case self::CLUSTERER:
                     $metric = new VMeasure();
+
                     break 1;
     
                 case self::ANOMALY_DETECTOR:
                     $metric = new FBeta();
+                    
                     break 1;
     
                 default:
@@ -252,9 +256,9 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             ]));
         }
 
-        $combinations = $this->combinations();
-
         $this->backend->flush();
+
+        $combinations = $this->combinations();
 
         foreach ($combinations as $params) {
             $estimator = new $this->base(...$params);
@@ -299,7 +303,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         $estimator = new $this->base(...$bestParams);
 
         if ($this->logger) {
-            $this->logger->info('Training base learner with best'
+            $this->logger->info('Training learner with best'
                 . ' params on full dataset');
         }
 

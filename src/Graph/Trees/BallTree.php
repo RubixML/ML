@@ -178,10 +178,10 @@ class BallTree implements BST, Spatial
     {
         $path = $this->path($sample);
         
-        $leaf = end($path);
+        $node = end($path);
 
-        if ($leaf instanceof Cluster) {
-            return $leaf;
+        if ($node instanceof Cluster) {
+            return $node;
         }
 
         return null;
@@ -208,13 +208,13 @@ class BallTree implements BST, Spatial
                 $right = $current->right();
 
                 if ($left instanceof Hypersphere and $right instanceof Hypersphere) {
-                    $lHat = $this->kernel->compute($sample, $left->center());
-                    $rHat = $this->kernel->compute($sample, $right->center());
+                    $lDistance = $this->kernel->compute($sample, $left->center());
+                    $rDistance = $this->kernel->compute($sample, $right->center());
 
-                    if ($lHat < $rHat) {
-                        $current = $current->left();
+                    if ($lDistance < $rDistance) {
+                        $current = $left;
                     } else {
-                        $current = $current->right();
+                        $current = $right;
                     }
                 }
 

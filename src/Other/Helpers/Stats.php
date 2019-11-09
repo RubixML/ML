@@ -59,13 +59,13 @@ class Stats
 
         $total = array_sum($weights) ?: EPSILON;
 
-        $temp = 0.;
+        $sigma = 0.;
 
         foreach ($values as $i => $value) {
-            $temp += $value * ($weights[$i] ?: EPSILON);
+            $sigma += $value * $weights[$i];
         }
 
-        return $temp / $total;
+        return $sigma / $total;
     }
 
     /**
@@ -149,7 +149,7 @@ class Stats
         if ($n % 2 === 1) {
             $median = $values[$mid];
         } else {
-            $median = self::mean([$values[$mid - 1], $values[$mid]]);
+            $median = ($values[$mid - 1] + $values[$mid]) / 2.;
         }
 
         return $median;
