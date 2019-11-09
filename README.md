@@ -20,7 +20,7 @@ $ composer require rubix/ml
 
 #### Optional
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computation
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB

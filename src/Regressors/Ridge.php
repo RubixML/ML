@@ -134,22 +134,19 @@ class Ridge implements Estimator, Learner, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $samples = $dataset->samples();
-        $labels = $dataset->labels();
-
         $biases = Matrix::ones($dataset->numRows(), 1);
 
-        $x = Matrix::build($samples)->augmentLeft($biases);
-        $y = Vector::build($labels);
+        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
+        $y = Vector::build($dataset->labels());
 
         $alphas = array_fill(0, $x->n() - 1, $this->alpha);
 
-        $penalty = Matrix::diagonal(array_merge([0.], $alphas));
+        $penalties = Matrix::diagonal(array_merge([0.], $alphas));
 
         $xT = $x->transpose();
 
         $coefficients = $xT->matmul($x)
-            ->add($penalty)
+            ->add($penalties)
             ->inverse()
             ->dot($xT->dot($y))
             ->asArray();

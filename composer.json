@@ -39,15 +39,17 @@
         "ext-redis": "*",
         "ext-svm": "*",
         "friendsofphp/php-cs-fixer": "^2.14",
+        "phpmetrics/phpmetrics": "^2.4",
         "phpstan/phpstan": "^0.10.0",
         "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "7.2.*"
     },
     "suggest": {
+        "ext-tensor": "For fast Matrix/Vector computing",
+        "ext-svm": "For Support Vector Machine engine (libsvm)",
         "ext-gd": "For image vectorization",
-        "ext-igbinary": "For fast binary serialization of persistables",
         "ext-redis": "To persist models to a Redis DB",
-        "ext-svm": "For Support Vector Machine engine (libsvm)"
+        "ext-igbinary": "For binary serialization of persistables"
     },
     "autoload": {
         "psr-4": {
@@ -67,12 +69,14 @@
         "build": [
             "@composer install",
             "@analyze",
+            "@test",
             "@check",
-            "@test"
+            "@metrics"
         ],
         "analyze": "phpstan analyse -c phpstan.neon",
         "check": "php-cs-fixer fix --config=.php_cs.dist -v --dry-run --using-cache=no",
         "fix": "php-cs-fixer fix --config=.php_cs.dist",
+        "metrics": "phpmetrics --report-html=metrics ./",
         "test": "phpunit"
     },
     "config": {

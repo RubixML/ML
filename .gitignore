@@ -1,5 +1,5 @@
 /vendor
-/site
+/metrics
 composer.lock
 test.json
 *.model
