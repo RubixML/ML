@@ -12,7 +12,7 @@ public partial(Dataset $dataset) : void
 ```php
 $folds = $dataset->fold(3);
 
-$estimator->train($folds[0]);
+$estimator->partial($folds[0]);
 
 $estimator->partial($folds[1]);
 
