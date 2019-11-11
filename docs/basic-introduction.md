@@ -8,7 +8,7 @@ Supervised learning is a type of ML that incorporates a training signal in the f
 For classification problems, a supervised learner is trained to differentiate samples among a set of k possible discrete classes. In this type of problem, the training labels are the classes that each sample belongs to. Examples of class labels include "cat", "dog", "ship", "human", etc. Classification problems range from simple to very complex and include [image recognition](https://github.com/RubixML/CIFAR-10), [text sentiment analysis](https://github.com/RubixML/Sentiment), and [Iris flower classification](https://github.com/RubixML/Iris).
 
 ### Regression
-Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as integers and floating point numbers. Unlike classifiers, a regressor can predict infinitely many real values. Regression problems include determining the angle of an automobile steering wheel, [estimating the sale price of a home](https://github.com/RubixML/Housing), and credit scoring.
+Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as integers and floating point numbers. Unlike classifiers, a regressor can predict infinitely many real values. Regression problems include determining the angle of an automobile steering wheel, estimating the [sale price of a home](https://github.com/RubixML/Housing), and credit scoring.
 
 > **Note:** By convention in Rubix ML, discrete (referred to as *categorical*) variables are always denoted by a string, whereas *continuous* variables are given as either integers or floating point numbers.
 
@@ -29,7 +29,7 @@ Machine learning projects typically begin with a question. For example, you migh
 
 As an alternative to collecting data yourself, you can access one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that the data has most likely already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open datasets.
 
-> See the ['Extracting Data'](extracting-data.md) section to learn more about extracting data from different storage formats.
+> **Hint:** See the ['Extracting Data'](extracting-data.md) section to learn more about extracting data from different storage formats.
 
 ## The Dataset Object
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, transforming, randomizing, and sorting of the samples and labels for you. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
@@ -48,7 +48,7 @@ $labels = ['married', 'divorced', 'married', 'divorced'];
 $dataset = new Labeled($samples, $labels);
 ```
 
-> See the ['Representing your Data'](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
+> **Hint:** See the ['Representing your Data'](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
 
 # Choosing an Estimator
 [Estimators](https://docs.rubixml.com/en/latest/estimator.html) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](https://docs.rubixml.com/en/latest/learner.html) and must be trained before making predictions.
@@ -66,8 +66,10 @@ use Rubix\ML\Classifiers\KNearestNeighbors;
 $estimator = new KNearestNeighbors(5);
 ```
 
-# Training and Prediction
-Training is the process of feeding the learning algorithm data so that it can build an internal representation of the problem space. This representation is often called a *model* and it consists of all of the parameters (except hyper-parameters) that are required to make a prediction. If you try to make a prediction using an untrained learner, it will throw an exception.
+# Training the Learner
+Training is the process of feeding the learning algorithm data so that it can build an internal representation of the problem space. This representation is often called a *model* and it consists of all of the parameters (except hyper-parameters) that are required to make a prediction. In the case of K Nearest Neighbors, this representation is a high-dimensional Euclidean space in which each sample is considered a point.
+
+> **Note:** If you try to make predictions using an untrained learner, it will throw an exception.
 
 ```php
 $estimator->train($dataset);
@@ -82,9 +84,12 @@ var_dump($estimator->trained());
 bool(true)
 ```
 
-For our small training set, the training process should only take a matter of microseconds, but larger datasets with higher dimensionality can take much longer. Once the learner has been fully trained, we can feed in some unknown samples to see what the model predicts.
+For our small training set, the training process should only take a matter of microseconds, but larger datasets with higher dimensionality can take much longer. Once the learner has been trained, we can feed in some unknown samples to see what the model predicts.
 
-Suppose that we went out and collected 4 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married by taking their answers and running them past the trained KNN estimator in and [Unlabeled](https://docs.rubixml.com/en/latest/datasets/unlabeled.html) dataset.
+> **Hint:** See the ['Training'](training.md) section for a closer look at training a learner.
+
+### Making Predictions
+Suppose that we went out and collected 4 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married by taking their answers and running them through the trained KNN estimator in and [Unlabeled](https://docs.rubixml.com/en/latest/datasets/unlabeled.html) dataset. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -108,6 +113,10 @@ array(4) {
 	[4] => 'married'
 }
 ```
+
+The output of the KNN classifier are the predicted class labels of the unknown samples in the order they were feed to the estimator. We could either trust these predictions or we could procees to further evaluate the model. In the next section, we'll learn how to test the generalization performance of our estimator.
+
+> **Hint:** Check out the section on ['Inference'](inference.md) for more info on making predictions with an estimator.
 
 # Model Evaluation
 To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in  order to produce a validation score. For the purposes of the introduction, we will use the Hold Out validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.

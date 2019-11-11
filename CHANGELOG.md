@@ -5,6 +5,7 @@
     - Clusterers now predict categorical cluster labels
     - Added extracting data section to docs
     - Added code metrics
+    - Added training and inference sections to the docs
 
 - 0.0.16-beta
     - Radius Neighbors allows user-definable anomaly class

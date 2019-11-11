@@ -12,6 +12,7 @@ nav:
 - Extracting Data: extracting-data.md
 - Representing Your Data: representing-your-data.md
 - Training: training.md
+- Inference: inference.md
 - Model Persistence: model-persistence.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md
