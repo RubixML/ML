@@ -505,6 +505,24 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
+    public function test_drop_rows()
+    {
+        $dataset = $this->dataset->dropRows([1, 5]);
+
+        $samples = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
+        ];
+
+        $labels = ['not monster', 'not monster', 'monster', 'not monster'];
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertEquals($samples, $dataset->samples());
+        $this->assertEquals($labels, $dataset->labels());
+    }
+
     public function test_drop_column()
     {
         $dataset = $this->dataset->dropColumn(2);
@@ -516,6 +534,29 @@ class LabeledTest extends TestCase
             ['mean', 'rough', -1.0],
             ['nice', 'rough', 2.9],
             ['nice', 'furry', -5.0],
+        ];
+
+        $labels = [
+            'not monster', 'monster', 'not monster',
+            'monster', 'not monster', 'not monster',
+        ];
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertEquals($samples, $dataset->samples());
+        $this->assertEquals($labels, $dataset->labels());
+    }
+
+    public function test_drop_columns()
+    {
+        $dataset = $this->dataset->dropColumns([0, 2]);
+
+        $samples = [
+            ['furry', 4.0],
+            ['furry', -1.5],
+            ['rough', 2.6],
+            ['rough', -1.0],
+            ['rough', 2.9],
+            ['furry', -5.0],
         ];
 
         $labels = [

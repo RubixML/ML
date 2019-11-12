@@ -205,9 +205,28 @@ class Unlabeled extends Dataset
      */
     public function dropRow(int $index) : self
     {
+        return $this->dropRows([$index]);
+    }
+
+    /**
+     * Drop the rows at the given indices and return the new dataset.
+     *
+     * @param array $indices
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function dropRows(array $indices) : self
+    {
         $samples = $this->samples;
 
-        unset($samples[$index]);
+        foreach ($indices as $index) {
+            if (!is_int($index)) {
+                throw new InvalidArgumentException('Index must be an'
+                    . ' integer, ' . gettype($index) . ' given.');
+            }
+
+            unset($samples[$index]);
+        }
 
         return self::quick(array_values($samples));
     }
@@ -220,10 +239,31 @@ class Unlabeled extends Dataset
      */
     public function dropColumn(int $index) : self
     {
+        return $this->dropColumns([$index]);
+    }
+
+    /**
+     * Drop the columns at the given indices and return the new dataset.
+     *
+     * @param array $indices
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function dropColumns(array $indices) : self
+    {
         $samples = [];
 
+        foreach ($indices as $index) {
+            if (!is_int($index)) {
+                throw new InvalidArgumentException('Index must be an'
+                    . ' integer, ' . gettype($index) . ' given.');
+            }
+        }
+
         foreach ($this->samples as $sample) {
-            unset($sample[$index]);
+            foreach ($indices as $index) {
+                unset($sample[$index]);
+            }
 
             $samples[] = array_values($sample);
         }

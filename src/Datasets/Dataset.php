@@ -451,12 +451,28 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function dropRow(int $index);
 
     /**
+     * Drop the rows at the given indices and return the new dataset.
+     *
+     * @param array $indices
+     * @return self
+     */
+    abstract public function dropRows(array $indices);
+
+    /**
      * Drop the column at the given index and return the new dataset.
      *
      * @param int $index
      * @return self
      */
     abstract public function dropColumn(int $index);
+
+    /**
+     * Drop the columns at the given indices and return the new dataset.
+     *
+     * @param array $indices
+     * @return self
+     */
+    abstract public function dropColumns(array $indices);
 
     /**
      * Randomize the dataset.

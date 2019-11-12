@@ -356,15 +356,25 @@ array(3) {
 }
 ```
 
-### Dropping Rows or Columns
+### Dropping Rows and Columns
 Drop the row at the given index and return the new dataset:
 ```php
 public dropRow(int $index) : self
 ```
 
+Drop the rows at the given indices and return the new dataset:
+```php
+public dropRows(array $indices) : self
+```
+
 Drop the column at the given index and return the new dataset:
 ```php
 public dropColumn(int $index) : self
+```
+
+Drop the columns at the given indices and return the new dataset:
+```php
+public dropColumns(array $indices) : self
 ```
 
 ### Descriptive Statistics
