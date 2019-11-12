@@ -141,14 +141,14 @@ array(3) {
 ```
 
 ### Print Rules
-Print a human readable text representation of the decision tree:
+Return a human readable text representation of the decision tree rules:
 ```php
-public printRules() : void
+public rules() : string
 ```
 
 **Example**
 ```php
-$tree->printRules();
+echo $tree->rules();
 ```
 
 ```sh

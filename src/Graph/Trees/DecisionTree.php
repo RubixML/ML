@@ -13,7 +13,9 @@ interface DecisionTree extends BST
     public function featureImportances() : array;
 
     /**
-     * Print a human readable text representation of the decision tree.
+     * Return a human readable text representation of the decision tree rules.
+     *
+     * @return string
      */
-    public function printRules() : void;
+    public function rules() : string;
 }

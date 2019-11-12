@@ -62,7 +62,7 @@ class ExtraTreeRegressorTest extends TestCase
         $this->assertEquals(0, $this->estimator->height());
     }
 
-    public function test_train_predict_feature_importances()
+    public function test_train_predict_feature_importances_rules()
     {
         $this->estimator->train($this->training);
 
@@ -80,6 +80,10 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->assertCount(6, $importances);
         $this->assertEquals(1., array_sum($importances));
+
+        $rules = $this->estimator->rules();
+
+        $this->assertInternalType('string', $rules);
     }
 
     public function test_train_with_unlabeled()

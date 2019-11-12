@@ -6,6 +6,7 @@
     - Added extracting data section to docs
     - Added code metrics
     - Added training and inference sections to the docs
+    - Decision tree rules method now outputs a string
 
 - 0.0.16-beta
     - Radius Neighbors allows user-definable anomaly class

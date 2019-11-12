@@ -334,24 +334,30 @@ abstract class CART implements DecisionTree
      * Print a human readable text representation of the decision tree.
      *
      * @throws RuntimeException
+     * @return string
      */
-    public function printRules() : void
+    public function rules() : string
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
         }
 
-        $this->_printrules($this->root);
+        $carry = '';
+
+        $this->_rules($carry, $this->root);
+
+        return $carry;
     }
 
     /**
      * Recursive function to print out the decision rule at each node
      * using preorder traversal.
      *
+     * @param string $carry
      * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
      * @param int $depth
      */
-    protected function _printRules(BinaryNode $node, int $depth = 0) : void
+    protected function _rules(string &$carry, BinaryNode $node, int $depth = 0) : void
     {
         ++$depth;
 
@@ -361,22 +367,22 @@ abstract class CART implements DecisionTree
             if ($node->left() !== null) {
                 $operator = is_string($node->value()) ? '==' : '<';
 
-                echo $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
 
-                $this->_printrules($node->left(), $depth);
+                $this->_rules($carry, $node->left(), $depth);
             }
             
             if ($node->right() !== null) {
                 $operator = is_string($node->value()) ? '!=' : '>=';
 
-                echo $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
 
-                $this->_printrules($node->right(), $depth);
+                $this->_rules($carry, $node->right(), $depth);
             }
         }
 
         if ($node instanceof Outcome) {
-            echo $prefix . "Outcome={$node->outcome()} Impurity={$node->impurity()}" . PHP_EOL;
+            $carry .= $prefix . "Outcome={$node->outcome()} Impurity={$node->impurity()}" . PHP_EOL;
         }
     }
 

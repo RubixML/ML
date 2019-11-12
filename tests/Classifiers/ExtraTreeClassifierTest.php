@@ -67,7 +67,7 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertEquals(0, $this->estimator->height());
     }
 
-    public function test_train_predict_feature_importances()
+    public function test_train_predict_feature_importances_rules()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -89,6 +89,10 @@ class ExtraTreeClassifierTest extends TestCase
 
         $this->assertCount(3, $importances);
         $this->assertEquals(1., array_sum($importances));
+
+        $rules = $this->estimator->rules();
+
+        $this->assertInternalType('string', $rules);
     }
 
     public function test_train_with_unlabeled()

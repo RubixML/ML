@@ -21,9 +21,9 @@ Return the normalized feature importances i.e. the proportion that each feature 
 public featureImportances() : array
 ```
 
-Display a human readable text representation of the decision tree:
+Return a human readable text representation of the decision tree rules:
 ```php
-public printrules() : void
+public rules() : string
 ```
 
 Return the height of the tree:
