@@ -105,12 +105,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param int $row
+     * @param int $index
      * @return array
      */
-    public function row(int $row) : array
+    public function row(int $index) : array
     {
-        return $this->offsetGet($row);
+        return $this->offsetGet($index);
     }
 
     /**
@@ -126,12 +126,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature column at the given index.
      *
-     * @param int $column
+     * @param int $index
      * @return array
      */
-    public function column(int $column) : array
+    public function column(int $index) : array
     {
-        return array_column($this->samples, $column);
+        return array_column($this->samples, $index);
     }
 
     /**
@@ -441,6 +441,22 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return \Rubix\ML\Datasets\Dataset
      */
     abstract public function append(Dataset $dataset);
+
+    /**
+     * Drop the row at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    abstract public function dropRow(int $index);
+
+    /**
+     * Drop the column at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    abstract public function dropColumn(int $index);
 
     /**
      * Randomize the dataset.

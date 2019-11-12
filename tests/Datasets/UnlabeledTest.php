@@ -349,6 +349,39 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
     }
 
+    public function test_drop_row()
+    {
+        $dataset = $this->dataset->dropRow(1);
+
+        $samples = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'loner', -5.0],
+        ];
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertEquals($samples, $dataset->samples());
+    }
+
+    public function test_drop_column()
+    {
+        $dataset = $this->dataset->dropColumn(2);
+
+        $samples = [
+            ['nice', 'furry', 4.0],
+            ['mean', 'furry', -1.5],
+            ['nice', 'rough', 2.6],
+            ['mean', 'rough', -1.0],
+            ['nice', 'rough', 2.9],
+            ['nice', 'furry', -5.0],
+        ];
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertEquals($samples, $dataset->samples());
+    }
+
     public function test_describe_dataset()
     {
         $stats = $this->dataset->describe();

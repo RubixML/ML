@@ -198,6 +198,40 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Drop the row at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    public function dropRow(int $index) : self
+    {
+        $samples = $this->samples;
+
+        unset($samples[$index]);
+
+        return self::quick(array_values($samples));
+    }
+
+    /**
+     * Drop the column at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    public function dropColumn(int $index) : self
+    {
+        $samples = [];
+
+        foreach ($this->samples as $sample) {
+            unset($sample[$index]);
+
+            $samples[] = array_values($sample);
+        }
+
+        return self::quick($samples);
+    }
+
+    /**
      * Randomize the dataset in place and return self for chaining.
      *
      * @return self

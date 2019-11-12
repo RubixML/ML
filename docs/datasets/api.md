@@ -356,6 +356,17 @@ array(3) {
 }
 ```
 
+### Dropping Rows or Columns
+Drop the row at the given index and return the new dataset:
+```php
+public dropRow(int $index) : self
+```
+
+Drop the column at the given index and return the new dataset:
+```php
+public dropColumn(int $index) : self
+```
+
 ### Descriptive Statistics
 Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
 ```php

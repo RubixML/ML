@@ -454,6 +454,44 @@ class Labeled extends Dataset
     }
 
     /**
+     * Drop the row at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    public function dropRow(int $index) : self
+    {
+        $samples = $this->samples;
+        $labels = $this->labels;
+
+        unset($samples[$index], $labels[$index]);
+
+        return self::quick(
+            array_values($samples),
+            array_values($labels)
+        );
+    }
+
+    /**
+     * Drop the column at the given index and return the new dataset.
+     *
+     * @param int $index
+     * @return self
+     */
+    public function dropColumn(int $index) : self
+    {
+        $samples = [];
+
+        foreach ($this->samples as $sample) {
+            unset($sample[$index]);
+
+            $samples[] = array_values($sample);
+        }
+
+        return self::quick($samples, $this->labels);
+    }
+
+    /**
      * Randomize the dataset in place and return self for chaining.
      *
      * @return self
