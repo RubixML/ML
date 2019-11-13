@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Mean.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Mean.php">[source]</a></span>
 
 # Mean
 This strategy always predicts the mean of the fitted data.

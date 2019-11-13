@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php">[source]</a></span>
 
 # Image Vectorizer
 Image Vectorizer takes images and converts them into a flat vector of raw color channel data.

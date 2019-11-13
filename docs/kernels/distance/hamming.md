@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Hamming.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Hamming.php">[source]</a></span>
 
 # Hamming
 A categorical distance function that measures distance as the number of substitutions necessary to convert one sample to the other.

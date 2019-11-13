@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">[source]</a></span>
 
 # Random Hot Deck Imputer
 A method of imputation similiar to [KNN Imputer](knn-imputer.md) but instead of computing a weighted average of the neighbors' features, Random Hot Deck picks a value from the neighborhood at random. This makes Random Hot Deck Imputer slightly less computationally complex while satisfying some balancing equations at the same time.

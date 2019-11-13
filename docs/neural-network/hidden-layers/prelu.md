@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/PReLU.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/PReLU.php">[source]</a></span>
 
 # PReLU
 Parametric Rectified Linear Units are leaky rectifiers whose leakage coefficient is learned during training.

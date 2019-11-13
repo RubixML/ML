@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php">[source]</a></span>
 
 # Softmax Classifier
 A generalization of [Logistic Regression](logistic-regression.md) for the multiclass case using a single layer neural network with a [Softmax](../neural-network/activation-functions/softmax.md) output layer.

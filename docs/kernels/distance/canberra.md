@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Canberra.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Canberra.php">[source]</a></span>
 
 # Canberra
 A weighted version of the [Manhattan](manhattan.md) distance, Canberra examines the sum of a series of fractional differences between two samples. Canberra can be very sensitive when both coordinates are near zero.

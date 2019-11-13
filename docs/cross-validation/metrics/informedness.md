@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php">[source]</a></span>
 
 # Informedness
 Informedness is a measure of the probability that an estimator will make an informed decision. Its value ranges from -1 through 1 and has a zero value when the test gives yields no useful information.

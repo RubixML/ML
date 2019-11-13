@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Graph/Trees/BallTree.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Graph/Trees/BallTree.php">[source]</a></span>
 
 # Ball Tree
 A binary spatial tree that partitions the dataset into successively smaller and tighter *ball* nodes whose boundary are defined by a centroid and radius. Ball Trees work well in higher dimensions since the partitioning schema does not rely on a finite number of 1-dimensional axis aligned splits as with [k-d trees](k-d-tree.md).

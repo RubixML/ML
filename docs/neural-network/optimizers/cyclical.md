@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Cyclical.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Cyclical.php">[source]</a></span>
 
 # Cyclical
 The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by the decay coefficient at each step. Cyclical learning rates have been shown to help escape bad local minima and saddle points thus achieving lower training loss.

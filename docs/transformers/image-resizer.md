@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php">[source]</a></span>
 
 # Image Resizer
 The Image Resizer scales and crops images to a user specified width, height, and color depth.

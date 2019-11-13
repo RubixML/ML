@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanSquaredError.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanSquaredError.php">[source]</a></span>
 
 # Mean Squared Error
 A scale-dependent regression metric that punishes bad predictions more the worse they are. Formally, MSE is the average of the squared differences between a set of predictions and their target labels. For an unbiased estimator, the MSE measures the variance of the predictions.

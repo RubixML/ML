@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php">[source]</a></span>
 
 # HTML Stripper
 Removes any HTML tags that may be in the text of a categorical variable.

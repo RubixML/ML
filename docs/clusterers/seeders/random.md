@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/Random.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/Random.php">[source]</a></span>
 
 # Random
 Completely random selection of k seeds from the given dataset.

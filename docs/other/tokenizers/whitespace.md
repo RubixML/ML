@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Whitespace.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Whitespace.php">[source]</a></span>
 
 # Whitespace
 Tokens are delimited by a user-specified whitespace character.

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/SMAPE.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/SMAPE.php">[source]</a></span>
 
 # SMAPE
 *Symmetric Mean Absolute Percentage Error* is a scale-independent regression metric that expresses the relative error of a set of predictions and their labels as a percentage. It is an improvement over the standard MAPE in that it is both upper and lower bounded.

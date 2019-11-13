@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php">[source]</a></span>
 
 # SVR
 The Support Vector Machine Regressor is a maximum margin algorithm for the purposes of regression. Similarly to the [SVC](../classifiers/svc.md), the model produced by SVR (*R* for regression) depends only on a subset of the training data, because the cost function for building the model ignores any training data close to the model prediction given by parameter *epsilon*. Thus, the value of epsilon defines a margin of tolerance where no penalty is given to errors.

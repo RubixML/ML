@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/KNNRegressor.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/KNNRegressor.php">[source]</a></span>
 
 # KNN Regressor
 A version of the K Nearest Neighbors algorithm that uses the average (mean) outcome of the k nearest data points to make continuous valued predictions suitable for regression problems.

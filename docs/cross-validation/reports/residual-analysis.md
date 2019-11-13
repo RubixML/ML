@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php">[source]</a></span>
 
 # Residual Analysis
 Residual Analysis is a report that measures the differences between the predicted and target values of a regression problem in detail. In one report, you get multiple error measurements (MAE, MSE, MAPE, R2, etc.) as well as statistics regarding the distribution of errors.

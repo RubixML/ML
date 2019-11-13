@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php">[source]</a></span>
 
 # K Nearest Neighbors
 A distance-based algorithm that locates the k nearest neighbors (data points) from the training set and uses a weighted vote to classify unknown samples during inference. A *kernelized* distance function allows the user to specify different concepts of distance to the estimator. 

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MinMaxNormalizer.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MinMaxNormalizer.php">[source]</a></span>
 
 # Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).

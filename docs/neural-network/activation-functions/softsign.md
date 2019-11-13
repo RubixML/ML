@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Softsign.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Softsign.php">[source]</a></span>
 
 # Softsign
 A smooth sigmoid-shaped function that squashes the input between -1 and 1.

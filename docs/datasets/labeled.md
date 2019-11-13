@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">[source]</a></span>
 
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model using cross validation. In addition to the standard dataset object methods, a Labeled dataset can perform operations such as stratification and sorting the dataset by label.

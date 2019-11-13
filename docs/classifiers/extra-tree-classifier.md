@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ExtraTreeClassifier.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ExtraTreeClassifier.php">[source]</a></span>
 
 # Extra Tree Classifier
 An Extremely Randomized Classification Tree that splits the training set at a random point with the lowest entropy among *m* features. Extra Trees are useful in ensembles such as [Random Forest](random-forest.md) or [AdaBoost](adaboost.md) as the *weak* classifier or they can be used on their own. The strength of Extra Trees are their computational efficiency and increased variance of predictions.

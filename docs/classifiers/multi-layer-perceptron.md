@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultiLayerPerceptron.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultiLayerPerceptron.php">[source]</a></span>
 
 # Multi Layer Perceptron
 A multiclass feedforward neural network classifier with user-defined hidden layers as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. In addition, the MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress declined during training.

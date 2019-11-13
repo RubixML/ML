@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Linear.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Linear.php">[source]</a></span>
 
 # Linear
 A simple linear kernel computed by the dot product of two vectors.

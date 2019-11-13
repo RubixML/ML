@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php">[source]</a></span>
 
 # MLP Regressor
 A feedforward neural network with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](../classifiers/multi-layer-perceptron.md) classifier, the MLP Regressor is able to tackle complex non-linear regression problems by forming higher-order representations of the input features using intermediate computational units called hidden layers.

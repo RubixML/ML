@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/LogisticRegresion.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/LogisticRegresion.php">[source]</a></span>
 
 # Logistic Regression
 A linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes. The model parameters (weights and bias) are solved using mini batch Gradient Descent with pluggable optimizers and cost functions that run on the neural network subsystem.

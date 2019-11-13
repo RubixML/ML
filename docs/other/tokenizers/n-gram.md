@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/NGram.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/NGram.php">[source]</a></span>
 
 # N-gram
 N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max* number of words per token.

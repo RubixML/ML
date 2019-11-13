@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/AdaMax.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/AdaMax.php">[source]</a></span>
 
 # AdaMax
 A version of [Adam](adam.md) that replaces the RMS property with the infinity norm of the gradients.

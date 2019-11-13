@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php">[source]</a></span>
 
 # Naive Bayes
 Probability-based classifier that uses Bayes' Theorem and the strong assumption that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world. This particular implementation is based on a multinomial (categorical) distribution of input features.

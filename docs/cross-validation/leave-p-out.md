@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/LeavePOut.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/LeavePOut.php">[source]</a></span>
 
 # Leave P Out
 Leave P Out tests a learner with a unique holdout set of size p for each round until all samples have been tested.

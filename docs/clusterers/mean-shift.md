@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">[source]</a></span>
 
 # Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given a radius constraint.

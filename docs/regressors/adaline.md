@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Adaline.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Adaline.php">[source]</a></span>
 
 # Adaline
 *Adaptive Linear Neuron* is a single layer neural network with a linear output neuron. Training is equivalent to solving [Ridge](ridge.md) regression iteratively using mini batch Gradient Descent.

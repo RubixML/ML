@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/TextNormalizer.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/TextNormalizer.php">[source]</a></span>
 
 # Text Normalizer
 This transformer converts all text to lowercase and *optionally* removes extra whitespace.

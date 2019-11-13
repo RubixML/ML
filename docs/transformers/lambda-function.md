@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/LambdaFunction.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/LambdaFunction.php">[source]</a></span>
 
 # Lambda Function
 Run a stateless lambda function (*anonymous* function) over the samples. The lambda function receives the sample matrix as an argument and should return the transformed matrix.

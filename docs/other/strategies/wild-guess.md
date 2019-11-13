@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/WildGuess.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/WildGuess.php">[source]</a></span>
 
 # Wild Guess
 Guess a random number somewhere between an upper and lower bound given by the data and a user-defined *shrinkage* parameter.

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Euclidean.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Euclidean.php">[source]</a></span>
 
 # Euclidean
 Standard straight line (*bee* line) distance between two points. The Euclidean distance has the nice property of being invariant under any rotation.

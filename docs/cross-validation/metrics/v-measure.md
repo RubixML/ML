@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/VMeasure.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/VMeasure.php">[source]</a></span>
 
 # V Measure
 V Measure is an entropy-based clustering metric that balances [homogeneity](homogeneity.md) and [completeness](completeness.md).

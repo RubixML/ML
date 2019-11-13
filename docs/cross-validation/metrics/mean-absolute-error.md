@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanAbsoluteError.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanAbsoluteError.php">[source]</a></span>
 
 # Mean Absolute Error
 A scale-dependent metric that measures the average absolute error between a set of predictions and their ground truth labels. MAE has the same units of measurement as the labels being estimated.

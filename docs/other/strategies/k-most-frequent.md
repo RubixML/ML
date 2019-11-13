@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/KMostFrequent.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/KMostFrequent.php">[source]</a></span>
 
 # K Most Frequent
 This Strategy outputs one of k most frequently occurring classes at random with equal probability.

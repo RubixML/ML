@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Binary.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Binary.php">[source]</a></span>
 
 # Binary Serializer
 Converts Persistable objects to and from binary format.

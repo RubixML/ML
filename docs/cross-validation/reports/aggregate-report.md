@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php">[source]</a></span>
 
 # Aggregate Report
 A report that aggregates the output of multiple reports.

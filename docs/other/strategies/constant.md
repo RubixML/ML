@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Constant.php">Source</a></span>'
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Constant.php">[source]</a></span>'
 
 # Constant
 Always guess the same value.
