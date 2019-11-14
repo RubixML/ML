@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.17-beta
     - Added Tensor extension compatibility
     - Migrated to new Tensor library namespace
     - Anomaly detector predictions now categorical
