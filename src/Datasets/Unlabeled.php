@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithDistance;
 use InvalidArgumentException;
 
 use const Rubix\ML\PHI;
@@ -444,6 +445,8 @@ class Unlabeled extends Dataset
             throw new InvalidArgumentException('Dimensionality mismatch between'
                 . ' left and right centroids.');
         }
+
+        DatasetIsCompatibleWithDistance::check($this, $kernel);
 
         $left = $right = [];
 

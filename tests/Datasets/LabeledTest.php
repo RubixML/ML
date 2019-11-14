@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Datasets;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
 use ArrayAccess;
@@ -435,6 +436,19 @@ class LabeledTest extends TestCase
 
         $this->assertCount(3, $left);
         $this->assertCount(3, $right);
+    }
+
+    public function test_spatial_partition()
+    {
+        $kernel = new Gower(9.);
+
+        [$left, $right] = $this->dataset->spatialPartition($this->dataset->row(0), $this->dataset->row(3), $kernel);
+
+        $this->assertInstanceOf(Labeled::class, $left);
+        $this->assertInstanceOf(Labeled::class, $right);
+
+        $this->assertCount(4, $left);
+        $this->assertCount(2, $right);
     }
 
     public function test_random_subset()

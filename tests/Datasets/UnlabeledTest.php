@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Datasets;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
 use ArrayAccess;
@@ -298,6 +299,19 @@ class UnlabeledTest extends TestCase
 
         $this->assertCount(2, $left);
         $this->assertCount(4, $right);
+    }
+
+    public function test_spatial_partition()
+    {
+        $kernel = new Gower(9.);
+
+        [$left, $right] = $this->dataset->spatialPartition($this->dataset->row(0), $this->dataset->row(3), $kernel);
+
+        $this->assertInstanceOf(Unlabeled::class, $left);
+        $this->assertInstanceOf(Unlabeled::class, $right);
+
+        $this->assertCount(4, $left);
+        $this->assertCount(2, $right);
     }
 
     public function test_random_subset()
