@@ -186,12 +186,11 @@ class Labeled extends Dataset
      */
     public function label(int $index)
     {
-        if (!isset($this->labels[$index])) {
-            throw new InvalidArgumentException("Row at offset $index"
-                . ' does not exist.');
+        if (isset($this->labels[$index])) {
+            return $this->labels[$index];
         }
 
-        return $this->labels[$index];
+        throw new InvalidArgumentException("Row at index $index not found.");
     }
 
     /**
@@ -874,10 +873,10 @@ class Labeled extends Dataset
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         foreach ($this->samples as $i => $sample) {
-            $lHat = $kernel->compute($sample, $leftCentroid);
-            $rHat = $kernel->compute($sample, $rightCentroid);
+            $lDistance = $kernel->compute($sample, $leftCentroid);
+            $rDistance = $kernel->compute($sample, $rightCentroid);
 
-            if ($lHat < $rHat) {
+            if ($lDistance < $rDistance) {
                 $leftSamples[] = $sample;
                 $leftLabels[] = $this->labels[$i];
             } else {

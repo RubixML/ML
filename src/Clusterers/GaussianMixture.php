@@ -266,7 +266,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $memberships = [];
 
-            foreach ($dataset as $sample) {
+            foreach ($dataset->samples() as $sample) {
                 $jll = $this->jointLogLikelihood($sample);
 
                 $memberships[] = array_map('exp', $jll);
@@ -373,7 +373,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
             $total = logsumexp($jll);
@@ -438,7 +438,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $clusters = array_fill(0, $this->k, []);
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $bestDistance = INF;
             $bestCluster = -1;
     

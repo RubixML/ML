@@ -122,7 +122,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, Persis
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $predictions[] = $node instanceof Average

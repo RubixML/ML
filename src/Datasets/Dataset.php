@@ -617,7 +617,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a column from the dataset given by index.
+     * Return a sample from the dataset given by index.
      *
      * @param mixed $index
      * @throws \InvalidArgumentException
@@ -625,7 +625,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetGet($index) : array
     {
-        return $this->samples[$index];
+        if (isset($this->samples[$index])) {
+            return $this->samples[$index];
+        }
+
+        throw new InvalidArgumentException("Row at index $index not found.");
     }
 
     /**

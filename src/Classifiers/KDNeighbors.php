@@ -169,7 +169,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
@@ -208,7 +208,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {

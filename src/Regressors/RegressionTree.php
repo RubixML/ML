@@ -121,7 +121,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $predictions[] = $node instanceof Average

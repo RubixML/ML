@@ -59,7 +59,7 @@ class Ball implements BinaryNode, Hypersphere
             
         $distances = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $distances[] = $kernel->compute($sample, $center);
         }
 
@@ -69,7 +69,7 @@ class Ball implements BinaryNode, Hypersphere
 
         $distances = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $distances[] = $kernel->compute($sample, $leftCentroid);
         }
 

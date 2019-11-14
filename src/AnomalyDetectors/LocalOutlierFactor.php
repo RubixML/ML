@@ -177,7 +177,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 
         $iHat = $dHat = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
 
             $iHat[] = $indices;

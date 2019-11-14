@@ -53,7 +53,7 @@ class PlusPlus implements Seeder
         while (count($centroids) < $k) {
             $weights = [];
 
-            foreach ($dataset as $sample) {
+            foreach ($dataset->samples() as $sample) {
                 $closest = INF;
 
                 foreach ($centroids as $centroid) {

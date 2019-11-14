@@ -149,7 +149,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {

@@ -144,10 +144,12 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $kernel = $kernel ?? new Euclidean();
 
+        $samples = $dataset->samples();
+
         $distances = [];
 
-        foreach ($dataset as $i => $sampleA) {
-            foreach ($dataset as $j => $sampleB) {
+        foreach ($samples as $i => $sampleA) {
+            foreach ($samples as $j => $sampleB) {
                 if ($i !== $j) {
                     $distances[] = $kernel->compute($sampleA, $sampleB);
                 }

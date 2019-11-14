@@ -167,7 +167,7 @@ class SVC implements Estimator, Learner
 
         $data = [];
 
-        foreach ($dataset as $i => $sample) {
+        foreach ($dataset->samples() as $i => $sample) {
             $data[] = array_merge([$mapping[$labels[$i]]], $sample);
         }
 
@@ -193,7 +193,7 @@ class SVC implements Estimator, Learner
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $predictions[] = $this->classes[$this->model->predict($sample)];
         }
 

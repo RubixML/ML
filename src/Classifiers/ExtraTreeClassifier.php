@@ -135,7 +135,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $predictions[] = $node instanceof Best
@@ -166,7 +166,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best

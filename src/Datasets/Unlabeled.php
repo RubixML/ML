@@ -448,10 +448,10 @@ class Unlabeled extends Dataset
         $left = $right = [];
 
         foreach ($this->samples as $sample) {
-            $lHat = $kernel->compute($sample, $leftCentroid);
-            $rHat = $kernel->compute($sample, $rightCentroid);
+            $lDistance = $kernel->compute($sample, $leftCentroid);
+            $rDistance = $kernel->compute($sample, $rightCentroid);
 
-            if ($lHat < $rHat) {
+            if ($lDistance < $rDistance) {
                 $left[] = $sample;
             } else {
                 $right[] = $sample;

@@ -155,7 +155,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {

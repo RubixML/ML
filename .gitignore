@@ -2,6 +2,7 @@
 /metrics
 composer.lock
 test.json
+test.php
 *.model
 .php_cs.cache
 .vscode

@@ -138,7 +138,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $predictions[] = $node instanceof Best
@@ -169,7 +169,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best

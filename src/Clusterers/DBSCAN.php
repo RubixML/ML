@@ -121,7 +121,7 @@ class DBSCAN implements Estimator
         
         $cluster = self::START_CLUSTER;
 
-        foreach ($dataset as $i => $sample) {
+        foreach ($dataset->samples() as $i => $sample) {
             if (isset($predictions[$i])) {
                 continue 1;
             }

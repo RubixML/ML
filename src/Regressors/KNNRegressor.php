@@ -177,7 +177,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {

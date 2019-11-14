@@ -63,7 +63,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
 
         $distances = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $distances[] = $kernel->compute($sample, $center);
         }
 

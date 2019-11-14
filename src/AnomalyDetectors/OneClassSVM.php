@@ -167,7 +167,7 @@ class OneClassSVM implements Estimator, Learner
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $predictions[] = $this->model->predict($sample) !== 1. ? '0' : '1';
         }
 

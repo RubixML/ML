@@ -117,7 +117,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
             return;
         }
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             foreach ($sample as $column => $feature) {
                 if ($feature > 0) {
                     ++$this->dfs[$column];

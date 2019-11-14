@@ -340,7 +340,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
             $total = logsumexp($jll);

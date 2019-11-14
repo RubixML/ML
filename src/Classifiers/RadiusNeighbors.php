@@ -183,7 +183,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
@@ -229,7 +229,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             $dist = $template;

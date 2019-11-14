@@ -166,7 +166,7 @@ class SVR implements Estimator, Learner
 
         $data = [];
 
-        foreach ($dataset as $i => $sample) {
+        foreach ($dataset->samples() as $i => $sample) {
             $data[] = array_merge([$labels[$i]], $sample);
         }
 

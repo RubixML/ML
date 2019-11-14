@@ -188,7 +188,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
@@ -227,7 +227,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         $probabilities = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($dataset->samples() as $sample) {
             [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
