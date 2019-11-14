@@ -108,7 +108,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @param int $index
      * @return array
      */
-    public function row(int $index) : array
+    public function sample(int $index) : array
     {
         return $this->offsetGet($index);
     }

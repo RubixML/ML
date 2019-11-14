@@ -44,7 +44,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
 
         $sample = $this->generator->generate(3)
             ->apply($this->transformer)
-            ->row(0);
+            ->sample(0);
 
         $this->assertCount(1, $sample);
     }

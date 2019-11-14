@@ -31,7 +31,7 @@ class DenseRandomProjectorTest extends TestCase
 
     public function test_fit_transform()
     {
-        $this->assertCount(10, $this->generator->generate(1)->row(0));
+        $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
         $this->transformer->fit($this->generator->generate(30));
 
@@ -39,7 +39,7 @@ class DenseRandomProjectorTest extends TestCase
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
-            ->row(0);
+            ->sample(0);
 
         $this->assertCount(3, $sample);
     }

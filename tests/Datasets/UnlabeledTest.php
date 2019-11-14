@@ -84,10 +84,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());
     }
 
-    public function test_get_row()
+    public function test_get_sample()
     {
-        $this->assertEquals(self::SAMPLES[2], $this->dataset->row(2));
-        $this->assertEquals(self::SAMPLES[5], $this->dataset->row(5));
+        $this->assertEquals(self::SAMPLES[2], $this->dataset->sample(2));
+        $this->assertEquals(self::SAMPLES[5], $this->dataset->sample(5));
     }
 
     public function test_num_rows()
@@ -305,7 +305,7 @@ class UnlabeledTest extends TestCase
     {
         $kernel = new Gower(9.);
 
-        [$left, $right] = $this->dataset->spatialPartition($this->dataset->row(0), $this->dataset->row(3), $kernel);
+        [$left, $right] = $this->dataset->spatialPartition($this->dataset->sample(0), $this->dataset->sample(3), $kernel);
 
         $this->assertInstanceOf(Unlabeled::class, $left);
         $this->assertInstanceOf(Unlabeled::class, $right);
@@ -347,7 +347,7 @@ class UnlabeledTest extends TestCase
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(0));
+        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(0));
     }
 
     public function test_append_dataset()
@@ -360,10 +360,10 @@ class UnlabeledTest extends TestCase
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
+        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(6));
     }
 
-    public function test_drop_row()
+    public function test_drop_sample()
     {
         $dataset = $this->dataset->dropRow(1);
 

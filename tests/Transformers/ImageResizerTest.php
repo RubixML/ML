@@ -32,7 +32,7 @@ class ImageResizerTest extends TestCase
     {
         $this->dataset->apply($this->transformer);
 
-        $sample = $this->dataset->row(0);
+        $sample = $this->dataset->sample(0);
     
         $image = $sample[0];
 

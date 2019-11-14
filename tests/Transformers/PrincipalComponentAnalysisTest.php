@@ -39,7 +39,7 @@ class PrincipalComponentAnalysisTest extends TestCase
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
-            ->row(0);
+            ->sample(0);
 
         $this->assertCount(2, $sample);
     }

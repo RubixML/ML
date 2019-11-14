@@ -47,7 +47,7 @@ class KDTreeTest extends TestCase
 
         $this->assertGreaterThan(2, $this->tree->height());
 
-        $sample = $this->generator->generate(1)->row(0);
+        $sample = $this->generator->generate(1)->sample(0);
 
         [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
 

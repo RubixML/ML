@@ -37,7 +37,7 @@ public samples() : array
 
 Select a single row containing the sample at a given offset (offsets begin at 0):
 ```php
-public row(int $index) : array
+public sample(int $index) : array
 ```
 
 Select the values of a feature column at a given offset (offsets begin at 0):
