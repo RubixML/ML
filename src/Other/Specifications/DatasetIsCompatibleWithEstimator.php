@@ -5,12 +5,13 @@ namespace Rubix\ML\Other\Specifications;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Params;
 use InvalidArgumentException;
 
 class DatasetIsCompatibleWithEstimator
 {
     /**
-     * Perform a check.
+     * Perform a check of the specification.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Estimator $estimator
@@ -25,16 +26,12 @@ class DatasetIsCompatibleWithEstimator
         $same = array_intersect($types, $compatibility);
 
         if (count($same) < count($types)) {
-            $different = array_diff($types, $compatibility);
+            $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', array_map([DataType::class, 'asString'], $different));
+            $diffString = implode(', ', array_map([DataType::class, 'asString'], $diff));
 
-            $compatString = implode(', ', array_map([DataType::class, 'asString'], $compatibility));
-
-            throw new InvalidArgumentException('Estimator is not'
-                . " compatible with $diffString data type"
-                . (count($different) > 1 ? 's.' : '.')
-                . " Compatible data types are $compatString.");
+            throw new InvalidArgumentException(Params::shortName($estimator)
+                . " is not compatible with $diffString data types.");
         }
     }
 }

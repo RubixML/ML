@@ -10,7 +10,7 @@ use InvalidArgumentException;
 class EstimatorIsCompatibleWithMetric
 {
     /**
-     * Perform a check.
+     * Perform a check of the specification.
      *
      * @param \Rubix\ML\Estimator $estimator
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
