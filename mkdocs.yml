@@ -8,6 +8,7 @@ site_description: 'A high-level machine learning and deep learning library for t
 
 nav:
 - Home: index.md
+- What is Machine Learning?: what-is-machine-learning.md
 - Basic Introduction: basic-introduction.md
 - Extracting Data: extracting-data.md
 - Representing Your Data: representing-your-data.md
