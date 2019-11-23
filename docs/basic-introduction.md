@@ -28,7 +28,7 @@ $dataset = new Labeled($samples, $labels);
 > **Hint:** See the ['Representing your Data'](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
 
 # Choosing an Estimator
-[Estimators](https://docs.rubixml.com/en/latest/estimator.html) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](https://docs.rubixml.com/en/latest/learner.html) and must be trained before making predictions.
+[Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
 
 For our example we will focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a type of estimator called a Classifier because it takes unknown samples and assigns them a class label. In our example the output of KNN will either be *married* or *divorced* since those are the class labels that we train it with.
 
@@ -66,7 +66,7 @@ For our small training set, the training process should only take a matter of mi
 > **Hint:** See the ['Training'](training.md) section for a closer look at training a learner.
 
 ### Making Predictions
-Suppose that we went out and collected 4 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married by taking their answers and running them through the trained KNN estimator in and [Unlabeled](https://docs.rubixml.com/en/latest/datasets/unlabeled.html) dataset. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
+Suppose that we went out and collected 4 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married by taking their answers and running them through the trained KNN estimator in and [Unlabeled](datasets/unlabeled.md) dataset. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -102,7 +102,7 @@ The [Hold Out](cross-validation/hold-out.md) validator requires the user to set 
 
 > **Note:** Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
-To return a score from the Hold Out validator using the [Accuracy](https://docs.rubixml.com/en/latest/cross-validation/metrics/accuracy.html) metric, pass in an untrained estimator instance along with the entire dataset.
+To return a score from the Hold Out validator using the [Accuracy](cross-validation/metrics/accuracy.md) metric, pass in an untrained estimator instance along with the entire dataset.
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
