@@ -7,4 +7,4 @@ From the perspective of data flowing in and out of a machine learning system, th
 ![Rubix ML System Architecture](https://raw.githubusercontent.com/RubixML/RubixML/master/docs/img/rubix-ml-system-architecture.svg?sanitize=true)
 
 ### Subsystems
-Under the hood, Rubix ML utilizes a number of modular subsystems that are highly optimized for their purpose such as the graph, neural net, SVM, and tensor processing subsystems. Some mid and low level subsystems run as optional PHP extensions.
+Under the hood, Rubix ML utilizes a number of modular subsystems that are highly optimized for their purpose such as the graph, neural net, SVM, and tensor computing subsystems. Some mid and low level subsystems run as optional PHP extensions.
