@@ -16,10 +16,12 @@ use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
+// Import labels and make predictions
+
 $report = new AggregateReport([
 	'breakdown' => new MulticlassBreakdown(),
 	'matrix' => new ConfusionMatrix(),
 ]);
 
-$result = $report->generate($estimator, $testing);
+$result = $report->generate($predictions, $labels);
 ```

@@ -14,6 +14,7 @@ nav:
 - Representing Your Data: representing-your-data.md
 - Training: training.md
 - Inference: inference.md
+- Cross Validation: cross-validation.md
 - Model Persistence: model-persistence.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md

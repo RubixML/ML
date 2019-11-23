@@ -12,9 +12,11 @@ This report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 
+// Import labels and make predictions
+
 $report = new ResidualAnalysis();
 
-$result = $report->generate($estimator, $testing);
+$result = $report->generate($predictions, $labels);
 
 var_dump($result);
 ```

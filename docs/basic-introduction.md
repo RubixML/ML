@@ -121,5 +121,7 @@ float(0.945)
 
 The output of the cross validator is a validation score that can be interpretted as the degree to which the learner is able to accurately generalize its training to unknown data. In the example above, our model is about 95% accurate according to our chosen metric.
 
+> **Hint:** More info can be found in the ['Cross Validation'](cross-validation.md) section of the docs.
+
 ### Next Steps
 Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier, check out the [Iris Flower](https://github.com/RubixML/Iris) example project. We highly recommend browsing the rest of the documentation and the other [example projects](https://github.com/RubixML) which range from beginner to advanced skill level. Have fun and stay curious!

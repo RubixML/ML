@@ -12,7 +12,7 @@ public generate(array $predictions, array $labels) : array
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
 
-// Train an estimator and make predictions
+// Import labels and make predictions
 
 $report = new ConfusionMatrix();
 
