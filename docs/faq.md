@@ -1,10 +1,10 @@
 # FAQ
-Here you will find answers to the most frequently asked Rubix ML questions.
+Here you will find answers to the most frequently asked questions.
 
 ### What environment (SAPI) should I run Rubix ML in?
-All Rubix ML programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
+All Rubix ML projects are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
 
-If you want to serve your Rubix ML models in production then you can use the [Server](https://github.com/RubixML/Server) library to spin up an optimized standalone model server.
+If you would like to serve your models in production, then you can use the [Server](https://github.com/RubixML/Server) library to spin up an optimized standalone model server.
 
 To run your script using the PHP command line interface (CLI), open a terminal window and enter:
 ```sh
