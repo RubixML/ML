@@ -1,5 +1,5 @@
 # Transformer
-Transformers take Dataset objects and apply transformations to the features contained within the samples. They are often used as part of a [Pipeline](../pipeline.md) or they can be used standalone.
+Transformers take Dataset objects and apply transformations to the features contained within. They are often used as part of a transformer [Pipeline](../pipeline.md) or they can be used standalone.
 
 ### Transform Samples
 The transformer directly transforms the samples in place via the `transform()` method:

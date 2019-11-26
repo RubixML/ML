@@ -35,11 +35,11 @@ use RuntimeException;
 use const Rubix\ML\EPSILON;
 
 /**
- * Multi Layer Perceptron
+ * Multilayer Perceptron
  *
  * A multiclass feedforward neural network classifier with user-defined hidden
  * layers as intermediate computational units. Multiple layers and non-linear
- * activation functions allow the Multi Layer Perceptron to handle complex
+ * activation functions allow the Multilayer Perceptron to handle complex
  * non-linear problems. In addition, the MLP features progress monitoring which
  * stops training when it can no longer make progress. It also utilizes network
  * snapshotting to make sure that it always has the best model parameters even
@@ -53,7 +53,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

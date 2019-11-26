@@ -35,13 +35,11 @@ use const Rubix\ML\EPSILON;
 /**
  * MLP Regressor
  *
- * A multi layer Neural Network with a continuous output layer suitable
- * for regression problems.
- *
- * > **Note**: The MLP features progress monitoring which stops training
- * when it can no longer make progress. It also utilizes snapshotting to
- * make sure that it always uses the best parameters even if progress may
- * have declined during training.
+ * A feed-forward neural network with a continuous output layer suitable for
+ * regression problems. Like the Multilayer Perceptron classifier, the MLP
+ * Regressor is able to tackle complex non-linear regression problems by forming
+ * higher-order representations of the input features using intermediate hidden
+ * layers.
  *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.

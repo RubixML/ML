@@ -18,7 +18,7 @@ use Rubix\ML\NeuralNet\Optimizers\AdaMax;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Classifiers\MultiLayerPerceptron;
+use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MultiLayerPerceptronTest extends TestCase
+class MultilayerPerceptronTest extends TestCase
 {
     protected const TRAIN_SIZE = 550;
     protected const TEST_SIZE = 10;
@@ -48,7 +48,7 @@ class MultiLayerPerceptronTest extends TestCase
             'outer' => new Circle(0., 0., 10., 0.1),
         ], [3, 3, 4]);
 
-        $this->estimator = new MultiLayerPerceptron([
+        $this->estimator = new MultilayerPerceptron([
             new Dense(10),
             new Activation(new LeakyReLU()),
             new Dense(10),
@@ -64,7 +64,7 @@ class MultiLayerPerceptronTest extends TestCase
 
     public function test_build_classifier()
     {
-        $this->assertInstanceOf(MultiLayerPerceptron::class, $this->estimator);
+        $this->assertInstanceOf(MultilayerPerceptron::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);

@@ -30,17 +30,17 @@ $dataset = new Labeled($samples, $labels);
 ## Choosing an Estimator
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
 
-In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. Rubix ML offers other estimator types such as regressors, clusterers, and anomaly detectors as well. In our example, the output of KNN will either be *married* or *divorced* since those are the class labels that we'll train it with.
+In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be *married* or *divorced* since those are the class labels that we'll train it with.
 
 ## Instantiating the Learner
 The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that is most common. Like most estimators, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge of the problem space, or completely at random. The defaults provided in Rubix ML are a good place to start for most problems.
 
-In K Nearest Neighbors, the hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 5 closest neighbors to a given unknown sample have 4 married and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.8. To instantiate the KNN learner, simply pass a set of hyper-parameters to the class's constructor.
+In K Nearest Neighbors, the hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the KNN learner, simply pass a set of hyper-parameters to the class's constructor.
 
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
 
-$estimator = new KNearestNeighbors(5);
+$estimator = new KNearestNeighbors(3);
 ```
 
 ## Training
@@ -67,7 +67,7 @@ For our small training set, the entire process should only take a matter of micr
 > **Hint:** See the [Training](training.md) section of the docs for a closer look at training a learner.
 
 ## Making Predictions
-Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them to the `predict()` method on the KNN estimator in an [Unlabeled](datasets/unlabeled.md) dataset. This process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
+Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We can predict whether or not they will stay married to their spouse by taking their answers and passing them to the `predict()` method on the KNN estimator in an [Unlabeled](datasets/unlabeled.md) dataset. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 > **Note:** If you attempt to make predictions using an untrained learner, it will throw an exception.
 
@@ -99,13 +99,13 @@ The output of the estimator are the predicted class labels of the unknown sample
 > **Hint:** Check out the section on [Inference](inference.md) for more info on making predictions.
 
 ## Model Evaluation
-To test that the estimator can correctly generalize what it has learned during training to the real world we can use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in order to produce a validation score. For the purposes of the introduction, we will use the simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
+To test that the estimator can correctly generalize what it has learned during training to the real world we can use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset in order to produce a validation score. For the purposes of the introduction, we will use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
 
 The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
 > **Note:** 20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
-To return a score from the Hold Out validator using the [Accuracy](cross-validation/metrics/accuracy.md) metric, pass in an untrained estimator instance along with the entire dataset.
+The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be selected as the scoring function. To return a score from the Hold Out validator using the [Accuracy](cross-validation/metrics/accuracy.md) metric, pass in an untrained estimator instance along with the entire dataset like in the example below.
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
@@ -122,7 +122,7 @@ var_dump($score);
 float(0.945)
 ```
 
-The output of the cross validator is a validation score that can be interpreted as the degree to which the learner is able to accurately generalize its training to unseen data. According to the example above, our model is about 95% accurate given our chosen metric.
+The output is the validation score which can be interpreted as the degree to which the learner is able to accurately generalize its training to unseen data. According to the example above, our model is about 95% accurate given our chosen metric. Nice work!
 
 > **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 

@@ -55,7 +55,7 @@ nav:
   - K-d Neighbors: classifiers/kd-neighbors.md
   - K Nearest Neighbors: classifiers/k-nearest-neighbors.md
   - Logistic Regression: classifiers/logistic-regression.md
-  - Multi Layer Perceptron: classifiers/multi-layer-perceptron.md
+  - Multilayer Perceptron: classifiers/multilayer-perceptron.md
   - Naive Bayes: classifiers/naive-bayes.md
   - Radius Neighbors: classifiers/radius-neighbors.md
   - Random Forest: classifiers/random-forest.md

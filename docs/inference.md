@@ -6,10 +6,10 @@ The most basic output of an estimator is a prediction. All estimators that imple
 
 | Estimator Type | Prediction | Examples |
 |---|---|---|
-| Classifier | A categorical class label | 'cat', 'dog', 'ship' |
-| Regressor | A continuous value | 490,000 or 1.67592 |
-| Clusterer | A discrete cluster number | '0', '1', '2', etc. |
-| Anomaly Detector | '1' for an anomaly, '0' otherwise | '0' or '1' |
+| Classifier | A categorical class label | `cat`, `dog`, `ship` |
+| Regressor | A continuous value | `490,000` or `1.67592` |
+| Clusterer | A discrete cluster number | `0`, `1`, `2`, etc. |
+| Anomaly Detector | `1` for an anomaly, `0` otherwise | `0` or `1` |
 
 **Example**
 

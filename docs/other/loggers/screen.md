@@ -1,5 +1,5 @@
 # Screen
-A logger that outputs to the php standard output.
+A simple logger that outputs directly to the console.
 
 ### Parameters
 | # | Param | Default | Type | Description |

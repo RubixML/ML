@@ -1,3 +1,6 @@
+- Unreleased
+    - Changed name of Multilayer Perceptron classifier
+
 - 0.0.17-beta
     - Added Tensor extension compatibility
     - Migrated to new Tensor library namespace
