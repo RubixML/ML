@@ -41,3 +41,12 @@ $estimator->setLogger(new Screen('example'));
 
 ## Ensemble Learning
 Some learners are actually collections or *ensembles* of learners that work together to form a single model. Some ensembles such as [Bootstrap Aggregator](bootstrap-aggregator.md) and [Committee Machine](committee-machine.md) work by averaging the predictions of the base estimators. Ensembles such as these are able to produce more stable models than any single member because they reduce the variance of their prediction through averaging. More sophisticated boosting ensembles such as [AdaBoost](classifiers/adaboost.md) and [Gradient Boost](regressors/gradient-boost.md) focus on iteratively improving the predictions of a *weak* learner by using many specialized *weak* learners.
+
+**Examples**
+
+- [Bootstrap Aggregator](bootstrap-aggregator.md)
+- [Committee Machine](committee-machine.md)
+- [AdaBoost](classifiers/adaboost.md)
+- [Random Forest](classifiers/random-forest.md)
+- [Isolation Forest](anomaly-detectors/isolation-forest.md)
+- [Gradient Boost](regressors/gradient-boost.md)
