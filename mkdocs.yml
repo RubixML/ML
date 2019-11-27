@@ -7,7 +7,7 @@ site_url: https://rubixml.com
 site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 
 nav:
-- Home: index.md
+- Welcome: index.md
 - What is Machine Learning?: what-is-machine-learning.md
 - Basic Introduction: basic-introduction.md
 - Extracting Data: extracting-data.md
@@ -16,6 +16,7 @@ nav:
 - Training: training.md
 - Inference: inference.md
 - Cross Validation: cross-validation.md
+- Model Selection: model-selection.md
 - Model Persistence: model-persistence.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md

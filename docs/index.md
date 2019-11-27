@@ -26,7 +26,7 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## Getting Started
-If you are new to machine learning, we recommend the section [What is Machine Learning?](what-is-machine-learning.md) to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](basic-introduction.md) for a brief survey of a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend the section [What is Machine Learning?](what-is-machine-learning.md) to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](basic-introduction.md) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
 Check out these example projects using the Rubix ML library. Most come with instructions and a pre-cleaned dataset.
