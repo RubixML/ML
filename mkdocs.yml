@@ -12,6 +12,7 @@ nav:
 - Basic Introduction: basic-introduction.md
 - Extracting Data: extracting-data.md
 - Representing Your Data: representing-your-data.md
+- Preprocessing: preprocessing.md
 - Training: training.md
 - Inference: inference.md
 - Cross Validation: cross-validation.md
