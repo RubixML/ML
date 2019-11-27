@@ -25,9 +25,7 @@ $predictions = $estimator->predict($dataset);
 ```
 
 ```php
-$best = $estimator->best();
-
-var_dump($best);
+var_dump($estimator->best());
 ```
 
 ```sh
@@ -36,6 +34,17 @@ array(3) {
   [1]=> bool(true)
   [2]=> object(Rubix\ML\Kernels\Distance\Manhattan) {}
 }
+```
+
+## Grid Search
+When the list of possible hyper-parameters are spaced out evenly, we call that *grid search*. Instead of doing the math to choose these parameters in your head, you can use the [Params](other/helpers/params.md) helper to generate an evenly-spaced list of possible parameters for you. Here we'll choose the same params as the example above except that instead of choosing the values of *k* we'll generate a grid of values between 1 and 10 with a grid spacing of 2.
+
+```php
+use Rubix\ML\Other\Helpers\Params;
+
+$params = [
+    Params::grid(1, 20, 2), [true, false], // ...
+];
 ```
 
 ## Random Search
