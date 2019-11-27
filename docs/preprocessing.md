@@ -71,6 +71,13 @@ According to the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Joh
 - [Principal Component Analysis](transformers/principal-component-analysis.md)
 - [Sparse Random Projector](transformers/sparse-random-projector.md)
 
+## Feature Selection
+Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset - however, they work in different ways. Whereas dimensionality reduction produces denser representations using the information contained within all the features, feature selection seeks to keep the best features as-is and drop the poorer ones entirely. Adding feature selection as a preprocessing step can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
+
+**Examples**
+
+- [Variance Threshold Filter](https://docs.rubixml.com/en/latest/transformers/variance-threshold-filter.html)
+
 ## Transformer Pipelines
 You can automate the application of a series of transformations to a dataset using the [Pipeline](pipeline.md) meta-estimator. Whenever a dataset is passed to an estimator wrapped in a Pipeline it will automatically be transformed before it hits the method context. Pipeline objects are also [Persistable](persistable.md) which allows you to save and load the state of the transformer fittings between processes. Let's say we wanted to build a pipeline to normalize some blobs of text, extract the word count vectors, and then transform them by their inverse document frequency - a common series of data transformations for natural language processing. We could build such a pipeline by passing the transformers in the proper order along with a base estimator to the Pipeline's constructor.
 

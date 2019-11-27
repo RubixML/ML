@@ -37,16 +37,23 @@ array(3) {
 ```
 
 ## Grid Search
-When the list of possible hyper-parameters are spaced out evenly, we call that *grid search*. Instead of doing the math to choose these parameters in your head, you can use the [Params](other/helpers/params.md) helper to generate an evenly-spaced list of possible parameters for you. Here we'll choose the same params as the example above except that instead of choosing the values of *k* we'll generate a grid of values between 1 and 10 with a grid spacing of 2.
+In contrast to the *manual* search shown in the example above, when the values of possible hyper-parameters are generated such that they are spaced out evenly, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically. Here we'll choose the same params as the example above except that instead of choosing the values of *k* manually, we'll generate a grid of values between 1 and 10 with a grid spacing of 2.
 
 ```php
 use Rubix\ML\Other\Helpers\Params;
 
 $params = [
-    Params::grid(1, 20, 2), [true, false], // ...
+    Params::grid(1, 10, 2), [true, false], // ...
 ];
 ```
 
 ## Random Search
+When the list of possible hyper-parameters is randomly chosen from a distribution, we call that *random search*. In the absence of a good manual strategy, random search has the advantage of being able to search the hyper-parameter space effectively by testing combinations of parameters that might not have been considered otherwise. To generate a list of random values from a uniform distribution you can use either the `ints()` or `floats()` method on the [Params](other/helpers/params.md) helper. In the example below, we'll generate 5 unique random integers between 1 and 10 as possible values of *k*.
 
-On the map ...
+```php
+use Rubix\ML\Other\Helpers\Params;
+
+$params = [
+    Params::ints(1, 10, 5), [true, false], // ...
+];
+```
