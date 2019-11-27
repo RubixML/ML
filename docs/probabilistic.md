@@ -11,7 +11,7 @@ public proba(Dataset $dataset) : array
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-// Import samples
+// Import unknown samples
 
 $dataset = new Unlabeled($samples);
 
