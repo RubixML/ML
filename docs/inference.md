@@ -33,9 +33,43 @@ array(3) {
 ```
 
 ## Estimation of Probabilities
+Sometimes, you may not just want to know the outcome of a prediction but also how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a method `proba()` that outputs the joint probability estimates for each class or cluster number.
 
-On the map ...
+**Example**
+```php
+$probabilities = $estimator->proba($dataset);  
+
+var_dump($probabilities);
+```
+
+```sh
+array(2) {
+	[0] => array(2) {
+		['monster'] => 0.975,
+		['not monster'] => 0.025,
+	}
+	[1] => array(2) {
+		['monster'] => 0.2,
+		['not monster'] => 0.8,
+	}
+}
+```
 
 ## Ranking Samples
+What if you just wanted to identify either the top or bottom performing samples of a dataset? Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output a score for each sample that can be used to sort the samples by.
 
-On the map ...
+**Example**
+
+```php
+$scores = $estimator->rank($dataset);
+
+var_dump($scores);
+```
+
+```sh
+array(3) {
+  [0]=> float(0.35033859096744)
+  [1]=> int(0.40992076925443)
+  [2]=> int(0.68163357834096)
+}
+```
