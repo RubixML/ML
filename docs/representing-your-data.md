@@ -12,7 +12,7 @@ $samples = [
 ## Internal Data Types
 In addition to PHP's type system, Rubix ML adds a layer on top to distinguish types that are continuous (numerical), categorical (discrete), or some other type such as resource. Continuous features represent some *quantitative* property of the sample such as age or velocity, whereas, categorical features form a *qualitative* property such as rough or furry. It is necessary to make the distinction between these data types in the context of machine learning because different learners are compatible with different data types. For example, the [Naive Bayes](./classifiers/naive-bayes.md) classifier is compatible with categorical features while [Gaussian Naive Bayes](./classifiers/gaussian-naive-bayes.md) is compatible with continuous ones - and [Random Forest](./classifiers/random-forest.md) is compatible with both.
 
-### PHP Representations
+#### PHP Representations
 | Rubix ML Data Type | PHP Representation |
 |---|---|
 | Categorical | string |
