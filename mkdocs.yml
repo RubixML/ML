@@ -114,23 +114,25 @@ nav:
     - Linear Disciminant Analysis: transformers/linear-discriminant-analysis.md
     - Principal Component Analysis: transformers/principal-component-analysis.md
     - Sparse Random Projector: transformers/sparse-random-projector.md
+  - Feature Conversion:
+    - Interval Discretizer: transformers/interval-discretizer.md
+    - One Hot Encoder: transformers/one-hot-encoder.md
+    - Numeric String Converter: transformers/numeric-string-converter.md
   - Feature Extraction:
     - Image Vectorizer: transformers/image-vectorizer.md
     - Word Count Vectorizer: transformers/word-count-vectorizer.md
-    - TF-IDF Transformer: transformers/tf-idf-transformer.md
   - Feature Selection:
     - Variance Threshold Filter: transformers/variance-threshold-filter.md
+  - Image Processing:
+    - Image Resizer: transformers/image-resizer.md
   - Imputation:
     - KNN Imputer: transformers/knn-imputer.md
     - Missing Data Imputer: transformers/missing-data-imputer.md
     - Random Hot Deck Imputer: transformers/random-hot-deck-imputer.md
   - Other:
-    - Image Resizer: transformers/image-resizer.md
-    - Interval Discretizer: transformers/interval-discretizer.md
     - Lambda Function: transformers/lambda-function.md
-    - Numeric String Converter: transformers/numeric-string-converter.md
-    - One Hot Encoder: transformers/one-hot-encoder.md
     - Polynomial Expander: transformers/polynomial-expander.md
+    - TF-IDF Transformer: transformers/tf-idf-transformer.md
   - Standardization and Normalization:
     - L1 Normalizer: transformers/l1-normalizer.md
     - L2 Normalizer: transformers/l2-normalizer.md
