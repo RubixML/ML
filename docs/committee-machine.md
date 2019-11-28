@@ -1,11 +1,11 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php">[source]</a></span>
 
 # Committee Machine
-A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence scheme to weight the final predictions. 
-
-> **Note:** Bootstrap Aggregator is not compatible with clusterers.
+A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence scheme to weight the final predictions.
 
 > **Note:** Influence values can be arbitrary as they are normalized upon instantiation.
+
+> **Note:** Not compatible with clusterers.
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
 
@@ -36,13 +36,12 @@ use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
 $estimator = new CommitteeMachine([
     new GaussianNB(),
     new RandomForest(new ClassificationTree(4), 100, 0.3),
     new KDNeighbors(3),
-    new SoftmaxClassifier(100, new Mometum(0.001)),
+    new SoftmaxClassifier(100),
 ], [
     1, 4, 3, 2,
 ]);

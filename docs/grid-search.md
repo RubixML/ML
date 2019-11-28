@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php">[source]</a></span>
 
 # Grid Search
-Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
+Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one learner per combination of parameters and the best model is selected as the base estimator.
 
 > **Note:** You can choose the hyper-parameters manually or you can generate them randomly or in a grid using the [Params](other/helpers/params.md) helper.
 

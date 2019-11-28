@@ -33,9 +33,9 @@ $dataset = new Labeled($samples, $labels);
 In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be *married* or *divorced* since those are the class labels that we'll train it with.
 
 ## Instantiating the Learner
-The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that is most common. Like most estimators, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge of the problem space, or completely at random. The defaults provided in Rubix ML are a good place to start for most problems.
+Like most estimators in Rubix ML, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge of the problem space, or completely at random. The defaults provided in Rubix ML are a good place to start for most problems.
 
-In K Nearest Neighbors, the hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the KNN learner, simply pass a set of hyper-parameters to the class's constructor.
+The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that is most common. The hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the KNN learner, simply pass a set of hyper-parameters to the class's constructor.
 
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -44,9 +44,9 @@ $estimator = new KNearestNeighbors(3);
 ```
 
 ## Training
-Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the problem space. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction. In the case of K Nearest Neighbors, this representation is a high-dimensional Euclidean space in which each sample is considered a point. We define the *distance* between two points as their degree of dissimilarity. Thus, points in this space that are similar will be closer together.
+Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction. In the case of K Nearest Neighbors, this representation is a high-dimensional Euclidean space in which each sample is considered a point. We define the *distance* between two points as their degree of dissimilarity. Thus, points in this space that are similar will be closer together.
 
-To start training, simply pass the training dataset to the `train()` method on the learner instance.
+To start training, pass the training dataset as a argument to the `train()` method on the learner instance.
 
 ```php
 $estimator->train($dataset);
@@ -67,7 +67,7 @@ For our small training set, the entire process should only take a matter of micr
 > **Hint:** See the [Training](training.md) section of the docs for a closer look at training a learner.
 
 ## Making Predictions
-Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We can predict whether or not they will stay married to their spouse by taking their answers and passing them to the `predict()` method on the KNN estimator in an [Unlabeled](datasets/unlabeled.md) dataset. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
+Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on the KNN estimator. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 > **Note:** If you attempt to make predictions using an untrained learner, it will throw an exception.
 

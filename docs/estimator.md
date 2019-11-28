@@ -26,7 +26,7 @@ array(3) {
 }
 ```
 
-> **Note:** The return value of `predict()` is an array containing the predictions in the order that they were indexed in the dataset.
+> **Note:** The return value of `predict()` is an array containing the predictions in the same order that they were indexed in the dataset.
 
 ### Estimator Type
 Return the integer encoded estimator type:
