@@ -38,7 +38,7 @@ public balance() : int
 
 ### Example
 ```php
-use Rubix\ML\Classifiers\ExtraTreeRegressor;
+use Rubix\ML\Regressors\ExtraTreeRegressor;
 
 $estimator = new ExtraTreeRegressor(30, 3, 20, 0.05);
 ```
