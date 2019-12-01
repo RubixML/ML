@@ -46,7 +46,7 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
 ## Funding
-Rubix ML is funded entirely by donations from the open source software community. If you are interested in becoming a patron, you can make a contribution to one our funding sources below.
+Rubix ML is funded entirely by donations from the open source software community. If you are interested in becoming a patron, you can make a contribution to one of our funding sources below.
 
 - [Patreon](https://www.patreon.com/rubixml)
 
