@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ELU.php">[source]</a></span>
 
 # ELU
-*Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function. As such, ELU produces smoother gradients than [ReLU](relu.md).
+*Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function. As such, ELU produces smoother gradients than the piecewise linear [ReLU](relu.md) function.
 
 ### Parameters
 | # | Param | Default | Type | Description |

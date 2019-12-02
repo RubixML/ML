@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/LeakyReLU.php">[source]</a></span>
 
 # Leaky ReLU
-Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
+Leaky Rectified Linear Units are activation functions that output `x` when x is greater or equal to 0 or `x` scaled by a small *leakage* coefficient when the input is less than 0. Leaky rectifiers have the benefit of allowing a small gradient to flow through during backpropagation even though they might not have activated during the forward pass.
 
 ### Parameters
 | # | Param | Default | Type | Description |

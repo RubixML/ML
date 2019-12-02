@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Adam.php">[source]</a></span>
 
 # Adam
-Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](rms-prop.md), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](momentum.md). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction.
+Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS properties. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](rms-prop.md), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](momentum.md). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction.
 
 ### Parameters
 | # | Param | Default | Type | Description |

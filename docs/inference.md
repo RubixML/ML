@@ -1,8 +1,8 @@
 # Inference
-Inference is the process of making predictions using an estimator. You can think of an estimator as a function that maps unknown samples to predictions by *inferring* their output given the input and the estimator's hidden state (called a *model*) created during training. Estimators are organized into their own namespaces by type. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are polymorphic i.e. they can become a classifier, or a regressor, or an anomaly detector based on the type of the estimator(s) they wrap.
+Inference is the process of making predictions using an estimator. You can think of an estimator as a function that maps unknown samples to predictions by *inferring* their outcome given the input features and the estimator's hidden state (or *model*) created during training. Estimators are organized into their own namespaces by type. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator that they wrap.
 
 ## Making Predictions
-The most basic output of an estimator is a prediction. All estimators that implement the [Estimator](estimator.md) interface have the `predict()` method which takes a dataset of unknown samples and returns their predictions in order. There are 4 types of estimators in Rubix ML and each type has a different output for a prediction as shown in the table below.
+All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples as an argument and returns their predictions in order. There are 4 types of estimators in Rubix ML and each type has a different output for a prediction as shown in the table below.
 
 | Estimator Type | Prediction | Examples |
 |---|---|---|
@@ -33,7 +33,7 @@ array(3) {
 ```
 
 ## Estimation of Probabilities
-Sometimes, you may not just want to know the outcome of a prediction but also how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a method `proba()` that outputs the joint probability estimates for each class or cluster number.
+Sometimes, you may not just want to know the outcome of a prediction but also how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a method `proba()` that outputs the joint probability estimates for each class or cluster number as shown in the example below.
 
 **Example**
 ```php
@@ -56,7 +56,7 @@ array(2) {
 ```
 
 ## Ranking Samples
-What if you just wanted to identify either the top or bottom performing samples of a dataset? Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output a score for each sample that can be used to sort the samples by.
+Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output a score for each sample that can be used to sort the samples. Ranking is useful to identify either the top or bottom performing samples. For example, you may want to set the top *k* anomalous samples aside for further analysis by a human expert.
 
 **Example**
 

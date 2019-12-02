@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/RMSProp.php">[source]</a></span>
 
 # RMS Prop
-An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients. Unlike [AdaGrad](adagrad.md), RMS Prop does not suffer from an infinitely decaying step size.
+An adaptive gradient technique that divides the current gradient over a rolling window of the magnitudes of recent gradients. Unlike [AdaGrad](adagrad.md), RMS Prop does not suffer from an infinitely decaying step size.
 
 ### Parameters
 | # | Param | Default | Type | Description |

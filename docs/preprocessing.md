@@ -20,7 +20,7 @@ $dataset->apply(new NumericStringConverter())
 ```
 
 ## Standardization and Normalization
-Often, the continuous features of a dataset will be on different scales due to different forms of measurement. For example, age (0 - 100) and income (0 - 1,000,000) are on two vastly different scales. The condition that all features are on the same scale matters to some learners such as [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), [K Means](clusterers/k-means.md), and [Multilayer Perceptron](classifiers/multilayer-perceptron.md) to name a few. Standardization is often accompanied by a *centering* step which gives the transformed feature matrix 0 mean. Depending on the transformer, it may operate on the columns of the feature matrix or the rows. Normalization is a special case where the transformed features have a range between 0 and 1.
+Often, the continuous features of a dataset will be on different scales due to different forms of measurement. For example, age (0 - 100) and income (0 - 1,000,000) are on two vastly different scales. The condition that all features are on the same scale matters to some learners such as [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), [K Means](clusterers/k-means.md), and [Multilayer Perceptron](classifiers/multilayer-perceptron.md) to name a few. Standardization is a tranformation applied to the features of a dataset such that they are all on the same scale. Normalization is a special case where the transformed features have a range between 0 and 1. Standardization is often accompanied by a *centering* step which gives the features 0 mean. Depending on the transformer, it may either operate on the columns of a sample matrix or the rows.
 
 **Column-wise Examples**
 
@@ -35,7 +35,7 @@ Often, the continuous features of a dataset will be on different scales due to d
 - [L2 Normalizer](transformers/l2-normalizer.md)
 
 ## Feature Conversion
-Sometimes we are stuck in a situation when we have a dataset with both categorical and continuous features but our estimator is only compatible with one of those types. For this issue we need to convert the incompatible type to a compatible type in order to proceed. Rubix ML provides a number of transformers that will convert your data in a snap.
+Sometimes we are stuck in a situation when we have a dataset with both categorical and continuous features but our estimator is only compatible with one of those types. For this issue we'll need to convert the incompatible type to a compatible type in order to proceed. Rubix ML provides a number of transformers that will convert your data in a snap.
 
 **Examples**
 
@@ -44,7 +44,7 @@ Sometimes we are stuck in a situation when we have a dataset with both categoric
 - [Numeric String Converter](https://docs.rubixml.com/en/latest/transformers/numeric-string-converter.html)
 
 ## Imputation
-Although some estimators are robust to missing data, the primary tool for handling missing data in Rubix ML is through a process called imputation. Data imputation is the process of replacing missing values with a pretty good substitution such as the average value or the sample's nearest neighbor's value. By imputing values rather than discarding or ignoring the sample we minimize the introduction of bias. The available imputers are listed below.
+Although some estimators are robust to missing data, the primary tool for handling missing data in Rubix ML is through a process called *imputation*s. Data imputation is the process of replacing missing values with a pretty good substitution such as the average value for the column or the sample's nearest neighbor's value. By imputing values rather than discarding or ignoring them, we minimize the introduction of bias. The available imputers in Rubix ML are listed below.
 
 **Examples**
 
@@ -53,7 +53,7 @@ Although some estimators are robust to missing data, the primary tool for handli
 - [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md)
 
 ## Feature Extraction
-Certain forms of data such as text blobs and images do not have directly analogous feature representations. Thus, it is necessary to extract features from their original representation. For example, in order to extract a useful feature representation from a blob of text, the text must be encoded as some fixed-length feature vector. One way we can accomplish this is by computing a fixed-length *vocabulary* from the training corpus and then encoding each sample as a vector of word counts. This is exactly what the Word Count Vectorizer does under the hood.
+Certain forms of data such as text blobs and images do not have directly analogous scalar feature representations. Thus, it is necessary to extract features from their original representation. For example, to extract a useful feature representation from a blob of text, the text must be encoded as some fixed-length feature vector. One way we can accomplish this in Rubix ML is by computing a fixed-length *vocabulary* from the training corpus and then encoding each sample as a vector of word (or *token*) counts. This is exactly what the Word Count Vectorizer does under the hood.
 
 **Examples**
 

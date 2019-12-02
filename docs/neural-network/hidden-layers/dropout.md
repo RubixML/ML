@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dropout.php">[source]</a></span>
 
 # Dropout
-Dropout is a regularization technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data. It works by temporarily disabling neurons during each training pass. It also is a very efficient way of performing model averaging with neural networks.
+Dropout is a regularization technique to reduce overfitting in neural networks by preventing complex co-adaptations on training data. It works by temporarily disabling output nodes during each training pass. It also acts as an efficient way of performing model averaging with the parameters of neural networks.
 
 ### Parameters
 | # | Param | Default | Type | Description |

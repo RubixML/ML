@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ReLU.php">[source]</a></span>
 
 # ReLU
-Rectified Linear Units only output the positive signal of the input. Both the function and its derivative are monotonic and cheap to compute.
+Rectified Linear Units (ReLU) only output the positive signal of the input. They have the benefit of having a monotonic derivative and are cheap to compute.
 
 ### Parameters
 | # | Param | Default | Type | Description |

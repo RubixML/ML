@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/AdaMax.php">[source]</a></span>
 
 # AdaMax
-A version of [Adam](adam.md) that replaces the RMS property with the infinity norm of the gradients.
+A version of the [Adam](adam.md) optimizer that replaces the RMS property with the infinity norm of the past gradients. As such, AdaMax is generally more suitable for sparse parameter updates and noisy gradients.
 
 ### Parameters
 | # | Param | Default | Type | Description |
