@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/GaussianNB.php">[source]</a></span>
 
 # Gaussian Naive Bayes
-A version of the [Naive Bayes](naive-bayes.md) classifier that places a probability density function over continuous features which are assumed to be normally (Gaussian) distributed.
+A version of the [Naive Bayes](naive-bayes.md) classifier that places a probability density function over continuous input features. Aside from feature independence, Gaussian NB comes with the additional assumption that all features are normally (Gaussian) distributed.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

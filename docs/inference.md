@@ -24,12 +24,24 @@ var_dump($predictions);
 ```sh
 array(3) {
   [0]=>
-  string(7) "cat"
+  string(3) "cat"
   [1]=>
-  string(8) "dog"
+  string(3) "dog"
   [2]=>
-  string(7) "frog"
+  string(4) "frog"
 }
+```
+
+To make a prediction on a single sample, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface.
+
+```php
+$prediction = $estimator->predictSample([0.25, 3, 'furry']);
+
+var_dump($prediction);
+```
+
+```sh
+string(3) "cat"
 ```
 
 ## Estimation of Probabilities
