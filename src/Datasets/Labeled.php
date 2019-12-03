@@ -16,10 +16,13 @@ use const Rubix\ML\EPSILON;
 /**
  * Labeled
  *
- * A Labeled dataset is used to train supervised learners and for testing a
- * model using cross validation. In addition to the standard dataset object
- * methods, a Labeled dataset can perform operations such as stratification
- * and sorting the dataset by label.
+ * A Labeled dataset is used to train supervised learners and for testing a model by
+ * providing the ground-truth. In addition to the standard dataset object methods, a
+ * Labeled dataset can perform operations such as stratification and sorting the
+ * dataset by label.
+ *
+ * > **Note:** Labels can be of categorical or continuous data type but NaN values
+ * are not allowed.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

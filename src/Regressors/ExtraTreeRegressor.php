@@ -20,11 +20,10 @@ use RuntimeException;
 /**
  * Extra Tree Regressor
  *
- * An *Extremely Randomized* Regression Tree, these trees differ from standard
- * Regression Trees in that they choose a split drawn from a set random set
- * determined by max features, rather than searching the entire column. Due to
- * their added randomness, Extra Trees are faster to build and their predictions
- * have higher variance than a regular decision tree.
+ * An *Extremely Randomized* Regression Tree. These trees differ from standard Regression
+ * Trees in that they choose candidate splits at random, rather than searching the entire
+ * column for the best split. Extra Trees are faster to build and their predictions have
+ * higher variance than a regular decision tree.
  *
  * References:
  * [1] P. Geurts. et al. (2005). Extremely Randomized Trees.

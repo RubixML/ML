@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 /**
  * Random
  *
- * Completely random selection of k seeds from the given dataset.
+ * Completely random selection of seeds from a given dataset.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -7,8 +7,7 @@ use InvalidArgumentException;
 /**
  * Aggregate Report
  *
- * A Report that aggregates the results of multiple reports. The reports are
- * indexed by their key given at construction time.
+ * A report that aggregates the output of multiple reports into one report.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

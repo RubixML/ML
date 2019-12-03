@@ -21,11 +21,12 @@ use RuntimeException;
 /**
  * Extra Tree Classifier
  *
- * An Extremely Randomized Classification Tree that splits the training set at
- * a random point with the lowest entropy among *m* features. Extra Trees are
- * useful in ensembles such as Random Forest or AdaBoost as the *weak* classifier
- * or they can be used on their own. The strength of Extra Trees are their
- * computational efficiency as well as increased variance of the prediction.
+ * An Extremely Randomized Classification Tree that recursively chooses node splits
+ * with the least entropy among a set of *k* (given by max features) completely
+ * random split points. Extra Trees are useful in ensembles such as Random Forest or
+ * AdaBoost as the *weak* learner or they can be used on their own. The strength of
+ * Extra Trees as compared to more greedy decision trees are their computational
+ * efficiency and reduced bias.
  *
  * References:
  * [1] P. Geurts et al. (2005). Extremely Randomized Trees.

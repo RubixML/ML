@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php">[source]</a></span>
 
 # Regression Tree
-A decision tree based on the CART (Classification and Regression Tree) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split.
+A decision tree based on the CART (*Classification and Regression Tree*) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 

@@ -12,8 +12,9 @@ use const Rubix\ML\PHI;
 /**
  * Unlabeled
  *
- * Unlabeled datasets can be used to train *unsupervised* Estimators and for
- * feeding data into an Estimator to make predictions.
+ * Unlabeled datasets are used to train unsupervised learners and for feeding unknown
+ * samples into an estimator to make predictions during inference. As their name implies,
+ * they do not require a corresponding label for each sample.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

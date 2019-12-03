@@ -32,8 +32,8 @@ use const Rubix\ML\EPSILON;
 /**
  * Logistic Regression
  *
- * A type of linear classifier that uses the logistic (*sigmoid*) function to estimate
- * the probabilities of exactly *two* classes. The model parameters (weights and bias)
+ * A linear classifier that uses the logistic (*sigmoid*) function to estimate the
+ * probabilities of exactly two class outcomes. The model parameters (weights and bias)
  * are solved using mini batch Gradient Descent with pluggable optimizers and cost
  * functions that run on the neural network subsystem.
  *

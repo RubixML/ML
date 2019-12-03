@@ -11,12 +11,9 @@ use const Rubix\ML\EPSILON;
 /**
  * Informedness
  *
- * Informedness is a measure of the probability that an estimator will make an
- * informed decision. The index was suggested by W.J. Youden as a way of
- * summarizing the performance of a diagnostic test. Its value ranges from 0
- * through 1 and has a zero value when the test gives the same proportion of
- * positive results for groups with and without the disease, i.e the test is
- * useless.
+ * Informedness is a measure of the probability that an estimator will make an informed
+ * decision. Its value ranges from -1 through 1 and has a value of 0 when the test yields
+ * no useful information.
  *
  * References:
  * [1] W. J. Youden. (1950). Index for Rating Diagnostic Tests.

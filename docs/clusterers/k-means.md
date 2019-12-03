@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/KMeans.php">[source]</a></span>
 
 # K Means
-A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means is trained using adaptive mini batch Gradient Descent and minimizes the inertia cost function. Inertia is defined as the average sum of distances between each sample and its nearest cluster centroid.
+A fast online centroid-based hard clustering algorithm capable of grouping linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means is trained using adaptive Mini Batch Gradient Descent and minimizes the inertia cost function. Inertia is defined as the average sum of distances between each sample and its nearest cluster centroid.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 

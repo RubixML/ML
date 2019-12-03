@@ -18,10 +18,9 @@ use RuntimeException;
 /**
  * Ridge
  *
- * L2 penalized least squares linear regression solved using the closed-form
- * equation. The addition of regularization controlled by the alpha parameter
- * makes Ridge less prone to overfitting than ordinary least squares linear
- * regression.
+ * L2 penalized ordinary least squares linear regression (OLS) solved using the closed-form
+ * equation. The addition of regularization, controlled by the *alpha* parameter, makes Ridge
+ * less prone to overfitting than non-regularized linear regression.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -19,11 +19,12 @@ use RuntimeException;
 /**
  * K-d Neighbors Regressor
  *
- * A fast implementation of KNN Regressor using a K-d tree. The KDN Regressor works
- * by locating the neighborhood of a sample via binary search and then does a brute
- * force search only on the samples close to or within the neighborhood. The main
- * advantage of K-d Neighbors over brute force KNN is speed, however you no longer
- * have the ability to partially train.
+ * A fast implementation of KNN Regressor using a spatially-aware binary tree for nereast
+ * neighbors search. K-d Neighbors Regressor works by locating the neighborhood of a sample
+ * via binary search and then does a brute force search only on the samples close to or
+ * within the neighborhood of the unknown sample. The main advantage of K-d Neighbors over
+ * brute force KNN is inference speed, however you no longer have the ability to partially
+ * train.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

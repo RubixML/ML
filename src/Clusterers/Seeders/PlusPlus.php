@@ -9,9 +9,9 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 /**
  * Plus Plus
  *
- * This seeder attempts to maximize the likelihood of seeding distant clusters
- * while still remaining random. It does so by sequentially selecting random
- * samples weighted by their distance from the previous seed.
+ * This seeder attempts to maximize the chances of seeding distant clusters while still
+ * remaining random. It does so by sequentially selecting random samples weighted by their
+ * distance from the previous seed.
  *
  * References:
  * [1] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.

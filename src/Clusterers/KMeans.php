@@ -29,12 +29,11 @@ use const Rubix\ML\EPSILON;
 /**
  * K Means
  *
- * A fast online centroid-based hard clustering algorithm capable of clustering
- * linearly separable data points given some prior knowledge of the target number
- * of clusters (defined by *k*). K Means is trained using adaptive mini batch
- * Gradient Descent and minimizes the inertia cost function. Inertia is defined
- * as the average sum of distances between each sample and its nearest cluster
- * centroid.
+ * A fast online centroid-based hard clustering algorithm capable of grouping linearly
+ * separable data points given some prior knowledge of the target number of clusters
+ * (defined by *k*). K Means is trained using adaptive Mini Batch Gradient Descent and
+ * minimizes the inertia cost function. Inertia is defined as the average sum of distances
+ * between each sample and its nearest cluster centroid.
  *
  * References:
  * [1] D. Sculley. (2010). Web-Scale K-Means Clustering.

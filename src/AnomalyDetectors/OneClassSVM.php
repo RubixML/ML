@@ -18,13 +18,12 @@ use svm;
 /**
  * One Class SVM
  *
- * An unsupervised Support Vector Machine used for anomaly detection.
- * The One Class SVM aims to find a maximum margin between a set of
- * data points and the origin, rather than between classes like the
- * multiclass SVM.
+ * An unsupervised Support Vector Machine (SVM) used for anomaly detection. The One
+ * Class SVM aims to find a maximum margin between a set of data points and the
+ * *origin*, rather than between classes such as with SVC.
  *
- * > **Note**: This estimator requires the SVM PHP extension which uses
- * the LIBSVM engine written in C++ under the hood.
+ * > **Note:** This estimator requires the SVM extension which uses the libsvm engine
+ * under the hood.
  *
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector

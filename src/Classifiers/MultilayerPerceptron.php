@@ -37,13 +37,12 @@ use const Rubix\ML\EPSILON;
 /**
  * Multilayer Perceptron
  *
- * A multiclass feedforward neural network classifier with user-defined hidden
- * layers as intermediate computational units. Multiple layers and non-linear
- * activation functions allow the Multilayer Perceptron to handle complex
- * non-linear problems. In addition, the MLP features progress monitoring which
- * stops training when it can no longer make progress. It also utilizes network
- * snapshotting to make sure that it always has the best model parameters even
- * if progress declined during training.
+ * A multiclass feed forward neural network classifier with user-defined hidden layers. The
+ * Multilayer Perceptron is a deep learning model capable of forming higher-order feature
+ * representations through layers of computation. In addition, the MLP features progress
+ * monitoring which stops training when it can no longer make progress. It utilizes network
+ * snapshotting to make sure that it always has the best model parameters even if progress
+ * declined during training.
  *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.

@@ -35,11 +35,10 @@ use const Rubix\ML\EPSILON;
 /**
  * MLP Regressor
  *
- * A feed-forward neural network with a continuous output layer suitable for
- * regression problems. Like the Multilayer Perceptron classifier, the MLP
- * Regressor is able to tackle complex non-linear regression problems by forming
- * higher-order representations of the input features using intermediate hidden
- * layers.
+ * A multilayer feed forward neural network with a continuous output layer suitable for
+ * regression problems. Like the Multilayer Perceptron classifier, the MLP Regressor is
+ * able to handle complex non-linear regression problems by forming higher-order
+ * representations of the input features using intermediate hidden layers.
  *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.

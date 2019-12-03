@@ -19,9 +19,12 @@ use InvalidArgumentException;
 /**
  * Monte Carlo
  *
- * Monte Carlo cross validation or *repeated random subsampling* is a technique that
+ * Monte Carlo cross validation (or *repeated random subsampling*) is a technique that
  * averages the validation score of a learner over a user-defined number of simulations
- * where the learner is trained and tested on random splits of the dataset.
+ * where the learner is trained and tested on random splits of the dataset. The estimated
+ * validation score approaches the actual validation score as the number of simulations
+ * goes to infinity, however, only a tiny fraction of all possible simulations are needed
+ * to produce a pretty good approximation.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

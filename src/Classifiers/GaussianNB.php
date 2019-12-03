@@ -26,9 +26,9 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Gaussian Naive Bayes
  *
- * A variate of the Naive Bayes classifier that uses a probability density
- * function over continuous features which are assumed to be normally
- * (Gaussian) distributed.
+ * A version of the Naive Bayes classifier that places a probability density function over
+ * continuous input features. Aside from feature independence, Gaussian NB comes with the
+ * additional assumption that all features are normally (Gaussian) distributed.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for

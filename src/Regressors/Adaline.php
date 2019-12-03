@@ -30,9 +30,12 @@ use const Rubix\ML\EPSILON;
 /**
  * Adaline
  *
- * *Adaptive Linear Neuron* is a type of single layer neural network with a
- * linear output neuron. Training is equivalent to solving Ridge regression
- * iteratively using mini batch Gradient Descent.
+ * *Adaptive Linear Neuron* is a single layer neural network with a continuous linear
+ * output neuron. Training is equivalent to solving L2 regularized linear regression
+ * (Ridge) iteratively using Mini Batch Gradient Descent.
+ *
+ * References:
+ * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".
  *
  * @category    Machine Learning
  * @package     Rubix/ML

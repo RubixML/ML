@@ -8,10 +8,9 @@ use InvalidArgumentException;
 /**
  * Mean Squared Error
  *
- * A scale-dependent regression metric that punishes bad predictions more the worse
- * they are. Formally, MSE is the average of the squared differences between a set
- * of predictions and their target labels. For an unbiased estimator, the MSE
- * measures the variance of the predictions.
+ * A scale-dependent regression metric that gives greater weight to error scores the worse
+ * they are. Formally, Mean Squared Error (MSE) is the average of the squared differences
+ * between a set of predictions and their target labels.
  *
  * > **Note:** In order to maintain the convention of *maximizing* validation scores,
  * this metric outputs the negative of the original score.

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
 
 # Gradient Boost
-Gradient Boost is a stage-wise additive model that uses a Gradient Descent boosting method for training  boosters (Decision Trees) to correct the error residuals of a *weak* base learner. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set.
+Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set.
 
 > **Note:** The default base regressor is a Dummy Regressor using the Mean strategy and the default booster is a Regression Tree with a max depth of 3.
 

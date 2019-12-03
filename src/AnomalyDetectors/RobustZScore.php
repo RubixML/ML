@@ -24,7 +24,7 @@ use const Rubix\ML\EPSILON;
  * preexisting outliers. The modified Z score uses the median and median absolute
  * deviation (MAD) unlike the mean and standard deviation of a *standard* Z score
  * which are sensitive to outliers. Anomalies are flagged if their final weighted
- * Z score exceeds the user-defined threshold.
+ * Z score exceeds a user-defined threshold.
  *
  * > **Note:** An alpha value of 1 means the estimator only considers the maximum
  * absolute z score whereas a setting of 0 indicates that only the average z score

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/KMC2.php">[source]</a></span>
 
 # K-MC2
-A fast [Plus Plus](plus-plus.md) approximator that replaces the brute force method with a substantially faster Markov Chain Monte Carlo (MCMC) sampling method with comparable performance.
+A fast [Plus Plus](plus-plus.md) approximator that replaces the brute force method with a substantially faster Markov Chain Monte Carlo (MCMC) sampling procedure with comparable results.
 
 ### Parameters
 | # | Param | Default | Type | Description |

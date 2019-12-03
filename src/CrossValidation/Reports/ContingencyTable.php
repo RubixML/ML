@@ -8,9 +8,9 @@ use InvalidArgumentException;
 /**
  * Contingency Table
  *
- * A Contingency Table is used to display the frequency distribution of class
- * labels among a clustering of samples. It is similar to a Confusion Matrix
- * but uses the labels to establish a ground truth for a clustering instead.
+ * A Contingency Table is used to display the frequency distribution of class labels among
+ * a clustering. It is similar to a Confusion Matrix but uses the labels to establish
+ * ground-truth for a clustering problem instead.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

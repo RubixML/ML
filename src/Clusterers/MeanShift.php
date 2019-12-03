@@ -31,8 +31,9 @@ use const Rubix\ML\EPSILON;
 /**
  * Mean Shift
  *
- * A hierarchical clustering algorithm that uses peak finding to locate the local
- * maxima (the *centroids*) of a training set given a radius constraint.
+ * A hierarchical clustering algorithm that uses peak finding to locate the candiate
+ * centroids of a training set given a radius constraint. Near-duplicate candidates
+ * are merged together in a final post-processing step.
  *
  * References:
  * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms

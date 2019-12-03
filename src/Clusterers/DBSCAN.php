@@ -15,10 +15,10 @@ use InvalidArgumentException;
 /**
  * DBSCAN
  *
- * Density-Based Spatial Clustering of Applications with Noise is a clustering
- * algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
- * In addition, DBSCAN also has the ability to mark outliers as *noise* and thus
- * can be used as a quasi Anomaly Detector.
+ * *Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm
+ * able to find non-linearly separable and arbitrarily-shaped clusters given a radius and
+ * density constraint. In addition, DBSCAN also has the ability to mark outliers as *noise*
+ * and thus can be used as a *quasi* anomaly detector.
  *
  * > **Note**: Noise samples are assigned to the cluster number *-1*.
  *

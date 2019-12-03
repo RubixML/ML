@@ -24,9 +24,10 @@ use function Rubix\ML\array_transpose;
 /**
  * Random Forest
  *
- * Ensemble classifier that trains Decision Trees (Classification Trees or Extra
- * Trees) on a random subset of the training data. A prediction is made based on
- * the average probability score returned from each tree in the forest.
+ * An ensemble classifier that trains Decision Trees (Classification Trees or Extra Trees)
+ * on a random subset (*bootstrap* set) of the training data. A prediction is made based
+ * on the probability scores returned from each tree in the forest which are then averaged
+ * and weighted equally.
  *
  * References:
  * [1] L. Breiman. (2001). Random Forests.

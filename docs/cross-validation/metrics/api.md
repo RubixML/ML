@@ -1,8 +1,7 @@
 # Metrics
-Validation metrics are for evaluating the performance of an Estimator. They output a score based on the predictions and the ground-truth labels.
+Validation metrics are for used evaluating the performance of an estimator. They output a score based on the predictions and the ground-truth found in the labels.
 
 ### Scoring Predictions
-
 To compute a validation score, pass in the predictions from an estimator along with the expected labels:
 ```php
 public score(array $predictions, array $labels) : float

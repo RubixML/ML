@@ -32,8 +32,8 @@ use const Rubix\ML\EPSILON;
 /**
  * Softmax Classifier
  *
- * A generalization of logistic regression for the multiclass case using a
- * single layer neural network with a softmax output layer.
+ * A multiclass generalization of Logistic Regression using a single layer neural network
+ * with a Softmax output layer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

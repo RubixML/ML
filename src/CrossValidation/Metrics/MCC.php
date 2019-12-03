@@ -11,14 +11,12 @@ use const Rubix\ML\EPSILON;
 /**
  * MCC
  *
- * Matthews Correlation Coefficient measures the quality of a classification. It
- * takes into account true and false positives and negatives and is generally
- * regarded as a balanced measure which can be used even if the classes are of
- * very different sizes. The MCC is in essence a correlation coefficient between
- * the observed and predicted binary classifications; it returns a value between
- * −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better
- * than random prediction and −1 indicates total disagreement between prediction
- * and observation.
+ * Matthews Correlation Coefficient (MCC) measures the quality of a classification by taking
+ * into account true and false positives and negatives. It is generally regarded as a
+ * balanced measure which can be used even if the classes are of very different sizes. The
+ * MCC is a correlation coefficient between the observed and predicted binary classifications.
+ * A coefficient of 1 represents a perfect prediction, 0 no better than random prediction, and
+ * −1 indicates total disagreement between prediction and observation.
  *
  * References:
  * [1] B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary

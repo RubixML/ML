@@ -19,11 +19,11 @@ use InvalidArgumentException;
 /**
  * K Fold
  *
- * K Fold is a cross validation technique that splits the training set into k individual
- * folds and for each training round uses 1 of the folds to measure the generalization
- * performance of the model and the rest as training data. The final score is the average
- * validation score over k rounds. K Fold has the advantage of training and testing on
- * each sample in the dataset at least once.
+ * K Fold is a cross validation technique that splits the training set into *k* individual
+ * folds and for each training round uses 1 of the folds to test the model and the rest as
+ * training data. The final score is the average validation score over all of the *k*
+ * rounds. K Fold has the advantage of both training and testing on each sample in the
+ * dataset at least once.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

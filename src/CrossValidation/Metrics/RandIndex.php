@@ -11,14 +11,12 @@ use InvalidArgumentException;
 /**
  * Rand Index
  *
- * The Adjusted Rand Index is a measure of similarity between the clustering
- * and some ground truth that is adjusted for chance. It considers all pairs
- * of samples that are assigned in the same or different clusters in the
- * predicted and empirical clusterings.
+ * The Adjusted Rand Index is a measure of similarity between a clustering and some
+ * ground-truth that is adjusted for chance. It considers all pairs of samples that are
+ * assigned in the same or different clusters in the predicted and empirical clusterings.
  *
  * References:
- * [1] W. M. Rand. (1971). Objective Criteria for the Evaluation of
- * Clustering Methods.
+ * [1] W. M. Rand. (1971). Objective Criteria for the Evaluation of Clustering Methods.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

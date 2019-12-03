@@ -3,7 +3,7 @@
 # Radius Neighbors Regressor
 This is the regressor version of [Radius Neighbors](../classifiers/radius-neighbors.md) implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
 
-> **Note**: Unknown samples with no training samples within radius are labeled *NaN*. As such, Radius Neighbors is also a quasi anomaly detector.
+> **Note**: Unknown samples with no training samples within radius are labeled *NaN*. As such, Radius Neighbors can also be used as a quasi anomaly detector.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 

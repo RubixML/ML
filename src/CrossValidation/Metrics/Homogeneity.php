@@ -11,10 +11,9 @@ use const Rubix\ML\EPSILON;
 /**
  * Homogeneity
  *
- * A ground-truth clustering metric that measures the ratio of samples in a
- * cluster that are also members of the same class. A cluster is said to be
- * *homogenous* when the entire cluster is comprised of a single class of
- * samples.
+ * A ground-truth clustering metric that measures the ratio of samples in a cluster that
+ * are also members of the same class. A cluster is said to be *homogeneous* when the
+ * entire cluster is comprised of a single class of samples.
  *
  * References:
  * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based

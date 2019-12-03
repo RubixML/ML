@@ -23,10 +23,10 @@ use const Rubix\ML\EPSILON;
 /**
  * Local Outlier Factor
  *
- * Local Outlier Factor (LOF) measures the local deviation of density of a given
- * sample with respect to its *k* nearest neighbors. As such, LOF only considers
- * the local region (or *neighborhood*) of an unknown sample which enables it to
- * detect anomalies within individual clusters of data.
+ * Local Outlier Factor (LOF) measures the local deviation of density of an unknown
+ * sample with respect to its *k* nearest neighbors from the training set. As such,
+ * LOF only considers the local region (or *neighborhood*) of an unknown sample
+ * which enables it to detect anomalies within individual clusters of data.
  *
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local

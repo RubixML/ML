@@ -11,13 +11,14 @@ use Rubix\ML\Datasets\Unlabeled;
 $samples = [
     [0.1, 20, 'furry'],
     [2.0, -5, 'rough'],
+    // ...
 ];
 
 $dataset = new Unabeled($samples);
 ```
 
 ### Missing Values
-By convention, continuous missing values are denoted by `NaN` and categorical values are denoted by a special placeholder category (ex. the `'?'` category). Dataset objects do not allow missing values of resource or other data types.
+By convention, continuous missing values are denoted by `NaN` and categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
 
 **Example**
 
@@ -113,17 +114,19 @@ Stack any number of dataset objects on top of each other to form a single datase
 public static stack(array $datasets) : self
 ```
 
-> **Note:** Datasets must have the same number of feature columns.
+> **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
 
 **Example**
 
 ```php
 use Rubix\ML\Datasets\Labeled;
 
+// Import training datasets
+
 $dataset = Labeled::stack([
     $training1,
     $training2,
-    $testing,
+    $training3,
 ]);
 ```
 
@@ -138,7 +141,7 @@ To append a given dataset onto the end of another dataset:
 public append(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have the same number of feature columns.
+> **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
 
 **Example**
 
@@ -226,7 +229,6 @@ public fold(int $k = 10) : array
 **Example**
 
 ```php
-// Fold the dataset into 8 equal size datasets
 $folds = $dataset->fold(8);
 
 var_dump(count($folds));
@@ -245,7 +247,7 @@ public batch(int $n = 50) : array
 **Example**
 
 ```php
-$batches = $dataset->batch(1000); // Create batches of 1000 samples each 
+$batches = $dataset->batch(1000);
 ```
 
 ### Randomization

@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/OneClassSVM.php">[source]</a></span>
 
 # One Class SVM
-An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with multiclass SVM or [SVC](../classifiers/svc.md).
+An unsupervised Support Vector Machine (SVM) used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with [SVC](../classifiers/svc.md).
 
-> **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine under the hood.
+> **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md)
 
@@ -31,7 +31,7 @@ public load(string $path) : void
 
 ### Example
 ```php
-use Rubix\ML\AnomalyDetection\OneClassSVM;
+use Rubix\ML\AnomalyDetectors\OneClassSVM;
 use Rubix\ML\Kernels\SVM\Polynomial;
 
 $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);

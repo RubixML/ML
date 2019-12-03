@@ -23,11 +23,10 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Loda
  *
- * *Lightweight Online Detector of Anomalies* uses a sparse random projection matrix
- * to produce input to an ensemble of unique one dimensional equi-width histograms
- * able to estimate the probability density of a potential anomaly. The anomaly score
- * is defined as the negative log likelihood of a sample being an outlier. Thus,
- * samples with low probability density will be given a high anomaly score.
+ * *Lightweight Online Detector of Anomalies* uses a series of sparse random
+ * projection vectors to produce scalar inputs to an ensemble of unique
+ * one-dimensional equi-width histograms. The histograms are then used to estimate
+ * the probability density of an unknown sample during inference.
  *
  * References:
  * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.

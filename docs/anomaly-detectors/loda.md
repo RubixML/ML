@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/Loda.php">[source]</a></span>
 
 # Loda
-*Lightweight Online Detector of Anomalies* uses a sparse random projection matrix to produce input to an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is defined as the negative log likelihood of a sample being an outlier. Thus, samples with low probability density will be given a high anomaly score.
+*Lightweight Online Detector of Anomalies* uses a series of sparse random projection vectors to produce scalar inputs to an ensemble of unique one-dimensional equi-width histograms. The histograms are then used to estimate the probability density of an unknown sample during inference.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
@@ -22,7 +22,7 @@ public static estimateBins(int $n) : int
 
 ### Example
 ```php
-use Rubix\ML\AnomalyDetection\Loda;
+use Rubix\ML\AnomalyDetectors\Loda;
 
 $bins = Loda::estimateBins(1000);
 

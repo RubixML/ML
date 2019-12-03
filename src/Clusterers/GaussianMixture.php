@@ -30,11 +30,12 @@ use const Rubix\ML\EPSILON;
 /**
  * Gaussian Mixture
  *
- * A Gaussian Mixture model (GMM) is a probabilistic model for representing the
- * presence of clusters within an overall population without requiring a sample
- * to know which sub-population it belongs to a priori. GMMs are similar to
- * centroid-based clusterers like K Means but allow not just the means to
- * be learned but the variances (or *radii*) as well.
+ * A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence
+ * of clusters within an overall population without requiring a sample to know which
+ * sub-population it belongs to beforehand. GMMs are similar to centroid-based clusterers
+ * like [K Means](k-means.md) but allow both the cluster centers (*means*) as well as the
+ * radii (*variances*) to be learned as well. For this reason, GMMs are especially useful
+ * for clusterings that are of different radius.
  *
  * References:
  * [1] A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via

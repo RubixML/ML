@@ -5,9 +5,9 @@ namespace Rubix\ML\CrossValidation\Metrics;
 /**
  * RMSE
  *
- * The Root Mean Squared Error is equivalent to the standard deviation of the
- * error residuals in a regression problem. Since RMSE is just the square root
- * of the MSE, RMSE is also sensitive to outliers because larger errors have a
+ * The Root Mean Squared Error (RMSE) is equivalent to the standard deviation of the
+ * error residuals in a regression problem. Since RMSE is just the square root of the
+ * MSE, RMSE is also sensitive to outliers because larger errors have a
  * disproportionately large effect on the score.
  *
  * > **Note:** In order to maintain the convention of *maximizing* validation scores,

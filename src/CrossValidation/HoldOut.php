@@ -13,9 +13,10 @@ use InvalidArgumentException;
 /**
  * Hold Out
  *
- * Hold Out is a simple cross validation technique that uses a validation set that is
- * *held out* from the training data. The advantages of Hold Out is that it is quick,
- * but it doesn't allow the learner to train and test on the entire training set.
+ * Hold Out is a quick and simple cross validation technique that uses a validation set
+ * that is *held out* from the training data. The advantages of Hold Out is that the
+ * validation score is quick to compute, however it does not allow the learner to *both*
+ * train and test on all the data in the training set.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -8,10 +8,10 @@ use InvalidArgumentException;
 /**
  * Confusion Matrix
  *
- * A Confusion Matrix is a table that visualizes the true positives, false,
- * positives, true negatives, and false negatives of a Classifier. The name
- * stems from the fact that the matrix makes it easy to see the classes that the
- * Classifier might be confusing.
+ * A Confusion Matrix is a table that visualizes the true positives, false positives,
+ * true negatives, and false negatives of a classification experiment. The name stems
+ * from the fact that the matrix makes it clear to see if the estimator is *confusing*
+ * any two classes.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

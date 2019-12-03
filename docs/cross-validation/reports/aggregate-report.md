@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php">[source]</a></span>
 
 # Aggregate Report
-A report that aggregates the output of multiple reports.
+A report that aggregates the output of multiple reports into one report.
 
 **Estimator Compatibility:** Depends on base reports
 
