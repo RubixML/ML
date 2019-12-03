@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use PHPUnit\Framework\TestCase;
@@ -20,24 +21,21 @@ use RuntimeException;
 
 class AdalineTest extends TestCase
 {
-    protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.6;
+    protected const TRAIN_SIZE = 350;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     protected $metric;
 
     public function setUp()
     {
-        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
-
-        $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
         $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, 5, new HuberLoss(1.));
 
@@ -67,13 +65,17 @@ class AdalineTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->training);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
-        $predictions = $this->estimator->predict($this->testing);
+        $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $this->testing->labels());
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
@@ -98,6 +100,6 @@ class AdalineTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

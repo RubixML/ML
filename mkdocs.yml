@@ -20,17 +20,6 @@ nav:
 - Model Persistence: model-persistence.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md
-- Dataset Objects:
-  - API Reference: datasets/api.md
-  - Labeled: datasets/labeled.md
-  - Unlabeled: datasets/unlabeled.md
-  - Generators:
-    - API Reference: datasets/generators/api.md
-    - Agglomerate: datasets/generators/agglomerate.md
-    - Blob: datasets/generators/blob.md
-    - Circle: datasets/generators/circle.md
-    - Half Moon: datasets/generators/half-moon.md
-    - Swiss Roll: datasets/generators/swiss-roll.md
 - General API Reference:
   - Estimator: estimator.md
   - Learner: learner.md
@@ -41,6 +30,18 @@ nav:
   - Ranking: ranking.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
+- Dataset Objects:
+  - API Reference: datasets/api.md
+  - Labeled: datasets/labeled.md
+  - Unlabeled: datasets/unlabeled.md
+  - Generators:
+    - API Reference: datasets/generators/api.md
+    - Agglomerate: datasets/generators/agglomerate.md
+    - Blob: datasets/generators/blob.md
+    - Circle: datasets/generators/circle.md
+    - Half Moon: datasets/generators/half-moon.md
+    - Hyperplane: datasets/generators/hyperplane.md
+    - Swiss Roll: datasets/generators/swiss-roll.md
 - Anomaly Detectors:
   - Gaussian MLE: anomaly-detectors/gaussian-mle.md
   - Isolation Forest: anomaly-detectors/isolation-forest.md

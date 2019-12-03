@@ -146,7 +146,9 @@ class Continuous implements Output
         $fanOut = 1;
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
+
+        $b = $this->biasInitializer->initialize(1, $fanOut)
+            ->columnAsVector(0);
 
         $this->weights = new MatrixParam($w);
         $this->biases = new VectorParam($b);

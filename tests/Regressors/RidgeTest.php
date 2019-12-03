@@ -8,6 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -15,24 +16,21 @@ use RuntimeException;
 
 class RidgeTest extends TestCase
 {
-    protected const TEST_SIZE = 5;
+    protected const TRAIN_SIZE = 350;
+    protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
+
+    protected $generator;
     
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     protected $metric;
 
     public function setUp()
     {
-        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
-
-        $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
         $this->estimator = new Ridge(1.0);
 
@@ -58,13 +56,17 @@ class RidgeTest extends TestCase
 
     public function test_make_prediction()
     {
-        $this->estimator->train($this->training);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
-        $predictions = $this->estimator->predict($this->testing);
+        $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $this->testing->labels());
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
@@ -87,6 +89,6 @@ class RidgeTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

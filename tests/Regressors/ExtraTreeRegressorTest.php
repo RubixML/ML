@@ -10,6 +10,7 @@ use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -17,24 +18,21 @@ use RuntimeException;
 
 class ExtraTreeRegressorTest extends TestCase
 {
-    protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.8;
+    protected const TRAIN_SIZE = 350;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     protected $metric;
 
     public function setUp()
     {
-        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
-
-        $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
         $this->estimator = new ExtraTreeRegressor(10, 3, 6, 1e-7);
 
@@ -64,21 +62,25 @@ class ExtraTreeRegressorTest extends TestCase
 
     public function test_train_predict_feature_importances_rules()
     {
-        $this->estimator->train($this->training);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
         $this->assertGreaterThan(0, $this->estimator->height());
 
-        $predictions = $this->estimator->predict($this->testing);
+        $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $this->testing->labels());
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertCount(6, $importances);
+        $this->assertCount(4, $importances);
         $this->assertEquals(1., array_sum($importances));
 
         $rules = $this->estimator->rules();

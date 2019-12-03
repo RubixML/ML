@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Hyperplane dataset generator
     - Changed name of Multilayer Perceptron classifier
 
 - 0.0.17-beta

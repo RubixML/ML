@@ -1,0 +1,113 @@
+<?php
+
+namespace Rubix\ML\Datasets\Generators;
+
+use Tensor\Matrix;
+use Tensor\Vector;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use InvalidArgumentException;
+
+/**
+ * Hyperplane
+ *
+ * Generates a labeled dataset whose samples form a hyperplane in n-dimensional vector
+ * space and whose labels are continuous values drawn from a uniform random distribution
+ * between -1 and 1. Due to its linearity, Hyperplane is especially useful for testing
+ * linear regression models.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
+class Hyperplane implements Generator
+{
+    /**
+     * The n coefficients of the hyperplane where n is the dimensionality.
+     *
+     * @var \Tensor\Vector
+     */
+    protected $coefficients;
+
+    /**
+     * The y intercept term.
+     *
+     * @var float
+     */
+    protected $intercept;
+
+    /**
+     * The factor of gaussian noise to add to the data points.
+     *
+     * @var float
+     */
+    protected $noise;
+
+    /**
+     * @param array $coefficients
+     * @param float $intercept
+     * @param float $noise
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $coefficients = [1, -1], float $intercept = 0., float $noise = 0.1)
+    {
+        if (empty($coefficients)) {
+            throw new InvalidArgumentException('Cannot generate data of less'
+                . ' than 1 dimension.');
+        }
+
+        foreach ($coefficients as $value) {
+            if (!is_int($value) and !is_float($value)) {
+                throw new InvalidArgumentException('Coefficient must be'
+                    . ' an integer or floating point number, '
+                    . gettype($value) . ' given.');
+            }
+        }
+
+        if ($noise < 0.) {
+            throw new InvalidArgumentException('Noise factor must be'
+                . " greater than 0, $noise given.");
+        }
+
+        $this->coefficients = Vector::quick($coefficients);
+        $this->intercept = $intercept;
+        $this->noise = $noise;
+    }
+
+    /**
+     * Return the dimensionality of the data this generates.
+     *
+     * @return int
+     */
+    public function dimensions() : int
+    {
+        return $this->coefficients->n();
+    }
+
+    /**
+     * Generate n data points.
+     *
+     * @param int $n
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function generate(int $n) : Dataset
+    {
+        $d = $this->dimensions();
+
+        $y = Vector::uniform($n);
+
+        $noise = Matrix::gaussian($n, $d)
+            ->multiply($this->noise);
+        
+        $samples = $y->add($this->intercept)
+            ->asColumnMatrix()
+            ->repeat(1, $d)
+            ->multiply($this->coefficients)
+            ->add($noise)
+            ->asArray();
+
+        $labels = $y->asArray();
+
+        return Labeled::quick($samples, $labels);
+    }
+}

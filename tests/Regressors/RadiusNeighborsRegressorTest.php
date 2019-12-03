@@ -6,8 +6,9 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -16,14 +17,13 @@ use RuntimeException;
 
 class RadiusNeighborsRegressorTest extends TestCase
 {
-    protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.8;
+    protected const TRAIN_SIZE = 400;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
-    protected $training;
-
-    protected $testing;
+    protected $generator;
 
     protected $estimator;
 
@@ -31,9 +31,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     public function setUp()
     {
-        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
-
-        $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
         $this->estimator = new RadiusNeighborsRegressor(1.5, true, new BallTree());
         
@@ -61,15 +59,19 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->training);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
         $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
-        $predictions = $this->estimator->predict($this->testing);
+        $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $this->testing->labels());
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

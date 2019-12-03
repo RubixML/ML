@@ -30,9 +30,9 @@ class Blob implements Generator
     protected $center;
 
     /**
-     * The standard deviations of each dimension of the blob.
+     * The standard deviation of the blob.
      *
-     * @var \Tensor\Vector
+     * @var \Tensor\Vector|int|float
      */
     protected $stddev;
 
@@ -41,43 +41,50 @@ class Blob implements Generator
      * @param mixed $stddev
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $center = [0.0, 0.0], $stddev = 1.)
+    public function __construct(array $center = [0, 0], $stddev = 1.)
     {
-        $d = count($center);
-
-        if ($d < 1) {
+        if (empty($center)) {
             throw new InvalidArgumentException('Cannot generate data of less'
                 . ' than 1 dimension.');
         }
 
-        if (!is_array($stddev)) {
-            $stddev = array_fill(0, $d, (float) $stddev);
-        }
-
-        if ($d !== count($stddev)) {
-            throw new InvalidArgumentException('The number of center'
-                . ' coordinates and standard deviations must the same.');
-        }
-
-        foreach ($center as $column => $mean) {
-            if (!is_int($mean) and !is_float($mean)) {
+        foreach ($center as $value) {
+            if (!is_int($value) and !is_float($value)) {
                 throw new InvalidArgumentException('Center coordinate must be'
-                    . ' an integer or float, ' . gettype($mean) . ' found.');
+                    . ' an integer or floating point number, '
+                    . gettype($value) . ' given');
+            }
+        }
+
+        if (is_array($stddev)) {
+            if (count($center) !== count($stddev)) {
+                throw new InvalidArgumentException('The number of center'
+                    . ' coordinates and standard deviations must equal.');
             }
 
-            if (!is_int($stddev[$column]) and !is_float($stddev[$column])) {
-                throw new InvalidArgumentException('Standard deviation must be'
-                    . ' an integer or float, ' . gettype($mean) . ' found.');
+            foreach ($stddev as $value) {
+                if (!is_int($value) and !is_float($value)) {
+                    throw new InvalidArgumentException('Standard deviation must be'
+                        . ' an integer or float, ' . gettype($value) . ' given.');
+                }
+    
+                if ($value <= 0) {
+                    throw new InvalidArgumentException('Standard deviation must be'
+                        . " greater than 0, $value given.");
+                }
             }
 
-            if ($stddev[$column] <= 0) {
-                throw new InvalidArgumentException('Standard deviation must be'
-                 . " greater than 0, $stddev[$column] given.");
+            $stddev = Vector::quick($stddev);
+        } else {
+            if (!is_int($stddev) and !is_float($stddev)) {
+                throw new InvalidArgumentException('Standard deviation must'
+                    . ' be an integer or floating point number, '
+                    . gettype($stddev) . ' given');
             }
         }
 
         $this->center = Vector::quick($center);
-        $this->stddev = Vector::quick($stddev);
+        $this->stddev = $stddev;
     }
 
     /**
@@ -98,7 +105,9 @@ class Blob implements Generator
      */
     public function generate(int $n) : Dataset
     {
-        $samples = Matrix::gaussian($n, $this->dimensions())
+        $d = $this->dimensions();
+        
+        $samples = Matrix::gaussian($n, $d)
             ->multiply($this->stddev)
             ->add($this->center)
             ->asArray();
