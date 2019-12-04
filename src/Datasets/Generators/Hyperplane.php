@@ -13,8 +13,9 @@ use InvalidArgumentException;
  *
  * Generates a labeled dataset whose samples form a hyperplane in n-dimensional vector
  * space and whose labels are continuous values drawn from a uniform random distribution
- * between -1 and 1. Due to its linearity, Hyperplane is especially useful for testing
- * linear regression models.
+ * between -1 and 1. When the number of coefficients is either 1, 2 or 3, the samples
+ * form points, lines, and planes respectively. Due to its linearity, Hyperplane is
+ * especially useful for testing linear regression models.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -101,7 +102,7 @@ class Hyperplane implements Generator
         
         $samples = $y->add($this->intercept)
             ->asColumnMatrix()
-            ->repeat(1, $d)
+            ->repeat(0, $d - 1)
             ->multiply($this->coefficients)
             ->add($noise)
             ->asArray();
