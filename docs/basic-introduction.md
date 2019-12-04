@@ -127,4 +127,4 @@ The output is the validation score which can be interpreted as the degree to whi
 > **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 
 ## Next Steps
-Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier, check out the [Iris Flower](https://github.com/RubixML/Iris) example project. We highly recommend browsing the rest of the documentation and the other [example projects](https://github.com/RubixML) which range from beginner to advanced skill level. Have fun!
+Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier and a real dataset, check out the [Divorce Predictor](https://github.com/RubixML/Divorce) tutorial and example project. Have fun!

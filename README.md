@@ -38,6 +38,7 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 - [Color Clusterer](https://github.com/RubixML/Colors)
 - [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
+- [Divorce Predictor](https://github.com/RubixML/Divorce)
 - [Dota 2 Game Outcome Predictor](https://github.com/RubixML/Dota2)
 - [Human Activity Recognizer](https://github.com/RubixML/HAR)
 - [Housing Price Predictor](https://github.com/RubixML/Housing)
@@ -46,7 +47,7 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
 ## Funding
-Rubix ML is funded entirely by donations from the open source software community. If you are interested in becoming a patron, you can make a contribution to one of our funding sources below.
+Rubix ML is funded entirely by donations from supporters. You can become a patron by making a contribution to one of our funding sources below.
 
 - [Patreon](https://www.patreon.com/rubixml)
 
