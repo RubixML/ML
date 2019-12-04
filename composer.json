@@ -2,7 +2,7 @@
     "name": "rubix/ml",
     "type": "library",
     "description": "A high-level machine learning and deep learning library for the PHP language.",
-    "homepage": "https://github.com/RubixML/RubixML",
+    "homepage": "https://rubixml.com",
     "license": "MIT",
     "keywords": [
         "php", "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",

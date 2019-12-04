@@ -50,8 +50,11 @@ class Hyperplane implements Generator
      * @param float $noise
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $coefficients = [1, -1], float $intercept = 0., float $noise = 0.1)
-    {
+    public function __construct(
+        array $coefficients = [1, -1],
+        float $intercept = 0.0,
+        float $noise = 0.1
+    ) {
         if (empty($coefficients)) {
             throw new InvalidArgumentException('Cannot generate data of less'
                 . ' than 1 dimension.');

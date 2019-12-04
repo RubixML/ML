@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
+use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
@@ -56,9 +57,9 @@ class Circle implements Generator
                 . " than 0, $scale given.");
         }
 
-        if ($noise < 0. or $noise > 1.) {
-            throw new InvalidArgumentException('Noise factor must be between 0'
-                . " and less 1, $noise given.");
+        if ($noise < 0.) {
+            throw new InvalidArgumentException('Noise factor must be greater'
+                . " than 0, $noise given.");
         }
 
         $this->center = Vector::quick([$x, $y]);
@@ -84,7 +85,7 @@ class Circle implements Generator
      */
     public function generate(int $n) : Dataset
     {
-        $r = Vector::rand($n)->multiply(TWO_PI);
+        $r = ColumnVector::rand($n)->multiply(TWO_PI);
 
         $x = $r->cos();
         $y = $r->sin();
@@ -93,10 +94,9 @@ class Circle implements Generator
             ->multiply($this->noise);
 
         $samples = Matrix::stack([$x, $y])
-            ->transpose()
-            ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
+            ->add($noise)
             ->asArray();
 
         $labels = $r->rad2deg()->asArray();

@@ -148,9 +148,7 @@ class Agglomerate implements Generator
 
             $labels = array_fill(0, $p, $label);
 
-            $stratum = Labeled::quick($samples, $labels);
-
-            $dataset = $dataset->append($stratum);
+            $dataset = $dataset->append(Labeled::quick($samples, $labels));
         }
 
         return $dataset;

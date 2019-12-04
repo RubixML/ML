@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
+use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
@@ -41,7 +42,7 @@ class HalfMoon implements Generator
     protected $rotation;
 
     /**
-     * The amount of gaussian noise to add to the points as a percentage.
+     * The factor of Gaussian noise to add to the data points.
      *
      * @var float
      */
@@ -58,7 +59,7 @@ class HalfMoon implements Generator
     public function __construct(
         float $x = 0.0,
         float $y = 0.0,
-        float $scale = 1.,
+        float $scale = 1.0,
         float $rotation = 90.0,
         float $noise = 0.1
     ) {
@@ -72,9 +73,9 @@ class HalfMoon implements Generator
                 . " 360 degrees, $rotation given.");
         }
 
-        if ($noise < 0. or $noise > 1.) {
-            throw new InvalidArgumentException('Noise factor must be between 0'
-                . " and less 1, $noise given.");
+        if ($noise < 0.) {
+            throw new InvalidArgumentException('Noise factor must be greater'
+                . " than 0, $noise given.");
         }
 
         $this->center = Vector::quick([$x, $y]);
@@ -101,9 +102,8 @@ class HalfMoon implements Generator
      */
     public function generate(int $n) : Dataset
     {
-        $r = Vector::rand($n)->multiply(180)
-            ->add($this->rotation)
-            ->deg2rad();
+        $r = ColumnVector::rand($n)->multiply(M_PI)
+            ->add(deg2rad($this->rotation));
 
         $x = $r->cos();
         $y = $r->sin();
@@ -112,10 +112,9 @@ class HalfMoon implements Generator
             ->multiply($this->noise);
             
         $samples = Matrix::stack([$x, $y])
-            ->transpose()
-            ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
+            ->add($noise)
             ->asArray();
 
         $labels = $r->rad2deg()->asArray();

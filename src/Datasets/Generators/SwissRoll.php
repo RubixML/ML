@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
+use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
@@ -66,9 +67,9 @@ class SwissRoll implements Generator
         float $x = 0.0,
         float $y = 0.0,
         float $z = 0.0,
-        float $scale = 1.,
-        float $depth = 21.,
-        float $noise = 0.3
+        float $scale = 1.0,
+        float $depth = 21.0,
+        float $noise = 0.1
     ) {
         if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
@@ -109,21 +110,22 @@ class SwissRoll implements Generator
      */
     public function generate(int $n) : Dataset
     {
-        $t = Vector::rand($n)->multiply(2)->add(1)
+        $t = ColumnVector::rand($n)
+            ->multiply(2)
+            ->add(1)
             ->multiply(1.5 * M_PI);
 
         $x = $t->multiply($t->cos());
-        $y = Vector::rand($n)->multiply($this->depth);
+        $y = ColumnVector::rand($n)->multiply($this->depth);
         $z = $t->multiply($t->sin());
 
         $noise = Matrix::gaussian($n, 3)
             ->multiply($this->noise);
             
         $samples = Matrix::stack([$x, $y, $z])
-            ->transpose()
-            ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
+            ->add($noise)
             ->asArray();
 
         $labels = $t->asArray();
