@@ -21,6 +21,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use ReflectionClass;
 
+use function count;
+
 /**
  * Grid Search
  *

@@ -5,6 +5,8 @@ namespace Rubix\ML\Other\Helpers;
 use RuntimeException;
 use Exception;
 
+use function count;
+
 class CPU
 {
     protected const WIN_CORES = 'wmic cpu get NumberOfLogicalProcessors';

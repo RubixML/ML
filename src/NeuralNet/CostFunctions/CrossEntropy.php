@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 use Tensor\Tensor;
 use Tensor\Matrix;
 
+use function get_class;
+
 use const Rubix\ML\EPSILON;
 
 /**

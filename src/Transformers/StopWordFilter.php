@@ -5,6 +5,8 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use InvalidArgumentException;
 
+use function gettype;
+
 /**
  * Stop Word Filter
  *

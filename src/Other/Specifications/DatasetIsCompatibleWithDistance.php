@@ -8,6 +8,8 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
+use function count;
+
 class DatasetIsCompatibleWithDistance
 {
     /**

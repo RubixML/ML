@@ -7,6 +7,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 use Generator;
 
+use function count;
+
 /**
  * Neighborhood
  *

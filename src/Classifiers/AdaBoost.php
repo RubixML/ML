@@ -17,6 +17,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function count;
+
 use const Rubix\ML\EPSILON;
 
 /**

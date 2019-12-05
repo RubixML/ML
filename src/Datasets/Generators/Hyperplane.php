@@ -8,6 +8,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+use function gettype;
+
 /**
  * Hyperplane
  *

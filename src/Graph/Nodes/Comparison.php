@@ -6,6 +6,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * Comparison
  *

@@ -8,6 +8,8 @@ use Rubix\ML\Embedders\Embedder;
 use Rubix\ML\Other\Helpers\Params;
 use InvalidArgumentException;
 
+use function count;
+
 class DatasetIsCompatibleWithEmbedder
 {
     /**

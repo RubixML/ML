@@ -4,8 +4,6 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
 
-use function is_float;
-use function is_nan;
 use function count;
 
 /**

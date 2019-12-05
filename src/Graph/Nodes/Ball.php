@@ -9,6 +9,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 use function Rubix\ML\argmax;
+use function count;
+use function gettype;
 
 /**
  * Hypersphere

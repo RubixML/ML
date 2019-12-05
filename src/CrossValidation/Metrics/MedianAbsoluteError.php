@@ -6,6 +6,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * Median Absolute Error
  *

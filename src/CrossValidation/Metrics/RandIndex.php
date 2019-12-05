@@ -8,6 +8,8 @@ use Rubix\ML\Other\Functions\Comb;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * Rand Index
  *

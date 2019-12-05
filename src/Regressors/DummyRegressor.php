@@ -14,6 +14,8 @@ use Rubix\ML\Other\Strategies\Continuous;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function count;
+
 /**
  * Dummy Regressor
  *

@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\logsumexp;
+use function gettype;
 
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;

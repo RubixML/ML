@@ -9,6 +9,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function gettype;
+
 /**
  * Persistent Model
  *

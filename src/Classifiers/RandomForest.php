@@ -20,6 +20,7 @@ use RuntimeException;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\array_transpose;
+use function get_class;
 
 /**
  * Random Forest

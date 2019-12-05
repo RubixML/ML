@@ -6,6 +6,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
+use function count;
+
 use const Rubix\ML\EPSILON;
 
 /**

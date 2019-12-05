@@ -7,6 +7,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use RuntimeException;
 
+use function count;
+
 /**
  * One Hot Encoder
  *

@@ -7,6 +7,10 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithDistance;
 use InvalidArgumentException;
 
+use function count;
+use function get_class;
+use function gettype;
+
 use const Rubix\ML\PHI;
 
 /**

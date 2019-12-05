@@ -8,6 +8,8 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
+use function count;
+
 class DatasetIsCompatibleWithTransformer
 {
     /**

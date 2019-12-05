@@ -17,6 +17,8 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\logsumexp;
+use function count;
+use function gettype;
 
 use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;

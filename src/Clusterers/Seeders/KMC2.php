@@ -7,6 +7,8 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+use function count;
+
 use const Rubix\ML\EPSILON;
 
 /**

@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 
+use function count;
+
 /**
  * Sparse Random Projector
  *

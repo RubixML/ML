@@ -4,6 +4,9 @@ namespace Rubix\ML\CrossValidation\Reports;
 
 use InvalidArgumentException;
 
+use function count;
+use function gettype;
+
 /**
  * Aggregate Report
  *

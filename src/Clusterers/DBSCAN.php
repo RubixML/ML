@@ -12,6 +12,8 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * DBSCAN
  *

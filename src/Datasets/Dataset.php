@@ -15,6 +15,7 @@ use ArrayAccess;
 use Countable;
 
 use function Rubix\ML\array_transpose;
+use function count;
 
 use const Rubix\ML\EPSILON;
 

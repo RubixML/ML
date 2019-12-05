@@ -17,6 +17,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Generator;
 
+use function count;
+
 /**
  * Multiclass
  *

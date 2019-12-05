@@ -15,6 +15,9 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use Generator;
 
+use function count;
+use function get_class;
+
 /**
  * Feed Forward
  *

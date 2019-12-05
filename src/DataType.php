@@ -5,11 +5,6 @@ namespace Rubix\ML;
 use InvalidArgumentException;
 
 use function gettype;
-use function is_string;
-use function is_int;
-use function is_float;
-use function is_numeric;
-use function is_resource;
 use function in_array;
 
 class DataType

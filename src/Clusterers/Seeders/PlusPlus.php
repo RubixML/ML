@@ -6,6 +6,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
+use function count;
+
 /**
  * Plus Plus
  *

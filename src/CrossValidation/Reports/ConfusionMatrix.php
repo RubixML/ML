@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * Confusion Matrix
  *

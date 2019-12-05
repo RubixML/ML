@@ -6,6 +6,10 @@ use InvalidArgumentException;
 use ReflectionMethod;
 use ReflectionClass;
 
+use function count;
+use function get_class;
+use function gettype;
+
 use const Rubix\ML\PHI;
 
 /**

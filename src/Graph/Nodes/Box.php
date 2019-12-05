@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use Generator;
 
 use function Rubix\ML\argmax;
+use function count;
+use function gettype;
 
 /**
  * Hypercube

@@ -8,6 +8,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use InvalidArgumentException;
 
+use function count;
+use function gettype;
+
 /**
  * Blob
  *

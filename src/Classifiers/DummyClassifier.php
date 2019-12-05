@@ -14,6 +14,8 @@ use Rubix\ML\Other\Strategies\Prior;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function count;
+
 /**
  * Dummy Classifier
  *

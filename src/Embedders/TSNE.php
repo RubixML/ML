@@ -402,7 +402,7 @@ class TSNE implements Embedder, Verbose
      */
     protected function affinities(Matrix $distances) : Matrix
     {
-        $zeros = array_fill(0, count($distances), 0);
+        $zeros = array_fill(0, $distances->m(), 0);
         
         $affinities = [];
 

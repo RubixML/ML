@@ -4,6 +4,8 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
+use function count;
+
 /**
  * Skip Gram
  *

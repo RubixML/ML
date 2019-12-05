@@ -10,6 +10,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function count;
+
 /**
  * Word Count Vectorizer
  *

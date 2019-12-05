@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 
+use function get_class;
+
 use const Rubix\ML\EPSILON;
 
 /**

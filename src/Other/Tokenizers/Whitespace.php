@@ -31,7 +31,7 @@ class Whitespace implements Tokenizer
     {
         if (strlen($delimiter) < 1) {
             throw new InvalidArgumentException('Delimiter must be'
-                . ' at least 1 character.');
+                . ' at least 1 character in length.');
         }
 
         $this->delimiter = $delimiter;

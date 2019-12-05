@@ -5,6 +5,7 @@ namespace Rubix\ML\Other\Helpers;
 use InvalidArgumentException;
 
 use function Rubix\ML\argmax;
+use function count;
 
 use const Rubix\ML\EPSILON;
 

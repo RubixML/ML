@@ -5,9 +5,6 @@ namespace Rubix\ML\Kernels\Distance;
 use Rubix\ML\DataType;
 use InvalidArgumentException;
 
-use function is_string;
-use function is_float;
-use function is_nan;
 use function count;
 
 /**

@@ -8,6 +8,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use InvalidArgumentException;
 
+use function count;
+
 class DatasetIsCompatibleWithEstimator
 {
     /**

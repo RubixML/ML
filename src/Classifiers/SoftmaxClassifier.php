@@ -283,6 +283,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             ]));
         }
 
+        $k = (int) ceil($dataset->numRows() / $this->batchSize);
+
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
@@ -295,7 +297,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= count($batches);
+            $loss /= $k;
 
             $this->steps[] = $loss;
 
