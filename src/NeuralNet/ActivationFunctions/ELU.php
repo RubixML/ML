@@ -44,17 +44,6 @@ class ELU implements ActivationFunction
     }
 
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [-$this->alpha, INF];
-    }
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

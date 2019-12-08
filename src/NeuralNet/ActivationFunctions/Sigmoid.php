@@ -17,17 +17,6 @@ use Tensor\Matrix;
 class Sigmoid implements ActivationFunction
 {
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [0., 1.];
-    }
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

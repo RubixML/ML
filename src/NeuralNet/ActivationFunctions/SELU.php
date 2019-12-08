@@ -27,17 +27,6 @@ class SELU implements ActivationFunction
     protected const BETA = self::SCALE * self::ALPHA;
 
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [-self::BETA, INF];
-    }
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

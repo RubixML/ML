@@ -45,17 +45,6 @@ class LeakyReLU implements ActivationFunction
     }
 
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [-INF, INF];
-    }
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

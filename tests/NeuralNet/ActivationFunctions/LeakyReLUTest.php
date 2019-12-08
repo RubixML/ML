@@ -26,11 +26,6 @@ class LeakyReLUTest extends TestCase
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
-    public function test_get_range() : void
-    {
-        $this->assertEquals([-INF, INF], $this->activationFn->range());
-    }
-
     /**
      * @param \Tensor\Matrix $input
      * @param array[] $expected

@@ -7,14 +7,6 @@ use Tensor\Matrix;
 interface ActivationFunction
 {
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array;
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

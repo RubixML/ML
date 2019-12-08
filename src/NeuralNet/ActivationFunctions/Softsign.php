@@ -21,17 +21,6 @@ use Tensor\Matrix;
 class Softsign implements ActivationFunction
 {
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [-1., 1.];
-    }
-
-    /**
      * Compute the output value.
      *
      * @param \Tensor\Matrix $z

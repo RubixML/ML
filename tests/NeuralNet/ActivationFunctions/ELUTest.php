@@ -34,11 +34,6 @@ class ELUTest extends TestCase
         new ELU(-346);
     }
 
-    public function test_get_range() : void
-    {
-        $this->assertEquals([-1.0, INF], $this->activationFn->range());
-    }
-
     /**
      * @param \Tensor\Matrix $input
      * @param array[] $expected

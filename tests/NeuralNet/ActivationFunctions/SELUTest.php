@@ -26,11 +26,6 @@ class SELUTest extends TestCase
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
-    public function test_get_range() : void
-    {
-        $this->assertEquals([-1.7580993408473766, INF], $this->activationFn->range());
-    }
-
     /**
      * @param \Tensor\Matrix $input
      * @param array[] $expected
