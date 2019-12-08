@@ -81,8 +81,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     ];
 
     /**
-     * A tuple containing the parameters with the highest validation score and
-     * the validation score.
+     * A 2-tuple containing the parameters with the highest validation score
+     * and the validation score.
      *
      * @var (float|array)[]|null
      */

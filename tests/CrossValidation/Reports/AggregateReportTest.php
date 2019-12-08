@@ -48,7 +48,7 @@ class AggregateReportTest extends TestCase
 
         $result = $this->report->generate($predictions, $labels);
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertCount(2, $result);
     }
 }

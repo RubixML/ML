@@ -94,7 +94,7 @@ class RegressionTreeTest extends TestCase
 
         $rules = $this->estimator->rules();
 
-        $this->assertInternalType('string', $rules);
+        $this->assertIsString($rules);
     }
 
     public function test_train_with_unlabeled() : void

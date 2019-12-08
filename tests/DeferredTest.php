@@ -22,10 +22,11 @@ class DeferredTest extends TestCase
     public function test_build_deferred() : void
     {
         $this->assertInstanceOf(Deferred::class, $this->deferred);
+        $this->assertIsCallable($this->deferred);
     }
 
-    public function test_result() : void
+    public function test_compute() : void
     {
-        $this->assertEquals(3, $this->deferred->result());
+        $this->assertEquals(3, $this->deferred->compute());
     }
 }

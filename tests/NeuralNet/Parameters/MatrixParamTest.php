@@ -27,7 +27,7 @@ class MatrixParamTest extends TestCase
 
     public function test_id() : void
     {
-        $this->assertInternalType('integer', $this->param->id());
+        $this->assertIsInt($this->param->id());
     }
 
     public function test_w() : void

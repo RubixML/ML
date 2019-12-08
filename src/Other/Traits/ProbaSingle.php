@@ -17,7 +17,7 @@ trait ProbaSingle
      * Return the probabilities of a single sample.
      *
      * @param array $sample
-     * @return array[]
+     * @return float[]
      */
     public function probaSample(array $sample) : array
     {

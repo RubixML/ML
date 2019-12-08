@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-use function is_null;
+use function call_user_func;
 
 /**
  * Deferred
@@ -17,7 +17,7 @@ use function is_null;
 class Deferred
 {
     /**
-     * The callable function containing the computation.
+     * The function containing the computation.
      *
      * @var callable
      */
@@ -29,13 +29,6 @@ class Deferred
      * @var array
      */
     protected $args;
-
-    /**
-     * The memoized result of the computation.
-     *
-     * @var mixed|null
-     */
-    protected $result;
 
     /**
      * @param callable $fn
@@ -54,20 +47,16 @@ class Deferred
      */
     public function compute()
     {
-        return ($this->fn)(...$this->args);
+        return call_user_func($this->fn, ...$this->args);
     }
 
     /**
-     * Return the result of the computation.
+     * Invoke the object as a function.
      *
      * @return mixed
      */
-    public function result()
+    public function __invoke()
     {
-        if (is_null($this->result)) {
-            $this->result = $this->compute();
-        }
-
-        return $this->result;
+        return $this->compute();
     }
 }

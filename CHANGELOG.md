@@ -1,8 +1,10 @@
 - Unreleased
+    - Now requires PHP 7.2 and above
     - Added Hyperplane dataset generator
     - All Generators output Labeled datasets
     - Changed the way noise is applied to Circle, Half Moon, etc.
     - Changed name of Multilayer Perceptron classifier
+    - Deferred computations are now callable
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

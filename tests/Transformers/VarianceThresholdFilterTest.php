@@ -47,8 +47,8 @@ class VarianceThresholdFilterTest extends TestCase
 
         $this->assertCount(2, $sample);
         
-        $this->assertEquals(0., $sample[0], '', 3.);
-        $this->assertEquals(0., $sample[1], '', 15.);
+        $this->assertEqualsWithDelta(0, $sample[0], 3);
+        $this->assertEqualsWithDelta(0, $sample[1], 15);
     }
 
     public function test_transform_unfitted() : void

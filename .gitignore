@@ -4,6 +4,7 @@ composer.lock
 test.json
 test.php
 *.model
+.phpunit.result.cache
 .php_cs.cache
 .vscode
 .vs

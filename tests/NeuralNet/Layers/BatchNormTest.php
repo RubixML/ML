@@ -89,9 +89,7 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $back = $this->layer->back($this->prevGrad, $this->optimizer);
-
-        $this->assertInstanceOf(Deferred::class, $back);
+        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
             [-0.06445877134888621, 0.027271018647605647, 0.03718775270128047],
@@ -99,8 +97,8 @@ class BatchNormTest extends TestCase
             [-0.11909780311643131, -0.01087038130262698, 0.1299681844190583],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $back->result());
-        $this->assertEquals($expected, $back->result()->asArray());
+        $this->assertInstanceOf(Matrix::class, $gradient);
+        $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
             [-0.12607831595417437, 1.2804902385302876, -1.1575619225761131],

@@ -47,12 +47,12 @@ class HoldOutTest extends TestCase
         $this->assertInstanceOf(Validator::class, $this->validator);
     }
 
-    public function test_test_estimator() : void
+    public function test_test() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
         $score = $this->validator->test($this->estimator, $dataset, new Accuracy());
 
-        $this->assertEquals(.5, $score, '', .5);
+        $this->assertEqualsWithDelta(.5, $score, .5);
     }
 }

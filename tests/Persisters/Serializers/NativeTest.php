@@ -37,7 +37,7 @@ class NativeTest extends TestCase
     {
         $data = $this->serializer->serialize($this->persistable);
         
-        $this->assertInternalType('string', $data);
+        $this->assertIsString($data);
 
         $persistable = $this->serializer->unserialize($data);
 

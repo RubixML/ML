@@ -95,10 +95,10 @@ class FeedForwardTest extends TestCase
         $this->assertCount(3, $this->network->parametric());
     }
 
-    public function test_round_trip() : void
+    public function test_roundtrip() : void
     {
         $loss = $this->network->roundtrip($this->dataset);
 
-        $this->assertInternalType('double', $loss);
+        $this->assertIsFloat($loss);
     }
 }

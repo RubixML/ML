@@ -90,10 +90,12 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
-        $this->assertInstanceOf(Deferred::class, $back);
-        $this->assertInternalType('float', $loss);
+        $this->assertInstanceOf(Deferred::class, $computation);
+        $this->assertIsFloat($loss);
+
+        $gradient = $computation->compute();
 
         $expected = [
             [-3.2356355813536473, -9.40306199060677, -6.435544794124302],
@@ -101,8 +103,8 @@ class ContinuousTest extends TestCase
             [-6.811738590037662, -19.795554417514563, -13.548265161465714],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $back->result());
-        $this->assertEquals($expected, $back->result()->asArray());
+        $this->assertInstanceOf(Matrix::class, $gradient);
+        $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
             [0.5913062141627208, 2.9973293893216404, 2.277761099156666],

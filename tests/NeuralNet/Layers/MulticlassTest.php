@@ -92,10 +92,12 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
-        $this->assertInstanceOf(Deferred::class, $back);
-        $this->assertInternalType('float', $loss);
+        $this->assertInstanceOf(Deferred::class, $computation);
+        $this->assertIsFloat($loss);
+
+        $gradient = $computation->compute();
 
         $expected = [
             [-0.02314956691486992, 0.0013034187833920589, 0.026704012638151413],
@@ -103,8 +105,8 @@ class MulticlassTest extends TestCase
             [0.08201144203904855, -0.017002135254245234, -0.08555498623142435],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $back->result());
-        $this->assertEquals($expected, $back->result()->asArray(), '', 1e-4);
+        $this->assertInstanceOf(Matrix::class, $gradient);
+        $this->assertEquals($expected, $gradient->asArray());
 
         $infer = $this->layer->infer($this->input);
 
