@@ -27,6 +27,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -343,6 +344,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([

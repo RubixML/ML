@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -128,6 +129,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->tree->grow($dataset);
     }

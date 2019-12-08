@@ -23,6 +23,7 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -272,6 +273,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([

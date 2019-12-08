@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -112,6 +113,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
 

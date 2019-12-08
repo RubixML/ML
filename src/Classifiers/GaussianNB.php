@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -207,6 +208,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $classes = $dataset->possibleOutcomes();
 
@@ -261,6 +263,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
             $means = $oldMeans = $this->means[$class] ?? [];

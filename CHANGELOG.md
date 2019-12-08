@@ -6,6 +6,7 @@
     - Changed name of Multilayer Perceptron classifier
     - Deferred computations are now callable
     - Removed range() from the activation function interface
+    - Added label type validation for supervised learners
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

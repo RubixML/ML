@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -114,6 +115,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
 
