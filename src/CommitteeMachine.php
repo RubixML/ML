@@ -10,7 +10,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -230,7 +230,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             }
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([

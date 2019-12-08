@@ -11,7 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 use svmmodel;
@@ -158,7 +158,7 @@ class SVC implements Estimator, Learner
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
@@ -191,7 +191,7 @@ class SVC implements Estimator, Learner
                 . ' been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

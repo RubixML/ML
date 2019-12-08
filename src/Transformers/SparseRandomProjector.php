@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 
 use function count;
 
@@ -36,7 +36,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function fit(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         $columns = $dataset->numColumns();
 

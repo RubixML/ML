@@ -29,7 +29,7 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -343,7 +343,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
@@ -463,7 +463,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             throw new RuntimeException('The estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $xT = Matrix::quick($dataset->samples())->transpose();
 

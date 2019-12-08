@@ -13,7 +13,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -171,7 +171,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         [$m, $n] = $dataset->shape();
 
@@ -236,7 +236,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             return;
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
@@ -292,7 +292,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)

@@ -14,7 +14,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -207,7 +207,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $classes = $dataset->possibleOutcomes();
@@ -262,7 +262,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
@@ -319,7 +319,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
@@ -340,7 +340,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -231,7 +231,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
@@ -303,7 +303,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('The estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
@@ -324,7 +324,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('The estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

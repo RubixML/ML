@@ -20,7 +20,7 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -251,7 +251,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
@@ -279,7 +279,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             return;
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
@@ -397,7 +397,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map('strval', array_map([self::class, 'assign'], $dataset->samples()));
     }
@@ -416,7 +416,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'membership'], $dataset->samples());
     }

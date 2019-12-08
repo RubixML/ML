@@ -8,7 +8,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -149,7 +149,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
         
         $donors = [];
 

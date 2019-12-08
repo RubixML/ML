@@ -8,7 +8,7 @@ use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\KMostFrequent;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -100,7 +100,7 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
         
         $this->strategies = [];
 

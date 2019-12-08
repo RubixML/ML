@@ -4,7 +4,7 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithDistance;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 
 use function count;
@@ -451,7 +451,7 @@ class Unlabeled extends Dataset
                 . ' left and right centroids.');
         }
 
-        DatasetIsCompatibleWithDistance::check($this, $kernel);
+        SamplesAreCompatibleWithDistance::check($this, $kernel);
 
         $left = $right = [];
 

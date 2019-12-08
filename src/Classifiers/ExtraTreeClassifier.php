@@ -15,7 +15,7 @@ use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -112,7 +112,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
                 . ' labeled training set.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
@@ -134,7 +134,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -163,7 +163,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $template = array_fill_keys($this->classes, 0.);
 

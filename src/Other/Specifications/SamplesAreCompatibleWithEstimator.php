@@ -3,27 +3,27 @@
 namespace Rubix\ML\Other\Specifications;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
 use function count;
 
-class DatasetIsCompatibleWithTransformer
+class SamplesAreCompatibleWithEstimator
 {
     /**
      * Perform a check of the specification.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @param \Rubix\ML\Estimator $estimator
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Transformer $transformer) : void
+    public static function check(Dataset $dataset, Estimator $estimator) : void
     {
-        $types = $dataset->uniqueTypes();
+        $compatibility = $estimator->compatibility();
 
-        $compatibility = $transformer->compatibility();
+        $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
 
@@ -32,7 +32,7 @@ class DatasetIsCompatibleWithTransformer
 
             $diffString = implode(', ', array_map([DataType::class, 'asString'], $diff));
 
-            throw new InvalidArgumentException(Params::shortName($transformer)
+            throw new InvalidArgumentException(Params::shortName($estimator)
                 . " is not compatible with $diffString data types.");
         }
     }

@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -127,7 +127,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
         
         $this->minimums = $this->maximums = $this->scales = $this->mins = [];
 
@@ -154,7 +154,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
             return;
         }
 
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         $n = $dataset->numColumns();
 

@@ -4,26 +4,26 @@ namespace Rubix\ML\Other\Specifications;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Embedders\Embedder;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 use function count;
 
-class DatasetIsCompatibleWithEmbedder
+class SamplesAreCompatibleWithDistance
 {
     /**
      * Perform a check of the specification.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Embedders\Embedder $embedder
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Embedder $embedder) : void
+    public static function check(Dataset $dataset, Distance $kernel) : void
     {
         $types = $dataset->uniqueTypes();
 
-        $compatibility = $embedder->compatibility();
+        $compatibility = $kernel->compatibility();
 
         $same = array_intersect($types, $compatibility);
 
@@ -32,7 +32,7 @@ class DatasetIsCompatibleWithEmbedder
 
             $diffString = implode(', ', array_map([DataType::class, 'asString'], $diff));
 
-            throw new InvalidArgumentException(Params::shortName($embedder)
+            throw new InvalidArgumentException(Params::shortName($kernel)
                 . " is not compatible with $diffString data types.");
         }
     }

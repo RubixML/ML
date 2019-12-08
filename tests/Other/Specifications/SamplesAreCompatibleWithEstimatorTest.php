@@ -2,17 +2,17 @@
 
 namespace Rubix\ML\Tests\Other\Specifications;
 
-use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEmbedder;
+use Rubix\ML\Classifiers\NaiveBayes;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class DatasetIsCompatibleWithEmbedderTest extends TestCase
+class SamplesAreCompatibleWithEstimatorTest extends TestCase
 {
     public function test_check() : void
     {
-        $embedder = new TSNE();
+        $estimator = new NaiveBayes();
 
         $dataset = Unlabeled::quick([
             [6., -1.1, 5, 'college'],
@@ -20,6 +20,6 @@ class DatasetIsCompatibleWithEmbedderTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        DatasetIsCompatibleWithEmbedder::check($dataset, $embedder);
+        SamplesAreCompatibleWithEstimator::check($dataset, $estimator);
     }
 }

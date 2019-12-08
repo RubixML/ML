@@ -3,16 +3,16 @@
 namespace Rubix\ML\Tests\Other\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithDistance;
+use Rubix\ML\Transformers\L1Normalizer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class DatasetIsCompatibleWithDistanceTest extends TestCase
+class SamplesAreCompatibleWithTransformerTest extends TestCase
 {
     public function test_check() : void
     {
-        $kernel = new Euclidean();
+        $transformer = new L1Normalizer();
 
         $dataset = Unlabeled::quick([
             [6., -1.1, 5, 'college'],
@@ -20,6 +20,6 @@ class DatasetIsCompatibleWithDistanceTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        DatasetIsCompatibleWithDistance::check($dataset, $kernel);
+        SamplesAreCompatibleWithTransformer::check($dataset, $transformer);
     }
 }

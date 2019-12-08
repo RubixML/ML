@@ -2,17 +2,17 @@
 
 namespace Rubix\ML\Tests\Other\Specifications;
 
+use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\L1Normalizer;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEmbedder;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class DatasetIsCompatibleWithTransformerTest extends TestCase
+class SamplesAreCompatibleWithEmbedderTest extends TestCase
 {
     public function test_check() : void
     {
-        $transformer = new L1Normalizer();
+        $embedder = new TSNE();
 
         $dataset = Unlabeled::quick([
             [6., -1.1, 5, 'college'],
@@ -20,6 +20,6 @@ class DatasetIsCompatibleWithTransformerTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        DatasetIsCompatibleWithTransformer::check($dataset, $transformer);
+        SamplesAreCompatibleWithEmbedder::check($dataset, $embedder);
     }
 }

@@ -5,7 +5,7 @@ namespace Rubix\ML\Transformers;
 use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithTransformer;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -147,7 +147,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        DatasetIsCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         $xT = Matrix::build($dataset->samples())->transpose();
 
