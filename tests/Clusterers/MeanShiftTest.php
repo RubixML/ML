@@ -28,13 +28,22 @@ class MeanShiftTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Clusterers\MeanShift
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -51,7 +60,7 @@ class MeanShiftTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_clusterer()
+    public function test_build_clusterer() : void
     {
         $this->assertInstanceOf(MeanShift::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -68,16 +77,16 @@ class MeanShiftTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_estimate_radius()
+    public function test_estimate_radius() : void
     {
-        $subset = $this->generator->generate(0.5 * self::TRAIN_SIZE);
+        $subset = $this->generator->generate(intdiv(self::TRAIN_SIZE, 3));
 
         $radius = MeanShift::estimateRadius($subset, 30.);
 
-        $this->assertEquals(68.35439187218562, $radius);
+        $this->assertEquals(64.82125060782722, $radius);
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -94,14 +103,14 @@ class MeanShiftTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

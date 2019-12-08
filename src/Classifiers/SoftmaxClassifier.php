@@ -112,7 +112,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -206,7 +206,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return the training loss at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -337,7 +337,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -350,7 +350,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -367,7 +367,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $probabilities = [];
 
         foreach ($yT as $activations) {
-            $probabilities[] = array_combine($this->classes, $activations);
+            $probabilities[] = array_combine($this->classes, $activations) ?: [];
         }
 
         return $probabilities;

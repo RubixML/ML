@@ -124,7 +124,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -153,7 +153,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -171,8 +171,8 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best
-                ? array_replace($template, $node->probabilities())
-                : null;
+                ? array_replace($template, $node->probabilities()) ?? []
+                : [];
         }
 
         return $probabilities;

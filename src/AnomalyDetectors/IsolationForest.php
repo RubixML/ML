@@ -79,9 +79,9 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     protected $delta;
 
     /**
-     * The trees that make up the forest.
+     * The isolation trees that make up the forest.
      *
-     * @var array
+     * @var \Rubix\ML\Graph\Trees\ITree[]
      */
     protected $trees = [
         //
@@ -201,7 +201,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -214,7 +214,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return float[]
      */
     public function rank(Dataset $dataset) : array
     {
@@ -230,7 +230,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     /**
      * Return the isolation score of a sample.
      *
-     * @param array $sample
+     * @param (string|int|float)[] $sample
      * @return float
      */
     protected function isolationScore(array $sample) : float

@@ -9,11 +9,17 @@ use PHPUnit\Framework\TestCase;
 
 class L2NormalizerTest extends TestCase
 {
-    protected $transformer;
-
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Transformers\L2Normalizer
+     */
+    protected $transformer;
+
+    public function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [1, 2, 3, 4],
@@ -24,13 +30,13 @@ class L2NormalizerTest extends TestCase
         $this->transformer = new L2Normalizer();
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(L2Normalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_transform() : void
     {
         $this->dataset->apply($this->transformer);
 

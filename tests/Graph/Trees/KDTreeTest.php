@@ -15,11 +15,17 @@ class KDTreeTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Graph\Trees\KDTree
+     */
     protected $tree;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'east' => new Blob([5, -2, -2]),
@@ -31,7 +37,7 @@ class KDTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_tree()
+    public function test_build_tree() : void
     {
         $this->assertInstanceOf(KDTree::class, $this->tree);
         $this->assertInstanceOf(Spatial::class, $this->tree);
@@ -41,7 +47,7 @@ class KDTreeTest extends TestCase
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function test_grow_neighbors()
+    public function test_grow_neighbors() : void
     {
         $this->tree->grow($this->generator->generate(50));
 

@@ -11,11 +11,17 @@ use PHPUnit\Framework\TestCase;
 
 class PlusPlusTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Clusterers\Seeders\PlusPlus
+     */
     protected $seeder;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 0, 0], 3.),
@@ -26,13 +32,13 @@ class PlusPlusTest extends TestCase
         $this->seeder = new PlusPlus(new Euclidean());
     }
 
-    public function test_build_seeder()
+    public function test_build_seeder() : void
     {
         $this->assertInstanceOf(PlusPlus::class, $this->seeder);
         $this->assertInstanceOf(Seeder::class, $this->seeder);
     }
 
-    public function test_seed()
+    public function test_seed() : void
     {
         $dataset = $this->generator->generate(100);
 

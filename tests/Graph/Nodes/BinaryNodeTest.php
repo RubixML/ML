@@ -9,16 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class BinaryNodeTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode
+     */
     protected $node;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->node = new class implements BinaryNode {
             use HasBinaryChildren;
         };
     }
 
-    public function test_build_node()
+    public function test_build_node() : void
     {
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
@@ -30,7 +33,7 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($this->node->leaf());
     }
 
-    public function test_attach_left_child()
+    public function test_attach_left_child() : void
     {
         $this->node->attachLeft(new class implements BinaryNode {
             use HasBinaryChildren;
@@ -44,7 +47,7 @@ class BinaryNodeTest extends TestCase
         $this->assertFalse($this->node->leaf());
     }
 
-    public function test_attach_right_child()
+    public function test_attach_right_child() : void
     {
         $this->node->attachRight(new class implements BinaryNode {
             use HasBinaryChildren;
@@ -58,7 +61,7 @@ class BinaryNodeTest extends TestCase
         $this->assertFalse($this->node->leaf());
     }
 
-    public function test_detach_left_child()
+    public function test_detach_left_child() : void
     {
         $this->node->attachLeft(new class implements BinaryNode {
             use HasBinaryChildren;
@@ -72,7 +75,7 @@ class BinaryNodeTest extends TestCase
         $this->assertNull($this->node->left());
     }
 
-    public function test_detach_right_child()
+    public function test_detach_right_child() : void
     {
         $this->node->attachRight(new class implements BinaryNode {
             use HasBinaryChildren;

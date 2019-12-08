@@ -10,24 +10,30 @@ use PHPUnit\Framework\TestCase;
 
 class NativeTest extends TestCase
 {
-    protected $serializer;
-
+    /**
+     * @var \Rubix\ML\Persistable
+     */
     protected $persistable;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Persisters\Serializers\Native
+     */
+    protected $serializer;
+
+    public function setUp() : void
     {
         $this->serializer = new Native();
 
         $this->persistable = new DummyClassifier();
     }
 
-    public function test_build_serialzer()
+    public function test_build_serialzer() : void
     {
         $this->assertInstanceOf(Native::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 
-    public function test_serialize_unserialize()
+    public function test_serialize_unserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
         

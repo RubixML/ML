@@ -15,11 +15,17 @@ use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Snapshot
+     */
     protected $snapshot;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Network
+     */
     protected $network;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->network = new FeedForward(new Placeholder1D(1), [
             new Dense(10),
@@ -29,7 +35,7 @@ class SnapshotTest extends TestCase
         $this->snapshot = new Snapshot($this->network);
     }
 
-    public function test_build_snapshot()
+    public function test_build_snapshot() : void
     {
         $this->assertInstanceOf(Snapshot::class, $this->snapshot);
         $this->assertCount(2, iterator_to_array($this->snapshot));

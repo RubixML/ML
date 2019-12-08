@@ -11,11 +11,17 @@ use RuntimeException;
 
 class MissingDataImputerTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
+    /**
+     * @var \Rubix\ML\Transformers\MissingDataImputer
+     */
     protected $transformer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [30, 'friendly'],
@@ -28,14 +34,14 @@ class MissingDataImputerTest extends TestCase
         $this->transformer = new MissingDataImputer('?');
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -47,7 +53,7 @@ class MissingDataImputerTest extends TestCase
         $this->assertContains($this->dataset[3][1], ['friendly', 'mean']);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

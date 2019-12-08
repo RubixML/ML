@@ -8,33 +8,35 @@ use PHPUnit\Framework\TestCase;
 
 class NGramTest extends TestCase
 {
-    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
-
-    protected const TOKENS = [
-        'I', 'I would', 'would', 'would like', 'like', 'like to', 'to', 'to die', 'die',
-        'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
-        'on', 'on impact', 'impact', 'The', 'The end', 'end',
-    ];
-
+    /**
+     * @var \Rubix\ML\Other\Tokenizers\NGram
+     */
     protected $tokenizer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tokenizer = new NGram(1, 2);
     }
 
-    public function test_build_tokenizer()
+    public function test_build_tokenizer() : void
     {
         $this->assertInstanceOf(NGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 
-    public function test_tokenize()
+    public function test_tokenize() : void
     {
-        $tokens = $this->tokenizer->tokenize(self::TEXT);
+        $text = 'I would like to die on Mars, just not on impact. The end.';
+
+        $expected = [
+            'I', 'I would', 'would', 'would like', 'like', 'like to', 'to', 'to die', 'die',
+            'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
+            'on', 'on impact', 'impact', 'The', 'The end', 'end',
+        ];
+
+        $tokens = $this->tokenizer->tokenize($text);
 
         $this->assertCount(24, $tokens);
-
-        $this->assertEquals(self::TOKENS, $tokens);
+        $this->assertEquals($expected, $tokens);
     }
 }

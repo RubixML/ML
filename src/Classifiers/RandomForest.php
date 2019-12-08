@@ -189,7 +189,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -222,7 +222,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -311,7 +311,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      *
      * @param \Rubix\ML\Estimator $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {
@@ -323,7 +323,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      *
      * @param \Rubix\ML\Probabilistic $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return array[]
      */
     public static function _proba(Probabilistic $estimator, Dataset $dataset) : array
     {

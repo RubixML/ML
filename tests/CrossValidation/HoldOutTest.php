@@ -14,13 +14,22 @@ class HoldOutTest extends TestCase
 {
     protected const TRAIN_SIZE = 50;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Learner
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\HoldOut
+     */
     protected $validator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
@@ -32,13 +41,13 @@ class HoldOutTest extends TestCase
         $this->validator = new HoldOut(0.2);
     }
 
-    public function test_build_validator()
+    public function test_build_validator() : void
     {
         $this->assertInstanceOf(HoldOut::class, $this->validator);
         $this->assertInstanceOf(Validator::class, $this->validator);
     }
 
-    public function test_test_estimator()
+    public function test_test_estimator() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 

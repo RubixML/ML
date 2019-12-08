@@ -21,13 +21,22 @@ class DummyClassifierTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
-    protected $estimator;
-
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Classifiers\DummyClassifier
+     */
+    protected $estimator;
+
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -42,7 +51,7 @@ class DummyClassifierTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier()
+    public function test_build_classifier() : void
     {
         $this->assertInstanceOf(DummyClassifier::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -57,7 +66,7 @@ class DummyClassifierTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         

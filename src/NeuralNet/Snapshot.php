@@ -14,6 +14,8 @@ use ArrayIterator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements IteratorAggregate<int, \Rubix\ML\NeuralNet\Layers\Layer>
  */
 class Snapshot implements IteratorAggregate
 {

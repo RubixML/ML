@@ -9,11 +9,17 @@ use PHPUnit\Framework\TestCase;
 
 class ImageResizerTest extends TestCase
 {
-    protected $transformer;
-
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Transformers\ImageResizer
+     */
+    protected $transformer;
+
+    public function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             [imagecreatefromjpeg(__DIR__ . '/../space.jpg')],
@@ -22,13 +28,13 @@ class ImageResizerTest extends TestCase
         $this->transformer = new ImageResizer(32, 32, 'gd');
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(ImageResizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_transform() : void
     {
         $this->dataset->apply($this->transformer);
 

@@ -271,7 +271,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -284,7 +284,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return float[]
      */
     public function rank(Dataset $dataset) : array
     {

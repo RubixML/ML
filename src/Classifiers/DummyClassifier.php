@@ -106,7 +106,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
      * Make a prediction of a given sample dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {

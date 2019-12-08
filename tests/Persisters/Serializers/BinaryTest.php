@@ -10,24 +10,30 @@ use PHPUnit\Framework\TestCase;
 
 class BinaryTest extends TestCase
 {
-    protected $serializer;
-
+    /**
+     * @var \Rubix\ML\Persistable
+     */
     protected $persistable;
 
-    public function setUp()
-    {
-        $this->serializer = new Binary();
+    /**
+     * @var \Rubix\ML\Persisters\Serializers\Binary
+     */
+    protected $serializer;
 
+    public function setUp() : void
+    {
         $this->persistable = new DummyClassifier();
+
+        $this->serializer = new Binary();
     }
 
-    public function test_build_serialzer()
+    public function test_build_serialzer() : void
     {
         $this->assertInstanceOf(Binary::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 
-    public function test_serialize_unserialize()
+    public function test_serialize_unserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
         

@@ -9,14 +9,17 @@ use Generator;
 
 class ConfusionMatrixTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\CrossValidation\Reports\ConfusionMatrix
+     */
     protected $report;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->report = new ConfusionMatrix();
     }
 
-    public function test_build_report()
+    public function test_build_report() : void
     {
         $this->assertInstanceOf(ConfusionMatrix::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
@@ -25,7 +28,7 @@ class ConfusionMatrixTest extends TestCase
     /**
      * @dataProvider generate_report_provider
      */
-    public function test_generate_report(array $predictions, array $labels, array $expected)
+    public function test_generate_report(array $predictions, array $labels, array $expected) : void
     {
         $result = $this->report->generate($predictions, $labels);
 

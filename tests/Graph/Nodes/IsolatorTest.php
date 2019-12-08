@@ -18,26 +18,44 @@ class IsolatorTest extends TestCase
         [6., 4., -5],
     ];
 
-    public function test_build_node()
+    /**
+     * @var \Rubix\ML\Graph\Nodes\Isolator
+     */
+    protected $node;
+
+    public function setUp() : void
     {
         $groups = [
             Unlabeled::quick([self::SAMPLES[0]]),
             Unlabeled::quick([self::SAMPLES[1]]),
         ];
         
-        $node = new Isolator(self::COLUMN, self::VALUE, $groups);
-
-        $this->assertInstanceOf(Isolator::class, $node);
-        $this->assertInstanceOf(BinaryNode::class, $node);
-        $this->assertInstanceOf(Node::class, $node);
+        $this->node = new Isolator(self::COLUMN, self::VALUE, $groups);
     }
 
-    public function test_split()
+    public function test_build_node() : void
+    {
+        $this->assertInstanceOf(Isolator::class, $this->node);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
+
+    public function test_split() : void
     {
         $dataset = Unlabeled::quick(self::SAMPLES);
 
         $node = Isolator::split($dataset);
 
         $this->assertInstanceOf(Isolator::class, $node);
+    }
+
+    public function test_column() : void
+    {
+        $this->assertSame(self::COLUMN, $this->node->column());
+    }
+
+    public function test_value() : void
+    {
+        $this->assertSame(self::VALUE, $this->node->value());
     }
 }

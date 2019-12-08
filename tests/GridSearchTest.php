@@ -26,13 +26,22 @@ class GridSearchTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\GridSearch
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'inner' => new Circle(0., 0., 1., 0.01),
@@ -53,7 +62,7 @@ class GridSearchTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_meta_estimator() : void
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -64,7 +73,7 @@ class GridSearchTest extends TestCase
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         

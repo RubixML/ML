@@ -16,13 +16,22 @@ class RandomHotDeckImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
-
+    
+    /**
+     * @var \Rubix\ML\Transformers\RandomHotDeckImputer
+     */
     protected $transformer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [30, 0.001],
@@ -40,7 +49,7 @@ class RandomHotDeckImputerTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(RandomHotDeckImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
@@ -48,7 +57,7 @@ class RandomHotDeckImputerTest extends TestCase
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_fit_update_transform()
+    public function test_fit_update_transform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -62,7 +71,7 @@ class RandomHotDeckImputerTest extends TestCase
         $this->assertEquals(-2.0, $this->dataset[3][1]);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class DatasetIsCompatibleWithTransformerTest extends TestCase
 {
-    public function test_check()
+    public function test_check() : void
     {
         $transformer = new L1Normalizer();
 

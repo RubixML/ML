@@ -18,7 +18,7 @@ interface Backend
     /**
      * Process the queue and return the results.
      *
-     * @return array
+     * @return mixed[]
      */
     public function process() : array;
 

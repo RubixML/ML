@@ -25,13 +25,22 @@ class LocalOutlierFactorTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\AnomalyDetectors\LocalOutlierFactor
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             '0' => new Blob([0., 0.], 0.5),
@@ -45,7 +54,7 @@ class LocalOutlierFactorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_detector()
+    public function test_build_detector() : void
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -63,7 +72,7 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -82,7 +91,7 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

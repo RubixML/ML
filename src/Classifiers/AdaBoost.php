@@ -83,7 +83,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var array
+     * @var \Rubix\ML\Learner[]
      */
     protected $ensemble = [
         //
@@ -92,7 +92,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The weight of each training sample in the dataset.
      *
-     * @var array
+     * @var float[]
      */
     protected $weights = [
         //
@@ -102,7 +102,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * The amount of influence a particular classifier has. i.e. the
      * classifier's ability to make accurate predictions.
      *
-     * @var array
+     * @var float[]
      */
     protected $influences = [
         //
@@ -120,7 +120,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -136,7 +136,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function __construct(
         ?Learner $base = null,
-        float $rate = 1.,
+        float $rate = 1.0,
         float $ratio = 0.8,
         int $estimators = 100,
         float $minChange = 1e-4
@@ -206,7 +206,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the calculated weight values of the samples in the last training set.
      *
-     * @return array
+     * @return float[]
      */
     public function weights() : array
     {
@@ -216,7 +216,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the list of influence values for each classifier in the ensemble.
      *
-     * @return array
+     * @return float[]
      */
     public function influences() : array
     {
@@ -226,7 +226,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the training loss at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -357,7 +357,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -373,7 +373,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -406,7 +406,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     protected function score(Dataset $dataset) : array
     {

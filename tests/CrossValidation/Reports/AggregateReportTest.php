@@ -11,9 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class AggregateReportTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\CrossValidation\Reports\AggregateReport
+     */
     protected $report;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->report = new AggregateReport([
             new ConfusionMatrix(),
@@ -21,13 +24,13 @@ class AggregateReportTest extends TestCase
         ]);
     }
 
-    public function test_build_report()
+    public function test_build_report() : void
     {
         $this->assertInstanceOf(AggregateReport::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
-    public function test_compatibility()
+    public function test_compatibility() : void
     {
         $expected = [
             Estimator::CLASSIFIER,
@@ -37,7 +40,7 @@ class AggregateReportTest extends TestCase
         $this->assertEquals($expected, $this->report->compatibility());
     }
 
-    public function test_generate_report()
+    public function test_generate_report() : void
     {
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 

@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 use SplObjectStorage;
 
 /**
@@ -200,7 +201,7 @@ class BallTree implements BST, Spatial
 
         $path = [];
 
-        while ($current) {
+        while (true) {
             $path[] = $current;
 
             if ($current instanceof Ball) {
@@ -262,7 +263,7 @@ class BallTree implements BST, Spatial
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
     
-                            if ($distance < ($child->radius() + $radius)) {
+                            if ($distance < $child->radius() + $radius) {
                                 $stack[] = $child;
 
                                 continue 1;
@@ -306,6 +307,7 @@ class BallTree implements BST, Spatial
      * @param array $sample
      * @param float $radius
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array[]
      */
     public function range(array $sample, float $radius) : array
@@ -313,6 +315,10 @@ class BallTree implements BST, Spatial
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
+        }
+
+        if (empty($this->root)) {
+            throw new RuntimeException('Tree has not been grown yet.');
         }
 
         $samples = $labels = $distances = [];
@@ -327,7 +333,7 @@ class BallTree implements BST, Spatial
                     if ($child instanceof Hypersphere) {
                         $distance = $this->kernel->compute($sample, $child->center());
 
-                        if ($distance <= ($child->radius() + $radius)) {
+                        if ($distance <= $child->radius() + $radius) {
                             $stack[] = $child;
                         }
                     }

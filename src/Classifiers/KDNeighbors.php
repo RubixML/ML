@@ -65,7 +65,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * The unique class labels.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -157,7 +157,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -194,7 +194,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {

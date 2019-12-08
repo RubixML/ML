@@ -9,16 +9,17 @@ use Generator;
 
 class MeanSquaredErrorTest extends TestCase
 {
-    protected const LABELS = [10, 10.0, 6, -1400, .08];
-
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\MeanSquaredError
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->metric = new MeanSquaredError();
     }
 
-    public function test_build_metric()
+    public function test_build_metric() : void
     {
         $this->assertInstanceOf(MeanSquaredError::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
@@ -30,11 +31,11 @@ class MeanSquaredErrorTest extends TestCase
     /**
      * @dataProvider score_provider
      */
-    public function test_score(array $predictions, float $expected)
+    public function test_score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, self::LABELS);
+        $score = $this->metric->score($predictions, $labels);
 
         $this->assertThat(
             $score,
@@ -49,8 +50,22 @@ class MeanSquaredErrorTest extends TestCase
 
     public function score_provider() : Generator
     {
-        yield [[7, 9.5, -20, -500, .079], -162137.0500002];
-        yield [[0, 0, 0, 0, 0], -392047.20128000004];
-        yield [[10, 10.0, 6, -1400, .08], 0.0];
+        yield [
+            [7, 9.5, -20, -500, .079],
+            [10, 10.0, 6, -1400, .08],
+            -162137.0500002,
+        ];
+
+        yield [
+            [0, 0, 0, 0, 0],
+            [10, 10.0, 6, -1400, .08],
+            -392047.20128000004,
+        ];
+
+        yield [
+            [10, 10.0, 6, -1400, .08],
+            [10, 10.0, 6, -1400, .08],
+            0.0,
+        ];
     }
 }

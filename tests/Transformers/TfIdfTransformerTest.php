@@ -12,11 +12,17 @@ use RuntimeException;
 
 class TfIdfTransformerTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
+    /**
+     * @var \Rubix\ML\Transformers\TfIdfTransformer
+     */
     protected $transformer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],
@@ -27,7 +33,7 @@ class TfIdfTransformerTest extends TestCase
         $this->transformer = new TfIdfTransformer();
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(TfIdfTransformer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
@@ -35,7 +41,7 @@ class TfIdfTransformerTest extends TestCase
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -52,7 +58,7 @@ class TfIdfTransformerTest extends TestCase
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

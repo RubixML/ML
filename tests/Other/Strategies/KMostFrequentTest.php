@@ -9,34 +9,35 @@ use PHPUnit\Framework\TestCase;
 
 class KMostFrequentTest extends TestCase
 {
-    protected $values;
-
+    /**
+     * @var \Rubix\ML\Other\Strategies\KMostFrequent
+     */
     protected $strategy;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->values = ['a', 'a', 'b', 'b', 'c'];
-
         $this->strategy = new KMostFrequent(2);
     }
 
-    public function test_build_strategy()
+    public function test_build_strategy() : void
     {
         $this->assertInstanceOf(KMostFrequent::class, $this->strategy);
         $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_classes_guess()
+    public function test_classes_guess() : void
     {
-        $this->strategy->fit($this->values);
+        $values = ['a', 'a', 'b', 'b', 'c'];
 
         $exptected = ['a', 'b'];
+
+        $this->strategy->fit($values);
 
         $this->assertEquals($exptected, $this->strategy->classes());
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->values);
+        $this->assertContains($value, $values);
     }
 }

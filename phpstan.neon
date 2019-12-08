@@ -7,3 +7,7 @@ parameters:
     paths:
         - 'src'
         - 'tests'
+    excludes_analyse:
+        - src/Graph/Trees/BallTree.php
+        - src/Graph/Trees/CART.php
+        - src/Graph/Trees/KDTree.php

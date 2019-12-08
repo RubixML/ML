@@ -14,14 +14,17 @@ use Generator;
 
 class AdamTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Adam
+     */
     protected $optimizer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->optimizer = new Adam(0.001, 0.1, 0.001);
     }
 
-    public function test_build_optimizer()
+    public function test_build_optimizer() : void
     {
         $this->assertInstanceOf(Adam::class, $this->optimizer);
         $this->assertInstanceOf(Adaptive::class, $this->optimizer);
@@ -29,9 +32,13 @@ class AdamTest extends TestCase
     }
 
     /**
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Tensor\Tensor $gradient
+     * @param array[] $expected
+     *
      * @dataProvider step_provider
      */
-    public function test_warm_step(Parameter $param, Tensor $gradient, array $expected)
+    public function test_warm_step(Parameter $param, Tensor $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 

@@ -12,29 +12,34 @@ use RuntimeException;
 
 class WordCountVectorizerTest extends TestCase
 {
-    protected $transformer;
-
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Transformers\WordCountVectorizer
+     */
+    protected $transformer;
+
+    public function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            ['the quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of coke'],
+            ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
             ['with a dandy umbrella'],
         ]);
 
         $this->transformer = new WordCountVectorizer(50, 1, new Word());
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(WordCountVectorizer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -50,7 +55,7 @@ class WordCountVectorizerTest extends TestCase
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

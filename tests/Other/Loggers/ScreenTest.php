@@ -10,21 +10,24 @@ use Psr\Log\LogLevel;
 
 class ScreenTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Other\Loggers\Screen
+     */
     protected $logger;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->logger = new Screen('default', Screen::DEFAULT_TIMESTAMP_FORMAT);
     }
 
-    public function test_build_logger()
+    public function test_build_logger() : void
     {
         $this->assertInstanceOf(Screen::class, $this->logger);
         $this->assertInstanceOf(Logger::class, $this->logger);
         $this->assertInstanceOf(LoggerInterface::class, $this->logger);
     }
 
-    public function test_log()
+    public function test_log() : void
     {
         $this->expectOutputRegex('/\b(default.INFO: test)\b/');
 

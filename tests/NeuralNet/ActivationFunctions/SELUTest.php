@@ -10,28 +10,34 @@ use Generator;
 
 class SELUTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\SELU
+     */
     protected $activationFn;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->activationFn = new SELU();
     }
 
-    public function test_build_activation_function()
+    public function test_build_activation_function() : void
     {
         $this->assertInstanceOf(SELU::class, $this->activationFn);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
-    public function test_get_range()
+    public function test_get_range() : void
     {
         $this->assertEquals([-1.7580993408473766, INF], $this->activationFn->range());
     }
 
     /**
+     * @param \Tensor\Matrix $input
+     * @param array[] $expected
+     *
      * @dataProvider compute_provider
      */
-    public function test_compute(Matrix $input, array $expected)
+    public function test_compute(Matrix $input, array $expected) : void
     {
         $activations = $this->activationFn->compute($input)->asArray();
 
@@ -64,9 +70,13 @@ class SELUTest extends TestCase
     }
 
     /**
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $activations
+     * @param array[] $expected
+     *
      * @dataProvider differentiate_provider
      */
-    public function test_differentiate(Matrix $input, Matrix $activations, array $expected)
+    public function test_differentiate(Matrix $input, Matrix $activations, array $expected) : void
     {
         $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 

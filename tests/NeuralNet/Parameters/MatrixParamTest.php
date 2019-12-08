@@ -9,25 +9,28 @@ use PHPUnit\Framework\TestCase;
 
 class MatrixParamTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Parameters\MatrixParam
+     */
     protected $param;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->param = new MatrixParam(Matrix::quick([[5]]));
     }
 
-    public function test_build_parameter()
+    public function test_build_parameter() : void
     {
         $this->assertInstanceOf(MatrixParam::class, $this->param);
         $this->assertInstanceOf(Parameter::class, $this->param);
     }
 
-    public function test_id()
+    public function test_id() : void
     {
         $this->assertInternalType('integer', $this->param->id());
     }
 
-    public function test_w()
+    public function test_w() : void
     {
         $w = $this->param->w();
 
@@ -35,7 +38,7 @@ class MatrixParamTest extends TestCase
         $this->assertEquals(5, $w[0][0]);
     }
 
-    public function test_update()
+    public function test_update() : void
     {
         $step = Matrix::quick([[2]]);
 

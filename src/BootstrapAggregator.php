@@ -61,7 +61,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * The ensemble of estimators.
      *
-     * @var array
+     * @var \Rubix\ML\Learner[]
      */
     protected $ensemble = [
         //
@@ -168,7 +168,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -197,6 +197,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             case self::ANOMALY_DETECTOR:
                 return array_map([self::class, 'decideAnomaly'], $aggregate);
 
+            default:
+                throw new RuntimeException('Invalid estimator type.');
         }
     }
 
@@ -241,7 +243,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @param \Rubix\ML\Estimator $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {

@@ -4,8 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 use function count;
@@ -38,6 +37,20 @@ class Blob implements Generator
      * @var \Tensor\Vector|int|float
      */
     protected $stddev;
+
+    /**
+     * The categorical class label of the blob.
+     *
+     * @var string
+     */
+    protected $label;
+
+    /**
+     * The label counter.
+     *
+     * @var string
+     */
+    protected static $counter = 'a';
 
     /**
      * @param array $center
@@ -88,6 +101,7 @@ class Blob implements Generator
 
         $this->center = Vector::quick($center);
         $this->stddev = $stddev;
+        $this->label = self::$counter++;
     }
 
     /**
@@ -104,9 +118,9 @@ class Blob implements Generator
      * Generate n data points.
      *
      * @param int $n
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return \Rubix\ML\Datasets\Labeled
      */
-    public function generate(int $n) : Dataset
+    public function generate(int $n) : Labeled
     {
         $d = $this->dimensions();
         
@@ -115,6 +129,8 @@ class Blob implements Generator
             ->add($this->center)
             ->asArray();
 
-        return Unlabeled::quick($samples);
+        $labels = array_fill(0, $n, $this->label);
+
+        return Labeled::quick($samples, $labels);
     }
 }

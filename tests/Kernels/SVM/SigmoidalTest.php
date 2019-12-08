@@ -8,20 +8,23 @@ use PHPUnit\Framework\TestCase;
 
 class SigmoidalTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Kernels\SVM\Sigmoidal
+     */
     protected $kernel;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->kernel = new Sigmoidal(1e-3);
     }
 
-    public function test_build_svm_kernel()
+    public function test_build_svm_kernel() : void
     {
         $this->assertInstanceOf(Sigmoidal::class, $this->kernel);
         $this->assertInstanceOf(Kernel::class, $this->kernel);
     }
 
-    public function test_get_options()
+    public function test_get_options() : void
     {
         $options = [
             102 => 3,

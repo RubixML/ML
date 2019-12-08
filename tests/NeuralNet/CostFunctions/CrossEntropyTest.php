@@ -12,29 +12,39 @@ use Generator;
 
 class CrossEntropyTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CrossEntropy
+     */
     protected $costFn;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->costFn = new CrossEntropy();
     }
 
-    public function test_build_cost_function()
+    public function test_build_cost_function() : void
     {
         $this->assertInstanceOf(CrossEntropy::class, $this->costFn);
         $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
     /**
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
+     * @param float $expected
+     *
      * @dataProvider compute_provider
      */
-    public function test_compute(Tensor $output, Tensor $target, float $expected)
+    public function test_compute(Matrix $output, Matrix $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
         $this->assertEquals($expected, $loss);
     }
 
+    /**
+     * @return \Generator
+     */
     public function compute_provider() : Generator
     {
         yield [
@@ -71,15 +81,22 @@ class CrossEntropyTest extends TestCase
     }
 
     /**
+     * @param \Tensor\Tensor $output
+     * @param \Tensor\Tensor $target
+     * @param array[] $expected
+     *
      * @dataProvider differentiate_provider
      */
-    public function test_differentiate(Tensor $output, Tensor $target, array $expected)
+    public function test_differentiate(Tensor $output, Tensor $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
         $this->assertEquals($expected, $gradient);
     }
 
+    /**
+     * @return \Generator
+     */
     public function differentiate_provider() : Generator
     {
         yield [

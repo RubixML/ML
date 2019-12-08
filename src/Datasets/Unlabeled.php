@@ -29,7 +29,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset with validation.
      *
-     * @param array $samples
+     * @param mixed[] $samples
      * @return self
      */
     public static function build(array $samples = []) : self
@@ -40,7 +40,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset foregoing validation.
      *
-     * @param array[] $samples
+     * @param mixed[] $samples
      * @return self
      */
     public static function quick(array $samples = []) : self
@@ -67,7 +67,7 @@ class Unlabeled extends Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param array $datasets
+     * @param mixed[] $datasets
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -217,7 +217,7 @@ class Unlabeled extends Dataset
     /**
      * Drop the rows at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -251,7 +251,7 @@ class Unlabeled extends Dataset
     /**
      * Drop the columns at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -330,7 +330,7 @@ class Unlabeled extends Dataset
      *
      * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function split(float $ratio = 0.5) : array
     {
@@ -352,7 +352,7 @@ class Unlabeled extends Dataset
      *
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function fold(int $k = 3) : array
     {
@@ -380,7 +380,7 @@ class Unlabeled extends Dataset
      * as many samples as possible.
      *
      * @param int $n
-     * @return array
+     * @return self[]
      */
     public function batch(int $n = 50) : array
     {
@@ -438,11 +438,11 @@ class Unlabeled extends Dataset
      * Partition the dataset into left and right subsets based on their distance
      * between two centroids.
      *
-     * @param array $leftCentroid
-     * @param array $rightCentroid
+     * @param mixed[] $leftCentroid
+     * @param mixed[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel)
     {

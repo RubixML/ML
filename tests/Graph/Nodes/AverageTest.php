@@ -13,22 +13,43 @@ use PHPUnit\Framework\TestCase;
 class AverageTest extends TestCase
 {
     protected const OUTCOME = 44.21;
+
     protected const IMPURITY = 6.;
+
     protected const N = 3;
 
-    public function test_build_node()
+    /**
+     * @var \Rubix\ML\Graph\Nodes\Average
+     */
+    protected $node;
+
+    public function setUp() : void
     {
-        $node = new Average(self::OUTCOME, self::IMPURITY, self::N);
+        $this->node = new Average(self::OUTCOME, self::IMPURITY, self::N);
+    }
 
-        $this->assertInstanceOf(Average::class, $node);
-        $this->assertInstanceOf(Outcome::class, $node);
-        $this->assertInstanceOf(Decision::class, $node);
-        $this->assertInstanceOf(BinaryNode::class, $node);
-        $this->assertInstanceOf(Leaf::class, $node);
-        $this->assertInstanceOf(Node::class, $node);
+    public function test_build_node() : void
+    {
+        $this->assertInstanceOf(Average::class, $this->node);
+        $this->assertInstanceOf(Outcome::class, $this->node);
+        $this->assertInstanceOf(Decision::class, $this->node);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Leaf::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
 
-        $this->assertEquals(self::OUTCOME, $node->outcome());
-        $this->assertEquals(self::IMPURITY, $node->impurity());
-        $this->assertEquals(self::N, $node->n());
+    public function test_outcome() : void
+    {
+        $this->assertSame(self::OUTCOME, $this->node->outcome());
+    }
+
+    public function test_impurity() : void
+    {
+        $this->assertSame(self::IMPURITY, $this->node->impurity());
+    }
+
+    public function test_n() : void
+    {
+        $this->assertSame(self::N, $this->node->n());
     }
 }

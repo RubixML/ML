@@ -9,27 +9,26 @@ use PHPUnit\Framework\TestCase;
 
 class WildGuessTest extends TestCase
 {
-    protected $values;
-
+    /**
+     * @var \Rubix\ML\Other\Strategies\WildGuess
+     */
     protected $strategy;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->values = [1, 2, 3, 4, 5];
-
         $this->strategy = new WildGuess(0.5);
     }
 
-    public function test_build_random_copy_paste_strategy()
+    public function test_build_strategy() : void
     {
         $this->assertInstanceOf(WildGuess::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_range_guess()
+    public function test_guess() : void
     {
-        $this->strategy->fit($this->values);
+        $this->strategy->fit([1, 2, 3, 4, 5]);
 
         $guess = $this->strategy->guess();
 

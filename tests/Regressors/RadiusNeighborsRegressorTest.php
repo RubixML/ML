@@ -23,13 +23,22 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Regressors\RadiusNeighborsRegressor
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
@@ -40,7 +49,7 @@ class RadiusNeighborsRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_regressor()
+    public function test_build_regressor() : void
     {
         $this->assertInstanceOf(RadiusNeighborsRegressor::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -57,7 +66,7 @@ class RadiusNeighborsRegressorTest extends TestCase
         $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -76,21 +85,21 @@ class RadiusNeighborsRegressorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

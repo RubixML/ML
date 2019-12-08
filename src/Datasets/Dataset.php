@@ -34,6 +34,9 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements ArrayAccess<int, array>
+ * @implements IteratorAggregate<int, array>
  */
 abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 {
@@ -55,7 +58,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public static function stack(array $datasets);
 
     /**
-     * @param array $samples
+     * @param mixed[] $samples
      * @param bool $validate
      * @throws \InvalidArgumentException
      */
@@ -64,11 +67,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         if ($validate and $samples) {
             $samples = array_values($samples);
 
-            $proto = $samples ? array_values($samples[0]) : [];
+            $row = isset($samples[0]) ? array_values($samples[0]) : [];
 
-            $n = is_array($proto) ? count($proto) : 1;
+            $n = count($row);
 
-            $types = array_map([DataType::class, 'determine'], $proto);
+            $types = array_map([DataType::class, 'determine'], $row);
 
             foreach ($samples as &$sample) {
                 $sample = is_array($sample)
@@ -107,7 +110,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return the sample at the given row index.
      *
      * @param int $index
-     * @return array
+     * @return mixed[]
      */
     public function sample(int $index) : array
     {
@@ -128,7 +131,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return the feature column at the given index.
      *
      * @param int $index
-     * @return array
+     * @return mixed[]
      */
     public function column(int $index) : array
     {
@@ -224,7 +227,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Rotate the dataset and return it in an array. i.e. rows become
      * columns and columns become rows.
      *
-     * @return array
+     * @return array[]
      */
     public function columns() : array
     {
@@ -235,7 +238,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return the columns that match a given data type.
      *
      * @param int $type
-     * @return array
+     * @return mixed[]
      */
     public function columnsByType(int $type) : array
     {
@@ -301,7 +304,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.
      *
-     * @return array
+     * @return mixed[]
      */
     public function describe() : array
     {
@@ -454,7 +457,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Drop the rows at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @return self
      */
     abstract public function dropRows(array $indices);
@@ -470,7 +473,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Drop the columns at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @return self
      */
     abstract public function dropColumns(array $indices);
@@ -504,7 +507,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @return array
+     * @return self[]
      */
     abstract public function split(float $ratio = 0.5) : array;
 
@@ -512,7 +515,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
-     * @return array
+     * @return self[]
      */
     abstract public function fold(int $k = 10) : array;
 
@@ -522,7 +525,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * as many samples as possible.
      *
      * @param int $n
-     * @return array
+     * @return self[]
      */
     abstract public function batch(int $n = 50) : array;
 
@@ -532,7 +535,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param int $index
      * @param mixed $value
-     * @return array
+     * @return self[]
      */
     abstract public function partition(int $index, $value) : array;
 
@@ -540,10 +543,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Partition the dataset into left and right subsets based on their distance
      * between two centroids.
      *
-     * @param array $leftCentroid
-     * @param array $rightCentroid
+     * @param mixed[] $leftCentroid
+     * @param mixed[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
-     * @return array
+     * @return self[]
      */
     abstract public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel);
 
@@ -589,7 +592,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param mixed $index
-     * @param array $values
+     * @param mixed[] $values
      * @throws \RuntimeException
      */
     public function offsetSet($index, $values) : void
@@ -622,7 +625,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param mixed $index
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     public function offsetGet($index) : array
     {

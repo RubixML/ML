@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class DatasetIsCompatibleWithEstimatorTest extends TestCase
 {
-    public function test_check()
+    public function test_check() : void
     {
         $estimator = new NaiveBayes();
 

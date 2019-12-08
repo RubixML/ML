@@ -30,13 +30,22 @@ class LogisticRegressionTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Classifiers\LogisticRegression
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
@@ -52,7 +61,7 @@ class LogisticRegressionTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier()
+    public function test_build_classifier() : void
     {
         $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -70,7 +79,7 @@ class LogisticRegressionTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict()
+    public function test_train_partial_predict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -93,21 +102,21 @@ class LogisticRegressionTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -65,7 +65,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The unique class outcomes.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -74,7 +74,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The training samples that make up the neighborhood of the problem space.
      *
-     * @var array
+     * @var array[]
      */
     protected $samples = [
         //
@@ -176,7 +176,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -213,7 +213,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -258,7 +258,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param array $sample
+     * @param (string|int|float)[] $sample
      * @return array[]
      */
     protected function nearest(array $sample) : array

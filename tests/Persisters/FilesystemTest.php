@@ -11,13 +11,22 @@ use PHPUnit\Framework\TestCase;
 
 class FilesystemTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Persistable
+     */
     protected $persistable;
 
+    /**
+     * @var \Rubix\ML\Persisters\Filesystem
+     */
     protected $persister;
 
+    /**
+     * @var string
+     */
     protected $path;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->path = __DIR__ . '/test.model';
 
@@ -26,13 +35,13 @@ class FilesystemTest extends TestCase
         $this->persister = new Filesystem($this->path, true, new Native());
     }
 
-    public function test_build_persister()
+    public function test_build_persister() : void
     {
         $this->assertInstanceOf(Filesystem::class, $this->persister);
         $this->assertInstanceOf(Persister::class, $this->persister);
     }
 
-    public function test_save_and_load()
+    public function test_save_and_load() : void
     {
         $this->assertFalse(file_exists($this->path));
 
@@ -46,7 +55,7 @@ class FilesystemTest extends TestCase
         $this->assertInstanceOf(DummyClassifier::class, $model);
         $this->assertInstanceOf(Persistable::class, $model);
 
-        foreach (glob("$this->path.*.old") as $filename) {
+        foreach (glob("$this->path.*.old") ?: [] as $filename) {
             unlink($filename);
         }
 

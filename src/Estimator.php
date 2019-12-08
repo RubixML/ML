@@ -36,7 +36,7 @@ interface Estimator
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array;
 }

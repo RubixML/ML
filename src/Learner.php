@@ -23,7 +23,7 @@ interface Learner extends Estimator
     /**
      * Predict a single sample and return the result.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return mixed
      */
     public function predictSample(array $sample);

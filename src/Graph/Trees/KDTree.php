@@ -197,7 +197,7 @@ class KDTree implements BST, Spatial
 
         $path = [];
 
-        while ($current) {
+        while (true) {
             $path[] = $current;
 
             if ($current instanceof Box) {

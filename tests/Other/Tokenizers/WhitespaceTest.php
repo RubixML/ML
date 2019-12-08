@@ -8,32 +8,34 @@ use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase
 {
-    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
-
-    protected const TOKENS = [
-        'I', 'would', 'like', 'to', 'die', 'on', 'Mars,', 'just', 'not', 'on', 'impact.',
-        'The', 'end.',
-    ];
-    
+    /**
+     * @var \Rubix\ML\Other\Tokenizers\Whitespace
+     */
     protected $tokenizer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tokenizer = new Whitespace();
     }
 
-    public function test_build_tokenizer()
+    public function test_build_tokenizer() : void
     {
         $this->assertInstanceOf(Whitespace::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 
-    public function test_tokenize()
+    public function test_tokenize() : void
     {
-        $tokens = $this->tokenizer->tokenize(self::TEXT);
+        $text = 'I would like to die on Mars, just not on impact. The end.';
+
+        $expected = [
+            'I', 'would', 'like', 'to', 'die', 'on', 'Mars,', 'just', 'not', 'on', 'impact.',
+            'The', 'end.',
+        ];
+
+        $tokens = $this->tokenizer->tokenize($text);
 
         $this->assertCount(13, $tokens);
-
-        $this->assertEquals(self::TOKENS, $tokens);
+        $this->assertEquals($expected, $tokens);
     }
 }

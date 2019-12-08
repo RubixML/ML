@@ -17,12 +17,12 @@ trait ProbaSingle
      * Return the probabilities of a single sample.
      *
      * @param array $sample
-     * @return array
+     * @return array[]
      */
     public function probaSample(array $sample) : array
     {
         $probabilities = $this->proba(Unlabeled::build([$sample]));
 
-        return reset($probabilities);
+        return reset($probabilities) ?: [];
     }
 }

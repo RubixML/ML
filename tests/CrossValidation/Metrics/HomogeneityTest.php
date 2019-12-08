@@ -9,16 +9,17 @@ use Generator;
 
 class HomogeneityTest extends TestCase
 {
-    protected const LABELS = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Homogeneity
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->metric = new Homogeneity();
     }
 
-    public function test_build_metric()
+    public function test_build_metric() : void
     {
         $this->assertInstanceOf(Homogeneity::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
@@ -30,11 +31,11 @@ class HomogeneityTest extends TestCase
     /**
      * @dataProvider score_provider
      */
-    public function test_score(array $predictions, float $expected)
+    public function test_score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, self::LABELS);
+        $score = $this->metric->score($predictions, $labels);
 
         $this->assertThat(
             $score,
@@ -49,10 +50,34 @@ class HomogeneityTest extends TestCase
 
     public function score_provider() : Generator
     {
-        yield [[0, 1, 1, 0, 1], 0.5833333333333333];
-        yield [[0, 0, 1, 1, 1], 1.0];
-        yield [[1, 1, 0, 0, 0], 1.0];
-        yield [[0, 1, 2, 3, 4], 1.0];
-        yield [[0, 0, 0, 0, 0], 0.6];
+        yield [
+            [0, 1, 1, 0, 1],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            0.5833333333333333,
+        ];
+
+        yield [
+            [0, 0, 1, 1, 1],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            1.0,
+        ];
+
+        yield [
+            [1, 1, 0, 0, 0],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            1.0,
+        ];
+
+        yield [
+            [0, 1, 2, 3, 4],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            1.0,
+        ];
+
+        yield [
+            [0, 0, 0, 0, 0],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            0.6,
+        ];
     }
 }

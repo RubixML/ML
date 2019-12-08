@@ -203,7 +203,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -216,7 +216,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return float[]
      */
     public function rank(Dataset $dataset) : array
     {
@@ -233,7 +233,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * Calculate the local outlier factor of a given sample given its k
      * nearest neighbors.
      *
-     * @param array $sample
+     * @param (int|float)[] $sample
      * @throws \RuntimeException
      * @return float
      */
@@ -256,8 +256,8 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * Calculate the local reachability density of a sample given its
      * distances to its k nearest neighbors.
      *
-     * @param array $indices
-     * @param array $distances
+     * @param int[] $indices
+     * @param float[] $distances
      * @throws \RuntimeException
      * @return float
      */

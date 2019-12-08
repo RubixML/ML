@@ -9,16 +9,17 @@ use Generator;
 
 class SMAPETest extends TestCase
 {
-    protected const LABELS = [10, 10.0, 6, -1400, .08];
-
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\SMAPE
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->metric = new SMAPE();
     }
 
-    public function test_build_metric()
+    public function test_build_metric() : void
     {
         $this->assertInstanceOf(SMAPE::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
@@ -30,11 +31,11 @@ class SMAPETest extends TestCase
     /**
      * @dataProvider score_provider
      */
-    public function test_score(array $predictions, float $expected)
+    public function test_score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, self::LABELS);
+        $score = $this->metric->score($predictions, $labels);
 
         $this->assertThat(
             $score,
@@ -49,8 +50,22 @@ class SMAPETest extends TestCase
 
     public function score_provider() : Generator
     {
-        yield [[7, 9.5, -20, -500, .079], -33.641702651574725];
-        yield [[0, 0, 0, 0, 0], -100.0];
-        yield [[10, 10.0, 6, -1400, .08], 0.0];
+        yield [
+            [7, 9.5, -20, -500, .079],
+            [10, 10.0, 6, -1400, .08],
+            -33.641702651574725,
+        ];
+
+        yield [
+            [0, 0, 0, 0, 0],
+            [10, 10.0, 6, -1400, .08],
+            -100.0,
+        ];
+
+        yield [
+            [10, 10.0, 6, -1400, .08],
+            [10, 10.0, 6, -1400, .08],
+            0.0,
+        ];
     }
 }

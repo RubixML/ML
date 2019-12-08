@@ -132,7 +132,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Return the array of computed feature column medians.
      *
-     * @return array|null
+     * @return float[]|null
      */
     public function medians() : ?array
     {
@@ -142,7 +142,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Return the array of computed feature column median absolute deviations.
      *
-     * @return array|null
+     * @return float[]|null
      */
     public function mads() : ?array
     {
@@ -175,7 +175,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -186,6 +186,8 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
+     * @return float[]
      */
     public function rank(Dataset $dataset) : array
     {
@@ -201,7 +203,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Calculate the modified z score for a given sample.
      *
-     * @param array $sample
+     * @param (int|float)[] $sample
      * @return float
      */
     protected function z(array $sample) : float

@@ -9,25 +9,28 @@ use PHPUnit\Framework\TestCase;
 
 class AmpTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Backends\Amp
+     */
     protected $backend;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->backend = new Amp(4);
     }
 
-    public function test_build_backend()
+    public function test_build_backend() : void
     {
         $this->assertInstanceOf(Amp::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    public function test_workers()
+    public function test_workers() : void
     {
         $this->assertEquals(4, $this->backend->workers());
     }
 
-    public function test_enqueue_process()
+    public function test_enqueue_process() : void
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);
 
@@ -40,7 +43,7 @@ class AmpTest extends TestCase
         $this->assertCount(10, $results);
     }
 
-    public static function foo(int $i)
+    public static function foo(int $i) : array
     {
         return [$i, microtime(true)];
     }

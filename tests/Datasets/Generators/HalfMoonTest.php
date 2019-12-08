@@ -10,14 +10,17 @@ use PHPUnit\Framework\TestCase;
 
 class HalfMoonTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\HalfMoon
+     */
     protected $generator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new HalfMoon(5., 5., 10., 45., 0.1);
     }
 
-    public function test_build_generator()
+    public function test_build_generator() : void
     {
         $this->assertInstanceOf(HalfMoon::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
@@ -25,7 +28,7 @@ class HalfMoonTest extends TestCase
         $this->assertEquals(2, $this->generator->dimensions());
     }
 
-    public function test_generate_dataset()
+    public function test_generate_dataset() : void
     {
         $dataset = $this->generator->generate(30);
 

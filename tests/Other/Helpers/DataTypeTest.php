@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class DataTypeTest extends TestCase
 {
-    public function test_determine_type()
+    public function test_determine_type() : void
     {
         $this->assertEquals(DataType::CATEGORICAL, DataType::determine('string'));
         $this->assertEquals(DataType::CONTINUOUS, DataType::determine(2.75));
@@ -15,7 +15,7 @@ class DataTypeTest extends TestCase
         $this->assertEquals(DataType::OTHER, DataType::determine(null));
     }
 
-    public function test_is_categorical()
+    public function test_is_categorical() : void
     {
         $this->assertTrue(DataType::isCategorical('string'));
         $this->assertFalse(DataType::isCategorical(5.0));
@@ -23,7 +23,7 @@ class DataTypeTest extends TestCase
         $this->assertFalse(DataType::isCategorical(null));
     }
 
-    public function test_is_continuous()
+    public function test_is_continuous() : void
     {
         $this->assertFalse(DataType::isContinuous('string'));
         $this->assertTrue(DataType::isContinuous(5.0));
@@ -31,7 +31,7 @@ class DataTypeTest extends TestCase
         $this->assertFalse(DataType::isContinuous(null));
     }
     
-    public function test_is_other()
+    public function test_is_other() : void
     {
         $this->assertFalse(DataType::isOther('string'));
         $this->assertFalse(DataType::isOther(5.0));

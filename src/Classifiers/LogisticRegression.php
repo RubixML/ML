@@ -107,14 +107,14 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * The unique class labels.
      *
-     * @var array|null
+     * @var string[]|null
      */
     protected $classes;
 
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -208,7 +208,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Return the training loss at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -339,7 +339,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -352,7 +352,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {

@@ -27,13 +27,22 @@ class AdalineTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Regressors\Adaline
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
@@ -46,7 +55,7 @@ class AdalineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_regressor()
+    public function test_build_regressor() : void
     {
         $this->assertInstanceOf(Adaline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -63,7 +72,7 @@ class AdalineTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -80,7 +89,7 @@ class AdalineTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $dataset = new Unlabeled([['bad']]);
 
@@ -89,14 +98,14 @@ class AdalineTest extends TestCase
         $this->estimator->train($dataset);
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

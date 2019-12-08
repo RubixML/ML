@@ -9,27 +9,26 @@ use PHPUnit\Framework\TestCase;
 
 class PriorTest extends TestCase
 {
-    protected $values;
-
+    /**
+     * @var \Rubix\ML\Other\Strategies\Prior
+     */
     protected $strategy;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->values = ['a', 'a', 'b', 'a', 'c'];
-
         $this->strategy = new Prior();
     }
 
-    public function test_build_local_celebrity_strategy()
+    public function test_build_strategy() : void
     {
         $this->assertInstanceOf(Prior::class, $this->strategy);
         $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_priors_guess()
+    public function test_priors_guess() : void
     {
-        $this->strategy->fit($this->values);
+        $values = ['a', 'a', 'b', 'a', 'c'];
 
         $expected = [
             'a' => 0.6,
@@ -37,10 +36,12 @@ class PriorTest extends TestCase
             'c' => 0.2,
         ];
 
+        $this->strategy->fit($values);
+
         $this->assertEquals($expected, $this->strategy->priors());
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->values);
+        $this->assertContains($value, $values);
     }
 }

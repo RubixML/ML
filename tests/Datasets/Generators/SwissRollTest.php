@@ -10,14 +10,17 @@ use PHPUnit\Framework\TestCase;
 
 class SwissRollTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\SwissRoll
+     */
     protected $generator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new SwissRoll(0., 0., 0., 1., 12., 0.3);
     }
 
-    public function test_build_generator()
+    public function test_build_generator() : void
     {
         $this->assertInstanceOf(SwissRoll::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
@@ -25,7 +28,7 @@ class SwissRollTest extends TestCase
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    public function test_generate_dataset()
+    public function test_generate_dataset() : void
     {
         $dataset = $this->generator->generate(30);
 

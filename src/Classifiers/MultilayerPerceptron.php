@@ -59,7 +59,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * An array composing the user-specified hidden layers of the network in order.
      *
-     * @var array
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
     protected $hidden;
 
@@ -141,14 +141,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The unique class labels.
      *
-     * @var array|null
+     * @var string[]|null
      */
     protected $classes;
 
     /**
      * The validation scores at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $scores = [
         //
@@ -157,14 +157,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
     ];
 
     /**
-     * @param array $hidden
+     * @param mixed[] $hidden
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
      * @param float $alpha
@@ -269,7 +269,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the validation score at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function scores() : array
     {
@@ -279,7 +279,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the training loss at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -440,7 +440,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -453,7 +453,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -470,7 +470,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $probabilities = [];
 
         foreach ($yT as $activations) {
-            $probabilities[] = array_combine($this->classes, $activations);
+            $probabilities[] = array_combine($this->classes, $activations) ?: [];
         }
 
         return $probabilities;

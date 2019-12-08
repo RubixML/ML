@@ -11,25 +11,31 @@ use RuntimeException;
 
 class IntervalDiscretizerTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
+    protected $generator;
+    
+    /**
+     * @var \Rubix\ML\Transformers\Stateful
+     */
     protected $transformer;
 
-    protected $generator;
-
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Blob([0., 4., 0., -1.5], [1., 5., 0.01, 10.]);
 
         $this->transformer = new IntervalDiscretizer(5);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(IntervalDiscretizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $outcomes = ['a', 'b', 'c', 'd', 'e'];
 
@@ -49,7 +55,7 @@ class IntervalDiscretizerTest extends TestCase
         $this->assertContains($sample[3], $outcomes);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

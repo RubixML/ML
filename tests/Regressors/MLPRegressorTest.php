@@ -32,13 +32,22 @@ class MLPRegressorTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Regressors\MLPRegressor
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
@@ -56,7 +65,7 @@ class MLPRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_regressor()
+    public function test_build_regressor() : void
     {
         $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -73,7 +82,7 @@ class MLPRegressorTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict_proba()
+    public function test_train_partial_predict_proba() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -96,21 +105,21 @@ class MLPRegressorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

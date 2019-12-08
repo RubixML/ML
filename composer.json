@@ -40,8 +40,8 @@
         "ext-svm": "*",
         "friendsofphp/php-cs-fixer": "^2.14",
         "phpmetrics/phpmetrics": "^2.4",
-        "phpstan/phpstan": "^0.10.0",
-        "phpstan/phpstan-phpunit": "^0.10.0",
+        "phpstan/phpstan": "^0.11.19",
+        "phpstan/phpstan-phpunit": "^0.11.2",
         "phpunit/phpunit": "7.2.*"
     },
     "suggest": {

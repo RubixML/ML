@@ -46,8 +46,8 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset with validation.
      *
-     * @param array $samples
-     * @param array $labels
+     * @param mixed[] $samples
+     * @param mixed[] $labels
      * @return self
      */
     public static function build(array $samples = [], array $labels = []) : self
@@ -58,8 +58,8 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset foregoing validation.
      *
-     * @param array[] $samples
-     * @param (int|float|string)[] $labels
+     * @param mixed[] $samples
+     * @param mixed[] $labels
      * @return self
      */
     public static function quick(array $samples = [], array $labels = []) : self
@@ -91,7 +91,7 @@ class Labeled extends Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param array $datasets
+     * @param mixed[] $datasets
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -133,8 +133,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * @param array $samples
-     * @param array $labels
+     * @param mixed[] $samples
+     * @param mixed[] $labels
      * @param bool $validate
      * @throws \InvalidArgumentException
      */
@@ -204,12 +204,13 @@ class Labeled extends Dataset
     /**
      * Return the integer encoded data type of the label or null if empty.
      *
-     * @return int|null
+     * @throws \RuntimeException
+     * @return int
      */
-    public function labelType() : ?int
+    public function labelType() : int
     {
         if (!isset($this->labels[0])) {
-            return null;
+            throw new RuntimeException('Dataset is empty.');
         }
 
         return DataType::determine($this->labels[0]);
@@ -242,7 +243,7 @@ class Labeled extends Dataset
      * Return an array of descriptive statistics about the labels in the
      * dataset.
      *
-     * @return array
+     * @return mixed[]
      */
     public function describeLabels() : array
     {
@@ -474,7 +475,7 @@ class Labeled extends Dataset
     /**
      * Drop the rows at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -512,7 +513,7 @@ class Labeled extends Dataset
     /**
      * Drop the columns at the given indices and return the new dataset.
      *
-     * @param array $indices
+     * @param mixed[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -718,7 +719,7 @@ class Labeled extends Dataset
      *
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function fold(int $k = 10) : array
     {
@@ -749,7 +750,7 @@ class Labeled extends Dataset
      *
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function stratifiedFold(int $k = 10) : array
     {
@@ -799,7 +800,7 @@ class Labeled extends Dataset
      * as many samples and labels as possible.
      *
      * @param int $n
-     * @return array
+     * @return self[]
      */
     public function batch(int $n = 50) : array
     {
@@ -822,7 +823,7 @@ class Labeled extends Dataset
      * @param int $column
      * @param mixed $value
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function partition(int $column, $value) : array
     {
@@ -865,11 +866,11 @@ class Labeled extends Dataset
      * Partition the dataset into left and right subsets based on their distance
      * from two centroids.
      *
-     * @param array $leftCentroid
-     * @param array $rightCentroid
+     * @param mixed[] $leftCentroid
+     * @param mixed[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel)
     {

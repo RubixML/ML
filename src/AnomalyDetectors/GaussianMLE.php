@@ -134,7 +134,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Return the column means computed from the training set.
      *
-     * @return array
+     * @return float[]
      */
     public function means() : array
     {
@@ -144,7 +144,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Return the column variances computed from the training set.
      *
-     * @return array
+     * @return float[]
      */
     public function variances() : array
     {
@@ -220,7 +220,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -231,7 +231,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @return float[]
      */
     public function rank(Dataset $dataset) : array
     {
@@ -247,7 +247,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Calculate the log likelihood of a sample being an outlier.
      *
-     * @param array $sample
+     * @param (int|float)[] $sample
      * @return float
      */
     protected function logLikelihood(array $sample) : float

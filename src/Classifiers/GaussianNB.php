@@ -46,7 +46,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The class prior probabilities.
      *
-     * @var array|null
+     * @var float[]|null
      */
     protected $priors;
 
@@ -69,7 +69,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed means of each feature column of the training set.
      *
-     * @var array[]
+     * @var array
      */
     protected $means = [
         //
@@ -78,7 +78,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed variances of each feature column of the training set.
      *
-     * @var array[]
+     * @var array
      */
     protected $variances = [
         //
@@ -87,14 +87,14 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The possible class labels.
      *
-     * @var (int|string)[]
+     * @var mixed[]
      */
     protected $classes = [
         //
     ];
 
     /**
-     * @param array|null $priors
+     * @param mixed[]|null $priors
      * @throws \InvalidArgumentException
      */
     public function __construct(?array $priors = null)
@@ -210,7 +210,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->weights = array_fill_keys($classes, 0);
+        $this->weights = array_fill_keys($classes, 0.);
 
         $this->means = $this->variances = array_fill_keys($classes, []);
 
@@ -308,7 +308,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -329,7 +329,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -361,8 +361,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
-     * @param array $sample
-     * @return array
+     * @param (int|float)[] $sample
+     * @return float[]
      */
     protected function jointLogLikelihood(array $sample) : array
     {

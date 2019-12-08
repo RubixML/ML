@@ -3,12 +3,12 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
-use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -23,15 +23,24 @@ class SVRTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Regressors\SVR
+     */
     protected $estimator;
-    
+
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->generator = new HalfMoon(0., 0., 1., 90, 0.02);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
         $this->estimator = new SVR(0.1, 1e-3, new Polynomial(4), false, 1e-3);
 
@@ -40,7 +49,7 @@ class SVRTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_regressor()
+    public function test_build_regressor() : void
     {
         $this->assertInstanceOf(SVR::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -54,7 +63,7 @@ class SVRTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -73,21 +82,21 @@ class SVRTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

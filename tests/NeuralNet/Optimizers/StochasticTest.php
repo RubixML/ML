@@ -13,23 +13,30 @@ use Generator;
 
 class StochasticTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Stochastic
+     */
     protected $optimizer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->optimizer = new Stochastic(0.001);
     }
 
-    public function test_build_optimizer()
+    public function test_build_optimizer() : void
     {
         $this->assertInstanceOf(Stochastic::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
     /**
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Tensor\Tensor $gradient
+     * @param array[] $expected
+     *
      * @dataProvider step_provider
      */
-    public function test_step(Parameter $param, Tensor $gradient, array $expected)
+    public function test_step(Parameter $param, Tensor $gradient, array $expected) : void
     {
         $step = $this->optimizer->step($param, $gradient);
 

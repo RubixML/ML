@@ -8,32 +8,36 @@ use PHPUnit\Framework\TestCase;
 
 class SkipGramTest extends TestCase
 {
-    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
-
-    protected const TOKENS = ['I would', 'I like', 'I to', 'would like', 'would to', 'would die',
-    'like to', 'like die', 'like on', 'to die', 'to on', 'to Mars', 'die on', 'die Mars',
-    'die just', 'on Mars', 'on just', 'on not', 'Mars just', 'Mars not', 'Mars on',
-    'just not', 'just on', 'just impact', 'on impact', 'The end'];
-
+    /**
+     * @var \Rubix\ML\Other\Tokenizers\SkipGram
+     */
     protected $tokenizer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tokenizer = new SkipGram(2, 2);
     }
 
-    public function test_build_tokenizer()
+    public function test_build_tokenizer() : void
     {
         $this->assertInstanceOf(SkipGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 
-    public function test_tokenize()
+    public function test_tokenize() : void
     {
-        $tokens = $this->tokenizer->tokenize(self::TEXT);
+        $text = 'I would like to die on Mars, just not on impact. The end.';
+
+        $expected = [
+            'I would', 'I like', 'I to', 'would like', 'would to', 'would die',
+            'like to', 'like die', 'like on', 'to die', 'to on', 'to Mars', 'die on', 'die Mars',
+            'die just', 'on Mars', 'on just', 'on not', 'Mars just', 'Mars not', 'Mars on',
+            'just not', 'just on', 'just impact', 'on impact', 'The end',
+        ];
+
+        $tokens = $this->tokenizer->tokenize($text);
 
         $this->assertCount(26, $tokens);
-
-        $this->assertEquals(self::TOKENS, $tokens);
+        $this->assertEquals($expected, $tokens);
     }
 }

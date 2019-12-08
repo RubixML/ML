@@ -9,20 +9,23 @@ use PHPUnit\Framework\TestCase;
 
 class SerialTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Backends\Serial
+     */
     protected $backend;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->backend = new Serial();
     }
 
-    public function test_build_backend()
+    public function test_build_backend() : void
     {
         $this->assertInstanceOf(Serial::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    public function test_enqueue_process()
+    public function test_enqueue_process() : void
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);
 
@@ -35,7 +38,7 @@ class SerialTest extends TestCase
         $this->assertCount(10, $results);
     }
 
-    public static function foo(int $i)
+    public static function foo(int $i) : array
     {
         return [$i, microtime(true)];
     }

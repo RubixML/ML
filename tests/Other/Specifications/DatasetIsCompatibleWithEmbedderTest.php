@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class DatasetIsCompatibleWithEmbedderTest extends TestCase
 {
-    public function test_check()
+    public function test_check() : void
     {
         $embedder = new TSNE();
 

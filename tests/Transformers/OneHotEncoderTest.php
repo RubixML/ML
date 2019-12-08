@@ -11,11 +11,17 @@ use RuntimeException;
 
 class OneHotEncoderTest extends TestCase
 {
-    protected $transformer;
-
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Transformers\OneHotEncoder
+     */
+    protected $transformer;
+
+    public function setUp() : void
     {
         $this->dataset = new Unlabeled([
             ['nice', 'furry', 'friendly'],
@@ -27,14 +33,14 @@ class OneHotEncoderTest extends TestCase
         $this->transformer = new OneHotEncoder();
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(OneHotEncoder::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -50,7 +56,7 @@ class OneHotEncoderTest extends TestCase
         ], $this->dataset->samples());
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

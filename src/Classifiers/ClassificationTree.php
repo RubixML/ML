@@ -126,7 +126,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -155,7 +155,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -173,8 +173,8 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best
-                ? array_replace($template, $node->probabilities())
-                : null;
+                ? array_replace($template, $node->probabilities()) ?? []
+                : [];
         }
 
         return $probabilities;

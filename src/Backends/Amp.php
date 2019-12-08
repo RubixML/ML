@@ -36,7 +36,7 @@ class Amp implements Backend
     /**
      * The queue of coroutines.
      *
-     * @var array
+     * @var \Amp\Promise[]
      */
     protected $queue = [
         //
@@ -95,7 +95,7 @@ class Amp implements Backend
     /**
      * Process the queue and return the results.
      *
-     * @return array
+     * @return mixed[]
      */
     public function process() : array
     {

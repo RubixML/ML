@@ -4,7 +4,6 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
@@ -94,9 +93,9 @@ class Hyperplane implements Generator
      * Generate n data points.
      *
      * @param int $n
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return \Rubix\ML\Datasets\Labeled
      */
-    public function generate(int $n) : Dataset
+    public function generate(int $n) : Labeled
     {
         $d = $this->dimensions();
 

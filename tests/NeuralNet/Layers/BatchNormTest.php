@@ -14,17 +14,32 @@ use PHPUnit\Framework\TestCase;
 
 class BatchNormTest extends TestCase
 {
+    /**
+     * @var int
+     */
     protected $fanIn;
 
+    /**
+     * @var \Tensor\Matrix
+     */
     protected $input;
 
+    /**
+     * @var \Rubix\ML\Deferred
+     */
     protected $prevGrad;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
     protected $optimizer;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\BatchNorm
+     */
     protected $layer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -47,7 +62,7 @@ class BatchNormTest extends TestCase
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
 
-    public function test_build_layer()
+    public function test_build_layer() : void
     {
         $this->assertInstanceOf(BatchNorm::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
@@ -59,7 +74,7 @@ class BatchNormTest extends TestCase
         $this->assertEquals($this->fanIn, $this->layer->width());
     }
 
-    public function test_forward_back_infer()
+    public function test_forward_back_infer() : void
     {
         $this->layer->initialize($this->fanIn);
 

@@ -19,11 +19,17 @@ class TSNETest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
-    protected $embedder;
-
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Embedders\TSNE;
+     */
+    protected $embedder;
+
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -38,7 +44,7 @@ class TSNETest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_embedder()
+    public function test_build_embedder() : void
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
         $this->assertInstanceOf(Verbose::class, $this->embedder);
@@ -47,7 +53,7 @@ class TSNETest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->embedder->compatibility());
     }
 
-    public function test_embed()
+    public function test_embed() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -55,11 +61,9 @@ class TSNETest extends TestCase
 
         $this->assertCount(self::TRAIN_SIZE, $samples);
         $this->assertCount(1, $samples[0]);
-
-        // file_put_contents('embedding.json', json_encode($samples, JSON_PRETTY_PRINT));
     }
 
-    public function test_embed_incompatible()
+    public function test_embed_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

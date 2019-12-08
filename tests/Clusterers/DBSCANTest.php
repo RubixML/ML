@@ -20,13 +20,22 @@ class DBSCANTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Clusterers\DBSCAN
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -41,7 +50,7 @@ class DBSCANTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_clusterer()
+    public function test_build_clusterer() : void
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -52,7 +61,7 @@ class DBSCANTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-    public function test_predict()
+    public function test_predict() : void
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -63,7 +72,7 @@ class DBSCANTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_incompatible()
+    public function test_predict_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

@@ -20,22 +20,46 @@ class BestTest extends TestCase
     ];
 
     protected const IMPURITY = 14.1;
+
     protected const N = 6;
 
-    public function test_build_node()
+    /**
+     * @var \Rubix\ML\Graph\Nodes\Best
+     */
+    protected $node;
+
+    public function setUp() : void
     {
-        $node = new Best(self::OUTCOME, self::PROBABILITIES, self::IMPURITY, self::N);
+        $this->node = new Best(self::OUTCOME, self::PROBABILITIES, self::IMPURITY, self::N);
+    }
 
-        $this->assertInstanceOf(Best::class, $node);
-        $this->assertInstanceOf(Outcome::class, $node);
-        $this->assertInstanceOf(Decision::class, $node);
-        $this->assertInstanceOf(BinaryNode::class, $node);
-        $this->assertInstanceOf(Leaf::class, $node);
-        $this->assertInstanceOf(Node::class, $node);
+    public function test_build_node() : void
+    {
+        $this->assertInstanceOf(Best::class, $this->node);
+        $this->assertInstanceOf(Outcome::class, $this->node);
+        $this->assertInstanceOf(Decision::class, $this->node);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Leaf::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
 
-        $this->assertEquals(self::OUTCOME, $node->outcome());
-        $this->assertEquals(self::PROBABILITIES, $node->probabilities());
-        $this->assertEquals(self::IMPURITY, $node->impurity());
-        $this->assertEquals(self::N, $node->n());
+    public function test_outcome() : void
+    {
+        $this->assertEquals(self::OUTCOME, $this->node->outcome());
+    }
+
+    public function test_probabilities() : void
+    {
+        $this->assertEquals(self::PROBABILITIES, $this->node->probabilities());
+    }
+
+    public function test_impurity() : void
+    {
+        $this->assertEquals(self::IMPURITY, $this->node->impurity());
+    }
+
+    public function test_n() : void
+    {
+        $this->assertEquals(self::N, $this->node->n());
     }
 }

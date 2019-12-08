@@ -23,13 +23,22 @@ class BootstrapAggregatorTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\BootstrapAggregator
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
@@ -42,7 +51,7 @@ class BootstrapAggregatorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_meta_estimator() : void
     {
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -55,7 +64,7 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -72,7 +81,7 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

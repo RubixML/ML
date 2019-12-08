@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class DatasetIsCompatibleWithDistanceTest extends TestCase
 {
-    public function test_check()
+    public function test_check() : void
     {
         $kernel = new Euclidean();
 

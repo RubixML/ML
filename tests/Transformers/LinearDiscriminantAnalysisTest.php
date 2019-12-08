@@ -12,11 +12,17 @@ use RuntimeException;
 
 class LinearDiscriminantAnalysisTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
     
+    /**
+     * @var \Rubix\ML\Transformers\LinearDiscriminantAnalysis
+     */
     protected $transformer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 0, 0], 3.),
@@ -27,14 +33,14 @@ class LinearDiscriminantAnalysisTest extends TestCase
         $this->transformer = new LinearDiscriminantAnalysis(1);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(LinearDiscriminantAnalysis::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
 
@@ -49,7 +55,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
         $this->assertCount(1, $sample);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

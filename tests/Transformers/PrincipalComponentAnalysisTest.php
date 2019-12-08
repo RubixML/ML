@@ -11,25 +11,31 @@ use RuntimeException;
 
 class PrincipalComponentAnalysisTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
     
+    /**
+     * @var \Rubix\ML\Transformers\PrincipalComponentAnalysis
+     */
     protected $transformer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Blob([0., 3000., -6., 25], [1., 30., 0.001, 10.]);
 
         $this->transformer = new PrincipalComponentAnalysis(2);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(PrincipalComponentAnalysis::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_transform() : void
     {
         $this->assertEquals(4, $this->generator->dimensions());
 

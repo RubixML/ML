@@ -9,11 +9,17 @@ use PHPUnit\Framework\TestCase;
 
 class TextNormalizerTest extends TestCase
 {
-    protected $transformer;
-
+    /**
+     * @var \Rubix\ML\Datasets\Unlabeled
+     */
     protected $dataset;
 
-    public function setUp()
+    /**
+     * @var \Rubix\ML\Transformers\TextNormalizer
+     */
+    protected $transformer;
+
+    public function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             ['The quick brown fox jumped over the lazy man sitting at a bus'
@@ -24,13 +30,13 @@ class TextNormalizerTest extends TestCase
         $this->transformer = new TextNormalizer(true);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_transform() : void
     {
         $this->dataset->apply($this->transformer);
     

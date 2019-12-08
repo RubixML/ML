@@ -25,13 +25,22 @@ class RobustZScoreTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\AnomalyDetectors\RobustZScore
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             '0' => new Blob([0., 0.], 0.5),
@@ -45,7 +54,7 @@ class RobustZScoreTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_detector()
+    public function test_build_detector() : void
     {
         $this->assertInstanceOf(RobustZScore::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -61,7 +70,7 @@ class RobustZScoreTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict()
+    public function test_train_predict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -78,14 +87,14 @@ class RobustZScoreTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

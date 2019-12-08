@@ -23,6 +23,6 @@ trait RankSingle
     {
         $scores = $this->rank(Unlabeled::build([$sample]));
 
-        return reset($scores);
+        return reset($scores) ?: NAN;
     }
 }

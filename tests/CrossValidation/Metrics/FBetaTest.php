@@ -9,18 +9,17 @@ use Generator;
 
 class FBetaTest extends TestCase
 {
-    protected const CLASS_LABELS = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-    protected const ANOMALY_LABELS = [0, 0, 0, 1, 0];
-
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->metric = new FBeta(1.);
     }
 
-    public function test_build_metric()
+    public function test_build_metric() : void
     {
         $this->assertInstanceOf(FBeta::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
@@ -32,11 +31,11 @@ class FBetaTest extends TestCase
     /**
      * @dataProvider score_class_provider
      */
-    public function test_score_class(array $predictions, float $expected)
+    public function test_score_class(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, self::CLASS_LABELS);
+        $score = $this->metric->score($predictions, $labels);
 
         $this->assertThat(
             $score,
@@ -51,19 +50,33 @@ class FBetaTest extends TestCase
 
     public function score_class_provider() : Generator
     {
-        yield [['wolf', 'lamb', 'wolf', 'lamb', 'wolf'], 0.5833333333333333];
-        yield [['wolf', 'wolf', 'lamb', 'lamb', 'lamb'], 0.0];
-        yield [['lamb', 'lamb', 'wolf', 'wolf', 'wolf'], 1.0];
+        yield [
+            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            0.5833333333333333,
+        ];
+
+        yield [
+            ['wolf', 'wolf', 'lamb', 'lamb', 'lamb'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            0.0,
+        ];
+
+        yield [
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            1.0,
+        ];
     }
 
     /**
      * @dataProvider score_anomaly_provider
      */
-    public function test_score_anomaly(array $predictions, float $expected)
+    public function test_score_anomaly(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, self::ANOMALY_LABELS);
+        $score = $this->metric->score($predictions, $labels);
 
         $this->assertThat(
             $score,
@@ -78,8 +91,22 @@ class FBetaTest extends TestCase
 
     public function score_anomaly_provider() : Generator
     {
-        yield [[0, 1, 0, 1, 0], 0.8076923076923077];
-        yield [[0, 0, 0, 1, 0], 1.0];
-        yield [[1, 1, 1, 0, 1], 0.0];
+        yield [
+            [0, 1, 0, 1, 0],
+            [0, 0, 0, 1, 0],
+            0.8076923076923077,
+        ];
+
+        yield [
+            [0, 0, 0, 1, 0],
+            [0, 0, 0, 1, 0],
+            1.0,
+        ];
+
+        yield [
+            [1, 1, 1, 0, 1],
+            [0, 0, 0, 1, 0],
+            0.0,
+        ];
     }
 }

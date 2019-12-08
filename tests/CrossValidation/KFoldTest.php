@@ -16,13 +16,22 @@ class KFoldTest extends TestCase
 {
     protected const TRAIN_SIZE = 50;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Learner
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\KFold
+     */
     protected $validator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
@@ -36,14 +45,14 @@ class KFoldTest extends TestCase
         $this->validator->setBackend(new Serial());
     }
 
-    public function test_build_validator()
+    public function test_build_validator() : void
     {
         $this->assertInstanceOf(KFold::class, $this->validator);
         $this->assertInstanceOf(Validator::class, $this->validator);
         $this->assertInstanceOf(Parallel::class, $this->validator);
     }
 
-    public function test_test_estimator()
+    public function test_test_estimator() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 

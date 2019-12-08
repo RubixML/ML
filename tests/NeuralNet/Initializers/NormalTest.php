@@ -9,20 +9,23 @@ use PHPUnit\Framework\TestCase;
 
 class NormalTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Initializers\Normal
+     */
     protected $initializer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->initializer = new Normal(0.05);
     }
 
-    public function test_build_layer()
+    public function test_build_layer() : void
     {
         $this->assertInstanceOf(Normal::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    public function test_initialize()
+    public function test_initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);
 

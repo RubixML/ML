@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParamsTest extends TestCase
 {
-    public function test_generate_ints()
+    public function test_generate_ints() : void
     {
         $values = Params::ints(0, 100, 5);
 
@@ -19,7 +19,7 @@ class ParamsTest extends TestCase
         $this->assertThat($values[4], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
     }
 
-    public function test_generate_floats()
+    public function test_generate_floats() : void
     {
         $values = Params::floats(0, 100, 5);
 
@@ -30,7 +30,7 @@ class ParamsTest extends TestCase
         $this->assertThat($values[4], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
     }
 
-    public function test_generate_grid()
+    public function test_generate_grid() : void
     {
         $values = Params::grid(0, 100, 5);
 
@@ -41,14 +41,14 @@ class ParamsTest extends TestCase
         $this->assertEquals(100, $values[4]);
     }
 
-    public function test_extract_args()
+    public function test_extract_args() : void
     {
         $expected = ['k', 'weighted', 'kernel'];
 
         $this->assertEquals($expected, Params::args(new KNearestNeighbors()));
     }
 
-    public function test_stringify()
+    public function test_stringify() : void
     {
         $expected = 'learning_rate=0.1 alpha=0.0001';
 
@@ -58,7 +58,7 @@ class ParamsTest extends TestCase
         ]));
     }
 
-    public function test_get_short_name()
+    public function test_get_short_name() : void
     {
         $this->assertEquals('KNearestNeighbors', Params::shortName(new KNearestNeighbors()));
         $this->assertEquals('KNearestNeighbors', Params::shortName(KNearestNeighbors::class));

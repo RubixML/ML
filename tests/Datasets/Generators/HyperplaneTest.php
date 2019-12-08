@@ -10,14 +10,17 @@ use PHPUnit\Framework\TestCase;
 
 class HyperplaneTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Hyperplane
+     */
     protected $generator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Hyperplane([0, 0], 0.0);
     }
 
-    public function test_build_generator()
+    public function test_build_generator() : void
     {
         $this->assertInstanceOf(Hyperplane::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
@@ -25,7 +28,7 @@ class HyperplaneTest extends TestCase
         $this->assertEquals(2, $this->generator->dimensions());
     }
 
-    public function test_generate_dataset()
+    public function test_generate_dataset() : void
     {
         $dataset = $this->generator->generate(30);
 

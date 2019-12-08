@@ -15,11 +15,17 @@ class ITreeTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Graph\Trees\ITree
+     */
     protected $tree;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'east' => new Blob([5, -2, -2]),
@@ -31,7 +37,7 @@ class ITreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_tree()
+    public function test_build_tree() : void
     {
         $this->assertInstanceOf(ITree::class, $this->tree);
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
@@ -40,7 +46,7 @@ class ITreeTest extends TestCase
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function test_c()
+    public function test_c() : void
     {
         $this->assertEquals(3.748880484475505, ITree::c(10));
         $this->assertEquals(8.364671030072245, ITree::c(100));
@@ -49,7 +55,7 @@ class ITreeTest extends TestCase
         $this->assertEquals(22.180282259643523, ITree::c(100000));
     }
 
-    public function test_grow_range()
+    public function test_grow_range() : void
     {
         $this->tree->grow($this->generator->generate(50));
 

@@ -13,18 +13,24 @@ use PHPUnit\Framework\TestCase;
 
 class PersistentModelTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Persisters\Persister
+     */
     protected $persister;
 
+    /**
+     * @var \Rubix\ML\PersistentModel
+     */
     protected $estimator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->persister = $this->createMock(Filesystem::class);
 
         $this->estimator = new PersistentModel(new DummyClassifier(), $this->persister);
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_meta_estimator() : void
     {
         $this->assertInstanceOf(PersistentModel::class, $this->estimator);
         $this->assertInstanceOf(Wrapper::class, $this->estimator);

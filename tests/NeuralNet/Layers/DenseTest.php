@@ -16,17 +16,32 @@ class DenseTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var int
+     */
     protected $fanIn;
 
+    /**
+     * @var \Tensor\Matrix
+     */
     protected $input;
 
+    /**
+     * @var \Rubix\ML\Deferred
+     */
     protected $prevGrad;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
     protected $optimizer;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\Dense
+     */
     protected $layer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -50,7 +65,7 @@ class DenseTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_layer()
+    public function test_build_layer() : void
     {
         $this->assertInstanceOf(Dense::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
@@ -62,7 +77,7 @@ class DenseTest extends TestCase
         $this->assertEquals(2, $this->layer->width());
     }
 
-    public function test_forward_back_infer()
+    public function test_forward_back_infer() : void
     {
         $this->layer->initialize($this->fanIn);
 

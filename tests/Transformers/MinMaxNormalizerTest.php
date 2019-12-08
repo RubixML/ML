@@ -12,18 +12,24 @@ use RuntimeException;
 
 class MinMaxNormalizerTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
+    protected $generator;
+    
+    /**
+     * @var \Rubix\ML\Transformers\MinMaxNormalizer
+     */
     protected $transformer;
 
-    protected $generator;
-
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
 
         $this->transformer = new MinMaxNormalizer(0., 1.);
     }
 
-    public function test_build_transformer()
+    public function test_build_transformer() : void
     {
         $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
@@ -31,7 +37,7 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_fit_update_transform()
+    public function test_fit_update_transform() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -50,7 +56,7 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertEquals(0.5, $sample[2], '', 1);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

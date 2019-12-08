@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Rubix\ML\Deferred;
 use Tensor\Matrix;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
@@ -16,17 +16,37 @@ class BinaryTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var int
+     */
     protected $fanIn;
 
+    /**
+     * @var \Tensor\Matrix
+     */
     protected $input;
 
+    /**
+     * @var string[]
+     */
     protected $labels;
 
+    /**
+     * @var \Rubix\ML\Deferred
+     */
+    protected $prevGrad;
+
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
     protected $optimizer;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\Binary
+     */
     protected $layer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -45,7 +65,7 @@ class BinaryTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_layer()
+    public function test_build_layer() : void
     {
         $this->assertInstanceOf(Binary::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
@@ -57,7 +77,7 @@ class BinaryTest extends TestCase
         $this->assertEquals(1, $this->layer->width());
     }
 
-    public function test_forward_back_infer()
+    public function test_forward_back_infer() : void
     {
         $this->layer->initialize($this->fanIn);
 

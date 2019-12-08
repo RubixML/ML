@@ -15,11 +15,17 @@ class BallTreeTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Graph\Trees\BallTree
+     */
     protected $tree;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'east' => new Blob([5, -2, -2]),
@@ -31,7 +37,7 @@ class BallTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_tree()
+    public function test_build_tree() : void
     {
         $this->assertInstanceOf(BallTree::class, $this->tree);
         $this->assertInstanceOf(Spatial::class, $this->tree);
@@ -41,7 +47,7 @@ class BallTreeTest extends TestCase
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function test_grow_neighbors_range()
+    public function test_grow_neighbors_range() : void
     {
         $this->tree->grow($this->generator->generate(50));
 

@@ -9,20 +9,23 @@ use PHPUnit\Framework\TestCase;
 
 class Xavier2Test extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\Initializers\Xavier2
+     */
     protected $initializer;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->initializer = new Xavier2();
     }
 
-    public function test_build_layer()
+    public function test_build_layer() : void
     {
         $this->assertInstanceOf(Xavier2::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    public function test_initialize()
+    public function test_initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);
 

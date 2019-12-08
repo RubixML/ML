@@ -11,11 +11,17 @@ use PHPUnit\Framework\TestCase;
 
 class KMC2Test extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Clusterers\Seeders\KMC2
+     */
     protected $seeder;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 0, 0], 3.),
@@ -26,13 +32,13 @@ class KMC2Test extends TestCase
         $this->seeder = new KMC2(50, new Euclidean());
     }
 
-    public function test_build_seeder()
+    public function test_build_seeder() : void
     {
         $this->assertInstanceOf(KMC2::class, $this->seeder);
         $this->assertInstanceOf(Seeder::class, $this->seeder);
     }
 
-    public function test_seed()
+    public function test_seed() : void
     {
         $dataset = $this->generator->generate(100);
 

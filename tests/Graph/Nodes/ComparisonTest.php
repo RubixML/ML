@@ -19,31 +19,60 @@ class ComparisonTest extends TestCase
         [6., 4., -5],
     ];
 
-    protected const LABELS = [
-        22, 13,
-    ];
+    protected const LABELS = [22, 13];
 
     protected const IMPURITY = 400.;
-    protected const N = 2;
 
-    public function test_build_node()
+    /**
+     * @var \Rubix\ML\Graph\Nodes\Comparison
+     */
+    protected $node;
+
+    public function setUp() : void
     {
         $groups = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
+        $this->node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
+    }
 
-        $this->assertInstanceOf(Comparison::class, $node);
-        $this->assertInstanceOf(Decision::class, $node);
-        $this->assertInstanceOf(BinaryNode::class, $node);
-        $this->assertInstanceOf(Node::class, $node);
+    public function test_build_node() : void
+    {
+        $this->assertInstanceOf(Comparison::class, $this->node);
+        $this->assertInstanceOf(Decision::class, $this->node);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
 
-        $this->assertEquals(self::COLUMN, $node->column());
-        $this->assertEquals(self::VALUE, $node->value());
-        $this->assertEquals($groups, $node->groups());
-        $this->assertEquals(self::IMPURITY, $node->impurity());
-        $this->assertEquals(self::N, $node->n());
+    public function test_column() : void
+    {
+        $this->assertSame(self::COLUMN, $this->node->column());
+    }
+
+    public function test_value() : void
+    {
+        $this->assertSame(self::VALUE, $this->node->value());
+    }
+
+    public function test_groups() : void
+    {
+        $expected = [
+            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
+            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+        ];
+
+        $this->assertEquals($expected, $this->node->groups());
+    }
+
+    public function test_impurity() : void
+    {
+        $this->assertSame(self::IMPURITY, $this->node->impurity());
+    }
+
+    public function test_n() : void
+    {
+        $this->assertSame(2, $this->node->n());
     }
 }

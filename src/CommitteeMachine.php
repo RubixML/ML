@@ -299,6 +299,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
             case self::ANOMALY_DETECTOR:
                 return array_map([$this, 'decideAnomaly'], $aggregate);
+
+            default:
+                throw new RuntimeException('Invalid estimator type.');
         }
     }
 

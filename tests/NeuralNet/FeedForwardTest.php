@@ -17,31 +17,38 @@ use PHPUnit\Framework\TestCase;
 
 class FeedForwardTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Labeled
+     */
     protected $dataset;
 
-    protected $activations;
-
+    /**
+     * @var \Rubix\ML\NeuralNet\FeedForward
+     */
     protected $network;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\Input
+     */
     protected $input;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     */
     protected $hidden;
 
+    /**
+     * @var \Rubix\ML\NeuralNet\Layers\Output
+     */
     protected $output;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dataset = new Labeled([
             [1., 2.5,],
             [0.1, 0.],
             [0.002, -6.],
         ], ['yes', 'no', 'maybe'], false);
-
-        $this->activations = [
-            [1.0, 2.5],
-            [0.1, 0.0],
-            [0.002, 0.],
-        ];
 
         $this->input = new Placeholder1D(2);
 
@@ -57,41 +64,41 @@ class FeedForwardTest extends TestCase
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
-    public function test_build_network()
+    public function test_build_network() : void
     {
         $this->assertInstanceOf(FeedForward::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
 
-    public function test_depth()
+    public function test_depth() : void
     {
         $this->assertEquals(6, $this->network->depth());
     }
 
-    public function test_get_input_layer()
+    public function test_get_input_layer() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    public function test_get_hidden_layers()
+    public function test_get_hidden_layers() : void
     {
         $this->assertCount(4, $this->network->hidden());
     }
 
-    public function test_get_output_layer()
+    public function test_get_output_layer() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }
 
-    public function test_get_parametric_layers()
+    public function test_get_parametric_layers() : void
     {
         $this->assertCount(3, $this->network->parametric());
     }
 
-    public function test_round_trip()
+    public function test_round_trip() : void
     {
         $loss = $this->network->roundtrip($this->dataset);
 
-        $this->assertEquals(0., $loss, '', INF);
+        $this->assertInternalType('double', $loss);
     }
 }

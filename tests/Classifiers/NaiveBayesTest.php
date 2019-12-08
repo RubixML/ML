@@ -26,13 +26,22 @@ class NaiveBayesTest extends TestCase
 
     protected const RANDOM_SEED = 0;
 
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Classifiers\NaiveBayes
+     */
     protected $estimator;
 
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     */
     protected $metric;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -47,7 +56,7 @@ class NaiveBayesTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier()
+    public function test_build_classifier() : void
     {
         $this->assertInstanceOf(NaiveBayes::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -64,7 +73,7 @@ class NaiveBayesTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict_proba()
+    public function test_train_partial_predict_proba() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -90,21 +99,21 @@ class NaiveBayesTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled()
+    public function test_train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible()
+    public function test_train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([[1.0]]));
     }
 
-    public function test_predict_untrained()
+    public function test_predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

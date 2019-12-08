@@ -1,5 +1,6 @@
 - Unreleased
     - Added Hyperplane dataset generator
+    - All Generators output Labeled datasets
     - Changed the way noise is applied to Circle, Half Moon, etc.
     - Changed name of Multilayer Perceptron classifier
 

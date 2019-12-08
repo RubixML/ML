@@ -9,27 +9,26 @@ use PHPUnit\Framework\TestCase;
 
 class MeanTest extends TestCase
 {
-    protected $values;
-
+    /**
+     * @var \Rubix\ML\Other\Strategies\Mean
+     */
     protected $strategy;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->values = [1, 2, 3, 4, 5];
-
         $this->strategy = new Mean();
     }
 
-    public function test_build_strategy()
+    public function test_build_strategy() : void
     {
         $this->assertInstanceOf(Mean::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess()
+    public function test_guess() : void
     {
-        $this->strategy->fit($this->values);
+        $this->strategy->fit([1, 2, 3, 4, 5]);
 
         $guess = $this->strategy->guess();
 

@@ -53,7 +53,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The class prior probabilities.
      *
-     * @var array|null
+     * @var float[]|null
      */
     protected $priors;
 
@@ -67,7 +67,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array
+     * @var float[]
      */
     protected $weights = [
         //
@@ -77,7 +77,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * The count of each feature from the training set used for online
      * probability calculation.
      *
-     * @var array
+     * @var array[]
      */
     protected $counts = [
         //
@@ -87,7 +87,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * The precomputed negative log probabilities of each feature conditioned on
      * a given class label.
      *
-     * @var array
+     * @var array[]
      */
     protected $probs = [
         //
@@ -96,7 +96,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The possible class outcomes.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -104,7 +104,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * @param float $alpha
-     * @param array|null $priors
+     * @param mixed[]|null $priors
      * @throws \InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0, ?array $priors = null)
@@ -172,7 +172,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the class prior probabilities.
      *
-     * @return array
+     * @return float[]
      */
     public function priors() : array
     {
@@ -192,7 +192,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the counts for each category per class.
      *
-     * @return array|null
+     * @return array[]|null
      */
     public function counts() : ?array
     {
@@ -295,7 +295,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -316,7 +316,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -348,8 +348,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
-     * @param array $sample
-     * @return array
+     * @param string[] $sample
+     * @return float[]
      */
     protected function jointLogLikelihood(array $sample) : array
     {

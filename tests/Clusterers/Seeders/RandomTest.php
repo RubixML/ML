@@ -10,11 +10,17 @@ use PHPUnit\Framework\TestCase;
 
 class RandomTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\Datasets\Generators\Generator
+     */
     protected $generator;
 
+    /**
+     * @var \Rubix\ML\Clusterers\Seeders\Random
+     */
     protected $seeder;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 0, 0], 3.),
@@ -25,13 +31,13 @@ class RandomTest extends TestCase
         $this->seeder = new Random();
     }
 
-    public function test_build_seeder()
+    public function test_build_seeder() : void
     {
         $this->assertInstanceOf(Random::class, $this->seeder);
         $this->assertInstanceOf(Seeder::class, $this->seeder);
     }
 
-    public function test_seed()
+    public function test_seed() : void
     {
         $dataset = $this->generator->generate(100);
 
