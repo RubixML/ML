@@ -1019,4 +1019,53 @@ class Labeled extends Dataset
 
         return self::unzip($table);
     }
+
+    /**
+     * Return the dataset object as an associative array.
+     *
+     * @return mixed[]
+     */
+    public function toArray() : array
+    {
+        return [
+            'samples' => $this->samples(),
+            'labels' => $this->labels(),
+        ];
+    }
+
+    /**
+     * Return a JSON representation of the dataset.
+     *
+     * @param bool $pretty
+     * @return string
+     */
+    public function toJson(bool $pretty = false) : string
+    {
+        return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
+    }
+
+    /**
+     * Return the dataset as comma-separated values (CSV) string.
+     *
+     * @param string $delimiter
+     * @return string
+     */
+    public function toCsv(string $delimiter = ',') : string
+    {
+        $csv = '';
+
+        foreach ($this->zip() as $row) {
+            $csv .= implode($delimiter, $row) . PHP_EOL;
+        }
+
+        return $csv;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
 }

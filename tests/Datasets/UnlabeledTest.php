@@ -482,13 +482,6 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $stats);
     }
 
-    public function test_deduplicate() : void
-    {
-        $dataset = $this->dataset->deduplicate();
-
-        $this->assertCount(6, $dataset);
-    }
-
     public function test_transform_column() : void
     {
         $dataset = $this->dataset->transformColumn(3, 'abs');
@@ -496,5 +489,42 @@ class UnlabeledTest extends TestCase
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
         $this->assertEquals($expected, $dataset->column(3));
+    }
+
+    public function test_deduplicate() : void
+    {
+        $dataset = $this->dataset->deduplicate();
+
+        $this->assertCount(6, $dataset);
+    }
+
+    public function test_to_array() : void
+    {
+        $expected = [
+            'samples' => self::SAMPLES,
+        ];
+
+        $this->assertEquals($expected, $this->dataset->toArray());
+    }
+
+    public function test_to_json() : void
+    {
+        $expected = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
+            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
+            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]]}';
+            
+        $this->assertEquals($expected, $this->dataset->toJson());
+    }
+
+    public function test_to_csv() : void
+    {
+        $expected = 'nice,furry,friendly,4' . PHP_EOL
+            . 'mean,furry,loner,-1.5' . PHP_EOL
+            . 'nice,rough,friendly,2.6' . PHP_EOL
+            . 'mean,rough,friendly,-1' . PHP_EOL
+            . 'nice,rough,friendly,2.9' . PHP_EOL
+            . 'nice,furry,loner,-5' . PHP_EOL;
+            
+        $this->assertEquals($expected, $this->dataset->toCsv());
     }
 }

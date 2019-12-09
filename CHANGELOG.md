@@ -7,6 +7,7 @@
     - Deferred computations are now callable
     - Removed range() from the activation function interface
     - Added label type validation for supervised learners
+    - Added toArray, toJson, and toCsv methods to Dataset API
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

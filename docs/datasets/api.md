@@ -436,8 +436,18 @@ Return a dataset with duplicate rows removed:
 public deduplicate() : self
 ```
 
-**Example**
-
+### Other Formats
+Return the dataset object as an associative array:
 ```php
-$deduped = $dataset->deduplicate();
+public toArray() : array
+```
+
+Return a JSON representation of the dataset:
+```php
+public toJson(bool $pretty = false) : string
+```
+
+Return the dataset as comma-separated values (CSV) string:
+```php
+public toCsv(string $delimiter = ',') : string
 ```

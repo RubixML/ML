@@ -9,6 +9,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 use IteratorAggregate;
+use JsonSerializable;
 use RuntimeException;
 use ArrayIterator;
 use ArrayAccess;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  * @implements ArrayAccess<int, array>
  * @implements IteratorAggregate<int, array>
  */
-abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
+abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
     /**
      * The rows of samples and columns of features that make up the
@@ -581,6 +582,29 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     abstract public function deduplicate();
+
+    /**
+     * Return the dataset object as an associative array.
+     *
+     * @return mixed[]
+     */
+    abstract public function toArray() : array;
+
+    /**
+     * Return a JSON representation of the dataset.
+     *
+     * @param bool $pretty
+     * @return string
+     */
+    abstract public function toJson(bool $pretty = false) : string;
+
+    /**
+     * Return the dataset as comma-separated values (CSV) string.
+     *
+     * @param string $delimiter
+     * @return string
+     */
+    abstract public function toCsv(string $delimiter = ',') : string;
 
     /**
      * @return int
