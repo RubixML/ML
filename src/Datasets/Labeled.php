@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
@@ -1067,5 +1068,39 @@ class Labeled extends Dataset
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() : string
+    {
+        [$tRows, $tCols] = Console::size();
+
+        $m = (int) floor($tRows / 2) + 2;
+        $n = (int) floor($tCols / (3 + Console::TABLE_CELL_WIDTH)) - 1;
+
+        $m = min($this->numRows(), $m);
+        $n = min($this->numColumns(), $n);
+
+        $header = [];
+
+        for ($column = '0'; $column < $n; ++$column) {
+            $header[] = "Column $column";
+        }
+
+        $header[] = 'Label';
+
+        $samples = array_slice($this->samples(), 0, $m);
+
+        foreach ($samples as $i => &$sample) {
+            $sample = array_slice($sample, 0, $n);
+
+            $sample[] = $this->labels[$i];
+        }
+
+        $table = array_merge([$header], $samples);
+
+        return Console::table($table);
     }
 }

@@ -527,4 +527,25 @@ class UnlabeledTest extends TestCase
             
         $this->assertEquals($expected, $this->dataset->toCsv());
     }
+
+    public function test_to_string() : void
+    {
+        $expected = PHP_EOL
+            . '| Column 0    | Column 1    | Column 2    | Column 3    |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| nice        | furry       | friendly    | 4           |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| mean        | furry       | loner       | -1.5        |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| nice        | rough       | friendly    | 2.6         |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| mean        | rough       | friendly    | -1          |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| nice        | rough       | friendly    | 2.9         |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL
+            . '| nice        | furry       | loner       | -5          |' . PHP_EOL
+            . '---------------------------------------------------------' . PHP_EOL;
+
+        $this->assertEquals($expected, (string) $this->dataset);
+    }
 }

@@ -451,3 +451,27 @@ Return the dataset as comma-separated values (CSV) string:
 ```php
 public toCsv(string $delimiter = ',') : string
 ```
+
+### Previewing in the Console
+You can echo the dataset objectto preview the first rows and columns in the console.
+
+```php
+echo $dataset;
+```
+
+```sh
+| Column 0    | Column 1    | Column 2    | Column 3    | Label       |
+-----------------------------------------------------------------------
+| nice        | furry       | friendly    | 4           | not monster |
+-----------------------------------------------------------------------
+| mean        | furry       | loner       | -1.5        | monster     |
+-----------------------------------------------------------------------
+| nice        | rough       | friendly    | 2.6         | not monster |
+-----------------------------------------------------------------------
+| mean        | rough       | friendly    | -1          | monster     |
+-----------------------------------------------------------------------
+| nice        | rough       | friendly    | 2.9         | not monster |
+-----------------------------------------------------------------------
+| nice        | furry       | loner       | -5          | not monster |
+-----------------------------------------------------------------------
+```
