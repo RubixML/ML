@@ -30,6 +30,41 @@ $samples = [
 ];
 ```
 
+### Factory Methods
+Build a dataset object from a JSON string:
+```php
+public fromJson(string $json) : self
+```
+
+**Example**
+
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$json = '{
+    "samples": [
+        [
+            "nice",
+            "furry",
+            "friendly",
+            4
+        ],
+        [
+            "mean",
+            "furry",
+            "loner",
+            -1.5
+        ]
+    ],
+    "labels": [
+        "not monster",
+        "monster"
+    ]
+}';
+
+$dataset = Labeled::fromJson($json);
+```
+
 ### Selecting
 Return all the samples in the dataset in a 2-dimensional array:
 ```php

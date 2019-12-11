@@ -89,6 +89,19 @@ class LabeledTest extends TestCase
         $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
+    public function test_from_json() : void
+    {
+        $json = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
+            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
+            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]],'
+            . '"labels":["not monster","monster","not monster","monster","not monster","not monster"]}';
+
+        $dataset = Labeled::fromJson($json);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+    }
+
     public function test_unzip() : void
     {
         $table = iterator_to_array($this->dataset->zip());

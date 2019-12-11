@@ -9,6 +9,7 @@
     - Added label type validation for supervised learners
     - Added toArray, toJson, and toCsv methods to Dataset API
     - Can now preview a Dataset object in console by echoing it
+    - Added JSON factory to Dataset API
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

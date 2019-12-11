@@ -65,6 +65,24 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Build a dataset object from a JSON string.
+     *
+     * @param string $json
+     * @return self
+     */
+    public static function fromJson(string $json) : self
+    {
+        $data = json_decode($json);
+
+        if (empty($data->samples)) {
+            throw new InvalidArgumentException('JSON object is missing'
+                . ' samples array.');
+        }
+
+        return self::build($data->samples);
+    }
+
+    /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
@@ -633,6 +651,8 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Return a string representation of the first few rows of the dataset.
+     *
      * @return string
      */
     public function __toString() : string

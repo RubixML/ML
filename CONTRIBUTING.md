@@ -61,7 +61,7 @@ $ composer fix
 ```
 
 ### Class Organization
-In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, regular methods.
+In Rubix ML, class definitions flow in the following manner from top to bottom - traits, class constants, properties, static methods, constructor, regular methods, magic methods.
 
 ### Mutability Policy
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.

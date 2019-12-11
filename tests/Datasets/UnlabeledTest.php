@@ -82,6 +82,18 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(self::SAMPLES, $dataset->samples());
     }
 
+    public function test_from_json() : void
+    {
+        $json = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
+            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
+            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]]}';
+
+        $dataset = Unlabeled::fromJson($json);
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+    }
+
     public function test_get_samples() : void
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());

@@ -89,6 +89,30 @@ class Labeled extends Dataset
     }
 
     /**
+     * Build a dataset object from a JSON string.
+     *
+     * @param string $json
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function fromJson(string $json) : self
+    {
+        $data = json_decode($json);
+
+        if (empty($data->samples)) {
+            throw new InvalidArgumentException('JSON object is missing'
+                . ' samples array.');
+        }
+
+        if (empty($data->labels)) {
+            throw new InvalidArgumentException('JSON object is missing'
+                . ' labels array.');
+        }
+
+        return self::build($data->samples, $data->labels);
+    }
+
+    /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
@@ -1071,6 +1095,8 @@ class Labeled extends Dataset
     }
 
     /**
+     * Return a string representation of the first few rows of the dataset.
+     *
      * @return string
      */
     public function __toString() : string

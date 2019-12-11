@@ -50,6 +50,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     protected $samples;
 
     /**
+     * Build a dataset object from a JSON string.
+     *
+     * @param string $json
+     * @return self
+     */
+    abstract public static function fromJson(string $json);
+
+    /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
@@ -605,6 +613,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @return string
      */
     abstract public function toCsv(string $delimiter = ',') : string;
+
+    /**
+     * Return a string representation of the first few rows of the dataset.
+     *
+     * @return string
+     */
+    abstract public function __toString() : string;
 
     /**
      * @return int
