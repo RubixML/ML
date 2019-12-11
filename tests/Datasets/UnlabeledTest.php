@@ -94,6 +94,21 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(self::SAMPLES, $dataset->samples());
     }
 
+    public function test_from_csv() : void
+    {
+        $csv = 'nice,furry,friendly,4' . PHP_EOL
+            . 'mean,furry,loner,-1.5' . PHP_EOL
+            . 'nice,rough,friendly,2.6' . PHP_EOL
+            . 'mean,rough,friendly,-1' . PHP_EOL
+            . 'nice,rough,friendly,2.9' . PHP_EOL
+            . 'nice,furry,loner,-5' . PHP_EOL;
+
+        $dataset = Unlabeled::fromCsv($csv);
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+    }
+
     public function test_get_samples() : void
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());

@@ -14,10 +14,10 @@ $samples = [
     // ...
 ];
 
-$dataset = new Unabeled($samples);
+$dataset = new Unlabeled($samples);
 ```
 
-### Missing Values
+## Missing Values
 By convention, continuous missing values are denoted by `NaN` and categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
 
 **Example**
@@ -30,10 +30,10 @@ $samples = [
 ];
 ```
 
-### Factory Methods
+## Factory Methods
 Build a dataset object from a JSON string:
 ```php
-public fromJson(string $json) : self
+public static fromJson(string $json) : self
 ```
 
 **Example**
@@ -65,7 +65,26 @@ $json = '{
 $dataset = Labeled::fromJson($json);
 ```
 
-### Selecting
+Build a dataset object from a CSV (comma-separated values) string:
+```php
+public static fromCsv(string $csv, string $delimiter = ',', string $enclosure = '') : self
+```
+
+**Example**
+
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$csv = 'nice,furry,friendly,4,not monster\n'
+    . 'mean,furry,loner,-1.5,monster\n'
+    . 'nice,rough,friendly,2.6,not monster\n';
+
+$dataset = Labeled::fromCsv($csv);
+```
+
+**Note:** In a [Labeled](labeled.md) dataset the *last* column of a CSV table are taken as the labels.
+
+## Selecting
 Return all the samples in the dataset in a 2-dimensional array:
 ```php
 public samples() : array
@@ -81,7 +100,7 @@ Select the values of a feature column at a given offset (offsets begin at 0):
 public column(int $index) : array
 ```
 
-### Properties
+## Properties
 Return the number of rows in the dataset:
 ```php
 public numRows() : int
@@ -102,7 +121,7 @@ Return the integer encoded column type given a column index:
 public columnType(int $index) : int
 ```
 
-### Applying Transformations
+## Applying Transformations
 You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object. The method returns self for chaining.
 
 ```php
@@ -143,7 +162,7 @@ $dataset = $dataset->transformColumn(32, function ($value) {
 });
 ```
 
-### Stacking
+## Stacking
 Stack any number of dataset objects on top of each other to form a single dataset:
 ```php
 public static stack(array $datasets) : self
@@ -165,7 +184,7 @@ $dataset = Labeled::stack([
 ]);
 ```
 
-### Prepending and Appending
+## Prepending and Appending
 To prepend a given dataset onto the beginning of another dataset:
 ```php
 public prepend(Dataset $dataset) : self
@@ -186,7 +205,7 @@ $dataset = $training->append($testing); // Append the testing set to the trainin
 $dataset = $dataset->prepend($new); // Prepend a new dataset to the current dataset
 ```
 
-### Head and Tail
+## Head and Tail
 Return the *first* **n** rows of data in a new dataset object:
 ```php
 public head(int $n = 10) : self
@@ -207,7 +226,7 @@ $subset = $dataset->head(5);
 $subset = $dataset->tail(10);
 ```
 
-### Taking and Leaving
+## Taking and Leaving
 Remove **n** rows from the dataset and return them in a new dataset:
 ```php
 public take(int $n = 1) : self
@@ -218,7 +237,7 @@ Leave **n** samples on the dataset and return the rest in a new dataset:
 public leave(int $n = 1) : self
 ```
 
-### Slicing and Splicing
+## Slicing and Splicing
 Return an *n* size portion of the dataset in a new dataset:
 ```php
 public slice(int $offset, int $n) : self
@@ -229,7 +248,7 @@ Remove a size *n* chunk of the dataset starting at *offset* and return it in a n
 public splice(int $offset, int $n) : self
 ```
 
-# Splitting
+## Splitting
 Split the dataset into left and right subsets given by a *ratio*:
 ```php
 public split(float $ratio = 0.5) : array
@@ -253,7 +272,7 @@ public partition(int $index, mixed $value) : array
 [$left, $right] = $dataset->partition(4, 50);
 ```
 
-### Folding
+## Folding
 Fold the dataset to form *k* equal size datasets:
 ```php
 public fold(int $k = 10) : array
@@ -273,7 +292,7 @@ var_dump(count($folds));
 int(8)
 ```
 
-### Batching
+## Batching
 Batch the dataset into subsets containing a maximum of *n* rows per batch:
 ```php
 public batch(int $n = 50) : array
@@ -285,7 +304,7 @@ public batch(int $n = 50) : array
 $batches = $dataset->batch(1000);
 ```
 
-### Randomization
+## Randomization
 Randomize the order of the Dataset and return it for method chaining:
 ```php
 public randomize() : self
@@ -325,7 +344,7 @@ $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(1));
 ```
 
-### Filtering
+## Filtering
 To filter a Dataset by a feature column:
 ```php
 public filterByColumn(int $index, callable $fn) : self
@@ -339,7 +358,7 @@ $tallPeople = $dataset->filterByColumn(3, function ($value) {
 });
 ```
 
-### Sorting
+## Sorting
 To sort a dataset in place by a specific feature column:
 ```php
 public sortByColumn(int $index, bool $descending = false) : self
@@ -393,7 +412,7 @@ array(3) {
 }
 ```
 
-### Dropping Rows and Columns
+## Dropping Rows and Columns
 Drop the row at the given index and return the new dataset:
 ```php
 public dropRow(int $index) : self
@@ -414,7 +433,7 @@ Drop the columns at the given indices and return the new dataset:
 public dropColumns(array $indices) : self
 ```
 
-### Descriptive Statistics
+## Descriptive Statistics
 Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
 ```php
 public describe() : array
@@ -465,13 +484,13 @@ Array
 )
 ```
 
-### De-duplication
+## De-duplication
 Return a dataset with duplicate rows removed:
 ```php
 public deduplicate() : self
 ```
 
-### Other Formats
+## Other Formats
 Return the dataset object as an associative array:
 ```php
 public toArray() : array
@@ -484,10 +503,10 @@ public toJson(bool $pretty = false) : string
 
 Return the dataset as comma-separated values (CSV) string:
 ```php
-public toCsv(string $delimiter = ',') : string
+public toCsv(string $delimiter = ',', string $enclosure = '') : string
 ```
 
-### Previewing in the Console
+## Previewing in the Console
 You can echo the dataset objectto preview the first rows and columns in the console.
 
 ```php

@@ -83,6 +83,30 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Build a dataset object from a CSV string.
+     *
+     * @param string $csv
+     * @param string $delimiter
+     * @param string $enclosure
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function fromCsv(string $csv, string $delimiter = ',', string $enclosure = '') : self
+    {
+        $rows = preg_split(self::NEWLINE_REGEX, $csv) ?: [];
+
+        $samples = [];
+
+        foreach ($rows as $row) {
+            if (!empty($row)) {
+                $samples[] = str_getcsv($row, $delimiter, $enclosure);
+            }
+        }
+
+        return self::build($samples);
+    }
+
+    /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
@@ -629,13 +653,21 @@ class Unlabeled extends Dataset
      * Return the dataset as comma-separated values (CSV) string.
      *
      * @param string $delimiter
+     * @param string $enclosure
+     * @throws \InvalidArgumentException
      * @return string
      */
-    public function toCsv(string $delimiter = ',') : string
+    public function toCsv(string $delimiter = ',', string $enclosure = '') : string
     {
         $csv = '';
 
         foreach ($this->samples() as $row) {
+            if (!empty($enclosure)) {
+                foreach ($row as &$value) {
+                    $value = $enclosure . $value . $enclosure;
+                }
+            }
+
             $csv .= implode($delimiter, $row) . PHP_EOL;
         }
 

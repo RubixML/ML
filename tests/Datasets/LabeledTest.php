@@ -100,6 +100,23 @@ class LabeledTest extends TestCase
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertEquals(self::SAMPLES, $dataset->samples());
+        $this->assertEquals(self::LABELS, $dataset->labels());
+    }
+
+    public function test_from_csv() : void
+    {
+        $csv = 'nice,furry,friendly,4,not monster' . PHP_EOL
+            . 'mean,furry,loner,-1.5,monster' . PHP_EOL
+            . 'nice,rough,friendly,2.6,not monster' . PHP_EOL
+            . 'mean,rough,friendly,-1,monster' . PHP_EOL
+            . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
+            . 'nice,furry,loner,-5,not monster' . PHP_EOL;
+
+        $dataset = Labeled::fromCsv($csv);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+        $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
     public function test_unzip() : void

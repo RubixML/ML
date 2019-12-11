@@ -113,6 +113,33 @@ class Labeled extends Dataset
     }
 
     /**
+     * Build a dataset object from a CSV string.
+     *
+     * @param string $csv
+     * @param string $delimiter
+     * @param string $enclosure
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function fromCsv(string $csv, string $delimiter = ',', string $enclosure = '') : self
+    {
+        $rows = preg_split(self::NEWLINE_REGEX, $csv) ?: [];
+
+        $samples = $labels = [];
+
+        foreach ($rows as $row) {
+            if (!empty($row)) {
+                $data = str_getcsv($row, $delimiter, $enclosure);
+
+                $samples[] = array_slice($data, 0, -1);
+                $labels[] = end($data);
+            }
+        }
+
+        return self::build($samples, $labels);
+    }
+
+    /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
@@ -1073,13 +1100,31 @@ class Labeled extends Dataset
      * Return the dataset as comma-separated values (CSV) string.
      *
      * @param string $delimiter
+     * @param string $enclosure
+     * @throws \InvalidArgumentException
      * @return string
      */
-    public function toCsv(string $delimiter = ',') : string
+    public function toCsv(string $delimiter = ',', string $enclosure = '') : string
     {
+        if (strlen($delimiter) !== 1) {
+            throw new InvalidArgumentException('Delimiter must be'
+                . ' a single character.');
+        }
+
+        if (strlen($enclosure) > 1) {
+            throw new InvalidArgumentException('Enclosure must be'
+                . ' less than or equal to 1 character.');
+        }
+        
         $csv = '';
 
         foreach ($this->zip() as $row) {
+            if (!empty($enclosure)) {
+                foreach ($row as &$value) {
+                    $value = $enclosure . $value . $enclosure;
+                }
+            }
+
             $csv .= implode($delimiter, $row) . PHP_EOL;
         }
 
