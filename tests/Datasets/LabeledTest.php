@@ -103,6 +103,22 @@ class LabeledTest extends TestCase
         $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
+    public function test_from_ndjson() : void
+    {
+        $ndjson = '["nice","furry","friendly",4,"not monster"]' . PHP_EOL
+        . '["mean","furry","loner",-1.5,"monster"]' . PHP_EOL
+        . '["nice","rough","friendly",2.6,"not monster"]' . PHP_EOL
+        . '["mean","rough","friendly",-1,"monster"]' . PHP_EOL
+        . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
+        . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
+
+        $dataset = Labeled::fromNdjson($ndjson);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+        $this->assertEquals(self::LABELS, $dataset->labels());
+    }
+
     public function test_from_csv() : void
     {
         $csv = 'nice,furry,friendly,4,not monster' . PHP_EOL
@@ -717,6 +733,18 @@ class LabeledTest extends TestCase
             . '"labels":["not monster","monster","not monster","monster","not monster","not monster"]}';
             
         $this->assertEquals($expected, $this->dataset->toJson());
+    }
+
+    public function test_to_ndjson() : void
+    {
+        $expected = '["nice","furry","friendly",4,"not monster"]' . PHP_EOL
+        . '["mean","furry","loner",-1.5,"monster"]' . PHP_EOL
+        . '["nice","rough","friendly",2.6,"not monster"]' . PHP_EOL
+        . '["mean","rough","friendly",-1,"monster"]' . PHP_EOL
+        . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
+        . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
+            
+        $this->assertEquals($expected, $this->dataset->toNdjson());
     }
 
     public function test_to_csv() : void

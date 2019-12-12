@@ -65,6 +65,26 @@ $json = '{
 $dataset = Labeled::fromJson($json);
 ```
 
+Build a dataset from a newline delimited JSON string:
+```php
+public static fromNdjson(string $ndjson) : self
+```
+
+**Example**
+
+```php
+use Rubix\ML\Datasets\Unlabeled;
+
+$ndjson = '["nice","furry","friendly",4]\n'
+    . '["mean","furry","loner",-1.5]\n'
+    . '["nice","rough","friendly",2.6]\n'
+    . '["mean","rough","friendly",-1]\n'
+    . '["nice","rough","friendly",2.9]\n'
+    . '["nice","furry","loner",-5]\n';
+
+$dataset = Unlabeled::fromNdjson($ndjson);
+```
+
 Build a dataset object from a CSV (comma-separated values) string:
 ```php
 public static fromCsv(string $csv, string $delimiter = ',', string $enclosure = '') : self
@@ -499,6 +519,11 @@ public toArray() : array
 Return a JSON representation of the dataset:
 ```php
 public toJson(bool $pretty = false) : string
+```
+
+Return a newline delimited JSON representation of the dataset:
+```php
+public toNdjson() : string
 ```
 
 Return the dataset as comma-separated values (CSV) string:

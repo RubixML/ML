@@ -83,6 +83,27 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Build a dataset from a newline delimited JSON string.
+     *
+     * @param string $ndjson
+     * @return self
+     */
+    public static function fromNdjson(string $ndjson) : self
+    {
+        $rows = preg_split(self::NEWLINE_REGEX, $ndjson) ?: [];
+
+        $samples = [];
+
+        foreach ($rows as $row) {
+            if (!empty($row)) {
+                $samples[] = array_values(json_decode($row, true));
+            }
+        }
+
+        return self::build($samples);
+    }
+
+    /**
      * Build a dataset object from a CSV string.
      *
      * @param string $csv
@@ -647,6 +668,22 @@ class Unlabeled extends Dataset
     public function toJson(bool $pretty = false) : string
     {
         return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
+    }
+
+    /**
+     * Return a newline delimited JSON representation of the dataset.
+     *
+     * @return string
+     */
+    public function toNdjson() : string
+    {
+        $ndjson = '';
+
+        foreach ($this->samples as $row) {
+            $ndjson .= json_encode($row) . PHP_EOL;
+        }
+
+        return $ndjson;
     }
 
     /**

@@ -94,6 +94,21 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(self::SAMPLES, $dataset->samples());
     }
 
+    public function test_from_ndjson() : void
+    {
+        $ndjson = '["nice","furry","friendly",4]' . PHP_EOL
+        . '["mean","furry","loner",-1.5]' . PHP_EOL
+        . '["nice","rough","friendly",2.6]' . PHP_EOL
+        . '["mean","rough","friendly",-1]' . PHP_EOL
+        . '["nice","rough","friendly",2.9]' . PHP_EOL
+        . '["nice","furry","loner",-5]' . PHP_EOL;
+
+        $dataset = Unlabeled::fromNdjson($ndjson);
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+    }
+
     public function test_from_csv() : void
     {
         $csv = 'nice,furry,friendly,4' . PHP_EOL
@@ -541,6 +556,18 @@ class UnlabeledTest extends TestCase
             . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]]}';
             
         $this->assertEquals($expected, $this->dataset->toJson());
+    }
+
+    public function test_to_ndjson() : void
+    {
+        $expected = '["nice","furry","friendly",4]' . PHP_EOL
+        . '["mean","furry","loner",-1.5]' . PHP_EOL
+        . '["nice","rough","friendly",2.6]' . PHP_EOL
+        . '["mean","rough","friendly",-1]' . PHP_EOL
+        . '["nice","rough","friendly",2.9]' . PHP_EOL
+        . '["nice","furry","loner",-5]' . PHP_EOL;
+            
+        $this->assertEquals($expected, $this->dataset->toNdjson());
     }
 
     public function test_to_csv() : void
