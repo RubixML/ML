@@ -38,8 +38,6 @@ use const Rubix\ML\EPSILON;
  */
 abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
-    protected const NEWLINE_REGEX = '/((\r?\n)|(\r\n?))/';
-    
     /**
      * The rows of samples and columns of features that make up the
      * data table i.e. the fixed-length feature vectors.
@@ -47,24 +45,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @var array[]
      */
     protected $samples;
-
-    /**
-     * Build a dataset object from a JSON string.
-     *
-     * @param string $json
-     * @return self
-     */
-    abstract public static function fromJson(string $json);
-
-    /**
-     * Build a dataset object from a CSV string.
-     *
-     * @param string $csv
-     * @param string $delimiter
-     * @param string $enclosure
-     * @return self
-     */
-    abstract public static function fromCsv(string $csv, string $delimiter = ',', string $enclosure = '');
 
     /**
      * Stack a number of datasets on top of each other to form a single

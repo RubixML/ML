@@ -25,7 +25,7 @@ class OneClassSVMTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
 
@@ -35,7 +35,7 @@ class OneClassSVMTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric;
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
      */
     protected $metric;
 

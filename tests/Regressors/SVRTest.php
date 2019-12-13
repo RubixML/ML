@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\Polynomial;
+use Rubix\ML\Kernels\SVM\Linear;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -24,7 +24,7 @@ class SVRTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Hyperplane
      */
     protected $generator;
 
@@ -34,7 +34,7 @@ class SVRTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
      */
     protected $metric;
 
@@ -42,7 +42,7 @@ class SVRTest extends TestCase
     {
         $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
-        $this->estimator = new SVR(0.1, 1e-3, new Polynomial(4), false, 1e-3);
+        $this->estimator = new SVR(1, 1e-8, new Linear(), false, 1e-3);
 
         $this->metric = new RSquared();
 

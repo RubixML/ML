@@ -17,12 +17,12 @@ class LeavePOutTest extends TestCase
     protected const TRAIN_SIZE = 50;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Learner
+     * @var \Rubix\ML\Classifiers\DummyClassifier
      */
     protected $estimator;
 

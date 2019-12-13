@@ -14,10 +14,10 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\PolynomialExpander;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -31,7 +31,7 @@ class PipelineTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
 
@@ -41,7 +41,7 @@ class PipelineTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
      */
     protected $metric;
 
@@ -61,7 +61,7 @@ class PipelineTest extends TestCase
 
         $this->estimator->setLogger(new BlackHole());
 
-        $this->metric = new FBeta();
+        $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
     }

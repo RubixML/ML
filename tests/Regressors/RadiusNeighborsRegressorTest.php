@@ -9,8 +9,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -24,7 +24,7 @@ class RadiusNeighborsRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Hyperplane
      */
     protected $generator;
 
@@ -34,7 +34,7 @@ class RadiusNeighborsRegressorTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
      */
     protected $metric;
 

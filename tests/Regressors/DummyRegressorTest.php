@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -23,7 +23,7 @@ class DummyRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Hyperplane
      */
     protected $generator;
 
@@ -33,13 +33,13 @@ class DummyRegressorTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
      */
     protected $metric;
 
     public function setUp() : void
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
         $this->estimator = new DummyRegressor(new Mean());
 

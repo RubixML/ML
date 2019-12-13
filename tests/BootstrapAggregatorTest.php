@@ -19,12 +19,12 @@ class BootstrapAggregatorTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\SwissRoll
      */
     protected $generator;
 
@@ -34,7 +34,7 @@ class BootstrapAggregatorTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
      */
     protected $metric;
 

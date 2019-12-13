@@ -34,6 +34,12 @@ nav:
   - API Reference: datasets/api.md
   - Labeled: datasets/labeled.md
   - Unlabeled: datasets/unlabeled.md
+  - Extractors:
+    - API Reference: datasets/extractors/api.md
+    - CSV: datasets/extractors/csv.md
+    - CSV With Labels: datasets/extractors/csv-with-labels.md
+    - NDJSON: datasets/extractors/ndjson.md
+    - NDJSON With Labels: datasets/extractors/ndjson-with-labels.md
   - Generators:
     - API Reference: datasets/generators/api.md
     - Agglomerate: datasets/generators/agglomerate.md

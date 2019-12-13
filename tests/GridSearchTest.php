@@ -14,8 +14,9 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 
 class GridSearchTest extends TestCase
@@ -27,7 +28,7 @@ class GridSearchTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
 
@@ -37,7 +38,7 @@ class GridSearchTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
      */
     protected $metric;
 
@@ -57,7 +58,7 @@ class GridSearchTest extends TestCase
 
         $this->estimator->setBackend(new Serial());
 
-        $this->metric = new FBeta();
+        $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
     }

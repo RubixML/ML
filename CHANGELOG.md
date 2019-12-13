@@ -1,5 +1,6 @@
 - Unreleased
     - Now requires PHP 7.2 and above
+    - Added NDJSON and CSV dataset Extractors
     - Added Hyperplane dataset generator
     - All Generators output Labeled datasets
     - Changed the way noise is applied to Circle, Half Moon, etc.
@@ -7,10 +8,8 @@
     - Deferred computations are now callable
     - Removed range() from the activation function interface
     - Added label type validation for supervised learners
-    - Added toArray, toJson, and toCsv methods to Dataset API
+    - Added toArray, toJson, toCsv, toNdjson methods to Dataset API
     - Can now preview a Dataset object in console by echoing it
-    - Added JSON, and CSV factories to Dataset API
-    - Added NDJSON support to Dataset objects
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

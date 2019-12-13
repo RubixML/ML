@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Rubix\ML\Datasets\Labeled;
-
 interface Generator
 {
     /**
@@ -17,7 +15,7 @@ interface Generator
      * Generate n data points.
      *
      * @param int $n
-     * @return \Rubix\ML\Datasets\Labeled
+     * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n) : Labeled;
+    public function generate(int $n);
 }

@@ -10,7 +10,7 @@ use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -25,7 +25,7 @@ class RegressionTreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\HalfMoon
      */
     protected $generator;
 
@@ -35,13 +35,13 @@ class RegressionTreeTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
      */
     protected $metric;
 
     public function setUp() : void
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
+        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
         $this->estimator = new RegressionTree(10, 2, 3, 1e-7);
 
@@ -89,7 +89,7 @@ class RegressionTreeTest extends TestCase
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertCount(3, $importances);
+        $this->assertCount(2, $importances);
         $this->assertEquals(1., array_sum($importances));
 
         $rules = $this->estimator->rules();

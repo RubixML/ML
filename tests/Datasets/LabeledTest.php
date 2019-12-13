@@ -7,7 +7,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
-use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
@@ -74,65 +73,6 @@ class LabeledTest extends TestCase
 
         $this->assertEquals(3, $dataset->numRows());
         $this->assertEquals(1, $dataset->numColumns());
-    }
-
-    public function test_from_iterator() : void
-    {
-        $samples = new ArrayIterator(self::SAMPLES);
-        $labels = new ArrayIterator(self::LABELS);
-
-        $dataset = Labeled::fromIterator($samples, $labels);
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-        $this->assertEquals(self::LABELS, $dataset->labels());
-    }
-
-    public function test_from_json() : void
-    {
-        $json = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
-            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
-            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]],'
-            . '"labels":["not monster","monster","not monster","monster","not monster","not monster"]}';
-
-        $dataset = Labeled::fromJson($json);
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-        $this->assertEquals(self::LABELS, $dataset->labels());
-    }
-
-    public function test_from_ndjson() : void
-    {
-        $ndjson = '["nice","furry","friendly",4,"not monster"]' . PHP_EOL
-        . '["mean","furry","loner",-1.5,"monster"]' . PHP_EOL
-        . '["nice","rough","friendly",2.6,"not monster"]' . PHP_EOL
-        . '["mean","rough","friendly",-1,"monster"]' . PHP_EOL
-        . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
-        . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
-
-        $dataset = Labeled::fromNdjson($ndjson);
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-        $this->assertEquals(self::LABELS, $dataset->labels());
-    }
-
-    public function test_from_csv() : void
-    {
-        $csv = 'nice,furry,friendly,4,not monster' . PHP_EOL
-            . 'mean,furry,loner,-1.5,monster' . PHP_EOL
-            . 'nice,rough,friendly,2.6,not monster' . PHP_EOL
-            . 'mean,rough,friendly,-1,monster' . PHP_EOL
-            . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
-            . 'nice,furry,loner,-5,not monster' . PHP_EOL;
-
-        $dataset = Labeled::fromCsv($csv);
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-        $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
     public function test_unzip() : void

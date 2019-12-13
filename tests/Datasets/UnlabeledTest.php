@@ -7,7 +7,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
-use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
@@ -69,59 +68,6 @@ class UnlabeledTest extends TestCase
 
         $this->assertEquals(3, $dataset->numRows());
         $this->assertEquals(1, $dataset->numColumns());
-    }
-
-    public function test_from_iterator() : void
-    {
-        $samples = new ArrayIterator(self::SAMPLES);
-
-        $dataset = Unlabeled::fromIterator($samples);
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-    }
-
-    public function test_from_json() : void
-    {
-        $json = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
-            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
-            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]]}';
-
-        $dataset = Unlabeled::fromJson($json);
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-    }
-
-    public function test_from_ndjson() : void
-    {
-        $ndjson = '["nice","furry","friendly",4]' . PHP_EOL
-        . '["mean","furry","loner",-1.5]' . PHP_EOL
-        . '["nice","rough","friendly",2.6]' . PHP_EOL
-        . '["mean","rough","friendly",-1]' . PHP_EOL
-        . '["nice","rough","friendly",2.9]' . PHP_EOL
-        . '["nice","furry","loner",-5]' . PHP_EOL;
-
-        $dataset = Unlabeled::fromNdjson($ndjson);
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-    }
-
-    public function test_from_csv() : void
-    {
-        $csv = 'nice,furry,friendly,4' . PHP_EOL
-            . 'mean,furry,loner,-1.5' . PHP_EOL
-            . 'nice,rough,friendly,2.6' . PHP_EOL
-            . 'mean,rough,friendly,-1' . PHP_EOL
-            . 'nice,rough,friendly,2.9' . PHP_EOL
-            . 'nice,furry,loner,-5' . PHP_EOL;
-
-        $dataset = Unlabeled::fromCsv($csv);
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
     }
 
     public function test_get_samples() : void
