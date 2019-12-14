@@ -9,11 +9,11 @@ $samples = [
 ];
 ```
 
-## Internal Data Types
+## Data Types
 In addition to PHP's type system, Rubix ML adds a layer on top that distinguishes types that are continuous (numerical), categorical (discrete), or some other type such as resource. Continuous features represent some *quantitative* property of the sample such as age or velocity, whereas, categorical features form a *qualitative* property such as rough or furry. It is necessary to make this distinction because different learners can be compatible with different data types. For example, the [Naive Bayes](./classifiers/naive-bayes.md) classifier is compatible with only categorical features but [Gaussian Naive Bayes](./classifiers/gaussian-naive-bayes.md) is compatible with continuous - and [Random Forest](./classifiers/random-forest.md) is compatible with both.
 
 #### PHP Representations
-| Rubix ML Data Type | PHP Representation |
+| Rubix ML Type | PHP Type |
 |---|---|
 | Categorical | string |
 | Continuous | int or float |
@@ -25,6 +25,9 @@ A boolean type is the special case of a categorical variable when the number of 
 
 ## Numeric Strings
 Even though the standard PHP library function `is_numeric()` returns true for numeric strings such as "5" or "2.5", they are still considered categorical variables according to Rubix ML. This conveniently allows you to represent ordinal variables as *ordered categories*. For example, instead of the integers `1`, `2`, `3`, etc., which implies a precise interval, you could use the strings `'1'`, `'2'`, `'3'`, etc. to signal ordinal values in which the precise *distance* between values is arbitrary.
+
+## Date/Time
+There are a few ways that dates and times can be represented as features in a dataset. For example, a month or year column can be represented categorically using discrete categories such as `june`, `july`, `august`, or `2018`, `2019`. A datetime can also be represented as a continuous value by converting it to an integer timestamp. PHP provides the `strtotime()` function that handles converting a datetime string to Unix timestamp for most use cases.
 
 ## Ints or Floats?
 Since Rubix ML identifies both integer and floating point types as continuous data, you may be wondering which type to use to represent your features. The answer is you can use either, but the optimal usage comes down to what the data are representing and the precision of the measured features. For example, it might be better to represent the sale price of a house as an integer since a fraction of a unit of currency is negligible in that case. However, if you are representing a precise sensor measurement such as rotational acceleration from a gyroscope then a floating point number is better suited.

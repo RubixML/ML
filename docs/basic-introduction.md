@@ -14,7 +14,7 @@ $samples = [
 $labels = ['married', 'divorced', 'married', 'divorced'];
 ```
 
-> **Hint:** See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different storage mediums.
+> **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
 
 ## The Dataset Object
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, transforming, randomizing, and sorting of the samples and labels for you. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
@@ -27,7 +27,7 @@ use Rubix\ML\Datasets\Labeled;
 $dataset = new Labeled($samples, $labels);
 ```
 
-> **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
+> **Hint:** See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different storage mediums.
 
 ## Choosing an Estimator
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
