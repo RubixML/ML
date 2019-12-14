@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Datasets\Extractors;
 
+use League\Csv\Reader;
+use League\Csv\Statement;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use InvalidArgumentException;
 use RuntimeException;
@@ -21,40 +24,26 @@ use RuntimeException;
  */
 class CSV implements Extractor
 {
-    protected const NEWLINE_REGEX = '/((\r?\n)|(\r\n?))/';
-
     /**
-     * The path to the CSV file.
+     * The CSV reader instance.
      *
-     * @var string
+     * @var \League\Csv\Reader
      */
-    protected $path;
-
-    /**
-     * The character that delineates a new column.
-     *
-     * @var string
-     */
-    protected $delimiter;
-
-    /**
-     * The character used to enclose the value of a column.
-     *
-     * @var string
-     */
-    protected $enclosure;
+    protected $reader;
 
     /**
      * @param string $path
      * @param string $delimiter
-     * @param string $enclosure
+     * @param bool $header
+     * @param string|null $enclosure
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function __construct(
         string $path,
         string $delimiter = ',',
-        string $enclosure = ''
+        bool $header = true,
+        ?string $enclosure = null
     ) {
         if (is_file($path) and !is_readable($path)) {
             throw new RuntimeException("File $path is not readable.");
@@ -65,18 +54,28 @@ class CSV implements Extractor
                 . " a single character, $delimiter given.");
         }
 
-        if (strlen($enclosure) > 1) {
+        if (isset($enclosure) and strlen($enclosure) !== 1) {
             throw new InvalidArgumentException('Enclosure must be'
-                . ' less than or equal to 1 character.');
+                . " a single character, $enclosure given.");
         }
 
-        $this->path = $path;
-        $this->delimiter = $delimiter;
-        $this->enclosure = $enclosure;
+        $reader = Reader::createFromPath($path)
+            ->setDelimiter($delimiter)
+            ->skipEmptyRecords();
+
+        if ($header) {
+            $reader->setHeaderOffset(0);
+        }
+
+        if ($enclosure) {
+            $reader->setEnclosure($enclosure);
+        }
+
+        $this->reader = $reader;
     }
 
     /**
-     * Extract and build a dataset object from source.
+     * Extract and build an unlabeled dataset object from source.
      *
      * @param int $offset
      * @param int|null $limit
@@ -84,22 +83,51 @@ class CSV implements Extractor
      */
     public function extract(int $offset = 0, ?int $limit = null) : Unlabeled
     {
-        $csv = trim(file_get_contents($this->path) ?: '');
-
-        $rows = preg_split(self::NEWLINE_REGEX, $csv) ?: [];
-
-        if ($offset or $limit) {
-            $rows = array_slice($rows, $offset, $limit);
+        $statement = new Statement();
+        
+        if ($offset) {
+            $statement = $statement->offset($offset);
         }
 
-        $samples = [];
-
-        foreach ($rows as $row) {
-            if (!empty($row)) {
-                $samples[] = str_getcsv($row, $this->delimiter, $this->enclosure);
-            }
+        if (isset($limit)) {
+            $statement = $statement->limit($limit);
         }
+
+        $records = $statement->process($this->reader);
+
+        $samples = iterator_to_array($records);
 
         return Unlabeled::build($samples);
+    }
+
+    /**
+     * Extract and build a labeled dataset object from source.
+     *
+     * @param int $offset
+     * @param int|null $limit
+     * @return \Rubix\ML\Datasets\Labeled
+     */
+    public function extractWithLabels(int $offset = 0, ?int $limit = null) : Labeled
+    {
+        $statement = new Statement();
+        
+        if ($offset) {
+            $statement = $statement->offset($offset);
+        }
+
+        if (isset($limit)) {
+            $statement = $statement->limit($limit);
+        }
+
+        $records = $statement->process($this->reader);
+
+        $samples = $labels = [];
+
+        foreach ($records as $record) {
+            $samples[] = array_slice($record, 0, -1);
+            $labels[] = end($record);
+        }
+
+        return Labeled::build($samples, $labels);
     }
 }

@@ -1,5 +1,5 @@
 # Extracting Data
-Data will need to be loaded it into your ML project before it can become useful. There are many ways in which data can be stored, but the most common formats are either in plain-text format such as CSV and NDJSON or in a database such as MySQL. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML as the library only cares about the data once it has already been loaded into memory in PHP. This gives the developer the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure.
+Data will need to be loaded it into your project before it can become useful. There are many ways in which data can be stored, but the most common formats are either in plain-text format such as CSV or NDJSON and in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. Thus, you have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides  [Extractor](datasets/extractors/api.md) objects to help automate more common use cases.
 
 ## CSV
 One of the most common formats that you'll find smaller datasets in is comma-separated (CSV) or tab-separated (TSV) values files. Their popularity is largely due to their simplicity, interpretability, and ubiquity. A CSV file is a text file that contains a table with samples indicated by rows and the values of the features as columns separated either by a comma or tab. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import the data. You can always import your data manually or with the help of other tools such as the PHP League's [CSV Reader/Writer](https://csv.thephpleague.com/). The disadvantage of CSV is that data type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. The library provides the [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted.
@@ -8,10 +8,11 @@ One of the most common formats that you'll find smaller datasets in is comma-sep
 
 ```php
 use Rubix\ML\Datasets\Extractors\CSV;
+use Rubix\ML\Transformers\NumericStringConverter;
 
 $extractor = new CSV('example.csv', ',');
 
-$dataset = $extractor->extract(1, 5000);
+$dataset = $extractor->extract()->apply(new NumericStringConverter());
 ```
 
 ## NDJSON
@@ -24,7 +25,7 @@ use Rubix\ML\Datasets\Extractors\NDJSON;
 
 $extractor = new NDJSON('example.ndjson');
 
-$dataset = $extractor->extract();
+$dataset = $extractor->extract(0, 5000);
 ```
 
 ## Database
