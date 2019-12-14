@@ -1,8 +1,8 @@
 # Extracting Data
 Data will need to be loaded it into your project before it can become useful. There are many ways in which data can be stored, but the most common formats are either in plain-text format such as CSV or NDJSON and in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. Thus, you have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides  [Extractor](datasets/extractors/api.md) objects to help automate more common use cases.
 
-## CSV
-One of the most common formats that you'll find smaller datasets in is comma-separated (CSV) or tab-separated (TSV) values files. Their popularity is largely due to their simplicity, interpretability, and ubiquity. A CSV file is a text file that contains a table with samples indicated by rows and the values of the features as columns separated either by a comma or tab. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import the data. You can always import your data manually or with the help of other tools such as the PHP League's [CSV Reader/Writer](https://csv.thephpleague.com/). The disadvantage of CSV is that data type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. The library provides the [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted.
+### CSV
+One of the most common formats that you'll find smaller datasets in is comma-separated (CSV) or tab-separated (TSV) values files. Their popularity is largely due to their simplicity, interpretability, and ubiquity. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns separated either by a comma or tab. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import the data. You can always import your data manually or with the help of other tools such as the PHP League's [CSV Reader/Writer](https://csv.thephpleague.com/). The disadvantage of CSV is that data type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. The library provides the [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted.
 
 **Example**
 
@@ -15,17 +15,17 @@ $extractor = new CSV('example.csv', ',');
 $dataset = $extractor->extract()->apply(new NumericStringConverter());
 ```
 
-## NDJSON
-Another popular plain-text format is a hybrid of CSV and JSON called NDJSON or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. Since it is possible to derive the original data type from JSON, NDJSON files have the advantage of importing the data with the proper type foregoing the need for conversion. The [NDJSON](datasets/extractors/ndjson.md) extractor is designed to help you import data in the NDJSON format.
+### NDJSON
+Another popular plain-text format is a hybrid of CSV and JSON called NDJSON or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. Since it is possible to derive the original data type from JSON, NDJSON files have the advantage of importing the data with the proper type foregoing the need for conversion. The [NDJSON Array](datasets/extractors/ndjson-array.md) extractor is designed to help you import data in the NDJSON format.
 
 **Example**
 
 ```php
-use Rubix\ML\Datasets\Extractors\NDJSON;
+use Rubix\ML\Datasets\Extractors\NDJSONArray;
 
-$extractor = new NDJSON('example.ndjson');
+$extractor = new NDJSONArray('example.ndjson');
 
-$dataset = $extractor->extract(0, 5000);
+$dataset = $extractor->extract(0, 5000); // Extract first 5000 rows
 ```
 
 ## Database
@@ -34,6 +34,8 @@ For bigger datasets, the data will often be stored in some type of database such
 **Example**
 
 ```php
+use Rubix\ML\Datasets\Unlabeled;
+
 $pdo = new PDO('mysql:dbname=example;host=127.0.0.1');
 
 $query = $pdo->prepare('SELECT age, gender, height FROM patients');
@@ -41,6 +43,8 @@ $query = $pdo->prepare('SELECT age, gender, height FROM patients');
 $query->execute();
 
 $samples = $query->fetchAll();
+
+$dataset = new Unlabeled($samples);
 ```
 
 ## Images
@@ -49,12 +53,16 @@ The PHP language offers a number of functions to import images as PHP resources 
 **Example**
 
 ```php
+use Rubix\ML\Datasets\Labeled;
+
 $samples = $labels = [];
 
 foreach (glob('train/*.png') as $file) {
     $samples[] = [imagecreatefrompng($file)];
     $labels[] = preg_replace('/[0-9]+_(.*).png/', '$1', basename($file));
 }
+
+$dataset = new Labeled($samples, $labels);
 ```
 
 > **Note:** Images as they come are not compatible with any learner, but they can be converted into compatible raw color channel data once they have been imported into your project using the [Image Vectorizer](transformers/image-vectorizer.md).

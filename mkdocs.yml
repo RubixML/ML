@@ -10,8 +10,8 @@ nav:
 - Welcome: index.md
 - What is Machine Learning?: what-is-machine-learning.md
 - Basic Introduction: basic-introduction.md
-- Extracting Data: extracting-data.md
 - Representing Your Data: representing-your-data.md
+- Extracting Data: extracting-data.md
 - Preprocessing: preprocessing.md
 - Training: training.md
 - Inference: inference.md
@@ -37,7 +37,7 @@ nav:
   - Extractors:
     - API Reference: datasets/extractors/api.md
     - CSV: datasets/extractors/csv.md
-    - NDJSON: datasets/extractors/ndjson.md
+    - NDJSON Array: datasets/extractors/ndjson-array.md
   - Generators:
     - API Reference: datasets/generators/api.md
     - Agglomerate: datasets/generators/agglomerate.md

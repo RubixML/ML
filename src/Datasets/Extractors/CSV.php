@@ -7,7 +7,7 @@ use League\Csv\Statement;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use InvalidArgumentException;
-use RuntimeException;
+use Traversable;
 
 /**
  * CSV
@@ -37,7 +37,6 @@ class CSV implements Extractor
      * @param bool $header
      * @param string|null $enclosure
      * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      */
     public function __construct(
         string $path,
@@ -46,7 +45,7 @@ class CSV implements Extractor
         ?string $enclosure = null
     ) {
         if (is_file($path) and !is_readable($path)) {
-            throw new RuntimeException("File $path is not readable.");
+            throw new InvalidArgumentException("File at $path is not readable.");
         }
 
         if (strlen($delimiter) !== 1) {
@@ -78,22 +77,12 @@ class CSV implements Extractor
      * Extract and build an unlabeled dataset object from source.
      *
      * @param int $offset
-     * @param int|null $limit
+     * @param int $limit
      * @return \Rubix\ML\Datasets\Unlabeled
      */
-    public function extract(int $offset = 0, ?int $limit = null) : Unlabeled
+    public function extract(int $offset = 0, int $limit = PHP_INT_MAX) : Unlabeled
     {
-        $statement = new Statement();
-        
-        if ($offset) {
-            $statement = $statement->offset($offset);
-        }
-
-        if (isset($limit)) {
-            $statement = $statement->limit($limit);
-        }
-
-        $records = $statement->process($this->reader);
+        $records = $this->parseRecords($offset, $limit);
 
         $samples = iterator_to_array($records);
 
@@ -104,22 +93,12 @@ class CSV implements Extractor
      * Extract and build a labeled dataset object from source.
      *
      * @param int $offset
-     * @param int|null $limit
+     * @param int $limit
      * @return \Rubix\ML\Datasets\Labeled
      */
-    public function extractWithLabels(int $offset = 0, ?int $limit = null) : Labeled
+    public function extractWithLabels(int $offset = 0, int $limit = PHP_INT_MAX) : Labeled
     {
-        $statement = new Statement();
-        
-        if ($offset) {
-            $statement = $statement->offset($offset);
-        }
-
-        if (isset($limit)) {
-            $statement = $statement->limit($limit);
-        }
-
-        $records = $statement->process($this->reader);
+        $records = $this->parseRecords($offset, $limit);
 
         $samples = $labels = [];
 
@@ -129,5 +108,22 @@ class CSV implements Extractor
         }
 
         return Labeled::build($samples, $labels);
+    }
+
+    /**
+     * Read the records starting at the given offset and return them in an iterator.
+     *
+     * @param int $offset
+     * @param int $limit
+     * @return \Traversable
+     */
+    protected function parseRecords(int $offset, int $limit) : Traversable
+    {
+        $statement = new Statement();
+        
+        $statement = $statement->offset($offset)
+            ->limit($limit);
+
+        return $statement->process($this->reader);
     }
 }

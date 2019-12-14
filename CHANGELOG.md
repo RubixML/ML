@@ -1,6 +1,6 @@
 - Unreleased
     - Now requires PHP 7.2 and above
-    - Added NDJSON and CSV dataset Extractors
+    - Added NDJSON Array and CSV dataset Extractors
     - Added Hyperplane dataset generator
     - All Generators output Labeled datasets
     - Changed the way noise is applied to Circle, Half Moon, etc.

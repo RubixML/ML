@@ -4,25 +4,25 @@ namespace Rubix\ML\Tests\Datasets\Extractors;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Extractors\NDJSON;
+use Rubix\ML\Datasets\Extractors\NDJSONArray;
 use Rubix\ML\Datasets\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 
-class NDJSONTest extends TestCase
+class NDJSONArrayTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Extractors\NDJSON;
+     * @var \Rubix\ML\Datasets\Extractors\NDJSONArray;
      */
     protected $factory;
 
     public function setUp() : void
     {
-        $this->factory = new NDJSON('tests/test.ndjson');
+        $this->factory = new NDJSONArray('tests/test_array.ndjson');
     }
 
     public function test_build_factory() : void
     {
-        $this->assertInstanceOf(NDJSON::class, $this->factory);
+        $this->assertInstanceOf(NDJSONArray::class, $this->factory);
         $this->assertInstanceOf(Extractor::class, $this->factory);
     }
 
