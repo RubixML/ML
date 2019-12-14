@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class KMC2Test extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
 

@@ -32,7 +32,7 @@ public rankSample(array $sample) : float
 **Example**
 
 ```php
-$score = $estimator->rankSample($dataset[1]);
+$score = $estimator->rankSample($dataset->sample(0));
 
 var_dump($score);
 ```

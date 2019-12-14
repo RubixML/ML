@@ -7,6 +7,7 @@ use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
+use ArrayIterator;
 
 use function count;
 use function get_class;
@@ -671,5 +672,42 @@ class Unlabeled extends Dataset
         $table = array_merge([$header], $samples);
 
         return Console::table($table);
+    }
+
+    /**
+     * Does a given row exist in the dataset.
+     *
+     * @param mixed $index
+     * @return bool
+     */
+    public function offsetExists($index) : bool
+    {
+        return isset($this->samples[$index]);
+    }
+
+    /**
+     * Return a sample from the dataset given by index.
+     *
+     * @param mixed $index
+     * @throws \InvalidArgumentException
+     * @return array[]
+     */
+    public function offsetGet($index) : array
+    {
+        if (isset($this->samples[$index])) {
+            return $this->samples[$index];
+        }
+
+        throw new InvalidArgumentException("Row at index $index not found.");
+    }
+
+    /**
+     * Get an iterator for the samples in the dataset.
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator() : ArrayIterator
+    {
+        return new ArrayIterator($this->samples);
     }
 }

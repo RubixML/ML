@@ -151,11 +151,6 @@ class UnlabeledTest extends TestCase
         $this->assertFalse($this->dataset->empty());
     }
 
-    public function test_count() : void
-    {
-        $this->assertEquals(6, $this->dataset->count());
-    }
-
     public function test_randomize() : void
     {
         $samples = $this->dataset->samples();
@@ -547,5 +542,32 @@ class UnlabeledTest extends TestCase
             . '---------------------------------------------------------' . PHP_EOL;
 
         $this->assertEquals($expected, (string) $this->dataset);
+    }
+
+    public function test_count() : void
+    {
+        $this->assertEquals(6, $this->dataset->count());
+        $this->assertCount(6, $this->dataset);
+    }
+
+    public function test_array_access() : void
+    {
+        $expected = ['mean', 'furry', 'loner', -1.5];
+
+        $this->assertEquals($expected, $this->dataset[1]);
+    }
+
+    public function test_iterate() : void
+    {
+        $expected = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'loner', -5.0],
+        ];
+        
+        $this->assertEquals($expected, iterator_to_array($this->dataset));
     }
 }

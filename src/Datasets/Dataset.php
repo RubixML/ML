@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
 use RuntimeException;
-use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
@@ -112,7 +111,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function sample(int $index) : array
     {
-        return $this->offsetGet($index);
+        if (isset($this->samples[$index])) {
+            return $this->samples[$index];
+        }
+
+        throw new InvalidArgumentException("Sample at offset $index not found.");
     }
 
     /**
@@ -630,48 +633,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Does a given row exist in the dataset.
-     *
-     * @param mixed $index
-     * @return bool
-     */
-    public function offsetExists($index) : bool
-    {
-        return isset($this->samples[$index]);
-    }
-
-    /**
      * @param mixed $index
      * @throws \RuntimeException
      */
     public function offsetUnset($index) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
-    }
-
-    /**
-     * Return a sample from the dataset given by index.
-     *
-     * @param mixed $index
-     * @throws \InvalidArgumentException
-     * @return array[]
-     */
-    public function offsetGet($index) : array
-    {
-        if (isset($this->samples[$index])) {
-            return $this->samples[$index];
-        }
-
-        throw new InvalidArgumentException("Row at index $index not found.");
-    }
-
-    /**
-     * Get an iterator for the samples in the dataset.
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->samples);
     }
 }

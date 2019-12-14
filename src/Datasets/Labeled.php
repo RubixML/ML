@@ -95,25 +95,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Build a labeled dataset from a data table with the last column
-     * containing the label.
-     *
-     * @param iterable $table
-     * @return self
-     */
-    public static function unzip(iterable $table) : self
-    {
-        $samples = $labels = [];
-
-        foreach ($table as $row) {
-            $samples[] = array_slice($row, 0, -1);
-            $labels[] = end($row);
-        }
-
-        return self::quick($samples, $labels);
-    }
-
-    /**
      * @param mixed[] $samples
      * @param mixed[] $labels
      * @param bool $validate
@@ -274,21 +255,6 @@ class Labeled extends Dataset
         }
 
         return $desc;
-    }
-
-    /**
-     * Combine the samples and labels together into a table on the fly
-     * using a generator.
-     *
-     * @return \Generator
-     */
-    public function zip() : Generator
-    {
-        foreach ($this->samples as $i => $sample) {
-            $sample[] = $this->labels[$i];
-
-            yield $sample;
-        }
     }
 
     /**
@@ -996,9 +962,18 @@ class Labeled extends Dataset
      */
     public function deduplicate() : self
     {
-        $table = array_unique(iterator_to_array($this->zip()), SORT_REGULAR);
+        $table = iterator_to_array($this);
 
-        return self::unzip($table);
+        $table = array_unique($table, SORT_REGULAR);
+
+        $samples = $labels = [];
+
+        foreach ($table as $row) {
+            $samples[] = array_slice($row, 0, -1);
+            $labels[] = end($row);
+        }
+
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -1034,7 +1009,7 @@ class Labeled extends Dataset
     {
         $ndjson = '';
 
-        foreach ($this->zip() as $row) {
+        foreach ($this as $row) {
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
@@ -1063,7 +1038,7 @@ class Labeled extends Dataset
         
         $csv = '';
 
-        foreach ($this->zip() as $row) {
+        foreach ($this as $row) {
             if (!empty($enclosure)) {
                 foreach ($row as &$value) {
                     $value = $enclosure . $value . $enclosure;
@@ -1082,6 +1057,47 @@ class Labeled extends Dataset
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * Does a given row exist in the dataset.
+     *
+     * @param mixed $index
+     * @return bool
+     */
+    public function offsetExists($index) : bool
+    {
+        return isset($this->samples[$index]);
+    }
+
+    /**
+     * Return a sample from the dataset given by index.
+     *
+     * @param mixed $index
+     * @throws \InvalidArgumentException
+     * @return array[]
+     */
+    public function offsetGet($index) : array
+    {
+        if (isset($this->samples[$index])) {
+            return array_merge($this->samples[$index], [$this->labels[$index]]);
+        }
+
+        throw new InvalidArgumentException("Row at index $index not found.");
+    }
+
+    /**
+     * Get an iterator for the samples in the dataset.
+     *
+     * @return \Generator
+     */
+    public function getIterator() : Generator
+    {
+        foreach ($this->samples as $i => $sample) {
+            $sample[] = $this->labels[$i];
+
+            yield $sample;
+        }
     }
 
     /**

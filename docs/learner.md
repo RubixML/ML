@@ -46,7 +46,7 @@ use Rubix\ML\Datasets\Unlabeled;
 
 $dataset = new Unlabeled($samples);
 
-$prediction = $estimator->predictSample($dataset[2]); // Predict the third sample in dataset
+$prediction = $estimator->predictSample($dataset->sample(2)); // Predict the third sample in dataset
 
 var_dump($prediction);
 ```

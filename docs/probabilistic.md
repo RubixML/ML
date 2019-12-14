@@ -46,7 +46,7 @@ public probaSample(array $sample) : array
 **Example**
 
 ```php
-$probabilities = $estimator->probaSample($dataset[2]);
+$probabilities = $estimator->probaSample($dataset->sample(1));
 
 var_dump($probabilities);
 ```

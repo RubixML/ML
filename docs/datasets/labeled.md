@@ -25,16 +25,6 @@ Build a new labeled dataset foregoing validation:
 public static quick(array $samples = [], array $labels = []) : self
 ```
 
-Build a dataset using a pair of iterators:
-```php
-public static fromIterator(iterable $samples, iterable $labels) : self
-```
-
-Build a labeled dataset from a data table with the last column containing the label:
-```php
-public static unzip(array $table) : self
-```
-
 **Example**
 
 ```php
@@ -56,19 +46,12 @@ $dataset = new Labeled($samples, $labels, false); // Without validation
 $dataset = Labeled::build($samples, $labels);  // With validation
 
 $dataset = Labeled::quick($samples, $labels);  // Without validation
-
-$dataset = Labeled::fromItertor($samples, $labels); // From a pair of iterators
 ```
 
 #### Selectors
 Return an array of labels:
 ```php
 public labels() : array
-```
-
-Zip the samples and labels together and return a Generator for the table:
-```php
-public zip() : Generator
 ```
 
 Return a single label at the given row offset:

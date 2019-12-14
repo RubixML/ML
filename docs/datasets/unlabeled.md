@@ -22,11 +22,6 @@ Build a new unlabeled dataset foregoing validation:
 public static quick(array $samples = []) : self
 ```
 
-Build a dataset with an iterator:
-```php
-public static fromIterator(iterable $samples) : self
-```
-
 **Example**
 
 ```php
@@ -45,6 +40,4 @@ $dataset = new Unlabeled($samples, false); // Without validation
 $dataset = Unlabeled::build($samples);  // With validation
 
 $dataset = Unlabeled::quick($samples);  // Without validation
-
-$dataset = Unlabeled::fromIterator($samples); // From an iterator
 ```

@@ -10,6 +10,9 @@
     - Added label type validation for supervised learners
     - Added toArray, toJson, toCsv, toNdjson methods to Dataset API
     - Can now preview a Dataset object in console by echoing it
+    - Removed fromIterator method from Dataset class
+    - Changed Labeled dataset objects iteration and array access
+    - Removed zip and unzip methods on Labeled dataset
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

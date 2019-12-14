@@ -151,7 +151,7 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                $neighbor = $dataset[$index];
+                $neighbor = $dataset->sample($index);
 
                 [$samples, $seeds, $distances] = $this->tree->range($neighbor, $this->radius);
 

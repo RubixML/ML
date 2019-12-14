@@ -510,7 +510,7 @@ Return a dataset with duplicate rows removed:
 public deduplicate() : self
 ```
 
-## Other Formats
+## Output Formats
 Return the dataset object as an associative array:
 ```php
 public toArray() : array

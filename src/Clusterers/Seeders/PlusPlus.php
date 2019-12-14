@@ -71,7 +71,7 @@ class PlusPlus implements Seeder
 
             $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
 
-            $centroids[] = $subset[0];
+            $centroids[] = $subset->sample(0);
         }
 
         return $centroids;

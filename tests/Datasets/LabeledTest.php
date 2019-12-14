@@ -75,18 +75,6 @@ class LabeledTest extends TestCase
         $this->assertEquals(1, $dataset->numColumns());
     }
 
-    public function test_unzip() : void
-    {
-        $table = iterator_to_array($this->dataset->zip());
-
-        $dataset = Labeled::unzip($table);
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-
-        $this->assertEquals(self::SAMPLES, $dataset->samples());
-        $this->assertEquals(self::LABELS, $dataset->labels());
-    }
-
     public function test_get_samples() : void
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());
@@ -168,28 +156,9 @@ class LabeledTest extends TestCase
         $this->assertFalse($this->dataset->empty());
     }
 
-    public function test_count() : void
-    {
-        $this->assertEquals(6, $this->dataset->count());
-    }
-
     public function test_get_labels() : void
     {
         $this->assertEquals(self::LABELS, $this->dataset->labels());
-    }
-
-    public function test_zip() : void
-    {
-        $outcome = [
-            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
-            ['mean', 'furry', 'loner', -1.5, 'monster'],
-            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
-            ['mean', 'rough', 'friendly', -1.0, 'monster'],
-            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            ['nice', 'furry', 'loner', -5.0, 'not monster'],
-        ];
-        
-        $this->assertEquals($outcome, iterator_to_array($this->dataset->zip()));
     }
 
     public function test_transform_labels() : void
@@ -718,5 +687,32 @@ class LabeledTest extends TestCase
             . '-----------------------------------------------------------------------' . PHP_EOL;
 
         $this->assertEquals($expected, (string) $this->dataset);
+    }
+
+    public function test_count() : void
+    {
+        $this->assertEquals(6, $this->dataset->count());
+        $this->assertCount(6, $this->dataset);
+    }
+
+    public function test_array_access() : void
+    {
+        $expected = ['mean', 'furry', 'loner', -1.5, 'monster'];
+
+        $this->assertEquals($expected, $this->dataset[1]);
+    }
+
+    public function test_iterate() : void
+    {
+        $expected = [
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
+        ];
+        
+        $this->assertEquals($expected, iterator_to_array($this->dataset));
     }
 }
