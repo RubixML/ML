@@ -448,7 +448,7 @@ Array
 ```
 
 ## De-duplication
-Return a dataset with duplicate rows removed:
+Return a new dataset with duplicate rows removed:
 ```php
 public deduplicate() : self
 ```

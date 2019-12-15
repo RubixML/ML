@@ -15,7 +15,7 @@ class CSVTest extends TestCase
 
     public function setUp() : void
     {
-        $this->extractor = new CSV('tests/test.csv', ',', true, null);
+        $this->extractor = new CSV('tests/test.csv', ',', '');
     }
 
     public function test_build_extractor() : void
@@ -26,15 +26,15 @@ class CSVTest extends TestCase
 
     public function test_extract() : void
     {
-        $records = $this->extractor->extract();
+        $records = $this->extractor->setOffset(1)->extract();
 
         $expected = [
-            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
-            ['attitude' => 'mean', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-1.5', 'class' => 'monster'],
-            ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.6', 'class' => 'not monster'],
-            ['attitude' => 'mean', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '-1', 'class' => 'monster'],
-            ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.9', 'class' => 'not monster'],
-            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
+            ['nice', 'furry', 'friendly', '4', 'not monster'],
+            ['mean', 'furry', 'loner', '-1.5', 'monster'],
+            ['nice', 'rough', 'friendly', '2.6', 'not monster'],
+            ['mean', 'rough', 'friendly', '-1', 'monster'],
+            ['nice', 'rough', 'friendly', '2.9', 'not monster'],
+            ['nice', 'furry', 'loner', '-5', 'not monster'],
         ];
 
         $records = is_array($records) ? $records : iterator_to_array($records);

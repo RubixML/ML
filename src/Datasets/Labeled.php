@@ -975,24 +975,24 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return a dataset with all duplicate rows removed.
+     * Return a new dataset with all duplicate rows removed.
      *
      * @return self
      */
     public function deduplicate() : self
     {
-        $table = iterator_to_array($this);
+        $zip = function ($sample, $label) {
+            return array_merge($sample, [$label]);
+        };
+
+        $table = array_map($zip, $this->samples, $this->labels);
 
         $table = array_unique($table, SORT_REGULAR);
 
-        $samples = $labels = [];
-
-        foreach ($table as $row) {
-            $samples[] = array_slice($row, 0, -1);
-            $labels[] = end($row);
-        }
-
-        return self::quick($samples, $labels);
+        return self::quick(
+            array_intersect_key($this->samples, $table),
+            array_intersect_key($this->labels, $table)
+        );
     }
 
     /**
@@ -1028,7 +1028,9 @@ class Labeled extends Dataset
     {
         $ndjson = '';
 
-        foreach ($this as $row) {
+        foreach ($this as [$sample, $label]) {
+            $row = array_merge($sample, [$label]);
+
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
@@ -1057,14 +1059,17 @@ class Labeled extends Dataset
         
         $csv = '';
 
-        foreach ($this as $row) {
+        foreach ($this as [$sample, $label]) {
             if (!empty($enclosure)) {
-                foreach ($row as &$value) {
+                foreach ($sample as &$value) {
                     $value = $enclosure . $value . $enclosure;
                 }
+
+                $label = $enclosure . $label . $enclosure;
             }
 
-            $csv .= implode($delimiter, $row) . PHP_EOL;
+            $csv .= implode($delimiter, $sample);
+            $csv .= $delimiter . $label . PHP_EOL;
         }
 
         return $csv;
@@ -1083,12 +1088,12 @@ class Labeled extends Dataset
      *
      * @param mixed $index
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return mixed[]
      */
     public function offsetGet($index) : array
     {
         if (isset($this->samples[$index])) {
-            return array_merge($this->samples[$index], [$this->labels[$index]]);
+            return [$this->samples[$index], $this->labels[$index]];
         }
 
         throw new InvalidArgumentException("Row at index $index not found.");
@@ -1102,9 +1107,7 @@ class Labeled extends Dataset
     public function getIterator() : Generator
     {
         foreach ($this->samples as $i => $sample) {
-            $sample[] = $this->labels[$i];
-
-            yield $sample;
+            yield [$sample, $this->labels[$i]];
         }
     }
 
@@ -1131,15 +1134,15 @@ class Labeled extends Dataset
 
         $header[] = 'Label';
 
-        $samples = array_slice($this->samples(), 0, $m);
+        $table = array_slice($this->samples(), 0, $m);
 
-        foreach ($samples as $i => &$sample) {
-            $sample = array_slice($sample, 0, $n);
+        foreach ($table as $i => &$row) {
+            $row = array_slice($row, 0, $n);
 
-            $sample[] = $this->labels[$i];
+            $row[] = $this->labels[$i];
         }
 
-        $table = array_merge([$header], $samples);
+        $table = array_merge([$header], $table);
 
         return Console::table($table);
     }

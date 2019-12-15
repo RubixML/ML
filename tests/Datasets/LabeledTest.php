@@ -709,7 +709,7 @@ class LabeledTest extends TestCase
 
     public function test_array_access() : void
     {
-        $expected = ['mean', 'furry', 'loner', -1.5, 'monster'];
+        $expected = [['mean', 'furry', 'loner', -1.5], 'monster'];
 
         $this->assertEquals($expected, $this->dataset[1]);
     }
@@ -717,12 +717,12 @@ class LabeledTest extends TestCase
     public function test_iterate() : void
     {
         $expected = [
-            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
-            ['mean', 'furry', 'loner', -1.5, 'monster'],
-            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
-            ['mean', 'rough', 'friendly', -1.0, 'monster'],
-            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            ['nice', 'furry', 'loner', -5.0, 'not monster'],
+            [['nice', 'furry', 'friendly', 4.0], 'not monster'],
+            [['mean', 'furry', 'loner', -1.5], 'monster'],
+            [['nice', 'rough', 'friendly', 2.6], 'not monster'],
+            [['mean', 'rough', 'friendly', -1.0], 'monster'],
+            [['nice', 'rough', 'friendly', 2.9], 'not monster'],
+            [['nice', 'furry', 'loner', -5.0], 'not monster'],
         ];
         
         $this->assertEquals($expected, iterator_to_array($this->dataset));

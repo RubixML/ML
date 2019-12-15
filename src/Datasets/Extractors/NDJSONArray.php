@@ -56,29 +56,29 @@ class NDJSONArray implements Extractor
      */
     public function extract() : iterable
     {
-        if (!$handle = fopen($this->path, 'r')) {
+        $handle = fopen($this->path, 'r');
+        
+        if (!$handle) {
             throw new RuntimeException("Could not open file at {$this->path}.");
         }
 
         $line = $n = 0;
 
-        while (true) {
+        while (!feof($handle)) {
             $row = fgets($handle);
-
-            if (is_bool($row)) {
-                break 1;
-            }
 
             if (empty($row)) {
                 continue 1;
             }
 
-            if ($line >= $this->offset) {
+            ++$line;
+
+            if ($line > $this->offset) {
                 $record = json_decode($row);
 
                 if (!is_array($record)) {
                     throw new RuntimeException('Non JSON array found'
-                        . " at offset $line.");
+                        . " at row $line.");
                 }
 
                 yield $record;
@@ -89,8 +89,8 @@ class NDJSONArray implements Extractor
                     break 1;
                 }
             }
-
-            ++$line;
         }
+
+        fclose($handle);
     }
 }

@@ -2,10 +2,9 @@
 
 namespace Rubix\ML\Datasets\Extractors;
 
-use League\Csv\Reader;
-use League\Csv\Statement;
 use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * CSV
@@ -25,25 +24,34 @@ class CSV implements Extractor
     use Cursorable;
 
     /**
-     * The CSV reader instance.
+     * The path to the CSV file.
      *
-     * @var \League\Csv\Reader
+     * @var string
      */
-    protected $reader;
+    protected $path;
+
+    /**
+     * The character that delineates the values of the columns of the data table.
+     *
+     * @var string
+     */
+    protected $delimiter;
+
+    /**
+     * The character used to enclose each column.
+     *
+     * @var string
+     */
+    protected $enclosure;
 
     /**
      * @param string $path
      * @param string $delimiter
-     * @param bool $header
-     * @param string|null $enclosure
+     * @param string $enclosure
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        string $path,
-        string $delimiter = ',',
-        bool $header = true,
-        ?string $enclosure = null
-    ) {
+    public function __construct(string $path, string $delimiter = ',', string $enclosure = '')
+    {
         if (!is_file($path)) {
             throw new InvalidArgumentException("File at $path does not exist.");
         }
@@ -57,37 +65,54 @@ class CSV implements Extractor
                 . " a single character, $delimiter given.");
         }
 
-        if (isset($enclosure) and strlen($enclosure) !== 1) {
+        if (strlen($enclosure) > 1) {
             throw new InvalidArgumentException('Enclosure must be'
                 . " a single character, $enclosure given.");
         }
 
-        $reader = Reader::createFromPath($path)
-            ->setDelimiter($delimiter)
-            ->skipEmptyRecords();
-
-        if ($header) {
-            $reader->setHeaderOffset(0);
-        }
-
-        if ($enclosure) {
-            $reader->setEnclosure($enclosure);
-        }
-
-        $this->reader = $reader;
+        $this->path = $path;
+        $this->delimiter = $delimiter;
+        $this->enclosure = $enclosure;
     }
 
     /**
      * Read the records starting at the given offset and return them in an iterator.
      *
+     * @throws \RuntimeException
      * @return iterable
      */
     public function extract() : iterable
     {
-        $statement = new Statement();
+        $handle = fopen($this->path, 'r');
         
-        return $statement->offset($this->offset)
-            ->limit($this->limit)
-            ->process($this->reader);
+        if (!$handle) {
+            throw new RuntimeException("Could not open file at {$this->path}.");
+        }
+
+        $line = $n = 0;
+
+        while (!feof($handle)) {
+            $row = fgets($handle);
+
+            if (empty($row)) {
+                continue 1;
+            }
+
+            ++$line;
+
+            if ($line > $this->offset) {
+                $record = str_getcsv($row, $this->delimiter, $this->enclosure);
+
+                yield $record;
+
+                ++$n;
+
+                if ($n >= $this->limit) {
+                    break 1;
+                }
+            }
+        }
+
+        fclose($handle);
     }
 }

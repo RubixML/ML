@@ -577,7 +577,7 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Return a dataset with all duplicate rows removed.
+     * Return a new dataset with all duplicate rows removed.
      *
      * @return self
      */
@@ -616,13 +616,11 @@ class Unlabeled extends Dataset
      */
     public function toNdjson() : string
     {
-        $ndjson = '';
+        $encode = function ($carry, $row) {
+            return $carry . json_encode($row) . PHP_EOL;
+        };
 
-        foreach ($this->samples as $row) {
-            $ndjson .= json_encode($row) . PHP_EOL;
-        }
-
-        return $ndjson;
+        return array_reduce($this->samples, $encode, '');
     }
 
     /**
@@ -635,19 +633,17 @@ class Unlabeled extends Dataset
      */
     public function toCsv(string $delimiter = ',', string $enclosure = '') : string
     {
-        $csv = '';
-
-        foreach ($this->samples() as $row) {
+        $encode = function ($carry, $row) use ($enclosure, $delimiter) {
             if (!empty($enclosure)) {
                 foreach ($row as &$value) {
                     $value = $enclosure . $value . $enclosure;
                 }
             }
 
-            $csv .= implode($delimiter, $row) . PHP_EOL;
-        }
+            return $carry . implode($delimiter, $row) . PHP_EOL;
+        };
 
-        return $csv;
+        return array_reduce($this->samples, $encode, '');
     }
 
     /**
@@ -679,13 +675,13 @@ class Unlabeled extends Dataset
             $header[] = "Column $column";
         }
 
-        $samples = array_slice($this->samples(), 0, $m);
+        $table = array_slice($this->samples(), 0, $m);
 
-        foreach ($samples as $i => &$sample) {
-            $sample = array_slice($sample, 0, $n);
+        foreach ($table as $i => &$row) {
+            $row = array_slice($row, 0, $n);
         }
 
-        $table = array_merge([$header], $samples);
+        $table = array_merge([$header], $table);
 
         return Console::table($table);
     }
