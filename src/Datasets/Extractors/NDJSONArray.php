@@ -2,18 +2,17 @@
 
 namespace Rubix\ML\Datasets\Extractors;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
 use RuntimeException;
-use Generator;
 
 /**
  * NDJSON Array
  *
  * NDJSON or *Newline Delimited* JSON files contain rows of data encoded in Javascript Object
- * Notation (JSON) arrays. The format is similar to CSV but has the advantage of retaining data
- * type information at the cost of having a slightly heavier footprint.
+ * Notation (JSON) arrays. The format is similar to CSV but has the advantage of being
+ * standardized and retaining data type information at the cost of having a slightly heavier
+ * footprint.
  *
  * > **Note:** Empty rows will be ignored by the parser by default.
  *
@@ -23,6 +22,8 @@ use Generator;
  */
 class NDJSONArray implements Extractor
 {
+    use Cursorable;
+
     /**
      * The path to the NDJSON file.
      *
@@ -36,7 +37,11 @@ class NDJSONArray implements Extractor
      */
     public function __construct(string $path)
     {
-        if (is_file($path) and !is_readable($path)) {
+        if (!is_file($path)) {
+            throw new InvalidArgumentException("File at $path does not exist.");
+        }
+        
+        if (!is_readable($path)) {
             throw new InvalidArgumentException("File at $path is not readable.");
         }
 
@@ -44,51 +49,12 @@ class NDJSONArray implements Extractor
     }
 
     /**
-     * Extract and build an unlabeled dataset object from source.
-     *
-     * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Unlabeled
-     */
-    public function extract(int $offset = 0, int $limit = PHP_INT_MAX) : Unlabeled
-    {
-        $records = $this->parseRecords($offset, $limit);
-
-        $samples = iterator_to_array($records);
-
-        return Unlabeled::build($samples);
-    }
-
-    /**
-     * Extract and build a labeled dataset object from source.
-     *
-     * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Labeled
-     */
-    public function extractWithLabels(int $offset = 0, int $limit = PHP_INT_MAX) : Labeled
-    {
-        $records = $this->parseRecords($offset, $limit);
-
-        $samples = $labels = [];
-
-        foreach ($records as $record) {
-            $samples[] = array_slice($record, 0, -1);
-            $labels[] = end($record);
-        }
-
-        return Labeled::build($samples, $labels);
-    }
-
-    /**
      * Read the records starting at the given offset and return them in an iterator.
      *
-     * @param int $offset
-     * @param int $limit
      * @throws \RuntimeException
-     * @return \Generator
+     * @return iterable
      */
-    protected function parseRecords(int $offset, int $limit) : Generator
+    public function extract() : iterable
     {
         if (!$handle = fopen($this->path, 'r')) {
             throw new RuntimeException("Could not open file at {$this->path}.");
@@ -107,7 +73,7 @@ class NDJSONArray implements Extractor
                 continue 1;
             }
 
-            if ($line >= $offset) {
+            if ($line >= $this->offset) {
                 $record = json_decode($row);
 
                 if (!is_array($record)) {
@@ -119,7 +85,7 @@ class NDJSONArray implements Extractor
 
                 ++$n;
 
-                if ($n >= $limit) {
+                if ($n >= $this->limit) {
                     break 1;
                 }
             }

@@ -8,11 +8,12 @@ A non-standard plain-text format that use newlines to delineate rows and a user-
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the CSV file. |
 | 2 | delimiter | ',' | string | The character that delineates a new column. |
-| 3 | enclosure | '' | string | The character used to enclose the value of a column. |
+| 3 | header | true | Does the first row contain a header? |
+| 4 | enclosure | '' | string | The character used to enclose the value of a column. |
 
 ### Example
 ```php
 use Rubix\ML\Datasets\Extractors\CSV;
 
-$extractor = new CSV('example.csv', ',', '"');
+$extractor = new CSV('example.csv', ',', false, '"');
 ```

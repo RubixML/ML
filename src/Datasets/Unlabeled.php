@@ -5,6 +5,7 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Datasets\Extractors\Extractor;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use ArrayIterator;
@@ -48,6 +49,21 @@ class Unlabeled extends Dataset
     public static function quick(array $samples = []) : self
     {
         return new self($samples, false);
+    }
+
+    /**
+     * Build a dataset using the data from an extractor object.
+     *
+     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @return self
+     */
+    public static function from(Extractor $extractor) : self
+    {
+        $records = $extractor->extract();
+
+        $samples = is_array($records) ? $records : iterator_to_array($records);
+
+        return self::build($samples);
     }
 
     /**
@@ -672,17 +688,6 @@ class Unlabeled extends Dataset
         $table = array_merge([$header], $samples);
 
         return Console::table($table);
-    }
-
-    /**
-     * Does a given row exist in the dataset.
-     *
-     * @param mixed $index
-     * @return bool
-     */
-    public function offsetExists($index) : bool
-    {
-        return isset($this->samples[$index]);
     }
 
     /**

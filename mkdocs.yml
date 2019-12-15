@@ -35,7 +35,6 @@ nav:
   - Labeled: datasets/labeled.md
   - Unlabeled: datasets/unlabeled.md
   - Extractors:
-    - API Reference: datasets/extractors/api.md
     - CSV: datasets/extractors/csv.md
     - NDJSON Array: datasets/extractors/ndjson-array.md
   - Generators:

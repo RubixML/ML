@@ -6,7 +6,7 @@ Dataset objects have the additional constraint that each feature column must be 
 **Example**
 
 ```php
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 
 $samples = [
     [0.1, 20, 'furry'],
@@ -14,7 +14,9 @@ $samples = [
     // ...
 ];
 
-$dataset = new Unlabeled($samples);
+$labels = ['not monster', 'monster']; // ...
+
+$dataset = new Labeled($samples, $labels);
 ```
 
 ## Missing Values
@@ -30,79 +32,20 @@ $samples = [
 ];
 ```
 
-## Factory Methods
-Build a dataset object from a JSON string:
+## Extracting From Source
+Build a dataset using the data from an extractor object:
 ```php
-public static fromJson(string $json) : self
+public static from(Extractor $extractor) : self
 ```
 
 **Example**
 
 ```php
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Extractors\CSV;
 
-$json = '{
-    "samples": [
-        [
-            "nice",
-            "furry",
-            "friendly",
-            4
-        ],
-        [
-            "mean",
-            "furry",
-            "loner",
-            -1.5
-        ]
-    ],
-    "labels": [
-        "not monster",
-        "monster"
-    ]
-}';
-
-$dataset = Labeled::fromJson($json);
+$dataset = Labeled::from(new CSV('example.csv'));
 ```
-
-Build a dataset from a newline delimited JSON string:
-```php
-public static fromNdjson(string $ndjson) : self
-```
-
-**Example**
-
-```php
-use Rubix\ML\Datasets\Unlabeled;
-
-$ndjson = '["nice","furry","friendly",4]\n'
-    . '["mean","furry","loner",-1.5]\n'
-    . '["nice","rough","friendly",2.6]\n'
-    . '["mean","rough","friendly",-1]\n'
-    . '["nice","rough","friendly",2.9]\n'
-    . '["nice","furry","loner",-5]\n';
-
-$dataset = Unlabeled::fromNdjson($ndjson);
-```
-
-Build a dataset object from a CSV (comma-separated values) string:
-```php
-public static fromCsv(string $csv, string $delimiter = ',', string $enclosure = '') : self
-```
-
-**Example**
-
-```php
-use Rubix\ML\Datasets\Labeled;
-
-$csv = 'nice,furry,friendly,4,not monster\n'
-    . 'mean,furry,loner,-1.5,monster\n'
-    . 'nice,rough,friendly,2.6,not monster\n';
-
-$dataset = Labeled::fromCsv($csv);
-```
-
-**Note:** In a [Labeled](labeled.md) dataset the *last* column of a CSV table are taken as the labels.
 
 ## Selecting
 Return all the samples in the dataset in a 2-dimensional array:

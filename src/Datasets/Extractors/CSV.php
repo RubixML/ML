@@ -4,10 +4,8 @@ namespace Rubix\ML\Datasets\Extractors;
 
 use League\Csv\Reader;
 use League\Csv\Statement;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
-use Traversable;
 
 /**
  * CSV
@@ -24,6 +22,8 @@ use Traversable;
  */
 class CSV implements Extractor
 {
+    use Cursorable;
+
     /**
      * The CSV reader instance.
      *
@@ -44,7 +44,11 @@ class CSV implements Extractor
         bool $header = true,
         ?string $enclosure = null
     ) {
-        if (is_file($path) and !is_readable($path)) {
+        if (!is_file($path)) {
+            throw new InvalidArgumentException("File at $path does not exist.");
+        }
+        
+        if (!is_readable($path)) {
             throw new InvalidArgumentException("File at $path is not readable.");
         }
 
@@ -74,56 +78,16 @@ class CSV implements Extractor
     }
 
     /**
-     * Extract and build an unlabeled dataset object from source.
-     *
-     * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Unlabeled
-     */
-    public function extract(int $offset = 0, int $limit = PHP_INT_MAX) : Unlabeled
-    {
-        $records = $this->parseRecords($offset, $limit);
-
-        $samples = iterator_to_array($records);
-
-        return Unlabeled::build($samples);
-    }
-
-    /**
-     * Extract and build a labeled dataset object from source.
-     *
-     * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Labeled
-     */
-    public function extractWithLabels(int $offset = 0, int $limit = PHP_INT_MAX) : Labeled
-    {
-        $records = $this->parseRecords($offset, $limit);
-
-        $samples = $labels = [];
-
-        foreach ($records as $record) {
-            $samples[] = array_slice($record, 0, -1);
-            $labels[] = end($record);
-        }
-
-        return Labeled::build($samples, $labels);
-    }
-
-    /**
      * Read the records starting at the given offset and return them in an iterator.
      *
-     * @param int $offset
-     * @param int $limit
-     * @return \Traversable
+     * @return iterable
      */
-    protected function parseRecords(int $offset, int $limit) : Traversable
+    public function extract() : iterable
     {
         $statement = new Statement();
         
-        $statement = $statement->offset($offset)
-            ->limit($limit);
-
-        return $statement->process($this->reader);
+        return $statement->offset($this->offset)
+            ->limit($this->limit)
+            ->process($this->reader);
     }
 }

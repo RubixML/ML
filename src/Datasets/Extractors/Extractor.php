@@ -2,26 +2,28 @@
 
 namespace Rubix\ML\Datasets\Extractors;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
-
 interface Extractor
 {
     /**
-     * Extract and build an unlabeled dataset object from source.
+     * Read the records and return them in an iterator.
      *
-     * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Unlabeled
+     * @return iterable
      */
-    public function extract(int $offset = 0, int $limit = PHP_INT_MAX) : Unlabeled;
+    public function extract() : iterable;
 
     /**
-     * Extract and build a labeled dataset object from source.
+     * Set the row offset of the cursor.
      *
      * @param int $offset
-     * @param int $limit
-     * @return \Rubix\ML\Datasets\Labeled
+     * @return self
      */
-    public function extractWithLabels(int $offset = 0, int $limit = PHP_INT_MAX) : Labeled;
+    public function setOffset(int $offset);
+
+    /**
+     * Set the maximum number of rows to return.
+     *
+     * @param int $limit
+     * @return self
+     */
+    public function setLimit(int $limit);
 }

@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Datasets\Extractors\NDJSONArray;
 use PHPUnit\Framework\TestCase;
 use ArrayAccess;
 use Countable;
@@ -54,6 +55,13 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Dataset::class, $this->dataset);
         $this->assertInstanceOf(Countable::class, $this->dataset);
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
+    }
+
+    public function test_from_extractor() : void
+    {
+        $dataset = Unlabeled::from(new NDJSONArray('tests/test_array.ndjson'));
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
     }
 
     public function test_stack_datasets() : void

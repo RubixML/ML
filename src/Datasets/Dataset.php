@@ -7,6 +7,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Datasets\Extractors\Extractor;
 use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
@@ -44,6 +45,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @var array[]
      */
     protected $samples;
+
+    /**
+     * Build a dataset using the data from an extractor object.
+     *
+     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @return self
+     */
+    abstract public static function from(Extractor $extractor);
 
     /**
      * Stack a number of datasets on top of each other to form a single
@@ -630,6 +639,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     public function offsetSet($index, $values) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
+    }
+
+    /**
+     * Does a given row exist in the dataset.
+     *
+     * @param mixed $index
+     * @return bool
+     */
+    public function offsetExists($index) : bool
+    {
+        return isset($this->samples[$index]);
     }
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Tests\Datasets\Extractors;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Extractors\CSV;
 use Rubix\ML\Datasets\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
@@ -11,58 +9,36 @@ use PHPUnit\Framework\TestCase;
 class CSVTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Extractors\CSV;
+     * @var \Rubix\ML\Datasets\Extractors\Extractor;
      */
-    protected $factory;
+    protected $extractor;
 
     public function setUp() : void
     {
-        $this->factory = new CSV('tests/test.csv', ',', true, null);
+        $this->extractor = new CSV('tests/test.csv', ',', true, null);
     }
 
-    public function test_build_factory() : void
+    public function test_build_extractor() : void
     {
-        $this->assertInstanceOf(CSV::class, $this->factory);
-        $this->assertInstanceOf(Extractor::class, $this->factory);
+        $this->assertInstanceOf(CSV::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 
     public function test_extract() : void
     {
-        $dataset = $this->factory->extract();
+        $records = $this->extractor->extract();
 
-        $samples = [
-            ['nice', 'furry', 'friendly', '4', 'not monster'],
-            ['mean', 'furry', 'loner', '-1.5', 'monster'],
-            ['nice', 'rough', 'friendly', '2.6', 'not monster'],
-            ['mean', 'rough', 'friendly', '-1', 'monster'],
-            ['nice', 'rough', 'friendly', '2.9', 'not monster'],
-            ['nice', 'furry', 'loner', '-5', 'not monster'],
+        $expected = [
+            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
+            ['attitude' => 'mean', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-1.5', 'class' => 'monster'],
+            ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.6', 'class' => 'not monster'],
+            ['attitude' => 'mean', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '-1', 'class' => 'monster'],
+            ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.9', 'class' => 'not monster'],
+            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
         ];
 
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-    }
+        $records = is_array($records) ? $records : iterator_to_array($records);
 
-    public function test_extract_with_labels() : void
-    {
-        $dataset = $this->factory->extractWithLabels();
-
-        $samples = [
-            ['nice', 'furry', 'friendly', '4'],
-            ['mean', 'furry', 'loner', '-1.5'],
-            ['nice', 'rough', 'friendly', '2.6'],
-            ['mean', 'rough', 'friendly', '-1'],
-            ['nice', 'rough', 'friendly', '2.9'],
-            ['nice', 'furry', 'loner', '-5'],
-        ];
-
-        $labels = [
-            'not monster', 'monster', 'not monster', 'monster',
-            'not monster', 'not monster',
-        ];
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-        $this->assertEquals($labels, $dataset->labels());
+        $this->assertEquals($expected, array_values($records));
     }
 }

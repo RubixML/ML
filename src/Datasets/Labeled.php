@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Datasets\Extractors\Extractor;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
@@ -66,6 +67,24 @@ class Labeled extends Dataset
     public static function quick(array $samples = [], array $labels = []) : self
     {
         return new self($samples, $labels, false);
+    }
+
+    /**
+     * Build a dataset using the data from an extractor object.
+     *
+     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @return self
+     */
+    public static function from(Extractor $extractor) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($extractor->extract() as $record) {
+            $samples[] = array_slice($record, 0, -1);
+            $labels[] = end($record);
+        }
+
+        return self::build($samples, $labels);
     }
 
     /**
@@ -1057,17 +1076,6 @@ class Labeled extends Dataset
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * Does a given row exist in the dataset.
-     *
-     * @param mixed $index
-     * @return bool
-     */
-    public function offsetExists($index) : bool
-    {
-        return isset($this->samples[$index]);
     }
 
     /**
