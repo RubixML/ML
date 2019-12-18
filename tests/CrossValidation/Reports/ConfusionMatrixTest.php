@@ -26,6 +26,10 @@ class ConfusionMatrixTest extends TestCase
     }
 
     /**
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
+     * @param mixed[] $expected
+     *
      * @dataProvider generate_report_provider
      */
     public function test_generate_report(array $predictions, array $labels, array $expected) : void
@@ -35,6 +39,9 @@ class ConfusionMatrixTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function generate_report_provider() : Generator
     {
         yield [

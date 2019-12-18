@@ -36,14 +36,14 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * The means of each feature column from the fitted data.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $means;
 
     /**
      * The variances of each feature column from the fitted data.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $variances;
 
@@ -57,7 +57,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * The precomputed standard deviations.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $stddevs;
 
@@ -92,7 +92,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Return the means calculated by fitting the training set.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function means() : ?array
     {
@@ -102,7 +102,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Return the variances calculated by fitting the training set.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function variances() : ?array
     {
@@ -112,7 +112,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Return the standard deviations calculated during fitting.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function stddevs() : ?array
     {
@@ -122,7 +122,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -150,7 +150,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -189,7 +189,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

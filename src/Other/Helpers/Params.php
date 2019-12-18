@@ -153,7 +153,7 @@ class Params
      * Return a string representation of the constructor arguments from
      * an associative constructor array.
      *
-     * @param array $constructor
+     * @param mixed[] $constructor
      * @param string $equator
      * @param string $separator
      * @return string

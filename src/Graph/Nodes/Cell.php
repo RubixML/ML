@@ -30,7 +30,7 @@ class Cell implements BinaryNode, Leaf
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @param int $depth
      * @return self
      */

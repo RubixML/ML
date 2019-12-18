@@ -7,8 +7,6 @@ use Tensor\Vector;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
-use function gettype;
-
 /**
  * Hyperplane
  *
@@ -46,7 +44,7 @@ class Hyperplane implements Generator
     protected $noise;
 
     /**
-     * @param array $coefficients
+     * @param (int|float)[] $coefficients
      * @param float $intercept
      * @param float $noise
      * @throws \InvalidArgumentException
@@ -59,14 +57,6 @@ class Hyperplane implements Generator
         if (empty($coefficients)) {
             throw new InvalidArgumentException('Cannot generate data of less'
                 . ' than 1 dimension.');
-        }
-
-        foreach ($coefficients as $value) {
-            if (!is_int($value) and !is_float($value)) {
-                throw new InvalidArgumentException('Coefficient must be'
-                    . ' an integer or floating point number, '
-                    . gettype($value) . ' given.');
-            }
         }
 
         if ($noise < 0.) {

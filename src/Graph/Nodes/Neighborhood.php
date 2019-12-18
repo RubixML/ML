@@ -26,14 +26,14 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * The samples that make up the neighborhood.
      *
-     * @var array
+     * @var array[]
      */
     protected $samples;
 
     /**
      * The labels that make up the neighborhood.
      *
-     * @var array
+     * @var (string|int|float)[]
      */
     protected $labels;
 
@@ -41,7 +41,7 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
      * The multivariate minimum of the bounding box around the samples
      * in the neighborhood.
      *
-     * @var array
+     * @var (int|float)[]
      */
     protected $min;
 
@@ -49,14 +49,14 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
      * The multivariate maximum of the bounding box around the samples
      * in the neighborhood.
      *
-     * @var array
+     * @var (int|float)[]
      */
     protected $max;
 
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\Datasets\Labeled<array> $dataset
      * @return self
      */
     public static function terminate(Labeled $dataset) : self
@@ -72,10 +72,10 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     }
 
     /**
-     * @param array $samples
-     * @param array $labels
-     * @param array $min
-     * @param array $max
+     * @param array[] $samples
+     * @param (string|int|float)[] $labels
+     * @param (int|float)[] $min
+     * @param (int|float)[] $max
      * @throws \InvalidArgumentException
      */
     public function __construct(array $samples, array $labels, array $min, array $max)
@@ -99,7 +99,7 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * Return the bounding box surrounding this node.
      *
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function sides() : Generator
     {
@@ -120,7 +120,7 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * Return the labels cooresponding to the samples in the neighborhood.
      *
-     * @return (int|float|string)[]
+     * @return (string|int|float)[]
      */
     public function labels() : array
     {

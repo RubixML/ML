@@ -27,7 +27,7 @@ class Mean implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param array $values
+     * @param (string|int|float)[] $values
      * @throws \InvalidArgumentException
      */
     public function fit(array $values) : void

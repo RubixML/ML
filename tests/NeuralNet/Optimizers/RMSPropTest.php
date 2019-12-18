@@ -33,7 +33,7 @@ class RMSPropTest extends TestCase
 
     /**
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
-     * @param \Tensor\Tensor $gradient
+     * @param \Tensor\Tensor<int|float> $gradient
      * @param array[] $expected
      *
      * @dataProvider step_provider
@@ -47,6 +47,9 @@ class RMSPropTest extends TestCase
         $this->assertEquals($expected, $step->asArray());
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function step_provider() : Generator
     {
         yield [

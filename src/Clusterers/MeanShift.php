@@ -127,7 +127,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * samples, for large datasets you can speed up the process by running it on
      * a smaller subset of the training data.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @param float $percentile
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
@@ -241,7 +241,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array
+     * @return array[]
      */
     public function centroids() : array
     {
@@ -251,7 +251,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the amount of centroid shift at each epoch of training.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -261,7 +261,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -354,10 +354,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -373,10 +373,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -392,7 +392,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param array $sample
+     * @param (int|float)[] $sample
      * @return int
      */
     protected function assign(array $sample) : int
@@ -415,8 +415,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the membership of a sample to each of the centroids.
      *
-     * @param array $sample
-     * @return array
+     * @param (int|float)[] $sample
+     * @return float[]
      */
     protected function membership(array $sample) : array
     {
@@ -438,8 +438,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Calculate the magnitude (l1) of centroid shift from the previous epoch.
      *
-     * @param array $current
-     * @param array $previous
+     * @param array[] $current
+     * @param array[] $previous
      * @return float
      */
     protected function shift(array $current, array $previous) : float

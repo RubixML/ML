@@ -29,6 +29,10 @@ class MedianAbsoluteErrorTest extends TestCase
     }
 
     /**
+     * @param (int|float)[] $predictions
+     * @param (int|float)[] $labels
+     * @param float $expected
+     *
      * @dataProvider score_provider
      */
     public function test_score(array $predictions, array $labels, float $expected) : void
@@ -48,6 +52,9 @@ class MedianAbsoluteErrorTest extends TestCase
         $this->assertEquals($expected, $score);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function score_provider() : Generator
     {
         yield [

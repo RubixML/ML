@@ -2,25 +2,25 @@
 
 namespace Rubix\ML\Tests\Datasets\Extractors;
 
-use Rubix\ML\Datasets\Extractors\NDJSONArray;
+use Rubix\ML\Datasets\Extractors\NDJSON;
 use Rubix\ML\Datasets\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 
-class NDJSONArrayTest extends TestCase
+class NDJSONTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Extractors\NDJSONArray;
+     * @var \Rubix\ML\Datasets\Extractors\NDJSON;
      */
     protected $extractor;
 
     public function setUp() : void
     {
-        $this->extractor = new NDJSONArray('tests/test_array.ndjson');
+        $this->extractor = new NDJSON('tests/test.ndjson');
     }
 
     public function test_build_factory() : void
     {
-        $this->assertInstanceOf(NDJSONArray::class, $this->extractor);
+        $this->assertInstanceOf(NDJSON::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 

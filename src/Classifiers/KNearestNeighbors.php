@@ -84,7 +84,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The memoized labels of the training set.
      *
-     * @var array
+     * @var string[]
      */
     protected $labels = [
         //
@@ -141,7 +141,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -153,7 +153,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -175,10 +175,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -212,7 +212,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]

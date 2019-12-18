@@ -56,7 +56,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * An array composing the user-specified hidden layers of the network in order.
      *
-     * @var array
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
     protected $hidden = [
         //
@@ -140,7 +140,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The validation scores at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $scores = [
         //
@@ -149,14 +149,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
     ];
 
     /**
-     * @param array $hidden
+     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
      * @param float $alpha
@@ -261,7 +261,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the validation score at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function scores() : array
     {
@@ -271,7 +271,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the training loss at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -291,7 +291,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -316,7 +316,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -431,10 +431,10 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Feed a sample through the network and make a prediction based on the
      * activation of the output neuron.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
     {

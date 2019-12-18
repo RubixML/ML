@@ -23,6 +23,8 @@ class WildGuess implements Continuous
      * The range between the upper and lower bounds of the guess. A value of 1.0
      * indicates the full range of fitted values, whereas the range becomes narrower
      * as the parameter goes to 0.
+     *
+     * @var float
      */
     protected $alpha;
 
@@ -57,7 +59,7 @@ class WildGuess implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param array $values
+     * @param (string|int|float)[] $values
      * @throws \InvalidArgumentException
      */
     public function fit(array $values) : void

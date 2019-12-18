@@ -19,7 +19,6 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\logsumexp;
-use function gettype;
 
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
@@ -61,7 +60,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array
+     * @var float[]
      */
     protected $weights = [
         //
@@ -70,7 +69,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed means of each feature column of the training set.
      *
-     * @var array
+     * @var array[]
      */
     protected $means = [
         //
@@ -79,7 +78,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed variances of each feature column of the training set.
      *
-     * @var array
+     * @var array[]
      */
     protected $variances = [
         //
@@ -88,27 +87,19 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The possible class labels.
      *
-     * @var mixed[]
+     * @var string[]
      */
     protected $classes = [
         //
     ];
 
     /**
-     * @param mixed[]|null $priors
+     * @param (int|float)[]|null $priors
      * @throws \InvalidArgumentException
      */
     public function __construct(?array $priors = null)
     {
         if ($priors) {
-            foreach ($priors as $weight) {
-                if (!is_int($weight) and !is_float($weight)) {
-                    throw new InvalidArgumentException('Weight must be'
-                        . ' an integer or float, ' . gettype($weight)
-                        . ' found.');
-                }
-            }
-
             $total = array_sum($priors) ?: EPSILON;
 
             if ($total != 1) {
@@ -197,7 +188,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -246,7 +237,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -308,10 +299,10 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * Calculate the likelihood of the sample being a member of a class and
      * choose the class with the highest likelihood as the prediction.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -329,7 +320,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]

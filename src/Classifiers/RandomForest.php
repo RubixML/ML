@@ -72,14 +72,14 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * The decision trees that make up the forest.
      *
-     * @var array|null
+     * @var mixed[]|null
      */
     protected $trees;
 
     /**
      * The possible class outcomes.
      *
-     * @var array|null
+     * @var string[]|null
      */
     protected $classes;
 
@@ -153,7 +153,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -190,8 +190,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -222,7 +222,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @return array[]
      */
@@ -271,7 +271,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * feature contributes to the overall model, indexed by feature column.
      *
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function featureImportances() : array
     {
@@ -298,7 +298,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * Train an estimator using a supplied dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return \Rubix\ML\Learner
      */
     public static function _train(Learner $estimator, Dataset $dataset) : Learner
@@ -312,8 +312,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * Return the predictions from a decision tree.
      *
      * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return string[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {
@@ -324,7 +324,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * Return the probabilities of each class outcome from a decision tree.
      *
      * @param \Rubix\ML\Probabilistic $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return array[]
      */
     public static function _proba(Probabilistic $estimator, Dataset $dataset) : array

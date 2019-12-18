@@ -8,7 +8,7 @@ interface DecisionTree extends BST
      * Return an array indexed by feature column that contains the normalized
      * importance score of that feature.
      *
-     * @return array
+     * @return (int|float)[]
      */
     public function featureImportances() : array;
 

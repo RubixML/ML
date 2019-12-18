@@ -15,7 +15,6 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
-use function gettype;
 
 /**
  * Committee Machine
@@ -47,7 +46,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
-     * @var array
+     * @var \Rubix\ML\Learner[]
      */
     protected $experts;
 
@@ -75,24 +74,22 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * The possible class labels.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
     ];
 
     /**
-     * @param array $experts
-     * @param array|null $influences
+     * @param \Rubix\ML\Learner[] $experts
+     * @param (int|float)[]|null $influences
      * @throws \InvalidArgumentException
      */
     public function __construct(array $experts, ?array $influences = null)
     {
-        $k = count($experts);
-
-        if ($k < 1) {
+        if (empty($experts)) {
             throw new InvalidArgumentException('Committee must contain at'
-                . ' least 1 expert, none given.');
+                . ' least 1 expert.');
         }
 
         foreach ($experts as $expert) {
@@ -105,6 +102,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $prototype = reset($experts);
 
         $type = $prototype->type();
+
+        $k = count($experts);
 
         if (!in_array($type, self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
@@ -125,14 +124,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 throw new InvalidArgumentException('The number of influence'
                     . " values must equal the number of experts, $k needed"
                     . ' but ' . count($influences) . ' given.');
-            }
-
-            foreach ($influences as $weight) {
-                if (!is_int($weight) and !is_float($weight)) {
-                    throw new InvalidArgumentException('Influence must be'
-                        . ' an integer or floating point number, '
-                        . gettype($weight) . ' given.');
-                }
             }
 
             $total = array_sum($influences);
@@ -192,7 +183,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function trained() : bool
     {
-        return reset($this->experts)->trained();
+        $expert = end($this->experts);
+
+        return $expert instanceof Learner ? $expert->trained() : false;
     }
 
     /**
@@ -208,7 +201,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Return the normalized influence values for each expert in the committee.
      *
-     * @return array
+     * @return (int|float)[]
      */
     public function influences() : array
     {
@@ -218,7 +211,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Train all the experts with the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -270,8 +263,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -308,8 +301,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Decide on a class outcome.
      *
-     * @param (int|string)[] $votes
-     * @return int|string
+     * @param string[] $votes
+     * @return string
      */
     public function decideClass(array $votes)
     {
@@ -336,10 +329,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Decide on an anomaly outcome.
      *
-     * @param int[] $votes
-     * @return int
+     * @param string[] $votes
+     * @return string
      */
-    public function decideAnomaly(array $votes) : int
+    public function decideAnomaly(array $votes) : string
     {
         $scores = array_fill(0, 2, 0.);
 
@@ -354,7 +347,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      * Train a learner with a dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return \Rubix\ML\Learner
      */
     public static function _train(Learner $estimator, Dataset $dataset) : Learner
@@ -368,8 +361,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      * Return the predictions from an estimator.
      *
      * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {

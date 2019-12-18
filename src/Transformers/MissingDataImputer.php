@@ -50,7 +50,7 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * The fitted guessing strategy for each feature column.
      *
-     * @var array|null
+     * @var \Rubix\ML\Other\Strategies\Strategy[]|null
      */
     protected $strategies;
 
@@ -96,7 +96,7 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -142,7 +142,7 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

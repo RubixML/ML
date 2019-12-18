@@ -22,8 +22,8 @@ class RMSE extends MeanSquaredError
     /**
      * Score a set of predictions.
      *
-     * @param array $predictions
-     * @param array $labels
+     * @param (int|float)[] $predictions
+     * @param (int|float)[] $labels
      * @throws \InvalidArgumentException
      * @return float
      */

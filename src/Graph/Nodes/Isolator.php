@@ -51,7 +51,7 @@ class Isolator implements BinaryNode
      * Factory method to build a isolator node from a dataset
      * using a random split of the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return self
      */
     public static function split(Dataset $dataset) : self
@@ -79,7 +79,7 @@ class Isolator implements BinaryNode
     /**
      * @param int $column
      * @param mixed $value
-     * @param array $groups
+     * @param \Rubix\ML\Datasets\Dataset[] $groups
      * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups)
@@ -129,7 +129,7 @@ class Isolator implements BinaryNode
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array
+     * @return \Rubix\ML\Datasets\Dataset[]
      */
     public function groups() : array
     {

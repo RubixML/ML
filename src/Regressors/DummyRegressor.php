@@ -88,7 +88,7 @@ class DummyRegressor implements Estimator, Learner, Persistable
     /**
      * Fit the training set to the given guessing strategy.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -108,9 +108,9 @@ class DummyRegressor implements Estimator, Learner, Persistable
     /**
      * Make a prediction of a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
     {

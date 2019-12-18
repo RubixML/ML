@@ -43,7 +43,7 @@ class LeastSquaresTest extends TestCase
     }
 
     /**
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function compute_provider() : Generator
     {
@@ -67,8 +67,8 @@ class LeastSquaresTest extends TestCase
     }
 
     /**
-     * @param \Tensor\Tensor $output
-     * @param \Tensor\Tensor $target
+     * @param \Tensor\Tensor<int|float> $output
+     * @param \Tensor\Tensor<int|float> $target
      * @param array[] $expected
      *
      * @dataProvider differentiate_provider
@@ -81,7 +81,7 @@ class LeastSquaresTest extends TestCase
     }
 
     /**
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function differentiate_provider() : Generator
     {

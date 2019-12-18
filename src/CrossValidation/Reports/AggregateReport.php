@@ -22,7 +22,7 @@ class AggregateReport implements Report
      * The report middleware stack. i.e. the reports to generate when the reports
      * method is called.
      *
-     * @var array
+     * @var \Rubix\ML\CrossValidation\Reports\Report[]
      */
     protected $reports = [
         //
@@ -36,7 +36,7 @@ class AggregateReport implements Report
     protected $compatibility;
 
     /**
-     * @param array $reports
+     * @param \Rubix\ML\CrossValidation\Reports\Report[] $reports
      * @throws \InvalidArgumentException
      */
     public function __construct(array $reports)
@@ -82,9 +82,9 @@ class AggregateReport implements Report
     /**
      * Generate the report.
      *
-     * @param array $predictions
-     * @param array $labels
-     * @return array
+     * @param mixed[] $predictions
+     * @param mixed[] $labels
+     * @return mixed[]
      */
     public function generate(array $predictions, array $labels) : array
     {

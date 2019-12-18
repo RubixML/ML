@@ -80,8 +80,8 @@ class StepDecay implements Optimizer
      * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
-     * @param \Tensor\Tensor $gradient
-     * @return \Tensor\Tensor
+     * @param \Tensor\Tensor<int|float|array> $gradient
+     * @return \Tensor\Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor
     {

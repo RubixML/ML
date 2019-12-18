@@ -15,7 +15,7 @@ interface Generator
      * Generate n data points.
      *
      * @param int $n
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return \Rubix\ML\Datasets\Dataset<array>
      */
     public function generate(int $n);
 }

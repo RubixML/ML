@@ -66,7 +66,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * The donor samples from the fitted training set.
      *
-     * @var array
+     * @var array[]
      */
     protected $samples = [
         //
@@ -126,7 +126,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      */
     public function fit(Dataset $dataset) : void
@@ -144,7 +144,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function update(Dataset $dataset) : void
@@ -169,7 +169,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void
@@ -242,7 +242,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return array[]
      */
     protected function nearest(array $sample) : array

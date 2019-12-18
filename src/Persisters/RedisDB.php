@@ -100,7 +100,7 @@ class RedisDB implements Persister
     /**
      * Return an associative array of info from the Redis server.
      *
-     * @return array
+     * @return mixed[]
      */
     public function info() : array
     {

@@ -43,7 +43,7 @@ class ClusterTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_terminate()
+    public function test_terminate() : void
     {
         $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 

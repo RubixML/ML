@@ -42,6 +42,9 @@ class HuberLossTest extends TestCase
         $this->assertEquals($expected, $loss);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [
@@ -64,8 +67,8 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @param \Tensor\Tensor $output
-     * @param \Tensor\Tensor $target
+     * @param \Tensor\Tensor<int|float> $output
+     * @param \Tensor\Tensor<int|float> $target
      * @param array[] $expected
      *
      * @dataProvider differentiate_provider
@@ -78,7 +81,7 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function differentiate_provider() : Generator
     {

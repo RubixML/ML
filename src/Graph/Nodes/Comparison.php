@@ -60,7 +60,7 @@ class Comparison implements Decision
     /**
      * @param int $column
      * @param mixed $value
-     * @param array $groups
+     * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param float $impurity
      * @throws \InvalidArgumentException
      */
@@ -113,7 +113,7 @@ class Comparison implements Decision
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array
+     * @return \Rubix\ML\Datasets\Labeled[]
      */
     public function groups() : array
     {

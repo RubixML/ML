@@ -79,7 +79,7 @@ class CSV implements Extractor
      * Read the records starting at the given offset and return them in an iterator.
      *
      * @throws \RuntimeException
-     * @return iterable
+     * @return iterable<array>
      */
     public function extract() : iterable
     {
@@ -92,7 +92,7 @@ class CSV implements Extractor
         $line = $n = 0;
 
         while (!feof($handle)) {
-            $row = fgets($handle);
+            $row = rtrim(fgets($handle) ?: '');
 
             if (empty($row)) {
                 continue 1;

@@ -187,8 +187,8 @@ class Unlabeled extends Dataset
     /**
      * Prepend this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return \Rubix\ML\Datasets\Dataset<array>
      */
     public function prepend(Dataset $dataset) : Dataset
     {
@@ -198,8 +198,8 @@ class Unlabeled extends Dataset
     /**
      * Append this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return \Rubix\ML\Datasets\Dataset<array>
      */
     public function append(Dataset $dataset) : Dataset
     {
@@ -536,7 +536,7 @@ class Unlabeled extends Dataset
      * Generate a random weighted subset with replacement.
      *
      * @param int $n
-     * @param array $weights
+     * @param (int|float)[] $weights
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -705,7 +705,7 @@ class Unlabeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \ArrayIterator
+     * @return \ArrayIterator<int, array>
      */
     public function getIterator() : ArrayIterator
     {

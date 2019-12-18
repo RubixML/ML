@@ -28,6 +28,10 @@ class SafeEuclideanTest extends TestCase
     }
 
     /**
+     * @param (int|float)[] $a
+     * @param (int|float)[] $b
+     * @param float $expected
+     *
      * @dataProvider compute_provider
      */
     public function test_compute(array $a, array $b, float $expected) : void
@@ -38,9 +42,12 @@ class SafeEuclideanTest extends TestCase
         $this->assertEquals($expected, $distance);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
-        yield [[2, 1, 4, NAN], [-2, 1, 8, -2],  6.531972647421808];
+        yield [[2, 1, 4, NAN], [-2, 1, 8, -2], 6.531972647421808];
 
         yield [[7.4, -2.5, 0.001], [NAN, -1, 0.075], 1.8393515161599752];
         

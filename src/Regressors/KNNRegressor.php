@@ -61,7 +61,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * The training samples.
      *
-     * @var array
+     * @var array[]
      */
     protected $samples = [
         //
@@ -70,7 +70,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * The training labels.
      *
-     * @var array
+     * @var (string|int|float)[]
      */
     protected $labels = [
         //
@@ -127,7 +127,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -145,7 +145,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -165,10 +165,10 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return (float|int)[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -205,7 +205,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param array $sample
+     * @param (string|int|float)[] $sample
      * @return array[]
      */
     protected function nearest(array $sample) : array

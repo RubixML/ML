@@ -66,7 +66,7 @@ class Polynomial implements Kernel
     /**
      * Return the options for the libsvm runtime.
      *
-     * @return array
+     * @return mixed[]
      */
     public function options() : array
     {

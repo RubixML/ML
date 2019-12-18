@@ -15,7 +15,7 @@ class SamplesAreCompatibleWithDistance
     /**
      * Perform a check of the specification.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
      */

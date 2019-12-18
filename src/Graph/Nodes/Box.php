@@ -90,9 +90,9 @@ class Box implements BinaryNode, Hypercube
     /**
      * @param int $column
      * @param mixed $value
-     * @param array $groups
-     * @param array $min
-     * @param array $max
+     * @param \Rubix\ML\Datasets\Labeled[] $groups
+     * @param (int|float)[] $min
+     * @param (int|float)[] $max
      * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups, array $min, array $max)
@@ -149,7 +149,7 @@ class Box implements BinaryNode, Hypercube
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array
+     * @return \Rubix\ML\Datasets\Labeled[]
      */
     public function groups() : array
     {
@@ -159,7 +159,7 @@ class Box implements BinaryNode, Hypercube
     /**
      * Return a generator with the bounding box surrounding this node.
      *
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function sides() : Generator
     {

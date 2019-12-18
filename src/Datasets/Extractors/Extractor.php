@@ -7,7 +7,7 @@ interface Extractor
     /**
      * Read the records and return them in an iterator.
      *
-     * @return iterable
+     * @return iterable<array>
      */
     public function extract() : iterable;
 

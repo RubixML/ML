@@ -112,7 +112,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The unique class labels from the training set.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -239,7 +239,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * to each one and re-weighting the training data accordingly to reflect how
      * difficult a particular sample is to classify.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -357,9 +357,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -373,7 +373,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @return array[]
      */
@@ -405,7 +405,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the influence scores for each sample in the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array[]

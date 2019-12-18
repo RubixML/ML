@@ -16,7 +16,7 @@ trait RankSingle
     /**
      * Return the score given to a single sample.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return float
      */
     public function rankSample(array $sample) : float

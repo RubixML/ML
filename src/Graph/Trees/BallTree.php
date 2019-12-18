@@ -140,13 +140,7 @@ class BallTree implements BST, Spatial
 
         $stack = [$this->root];
 
-        while ($stack) {
-            $current = array_pop($stack);
-
-            if (!$current instanceof Hypersphere) {
-                continue 1;
-            }
-
+        while ($current = array_pop($stack)) {
             [$left, $right] = $current->groups();
 
             $current->cleanup();
@@ -172,7 +166,7 @@ class BallTree implements BST, Spatial
     /**
      * Search the tree for a leaf node or return null if not found.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return \Rubix\ML\Graph\Nodes\Cluster|null
      */
     public function search(array $sample) : ?Cluster
@@ -192,8 +186,8 @@ class BallTree implements BST, Spatial
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param array $sample
-     * @return array
+     * @param mixed[] $sample
+     * @return mixed[]
      */
     public function path(array $sample) : array
     {
@@ -234,7 +228,7 @@ class BallTree implements BST, Spatial
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @param int $k
      * @throws \InvalidArgumentException
      * @return array[]
@@ -304,7 +298,7 @@ class BallTree implements BST, Spatial
      * Return all samples, labels, and distances within a given radius of a
      * sample.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @param float $radius
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -325,17 +319,13 @@ class BallTree implements BST, Spatial
 
         $stack = [$this->root];
 
-        while ($stack) {
-            $current = array_pop($stack);
-
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
-                    if ($child instanceof Hypersphere) {
-                        $distance = $this->kernel->compute($sample, $child->center());
+                    $distance = $this->kernel->compute($sample, $child->center());
 
-                        if ($distance <= $child->radius() + $radius) {
-                            $stack[] = $child;
-                        }
+                    if ($distance <= $child->radius() + $radius) {
+                        $stack[] = $child;
                     }
                 }
 

@@ -47,8 +47,8 @@ class Accuracy implements Metric
     /**
      * Score a set of predictions.
      *
-     * @param array $predictions
-     * @param array $labels
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
      * @throws \InvalidArgumentException
      * @return float
      */

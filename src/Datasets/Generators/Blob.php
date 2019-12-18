@@ -39,7 +39,7 @@ class Blob implements Generator
     protected $stddev;
 
     /**
-     * @param array $center
+     * @param (int|float)[] $center
      * @param mixed $stddev
      * @throws \InvalidArgumentException
      */
@@ -48,14 +48,6 @@ class Blob implements Generator
         if (empty($center)) {
             throw new InvalidArgumentException('Cannot generate data of less'
                 . ' than 1 dimension.');
-        }
-
-        foreach ($center as $value) {
-            if (!is_int($value) and !is_float($value)) {
-                throw new InvalidArgumentException('Center coordinate must be'
-                    . ' an integer or floating point number, '
-                    . gettype($value) . ' given');
-            }
         }
 
         if (is_array($stddev)) {

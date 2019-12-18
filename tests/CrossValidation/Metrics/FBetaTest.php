@@ -29,6 +29,10 @@ class FBetaTest extends TestCase
     }
 
     /**
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
+     * @param float $expected
+     *
      * @dataProvider score_class_provider
      */
     public function test_score_class(array $predictions, array $labels, float $expected) : void
@@ -48,6 +52,9 @@ class FBetaTest extends TestCase
         $this->assertEquals($expected, $score);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function score_class_provider() : Generator
     {
         yield [
@@ -70,6 +77,10 @@ class FBetaTest extends TestCase
     }
 
     /**
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
+     * @param float $expected
+     *
      * @dataProvider score_anomaly_provider
      */
     public function test_score_anomaly(array $predictions, array $labels, float $expected) : void
@@ -89,6 +100,9 @@ class FBetaTest extends TestCase
         $this->assertEquals($expected, $score);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function score_anomaly_provider() : Generator
     {
         yield [

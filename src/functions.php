@@ -5,7 +5,7 @@ namespace Rubix\ML
     /**
      * Compute the argmin of the given values.
      *
-     * @param array $values
+     * @param array<int|float> $values
      * @return mixed
      */
     function argmin(array $values)
@@ -16,7 +16,7 @@ namespace Rubix\ML
     /**
      * Compute the argmax of the given values.
      *
-     * @param array $values
+     * @param array<int|float> $values
      * @return mixed
      */
     function argmax(array $values)
@@ -27,7 +27,7 @@ namespace Rubix\ML
     /**
      * Compute the log of the sum of exponential values.
      *
-     * @param array $values
+     * @param array<int|float> $values
      * @return float
      */
     function logsumexp(array $values) : float
@@ -38,8 +38,8 @@ namespace Rubix\ML
     /**
      * Transpose a 2-dimensional array i.e. rotate the data table.
      *
-     * @param array $table
-     * @return array
+     * @param array[] $table
+     * @return array[]
      */
     function array_transpose(array $table) : array
     {
@@ -50,7 +50,7 @@ namespace Rubix\ML
                 return array_map(null, ...$table);
 
             case $m === 1:
-                $row = reset($table);
+                $row = reset($table) ?: [];
 
                 $n = count($row);
 
@@ -62,7 +62,7 @@ namespace Rubix\ML
 
                 return $columns;
             
-            case $m < 1:
+            default:
                 return $table;
         }
     }

@@ -36,7 +36,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     /**
      * The categories available for each feature column.
      *
-     * @var array
+     * @var string[]
      */
     protected $categories;
 
@@ -60,8 +60,10 @@ class IntervalDiscretizer implements Transformer, Stateful
 
         $last = chr(ord(self::START_CATEGORY) + ($bins - 1));
 
+        $categories = array_map('strval', range(self::START_CATEGORY, $last));
+
         $this->bins = $bins;
-        $this->categories = range(self::START_CATEGORY, $last);
+        $this->categories = $categories;
     }
 
     /**
@@ -87,7 +89,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     /**
      * Return the possible categories of each feature column.
      *
-     * @return array
+     * @return string[]
      */
     public function categories() : array
     {
@@ -98,7 +100,7 @@ class IntervalDiscretizer implements Transformer, Stateful
      * Return the intervals of each continuous feature column
      * calculated during fitting.
      *
-     * @return array|null
+     * @return array[]|null
      */
     public function intervals() : ?array
     {
@@ -108,7 +110,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
@@ -138,7 +140,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

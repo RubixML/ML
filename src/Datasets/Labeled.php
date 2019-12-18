@@ -159,7 +159,7 @@ class Labeled extends Dataset
     /**
      * Return the labels.
      *
-     * @return (int|float|string)[]
+     * @return mixed[]
      */
     public function labels() : array
     {
@@ -279,7 +279,7 @@ class Labeled extends Dataset
     /**
      * The set of all possible labeled outcomes.
      *
-     * @return array
+     * @return mixed[]
      */
     public function possibleOutcomes() : array
     {
@@ -390,7 +390,7 @@ class Labeled extends Dataset
     /**
      * Prepend this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -410,7 +410,7 @@ class Labeled extends Dataset
     /**
      * Append this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -1102,7 +1102,7 @@ class Labeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator
+     * @return \Generator<array>
      */
     public function getIterator() : Generator
     {

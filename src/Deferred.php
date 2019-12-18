@@ -26,13 +26,13 @@ class Deferred
     /**
      * The arguments to the function.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $args;
 
     /**
      * @param callable $fn
-     * @param array $args
+     * @param mixed[] $args
      */
     public function __construct(callable $fn, array $args = [])
     {

@@ -11,19 +11,19 @@ namespace Rubix\ML\Other\Strategies;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Constant implements Continuous
+class Constant implements Categorical, Continuous
 {
     /**
      * The value to constantly guess.
      *
-     * @var float
+     * @var string|int|float
      */
     protected $value;
 
     /**
-     * @param float $value
+     * @param string|int|float $value
      */
-    public function __construct(float $value = 0.)
+    public function __construct($value = 0)
     {
         $this->value = $value;
     }
@@ -31,8 +31,7 @@ class Constant implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param array $values
-     * @throws \InvalidArgumentException
+     * @param (string|int|float)[] $values
      */
     public function fit(array $values) : void
     {
@@ -42,9 +41,9 @@ class Constant implements Continuous
     /**
      * Make a continuous guess.
      *
-     * @return float
+     * @return string|int|float
      */
-    public function guess() : float
+    public function guess()
     {
         return $this->value;
     }

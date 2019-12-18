@@ -18,7 +18,7 @@ class BlackHole extends Logger
      *
      * @param mixed $level
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      */
     public function log($level, $message, array $context = []) : void
     {

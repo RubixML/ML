@@ -27,9 +27,10 @@ use function count;
 class OneHotEncoder implements Transformer, Stateful
 {
     /**
-     * The set of unique possible categories of the training set.
+     * The set of unique possible categories per feature column of the
+     * training set.
      *
-     * @var array|null
+     * @var array[]|null
      */
     protected $categories;
 
@@ -56,7 +57,7 @@ class OneHotEncoder implements Transformer, Stateful
     /**
      * Return the categories computed during fitting indexed by feature column.
      *
-     * @return array|null
+     * @return array[]|null
      */
     public function categories() : ?array
     {
@@ -66,7 +67,7 @@ class OneHotEncoder implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -90,7 +91,7 @@ class OneHotEncoder implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

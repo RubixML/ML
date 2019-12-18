@@ -48,7 +48,7 @@ class MatrixParam extends Parameter
     /**
      * Update the parameter.
      *
-     * @param \Tensor\Tensor $step
+     * @param \Tensor\Tensor<mixed> $step
      */
     public function update(Tensor $step) : void
     {

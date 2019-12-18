@@ -26,6 +26,10 @@ class EuclideanTest extends TestCase
     }
 
     /**
+     * @param (int|float)[] $a
+     * @param (int|float)[] $b
+     * @param float $expected
+     *
      * @dataProvider compute_provider
      */
     public function test_compute(array $a, array $b, float $expected) : void
@@ -36,6 +40,9 @@ class EuclideanTest extends TestCase
         $this->assertEquals($expected, $distance);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [[2, 1, 4, 0], [-2, 1, 8, -2],  6.0];

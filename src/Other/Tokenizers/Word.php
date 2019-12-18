@@ -19,7 +19,7 @@ class Word implements Tokenizer
      * Tokenize a block of text.
      *
      * @param string $string
-     * @return array
+     * @return string[]
      */
     public function tokenize(string $string) : array
     {

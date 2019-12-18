@@ -23,7 +23,7 @@ class Stats
     /**
      * Compute the population mean of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param int|null $n
      * @return float
      */
@@ -41,8 +41,8 @@ class Stats
     /**
      * Compute the weighted mean of a set of values.
      *
-     * @param array $values
-     * @param array $weights
+     * @param mixed[] $values
+     * @param mixed[] $weights
      * @return float
      */
     public static function weightedMean(array $values, array $weights) : float
@@ -72,7 +72,7 @@ class Stats
     /**
      * Return the midrange of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @return float
      */
     public static function midrange(array $values) : float
@@ -84,7 +84,7 @@ class Stats
      * Find a mode of a set of values i.e a value that appears most often in the
      * set.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -103,7 +103,7 @@ class Stats
      * Compute the variance of a set of values given a mean and n degrees of
      * freedom.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param float|null $mean
      * @param int|null $n
      * @throws \InvalidArgumentException
@@ -131,7 +131,7 @@ class Stats
     /**
      * Calculate the median of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -159,7 +159,7 @@ class Stats
     /**
      * Calculate the pth percentile of a given set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param float $p
      * @throws \InvalidArgumentException
      * @return float
@@ -168,16 +168,16 @@ class Stats
     {
         $percentiles = self::percentiles($values, [$p]);
 
-        return reset($percentiles);
+        return (float) reset($percentiles) ?: NAN;
     }
 
     /**
      * Calculate the pth percentiles of a given set of values.
      *
-     * @param array $values
-     * @param array $p
+     * @param mixed[] $values
+     * @param mixed[] $p
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public static function percentiles(array $values, array $p) : array
     {
@@ -215,7 +215,7 @@ class Stats
     /**
      * Compute the interquartile range of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -246,7 +246,7 @@ class Stats
     /**
      * Calculate the median absolute deviation of a set of values given a median.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param float|null $median
      * @return float
      */
@@ -266,7 +266,7 @@ class Stats
     /**
      * Compute the n-th central moment of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param int $moment
      * @param float|null $mean
      * @param int|null $n
@@ -296,7 +296,7 @@ class Stats
      * Compute the skewness of a set of values given a mean and n degrees of
      * freedom.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param float|null $mean
      * @param int|null $n
      * @throws \InvalidArgumentException
@@ -321,7 +321,7 @@ class Stats
     /**
      * Compute the kurtosis of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @param float|null $mean
      * @param int|null $n
      * @throws \InvalidArgumentException
@@ -347,7 +347,7 @@ class Stats
      * Return the statistical range given by the maximum minus the minimum
      * of a set of values.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -363,7 +363,7 @@ class Stats
     /**
      * Compute the population mean and variance and return them in a 2-tuple.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @return float[]
      */
     public static function meanVar(array $values) : array
@@ -377,7 +377,7 @@ class Stats
      * Compute the population median and median absolute deviation and return
      * them in a 2-tuple.
      *
-     * @param array $values
+     * @param mixed[] $values
      * @return float[]
      */
     public static function medianMad(array $values) : array

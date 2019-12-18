@@ -38,8 +38,8 @@ class SafeEuclidean implements Distance, NaNSafe
     /**
      * Compute the distance between two vectors.
      *
-     * @param array $a
-     * @param array $b
+     * @param (int|float)[] $a
+     * @param (int|float)[] $b
      * @return float
      */
     public function compute(array $a, array $b) : float

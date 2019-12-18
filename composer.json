@@ -8,7 +8,7 @@
         "php", "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",
         "regression", "clustering", "anomaly-detection", "neural-network", "manifold-learning",
         "dimensionality-reduction", "artificial-intelligence", "ai", "cross-validation", "feature-extraction",
-        "deep-learning", "rubix", "ml"
+        "deep-learning", "rubix", "ml", "analytics"
     ],
     "authors": [
         {
@@ -38,10 +38,9 @@
         "ext-igbinary": "*",
         "ext-redis": "*",
         "ext-svm": "*",
-        "friendsofphp/php-cs-fixer": "^2.14",
-        "phpmetrics/phpmetrics": "^2.4",
-        "phpstan/phpstan": "^0.11.19",
-        "phpstan/phpstan-phpunit": "^0.11.2",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "0.12.*",
+        "phpstan/phpstan-phpunit": "0.12.*",
         "phpunit/phpunit": "8.4.*"
     },
     "suggest": {
@@ -70,13 +69,11 @@
             "@composer install",
             "@analyze",
             "@test",
-            "@check",
-            "@metrics"
+            "@check"
         ],
         "analyze": "phpstan analyse -c phpstan.neon",
         "check": "php-cs-fixer fix --config=.php_cs.dist -v --dry-run --using-cache=no",
         "fix": "php-cs-fixer fix --config=.php_cs.dist",
-        "metrics": "phpmetrics --report-html=metrics ./",
         "test": "phpunit"
     },
     "config": {

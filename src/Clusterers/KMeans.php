@@ -246,7 +246,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -268,7 +268,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -386,10 +386,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -405,10 +405,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -424,7 +424,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param array $sample
+     * @param (int|float)[] $sample
      * @return int
      */
     protected function assign(array $sample) : int
@@ -447,8 +447,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Return the membership of a sample to each of the k centroids.
      *
-     * @param array $sample
-     * @return array
+     * @param (int|float)[] $sample
+     * @return float[]
      */
     protected function membership(array $sample) : array
     {
@@ -471,7 +471,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @return float
      */
     protected function inertia(array $samples) : float

@@ -39,6 +39,9 @@ class SigmoidTest extends TestCase
         $this->assertEquals($expected, $activations);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [
@@ -78,6 +81,9 @@ class SigmoidTest extends TestCase
         $this->assertEquals($expected, $derivatives);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function differentiate_provider() : Generator
     {
         yield [

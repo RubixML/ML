@@ -65,8 +65,8 @@ class Gower implements Distance, NaNSafe
     /**
      * Compute the distance between two vectors.
      *
-     * @param array $a
-     * @param array $b
+     * @param (string|int|float)[] $a
+     * @param (string|int|float)[] $b
      * @return float
      */
     public function compute(array $a, array $b) : float
@@ -80,13 +80,6 @@ class Gower implements Distance, NaNSafe
             $valueB = $b[$i];
 
             switch (true) {
-                case is_string($valueA):
-                    if ($valueA !== $valueB) {
-                        $distance += 1.;
-                    }
-
-                    break 1;
-
                 case is_float($valueA) and is_nan($valueA):
                     ++$nn;
 
@@ -97,9 +90,16 @@ class Gower implements Distance, NaNSafe
 
                     break 1;
 
-                default:
+                case !is_string($valueA) and !is_string($valueB):
                     $distance += abs($valueA - $valueB)
                         / $this->range;
+
+                    break 1;
+
+                default:
+                    if ($valueA !== $valueB) {
+                        $distance += 1.;
+                    }
             }
         }
 

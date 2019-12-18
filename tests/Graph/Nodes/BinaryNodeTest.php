@@ -39,12 +39,15 @@ class BinaryNodeTest extends TestCase
             use HasBinaryChildren;
         });
 
-        $this->assertNotNull($this->node->left());
-        $this->assertInstanceOf(BinaryNode::class, $this->node->left());
+        $node = $this->node->left();
+
+        $this->assertNotNull($node);
+        $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertEquals(2, $this->node->height());
         $this->assertEquals(-1, $this->node->balance());
-        $this->assertEquals(1, $this->node->left()->height());
+        $this->assertEquals(1, $node->height());
         $this->assertFalse($this->node->leaf());
+        $this->assertTrue($node->leaf());
     }
 
     public function test_attach_right_child() : void
@@ -53,12 +56,15 @@ class BinaryNodeTest extends TestCase
             use HasBinaryChildren;
         });
 
-        $this->assertNotNull($this->node->right());
-        $this->assertInstanceOf(BinaryNode::class, $this->node->right());
+        $node = $this->node->right();
+
+        $this->assertNotNull($node);
+        $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertEquals(2, $this->node->height());
         $this->assertEquals(1, $this->node->balance());
-        $this->assertEquals(1, $this->node->right()->height());
+        $this->assertEquals(1, $node->height());
         $this->assertFalse($this->node->leaf());
+        $this->assertTrue($node->leaf());
     }
 
     public function test_detach_left_child() : void

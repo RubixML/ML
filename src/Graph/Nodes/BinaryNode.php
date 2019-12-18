@@ -9,7 +9,7 @@ interface BinaryNode extends Node
     /**
      * Return the children of this node in a generator.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
     public function children() : Generator;
 

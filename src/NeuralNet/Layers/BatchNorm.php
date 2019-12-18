@@ -144,7 +144,7 @@ class BatchNorm implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
     public function parameters() : Generator
     {
@@ -307,7 +307,7 @@ class BatchNorm implements Hidden, Parametric
      * Return the parameters of the layer in an associative array.
      *
      * @throws \RuntimeException
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
      */
     public function read() : array
     {
@@ -324,8 +324,7 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param array $parameters
-     * @throws \RuntimeException
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

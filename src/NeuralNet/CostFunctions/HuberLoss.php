@@ -76,9 +76,9 @@ class HuberLoss implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Tensor\Tensor $output
-     * @param \Tensor\Tensor $target
-     * @return \Tensor\Tensor
+     * @param \Tensor\Tensor<int|float|array> $output
+     * @param \Tensor\Tensor<int|float|array> $target
+     * @return \Tensor\Tensor<int|float|array>
      */
     public function differentiate(Tensor $output, Tensor $target) : Tensor
     {

@@ -43,6 +43,10 @@ class AmpTest extends TestCase
         $this->assertCount(10, $results);
     }
 
+    /**
+     * @param int $i
+     * @return array<int|float>
+     */
     public static function foo(int $i) : array
     {
         return [$i, microtime(true)];

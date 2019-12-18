@@ -2,7 +2,7 @@
 Data will need to be loaded it into your project before it can become useful. There are many ways in which data can be stored, but the most common formats are either in plain-text format such as CSV or NDJSON and in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. Thus, you have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides  [Extractor](datasets/extractors/api.md) objects to help automate more common use cases.
 
 ### CSV
-One of the most common formats that you'll find smaller datasets in is comma-separated (CSV) or tab-separated (TSV) values files. Their popularity is largely due to their simplicity, interpretability, and ubiquity. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns separated either by a comma or tab. The file can sometimes contain a header as the first row which gives a name to the features. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `from()` method. In addition, you can either import your data manually or with the help of another tool such as the PHP League's [CSV Reader/Writer](https://csv.thephpleague.com/). The disadvantage of CSV is that data type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. However, the library provides a [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted from CSV format.
+One of the most common formats that you'll find smaller datasets in is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV) files. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as a `,` character and may be enclosed on both ends with a `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `from()` method to new up a dataset object. The disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. However, the library provides a [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted from CSV format.
 
 **Example**
 
@@ -11,20 +11,20 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Extractors\CSV;
 use Rubix\ML\Transformers\NumericStringConverter;
 
-$dataset = Labeled::from(new CSV('example.csv', ','))
+$dataset = Labeled::from(new CSV('example.csv'))
     ->apply(new NumericStringConverter());
 ```
 
 ### NDJSON
-Another popular plain-text format is a hybrid of CSV and JSON called NDJSON or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. Since it is possible to derive the original data type from JSON, NDJSON files have the advantage of importing the data with the proper type foregoing the need for conversion. The [NDJSON Array](datasets/extractors/ndjson-array.md) extractor is designed to help you import data in the NDJSON format.
+Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. Since it is possible to derive the original data type from the JSON format, NDJSON files have the advantage of importing the data in their proper type - foregoing the need for conversion. The [NDJSON](datasets/extractors/ndjson-array.md) extractor can be used to instantiate a new dataset object from a NDJSON file.
 
 **Example**
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Extractors\NDJSONArray;
+use Rubix\ML\Datasets\Extractors\NDJSON;
 
-$dataset = Unlabeled::from(new NDJSONArray('example.ndjson'));
+$dataset = Unlabeled::from(new NDJSON('example.ndjson'));
 ```
 
 ## Database

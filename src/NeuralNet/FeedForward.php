@@ -71,7 +71,7 @@ class FeedForward implements Network
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Input $input
-     * @param array $hidden
+     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
      * @param \Rubix\ML\NeuralNet\Layers\Output $output
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      */
@@ -142,7 +142,7 @@ class FeedForward implements Network
     /**
      * Return all the layers in the network.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Layer>
      */
     public function layers() : Generator
     {
@@ -158,7 +158,7 @@ class FeedForward implements Network
     /**
      * The parametric layers of the network. i.e. the layers that have weights.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Parametric>
      */
     public function parametric() : Generator
     {
@@ -242,7 +242,7 @@ class FeedForward implements Network
      * Backpropagate the gradient produced by the cost function and return
      * the loss calculated by the output layer's cost function.
      *
-     * @param array $labels
+     * @param (string|int|float)[] $labels
      * @return float
      */
     public function backpropagate(array $labels) : float
@@ -259,7 +259,7 @@ class FeedForward implements Network
     /**
      * Restore the network parameters from a snapshot.
      *
-     * @param \Rubix\ML\NeuralNet\Snapshot $snapshot
+     * @param \Rubix\ML\NeuralNet\Snapshot<array> $snapshot
      */
     public function restore(Snapshot $snapshot) : void
     {

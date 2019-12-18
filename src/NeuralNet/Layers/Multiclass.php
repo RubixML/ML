@@ -34,7 +34,7 @@ class Multiclass implements Output
     /**
      * The unique class labels.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -111,7 +111,7 @@ class Multiclass implements Output
     protected $computed;
 
     /**
-     * @param array $classes
+     * @param string[] $classes
      * @param float $alpha
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
@@ -159,7 +159,7 @@ class Multiclass implements Output
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
     public function parameters() : Generator
     {
@@ -238,10 +238,10 @@ class Multiclass implements Output
     /**
      * Calculate the gradients for each output neuron and update.
      *
-     * @param array $labels
+     * @param string[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
@@ -320,7 +320,7 @@ class Multiclass implements Output
      * Return the parameters of the layer in an associative array.
      *
      * @throws \RuntimeException
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
      */
     public function read() : array
     {
@@ -337,7 +337,7 @@ class Multiclass implements Output
     /**
      * Restore the parameters of the layer.
      *
-     * @param array $parameters
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

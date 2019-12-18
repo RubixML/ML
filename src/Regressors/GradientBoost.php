@@ -126,7 +126,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * An ensemble of weak regressors.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $ensemble = [
         //
@@ -142,7 +142,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * The validation scores at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $scores = [
         //
@@ -151,7 +151,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * The average training loss at each epoch.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -273,7 +273,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Return the validation scores at each epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function scores() : array
     {
@@ -283,7 +283,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Return the average cost at every epoch.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -293,7 +293,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -422,10 +422,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Make a prediction from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return array
+     * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -451,7 +451,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * feature contributes to the overall model, indexed by feature column.
      *
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function featureImportances() : array
     {

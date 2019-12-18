@@ -53,7 +53,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * An array of tuples where each tuple contains the possible values of each
      * parameter in the order they are given to the base learner's constructor.
      *
-     * @var array
+     * @var array[]
      */
     protected $grid;
 
@@ -74,7 +74,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     /**
      * The argument names for the base estimator's constructor.
      *
-     * @var array
+     * @var string[]
      */
     protected $args = [
         //
@@ -96,8 +96,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $estimator;
 
     /**
-     * @param string $base
-     * @param array $grid
+     * @param class-string $base
+     * @param array[] $grid
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
      * @throws \InvalidArgumentException
@@ -216,7 +216,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     /**
      * Return the parameters that had the highest validation score.
      *
-     * @return array|null
+     * @return (float|array)[]|null
      */
     public function best() : ?array
     {
@@ -237,7 +237,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -322,7 +322,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * Return an array of all possible combinations of parameters. i.e the
      * Cartesian product of the user supplied parameter grid.
      *
-     * @return array
+     * @return array[]
      */
     public function combinations() : array
     {
@@ -347,9 +347,9 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -374,7 +374,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * Allow methods to be called on the estimator from the wrapper.
      *
      * @param string $name
-     * @param array $arguments
+     * @param mixed[] $arguments
      * @return mixed
      */
     public function __call(string $name, array $arguments)

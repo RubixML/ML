@@ -131,7 +131,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -166,7 +166,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @return mixed[]
      */
@@ -205,10 +205,10 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Classification decision function.
      *
-     * @param (int|string)[] $votes
-     * @return int|string
+     * @param string[] $votes
+     * @return string
      */
-    public function decideClass($votes)
+    public function decideClass($votes) : string
     {
         return argmax(array_count_values($votes));
     }
@@ -216,19 +216,19 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Anomaly detection decision function.
      *
-     * @param int[] $votes
-     * @return int
+     * @param string[] $votes
+     * @return string
      */
-    public function decideAnomaly($votes) : int
+    public function decideAnomaly($votes) : string
     {
-        return Stats::mean($votes) > 0.5 ? 1 : 0;
+        return argmax(array_count_values($votes));
     }
 
     /**
      * Train a single learner and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return \Rubix\ML\Learner
      */
     public static function _train(Learner $estimator, Dataset $dataset) : Learner
@@ -242,7 +242,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Return the predictions from an estimator.
      *
      * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array

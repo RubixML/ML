@@ -89,7 +89,7 @@ abstract class CART implements DecisionTree
     /**
      * The memoized column indices of the dataset.
      *
-     * @var array
+     * @var int[]
      */
     protected $columns = [];
 
@@ -264,7 +264,7 @@ abstract class CART implements DecisionTree
     /**
      * Search the decision tree for a leaf node and return it.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return \Rubix\ML\Graph\Nodes\Outcome|null
      */
     public function search(array $sample) : ?Outcome
@@ -305,7 +305,7 @@ abstract class CART implements DecisionTree
      * importance score of that feature.
      *
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function featureImportances() : array
     {
@@ -405,7 +405,8 @@ abstract class CART implements DecisionTree
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
         $bestImpurity = INF;
-        $bestColumn = $bestValue = null;
+        $bestColumn = 0;
+        $bestValue = null;
         $bestGroups = [];
 
         foreach ($columns as $column) {
@@ -446,7 +447,7 @@ abstract class CART implements DecisionTree
     /**
      * Calculate the impurity of a given split.
      *
-     * @param array $groups
+     * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @return float
      */
     protected function splitImpurity(array $groups) : float
@@ -471,19 +472,17 @@ abstract class CART implements DecisionTree
     /**
      * Return a generator for all the nodes in the tree starting at the root.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
      */
     protected function dump() : Generator
     {
         $stack = [$this->root];
 
-        while ($stack) {
-            yield $current = array_pop($stack);
+        while ($current = array_pop($stack)) {
+            yield $current;
 
-            if ($current instanceof BinaryNode) {
-                foreach ($current->children() as $child) {
-                    $stack[] = $child;
-                }
+            foreach ($current->children() as $child) {
+                $stack[] = $child;
             }
         }
     }

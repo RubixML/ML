@@ -34,6 +34,9 @@ class FunctionsTest extends TestCase
     }
 
     /**
+     * @param array[] $table
+     * @param array[] $expected
+     *
      * @dataProvider transpose_provider
      */
     public function test_transpose(array $table, array $expected) : void
@@ -41,6 +44,9 @@ class FunctionsTest extends TestCase
         $this->assertEquals($expected, array_transpose($table));
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function transpose_provider() : Generator
     {
         yield [

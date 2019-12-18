@@ -45,15 +45,13 @@ class Agglomerate implements Generator
     protected $dimensions;
 
     /**
-     * @param array $generators
-     * @param array|null $weights
+     * @param \Rubix\ML\Datasets\Generators\Generator[] $generators
+     * @param (int|float)[]|null $weights
      * @throws \InvalidArgumentException
      */
     public function __construct(array $generators = [], ?array $weights = null)
     {
-        $k = count($generators);
-
-        if ($k < 1) {
+        if (empty($generators)) {
             throw new InvalidArgumentException('Agglomerate must consist'
                 . ' of at least 1 generator.');
         }
@@ -67,6 +65,8 @@ class Agglomerate implements Generator
         }
 
         $dimensions = reset($generators)->dimensions();
+
+        $k = count($generators);
 
         foreach ($generators as $generator) {
             if ($generator->dimensions() !== $dimensions) {
@@ -112,7 +112,7 @@ class Agglomerate implements Generator
     /**
      * Return the normalized weights of each generator in the agglomerate.
      *
-     * @return array
+     * @return (int|float)[]
      */
     public function weights() : array
     {

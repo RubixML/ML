@@ -107,9 +107,9 @@ class DBSCAN implements Estimator
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -165,6 +165,6 @@ class DBSCAN implements Estimator
 
         $this->tree->destroy();
 
-        return $predictions;
+        return array_map('strval', $predictions);
     }
 }

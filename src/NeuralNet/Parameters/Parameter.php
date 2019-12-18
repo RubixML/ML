@@ -35,7 +35,7 @@ abstract class Parameter
     /**
      * Update the parameter tensor.
      *
-     * @param \Tensor\Tensor $step
+     * @param \Tensor\Tensor<mixed> $step
      */
     abstract public function update(Tensor $step) : void;
 

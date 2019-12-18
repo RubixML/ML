@@ -86,7 +86,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
@@ -102,7 +102,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -139,7 +139,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

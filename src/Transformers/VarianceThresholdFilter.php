@@ -31,9 +31,9 @@ class VarianceThresholdFilter implements Transformer, Stateful
     protected $threshold;
 
     /**
-     * The feature columns that have been selected.
+     * The indices of the feature columns that have been selected.
      *
-     * @var array|null
+     * @var int[]|null
      */
     protected $selected;
 
@@ -74,7 +74,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
     /**
      * Return the column indexes that have been selected during fitting.
      *
-     * @return array
+     * @return int[]
      */
     public function selected() : array
     {
@@ -84,7 +84,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -110,7 +110,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

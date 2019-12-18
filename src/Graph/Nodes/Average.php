@@ -3,9 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
-
-use function gettype;
 
 /**
  * Average
@@ -43,18 +40,12 @@ class Average implements Outcome, Leaf
     protected $n;
     
     /**
-     * @param mixed $outcome
+     * @param int|float $outcome
      * @param float $impurity
      * @param int $n
-     * @throws \InvalidArgumentException
      */
     public function __construct($outcome, float $impurity, int $n)
     {
-        if (!is_int($outcome) and !is_float($outcome)) {
-            throw new InvalidArgumentException('Outcome must be an'
-                . ' integer or float, ' . gettype($outcome) . ' found.');
-        }
-
         $this->outcome = $outcome;
         $this->impurity = $impurity;
         $this->n = $n;
@@ -64,7 +55,7 @@ class Average implements Outcome, Leaf
      * Return the outcome of the decision i.e the average of the
      * labels.
      *
-     * @return int|float|string
+     * @return int|float
      */
     public function outcome()
     {

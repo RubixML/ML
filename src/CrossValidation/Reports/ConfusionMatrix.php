@@ -37,10 +37,10 @@ class ConfusionMatrix implements Report
     /**
      * Generate the report.
      *
-     * @param array $predictions
-     * @param array $labels
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function generate(array $predictions, array $labels) : array
     {

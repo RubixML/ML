@@ -229,7 +229,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -256,7 +256,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -340,8 +340,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -351,7 +351,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]

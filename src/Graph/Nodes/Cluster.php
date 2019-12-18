@@ -34,7 +34,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     /**
      * The labels that make up the cluster.
      *
-     * @var array
+     * @var (string|int|float)[]
      */
     protected $labels;
 
@@ -75,9 +75,9 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     }
 
     /**
-     * @param array $samples
-     * @param array $labels
-     * @param array $center
+     * @param array[] $samples
+     * @param (string|int|float)[] $labels
+     * @param (int|float)[] $center
      * @param float $radius
      * @throws \InvalidArgumentException
      */

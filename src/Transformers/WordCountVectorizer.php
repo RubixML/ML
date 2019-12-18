@@ -51,10 +51,9 @@ class WordCountVectorizer implements Transformer, Stateful
     protected $tokenizer;
 
     /**
-     * The vocabulary of the fitted training set per categorical feature
-     * column.
+     * The vocabularies of each categorical feature column of the fitted dataset.
      *
-     * @var array|null
+     * @var array[]|null
      */
     protected $vocabulary;
 
@@ -106,7 +105,7 @@ class WordCountVectorizer implements Transformer, Stateful
     /**
      * Return an array of words in the vocabulary.
      *
-     * @return array
+     * @return string[]
      */
     public function vocabulary() : array
     {
@@ -126,7 +125,7 @@ class WordCountVectorizer implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -183,7 +182,7 @@ class WordCountVectorizer implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

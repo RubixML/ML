@@ -35,6 +35,9 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements ArrayAccess<int, array>
+ * @implements IteratorAggregate<int, array>
  */
 abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
@@ -58,7 +61,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param array $datasets
+     * @param \Rubix\ML\Datasets\Dataset[] $datasets
      * @return self
      */
     abstract public static function stack(array $datasets);
@@ -216,7 +219,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Return a tuple containing the shape of the dataset i.e the number of
      * rows and columns.
      *
-     * @var int[]
+     * @return int[]
      */
     public function shape() : array
     {
@@ -580,7 +583,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Generate a random weighted subset with replacement.
      *
      * @param int $n
-     * @param array $weights
+     * @param (int|float)[] $weights
      * @return self
      */
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);

@@ -108,7 +108,7 @@ class ITree implements BST
      * Insert a root node and recursively split the dataset until a
      * terminating condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function grow(Dataset $dataset) : void
     {
@@ -157,7 +157,7 @@ class ITree implements BST
     /**
      * Search the tree for a leaf node.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return \Rubix\ML\Graph\Nodes\Cell|null
      */
     public function search(array $sample) : ?Cell

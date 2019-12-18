@@ -24,7 +24,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * The maximum absolute values for each fitted feature column.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $maxabs;
 
@@ -51,7 +51,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * Return the maximum absolute values for each feature column.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function maxabs() : ?array
     {
@@ -61,7 +61,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -81,7 +81,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -105,7 +105,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

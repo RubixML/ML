@@ -9,14 +9,14 @@ interface Network
     /**
      * Return all the layers in the network.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Layer>
      */
     public function layers() : Generator;
 
     /**
      * Return the parametric layers of the network.
      *
-     * @return \Generator
+     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Parametric>
      */
     public function parametric() : Generator;
 

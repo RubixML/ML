@@ -50,7 +50,7 @@ class PrincipalComponentAnalysisTest extends TestCase
         $this->assertCount(2, $sample);
     }
 
-    public function test_transform_unfitted()
+    public function test_transform_unfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

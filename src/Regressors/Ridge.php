@@ -102,7 +102,7 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Return the weights of the model.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function weights() : ?array
     {
@@ -122,7 +122,7 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -159,10 +159,10 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
     {

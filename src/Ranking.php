@@ -9,7 +9,7 @@ interface Ranking extends Estimator
     /**
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @return float[]
      */
     public function rank(Dataset $dataset) : array;
@@ -17,7 +17,7 @@ interface Ranking extends Estimator
     /**
      * Return the score given to a single sample.
      *
-     * @param array $sample
+     * @param mixed[] $sample
      * @return float
      */
     public function rankSample(array $sample) : float;

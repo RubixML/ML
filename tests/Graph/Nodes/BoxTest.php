@@ -51,7 +51,7 @@ class BoxTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_split()
+    public function test_split() : void
     {
         $node = Box::split(Labeled::quick(self::SAMPLES, self::LABELS));
 

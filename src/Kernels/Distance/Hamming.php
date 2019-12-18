@@ -34,8 +34,8 @@ class Hamming implements Distance
     /**
      * Compute the distance between two vectors.
      *
-     * @param array $a
-     * @param array $b
+     * @param string[] $a
+     * @param string[] $b
      * @return float
      */
     public function compute(array $a, array $b) : float

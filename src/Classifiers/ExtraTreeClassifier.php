@@ -43,7 +43,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * The memoized class outcomes.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -102,7 +102,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -123,10 +123,10 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -143,7 +143,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
             $predictions[] = $node instanceof Best
                 ? $node->outcome()
-                : null;
+                : '?';
         }
 
         return $predictions;
@@ -152,7 +152,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array[]
@@ -195,7 +195,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $max = max($counts);
 
-        $outcome = array_search($max, $counts);
+        $outcome = (string) array_search($max, $counts);
 
         $probabilities = [];
 

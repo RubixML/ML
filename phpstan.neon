@@ -3,11 +3,11 @@ includes:
     - vendor/phpstan/phpstan-phpunit/rules.neon
 
 parameters:
-    level: 7
+    level: 8
     paths:
         - 'src'
         - 'tests'
     excludes_analyse:
         - src/Graph/Trees/BallTree.php
-        - src/Graph/Trees/CART.php
         - src/Graph/Trees/KDTree.php
+        - src/NeuralNet/CostFunctions/CrossEntropy.php

@@ -45,7 +45,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * The memoized class outcomes.
      *
-     * @var array
+     * @var string[]
      */
     protected $classes = [
         //
@@ -104,7 +104,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * Train the binary tree by learning the most optimal splits in the
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -125,10 +125,10 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -145,7 +145,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
             $predictions[] = $node instanceof Best
                 ? $node->outcome()
-                : null;
+                : '?';
         }
 
         return $predictions;
@@ -154,7 +154,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array[]

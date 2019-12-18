@@ -32,13 +32,16 @@ class LeakyReLUTest extends TestCase
      *
      * @dataProvider compute_provider
      */
-    public function test_compute(Matrix $input, array $expected)
+    public function test_compute(Matrix $input, array $expected) : void
     {
         $activations = $this->activationFn->compute($input)->asArray();
 
         $this->assertEquals($expected, $activations);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [
@@ -78,6 +81,9 @@ class LeakyReLUTest extends TestCase
         $this->assertEquals($expected, $derivatives);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function differentiate_provider() : Generator
     {
         yield [

@@ -28,6 +28,10 @@ class GowerTest extends TestCase
     }
 
     /**
+     * @param (string|int|float)[] $a
+     * @param (string|int|float)[] $b
+     * @param float $expected
+     *
      * @dataProvider compute_provider
      */
     public function test_compute(array $a, array $b, $expected) : void
@@ -38,6 +42,9 @@ class GowerTest extends TestCase
         $this->assertEquals($expected, $distance);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [['toast', 1., 0.5, NAN], ['pretzels', 1., 0.2, 0.1], 0.43333333333333335];

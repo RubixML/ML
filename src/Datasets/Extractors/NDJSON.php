@@ -6,13 +6,15 @@ use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function is_null;
+
 /**
- * NDJSON Array
+ * NDJSON
  *
  * NDJSON or *Newline Delimited* JSON files contain rows of data encoded in Javascript Object
- * Notation (JSON) arrays. The format is similar to CSV but has the advantage of being
- * standardized and retaining data type information at the cost of having a slightly heavier
- * footprint.
+ * Notation (JSON) arrays or objects. The format is similar to CSV but has the advantage of
+ * being standardized and retaining data type information at the cost of having a slightly
+ * heavier footprint.
  *
  * > **Note:** Empty rows will be ignored by the parser by default.
  *
@@ -20,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSONArray implements Extractor
+class NDJSON implements Extractor
 {
     use Cursorable;
 
@@ -52,7 +54,7 @@ class NDJSONArray implements Extractor
      * Read the records starting at the given offset and return them in an iterator.
      *
      * @throws \RuntimeException
-     * @return iterable
+     * @return iterable<array>
      */
     public function extract() : iterable
     {
@@ -65,7 +67,7 @@ class NDJSONArray implements Extractor
         $line = $n = 0;
 
         while (!feof($handle)) {
-            $row = fgets($handle);
+            $row = rtrim(fgets($handle) ?: '');
 
             if (empty($row)) {
                 continue 1;
@@ -76,9 +78,12 @@ class NDJSONArray implements Extractor
             if ($line > $this->offset) {
                 $record = json_decode($row);
 
-                if (!is_array($record)) {
-                    throw new RuntimeException('Non JSON array found'
-                        . " at row $line.");
+                if (is_null($record)) {
+                    throw new RuntimeException("Malformed JSON on line $line.");
+                }
+
+                if (is_object($record)) {
+                    $record = array_values((array) $record);
                 }
 
                 yield $record;

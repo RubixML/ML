@@ -26,6 +26,10 @@ class HammingTest extends TestCase
     }
 
     /**
+     * @param string[] $a
+     * @param string[] $b
+     * @param float $expected
+     *
      * @dataProvider compute_provider
      */
     public function test_compute(array $a, array $b, $expected) : void
@@ -36,6 +40,9 @@ class HammingTest extends TestCase
         $this->assertEquals($expected, $distance);
     }
 
+    /**
+     * @return \Generator<array>
+     */
     public function compute_provider() : Generator
     {
         yield [['soup', 'turkey', 'broccoli', 'cake'], ['salad', 'turkey', 'broccoli', 'pie'], 2.0];

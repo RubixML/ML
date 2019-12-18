@@ -24,7 +24,8 @@ abstract class ExtraTree extends CART
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
         $bestImpurity = INF;
-        $bestColumn = $bestValue = null;
+        $bestColumn = 0;
+        $bestValue = null;
         $bestGroups = [];
 
         foreach ($columns as $column) {

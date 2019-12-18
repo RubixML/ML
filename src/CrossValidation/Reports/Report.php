@@ -14,9 +14,9 @@ interface Report
     /**
      * Generate the report.
      *
-     * @param array $predictions
-     * @param array $labels
-     * @return array
+     * @param mixed[] $predictions
+     * @param mixed[] $labels
+     * @return mixed[]
      */
     public function generate(array $predictions, array $labels) : array;
 }

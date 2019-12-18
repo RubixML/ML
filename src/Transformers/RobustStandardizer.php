@@ -34,7 +34,7 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * The computed medians of the fitted data indexed by column.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $medians;
 
@@ -42,7 +42,7 @@ class RobustStandardizer implements Transformer, Stateful
      * The computed median absolute deviations of the fitted data
      * indexed by column.
      *
-     * @var array|null
+     * @var (int|float)[]|null
      */
     protected $mads;
 
@@ -77,7 +77,7 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * Return the medians calculated by fitting the training set.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function medians() : ?array
     {
@@ -87,7 +87,7 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * Return the median absolute deviations calculated during fitting.
      *
-     * @return array|null
+     * @return (int|float)[]|null
      */
     public function mads() : ?array
     {
@@ -97,7 +97,7 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -122,7 +122,7 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param array $samples
+     * @param array[] $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

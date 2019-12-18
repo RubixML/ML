@@ -39,10 +39,10 @@ class ResidualAnalysis implements Report
     /**
      * Generate the report.
      *
-     * @param array $predictions
-     * @param array $labels
+     * @param (int|float)[] $predictions
+     * @param (int|float)[] $labels
      * @throws \InvalidArgumentException
-     * @return array
+     * @return mixed[]
      */
     public function generate(array $predictions, array $labels) : array
     {

@@ -3,9 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
-
-use function gettype;
 
 /**
  * Best
@@ -24,7 +21,7 @@ class Best implements Outcome, Leaf
     /**
      * The outcome of a decision.
      *
-     * @var int|float|string
+     * @var string
      */
     protected $outcome;
 
@@ -50,19 +47,14 @@ class Best implements Outcome, Leaf
     protected $n;
     
     /**
-     * @param mixed $outcome
-     * @param array $probabilities
+     * @param string $outcome
+     * @param (int|float)[] $probabilities
      * @param float $impurity
      * @param int $n
      * @throws \InvalidArgumentException
      */
-    public function __construct($outcome, array $probabilities, float $impurity, int $n)
+    public function __construct(string $outcome, array $probabilities, float $impurity, int $n)
     {
-        if (!is_int($outcome) and !is_string($outcome)) {
-            throw new InvalidArgumentException('Outcome must be an'
-                . ' int or string, ' . gettype($outcome) . ' given.');
-        }
-
         $this->outcome = $outcome;
         $this->probabilities = $probabilities;
         $this->impurity = $impurity;
@@ -72,9 +64,9 @@ class Best implements Outcome, Leaf
     /**
      * Return the outcome of the decision.
      *
-     * @return int|float|string
+     * @return string
      */
-    public function outcome()
+    public function outcome() : string
     {
         return $this->outcome;
     }

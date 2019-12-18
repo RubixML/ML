@@ -97,7 +97,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var array
+     * @var array[]
      */
     protected $centroids = [
         //
@@ -106,7 +106,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * The inertia at each epoch of training.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -193,7 +193,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array
+     * @return array[]
      */
     public function centroids() : array
     {
@@ -203,7 +203,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the inter cluster distance at each epoch of training.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -213,7 +213,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -284,8 +284,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -295,10 +295,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
@@ -314,8 +314,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the membership of a sample to each of the c centroids.
      *
-     * @param array $sample
-     * @return array
+     * @param (string|int|float)[] $sample
+     * @return float[]
      */
     protected function membership(array $sample) : array
     {
@@ -344,8 +344,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
-     * @param array $samples
-     * @param array $memberships
+     * @param array[] $samples
+     * @param array[] $memberships
      * @return float
      */
     protected function inertia(array $samples, array $memberships) : float

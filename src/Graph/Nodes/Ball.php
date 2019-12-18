@@ -29,7 +29,7 @@ class Ball implements BinaryNode, Hypersphere
     /**
      * The center or multivariate mean of the centroid.
      *
-     * @var (int|float)[]
+     * @var (string|int|float)[]
      */
     protected $center;
 
@@ -83,9 +83,9 @@ class Ball implements BinaryNode, Hypersphere
     }
 
     /**
-     * @param array $center
+     * @param (string|int|float)[] $center
      * @param float $radius
-     * @param array $groups
+     * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @throws \InvalidArgumentException
      */
     public function __construct(array $center, float $radius, array $groups)
@@ -120,7 +120,7 @@ class Ball implements BinaryNode, Hypersphere
     /**
      * Return the center vector.
      *
-     * @return (int|float)[]
+     * @return (string|int|float)[]
      */
     public function center() : array
     {
@@ -140,7 +140,7 @@ class Ball implements BinaryNode, Hypersphere
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array
+     * @return \Rubix\ML\Datasets\Labeled[]
      */
     public function groups() : array
     {

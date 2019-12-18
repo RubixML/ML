@@ -21,7 +21,7 @@ class Prior implements Categorical
     /**
      * The counts of each unique class.
      *
-     * @var array
+     * @var int[]
      */
     protected $counts;
 
@@ -35,7 +35,7 @@ class Prior implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param array $values
+     * @param (string|int|float)[] $values
      * @throws \InvalidArgumentException
      */
     public function fit(array $values) : void
