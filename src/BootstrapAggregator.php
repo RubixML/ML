@@ -189,13 +189,13 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         
         switch ($this->type()) {
             case self::CLASSIFIER:
-                return array_map([self::class, 'decideClass'], $aggregate);
+                return array_map([self::class, 'decideDiscrete'], $aggregate);
 
             case self::REGRESSOR:
                 return array_map([Stats::class, 'mean'], $aggregate);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([self::class, 'decideAnomaly'], $aggregate);
+                return array_map([self::class, 'decideDiscrete'], $aggregate);
 
             default:
                 throw new RuntimeException('Invalid estimator type.');
@@ -203,23 +203,12 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
-     * Classification decision function.
+     * Decide on a discrete-valued outcome.
      *
      * @param string[] $votes
      * @return string
      */
-    public function decideClass($votes) : string
-    {
-        return argmax(array_count_values($votes));
-    }
-
-    /**
-     * Anomaly detection decision function.
-     *
-     * @param string[] $votes
-     * @return string
-     */
-    public function decideAnomaly($votes) : string
+    public function decideDiscrete($votes) : string
     {
         return argmax(array_count_values($votes));
     }
