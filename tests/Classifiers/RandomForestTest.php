@@ -86,8 +86,6 @@ class RandomForestTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $this->estimator->proba($testing);
-
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);

@@ -7,6 +7,7 @@ $rules = [
     '@PSR2' => true,
     'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
+    'backtick_to_shell_exec' => true,
     'binary_operator_spaces' => true,
     'blank_line_after_opening_tag' => true,
     'cast_spaces' => ['space' => 'single'],

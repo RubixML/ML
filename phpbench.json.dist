@@ -1,0 +1,9 @@
+{
+    "bootstrap": "vendor/autoload.php",
+    "path": "benchmarks",
+    "time_unit": "milliseconds",
+    "progress": "blinken",
+    "php_config": {
+        "memory_limit": "-1"
+    }
+}
