@@ -1,24 +1,17 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Classifiers;
+namespace Rubix\ML\Benchmarks\Clusterers;
 
-use Rubix\ML\Classifiers\KDNeighbors;
+use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
- * @Groups({"Classifiers"})
+ * @Groups({"Clusterers"})
  */
-class KDNeighborsBench
+class DBSCANBench
 {
-    protected const TRAINING_SIZE = 2500;
-
     protected const TESTING_SIZE = 10000;
-
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    public $training;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
@@ -26,11 +19,11 @@ class KDNeighborsBench
     public $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\KNearestNeighbors
+     * @var \Rubix\ML\Clusterers\DBSCAN
      */
     protected $estimator;
 
-    public function setUpTrainPredict() : void
+    public function setUpPredict() : void
     {
         $generator = new Agglomerate([
             'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
@@ -38,22 +31,18 @@ class KDNeighborsBench
             'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
         ]);
 
-        $this->training = $generator->generate(self::TRAINING_SIZE);
-
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new KDNeighbors(5, true);
+        $this->estimator = new DBSCAN(0.1);
     }
 
     /**
      * @Iterations(3)
-     * @BeforeMethods({"setUpTrainPredict"})
+     * @BeforeMethods({"setUpPredict"})
      * @OutputTimeUnit("seconds", precision=3)
      */
     public function bench_train_predict() : void
     {
-        $this->estimator->train($this->training);
-
         $this->estimator->predict($this->testing);
     }
 }

@@ -2,14 +2,15 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Classifiers\KDNeighbors;
+use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
  * @Groups({"Classifiers"})
  */
-class KDNeighborsBench
+class RandomForestBench
 {
     protected const TRAINING_SIZE = 2500;
 
@@ -26,7 +27,7 @@ class KDNeighborsBench
     public $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\KNearestNeighbors
+     * @var \Rubix\ML\Classifiers\RandomForest
      */
     protected $estimator;
 
@@ -42,7 +43,7 @@ class KDNeighborsBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new KDNeighbors(5, true);
+        $this->estimator = new RandomForest(new ClassificationTree(30));
     }
 
     /**

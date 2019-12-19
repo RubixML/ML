@@ -74,7 +74,7 @@
             "@check"
         ],
         "analyze": "phpstan analyse -c phpstan.neon",
-        "benchmark": "phpbench run --report=default",
+        "benchmark": "phpbench run --report=aggregate",
         "check": "php-cs-fixer fix --config=.php_cs.dist -v --dry-run --using-cache=no",
         "fix": "php-cs-fixer fix --config=.php_cs.dist",
         "test": "phpunit"

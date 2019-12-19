@@ -1,15 +1,15 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Classifiers;
+namespace Rubix\ML\Benchmarks\Clusterers;
 
-use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
- * @Groups({"Classifiers"})
+ * @Groups({"Clusterers"})
  */
-class KDNeighborsBench
+class GaussianMixtureBench
 {
     protected const TRAINING_SIZE = 2500;
 
@@ -26,7 +26,7 @@ class KDNeighborsBench
     public $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\KNearestNeighbors
+     * @var \Rubix\ML\Clusterers\GaussianMixture
      */
     protected $estimator;
 
@@ -42,7 +42,7 @@ class KDNeighborsBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new KDNeighbors(5, true);
+        $this->estimator = new GaussianMixture(3);
     }
 
     /**
