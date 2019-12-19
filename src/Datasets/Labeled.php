@@ -221,6 +221,22 @@ class Labeled extends Dataset
     }
 
     /**
+     * Describe the features of the dataset broken down by label.
+     *
+     * @return mixed[]
+     */
+    public function describeByLabel() : array
+    {
+        $stats = [];
+
+        foreach ($this->stratify() as $label => $stratum) {
+            $stats[$label] = $stratum->describe();
+        }
+
+        return $stats;
+    }
+
+    /**
      * Return an array of descriptive statistics about the labels in the
      * dataset.
      *

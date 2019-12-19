@@ -14,6 +14,7 @@
     - Removed fromIterator method from Dataset class
     - Changed Labeled dataset objects iteration and array access
     - Removed zip and unzip methods on Labeled dataset
+    - Added describe by label method to Labeled dataset
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

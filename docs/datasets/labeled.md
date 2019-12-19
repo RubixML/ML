@@ -192,6 +192,87 @@ $folds = $dataset->stratifiedFold(5);
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
+### Describe by Label
+Describe the features of the dataset broken down by label:
+Return an array of descriptive statistics about the labels in the dataset:
+```php
+public describeByLabel() : array
+```
+
+**Example**
+
+```php
+print_r($dataset->describeByLabel());
+```
+
+```sh
+Array
+(
+    [not monster] => Array
+        (
+            [0] => Array
+                (
+                    [column] => 0
+                    [type] => categorical
+                    [num_categories] => 1
+                    [probabilities] => Array
+                        (
+                            [nice] => 1
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [column] => 1
+                    [type] => categorical
+                    [num_categories] => 2
+                    [probabilities] => Array
+                        (
+                            [furry] => 0.5
+                            [rough] => 0.5
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [column] => 2
+                    [type] => categorical
+                    [num_categories] => 2
+                    [probabilities] => Array
+                        (
+                            [friendly] => 0.75
+                            [loner] => 0.25
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [column] => 3
+                    [type] => continuous
+                    [mean] => 1.125
+                    [variance] => 12.776875
+                    [std_dev] => 3.5744754859979
+                    [skewness] => -1.0795676577114
+                    [kurtosis] => -0.71758677657925
+                    [min] => -5
+                    [25%] => 0.7
+                    [median] => 2.75
+                    [75%] => 3.175
+                    [max] => 4
+                )
+
+        )
+
+    [monster] => Array
+        (
+            ...
+        )
+)
+```
+
 ### Describe the Labels
 Return an array of descriptive statistics about the labels in the dataset:
 ```php
@@ -201,9 +282,7 @@ public describeLabels() : array
 **Example**
 
 ```php
-$desc = $dataset->describeLabels();
-
-print_r($desc);
+print_r($dataset->describeLabels());
 ```
 
 ```sh

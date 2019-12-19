@@ -553,7 +553,7 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
-    public function test_describe_dataset() : void
+    public function test_describe() : void
     {
         $stats = $this->dataset->describe();
 
@@ -602,6 +602,99 @@ class LabeledTest extends TestCase
         ];
 
         $this->assertEquals($expected, $stats);
+    }
+
+    public function test_describe_by_label() : void
+    {
+        $expected = [
+            'not monster' => [
+                [
+                    'column' => 0,
+                    'type' => 'categorical',
+                    'num_categories' => 1,
+                    'probabilities' => [
+                        'nice' => 1,
+                    ],
+                ],
+                [
+                    'column' => 1,
+                    'type' => 'categorical',
+                    'num_categories' => 2,
+                    'probabilities' => [
+                        'furry' => 0.5,
+                        'rough' => 0.5,
+                    ],
+                ],
+                [
+                    'column' => 2,
+                    'type' => 'categorical',
+                    'num_categories' => 2,
+                    'probabilities' => [
+                        'friendly' => 0.75,
+                        'loner' => 0.25,
+                    ],
+                ],
+                [
+                    'column' => 3,
+                    'type' => 'continuous',
+                    'mean' => 1.125,
+                    'variance' => 12.776875,
+                    'std_dev' => 3.574475485997911,
+                    'skewness' => -1.0795676577113944,
+                    'kurtosis' => -0.7175867765792474,
+                    'min' => -5.0,
+                    '25%' => 0.6999999999999993,
+                    'median' => 2.75,
+                    '75%' => 3.175,
+                    'max' => 4.0,
+                ],
+            ],
+            'monster' => [
+                [
+                    'column' => 0,
+                    'type' => 'categorical',
+                    'num_categories' => 1,
+                    'probabilities' => [
+                        'mean' => 1,
+                    ],
+                ],
+                [
+                    'column' => 1,
+                    'type' => 'categorical',
+                    'num_categories' => 2,
+                    'probabilities' => [
+                        'furry' => 0.5,
+                        'rough' => 0.5,
+                    ],
+                ],
+                [
+                    'column' => 2,
+                    'type' => 'categorical',
+                    'num_categories' => 2,
+                    'probabilities' => [
+                        'friendly' => 0.5,
+                        'loner' => 0.5,
+                    ],
+                ],
+                [
+                    'column' => 3,
+                    'type' => 'continuous',
+                    'mean' => -1.25,
+                    'variance' => 0.0625,
+                    'std_dev' => 0.25,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => -1.5,
+                    '25%' => -1.375,
+                    'median' => -1.25,
+                    '75%' => -1.125,
+                    'max' => -1.0,
+                    
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->dataset->describeByLabel());
     }
 
     public function test_transform_column() : void
