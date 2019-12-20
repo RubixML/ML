@@ -1,5 +1,5 @@
 # Ranking
-A Ranking anomaly detector is one that is able to assign arbitrary scores to samples in a dataset. The samples can then be sorted by their score and the top k samples can be selected for further analysis.
+A Ranking anomaly detector is one that is able to assign arbitrary scores to samples in a dataset such that they can be sorted. The top or bottom *k* samples can then be selected for further analysis by a human expert.
 
 ### Score a Dataset
 Apply an arbitrary unnormalized scoring function over the dataset:

@@ -1,5 +1,5 @@
 # Probabilistic
-Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. outcome. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
+Estimators that implement the Probabilistic interface have additional methods (`proba()` and `probaSample()`)that return an array of joint probabilities for each possible class or cluster assignment. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular outcome and their joint distribution always sums to 1.
 
 ### Predict Probabilities
 Return the probability estimates of a prediction:

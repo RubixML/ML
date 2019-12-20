@@ -21,18 +21,9 @@ To run static analysis:
 ```sh
 $ composer analyze
 ```
-
-In addition, we use code quality metrics to provide us a high-level view of the complexity, dependencies, and size of the code base. We use the report generated from secondary static analysis to identify modules that need refactoring.
-
-To generate the HTML report:
-```sh
-$ composer metrics
-```
-
-> The generated report will be located in the `metrics` folder in the project root.
   
 ## Unit Testing
-All new code *requires* an accompanying unit test whether it be a new feature or a bug fix. What to test depends on the type of change you are making. See the individual unit testing guidelines below.
+Almost always, *new* code will require an accompanying unit test - whether it be a new feature or a bug fix. What to test depends on the type of change you are making. See the individual unit testing guidelines below.
 
 To run the unit tests:
 ```sh

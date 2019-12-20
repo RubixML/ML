@@ -37,7 +37,7 @@ nav:
   - Extractors:
     - API Reference: datasets/extractors/api.md
     - CSV: datasets/extractors/csv.md
-    - NDJSON Array: datasets/extractors/ndjson-array.md
+    - NDJSON: datasets/extractors/ndjson.md
   - Generators:
     - API Reference: datasets/generators/api.md
     - Agglomerate: datasets/generators/agglomerate.md
