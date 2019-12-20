@@ -1,18 +1,14 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Classifiers;
+namespace Rubix\ML\Benchmarks\Regressors;
 
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Classifiers\MultilayerPerceptron;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\Regressors\ExtraTreeRegressor;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 
 /**
- * @Groups({"Classifiers"})
+ * @Groups({"Regressors"})
  */
-class MultilayerPerceptronBench
+class ExtraTreeRegressorBench
 {
     protected const TRAINING_SIZE = 2500;
 
@@ -29,25 +25,19 @@ class MultilayerPerceptronBench
     public $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\MultilayerPerceptron
+     * @var \Rubix\ML\Regressors\ExtraTreeRegressor
      */
     protected $estimator;
 
     public function setUpTrainPredict() : void
     {
-        $generator = new Agglomerate([
-            'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
-            'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
-        ]);
+        $generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
         $this->training = $generator->generate(self::TRAINING_SIZE);
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new MultilayerPerceptron([
-            new Dense(100),
-            new Activation(new ReLU()),
-        ]);
+        $this->estimator = new ExtraTreeRegressor(30);
     }
 
     /**

@@ -1,8 +1,8 @@
 # Extracting Data
-Data will need to be loaded it into your project before it can become useful. There are many ways in which data can be stored, but the most common formats are either in plain-text format such as CSV or NDJSON and in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. Thus, you have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides  [Extractor](datasets/extractors/api.md) objects to help automate more common use cases.
+Data needs to be loaded into your project before it can become useful. Data can be stored in many formats, but the most common formats are either structured plain-text such as CSV or NDJSON or in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. You have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides [Extractor](datasets/extractors/api.md) objects to help automate more common use cases.
 
 ### CSV
-One of the most common formats that you'll find smaller datasets in is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV) files. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as a `,` character and may be enclosed on both ends with a `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `from()` method to new up a dataset object. The disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. However, the library provides a [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted from CSV format.
+One of the most common formats that you'll find smaller datasets in is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV) files. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as the `,` character and may be enclosed on both ends with an *enclosure* such as `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. Rubix ML provides the [CSV](datasets/extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `from()` method to new up a dataset object. The disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. However, the library also provides a [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted from CSV format.
 
 **Example**
 
@@ -28,7 +28,7 @@ $dataset = Unlabeled::from(new NDJSON('example.ndjson'));
 ```
 
 ## Database
-For bigger datasets, the data will often be stored in some type of database such as an RDBMS (relational database management system) like MySQL or an object store such as MongoDB. PHP already comes built-in with great database support such as [PDO](https://www.php.net/manual/en/book.pdo.php) for relational databases and other extensions for other popular databases. In addition, the PHP community has developed a healthy ecosystem of DBALs (Database Abstraction Layers) such as [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) and ORMs (Object Relational Mappers) such as [Eloquent](https://laravel.com/docs/5.8/eloquent) that make it even easier to get the data you need. The following example uses PDO and the `fetchAll()` method to return a 2-d array of samples.
+Bigger datasets will often be stored in some type of database such as an RDBMS (relational database management system) like MySQL or an object store such as MongoDB. PHP already comes built-in with great database support such as [PDO](https://www.php.net/manual/en/book.pdo.php) for relational databases and other extensions for other popular databases. In addition, the PHP community has developed a healthy ecosystem of DBALs (Database Abstraction Layers) such as [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) and ORMs (Object Relational Mappers) such as [Eloquent](https://laravel.com/docs/5.8/eloquent) that make it even easier to get the data you need. The following example uses PDO and the `fetchAll()` method to return 1000 samples from the database.
 
 **Example**
 
@@ -37,7 +37,7 @@ use Rubix\ML\Datasets\Unlabeled;
 
 $pdo = new PDO('mysql:dbname=example;host=127.0.0.1');
 
-$query = $pdo->prepare('SELECT age, gender, height FROM patients');
+$query = $pdo->prepare('SELECT age, gender, height, diagnosis FROM patients LIMIT 1000');
 
 $query->execute();
 

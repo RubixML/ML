@@ -2,7 +2,7 @@
 Model persistence refers to the capability of an estimator to be trained and used to make predictions in processes other the current running process. Imagine that you trained a classifier to categorize comment posts and now you want to deploy it to a server to perform real-time inference on your website. Or, say you just finished training a model that took the whole day and you want to save it for later. Rubix ML allows you to handle both of these scenarios using [Persisters](./persiters/api.md) and [Persistable](persistable.md) objects.
 
 ### Persisters
-Persisters are objects whose responsibility is to save and load model data to and from storage. For example, the [Filesystem](./persisters/filesystem.md) serializes and reconstitutes a persistable model from a location on a filesystem such as a local hard disk drive (HDD) or network attached storage (NAS).
+Persisters are objects whose responsibility it is to save and load model data to and from storage. For example, the [Filesystem](./persisters/filesystem.md) persister saves and loads a persistable estimator from a location on a filesystem such as a local hard disk drive (HDD) or network attached storage (NAS).
 
 **Example**
 

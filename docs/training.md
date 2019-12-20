@@ -14,7 +14,7 @@ $estimator->train($dataset);
 ```
 
 ## Batch vs Online Learning
-Batch learning is when a learner is trained in full using one dataset within a single session. Calling the `train()` method on the learner instance is an example of batch learning. In contrast, *online* learning occurs when a learner is trained over multiple sessions with multiple datasets as small as a single sample each. Learners that are capable of being partially trained like this implement the [Online](online.md) interface that includes the `partial()` method for training in an online scheme. Subsequent calls the to `partial()` method will continue training where the learner left off since the last training session.
+Batch learning is when a learner is trained in full using only one dataset in a single session. Calling the `train()` method on the learner instance is an example of batch learning. In contrast, *online* learning occurs when a learner is trained over multiple sessions with multiple datasets as small as a single sample each. Learners that are capable of being partially trained like this implement the [Online](online.md) interface that includes the `partial()` method for training in an online scheme. Subsequent calls to the `partial()` method will continue training where the learner left off since the last training session.
 
 **Example**
 

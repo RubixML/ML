@@ -45,7 +45,7 @@ string(3) "cat"
 ```
 
 ## Estimation of Probabilities
-Sometimes, you may not just want to know the outcome of a prediction but also how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a method `proba()` that outputs the joint probability estimates for each class or cluster number as shown in the example below.
+Sometimes, you may not just want to know the outcome but also how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a method `proba()` that outputs the joint probability estimates for each class or cluster number as shown in the example below.
 
 **Example**
 ```php
@@ -81,7 +81,7 @@ var_dump($scores);
 ```sh
 array(3) {
   [0]=> float(0.35033859096744)
-  [1]=> int(0.40992076925443)
-  [2]=> int(0.68163357834096)
+  [1]=> float(0.40992076925443)
+  [2]=> float(0.68163357834096)
 }
 ```
