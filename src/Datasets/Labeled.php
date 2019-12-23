@@ -6,7 +6,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Datasets\Extractors\Extractor;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
@@ -70,16 +69,16 @@ class Labeled extends Dataset
     }
 
     /**
-     * Build a dataset using the data from an extractor object.
+     * Build a dataset using with data from an iterator.
      *
-     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @param iterable<array> $iterator
      * @return self
      */
-    public static function from(Extractor $extractor) : self
+    public static function fromIterator(iterable $iterator) : self
     {
         $samples = $labels = [];
 
-        foreach ($extractor->extract() as $record) {
+        foreach ($iterator as $record) {
             $samples[] = array_slice($record, 0, -1);
             $labels[] = end($record);
         }
@@ -91,7 +90,7 @@ class Labeled extends Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param mixed[] $datasets
+     * @param \Rubix\ML\Datasets\Labeled[] $datasets
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -100,7 +99,7 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($datasets as $dataset) {
-            if (!$dataset instanceof self) {
+            if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Dataset must be'
                     . ' a instance of Labeled, ' . get_class($dataset)
                     . ' given.');

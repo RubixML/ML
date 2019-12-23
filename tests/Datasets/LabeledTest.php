@@ -5,8 +5,8 @@ namespace Rubix\ML\Tests\Datasets;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Kernels\Distance\Gower;
-use Rubix\ML\Datasets\Extractors\NDJSON;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use ArrayAccess;
@@ -64,9 +64,9 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
     }
 
-    public function test_from_extractor() : void
+    public function test_from_iterator() : void
     {
-        $dataset = Labeled::from(new NDJSON('tests/test.ndjson'));
+        $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'));
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertEquals(self::SAMPLES, $dataset->samples());

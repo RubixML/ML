@@ -39,6 +39,9 @@
         <testsuite name="Embedders">
             <directory>tests/Embedders</directory>
         </testsuite>
+        <testsuite name="Extractors">
+            <directory>tests/Extractors</directory>
+        </testsuite>
         <testsuite name="Neural Net">
             <directory>tests/NeuralNet</directory>
         </testsuite>

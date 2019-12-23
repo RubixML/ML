@@ -4,9 +4,9 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Gower;
-use Rubix\ML\Datasets\Extractors\NDJSON;
 use PHPUnit\Framework\TestCase;
 use ArrayAccess;
 use Countable;
@@ -57,9 +57,9 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
     }
 
-    public function test_from_extractor() : void
+    public function test_from_iterator() : void
     {
-        $dataset = Unlabeled::from(new NDJSON('tests/test.ndjson'));
+        $dataset = Unlabeled::fromIterator(new NDJSON('tests/test.ndjson'));
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
     }

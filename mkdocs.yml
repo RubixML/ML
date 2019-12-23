@@ -30,14 +30,14 @@ nav:
   - Ranking: ranking.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
+- Extractors:
+  - API Reference: datasets/extractors/api.md
+  - CSV: datasets/extractors/csv.md
+  - NDJSON: datasets/extractors/ndjson.md
 - Dataset Objects:
   - API Reference: datasets/api.md
   - Labeled: datasets/labeled.md
   - Unlabeled: datasets/unlabeled.md
-  - Extractors:
-    - API Reference: datasets/extractors/api.md
-    - CSV: datasets/extractors/csv.md
-    - NDJSON: datasets/extractors/ndjson.md
   - Generators:
     - API Reference: datasets/generators/api.md
     - Agglomerate: datasets/generators/agglomerate.md

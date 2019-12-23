@@ -10,6 +10,9 @@
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the NDJSON file. |
 
+### Additional Methods
+This extractor does not have any additional methods.
+
 ### Example
 ```php
 use Rubix\ML\Datasets\Extractors\NDJSON;

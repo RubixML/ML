@@ -1,8 +1,13 @@
 <?php
 
-namespace Rubix\ML\Datasets\Extractors\Traits;
+namespace Rubix\ML\Extractors;
 
-trait Cursorable
+use IteratorAggregate;
+
+/**
+ * @implements IteratorAggregate<int, array>
+ */
+abstract class Extractor implements IteratorAggregate
 {
     /**
      * The row offset of the cursor.
@@ -42,5 +47,22 @@ trait Cursorable
         $this->limit = $limit;
 
         return $this;
+    }
+
+    /**
+     * Read the records and return them in an iterator.
+     *
+     * @return iterable<array>
+     */
+    abstract public function extract() : iterable;
+
+    /**
+     * Get an iterator for the records in the data table.
+     *
+     * @return iterable<array>
+     */
+    public function getIterator() : iterable
+    {
+        return $this->extract();
     }
 }

@@ -1,5 +1,4 @@
 /vendor
-/metrics
 composer.lock
 test.json
 test.php

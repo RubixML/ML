@@ -7,7 +7,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Datasets\Extractors\Extractor;
 use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
@@ -50,12 +49,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     protected $samples;
 
     /**
-     * Build a dataset using the data from an extractor object.
+     * Build a dataset using with data from an iterator.
      *
-     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @param iterable<array> $iterator
      * @return self
      */
-    abstract public static function from(Extractor $extractor);
+    abstract public static function fromIterator(iterable $iterator);
 
     /**
      * Stack a number of datasets on top of each other to form a single

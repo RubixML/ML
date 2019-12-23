@@ -5,7 +5,6 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Datasets\Extractors\Extractor;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use ArrayIterator;
@@ -52,16 +51,14 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Build a dataset using the data from an extractor object.
+     * Build a dataset using with data from an iterator.
      *
-     * @param \Rubix\ML\Datasets\Extractors\Extractor $extractor
+     * @param iterable<array> $iterator
      * @return self
      */
-    public static function from(Extractor $extractor) : self
+    public static function fromIterator(iterable $iterator) : self
     {
-        $records = $extractor->extract();
-
-        $samples = is_array($records) ? $records : iterator_to_array($records);
+        $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator);
 
         return self::build($samples);
     }
@@ -70,7 +67,7 @@ class Unlabeled extends Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param mixed[] $datasets
+     * @param \Rubix\ML\Datasets\Dataset[] $datasets
      * @throws \InvalidArgumentException
      * @return self
      */

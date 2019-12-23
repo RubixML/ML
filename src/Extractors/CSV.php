@@ -1,8 +1,7 @@
 <?php
 
-namespace Rubix\ML\Datasets\Extractors;
+namespace Rubix\ML\Extractors;
 
-use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -19,10 +18,8 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor
+class CSV extends Extractor
 {
-    use Cursorable;
-
     /**
      * The path to the CSV file.
      *
@@ -43,6 +40,13 @@ class CSV implements Extractor
      * @var string
      */
     protected $enclosure;
+
+    /**
+     * Does the CSV document have a header as the first row?
+     *
+     * @var bool
+     */
+    protected $header = false;
 
     /**
      * @param string $path
@@ -76,6 +80,19 @@ class CSV implements Extractor
     }
 
     /**
+     * Does the CSV document have a header as the first row?
+     *
+     * @param bool $header
+     * @return self
+     */
+    public function setHeader(bool $header = true) : self
+    {
+        $this->header = $header;
+
+        return $this;
+    }
+
+    /**
      * Read the records starting at the given offset and return them in an iterator.
      *
      * @throws \RuntimeException
@@ -86,7 +103,13 @@ class CSV implements Extractor
         $handle = fopen($this->path, 'r');
         
         if (!$handle) {
-            throw new RuntimeException("Could not open file at {$this->path}.");
+            throw new RuntimeException("Could not open $this->path.");
+        }
+
+        if ($this->header) {
+            $row = rtrim(fgets($handle) ?: '');
+
+            $header = str_getcsv($row, $this->delimiter, $this->enclosure);
         }
 
         $line = $n = 0;
@@ -100,16 +123,27 @@ class CSV implements Extractor
 
             ++$line;
 
-            if ($line > $this->offset) {
-                $record = str_getcsv($row, $this->delimiter, $this->enclosure);
+            if ($line <= $this->offset) {
+                continue 1;
+            }
 
-                yield $record;
+            $record = str_getcsv($row, $this->delimiter, $this->enclosure);
 
-                ++$n;
+            if (isset($header)) {
+                $record = array_combine($header, $record);
 
-                if ($n >= $this->limit) {
-                    break 1;
+                if (!$record) {
+                    throw new RuntimeException('Wrong number of'
+                        . " columns on line $line.");
                 }
+            }
+
+            yield $record;
+
+            ++$n;
+
+            if ($n >= $this->limit) {
+                break 1;
             }
         }
 

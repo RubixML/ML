@@ -10,9 +10,17 @@ A non-standard plain-text format that use newlines to delineate rows and a user-
 | 2 | delimiter | ',' | string | The character that delineates a new column. |
 | 4 | enclosure | '' | string | The character used to enclose the value of a column. |
 
+### Additional Methods
+Does the CSV document have a header as the first row?:
+```php
+public setHeader(bool $header = true) : self
+```
+
 ### Example
 ```php
 use Rubix\ML\Datasets\Extractors\CSV;
 
 $extractor = new CSV('example.csv', ',', '"');
+
+$extractor->setHeader(true);
 ```

@@ -1,7 +1,6 @@
 - Unreleased
     - Now requires PHP 7.2 and above
     - Added performance benchmarks
-    - Can now build Datasets using Extractors and from method
     - Added NDJSON Array and CSV data Extractors
     - Added Hyperplane dataset generator
     - Changed the way noise is applied to Circle, Half Moon, etc.
@@ -15,6 +14,7 @@
     - Changed Labeled dataset objects iteration and array access
     - Removed zip and unzip methods on Labeled dataset
     - Added describe by label method to Labeled dataset
+    - Changed the way fromIterator works on Dataset
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

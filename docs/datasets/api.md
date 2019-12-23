@@ -32,10 +32,10 @@ $samples = [
 ];
 ```
 
-## Extracting From Source
-Build a dataset using the data from an extractor object:
+## Factory Methods
+Build a dataset using the data from an iterator:
 ```php
-public static from(Extractor $extractor) : self
+public static fromIterator(iterable $iterator) : self
 ```
 
 **Example**
@@ -44,8 +44,10 @@ public static from(Extractor $extractor) : self
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Extractors\CSV;
 
-$dataset = Labeled::from(new CSV('example.csv'));
+$dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
+
+**Note:** The data must be in the format of a table where each row is an n-d array of values.
 
 ## Selecting
 Return all the samples in the dataset in a 2-dimensional array:

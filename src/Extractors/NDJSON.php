@@ -1,8 +1,7 @@
 <?php
 
-namespace Rubix\ML\Datasets\Extractors;
+namespace Rubix\ML\Extractors;
 
-use Rubix\ML\Datasets\Extractors\Traits\Cursorable;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -22,10 +21,8 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor
+class NDJSON extends Extractor
 {
-    use Cursorable;
-
     /**
      * The path to the NDJSON file.
      *
@@ -61,7 +58,7 @@ class NDJSON implements Extractor
         $handle = fopen($this->path, 'r');
         
         if (!$handle) {
-            throw new RuntimeException("Could not open file at {$this->path}.");
+            throw new RuntimeException("Could not open $this->path.");
         }
 
         $line = $n = 0;
@@ -75,24 +72,22 @@ class NDJSON implements Extractor
 
             ++$line;
 
-            if ($line > $this->offset) {
-                $record = json_decode($row);
+            if ($line <= $this->offset) {
+                continue 1;
+            }
+            
+            $record = json_decode($row, true);
 
-                if (is_null($record)) {
-                    throw new RuntimeException("Malformed JSON on line $line.");
-                }
+            if (is_null($record)) {
+                throw new RuntimeException("Malformed JSON on line $line.");
+            }
 
-                if (is_object($record)) {
-                    $record = array_values((array) $record);
-                }
+            yield $record;
 
-                yield $record;
+            ++$n;
 
-                ++$n;
-
-                if ($n >= $this->limit) {
-                    break 1;
-                }
+            if ($n >= $this->limit) {
+                break 1;
             }
         }
 
