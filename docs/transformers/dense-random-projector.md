@@ -7,18 +7,18 @@ The Dense Random Projector uses a random matrix sampled from a dense uniform dis
 
 **Data Type Compatibility:** Continuous only
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-### Additional Methods
+## Additional Methods
 Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\DenseRandomProjector;
 

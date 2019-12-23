@@ -7,15 +7,15 @@ A classifier that uses a user-defined guessing [Strategy](../other/strategies/ap
 
 **Data Type Compatibility:** Categorical, Continuous, Resource
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | strategy | Popularity Contest | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| 1 | strategy | Prior | Categorical | The guessing strategy to employ when making predictions. |
 
-### Additional Methods
+## Additional Methods
 This estimator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Other\Strategies\Prior;

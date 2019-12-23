@@ -5,15 +5,15 @@ A strategy that always guesses the p-th percentile of the fitted data.
 
 **Data Type:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | p | 50.0 | float | The percentile of the fitted data to use as a guess. |
 
-### Additional Methods
+## Additional Methods
 This strategy does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Other\Strategies\Percentile;
 

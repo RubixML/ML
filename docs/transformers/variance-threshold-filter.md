@@ -7,18 +7,18 @@ A type of feature selector that selects feature columns that have a greater vari
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 0. | float | Feature columns with a variance greater than this threshold will be selected. |
 
-### Additional Methods
+## Additional Methods
 Return the columns that were selected during fitting:
 ```php
 public selected() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 

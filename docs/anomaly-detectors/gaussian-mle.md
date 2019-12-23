@@ -7,13 +7,13 @@ The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by comp
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 5.0 | float | The minimum log likelihood to be flagged as an anomaly. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 
-### Additional Methods
+## Additional Methods
 Return the column means computed from the training set:
 ```php
 public means() : array
@@ -24,7 +24,7 @@ Return the column variances computed from the training set:
 public variances() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\AnomalyDetectors\GaussianMLE;
 

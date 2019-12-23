@@ -7,16 +7,16 @@ The One Hot Encoder takes a feature column of categorical values and produces an
 
 **Data Type Compatibility:** Categorical
 
-### Parameters
+## Parameters
 This transformer does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 Return the categories computed during fitting indexed by feature column:
 ```php
 public categories() : ?array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 

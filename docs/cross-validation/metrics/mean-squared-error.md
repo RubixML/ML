@@ -9,7 +9,7 @@ A scale-dependent regression metric that gives greater weight to error scores th
 
 **Output Range:** -∞ to 0
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 

@@ -7,17 +7,17 @@ An ensemble learner comprised of Isolation Trees that are each trained on a uniq
 
 **Data Type Compatibility:** Categorical, Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | estimators | 100 | int | The number of isolation trees to train in the ensemble. |
 | 2 | ratio | | float | The ratio of samples to train each estimator with. If `null` then the subsample size is 256. |
 | 3 | contamination | Auto | float | The proportion of outliers that are presumed to be present in the training set. |
 
-### Additional Methods
+## Additional Methods
 This estimator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 

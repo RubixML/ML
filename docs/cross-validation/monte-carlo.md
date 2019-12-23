@@ -5,13 +5,13 @@ Monte Carlo cross validation (or *repeated random subsampling*) is a technique t
 
 **Interfaces:** [Validator](api.md#validator), [Parallel](#parallel)
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | simulations | 10 | int | The number of simulations i.e. random subsamplings of the dataset. |
 | 2 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\MonteCarlo;
 

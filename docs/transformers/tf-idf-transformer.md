@@ -9,16 +9,16 @@
 
 **Data Type Compatibility:** Continuous only
 
-### Parameters
+## Parameters
 This transformer does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 Return the inverse document frequencies calculated during fitting:
 ```php
 public idfs() : ?array
 ```
 
-### Example
+## Example
 
 ```php
 use Rubix\ML\Transformers\TfIdfTransformer;

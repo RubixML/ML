@@ -9,13 +9,13 @@ A statistical anomaly detector that uses modified Z scores that are robust to pr
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 3.5 | float | The minimum Z score to be flagged as an anomaly. |
 | 2 | alpha | 0.5 | float | The weight of the maximum per-sample Z score in the overall anomaly score. |
 
-### Additional Methods
+## Additional Methods
 Return the median of each feature column in the training set:
 ```php
 public medians() : ?array
@@ -26,7 +26,7 @@ Return the median absolute deviation (MAD) of each feature column in the trainin
 public mads() : ?array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 

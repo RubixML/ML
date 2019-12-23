@@ -7,13 +7,13 @@ Transform each sample vector in the sample matrix such that each feature is divi
 
 **Data Type Compatibility:** Continuous only
 
-### Parameters
+## Parameters
 This transformer does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\L1Normalizer;
 

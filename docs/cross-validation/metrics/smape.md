@@ -9,7 +9,7 @@
 
 **Output Range:** -100 to 0
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 

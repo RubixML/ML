@@ -3,10 +3,10 @@
 # Softsign
 A smooth sigmoid-shaped function that squashes the input between -1 and 1.
 
-### Parameters
+## Parameters
 This activation function does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 

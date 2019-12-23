@@ -7,7 +7,7 @@ Matthews Correlation Coefficient (MCC) measures the quality of a classification 
 
 **Output Range:** -1 to 1
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\MCC;
 

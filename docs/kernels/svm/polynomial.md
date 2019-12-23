@@ -3,14 +3,14 @@
 # Polynomial
 This kernel projects a sample vector using polynomials of the p'th degree.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | degree | 3 | int | The degree of the polynomial. |
 | 2 | gamma | null | float | The kernel coefficient. |
 | 3 | coef0 | 0. | float | The independent term. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\SVM\Polynomial;
 

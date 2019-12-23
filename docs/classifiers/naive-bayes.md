@@ -9,13 +9,13 @@ Probability-based classifier that uses Bayes' Theorem and the strong assumption 
 
 **Data Type Compatibility:** Categorical
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing applied to the probabilities. |
 | 2 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
-### Additional Methods
+## Additional Methods
 Return the class prior probabilities:
 ```php
 public priors() : array
@@ -26,7 +26,7 @@ Return the counts for each category per class:
 public counts() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 

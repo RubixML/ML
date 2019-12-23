@@ -9,17 +9,17 @@ The Support Vector Machine Regressor (SVR) is a maximum margin algorithm for the
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
 | 2 | epsilon | 0.1 | float | Specifies the margin within which no penalty is associated in the training loss. |
-| 3 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
+| 3 | kernel | RBF | Kernel | The kernel function used to operate in higher dimensions. |
 | 4 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cache size | 100. | float | The size of the kernel cache in MB. |
 
-### Additional Methods
+## Additional Methods
 Save the model data to the filesystem:
 ```php
 public save(string $path) : void
@@ -30,7 +30,7 @@ Load the model data from the filesystem:
 public load(string $path) : void
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\SVR;
 use Rubix\ML\Kernels\SVM\RBF;

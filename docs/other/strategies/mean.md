@@ -5,13 +5,13 @@ This strategy always predicts the mean of the fitted data.
 
 **Data Type:** Continuous
 
-### Parameters
+## Parameters
 This strategy does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 This strategy does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Other\Strategies\Mean;
 

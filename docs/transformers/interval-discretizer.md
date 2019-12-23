@@ -7,12 +7,12 @@ This transformer creates an equi-width histogram for each continuous feature col
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | bins | 5 | int | The number of bins (discrete categories) per continuous feature column. |
 
-### Additional Methods
+## Additional Methods
 Return the possible categories of each feature column:
 ```php
 public categories() : array
@@ -23,7 +23,7 @@ Return the intervals of each continuous feature column calculated during fitting
 public intervals() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
 

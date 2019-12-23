@@ -3,14 +3,14 @@
 # Adam
 Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS properties. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](rms-prop.md), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](momentum.md). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | norm decay | 0.001 | float | The decay rate of the rms property. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 

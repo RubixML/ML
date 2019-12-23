@@ -3,12 +3,12 @@
 # Plus Plus
 This seeder attempts to maximize the chances of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
+| 1 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between samples. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Kernels\Distance\Minkowski;

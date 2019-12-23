@@ -5,12 +5,12 @@ A report that aggregates the output of multiple reports into one report.
 
 **Estimator Compatibility:** Depends on base reports
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | reports | | array | An array of report objects to aggregate indexed by a user-given name. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;

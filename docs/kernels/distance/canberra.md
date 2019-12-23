@@ -5,10 +5,10 @@ A weighted version of the [Manhattan](manhattan.md) distance, Canberra examines 
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Canberra;
 

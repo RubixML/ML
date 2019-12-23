@@ -7,18 +7,18 @@
 
 > **Note:** The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | workers | Auto | int | The maximum number of workers i.e. processes to execute in parallel. |
 
-### Additional Methods
+## Additional Methods
 Return the maximum number of workers:
 ```php
 public workers() : int
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Backends\Amp;
 

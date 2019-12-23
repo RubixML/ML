@@ -3,10 +3,10 @@
 # Soft Plus
 A smooth approximation of the piecewise linear [ReLU](relu.md) activation function.
 
-### Parameters
+## Parameters
 This activation function does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 

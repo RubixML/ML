@@ -5,14 +5,14 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 
 > **Note:** Labels can be of categorical or continuous data type but NaN values are not allowed.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
 
-### Additional Methods
+## Additional Methods
 
 #### Factory Methods
 Build a new labeled dataset with validation:

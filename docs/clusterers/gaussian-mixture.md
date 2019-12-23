@@ -7,15 +7,15 @@ A Gaussian Mixture model (GMM) is a probabilistic model for representing the pre
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
 | 2 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 3 | min change | 1e-3 | float | The minimum change in the components necessary for the algorithm to continue training. |
-| 6 | seeder | PlusPlus | object | The seeder used to initialize the Guassian components. |
+| 6 | seeder | PlusPlus | Seeder | The seeder used to initialize the Guassian components. |
 
-### Additional Methods
+## Additional Methods
 Return the cluster prior probabilities based on their representation over all training samples:
 ```php
 public priors() : array
@@ -31,7 +31,7 @@ Return the variance of each feature column for each cluster:
 public variances() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Clusterers\Seeders\KMC2;

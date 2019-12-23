@@ -7,20 +7,20 @@
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
 | 2 | bins | Auto | int | The number of equi-width bins for each histogram. |
 | 3 | threshold | 10.0 | float | The minimum negative log likelihood to be flagged as an anomaly. |
 
-### Additional Methods
+## Additional Methods
 To estimate the number of histogram bins from the number of samples in a dataset:
 ```php
 public static estimateBins(int $n) : int
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\AnomalyDetectors\Loda;
 

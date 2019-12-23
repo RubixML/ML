@@ -7,12 +7,12 @@ A weighted harmonic mean of precision and recall metrics. The beta parameter con
 
 **Output Range:** 0 to 1
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | beta | 1. | float | The weight of precision in the harmonic mean. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 

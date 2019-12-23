@@ -9,18 +9,18 @@ An unsupervised imputer that replaces missing values in datasets with the weight
 
 **Data Type Compatibility:** Depends on distance kernel
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when imputing a value. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when imputing values? |
-| 3 | kernel | Safe Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 3 | kernel | Safe Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 | 4 | placeholder | '?' | string | The categorical placeholder variable denoting the category that contains missing values. |
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\KNNImputer;
 use Rubix\ML\Kernels\Distance\Gower;

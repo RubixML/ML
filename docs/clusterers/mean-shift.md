@@ -7,17 +7,17 @@ A hierarchical clustering algorithm that uses peak finding to locate the candiat
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
 | 2 | ratio | 0.1 | float | The ratio of samples from the training set to seed the algorithm with. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 4 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
-| 5 | tree | BallTree | object | The spatial tree used to run range searches. |
-| 6 | seeder | Random | object | The seeder used to initialize the cluster centroids. |
+| 5 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
+| 6 | seeder | Random | Seeder | The seeder used to initialize the cluster centroids. |
 
-### Additional Methods
+## Additional Methods
 Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
 ```php
 public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $kernel = null) : float
@@ -35,7 +35,7 @@ Returns the amount of centroid shift during each epoch of training:
 public steps() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Graph\Trees\BallTree;

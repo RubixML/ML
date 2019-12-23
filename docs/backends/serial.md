@@ -5,13 +5,13 @@ The Serial backend executes tasks sequentially inside of a single PHP process. T
 
 > **Note:** The Serial backend is the default for most objects that capable of parallel processing.
 
-### Parameters
+## Parameters
 This backend does not have any additional parameters.
 
-### Additional Methods
+## Additional Methods
 This backend does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Backends\Serial;
 

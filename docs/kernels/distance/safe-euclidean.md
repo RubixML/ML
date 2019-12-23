@@ -5,10 +5,10 @@ An Euclidean distance metric suitable for samples that may contain NaN (not a nu
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 

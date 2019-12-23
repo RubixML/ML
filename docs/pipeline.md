@@ -9,17 +9,17 @@ Pipeline is a meta estimator responsible for transforming the input dataset by a
 
 **Data Type Compatibility:** Depends on base learner and transformers
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
-| 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
+| 2 | estimator |  | Estimator | An instance of the base estimator to receive transformed data. |
 | 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
 
-### Additional Methods
+## Additional Methods
 This meta estimator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\Transformers\NumericStringConverter;

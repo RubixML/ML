@@ -3,10 +3,10 @@
 # Native
 The native plain text serialization format that is bundled with PHP core.
 
-### Parameters
+## Parameters
 This serializer does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Persisters\Serializers\Native;
 

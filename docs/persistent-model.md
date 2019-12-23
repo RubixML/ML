@@ -7,13 +7,13 @@ The Persistent Model wrapper gives the estimator two additional methods (`save()
 
 **Data Type Compatibility:** Depends on base learner
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | | object | An instance of the base estimator to be persisted. |
-| 2 | persister | | object | The persister object used to store the model data. |
+| 1 | base | | Learner | The instance of the base estimator to be persisted. |
+| 2 | persister | | Persister | The persister used to store the model data. |
 
-### Additional Methods
+## Additional Methods
 Save the persistent model to storage:
 ```php
 public save() : void
@@ -24,7 +24,7 @@ Load the persistent model from storage given a persister:
 public static load(Persister $persister) : self
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\RandomForest;

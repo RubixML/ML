@@ -5,10 +5,10 @@ Standard straight line (*bee* line) distance between two points. The Euclidean d
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Euclidean;
 

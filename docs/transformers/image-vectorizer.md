@@ -9,15 +9,15 @@ Image Vectorizer takes images and converts them into a flat vector of raw color 
 
 **Data Type Compatibility:** Resource (Images)
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | channels | 3 | int | The channel depth i.e the number of rgba channels to encode starting with red. |
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\ImageVectorizer;
 

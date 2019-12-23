@@ -3,10 +3,10 @@
 # Le Cun
 Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
 
-### Parameters
+## Parameters
 This initializer does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Initializers\LeCun;
 

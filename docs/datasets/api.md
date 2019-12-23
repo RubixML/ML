@@ -47,7 +47,7 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
-**Note:** The data must be in the format of a table where each row is an n-d array of values.
+**Note:** The data must be in the format of a table where each row is an n-d array of values. By convention, labels are always the last column of the table.
 
 ## Selecting
 Return all the samples in the dataset in a 2-dimensional array:

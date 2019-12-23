@@ -7,7 +7,7 @@ The Adjusted Rand Index is a measure of similarity between a clustering and some
 
 **Output Range:** -1 to 1
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\RandIndex;
 

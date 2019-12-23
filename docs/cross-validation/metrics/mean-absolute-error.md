@@ -9,7 +9,7 @@ A scale-dependent metric that measures the average absolute error between a set 
 
 **Output Range:** -∞ to 0
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 

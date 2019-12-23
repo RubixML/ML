@@ -5,10 +5,10 @@ The Diagonal (a.k.a. *Chebyshev*) distance is a measure that constrains movement
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Diagonal;
 

@@ -3,10 +3,10 @@
 # Relative Entropy
 Relative Entropy (or *Kullback-Leibler divergence*) is a measure of how the expectation and activation of the network diverge. It is different from [Cross Entropy](cross-entropy.md) in that it is *asymmetric* and thus does not qualify as a statistical measure of error.
 
-### Parameters
+## Parameters
 This cost function does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 

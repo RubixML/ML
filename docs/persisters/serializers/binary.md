@@ -5,10 +5,10 @@ Converts Persistable objects to and from binary format.
 
 > **Note:** The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
 
-### Parameters
+## Parameters
 This serializer does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Persisters\Serializers\Binary;
 

@@ -5,10 +5,10 @@ Cosine Similarity is a measure that ignores the magnitude of the distance betwee
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Cosine;
 

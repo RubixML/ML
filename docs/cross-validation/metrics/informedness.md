@@ -7,7 +7,7 @@ Informedness is a measure of the probability that an estimator will make an info
 
 **Output Range:** -1 to 1
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 

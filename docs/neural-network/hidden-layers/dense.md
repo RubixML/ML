@@ -3,14 +3,14 @@
 # Dense
 Dense layers (or *fully connected* layers) are layers of neurons that connect to each node in the previous layer by a paramaterized synapse. The majority of the trainable parameters in a standard feed forward neural network are contained within Dense layers.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | neurons | None | int | The number of neurons in the layer. |
-| 2 | weight initializer | He | object | The initializer of the weight parameter. |
-| 3 | bias initializer | Constant | object | The initializer of the bias parameter. |
+| 2 | weight initializer | He | Initializer | The initializer of the weight parameter. |
+| 3 | bias initializer | Constant | Initializer | The initializer of the bias parameter. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;

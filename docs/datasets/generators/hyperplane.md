@@ -7,17 +7,17 @@ Generates a labeled dataset whose samples form a hyperplane in n-dimensional vec
 
 **Label Type:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | coefficients | [1, -1] | array | The *n* coefficients of the hyperplane where n is the dimensionality. |
 | 2 | intercept | 0.0 | float | The y intercept term. |
 | 3 | noise | 0.1 | float | The factor of gaussian noise to add to the data points. |
 
-### Additional Methods
+## Additional Methods
 This generator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Datasets\Generators\Hyperplane;
 

@@ -5,15 +5,15 @@
 
 > **Note:** Empty rows will be ignored by the parser by default.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the NDJSON file. |
 
-### Additional Methods
+## Additional Methods
 This extractor does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Datasets\Extractors\NDJSON;
 

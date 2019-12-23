@@ -5,10 +5,10 @@ The *generalized* Jaccard distance is a measure of distance with a range from 0 
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Jaccard;
 

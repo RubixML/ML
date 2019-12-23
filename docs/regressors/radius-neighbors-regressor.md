@@ -9,20 +9,20 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 3 | tree | BallTree | object | The spatial tree used to run range searches. |
+| 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
-### Additional Methods
+## Additional Methods
 Return the base spatial tree instance:
 ```php
 public tree() : Spatial
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;

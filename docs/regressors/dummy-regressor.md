@@ -7,15 +7,15 @@ Regressor that guesses output values based on a user-defined guessing [Strategy]
 
 **Data Type Compatibility:** Categorical, Continuous, Resource
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | strategy | Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| 1 | strategy | Mean | Continuous | The guessing strategy to employ when making predictions. |
 
-### Additional Methods
+## Additional Methods
 This estimator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\Percentile;

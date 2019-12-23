@@ -7,15 +7,15 @@ This transformer will generate polynomials up to and including the specified *de
 
 **Data Type Compatibility:** Continuous only
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\PolynomialExpander;
 

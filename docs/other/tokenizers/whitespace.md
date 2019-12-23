@@ -3,12 +3,12 @@
 # Whitespace
 Tokens are delimited by a user-specified whitespace character.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\Extractors\Tokenizers\Whitespace;
 

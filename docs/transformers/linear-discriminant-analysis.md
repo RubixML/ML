@@ -7,12 +7,12 @@ A supervised dimensionality reduction technique that selects the most discrimina
 
 **Data Type Compatibility:** Continuous only
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 
-### Additional Methods
+## Additional Methods
 Return the amount of variance that has been preserved by the transformation:
 ```php
 public explainedVar() : ?float
@@ -28,7 +28,7 @@ Return the percentage of information lost due to the transformation:
 public lossiness() : ?float
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
 

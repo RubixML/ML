@@ -5,10 +5,10 @@ Residual Analysis is a report that measures the differences between the predicte
 
 **Estimator Compatibility:** Regressor
 
-### Parameters
+## Parameters
 This report does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 

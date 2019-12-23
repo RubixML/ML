@@ -7,13 +7,13 @@ Removes any HTML tags that may be in the text of a categorical variable.
 
 **Data Type Compatibility:** Categorical
 
-### Parameters
+## Parameters
 This transformer does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\HTMLStripper;
 

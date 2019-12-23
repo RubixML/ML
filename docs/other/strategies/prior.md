@@ -5,16 +5,16 @@ A strategy where the probability of guessing a class is equal to the class's pri
 
 **Data Type:** Categorical
 
-### Parameters
+## Parameters
 This strategy does not have any parameters.
 
-### Additional Methods
+## Additional Methods
 Return the prior probabilities of each class:
 ```php
 public priors() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Other\Strategies\Prior;
 

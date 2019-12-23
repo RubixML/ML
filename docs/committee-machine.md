@@ -11,13 +11,13 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 **Data Type Compatibility:** Depends on the base learners
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | Auto | array | The influence scores for each expert in the committee. The default is to weight each expert equally. |
 
-### Additional Methods
+## Additional Methods
 Return the learner instances of the committee:
 ```php
 public experts() : array
@@ -28,7 +28,7 @@ Return the normalized influence scores of each expert in the committee:
 public influences() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Classifiers\GaussianNB;

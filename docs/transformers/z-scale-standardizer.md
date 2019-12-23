@@ -7,12 +7,12 @@ A method of centering and scaling a dataset such that it has 0 mean and unit var
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
-### Additional Methods
+## Additional Methods
 Return the means calculated by fitting the training set:
 ```php
 public means() : array
@@ -28,7 +28,7 @@ Return the standard deviations calculated during fitting:
 public stddevs() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\ZScaleStandardizer;
 

@@ -9,7 +9,7 @@ Median Absolute Error (MAD) is a robust measure of error, similar to [MAE](mean-
 
 **Output Range:** -∞ to 0
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
 

@@ -7,19 +7,19 @@ A multi-dimensional binary spatial tree for fast nearest neighbor queries. The K
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max leaf size | 30 | int | The maximum number of samples that each leaf node can contain. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
-### Additional Methods
+## Additional Methods
 Return the path of a sample taken from the root node to a leaf node in an array.
 ```php
 public path(array $sample) : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Euclidean;

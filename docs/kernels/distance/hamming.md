@@ -5,10 +5,10 @@ A categorical distance function that measures distance as the number of substitu
 
 **Data Type Compatibility:** Categorical
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Hamming;
 

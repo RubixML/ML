@@ -5,10 +5,10 @@ A Contingency Table is used to display the frequency distribution of class label
 
 **Estimator Compatibility:** Clusterer
 
-### Parameters
+## Parameters
 This report does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 

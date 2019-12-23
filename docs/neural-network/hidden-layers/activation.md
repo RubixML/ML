@@ -3,12 +3,12 @@
 # Activation
 Activation layers apply a user-defined non-linear activation function to their inputs. They often work in conjunction with [Dense](https://docs.rubixml.com/en/latest/neural-network/hidden-layers/dense.html) layers as a way to transform their output.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | activation fn | | object | The function that computes the output of the layer. |
+| 1 | activation fn | | ActivationFunction | The function that computes the output of the layer. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;

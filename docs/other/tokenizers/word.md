@@ -3,10 +3,10 @@
 # Word Tokenizer
 The Word tokenizer uses a regular expression to tokenize the words in a blob of text.
 
-### Parameters
+## Parameters
 This tokenizer does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Extractors\Tokenizers\Word;
 

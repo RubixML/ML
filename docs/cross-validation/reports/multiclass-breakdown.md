@@ -5,10 +5,10 @@ A classification and anomaly detection report that drills down into unique class
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 
-### Parameters
+## Parameters
 This report does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 

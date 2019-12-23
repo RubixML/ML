@@ -9,20 +9,20 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 
 **Data Type Compatibility:** Depends on base learners
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | booster | RegressionTree | object | The regressor that will fix up the error residuals of the *weak* base learner. |
+| 1 | booster | RegressionTree | Learner | The regressor that will fix up the error residuals of the *weak* base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 4 | estimators | 1000 | int | The maximum number of boosters to train in the ensemble. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 7 | holdout | 0.1 | float | The proportion of training samples to use for validation and progress monitoring. |
-| 8 | metric | RSquared | object | The metric used to score the generalization performance of the model during training. |
-| 9 | base | DummyRegressor | object | The *weak* base learner to be boosted. |
+| 8 | metric | RSquared | Metric | The metric used to score the generalization performance of the model during training. |
+| 9 | base | DummyRegressor | Learner | The *weak* base learner to be boosted. |
 
-### Additional Methods
+## Additional Methods
 Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
 ```php
 public featureImportances() : array
@@ -38,7 +38,7 @@ Return the training loss at each epoch:
 public steps() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;

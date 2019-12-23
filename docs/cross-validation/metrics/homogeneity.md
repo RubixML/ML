@@ -7,7 +7,7 @@ A ground-truth clustering metric that measures the ratio of samples in a cluster
 
 **Output Range:** 0 to 1
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 

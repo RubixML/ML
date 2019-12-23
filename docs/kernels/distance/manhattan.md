@@ -5,10 +5,10 @@ A distance metric that constrains movement to horizontal and vertical, similar t
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 This kernel does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Manhattan;
 

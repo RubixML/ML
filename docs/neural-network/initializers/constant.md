@@ -3,12 +3,12 @@
 # Constant
 Initialize the parameter to a user-specified constant value.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0.0 | float | The value to initialize the parameter to. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Initializers\Constant;
 

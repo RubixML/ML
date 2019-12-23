@@ -3,10 +3,10 @@
 # Xavier 1
 The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is equal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](../activation-functions/softmax.md) or [Sigmoid](../activation-functions/sigmoid.md).
 
-### Parameters
+## Parameters
 This initializer does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 

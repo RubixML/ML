@@ -9,17 +9,17 @@ A version of the K Nearest Neighbors algorithm that uses the average (mean) outc
 
 **Data Type Compatibility:** Depends on the distance kernel
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
-### Additional Methods
+## Additional Methods
 This estimator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;

@@ -7,17 +7,17 @@ The Missing Data Imputer replaces missing values denoted by NaN for continuous f
 
 **Data Type Compatibility:** Categorical and Continuous only
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | placeholder | '?' | string | The categorical placeholder variable denoting the category that contains missing values. |
-| 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
-| 3 | categorical strategy | K Most Frequent | object | The guessing strategy to employ for categorical feature columns. |
+| 2 | continuous strategy | Mean | Continuous | The guessing strategy to employ for continuous feature columns. |
+| 3 | categorical strategy | K Most Frequent | Categorical | The guessing strategy to employ for categorical feature columns. |
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Other\Strategies\Percentile;

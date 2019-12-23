@@ -7,12 +7,12 @@ L2 penalized ordinary least squares linear regression (OLS) solved using the clo
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The L2 regularization penalty amount to be added to the weight coefficients. |
 
-### Additional Methods
+## Additional Methods
 Return the weights of the model:
 ```php
 public weights() : array|null
@@ -23,7 +23,7 @@ Return the bias parameter:
 public bias() : float|null
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Regressors\Ridge;
 

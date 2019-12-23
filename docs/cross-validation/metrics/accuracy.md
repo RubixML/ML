@@ -7,7 +7,7 @@ A quick and simple classification and anomaly detection metric defined as the nu
 
 **Output Range:** 0 to 1
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 

@@ -7,12 +7,12 @@ A version of the [Naive Bayes](naive-bayes.md) classifier that places a probabil
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | priors | Auto | array | The user-defined class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
-### Additional Methods
+## Additional Methods
 Return the class prior probabilities:
 ```php
 public priors() : array
@@ -28,7 +28,7 @@ Return the running variance of each feature column for each class:
 public variances() : ?array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\GaussianNB;
 

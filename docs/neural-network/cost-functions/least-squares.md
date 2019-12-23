@@ -3,10 +3,10 @@
 # Least Squares
 Least Squares (or *quadratic* loss) is a function that computes the average squared error (MSE) between the target output given by the labels and the actual output of the network. It produces a smooth bowl-shaped gradient that is highly-influenced by large errors.
 
-### Parameters
+## Parameters
 This cost function does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 

@@ -9,7 +9,7 @@
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
@@ -19,15 +19,15 @@
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
 | 6 | min gradient | 1e-7 | float | The minimum norm of the gradient necessary to continue embedding. |
 | 7 | window | 10 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
-| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 8 | kernel | Euclidean | Distance | The distance kernel to use when measuring distances between samples. |
 
-### Additional Methods
+## Additional Methods
 Return the magnitudes of the gradient at each epoch from the last embedding:
 ```php
 public steps() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubi\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;

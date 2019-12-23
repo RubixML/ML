@@ -5,12 +5,12 @@ Leave P Out tests a learner with a unique holdout set of size p for each iterati
 
 **Interfaces:** [Validator](api.md#validator), [Parallel](#parallel)
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | p | 10 | int | The number of samples to leave out each round for testing. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\LeavePOut;
 

@@ -3,10 +3,10 @@
 # Random
 Completely random selection of seeds from a given dataset.
 
-### Parameters
+## Parameters
 This seeder does not have any parameters.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Clusterers\Seeders\Random;
 

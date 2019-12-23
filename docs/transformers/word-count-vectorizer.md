@@ -7,14 +7,14 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 
 **Data Type Compatibility:** Categorical
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
 | 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
-| 3 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
+| 3 | tokenizer | Word | Tokenizer | The tokenizer that extracts individual words from samples of text. |
 
-### Additional Methods
+## Additional Methods
 Return the fitted vocabulary i.e. the words that will be vectorized:
 ```php
 public vocabulary() : array
@@ -25,7 +25,7 @@ Return the size of the vocabulary:
 public size() : int
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Other\Tokenizers\SkipGram;

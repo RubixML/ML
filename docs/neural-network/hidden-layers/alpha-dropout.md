@@ -5,12 +5,12 @@ Alpha Dropout is a type of dropout layer that maintains the mean and variance of
 
 > **Note:** Alpha Dropout is generally only used in the context of SELU networks. Use regular [Dropout](dropout.md) for other types of neural nets.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | ratio | 0.1 | float | The ratio of neurons that are dropped during each training pass. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 

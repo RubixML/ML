@@ -9,16 +9,16 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 
 **Data Type Compatibility:** Depends on base learner
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | ClassificationTree | object | The base *weak* classifier to be boosted. |
+| 1 | base | ClassificationTree | Learner | The base *weak* classifier to be boosted. |
 | 2 | rate | 1.0 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.8 | float | The ratio of samples to subsample from the training set to train each *weak* learner. |
 | 4 | estimators | 100 | int | The maximum number of *weak* learners to train in the ensemble. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 
-### Additional Methods
+## Additional Methods
 Return the calculated weight values of the samples in the last training set:
 ```php
 public weights() : array
@@ -34,7 +34,7 @@ Return the training loss at each epoch:
 public steps() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;

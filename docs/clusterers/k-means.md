@@ -7,7 +7,7 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
@@ -15,10 +15,10 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
 | 4 | min change | 10.0 | float | The minimum change in the inertia for training to continue. |
 | 5 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 6 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-| 7 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
+| 6 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
+| 7 | seeder | PlusPlus | Seeder | The seeder used to initialize the cluster centroids. |
 
-### Additional Methods
+## Additional Methods
 Return the *k* computed centroids of the training set:
 ```php
 public centroids() : array
@@ -34,7 +34,7 @@ Return the value of the loss function at each epoch from the last round of train
 public steps() : array
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;

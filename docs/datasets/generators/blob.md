@@ -7,16 +7,16 @@ A normally distributed (Gaussian) n-dimensional blob of samples centered at a gi
 
 **Label Type:** Categorical
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | center | [0, 0] | array | An array containing the coordinates of the center of the blob. |
 | 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the standard deviation on a per feature column basis. |
 
-### Additional Methods
+## Additional Methods
 This generator does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 

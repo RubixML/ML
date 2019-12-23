@@ -5,12 +5,12 @@ Hold Out is a quick and simple cross validation technique that uses a validation
 
 **Interfaces:** [Validator](api.md#validator)
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
 

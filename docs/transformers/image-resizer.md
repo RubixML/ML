@@ -9,17 +9,17 @@ The Image Resizer scales and crops images to a user specified width, height, and
 
 **Data Type Compatibility:** Resource (GD Image)
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | width | 32 | int | The width of the transformed image. |
 | 2 | heights | 32 | int | The height of the transformed image. |
 | 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
-### Additional Methods
+## Additional Methods
 This transformer does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Transformers\ImageResizer;
 

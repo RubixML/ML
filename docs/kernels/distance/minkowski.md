@@ -5,12 +5,12 @@ The Minkowski distance can be considered as a generalization of both the [Euclid
 
 **Data Type Compatibility:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\Kernels\Distance\Minkowski;
 

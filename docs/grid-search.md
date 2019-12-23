@@ -9,17 +9,17 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 **Data Type Compatibility:** Depends on base learner
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | string | The fully qualified class name of the base Estimator. |
 | 2 | grid | | array | An array of [tuples](faq.md#what-is-a-tuple) where each tuple contains the possible values of each parameter in the order they are given to the base learner's constructor. |
-| 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
-| 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
+| 3 | metric | Auto | Metric | The validation metric used to score each set of hyper-parameters. |
+| 4 | validator | KFold | Validator | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
 
 > **Note:** The default validation metrics are [F Beta](cross-validation/metrics/f-beta.md) for classifiers and anomaly detectors, [R Squared](cross-validation/metrics/r-squared.md) for regressors, and [V Measure](cross-validation/metrics/v-measure.md) for clusterers.
 
-### Additional Methods
+## Additional Methods
 Return an array of every possible combination of hyper-parameters:
 ```php
 public combinations() : array
@@ -35,7 +35,7 @@ Return the underlying base estimator:
 public estimator() : Estimator
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;

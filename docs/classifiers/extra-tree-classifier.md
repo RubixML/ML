@@ -7,7 +7,7 @@ An Extremely Randomized Classification Tree that recursively chooses node splits
 
 **Data Type Compatibility:** Categorical, Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
@@ -15,7 +15,7 @@ An Extremely Randomized Classification Tree that recursively chooses node splits
 | 3 | max features | Auto | int | The max number of features columns to consider when determining a best split. |
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
-### Additional Methods
+## Additional Methods
 Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
 ```php
 public featureImportances() : array
@@ -36,7 +36,7 @@ Return the balance factor of the tree:
 public balance() : int
 ```
 
-### Example
+## Example
 ```php
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 

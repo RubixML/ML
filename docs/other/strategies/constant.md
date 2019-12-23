@@ -5,15 +5,15 @@ Always guess the same value.
 
 **Data Type:** Continuous
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0.0 | float | The value to constantly guess. |
 
-### Additional Methods
+## Additional Methods
 This strategy does not have any additional methods.
 
-### Example
+## Example
 ```php
 use Rubix\ML\Other\Strategies\Constant;
 

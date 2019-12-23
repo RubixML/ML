@@ -3,12 +3,12 @@
 # PReLU
 Parametric Rectified Linear Units are leaky rectifiers whose *leakage* coefficient is learned during training. Unlike standard [Leaky ReLUs](https://docs.rubixml.com/en/latest/neural-network/activation-functions/leaky-relu.html) whose leakage remains constant, PReLU layers can adjust the leakage to better suite the model on a per node basis.
 
-### Parameters
+## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | initializer | Constant | object | The initializer of the leakage parameter. |
+| 1 | initializer | Constant | Initializer | The initializer of the leakage parameter. |
 
-### Example
+## Example
 ```php
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\Initializers\Normal;

@@ -8,7 +8,7 @@ One of the most common formats that you'll find smaller datasets in is [comma-se
 
 ```php
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Extractors\CSV;
+use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Transformers\NumericStringConverter;
 
 $dataset = Labeled::fromIterator(new CSV('example.csv'))
@@ -22,13 +22,13 @@ Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](ht
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Extractors\NDJSON;
+use Rubix\ML\Extractors\NDJSON;
 
 $dataset = Unlabeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
 ## Database
-Bigger datasets will often be stored in some type of database such as an RDBMS (relational database management system) like MySQL or an object store such as MongoDB. PHP already comes built-in with great database support such as [PDO](https://www.php.net/manual/en/book.pdo.php) for relational databases and other extensions for other popular databases. In addition, the PHP community has developed a healthy ecosystem of DBALs (Database Abstraction Layers) such as [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) and ORMs (Object Relational Mappers) such as [Eloquent](https://laravel.com/docs/5.8/eloquent) that make it even easier to get the data you need. The following example uses PDO and the `fetchAll()` method to return 1000 samples from the database.
+Larger datasets will often be stored in a database such as an RDBMS (relational database management system) like MySQL or an object store like MongoDB. PHP comes built-in with great database support such as [PDO](https://www.php.net/manual/en/book.pdo.php) for relational databases and other extensions for other popular databases. In addition, the PHP community has developed a healthy ecosystem of DBALs (Database Abstraction Layers) such as [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) and ORMs (Object Relational Mappers) such as [Eloquent](https://laravel.com/docs/5.8/eloquent) that make it even easier to get the data you need. The following example uses PDO and the `fetchAll()` method to return 1000 samples from the database.
 
 **Example**
 
