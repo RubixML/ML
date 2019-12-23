@@ -1,14 +1,15 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Regressors;
+namespace Rubix\ML\Benchmarks\AnomalyDetectors;
 
-use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\AnomalyDetectors\GaussianMLE;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
- * @Groups({"Regressors"})
+ * @Groups({"AnomalyDetectors"})
  */
-class GradientBoostBench
+class GaussianMLEBench
 {
     protected const TRAINING_SIZE = 2500;
 
@@ -17,27 +18,30 @@ class GradientBoostBench
     /**
      * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $training;
+    protected $training;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $testing;
+    protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\GradientBoost
+     * @var \Rubix\ML\AnomalyDetectors\GaussianMLE
      */
     protected $estimator;
 
     public function setUp() : void
     {
-        $generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
+        $generator = new Agglomerate([
+            'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
+            'Iris-versicolor' => new Blob([5.94, 2.77, 4.26, 1.33], [0.51, 0.31, 0.47, 0.2]),
+        ], [0.99, 0.01]);
 
         $this->training = $generator->generate(self::TRAINING_SIZE);
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new GradientBoost();
+        $this->estimator = new GaussianMLE();
     }
 
     /**

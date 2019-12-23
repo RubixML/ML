@@ -30,7 +30,7 @@ class KNearestNeighborsBench
      */
     protected $estimator;
 
-    public function setUpTrainPredict() : void
+    public function setUp() : void
     {
         $generator = new Agglomerate([
             'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
@@ -46,11 +46,12 @@ class KNearestNeighborsBench
     }
 
     /**
+     * @Subject
      * @Iterations(1)
-     * @BeforeMethods({"setUpTrainPredict"})
+     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function bench_train_predict() : void
+    public function train_predict() : void
     {
         $this->estimator->train($this->training);
 

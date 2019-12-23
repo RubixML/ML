@@ -32,7 +32,7 @@ class MLPRegressorBench
      */
     protected $estimator;
 
-    public function setUpTrainPredict() : void
+    public function setUp() : void
     {
         $generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
 
@@ -47,11 +47,12 @@ class MLPRegressorBench
     }
 
     /**
+     * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUpTrainPredict"})
+     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function bench_train_predict() : void
+    public function train_predict() : void
     {
         $this->estimator->train($this->training);
 

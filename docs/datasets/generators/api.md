@@ -1,8 +1,8 @@
 # Generators
-Dataset generators produce synthetic datasets of a user-specified shape, dimensionality, and cardinality. Synthetic data is useful for a number of tasks including experimenting with data of various shapes, augmenting an already existing dataset with more data, or for testing and demonstration purposes.
+Dataset generators produce synthetic datasets of a user-specified shape and dimensionality. Synthetic data is useful for a number of tasks including experimentation, testing, benchmarking, and demonstration purposes.
 
 ### Generate a Dataset
-To generate a Dataset object with **n** rows:
+To generate a Dataset object with *n* rows:
 ```php
 public generate(int $n) : Dataset
 ```
