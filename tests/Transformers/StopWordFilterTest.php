@@ -40,11 +40,11 @@ class StopWordFilterTest extends TestCase
     {
         $this->dataset->apply($this->transformer);
     
-        $outcome = [
+        $expected = [
             ['the  brown fox jumped over the lazy man sitting at  bus stop drinking  can of coke'],
             ['with  dandy umbrella'],
         ];
     
-        $this->assertEquals($outcome, $this->dataset->samples());
+        $this->assertEquals($expected, $this->dataset->samples());
     }
 }

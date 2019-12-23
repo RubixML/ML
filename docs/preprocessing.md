@@ -39,9 +39,9 @@ Sometimes we are stuck in a situation when we have a dataset with both categoric
 
 **Examples**
 
-- [Interval Discretizer](https://docs.rubixml.com/en/latest/transformers/interval-discretizer.html)
-- [One Hot Encoder](https://docs.rubixml.com/en/latest/transformers/one-hot-encoder.html)
-- [Numeric String Converter](https://docs.rubixml.com/en/latest/transformers/numeric-string-converter.html)
+- [Interval Discretizer](transformers/interval-discretizer.md)
+- [One Hot Encoder](transformers/one-hot-encoder.md)
+- [Numeric String Converter](transformers/numeric-string-converter.md)
 
 ## Imputation
 Although some learners are robust to missing data, the primary tool for handling missing data in Rubix ML is through a preprocessing step called *imputation*. Data imputation is the process of replacing missing values with a pretty good substitution such as the average value for the column or the sample's nearest neighbor's value. By imputing values rather than discarding or ignoring them, we are able to squeeze more value from the data and limit the introduction of bias in the process.
@@ -76,7 +76,17 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 **Examples**
 
-- [Variance Threshold Filter](https://docs.rubixml.com/en/latest/transformers/variance-threshold-filter.html)
+- [Variance Threshold Filter](transformers/variance-threshold-filter.md)
+
+## Text Cleaning
+For natural language processing (NLP) tasks it is often desirable to preprocess the text corpus before extracting features to eliminate noise. One such step could involve filtering out *stop words* or other uninformative tokens such as URLs and email addresses. Another common step is to *normalize* the text such that tokens like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
+
+**Examples**
+
+- [HTML Stripper](transformers/html-stripper.md)
+- [Regex Filter](transformers/regex-filter.md)
+- [Text Normalizer](transformers/text-normalizer.md)
+- [Stop Word Filter](transformers/stop-word-filter.md)
 
 ## Transformer Pipelines
 You can automate the application of a series of transformations to a dataset using the [Pipeline](pipeline.md) meta-estimator. Whenever a dataset is passed to an estimator wrapped in a Pipeline it will automatically be transformed before it hits the method context. Pipeline objects are also [Persistable](persistable.md) which allows you to save and load the state of the transformer fittings between processes. Let's say we wanted to build a pipeline to normalize some blobs of text, extract the word count vectors, and then transform them by their inverse document frequency - a common series of data transformations for natural language processing (NLP). We could build such a pipeline by passing the transformers in the order we want them applied along with a base estimator to Pipeline's constructor.

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\DataType;
 use InvalidArgumentException;
 
 use function gettype;
@@ -17,22 +16,15 @@ use function gettype;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class StopWordFilter implements Transformer
+class StopWordFilter extends RegexFilter
 {
-    /**
-     * A list of stop words to filter out of each text feature.
-     *
-     * @var string[]
-     */
-    protected $stopWords;
-
     /**
      * @param string[] $stopWords
      * @throws \InvalidArgumentException
      */
     public function __construct(array $stopWords = [])
     {
-        $regexs = [];
+        $patterns = [];
 
         foreach ($stopWords as $word) {
             if (!is_string($word)) {
@@ -40,35 +32,9 @@ class StopWordFilter implements Transformer
                     . ' string, ' . gettype($word) . ' found.');
             }
 
-            $regexs[] = '/\b' . preg_quote($word, '/') . '\b/';
+            $patterns[] = '/\b' . preg_quote($word, '/') . '\b/';
         }
 
-        $this->stopWords = array_combine($stopWords, $regexs) ?: [];
-    }
-
-    /**
-     * Return the data types that this transformer is compatible with.
-     *
-     * @return int[]
-     */
-    public function compatibility() : array
-    {
-        return DataType::ALL;
-    }
-
-    /**
-     * Transform the dataset in place.
-     *
-     * @param array[] $samples
-     */
-    public function transform(array &$samples) : void
-    {
-        foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                if (is_string($feature)) {
-                    $feature = preg_replace($this->stopWords, '', $feature);
-                }
-            }
-        }
+        parent::__construct($patterns);
     }
 }

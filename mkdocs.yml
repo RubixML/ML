@@ -148,6 +148,7 @@ nav:
     - Z Scale Standardizer: transformers/z-scale-standardizer.md
   - Text Cleaning:
     - HTML Stripper: transformers/html-stripper.md
+    - Regex Filter: transformers/regex-filter.ms
     - Text Normalizer: transformers/text-normalizer.md
     - Stop Word Filter: transformers/stop-word-filter.md
 - Neural Network:

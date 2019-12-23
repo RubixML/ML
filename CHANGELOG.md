@@ -15,6 +15,7 @@
     - Removed zip and unzip methods on Labeled dataset
     - Added describe by label method to Labeled dataset
     - Changed the way fromIterator works on Dataset
+    - Added Regex Filter transformer
 
 - 0.0.17-beta
     - Added Tensor extension compatibility
