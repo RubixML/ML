@@ -50,7 +50,7 @@ class NDJSON extends Cursor
      * Read the records starting at the given offset and return them in an iterator.
      *
      * @throws \RuntimeException
-     * @return iterable<array>
+     * @return \Generator<array>
      */
     public function extract() : iterable
     {
@@ -65,11 +65,11 @@ class NDJSON extends Cursor
         while (!feof($handle)) {
             $row = rtrim(fgets($handle) ?: '');
 
+            ++$line;
+
             if (empty($row)) {
                 continue 1;
             }
-
-            ++$line;
 
             if ($line <= $this->offset) {
                 continue 1;

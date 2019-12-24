@@ -18,7 +18,7 @@ public setHeader(bool $header = true) : self
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Extractors\CSV;
+use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('example.csv', ',', '"');
 

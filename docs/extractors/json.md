@@ -13,7 +13,7 @@ This extractor does not have any additional methods.
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Extractors\JSON;
+use Rubix\ML\Extractors\JSON;
 
 $extractor = new JSON('example.json');
 ```

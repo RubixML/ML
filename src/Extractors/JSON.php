@@ -48,7 +48,7 @@ class JSON extends Extractor
      * Read the records starting at the given offset and return them in an iterator.
      *
      * @throws \RuntimeException
-     * @return iterable<array>
+     * @return array[]
      */
     public function extract() : iterable
     {

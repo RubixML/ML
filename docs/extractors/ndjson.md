@@ -15,7 +15,7 @@ This extractor does not have any additional methods.
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Extractors\NDJSON;
+use Rubix\ML\Extractors\NDJSON;
 
 $extractor = new NDJSON('example.ndjson');
 ```

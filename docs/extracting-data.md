@@ -7,8 +7,8 @@ One of the most common formats that you'll find smaller datasets in is [comma-se
 **Example**
 
 ```php
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Transformers\NumericStringConverter;
 
 $dataset = Labeled::fromIterator(new CSV('example.csv'))
@@ -33,12 +33,12 @@ Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](ht
 **Example**
 
 ```php
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Extractors\NDJSON;
+use Rubix\ML\Datasets\Unlabeled;
 
 $extractor = new NDJSON('example.ndjson');
 
-$extractor->setOffset(5)->setLimit(1000);
+$extractor->setOffset(5)->setLimit(1000); // Set the cursor
 
 $dataset = Unlabeled::fromIterator($extractor);
 ```

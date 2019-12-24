@@ -8,12 +8,14 @@ public extract() : iterable
 ```
 
 ### Cursoring
-Set the row offset of the cursor:
+Extractors that extend the Cursor class are able to iterate over portions of the dataset without loading it all into memory. They have the `setOffset()` and `setLimit()` methods that allow you to control the window of data.
+
+Set the line offset of the cursor:
 ```php
 public setOffset(int $offset) : self
 ```
 
-Set the maximum number of rows to return:
+Set the maximum number of rows of data to return:
 ```php
 public setLimit(int $limit) : self
 ```
@@ -30,7 +32,7 @@ $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```php
 $extractor = new NDJSON('example.ndjson');
 
-$extractor->setOffset(100)->setLimit(5000);
+$extractor->setOffset(100)->setLimit(5000); // Set the cursor
 
 foreach ($extractor as $key => $record) {
     // ...
