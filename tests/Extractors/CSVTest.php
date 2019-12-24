@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Extractors\Cursor;
 use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
@@ -23,12 +24,13 @@ class CSVTest extends TestCase
     {
         $this->assertInstanceOf(CSV::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(Cursor::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
     }
 
     public function test_extract() : void
     {
-        $records = $this->extractor->setHeader()->setOffset(1)->extract();
+        $records = $this->extractor->setHeader()->setOffset(1)->setLimit(4)->extract();
 
         $expected = [
             // ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
@@ -36,7 +38,7 @@ class CSVTest extends TestCase
             ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.6', 'class' => 'not monster'],
             ['attitude' => 'mean', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '-1', 'class' => 'monster'],
             ['attitude' => 'nice', 'appearance' => 'rough', 'sociability' => 'friendly', 'rating' => '2.9', 'class' => 'not monster'],
-            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
+            // ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
         ];
 
         $records = is_array($records) ? $records : iterator_to_array($records);

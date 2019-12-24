@@ -732,8 +732,12 @@ class LabeledTest extends TestCase
     public function test_to_array() : void
     {
         $expected = [
-            'samples' => self::SAMPLES,
-            'labels' => self::LABELS,
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
         ];
 
         $this->assertEquals($expected, $this->dataset->toArray());
@@ -741,10 +745,7 @@ class LabeledTest extends TestCase
 
     public function test_to_json() : void
     {
-        $expected = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
-            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
-            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]],'
-            . '"labels":["not monster","monster","not monster","monster","not monster","not monster"]}';
+        $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
             
         $this->assertEquals($expected, $this->dataset->toJson());
     }
@@ -802,7 +803,7 @@ class LabeledTest extends TestCase
 
     public function test_array_access() : void
     {
-        $expected = [['mean', 'furry', 'loner', -1.5], 'monster'];
+        $expected = ['mean', 'furry', 'loner', -1.5, 'monster'];
 
         $this->assertEquals($expected, $this->dataset[1]);
     }
@@ -810,12 +811,12 @@ class LabeledTest extends TestCase
     public function test_iterate() : void
     {
         $expected = [
-            [['nice', 'furry', 'friendly', 4.0], 'not monster'],
-            [['mean', 'furry', 'loner', -1.5], 'monster'],
-            [['nice', 'rough', 'friendly', 2.6], 'not monster'],
-            [['mean', 'rough', 'friendly', -1.0], 'monster'],
-            [['nice', 'rough', 'friendly', 2.9], 'not monster'],
-            [['nice', 'furry', 'loner', -5.0], 'not monster'],
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
         ];
         
         $this->assertEquals($expected, iterator_to_array($this->dataset));

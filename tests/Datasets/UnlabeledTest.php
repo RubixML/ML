@@ -492,7 +492,12 @@ class UnlabeledTest extends TestCase
     public function test_to_array() : void
     {
         $expected = [
-            'samples' => self::SAMPLES,
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'loner', -5.0],
         ];
 
         $this->assertEquals($expected, $this->dataset->toArray());
@@ -500,9 +505,7 @@ class UnlabeledTest extends TestCase
 
     public function test_to_json() : void
     {
-        $expected = '{"samples":[["nice","furry","friendly",4],["mean","furry","loner",-1.5],'
-            . '["nice","rough","friendly",2.6],["mean","rough","friendly",-1],'
-            . '["nice","rough","friendly",2.9],["nice","furry","loner",-5]]}';
+        $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
             
         $this->assertEquals($expected, $this->dataset->toJson());
     }

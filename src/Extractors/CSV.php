@@ -18,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV extends Extractor
+class CSV extends Cursor
 {
     /**
      * The path to the CSV file.
@@ -57,11 +57,11 @@ class CSV extends Extractor
     public function __construct(string $path, string $delimiter = ',', string $enclosure = '')
     {
         if (!is_file($path)) {
-            throw new InvalidArgumentException("File at $path does not exist.");
+            throw new InvalidArgumentException("Path $path does not exist.");
         }
         
         if (!is_readable($path)) {
-            throw new InvalidArgumentException("File at $path is not readable.");
+            throw new InvalidArgumentException("Path $path is not readable.");
         }
 
         if (strlen($delimiter) !== 1) {

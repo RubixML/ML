@@ -1017,10 +1017,7 @@ class Labeled extends Dataset
      */
     public function toArray() : array
     {
-        return [
-            'samples' => $this->samples(),
-            'labels' => $this->labels(),
-        ];
+        return iterator_to_array($this);
     }
 
     /**
@@ -1043,9 +1040,7 @@ class Labeled extends Dataset
     {
         $ndjson = '';
 
-        foreach ($this as [$sample, $label]) {
-            $row = array_merge($sample, [$label]);
-
+        foreach ($this as $row) {
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
@@ -1074,17 +1069,14 @@ class Labeled extends Dataset
         
         $csv = '';
 
-        foreach ($this as [$sample, $label]) {
+        foreach ($this as $row) {
             if (!empty($enclosure)) {
-                foreach ($sample as &$value) {
+                foreach ($row as &$value) {
                     $value = $enclosure . $value . $enclosure;
                 }
-
-                $label = $enclosure . $label . $enclosure;
             }
 
-            $csv .= implode($delimiter, $sample);
-            $csv .= $delimiter . $label . PHP_EOL;
+            $csv .= implode($delimiter, $row) . PHP_EOL;
         }
 
         return $csv;
@@ -1108,10 +1100,10 @@ class Labeled extends Dataset
     public function offsetGet($index) : array
     {
         if (isset($this->samples[$index])) {
-            return [$this->samples[$index], $this->labels[$index]];
+            return array_merge($this->samples[$index], [$this->labels[$index]]);
         }
 
-        throw new InvalidArgumentException("Row at index $index not found.");
+        throw new InvalidArgumentException("Row at offset $index not found.");
     }
 
     /**
@@ -1122,7 +1114,9 @@ class Labeled extends Dataset
     public function getIterator() : Generator
     {
         foreach ($this->samples as $i => $sample) {
-            yield [$sample, $this->labels[$i]];
+            $sample[] = $this->labels[$i];
+
+            yield $sample;
         }
     }
 
@@ -1149,7 +1143,7 @@ class Labeled extends Dataset
 
         $header[] = 'Label';
 
-        $table = array_slice($this->samples(), 0, $m);
+        $table = array_slice($this->samples, 0, $m);
 
         foreach ($table as $i => &$row) {
             $row = array_slice($row, 0, $n);

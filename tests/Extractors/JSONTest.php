@@ -2,43 +2,41 @@
 
 namespace Rubix\ML\Tests\Extractors;
 
-use Rubix\ML\Extractors\NDJSON;
-use Rubix\ML\Extractors\Cursor;
+use Rubix\ML\Extractors\JSON;
 use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 
-class NDJSONTest extends TestCase
+class JSONTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Extractors\NDJSON;
+     * @var \Rubix\ML\Extractors\JSON;
      */
     protected $extractor;
 
     public function setUp() : void
     {
-        $this->extractor = new NDJSON('tests/test.ndjson');
+        $this->extractor = new JSON('tests/test.json');
     }
 
     public function test_build_factory() : void
     {
-        $this->assertInstanceOf(NDJSON::class, $this->extractor);
+        $this->assertInstanceOf(JSON::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(Cursor::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
     }
 
     public function test_extract() : void
     {
-        $records = $this->extractor->setOffset(1)->setLimit(4)->extract();
+        $records = $this->extractor->extract();
 
         $expected = [
-            // ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
+            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
             ['attitude' => 'mean', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
             ['nice', 'rough', 'friendly', 2.6, 'not monster'],
             ['mean', 'rough', 'friendly', -1, 'monster'],
             ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            // ['nice', 'furry', 'loner', -5, 'not monster'],
+            ['nice', 'furry', 'loner', -5, 'not monster'],
         ];
 
         $records = is_array($records) ? $records : iterator_to_array($records);

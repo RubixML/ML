@@ -11,9 +11,8 @@ use function is_null;
  * NDJSON
  *
  * NDJSON or *Newline Delimited* JSON files contain rows of data encoded in Javascript Object
- * Notation (JSON) arrays or objects. The format is similar to CSV but has the advantage of
- * being standardized and retaining data type information at the cost of having a slightly
- * heavier footprint.
+ * Notation (JSON) arrays or objects. The format is like a mix of JSON and CSV and has the
+ * advantage of retaining data type information and being cursorable (read line by line).
  *
  * > **Note:** Empty rows will be ignored by the parser by default.
  *
@@ -21,7 +20,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON extends Extractor
+class NDJSON extends Cursor
 {
     /**
      * The path to the NDJSON file.
@@ -37,11 +36,11 @@ class NDJSON extends Extractor
     public function __construct(string $path)
     {
         if (!is_file($path)) {
-            throw new InvalidArgumentException("File at $path does not exist.");
+            throw new InvalidArgumentException("Path $path does not exist.");
         }
         
         if (!is_readable($path)) {
-            throw new InvalidArgumentException("File at $path is not readable.");
+            throw new InvalidArgumentException("Path $path is not readable.");
         }
 
         $this->path = $path;

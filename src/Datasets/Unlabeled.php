@@ -590,9 +590,7 @@ class Unlabeled extends Dataset
      */
     public function toArray() : array
     {
-        return [
-            'samples' => $this->samples(),
-        ];
+        return $this->samples;
     }
 
     /**
@@ -672,7 +670,7 @@ class Unlabeled extends Dataset
             $header[] = "Column $column";
         }
 
-        $table = array_slice($this->samples(), 0, $m);
+        $table = array_slice($this->samples, 0, $m);
 
         foreach ($table as $i => &$row) {
             $row = array_slice($row, 0, $n);
@@ -696,7 +694,7 @@ class Unlabeled extends Dataset
             return $this->samples[$index];
         }
 
-        throw new InvalidArgumentException("Row at index $index not found.");
+        throw new InvalidArgumentException("Row at offset $index not found.");
     }
 
     /**

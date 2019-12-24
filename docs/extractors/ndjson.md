@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Extractors/NDJSON.php">[source]</a></span>
 
 # NDJSON
-[NDJSON](http://ndjson.org/) or *Newline Delimited* JSON files contain rows of data encoded in Javascript Object Notation (JSON) arrays or objects. The format is similar to CSV but has the advantage of being standardized and retaining data type information at the cost of having a slightly heavier footprint.
+[NDJSON](http://ndjson.org/) or *Newline Delimited* JSON files contain rows of data encoded in Javascript Object Notation (JSON) arrays or objects. The format is like a mix of JSON and CSV and has the advantage of retaining data type information and being cursorable (read line by line).
 
 > **Note:** Empty rows will be ignored by the parser by default.
 

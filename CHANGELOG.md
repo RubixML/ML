@@ -1,7 +1,7 @@
 - Unreleased
     - Now requires PHP 7.2 and above
     - Added performance benchmarks
-    - Added NDJSON Array and CSV data Extractors
+    - Added JSON, NDJSON, and CSV data Extractors
     - Added Hyperplane dataset generator
     - Changed the way noise is applied to Circle, Half Moon, etc.
     - Changed name of Multilayer Perceptron classifier
