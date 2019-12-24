@@ -31,8 +31,8 @@ class JSONTest extends TestCase
         $records = $this->extractor->extract();
 
         $expected = [
-            ['attitude' => 'nice', 'appearance' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
-            ['attitude' => 'mean', 'appearance' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
+            ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
+            ['attitude' => 'mean', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
             ['nice', 'rough', 'friendly', 2.6, 'not monster'],
             ['mean', 'rough', 'friendly', -1, 'monster'],
             ['nice', 'rough', 'friendly', 2.9, 'not monster'],

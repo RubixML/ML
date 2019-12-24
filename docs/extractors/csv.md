@@ -13,7 +13,7 @@ A non-standard plain-text format that use newlines to delineate rows and a user-
 ## Additional Methods
 Does the CSV document have a header as the first row?:
 ```php
-public setHeader(bool $header = true) : self
+public withHeader(bool $header = true) : self
 ```
 
 ## Example
@@ -22,5 +22,5 @@ use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('example.csv', ',', '"');
 
-$extractor->setHeader(true);
+$extractor->withHeader();
 ```

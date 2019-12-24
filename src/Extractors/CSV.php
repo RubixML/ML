@@ -85,7 +85,7 @@ class CSV extends Cursor
      * @param bool $header
      * @return self
      */
-    public function setHeader(bool $header = true) : self
+    public function withHeader(bool $header = true) : self
     {
         $this->header = $header;
 
