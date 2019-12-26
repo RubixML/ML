@@ -33,9 +33,9 @@ $samples = [
 ```
 
 ## Factory Methods
-Build a dataset using the data from an iterator:
+Build a dataset with the data table from an iterator:
 ```php
-public static fromIterator(iterable $iterator) : self
+public static fromIterator(Traversable $iterator) : self
 ```
 
 **Example**

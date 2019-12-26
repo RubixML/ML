@@ -4,6 +4,7 @@ namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 
 use function is_null;
 
@@ -20,7 +21,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON extends Cursor
+class NDJSON implements Extractor
 {
     /**
      * The path to the NDJSON file.
@@ -47,12 +48,12 @@ class NDJSON extends Cursor
     }
 
     /**
-     * Read the records starting at the given offset and return them in an iterator.
+     * Return an iterator for the records in the data table.
      *
      * @throws \RuntimeException
      * @return \Generator<array>
      */
-    public function extract() : iterable
+    public function getIterator() : Generator
     {
         $handle = fopen($this->path, 'r');
         
@@ -60,18 +61,14 @@ class NDJSON extends Cursor
             throw new RuntimeException("Could not open $this->path.");
         }
 
-        $line = $n = 0;
+        $line = 0;
 
         while (!feof($handle)) {
-            $row = rtrim(fgets($handle) ?: '');
-
             ++$line;
 
-            if (empty($row)) {
-                continue 1;
-            }
+            $row = rtrim(fgets($handle) ?: '');
 
-            if ($line <= $this->offset) {
+            if (empty($row)) {
                 continue 1;
             }
             
@@ -82,12 +79,6 @@ class NDJSON extends Cursor
             }
 
             yield $record;
-
-            ++$n;
-
-            if ($n >= $this->limit) {
-                break 1;
-            }
         }
 
         fclose($handle);

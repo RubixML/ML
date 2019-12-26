@@ -4,6 +4,7 @@ namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
 use RuntimeException;
+use ArrayIterator;
 
 use function is_null;
 
@@ -18,7 +19,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class JSON extends Extractor
+class JSON implements Extractor
 {
     /**
      * The path to the JSON file.
@@ -45,12 +46,12 @@ class JSON extends Extractor
     }
 
     /**
-     * Read the records starting at the given offset and return them in an iterator.
+     * Return an iterator for the records in the data table.
      *
      * @throws \RuntimeException
-     * @return array[]
+     * @return \ArrayIterator<int, array>
      */
-    public function extract() : iterable
+    public function getIterator() : ArrayIterator
     {
         $data = file_get_contents($this->path);
 
@@ -64,6 +65,6 @@ class JSON extends Extractor
             throw new RuntimeException('Malformed JSON document.');
         }
 
-        return $records;
+        return new ArrayIterator($records);
     }
 }

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Extractors/JSON.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Extractors/JSON.php">[source]</a></span>
 
 # JSON
 Javascript Object Notation is a standardized lightweight plain-text representation that is widely used. JSON has the advantage of retaining type information, however since the entire JSON blob is read on load, it is not cursorable like CSV or NDJSON.

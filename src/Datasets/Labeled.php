@@ -9,6 +9,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
+use Traversable;
 use Generator;
 
 use function count;
@@ -69,12 +70,12 @@ class Labeled extends Dataset
     }
 
     /**
-     * Build a dataset using with data from an iterator.
+     * Build a dataset with the data table from an iterator.
      *
-     * @param iterable<array> $iterator
+     * @param \Traversable<array> $iterator
      * @return self
      */
-    public static function fromIterator(iterable $iterator) : self
+    public static function fromIterator(Traversable $iterator) : self
     {
         $samples = $labels = [];
 

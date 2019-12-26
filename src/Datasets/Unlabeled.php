@@ -51,16 +51,14 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Build a dataset using with data from an iterator.
+     * Build a dataset with the data table from an iterator.
      *
-     * @param iterable<array> $iterator
+     * @param \Traversable<array> $iterator
      * @return self
      */
     public static function fromIterator(iterable $iterator) : self
     {
-        $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator);
-
-        return self::build($samples);
+        return self::build(iterator_to_array($iterator));
     }
 
     /**
@@ -650,6 +648,32 @@ class Unlabeled extends Dataset
     }
 
     /**
+     * Return a sample from the dataset given by index.
+     *
+     * @param mixed $index
+     * @throws \InvalidArgumentException
+     * @return array[]
+     */
+    public function offsetGet($index) : array
+    {
+        if (isset($this->samples[$index])) {
+            return $this->samples[$index];
+        }
+
+        throw new InvalidArgumentException("Row at offset $index not found.");
+    }
+
+    /**
+     * Get an iterator for the samples in the dataset.
+     *
+     * @return \ArrayIterator<int, array>
+     */
+    public function getIterator() : ArrayIterator
+    {
+        return new ArrayIterator($this->samples);
+    }
+
+    /**
      * Return a string representation of the first few rows of the dataset.
      *
      * @return string
@@ -679,31 +703,5 @@ class Unlabeled extends Dataset
         $table = array_merge([$header], $table);
 
         return Console::table($table);
-    }
-
-    /**
-     * Return a sample from the dataset given by index.
-     *
-     * @param mixed $index
-     * @throws \InvalidArgumentException
-     * @return array[]
-     */
-    public function offsetGet($index) : array
-    {
-        if (isset($this->samples[$index])) {
-            return $this->samples[$index];
-        }
-
-        throw new InvalidArgumentException("Row at offset $index not found.");
-    }
-
-    /**
-     * Get an iterator for the samples in the dataset.
-     *
-     * @return \ArrayIterator<int, array>
-     */
-    public function getIterator() : ArrayIterator
-    {
-        return new ArrayIterator($this->samples);
     }
 }

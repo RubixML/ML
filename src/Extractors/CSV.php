@@ -4,6 +4,7 @@ namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 
 /**
  * CSV
@@ -18,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV extends Cursor
+class CSV implements Extractor
 {
     /**
      * The path to the CSV file.
@@ -35,6 +36,13 @@ class CSV extends Cursor
     protected $delimiter;
 
     /**
+     * Does the CSV document have a header as the first row?
+     *
+     * @var bool
+     */
+    protected $header;
+
+    /**
      * The character used to enclose each column.
      *
      * @var string
@@ -42,20 +50,18 @@ class CSV extends Cursor
     protected $enclosure;
 
     /**
-     * Does the CSV document have a header as the first row?
-     *
-     * @var bool
-     */
-    protected $header = false;
-
-    /**
      * @param string $path
      * @param string $delimiter
+     * @param bool $header
      * @param string $enclosure
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $path, string $delimiter = ',', string $enclosure = '')
-    {
+    public function __construct(
+        string $path,
+        string $delimiter = ',',
+        bool $header = false,
+        string $enclosure = ''
+    ) {
         if (!is_file($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
         }
@@ -66,39 +72,27 @@ class CSV extends Cursor
 
         if (strlen($delimiter) !== 1) {
             throw new InvalidArgumentException('Delimiter must be'
-                . " a single character, $delimiter given.");
+                . ' a single character, ' . strlen($delimiter) . ' given.');
         }
 
-        if (strlen($enclosure) > 1) {
-            throw new InvalidArgumentException('Enclosure must be'
-                . " a single character, $enclosure given.");
+        if (!empty($enclosure) and strlen($enclosure) !== 1) {
+            throw new InvalidArgumentException('Delimiter must be'
+                . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
         $this->path = $path;
         $this->delimiter = $delimiter;
+        $this->header = $header;
         $this->enclosure = $enclosure;
     }
 
     /**
-     * Does the CSV document have a header as the first row?
-     *
-     * @param bool $header
-     * @return self
-     */
-    public function withHeader(bool $header = true) : self
-    {
-        $this->header = $header;
-
-        return $this;
-    }
-
-    /**
-     * Read the records starting at the given offset and return them in an iterator.
+     * Return an iterator for the records in the data table.
      *
      * @throws \RuntimeException
      * @return \Generator<array>
      */
-    public function extract() : iterable
+    public function getIterator() : Generator
     {
         $handle = fopen($this->path, 'r');
         
@@ -106,24 +100,22 @@ class CSV extends Cursor
             throw new RuntimeException("Could not open $this->path.");
         }
 
+        $line = 0;
+
         if ($this->header) {
+            ++$line;
+
             $row = rtrim(fgets($handle) ?: '');
 
             $header = str_getcsv($row, $this->delimiter, $this->enclosure);
         }
 
-        $line = $n = 0;
-
         while (!feof($handle)) {
-            $row = rtrim(fgets($handle) ?: '');
-
             ++$line;
 
-            if (empty($row)) {
-                continue 1;
-            }
+            $row = rtrim(fgets($handle) ?: '');
 
-            if ($line <= $this->offset) {
+            if (empty($row)) {
                 continue 1;
             }
 
@@ -131,20 +123,13 @@ class CSV extends Cursor
 
             if (isset($header)) {
                 $record = array_combine($header, $record);
+            }
 
-                if (!$record) {
-                    throw new RuntimeException('Wrong number of'
-                        . " columns on line $line.");
-                }
+            if (!$record) {
+                throw new RuntimeException("Malformed CSV on line $line.");
             }
 
             yield $record;
-
-            ++$n;
-
-            if ($n >= $this->limit) {
-                break 1;
-            }
         }
 
         fclose($handle);

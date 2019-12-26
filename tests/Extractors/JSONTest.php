@@ -28,8 +28,6 @@ class JSONTest extends TestCase
 
     public function test_extract() : void
     {
-        $records = $this->extractor->extract();
-
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
             ['attitude' => 'mean', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
@@ -39,8 +37,8 @@ class JSONTest extends TestCase
             ['nice', 'furry', 'loner', -5, 'not monster'],
         ];
 
-        $records = is_array($records) ? $records : iterator_to_array($records);
+        $records = iterator_to_array($this->extractor);
 
-        $this->assertEquals($expected, array_values($records));
+        $this->assertEquals($expected, $records);
     }
 }
