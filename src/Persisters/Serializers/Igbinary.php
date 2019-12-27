@@ -6,16 +6,16 @@ use Rubix\ML\Persistable;
 use RuntimeException;
 
 /**
- * Binary
+ * Igbinary
  *
- * Converts persistable object to and from a binary encoding. Binary format is
- * smaller and typically faster than plain text serializers.
+ * Igbinary is a compact binary format that serves as a drop-in replacement for the
+ * native PHP serializer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Binary implements Serializer
+class Igbinary implements Serializer
 {
     /**
      * @throws \RuntimeException

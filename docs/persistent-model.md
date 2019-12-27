@@ -29,13 +29,10 @@ public static load(Persister $persister) : self
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\Native;
 
-$persister = new Filesystem('random_forest.model', true, new Native());
+$estimator = new PersistentModel(new RandomForest(100), new Filesystem('example.model'));
 
-$estimator = new PersistentModel(new RandomForest(100), $persister);
-
-// Train the learner
+// Do something ...
 
 $estimator->save();
 ```

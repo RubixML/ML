@@ -101,18 +101,6 @@ nav:
 - Embedders:
   - API Reference: embedders/api.md
   - t-SNE: embedders/t-sne.md
-- Backends:
-  - API Reference: backends/api.md
-  - Amp: backends/amp.md
-  - Serial: backends/serial.md
-- Persisters:
-  - API Reference: persisters/api.md
-  - Filesystem: persisters/filesystem.md
-  - Redis DB: persisters/redis-db.md
-  - Serializers:
-    - API Reference: persisters/serializers/api.md
-    - Binary: persisters/serializers/binary.md
-    - Native: persisters/serializers/native.md
 - Transformers:
   - API Reference: transformers/api.md
   - Dimensionality Reduction:
@@ -152,6 +140,18 @@ nav:
     - Regex Filter: transformers/regex-filter.md
     - Text Normalizer: transformers/text-normalizer.md
     - Stop Word Filter: transformers/stop-word-filter.md
+- Persisters:
+  - API Reference: persisters/api.md
+  - Filesystem: persisters/filesystem.md
+  - Redis DB: persisters/redis-db.md
+  - Serializers:
+    - API Reference: persisters/serializers/api.md
+    - Igbinary: persisters/serializers/igbinary.md
+    - Native: persisters/serializers/native.md
+- Backends:
+  - API Reference: backends/api.md
+  - Amp: backends/amp.md
+  - Serial: backends/serial.md
 - Neural Network:
   - Activation Functions:
     - ELU: neural-network/activation-functions/elu.md

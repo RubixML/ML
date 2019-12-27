@@ -16,7 +16,7 @@ This persister does not have any additional methods.
 ## Example
 ```php
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\Binary;
+use Rubix\ML\Persisters\Serializers\Igbinary;
 
-$persister = new Filesystem('/path/to/example.model', true, new Binary());
+$persister = new Filesystem('/path/to/example.model', true, new Iginary());
 ```

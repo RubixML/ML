@@ -1,6 +1,6 @@
 - Unreleased
     - Now requires PHP 7.2 and above
-    - Added performance benchmarks
+    - Added phpbench performance benchmarks
     - Added JSON, NDJSON, and CSV data Extractors
     - Added Hyperplane dataset generator
     - Changed the way noise is applied to Circle, Half Moon, etc.
@@ -16,6 +16,7 @@
     - Added describe by label method to Labeled dataset
     - Changed the way fromIterator works on Dataset
     - Added Regex Filter transformer
+    - Changed name of Igbinary serializer
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

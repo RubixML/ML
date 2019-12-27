@@ -4,11 +4,11 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\Binary;
+use Rubix\ML\Persisters\Serializers\Igbinary;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 
-class BinaryTest extends TestCase
+class IgbinaryTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Persistable
@@ -16,7 +16,7 @@ class BinaryTest extends TestCase
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\Binary
+     * @var \Rubix\ML\Persisters\Serializers\Igbinary
      */
     protected $serializer;
 
@@ -24,12 +24,12 @@ class BinaryTest extends TestCase
     {
         $this->persistable = new DummyClassifier();
 
-        $this->serializer = new Binary();
+        $this->serializer = new Igbinary();
     }
 
     public function test_build_serialzer() : void
     {
-        $this->assertInstanceOf(Binary::class, $this->serializer);
+        $this->assertInstanceOf(Igbinary::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 
