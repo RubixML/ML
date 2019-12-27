@@ -15,6 +15,7 @@ use Generator;
 use function count;
 use function get_class;
 use function gettype;
+use function array_slice;
 
 use const Rubix\ML\PHI;
 use const Rubix\ML\EPSILON;

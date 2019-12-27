@@ -627,6 +627,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function __toString() : string;
 
     /**
+     * Return the number of rows in the dataset.
+     *
      * @return int
      */
     public function count() : int

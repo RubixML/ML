@@ -6,6 +6,8 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Comparison;
 
+use function array_slice;
+
 use const Rubix\ML\PHI;
 
 abstract class ExtraTree extends CART

@@ -26,7 +26,7 @@ $dataset = Labeled::fromIterator(new CSV('example.csv'))
 ```
 
 ## JSON
-Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is widely used to represent structured data such as objects and arrays. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing data in their proper type - foregoing the need for conversion. The [JSON](extractors/json.md) extractor handles files containing both objects with string keys and arrays with numeric keys.
+Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is widely used to represent structured data such as objects and arrays. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing data in their proper type - foregoing the need for conversion.
 
 **Example**
 
@@ -49,6 +49,8 @@ Javascript Object Notation (JSON) is a standardized lightweight plain-text forma
 ]
 ```
 
+The [JSON](extractors/json.md) extractor handles files containing both objects with string keys and arrays with numeric keys.
+
 **Example**
 
 ```php
@@ -59,7 +61,7 @@ $dataset = Labeled::fromIterator(new JSON('example.json'));
 ```
 
 ## NDJSON
-Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. It has the advantage of retaining type information as well as being cursorable (able to be read line by line) like CSV. The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file.
+Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. It has the advantage of retaining type information as well as being cursorable (able to be read line by line) like CSV.
 
 **Example**
 
@@ -68,13 +70,18 @@ Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](ht
 {"attitude":"mean","texture":"furry","sociability":"loner","rating":-1.5,"class":"monster"}
 ```
 
+The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file. Like all iterators, it can be combined with the standard PHP library's [LimitIterator](https://www.php.net/manual/en/class.limititerator.php)
+
 **Example**
 
 ```php
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
+use LimitIterator;
 
-$dataset = Unlabeled::fromIterator(new NDJSON('example.ndjson'));
+$extractor = new LimitIterator(new NDJSON('example.ndjson'), 0, 1000);
+
+$dataset = Unlabeled::fromIterator($extractor);
 ```
 
 ## SQL

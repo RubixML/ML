@@ -5,6 +5,7 @@ namespace Rubix\ML\Other\Tokenizers;
 use InvalidArgumentException;
 
 use function count;
+use function array_slice;
 
 /**
  * Skip Gram

@@ -3,9 +3,9 @@
 namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\JSON;
-use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
+use Traversable;
 
 class JSONTest extends TestCase
 {
@@ -22,8 +22,8 @@ class JSONTest extends TestCase
     public function test_build_factory() : void
     {
         $this->assertInstanceOf(JSON::class, $this->extractor);
-        $this->assertInstanceOf(Extractor::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
+        $this->assertInstanceOf(Traversable::class, $this->extractor);
     }
 
     public function test_extract() : void

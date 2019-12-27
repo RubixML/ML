@@ -9,6 +9,9 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function chr;
+use function ord;
+
 /**
  * Interval Discretizer
  *

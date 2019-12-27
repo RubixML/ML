@@ -17,6 +17,8 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function array_slice;
+
 /**
  * KNN Regressor
  *

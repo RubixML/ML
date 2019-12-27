@@ -22,6 +22,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function array_slice;
 
 use const Rubix\ML\EPSILON;
 

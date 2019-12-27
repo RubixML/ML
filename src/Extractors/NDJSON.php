@@ -3,6 +3,7 @@
 namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
+use IteratorAggregate;
 use RuntimeException;
 use Generator;
 
@@ -20,19 +21,22 @@ use function is_null;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements IteratorAggregate<int, array>
  */
-class NDJSON implements Extractor
+class NDJSON implements IteratorAggregate
 {
     /**
-     * The path to the NDJSON file.
+     * The file handle.
      *
-     * @var string
+     * @var resource
      */
-    protected $path;
+    protected $handle;
 
     /**
      * @param string $path
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function __construct(string $path)
     {
@@ -44,7 +48,13 @@ class NDJSON implements Extractor
             throw new InvalidArgumentException("Path $path is not readable.");
         }
 
-        $this->path = $path;
+        $handle = fopen($path, 'r');
+        
+        if (!$handle) {
+            throw new RuntimeException("Could not open $path.");
+        }
+
+        $this->handle = $handle;
     }
 
     /**
@@ -55,18 +65,14 @@ class NDJSON implements Extractor
      */
     public function getIterator() : Generator
     {
-        $handle = fopen($this->path, 'r');
-        
-        if (!$handle) {
-            throw new RuntimeException("Could not open $this->path.");
-        }
+        rewind($this->handle);
 
         $line = 0;
 
-        while (!feof($handle)) {
+        while (!feof($this->handle)) {
             ++$line;
 
-            $row = rtrim(fgets($handle) ?: '');
+            $row = rtrim(fgets($this->handle) ?: '');
 
             if (empty($row)) {
                 continue 1;
@@ -80,7 +86,13 @@ class NDJSON implements Extractor
 
             yield $record;
         }
+    }
 
-        fclose($handle);
+    /**
+     * Clean up the file pointer.
+     */
+    public function __destruct()
+    {
+        fclose($this->handle);
     }
 }

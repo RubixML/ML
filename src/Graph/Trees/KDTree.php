@@ -13,6 +13,8 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
+use function array_slice;
+
 /**
  * K-d Tree
  *

@@ -5,6 +5,8 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function array_slice;
+
 /**
  * K Most Frequent
  *

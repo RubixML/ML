@@ -14,6 +14,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
 
+use function array_slice;
+
 /**
  * Ball Tree
  *

@@ -13,6 +13,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Generator;
 
+use function array_slice;
+
 use const Rubix\ML\EPSILON;
 
 /**

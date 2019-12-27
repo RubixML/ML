@@ -22,6 +22,7 @@ use InvalidArgumentException;
 use ReflectionClass;
 
 use function count;
+use function array_slice;
 
 /**
  * Grid Search

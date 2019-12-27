@@ -4,6 +4,7 @@ namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
 use RuntimeException;
+use IteratorAggregate;
 use ArrayIterator;
 
 use function is_null;
@@ -18,8 +19,10 @@ use function is_null;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements IteratorAggregate<int, array>
  */
-class JSON implements Extractor
+class JSON implements IteratorAggregate
 {
     /**
      * The path to the JSON file.

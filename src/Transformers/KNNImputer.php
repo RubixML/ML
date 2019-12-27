@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\argmax;
+use function array_slice;
 
 /**
  * KNN Imputer

@@ -3,8 +3,11 @@
 namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
+use IteratorAggregate;
 use RuntimeException;
 use Generator;
+
+use function strlen;
 
 /**
  * CSV
@@ -18,15 +21,17 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements IteratorAggregate<int, array>
  */
-class CSV implements Extractor
+class CSV implements IteratorAggregate
 {
     /**
-     * The path to the CSV file.
+     * The file handle.
      *
-     * @var string
+     * @var resource
      */
-    protected $path;
+    protected $handle;
 
     /**
      * The character that delineates the values of the columns of the data table.
@@ -55,6 +60,7 @@ class CSV implements Extractor
      * @param bool $header
      * @param string $enclosure
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function __construct(
         string $path,
@@ -70,6 +76,12 @@ class CSV implements Extractor
             throw new InvalidArgumentException("Path $path is not readable.");
         }
 
+        $handle = fopen($path, 'r');
+        
+        if (!$handle) {
+            throw new RuntimeException("Could not open $path.");
+        }
+
         if (strlen($delimiter) !== 1) {
             throw new InvalidArgumentException('Delimiter must be'
                 . ' a single character, ' . strlen($delimiter) . ' given.');
@@ -80,7 +92,7 @@ class CSV implements Extractor
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
-        $this->path = $path;
+        $this->handle = $handle;
         $this->delimiter = $delimiter;
         $this->header = $header;
         $this->enclosure = $enclosure;
@@ -94,26 +106,22 @@ class CSV implements Extractor
      */
     public function getIterator() : Generator
     {
-        $handle = fopen($this->path, 'r');
-        
-        if (!$handle) {
-            throw new RuntimeException("Could not open $this->path.");
-        }
+        rewind($this->handle);
 
         $line = 0;
 
         if ($this->header) {
             ++$line;
 
-            $row = rtrim(fgets($handle) ?: '');
+            $row = rtrim(fgets($this->handle) ?: '');
 
             $header = str_getcsv($row, $this->delimiter, $this->enclosure);
         }
 
-        while (!feof($handle)) {
+        while (!feof($this->handle)) {
             ++$line;
 
-            $row = rtrim(fgets($handle) ?: '');
+            $row = rtrim(fgets($this->handle) ?: '');
 
             if (empty($row)) {
                 continue 1;
@@ -131,7 +139,13 @@ class CSV implements Extractor
 
             yield $record;
         }
+    }
 
-        fclose($handle);
+    /**
+     * Clean up the file pointer.
+     */
+    public function __destruct()
+    {
+        fclose($this->handle);
     }
 }

@@ -9,6 +9,8 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function array_slice;
+
 use const Rubix\ML\EPSILON;
 
 /**
