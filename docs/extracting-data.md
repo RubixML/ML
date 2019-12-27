@@ -2,7 +2,7 @@
 Data needs to be loaded into your project before it can become useful. Data can be stored in many formats, but the most common formats are either structured plain-text such as CSV or NDJSON or in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. You have the freedom and flexibility to implement the data source to fit the scale of the problem and current infrastructure. In addition, the library provides [Extractor](extractors/api.md) objects to help automate more common use cases.
 
 ## CSV
-One of the most common formats that you'll find smaller datasets in is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV) files. A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row which gives names to the feature columns.
+A common format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV). A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. CSV files have the advantage of being able to be processed line by line. One disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default.
 
 **Example**
 
@@ -12,7 +12,7 @@ nice,furry,friendly,4,not monster
 mean,furry,loner,-1.5,monster
 ```
 
-Rubix ML provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `fromIterator()` method to new up a dataset object. One disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default. However, we also provide the [Numeric String Converter](transformers/numeric-string-converter.md) to handle transforming the data into the proper format after the dataset has been extracted from the CSV format.
+Rubix ML provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `fromIterator()` method to new up a dataset object. In the example below, we'll use the CSV extractor to instantiate a [Labeled](datasets/labeled.md) dataset and then convert the data to the proper format using the [Numeric String Converter](transformers/numeric-string-converter.md).
 
 **Example**
 
@@ -26,7 +26,7 @@ $dataset = Labeled::fromIterator(new CSV('example.csv'))
 ```
 
 ## JSON
-Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is widely used to represent structured data such as objects and arrays. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing data in their proper type - foregoing the need for conversion.
+Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is widely used to represent structured data such as objects and arrays. The rows of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data as the proper type. One downside of the JSON format, however, is that the entire document must be processed at once.
 
 **Example**
 
@@ -39,17 +39,17 @@ Javascript Object Notation (JSON) is a standardized lightweight plain-text forma
         "rating": 4,
         "class": "not monster"
     },
-    {
-        "attitude": "mean",
-        "texture": "furry",
-        "sociability": "loner",
-        "rating": -1.5,
-        "class": "monster"
-    }
+    [
+        "mean",
+        "furry",
+        "loner",
+        -1.5,
+        "monster"
+    ]
 ]
 ```
 
-The [JSON](extractors/json.md) extractor handles files containing both objects with string keys and arrays with numeric keys.
+The [JSON](extractors/json.md) extractor in Rubix ML handles loading data from JSON files.
 
 **Example**
 
@@ -61,16 +61,16 @@ $dataset = Labeled::fromIterator(new JSON('example.json'));
 ```
 
 ## NDJSON
-Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character. It has the advantage of retaining type information as well as being cursorable (able to be read line by line) like CSV.
+Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character (`\n` or `\r\n`). It has the advantage of retaining type information like JSON as well as being able to be read into memory line by line like CSV.
 
 **Example**
 
 ```ndjson
 {"attitude":"nice","texture":"furry","sociability":"friendly","rating":4,"class":"not monster"}
-{"attitude":"mean","texture":"furry","sociability":"loner","rating":-1.5,"class":"monster"}
+["mean","furry","loner",-1.5,"monster"]
 ```
 
-The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file. Like all iterators, it can be combined with the standard PHP library's [LimitIterator](https://www.php.net/manual/en/class.limititerator.php)
+The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file. Optionally, it can be combined with the standard PHP library's [Limit Iterator](https://www.php.net/manual/en/class.limititerator.php) to only load a portion of the data into memory. In the example below, we load the first 1,000 rows of data from an NDJSON file into an [Unlabeled](datasets/unlabeled.md) dataset.
 
 **Example**
 
@@ -79,13 +79,15 @@ use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use LimitIterator;
 
-$extractor = new LimitIterator(new NDJSON('example.ndjson'), 0, 1000);
+$extractor = new NDJSON('example.ndjson');
 
-$dataset = Unlabeled::fromIterator($extractor);
+$iterator = new LimitIterator($extractor->getIterator(), 0, 1000);
+
+$dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium and large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com), [PostgreSQL](https://www.postgresql.org), or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly. PHP comes with great relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. In addition, the PHP community has developed a healthy ecosystem of DBALs (Database Abstraction Layers) such as [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) and ORMs (Object Relational Mappers) such as [Eloquent](https://laravel.com/docs/5.8/eloquent) that help you get the data you want. The following example uses PDO and the `fetchAll()` method to return 1000 samples from the `patients` table.
+Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com) or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object.
 
 **Example**
 
@@ -104,12 +106,13 @@ $dataset = new Unlabeled($samples);
 ```
 
 ## Images
-The PHP language offers a number of functions to import images as PHP resources including `imagecreatefromjpeg()` and `imagecreatefrompng()` that come with the [GD](https://www.php.net/manual/en/book.image.php) extension. The example below loops over all the `.png` files in the `train` folder, imports the images as PHP resource types and labels them with the part of their filename after the underscore.
+A number of machine learning tasks such as image recognition and captioning involve images as the input to the learning algorithm. PHP offers a number of functions to import images as PHP resources including `imagecreatefromjpeg()` and `imagecreatefrompng()` that come with the [GD](https://www.php.net/manual/en/book.image.php) extension. The example below loops over all the `.png` files in the `train` folder, imports the images as PHP resource types and labels them with the part of their filename after the underscore. Those samples and labels are loaded into a [Labeled](datasets/labeled.md) dataset object and then converted into raw color channel data by the [Image Vectorizer](transformers/image-vectorizer.md).
 
 **Example**
 
 ```php
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Transformers\ImageVectorizer;
 
 $samples = $labels = [];
 
@@ -118,7 +121,6 @@ foreach (glob('train/*.png') as $file) {
     $labels[] = preg_replace('/[0-9]+_(.*).png/', '$1', basename($file));
 }
 
-$dataset = new Labeled($samples, $labels);
+$dataset = Labeled::build($samples, $labels)
+    ->apply(new ImageVectorizer());
 ```
-
-> **Note:** Images as they come are not compatible with any learner, but they can be converted into compatible raw color channel data once they have been imported into your project using the [Image Vectorizer](transformers/image-vectorizer.md).
