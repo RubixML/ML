@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
@@ -22,6 +23,7 @@ class CSVTest extends TestCase
     public function test_build_extractor() : void
     {
         $this->assertInstanceOf(CSV::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }

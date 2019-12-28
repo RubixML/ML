@@ -3,7 +3,6 @@
 namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
-use IteratorAggregate;
 use RuntimeException;
 use Generator;
 
@@ -26,10 +25,8 @@ use function strlen;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- *
- * @implements IteratorAggregate<int, array>
  */
-class CSV implements IteratorAggregate
+class CSV implements Extractor
 {
     /**
      * The file handle.
