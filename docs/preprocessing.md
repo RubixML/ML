@@ -35,7 +35,7 @@ Often, the continuous features of a dataset will be on different scales due to d
 - [L2 Normalizer](transformers/l2-normalizer.md)
 
 ## Feature Conversion
-Sometimes we are stuck in a situation when we have a dataset with both categorical and continuous features but the learner is only compatible with one of those types. For this issue we'll need to convert the incompatible type to a compatible type in order to proceed. Rubix ML provides a number of transformers that convert between types automatically.
+Sometimes we are stuck in a situation when we have a dataset with both categorical and continuous features but the learner is only compatible with one of those types. For this issue we'll need to convert the incompatible type to a compatible type in order to proceed to train the learner. Rubix ML provides a number of transformers that convert between types automatically.
 
 **Examples**
 
@@ -61,7 +61,7 @@ Certain forms of data such as text blobs and images do not have directly analogo
 - [Word Count Vectorizer](transformers/word-count-vectorizer.md)
 
 ## Dimensionality Reduction
-Dimensionality reduction in machine learning is analogous to compressing a data stream before sending it over a wire. According to the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson%E2%80%93Lindenstrauss_lemma), for every sample in high dimensions, there exists some lower-dimensional embedding that nearly preserves the distances between points in Euclidean space. In other words, datasets can almost always be represented with fewer but more informative features. Therefore, it is often a practice to transform a dataset in a way that results in denser features that train and infer quicker relative to their high-dimensional counterparts.
+Dimensionality reduction in machine learning is analogous to compressing a data stream before sending it over a wire. According to the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson%E2%80%93Lindenstrauss_lemma), for every sample in high dimensions, there exists some lower-dimensional embedding that nearly preserves the distances between the data points. In other words, datasets can almost always be represented with fewer but more informative features. Therefore, it is somewhat common to transform a dataset in a way that results in fewer but denser features in order to train and infer quicker relative to their high-dimensional counterparts.
 
 **Examples**
 
@@ -72,14 +72,14 @@ Dimensionality reduction in machine learning is analogous to compressing a data 
 - [Sparse Random Projector](transformers/sparse-random-projector.md)
 
 ## Feature Selection
-Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset - however, they work in different ways. Whereas dimensionality reduction produces denser representations using the information contained within *all* the features, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection as a preprocessing step can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
+Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset as well, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection as a preprocessing step can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
 
 **Examples**
 
 - [Variance Threshold Filter](transformers/variance-threshold-filter.md)
 
 ## Text Cleaning
-For natural language processing (NLP) tasks it is often desirable to preprocess the text corpus before extracting features to eliminate noise. One such step could involve filtering out *stop words* or other uninformative tokens such as URLs and email addresses. Another common step is to *normalize* the text such that tokens like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
+For natural language processing (NLP) tasks, cleaning the text before extracting features will help to eliminate noise from the corpus. One such step could involve filtering out *stop words* or other uninformative tokens such as URLs and email addresses. Another common step is to *normalize* the text so that tokens like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
 
 **Examples**
 
