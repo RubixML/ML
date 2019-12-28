@@ -3,13 +3,15 @@
 # CSV
 A plain-text format that use newlines to delineate rows and a user-specified delimiter (usually a comma) to separate the values of each column in a data table. Comma-Separated Values (CSV) format is a common format but suffers from not being able to retain type information - thus, all data is imported as categorical data (strings) by default.
 
+> **Note:** This implementation of CSV is based on the definition in [RFC 4180](https://tools.ietf.org/html/rfc4180).
+
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the CSV file. |
 | 2 | header | false | bool | Does the CSV document have a header as the first row? |
-| 3 | delimiter | ',' | string | The character that delineates a new column. |
-| 4 | enclosure | '' | string | The character used to enclose the value of a column. |
+| 3 | delimiter | ',' | string | The character that delineates the values of the columns of the data table. |
+| 4 | enclosure | '"' | string | The character used to enclose a cell that contains a delimiter in the body. |
 
 ## Additional Methods
 This extractor does not have any additional methods.
@@ -20,3 +22,6 @@ use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('example.csv', true, ',', '"');
 ```
+
+### References
+>- T. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.

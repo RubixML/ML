@@ -16,7 +16,7 @@ use function is_null;
  * Notation (JSON) arrays or objects. The format is like a mix of JSON and CSV and has the
  * advantage of retaining data type information and being read into memory incrementally.
  *
- * > **Note:** Empty rows are ignored by the parser by default.
+ * > **Note:** Empty lines are ignored by the parser.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -72,13 +72,13 @@ class NDJSON implements IteratorAggregate
         while (!feof($this->handle)) {
             ++$line;
 
-            $row = rtrim(fgets($this->handle) ?: '');
+            $data = rtrim(fgets($this->handle) ?: '');
 
-            if (empty($row)) {
+            if (empty($data)) {
                 continue 1;
             }
             
-            $record = json_decode($row, true);
+            $record = json_decode($data, true);
 
             if (is_null($record)) {
                 throw new RuntimeException("Malformed JSON on line $line.");

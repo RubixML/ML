@@ -17,6 +17,12 @@ use function strlen;
  * Values (CSV) format is a common format but suffers from not being able to retain type
  * information - thus, all data is imported as categorical data (strings) by default.
  *
+ * > **Note:** This implementation of CSV is based on the definition in RFC 4180.
+ *
+ * References:
+ * [1] Y. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV)
+ * Files.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -47,7 +53,7 @@ class CSV implements IteratorAggregate
     protected $delimiter;
 
     /**
-     * The character used to enclose each column.
+     * The character used to enclose a cell that contains a delimiter in the body.
      *
      * @var string
      */
@@ -65,7 +71,7 @@ class CSV implements IteratorAggregate
         string $path,
         bool $header = false,
         string $delimiter = ',',
-        string $enclosure = ''
+        string $enclosure = '"'
     ) {
         if (!is_file($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
@@ -75,20 +81,20 @@ class CSV implements IteratorAggregate
             throw new InvalidArgumentException("Path $path is not readable.");
         }
 
-        $handle = fopen($path, 'r');
-        
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
         if (strlen($delimiter) !== 1) {
             throw new InvalidArgumentException('Delimiter must be'
                 . ' a single character, ' . strlen($delimiter) . ' given.');
         }
 
-        if (!empty($enclosure) and strlen($enclosure) !== 1) {
-            throw new InvalidArgumentException('Delimiter must be'
+        if (strlen($enclosure) !== 1) {
+            throw new InvalidArgumentException('Enclosure must be'
                 . ' a single character, ' . strlen($enclosure) . ' given.');
+        }
+
+        $handle = fopen($path, 'r');
+        
+        if (!$handle) {
+            throw new RuntimeException("Could not open $path.");
         }
 
         $this->handle = $handle;
@@ -112,21 +118,21 @@ class CSV implements IteratorAggregate
         if ($this->header) {
             ++$line;
 
-            $row = rtrim(fgets($this->handle) ?: '');
+            $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
 
-            $header = str_getcsv($row, $this->delimiter, $this->enclosure);
+            if (!$header) {
+                throw new RuntimeException("Header not found on line $line.");
+            }
         }
 
         while (!feof($this->handle)) {
             ++$line;
 
-            $row = rtrim(fgets($this->handle) ?: '');
+            $record = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
 
-            if (empty($row)) {
+            if (empty($record)) {
                 continue 1;
             }
-
-            $record = str_getcsv($row, $this->delimiter, $this->enclosure);
 
             if (isset($header)) {
                 $record = array_combine($header, $record);

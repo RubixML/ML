@@ -5,7 +5,7 @@ namespace Rubix\ML\Extractors;
 use InvalidArgumentException;
 use RuntimeException;
 use IteratorAggregate;
-use ArrayIterator;
+use Generator;
 
 use function is_null;
 
@@ -15,6 +15,9 @@ use function is_null;
  * Javascript Object Notation is a standardized lightweight plain-text representation that
  * is widely used. JSON has the advantage of retaining type information, however since the
  * entire JSON blob is read on load, it is not cursorable like CSV or NDJSON.
+ *
+ * References:
+ * [1] T. Bray. (2014). The JavaScript Object Notation (JSON) Data Interchange Format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -52,9 +55,9 @@ class JSON implements IteratorAggregate
      * Return an iterator for the records in the data table.
      *
      * @throws \RuntimeException
-     * @return \ArrayIterator<int, array>
+     * @return \Generator<array>
      */
-    public function getIterator() : ArrayIterator
+    public function getIterator() : Generator
     {
         $data = file_get_contents($this->path);
 
@@ -68,6 +71,6 @@ class JSON implements IteratorAggregate
             throw new RuntimeException('Malformed JSON document.');
         }
 
-        return new ArrayIterator($records);
+        yield from $records;
     }
 }

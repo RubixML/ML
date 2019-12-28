@@ -7,7 +7,7 @@ use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
-use ArrayIterator;
+use Generator;
 
 use function count;
 use function get_class;
@@ -667,11 +667,11 @@ class Unlabeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \ArrayIterator<int, array>
+     * @return \Generator<array>
      */
-    public function getIterator() : ArrayIterator
+    public function getIterator() : Generator
     {
-        return new ArrayIterator($this->samples);
+        yield from $this->samples;
     }
 
     /**

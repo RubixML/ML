@@ -2,5 +2,6 @@
 {"attitude":"mean","texture":"furry","sociability":"loner","rating":-1.5,"class":"monster"}
 ["nice","rough","friendly", 2.6,"not monster"]
 ["mean","rough","friendly",-1,"monster"]
+
 ["nice","rough","friendly",2.9,"not monster"]
 ["nice","furry","loner",-5,"not monster"]

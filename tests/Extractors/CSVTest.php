@@ -16,7 +16,7 @@ class CSVTest extends TestCase
 
     public function setUp() : void
     {
-        $this->extractor = new CSV('tests/test.csv', true, ',', '');
+        $this->extractor = new CSV('tests/test.csv', true, ',', '"');
     }
 
     public function test_build_extractor() : void

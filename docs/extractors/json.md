@@ -17,3 +17,6 @@ use Rubix\ML\Extractors\JSON;
 
 $extractor = new JSON('example.json');
 ```
+
+### References
+>- T. Bray. (2014). The JavaScript Object Notation (JSON) Data Interchange Format.
