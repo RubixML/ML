@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  * I-Tree
  *
- * The base Isloation Tree implementation with completely random splitting.
+ * The base Isolation Tree implementation with completely random node splitting.
  *
  * References:
  * [1] F. T. Liu et al. (2008). Isolation Forest.

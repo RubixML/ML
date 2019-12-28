@@ -99,8 +99,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Train the regression tree by learning the optimal splits in the
-     * training set.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException

@@ -7,8 +7,7 @@ use Rubix\ML\DataType;
 /**
  * HTML Stripper
  *
- * Removes any HTML tags that may be in the text of a categorical
- * variable.
+ * Removes any HTML tags that may be in the text of a categorical variable.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

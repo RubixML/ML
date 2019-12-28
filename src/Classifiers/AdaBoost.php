@@ -235,9 +235,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Train a boosted enemble of *weak* classifiers assigning an influence value
-     * to each one and re-weighting the training data accordingly to reflect how
-     * difficult a particular sample is to classify.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException

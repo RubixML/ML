@@ -77,7 +77,7 @@ public static asString(int $type) : string
 **Example**
 
 ```php
-var_dump(DataType::asString(DataType::CATEGORIAL));
+var_dump(DataType::asString(DataType::CATEGORICAL));
 ```
 
 ```sh

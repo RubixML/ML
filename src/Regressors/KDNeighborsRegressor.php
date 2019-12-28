@@ -20,7 +20,7 @@ use RuntimeException;
 /**
  * K-d Neighbors Regressor
  *
- * A fast implementation of KNN Regressor using a spatially-aware binary tree for nereast
+ * A fast implementation of KNN Regressor using a spatially-aware binary tree for nearest
  * neighbors search. K-d Neighbors Regressor works by locating the neighborhood of a sample
  * via binary search and then does a brute force search only on the samples close to or
  * within the neighborhood of the unknown sample. The main advantage of K-d Neighbors over

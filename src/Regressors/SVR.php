@@ -27,7 +27,7 @@ use svm;
  * *epsilon*. Thus, the value of epsilon defines a margin of tolerance where no penalty is
  * given to errors.
  *
- * > **Note:** This estimator requires the SVM extensionwhich uses the libsvm engine under
+ * > **Note:** This estimator requires the SVM extension which uses the libsvm engine under
  * the hood.
  *
  * References:

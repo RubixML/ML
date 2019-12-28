@@ -24,7 +24,7 @@ public tree() : Spatial
 ```php
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Kernels\Distance\Minskowski;
+use Rubix\ML\Kernels\Distance\Minkowski;
 
 $estimator = new KDNeighbors(3, false, new BallTree(40, new Minkowski()));
 ```

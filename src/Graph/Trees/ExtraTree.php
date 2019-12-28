@@ -10,6 +10,15 @@ use function array_slice;
 
 use const Rubix\ML\PHI;
 
+/**
+ * Extra Tree
+ *
+ * The base implementation of an *Extremely Randomized* Decision Tree.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 abstract class ExtraTree extends CART
 {
     /**

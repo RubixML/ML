@@ -16,7 +16,7 @@ use function gettype;
  * A normally distributed n-dimensional blob of samples centered at a given
  * mean vector. The standard deviation can be set for the whole blob or for each
  * feature column independently. When a global standard deviation is used, the
- * resulting blob will be isotropic and will converge asypmtotically to a sphere.
+ * resulting blob will be isotropic and will converge asymptotically to a sphere.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -44,7 +44,7 @@ array(1) {
 ```
 
 ### Flush Queue
-Sometimes it might be necesary to remove leftover items from the queue before proceeding. In such a case the `flush()` method will clear the queue of Deferred computations.
+Sometimes it might be necessary to remove leftover items from the queue before proceeding. In such a case the `flush()` method will clear the queue of Deferred computations.
 ```php
 public flush(): void
 ```

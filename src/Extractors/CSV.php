@@ -12,11 +12,10 @@ use function strlen;
 /**
  * CSV
  *
- * A non-standard plain-text format that use newlines to delineate rows and a user-specified
- * delimiter (usually a comma) to separate the values of each column in a data table.
- * Comma-Separated Values (CSV) format is a common format but suffers from the disadvantage
- * of not being able to retain type information - thus, all data is imported as categorical
- * data (strings) by default.
+ * A plain-text format that use newlines to delineate rows and a user-specified delimiter
+ * (usually a comma) to separate the values of each column in a data table. Comma-Separated
+ * Values (CSV) format is a common format but suffers from not being able to retain type
+ * information - thus, all data is imported as categorical data (strings) by default.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

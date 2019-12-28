@@ -31,7 +31,7 @@ use const Rubix\ML\EPSILON;
 /**
  * Mean Shift
  *
- * A hierarchical clustering algorithm that uses peak finding to locate the candiate
+ * A hierarchical clustering algorithm that uses peak finding to locate the candidate
  * centroids of a training set given a radius constraint. Near-duplicate candidates
  * are merged together in a final post-processing step.
  *

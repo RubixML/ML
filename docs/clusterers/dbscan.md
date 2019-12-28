@@ -29,4 +29,4 @@ $estimator = new DBSCAN(4.0, 5, new BallTree(20, new Diagonal()));
 ```
 
 ### References
->- M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
+>- M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.

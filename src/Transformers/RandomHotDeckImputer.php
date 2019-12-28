@@ -9,7 +9,7 @@ use const Rubix\ML\PHI;
 /**
  * Random Hot Deck Imputer
  *
- * A method of imputation similiar to KNN Imputer but instead of computing a
+ * A method of imputation similar to KNN Imputer but instead of computing a
  * weighted average of the neighbors' features, Random Hot Deck picks a value
  * from the neighborhood at random. This makes Random Hot Deck Imputer slightly
  * less computationally complex while satisfying some balancing equations at

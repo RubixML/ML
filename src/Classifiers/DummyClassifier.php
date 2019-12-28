@@ -86,7 +86,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
     }
 
     /**
-     * Fit the training set to the given guessing strategy.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException

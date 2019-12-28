@@ -186,7 +186,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Train the estimator with a dataset.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException

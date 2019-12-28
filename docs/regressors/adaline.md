@@ -31,7 +31,7 @@ public network() : Network|null
 
 ## Example
 ```php
-use Rubix\ML\Classifers\Adaline;
+use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 

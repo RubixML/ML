@@ -48,7 +48,7 @@ $grid = [
 	[1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new FBeta(), new KFold(5));
+$estimator = new GridSearch(KNearestNeighbors::class, $grid, new FBeta(), new KFold(5));
 
 $estimator->train($dataset);
 

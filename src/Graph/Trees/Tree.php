@@ -29,7 +29,7 @@ interface Tree
     public function bare() : bool;
 
     /**
-     * Remove the root node and its descendents from the tree.
+     * Remove the root node and its descendants from the tree.
      */
     public function destroy() : void;
 }

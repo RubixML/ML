@@ -101,8 +101,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     }
 
     /**
-     * Train the binary tree by learning the most optimal splits in the
-     * training set.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException

@@ -12,7 +12,7 @@ Image Vectorizer takes images and converts them into a flat vector of raw color 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | channels | 3 | int | The channel depth i.e the number of rgba channels to encode starting with red. |
+| 1 | channels | 3 | int | The channel depth i.e the number of color channels to encode starting with red. |
 
 ## Additional Methods
 This transformer does not have any additional methods.

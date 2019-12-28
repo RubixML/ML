@@ -1,5 +1,5 @@
 # Dataset Objects
-In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples where each row constitues a single sample and each column represents the value of the feature indexed at that column.
+In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples where each row constitutes a single sample and each column represents the value of the feature indexed at that column.
 
 Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same data type. For example, a continuous feature column's value for height must be either an integer or floating point number. A stray string or other data type will throw an exception upon validation.
 
@@ -477,7 +477,7 @@ public toCsv(string $delimiter = ',', string $enclosure = '') : string
 ```
 
 ## Previewing in the Console
-You can echo the dataset objectto preview the first rows and columns in the console.
+You can echo the dataset object to preview the first few rows and columns in the console.
 
 ```php
 echo $dataset;

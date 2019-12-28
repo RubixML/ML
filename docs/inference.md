@@ -14,7 +14,7 @@ All estimators implement the [Estimator](estimator.md) interface which provides 
 **Example**
 
 ```php
-// Import dataset of unkown samples
+// Import dataset of unknown samples
 
 $predictions = $estimator->predict($dataset);
 

@@ -15,7 +15,7 @@ use function array_slice;
 use const Rubix\ML\EPSILON;
 
 /**
- * Linear Discriminant Analyis
+ * Linear Discriminant Analysis
  *
  * A supervised dimensionality reduction technique that selects the most discriminating
  * features based on their class labels. In other words, LDA finds a linear combination

@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 interface Persister
 {
     /**
-     * Save the persitable model.
+     * Save the persistable model.
      *
      * @param \Rubix\ML\Persistable $persistable
      */

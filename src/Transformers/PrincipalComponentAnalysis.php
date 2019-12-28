@@ -14,7 +14,7 @@ use function array_slice;
 use const Rubix\ML\EPSILON;
 
 /**
- * Principal Component Analyis
+ * Principal Component Analysis
  *
  * Principal Component Analysis or *PCA* is a dimensionality reduction technique that
  * aims to transform the feature space by the *k* principal components that explain

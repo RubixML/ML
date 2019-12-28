@@ -10,7 +10,7 @@ This report does not have any parameters.
 
 ## Example
 ```php
-use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
+use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 
 // Import labels and make predictions
 

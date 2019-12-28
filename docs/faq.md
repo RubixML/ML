@@ -33,7 +33,7 @@ Training time depends on a number of factors including size of the dataset and c
 - You have enough RAM to hold the dataset and model in memory without swapping to disk.
 
 ## What is a Tuple?
-A *tuple* is a way to denote an immutable sequential hetorogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
+A *tuple* is a way to denote an immutable sequential heterogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
 
 **Example**
 

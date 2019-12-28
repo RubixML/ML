@@ -23,7 +23,7 @@ use function array_slice;
  * hypercubes or *bounding boxes* that are used to prune off nodes during
  * nearest neighbor and range searches.
  *
- * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
+ * [1] J. L. Bentley. (1975). Multidimensional Binary Search Trees Used for
  * Associative Searching.
  *
  * @category    Machine Learning

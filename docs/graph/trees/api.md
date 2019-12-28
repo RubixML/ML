@@ -1,5 +1,5 @@
 # Tree
-A tree is a graph data structure with a root node and descendents called *child* nodes that form a hierarchy. One of the constraints of this model is that each node can only have a single parent node.
+A tree is a graph data structure with a root node and descendants called *child* nodes that form a hierarchy. One of the constraints of this structure is that each node can only have a single parent node. Trees are used for a number of tasks in Rubix ML including fast nearest neighbor and range searches, and to power decision tree-based learners.
 
 ### Grow a Tree
 Insert a root node and recursively split the dataset until a terminating condition is met:
@@ -44,7 +44,7 @@ bool(false)
 ```
 
 ### Destroy the Tree
-Remove the root node and its descendents from the tree:
+Remove the root node and its descendants from the tree:
 ```php
 public destroy() : void
 ```
@@ -129,7 +129,7 @@ public featureImportances() : array
 **Example**
 
 ```php
-var_dump($tree->featureImpartances());
+var_dump($tree->featureImportances());
 ```
 
 ```sh

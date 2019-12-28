@@ -29,7 +29,7 @@ public steps() : array
 
 ## Example
 ```php
-use Rubi\ML\Embedders\TSNE;
+use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
 $embedder = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());

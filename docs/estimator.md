@@ -1,5 +1,5 @@
 # Estimator
-Estimators make up the core of the Rubix ML library because they are responsible for computing predictions from a model (regarded as *inference*). An estimator can be a Classifier, Regressor, Clusterer, or Anomaly Detector and the interpretation of its output depends on this estimator type. For example, the output of a regressor is a single number whereas the predictions made by a classifier will be 1 of k discrete class labels. See the section on [Inference](inference.md) for more detals about estimator types and their outputs.
+Estimators make up the core of the Rubix ML library because they are responsible for computing predictions from a model (regarded as *inference*). An estimator can be a Classifier, Regressor, Clusterer, or Anomaly Detector and the interpretation of its output depends on this estimator type. For example, the output of a regressor is a single number whereas the predictions made by a classifier will be 1 of k discrete class labels. See the section on [Inference](inference.md) for more details about estimator types and their outputs.
 
 ### Make Predictions
 Return the predictions from a dataset in an array:
@@ -61,5 +61,5 @@ public compatibility() : array
 **Example**
 
 ```php
-$compatibility = $estimator->compatiility();
+$compatibility = $estimator->compatibility();
 ```

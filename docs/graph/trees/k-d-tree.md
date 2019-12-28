@@ -28,4 +28,4 @@ $tree = new KDTree(30, new Euclidean());
 ```
 
 ### References
->- J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for Associative Searching.
+>- J. L. Bentley. (1975). Multidimensional Binary Search Trees Used for Associative Searching.

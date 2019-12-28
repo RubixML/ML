@@ -26,7 +26,7 @@ A quantity is a property that describes either the magnitude or multitude of som
 Categories are discrete values that describe some qualitative property of a sample such as species, gender, or nationality. They are represented as strings and have no numerical relationship between the values. Unlike ratios and intervals, which can take on an infinite number of values, categorical variables can only take on 1 of *k* discrete values.
 
 ## Booleans
-A boolean (or *binary*) variable is a special case of a categorical variable when the number of possible categories is stricly two. For example, to denote if a subject is tall or not you can use either the `'tall'` or `'not tall'` categories respectively.
+A boolean (or *binary*) variable is a special case of a categorical variable when the number of possible categories is strictly two. For example, to denote if a subject is tall or not you can use either the `'tall'` or `'not tall'` categories respectively.
 
 ## Ordinals
 Even though PHP treats numeric strings such as `'1'` and `'2'` as if they were numeric, they are still considered categorical variables according to Rubix ML's high-level type system. This conveniently allows you to represent ordinal variables as *ordered categories*. For example, instead of the integers `1`, `2`, `3`, `...`, which imply a precise interval, you could use the strings `'1'`, `'2'`, `'3'`, `...`. to signal ordinal values in which the distances between values could be arbitrary.

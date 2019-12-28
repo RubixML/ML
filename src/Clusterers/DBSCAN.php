@@ -25,7 +25,7 @@ use function count;
  * > **Note**: Noise samples are assigned to the cluster number *-1*.
  *
  * References:
- * [1] M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
+ * [1] M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -27,8 +27,7 @@ use const Rubix\ML\EPSILON;
  * K Nearest Neighbors
  *
  * A distance-based learning algorithm that locates the *k* nearest samples from the
- * training set and predicts the class label that is most common. A kernelized distance
- * function allows the user to specify to the learner a definition of distance.
+ * training set and predicts the class label that is most common.
  *
  * > **Note:** This learner is considered a *lazy* learner because it does the majority
  * of its computation during inference. For a fast spatial tree-accelerated version, see
@@ -140,7 +139,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     }
 
     /**
-     * Train the estimator with a dataset.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      */
