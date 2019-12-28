@@ -76,11 +76,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
         if ($validate and $samples) {
             $samples = array_values($samples);
 
-            $row = isset($samples[0]) ? array_values($samples[0]) : [];
+            $proto = isset($samples[0]) ? array_values($samples[0]) : [];
 
-            $n = count($row);
+            $n = count($proto);
 
-            $types = array_map([DataType::class, 'determine'], $row);
+            $types = array_map([DataType::class, 'determine'], $proto);
 
             foreach ($samples as &$sample) {
                 $sample = is_array($sample)

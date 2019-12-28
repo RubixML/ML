@@ -21,7 +21,7 @@ use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Transformers\NumericStringConverter;
 
-$dataset = Labeled::fromIterator(new CSV('example.csv'))
+$dataset = Labeled::fromIterator(new CSV('example.csv', true))
     ->apply(new NumericStringConverter());
 ```
 

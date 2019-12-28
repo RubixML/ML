@@ -7,8 +7,8 @@ A plain-text format that use newlines to delineate rows and a user-specified del
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the CSV file. |
-| 2 | delimiter | ',' | string | The character that delineates a new column. |
-| 3 | header | false | bool | Does the CSV document have a header as the first row? |
+| 2 | header | false | bool | Does the CSV document have a header as the first row? |
+| 3 | delimiter | ',' | string | The character that delineates a new column. |
 | 4 | enclosure | '' | string | The character used to enclose the value of a column. |
 
 ## Additional Methods
@@ -18,5 +18,5 @@ This extractor does not have any additional methods.
 ```php
 use Rubix\ML\Extractors\CSV;
 
-$extractor = new CSV('example.csv', ',', true, '"');
+$extractor = new CSV('example.csv', true, ',', '"');
 ```

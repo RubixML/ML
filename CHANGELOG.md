@@ -93,7 +93,7 @@
     - Mean Shift compatible with Spatial trees
     - K-d Neighbors base spatial tree configurable
     - Radius Neighbors now uses base spatial tree
-    - Local Outlier Factor interchangable base search tree
+    - Local Outlier Factor interchangeable base search tree
     - DBSCAN now uses any Spatial tree for range searches
     - CART uses downsampling on continuous features
     - LOF and Isolation Forest contamination off by default
@@ -157,7 +157,7 @@
     - Changed order of Loda hyperparameters
     - Replaced F1 Score with F Beta metric
     - Removed ISRU and Gaussian activation functions
-    - Fixed SELU derivitive computation
+    - Fixed SELU derivative computation
     - Changed adaptive optimizer default decay parameters
     - Changed default learning rate of Stochastic Optimizer
     - Added SMAPE (Symmetric MAPE) regression metric

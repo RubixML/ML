@@ -33,18 +33,18 @@ class CSV implements IteratorAggregate
     protected $handle;
 
     /**
-     * The character that delineates the values of the columns of the data table.
-     *
-     * @var string
-     */
-    protected $delimiter;
-
-    /**
      * Does the CSV document have a header as the first row?
      *
      * @var bool
      */
     protected $header;
+
+    /**
+     * The character that delineates the values of the columns of the data table.
+     *
+     * @var string
+     */
+    protected $delimiter;
 
     /**
      * The character used to enclose each column.
@@ -55,16 +55,16 @@ class CSV implements IteratorAggregate
 
     /**
      * @param string $path
-     * @param string $delimiter
      * @param bool $header
+     * @param string $delimiter
      * @param string $enclosure
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function __construct(
         string $path,
-        string $delimiter = ',',
         bool $header = false,
+        string $delimiter = ',',
         string $enclosure = ''
     ) {
         if (!is_file($path)) {
@@ -92,8 +92,8 @@ class CSV implements IteratorAggregate
         }
 
         $this->handle = $handle;
-        $this->delimiter = $delimiter;
         $this->header = $header;
+        $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
     }
 
