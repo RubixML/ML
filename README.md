@@ -29,6 +29,9 @@ $ composer require rubix/ml
 ## Documentation
 Read the docs for the latest version [here](https://docs.rubixml.com).
 
+## What is Rubix ML?
+Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, validation, and production with over 40 modern supervised and unsupervised learning algorithms to choose from.
+
 ## Getting Started
 If you are new to machine learning, we recommend the section [What is Machine Learning?](https://docs.rubixml.com/en/latest/what-is-machine-learning.html) to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/en/latest/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
