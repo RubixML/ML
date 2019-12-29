@@ -248,6 +248,7 @@ class Labeled extends Dataset
         $type = $this->labelType();
 
         $desc = [];
+        
         $desc['type'] = DataType::TYPES[$type];
 
         switch ($type) {
@@ -278,14 +279,14 @@ class Labeled extends Dataset
 
                 $total = count($this->labels) ?: EPSILON;
 
-                $probabilities = [];
+                $densities = [];
 
                 foreach ($counts as $class => $count) {
-                    $probabilities[$class] = $count / $total;
+                    $densities[$class] = $count / $total;
                 }
 
                 $desc['num_categories'] = count($counts);
-                $desc['probabilities'] = $probabilities;
+                $desc['densities'] = $densities;
 
                 break 1;
         }

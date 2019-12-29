@@ -428,34 +428,30 @@ class UnlabeledTest extends TestCase
 
         $expected = [
             [
-                'column' => 0,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'nice' => 0.6666666666666666,
                     'mean' => 0.3333333333333333,
                 ],
             ],
             [
-                'column' => 1,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'furry' => 0.5,
                     'rough' => 0.5,
                 ],
             ],
             [
-                'column' => 2,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'friendly' => 0.6666666666666666,
                     'loner' => 0.3333333333333333,
                 ],
             ],
             [
-                'column' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
                 'variance' => 9.792222222222222,

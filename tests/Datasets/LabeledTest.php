@@ -559,34 +559,30 @@ class LabeledTest extends TestCase
 
         $expected = [
             [
-                'column' => 0,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'nice' => 0.6666666666666666,
                     'mean' => 0.3333333333333333,
                 ],
             ],
             [
-                'column' => 1,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'furry' => 0.5,
                     'rough' => 0.5,
                 ],
             ],
             [
-                'column' => 2,
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'probabilities' => [
+                'densities' => [
                     'friendly' => 0.6666666666666666,
                     'loner' => 0.3333333333333333,
                 ],
             ],
             [
-                'column' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
                 'variance' => 9.792222222222222,
@@ -609,33 +605,29 @@ class LabeledTest extends TestCase
         $expected = [
             'not monster' => [
                 [
-                    'column' => 0,
                     'type' => 'categorical',
                     'num_categories' => 1,
-                    'probabilities' => [
+                    'densities' => [
                         'nice' => 1,
                     ],
                 ],
                 [
-                    'column' => 1,
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'probabilities' => [
+                    'densities' => [
                         'furry' => 0.5,
                         'rough' => 0.5,
                     ],
                 ],
                 [
-                    'column' => 2,
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'probabilities' => [
+                    'densities' => [
                         'friendly' => 0.75,
                         'loner' => 0.25,
                     ],
                 ],
                 [
-                    'column' => 3,
                     'type' => 'continuous',
                     'mean' => 1.125,
                     'variance' => 12.776875,
@@ -651,33 +643,29 @@ class LabeledTest extends TestCase
             ],
             'monster' => [
                 [
-                    'column' => 0,
                     'type' => 'categorical',
                     'num_categories' => 1,
-                    'probabilities' => [
+                    'densities' => [
                         'mean' => 1,
                     ],
                 ],
                 [
-                    'column' => 1,
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'probabilities' => [
+                    'densities' => [
                         'furry' => 0.5,
                         'rough' => 0.5,
                     ],
                 ],
                 [
-                    'column' => 2,
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'probabilities' => [
+                    'densities' => [
                         'friendly' => 0.5,
                         'loner' => 0.5,
                     ],
                 ],
                 [
-                    'column' => 3,
                     'type' => 'continuous',
                     'mean' => -1.25,
                     'variance' => 0.0625,
@@ -713,7 +701,7 @@ class LabeledTest extends TestCase
         $expected = [
             'type' => 'categorical',
             'num_categories' => 2,
-            'probabilities' => [
+            'densities' => [
                 'monster' => 0.3333333333333333,
                 'not monster' => 0.6666666666666666,
             ],

@@ -212,10 +212,9 @@ Array
         (
             [0] => Array
                 (
-                    [column] => 0
                     [type] => categorical
                     [num_categories] => 1
-                    [probabilities] => Array
+                    [densities] => Array
                         (
                             [nice] => 1
                         )
@@ -224,10 +223,9 @@ Array
 
             [1] => Array
                 (
-                    [column] => 1
                     [type] => categorical
                     [num_categories] => 2
-                    [probabilities] => Array
+                    [densities] => Array
                         (
                             [furry] => 0.5
                             [rough] => 0.5
@@ -237,10 +235,9 @@ Array
 
             [2] => Array
                 (
-                    [column] => 2
                     [type] => categorical
                     [num_categories] => 2
-                    [probabilities] => Array
+                    [densities] => Array
                         (
                             [friendly] => 0.75
                             [loner] => 0.25
@@ -250,7 +247,6 @@ Array
 
             [3] => Array
                 (
-                    [column] => 3
                     [type] => continuous
                     [mean] => 1.125
                     [variance] => 12.776875
@@ -290,12 +286,11 @@ Array
 (
     [type] => categorical
     [num_categories] => 2
-    [probabilities] => Array
+    [densities] => Array
         (
             [monster] => 0.33333333333333
             [not monster] => 0.66666666666667
         )
 
 )
-
 ```

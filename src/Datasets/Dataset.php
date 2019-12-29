@@ -328,7 +328,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
             $desc = [];
 
-            $desc['column'] = $column;
             $desc['type'] = DataType::TYPES[$type];
 
             switch ($type) {
@@ -359,14 +358,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
                     $total = count($values) ?: EPSILON;
 
-                    $probabilities = [];
+                    $densities = [];
 
                     foreach ($counts as $category => $count) {
-                        $probabilities[$category] = $count / $total;
+                        $densities[$category] = $count / $total;
                     }
 
                     $desc['num_categories'] = count($counts);
-                    $desc['probabilities'] = $probabilities;
+                    $desc['densities'] = $densities;
 
                     break 1;
 
@@ -376,7 +375,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                     break 1;
             }
 
-            $stats[] = $desc;
+            $stats[$column] = $desc;
         }
 
         return $stats;

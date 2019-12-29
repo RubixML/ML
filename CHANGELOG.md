@@ -17,6 +17,7 @@
     - Changed the way fromIterator works on Dataset
     - Added Regex Filter transformer
     - Changed name of Igbinary serializer
+    - Changed dataset and label description
 
 - 0.0.17-beta
     - Added Tensor extension compatibility

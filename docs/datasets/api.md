@@ -415,14 +415,11 @@ print_r($stats);
 ```sh
 Array
 (
-	...
-
     [2] => Array
         (
-            [column] => 2
             [type] => categorical
             [num_categories] => 2
-            [probabilities] => Array
+            [densities] => Array
                 (
                     [friendly] => 0.66666666666667
                     [loner] => 0.33333333333333
@@ -432,7 +429,6 @@ Array
 
     [3] => Array
         (
-            [column] => 3
             [type] => continuous
             [mean] => 0.33333333333333
             [variance] => 9.7922222222222
@@ -445,7 +441,6 @@ Array
             [75%] => 2.825
             [max] => 4
         )
-
 )
 ```
 
