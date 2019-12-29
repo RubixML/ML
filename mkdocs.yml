@@ -32,6 +32,7 @@ nav:
   - Wrapper: wrapper.md
 - Extractors:
   - API Reference: datasets/extractors/api.md
+  - Column Picker: extractors/column-picker.md
   - CSV: extractors/csv.md
   - JSON: extractors/json.md
   - NDJSON: extractors/ndjson.md

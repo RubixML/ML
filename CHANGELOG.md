@@ -1,7 +1,8 @@
 - Unreleased
     - Now requires PHP 7.2 and above
     - Added phpbench performance benchmarks
-    - Added JSON, NDJSON, and CSV data Extractors
+    - Added JSON, NDJSON, CSV, and Column Picker Extractors
+    - Changed the way fromIterator method works on Dataset object
     - Added Hyperplane dataset generator
     - Changed the way noise is applied to Circle, Half Moon, etc.
     - Changed name of Multilayer Perceptron classifier
@@ -10,7 +11,6 @@
     - Added label type validation for supervised learners
     - Added toArray, toJson, toCsv, toNdjson methods to Dataset API
     - Can now preview a Dataset object in console by echoing it
-    - Removed fromIterator method from Dataset class
     - Changed Labeled dataset objects iteration and array access
     - Removed zip and unzip methods on Labeled dataset
     - Added describe by label method to Labeled dataset
