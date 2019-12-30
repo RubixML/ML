@@ -67,7 +67,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public static function stack(array $datasets);
 
     /**
-     * @param mixed[] $samples
+     * @param array[] $samples
      * @param bool $validate
      * @throws \InvalidArgumentException
      */
@@ -83,9 +83,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             $types = array_map([DataType::class, 'determine'], $proto);
 
             foreach ($samples as &$sample) {
-                $sample = is_array($sample)
-                    ? array_values($sample)
-                    : [$sample];
+                $sample = array_values($sample);
 
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('The number of feature'
@@ -251,7 +249,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Return the columns that match a given data type.
      *
      * @param int $type
-     * @return mixed[]
+     * @return array[]
      */
     public function columnsByType(int $type) : array
     {
@@ -288,6 +286,37 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             $value = &$sample[$column];
 
             $value = $callback($value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Drop the column at the given index.
+     *
+     * @param int $index
+     * @return self
+     */
+    public function dropColumn(int $index) : self
+    {
+        return $this->dropColumns([$index]);
+    }
+
+    /**
+     * Drop the columns at the given indices.
+     *
+     * @param int[] $indices
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function dropColumns(array $indices) : self
+    {
+        foreach ($this->samples as &$sample) {
+            foreach ($indices as $index) {
+                unset($sample[$index]);
+            }
+
+            $sample = array_values($sample);
         }
 
         return $this;
@@ -392,6 +421,70 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Return a JSON representation of the dataset.
+     *
+     * @param bool $pretty
+     * @return string
+     */
+    public function toJSON(bool $pretty = false) : string
+    {
+        return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
+    }
+
+    /**
+     * Return a newline delimited JSON representation of the dataset.
+     *
+     * @return string
+     */
+    public function toNDJSON() : string
+    {
+        $ndjson = '';
+
+        foreach ($this->getIterator() as $row) {
+            $ndjson .= json_encode($row) . PHP_EOL;
+        }
+
+        return $ndjson;
+    }
+
+    /**
+     * Return the dataset as comma-separated values (CSV) string.
+     *
+     * @param string $delimiter
+     * @param string $enclosure
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public function toCSV(string $delimiter = ',', string $enclosure = '"') : string
+    {
+        if (strlen($delimiter) !== 1) {
+            throw new InvalidArgumentException('Delimiter must be'
+                . ' a single character.');
+        }
+
+        if (strlen($enclosure) !== 1) {
+            throw new InvalidArgumentException('Enclosure must be'
+                . ' a single character.');
+        }
+        
+        $csv = '';
+
+        foreach ($this->getIterator() as $row) {
+            foreach ($row as &$value) {
+                $value = (string) $value;
+
+                if (strpos($value, $delimiter) !== false) {
+                    $value = $enclosure . $value . $enclosure;
+                }
+            }
+
+            $csv .= implode($delimiter, $row) . PHP_EOL;
+        }
+
+        return $csv;
+    }
+
+    /**
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
@@ -443,7 +536,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function splice(int $offset, int $n);
 
     /**
-     * Prepend this dataset with another dataset.
+     * Prepend a dataset onto this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
@@ -451,7 +544,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function prepend(Dataset $dataset);
 
     /**
-     * Append this dataset with another dataset.
+     * Append a dataset onto this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
@@ -459,7 +552,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function append(Dataset $dataset);
 
     /**
-     * Drop the row at the given index and return the new dataset.
+     * Drop the row at the given index.
      *
      * @param int $index
      * @return self
@@ -467,28 +560,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function dropRow(int $index);
 
     /**
-     * Drop the rows at the given indices and return the new dataset.
+     * Drop the rows at the given indices.
      *
      * @param mixed[] $indices
      * @return self
      */
     abstract public function dropRows(array $indices);
-
-    /**
-     * Drop the column at the given index and return the new dataset.
-     *
-     * @param int $index
-     * @return self
-     */
-    abstract public function dropColumn(int $index);
-
-    /**
-     * Drop the columns at the given indices and return the new dataset.
-     *
-     * @param mixed[] $indices
-     * @return self
-     */
-    abstract public function dropColumns(array $indices);
 
     /**
      * Randomize the dataset.
@@ -498,7 +575,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function randomize();
 
     /**
-     * Run a filter over the dataset using the values of a given column.
+     * Filter the rows of the dataset using the values of a feature column as the
+     * argument to a callback.
      *
      * @param int $index
      * @param callable $fn
@@ -588,42 +666,26 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
-     * Return a dataset with all duplicate rows removed.
+     * Remove duplicate rows from the dataset.
      *
      * @return self
      */
     abstract public function deduplicate();
 
     /**
-     * Return the dataset object as an associative array.
+     * Return the dataset object as a data table array.
      *
-     * @return mixed[]
+     * @return array[]
      */
     abstract public function toArray() : array;
 
     /**
-     * Return a JSON representation of the dataset.
-     *
-     * @param bool $pretty
-     * @return string
+     * @return array[]
      */
-    abstract public function toJson(bool $pretty = false) : string;
-
-    /**
-     * Return the dataset as comma-separated values (CSV) string.
-     *
-     * @param string $delimiter
-     * @param string $enclosure
-     * @return string
-     */
-    abstract public function toCsv(string $delimiter = ',', string $enclosure = '') : string;
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    abstract public function __toString() : string;
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
+    }
 
     /**
      * Return the number of rows in the dataset.
@@ -664,4 +726,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
+
+    /**
+     * Return a string representation of the first few rows of the dataset.
+     *
+     * @return string
+     */
+    abstract public function __toString() : string;
 }

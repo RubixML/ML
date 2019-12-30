@@ -42,15 +42,13 @@ class Labeled extends Dataset
      *
      * @var (int|float|string)[]
      */
-    protected $labels = [
-        //
-    ];
+    protected $labels;
 
     /**
      * Build a new labeled dataset with validation.
      *
-     * @param mixed[] $samples
-     * @param mixed[] $labels
+     * @param array[] $samples
+     * @param (string|int|float)[] $labels
      * @return self
      */
     public static function build(array $samples = [], array $labels = []) : self
@@ -61,8 +59,8 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset foregoing validation.
      *
-     * @param mixed[] $samples
-     * @param mixed[] $labels
+     * @param array[] $samples
+     * @param (string|int|float)[] $labels
      * @return self
      */
     public static function quick(array $samples = [], array $labels = []) : self
@@ -115,8 +113,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * @param mixed[] $samples
-     * @param mixed[] $labels
+     * @param array[] $samples
+     * @param (string|int|float)[] $labels
      * @param bool $validate
      * @throws \InvalidArgumentException
      */
@@ -406,7 +404,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Prepend this dataset with another dataset.
+     * Prepend a dataset to this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
@@ -415,8 +413,13 @@ class Labeled extends Dataset
     public function prepend(Dataset $dataset) : self
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only merge with a labeled'
-                . 'dataset.');
+            throw new InvalidArgumentException('Can only prepend with another'
+                . ' labeled dataset.');
+        }
+
+        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
+            throw new InvalidArgumentException('Can only append with dataset'
+                . ' that has the same number of columns.');
         }
 
         return self::quick(
@@ -426,7 +429,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Append this dataset with another dataset.
+     * Append a dataset to this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
@@ -435,8 +438,13 @@ class Labeled extends Dataset
     public function append(Dataset $dataset) : self
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only merge with a labeled'
-                . 'dataset.');
+            throw new InvalidArgumentException('Can only append with another'
+                . ' labeled dataset.');
+        }
+
+        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
+            throw new InvalidArgumentException('Can only append with dataset'
+                . ' that has the same number of columns.');
         }
 
         return self::quick(
@@ -446,7 +454,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Drop the row at the given index and return the new dataset.
+     * Drop the row at the given index.
      *
      * @param int $index
      * @return self
@@ -457,70 +465,22 @@ class Labeled extends Dataset
     }
 
     /**
-     * Drop the rows at the given indices and return the new dataset.
+     * Drop the rows at the given indices.
      *
-     * @param mixed[] $indices
+     * @param int[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
     public function dropRows(array $indices) : self
     {
-        $samples = $this->samples;
-        $labels = $this->labels;
-
         foreach ($indices as $index) {
-            if (!is_int($index)) {
-                throw new InvalidArgumentException('Index must be an'
-                    . ' integer, ' . gettype($index) . ' given.');
-            }
-
-            unset($samples[$index], $labels[$index]);
+            unset($this->samples[$index], $this->labels[$index]);
         }
 
-        return self::quick(
-            array_values($samples),
-            array_values($labels)
-        );
-    }
+        $this->samples = array_values($this->samples);
+        $this->labels = array_values($this->labels);
 
-    /**
-     * Drop the column at the given index and return the new dataset.
-     *
-     * @param int $index
-     * @return self
-     */
-    public function dropColumn(int $index) : self
-    {
-        return $this->dropColumns([$index]);
-    }
-
-    /**
-     * Drop the columns at the given indices and return the new dataset.
-     *
-     * @param mixed[] $indices
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function dropColumns(array $indices) : self
-    {
-        $samples = [];
-
-        foreach ($indices as $index) {
-            if (!is_int($index)) {
-                throw new InvalidArgumentException('Index must be an'
-                    . ' integer, ' . gettype($index) . ' given.');
-            }
-        }
-
-        foreach ($this->samples as $sample) {
-            foreach ($indices as $index) {
-                unset($sample[$index]);
-            }
-
-            $samples[] = array_values($sample);
-        }
-
-        return self::quick($samples, $this->labels);
+        return $this;
     }
 
     /**
@@ -540,7 +500,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * Run a filter over the dataset using the values of a given column.
+     * Filter the rows of the dataset using the values of a feature column as the
+     * argument to a callback.
      *
      * @param int $index
      * @param callable $callback
@@ -561,7 +522,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Run a filter over the dataset using the labels.
+     * Filter the rows of the dataset using the labels as the argument to a callback.
      *
      * @param callable $callback
      * @return self
@@ -805,17 +766,12 @@ class Labeled extends Dataset
      * value.
      *
      * @param int $column
-     * @param mixed $value
+     * @param string|int|float $value
      * @throws \InvalidArgumentException
      * @return self[]
      */
     public function partition(int $column, $value) : array
     {
-        if (!is_string($value) and !is_numeric($value)) {
-            throw new InvalidArgumentException('Value must be a string or'
-                . ' numeric type, ' . gettype($value) . ' given.');
-        }
-
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         if ($this->columnType($column) === DataType::CATEGORICAL) {
@@ -850,8 +806,8 @@ class Labeled extends Dataset
      * Partition the dataset into left and right subsets based on their distance
      * from two centroids.
      *
-     * @param mixed[] $leftCentroid
-     * @param mixed[] $rightCentroid
+     * @param (string|int|float)[] $leftCentroid
+     * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
      * @return self[]
@@ -993,104 +949,28 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return a new dataset with all duplicate rows removed.
+     * Remove duplicate rows from the dataset.
      *
      * @return self
      */
     public function deduplicate() : self
     {
-        $zip = function ($sample, $label) {
-            return array_merge($sample, [$label]);
-        };
-
-        $table = array_map($zip, $this->samples, $this->labels);
-
-        $table = array_unique($table, SORT_REGULAR);
-
-        return self::quick(
-            array_intersect_key($this->samples, $table),
-            array_intersect_key($this->labels, $table)
-        );
+        $table = array_unique($this->toArray(), SORT_REGULAR);
+        
+        $this->samples = array_values(array_intersect_key($this->samples, $table));
+        $this->labels = array_values(array_intersect_key($this->labels, $table));
+        
+        return $this;
     }
 
     /**
-     * Return the dataset object as an associative array.
+     * Return the dataset object as a data table array.
      *
-     * @return mixed[]
+     * @return array[]
      */
     public function toArray() : array
     {
-        return iterator_to_array($this);
-    }
-
-    /**
-     * Return a JSON representation of the dataset.
-     *
-     * @param bool $pretty
-     * @return string
-     */
-    public function toJson(bool $pretty = false) : string
-    {
-        return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
-    }
-
-    /**
-     * Return a newline delimited JSON representation of the dataset.
-     *
-     * @return string
-     */
-    public function toNdjson() : string
-    {
-        $ndjson = '';
-
-        foreach ($this as $row) {
-            $ndjson .= json_encode($row) . PHP_EOL;
-        }
-
-        return $ndjson;
-    }
-
-    /**
-     * Return the dataset as comma-separated values (CSV) string.
-     *
-     * @param string $delimiter
-     * @param string $enclosure
-     * @throws \InvalidArgumentException
-     * @return string
-     */
-    public function toCsv(string $delimiter = ',', string $enclosure = '') : string
-    {
-        if (strlen($delimiter) !== 1) {
-            throw new InvalidArgumentException('Delimiter must be'
-                . ' a single character.');
-        }
-
-        if (strlen($enclosure) > 1) {
-            throw new InvalidArgumentException('Enclosure must be'
-                . ' less than or equal to 1 character.');
-        }
-        
-        $csv = '';
-
-        foreach ($this as $row) {
-            if (!empty($enclosure)) {
-                foreach ($row as &$value) {
-                    $value = $enclosure . $value . $enclosure;
-                }
-            }
-
-            $csv .= implode($delimiter, $row) . PHP_EOL;
-        }
-
-        return $csv;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
+        return iterator_to_array($this->getIterator());
     }
 
     /**

@@ -11,7 +11,7 @@ Unlabeled datasets are used to train unsupervised learners and for feeding unkno
 
 ## Additional Methods
 
-#### Factory Methods
+### Factory Methods
 Build a new unlabeled dataset with validation:
 ```php
 public static build(array $samples = []) : self

@@ -335,26 +335,26 @@ class UnlabeledTest extends TestCase
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
-        $dataset = new Unlabeled([['nice', 'furry', 'friendly']]);
+        $dataset = new Unlabeled([['nice', 'furry', 'friendly', 4.7]]);
 
         $merged = $this->dataset->prepend($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(0));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(0));
     }
 
     public function test_append_dataset() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
-        $dataset = new Unlabeled([['nice', 'furry', 'friendly']]);
+        $dataset = new Unlabeled([['nice', 'furry', 'friendly', 4.7]]);
 
         $merged = $this->dataset->append($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(6));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
     }
 
     public function test_drop_sample() : void
@@ -503,7 +503,7 @@ class UnlabeledTest extends TestCase
     {
         $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
             
-        $this->assertEquals($expected, $this->dataset->toJson());
+        $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
     public function test_to_ndjson() : void
@@ -515,7 +515,7 @@ class UnlabeledTest extends TestCase
         . '["nice","rough","friendly",2.9]' . PHP_EOL
         . '["nice","furry","loner",-5]' . PHP_EOL;
             
-        $this->assertEquals($expected, $this->dataset->toNdjson());
+        $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
     public function test_to_csv() : void
@@ -527,7 +527,7 @@ class UnlabeledTest extends TestCase
             . 'nice,rough,friendly,2.9' . PHP_EOL
             . 'nice,furry,loner,-5' . PHP_EOL;
             
-        $this->assertEquals($expected, $this->dataset->toCsv());
+        $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
     public function test_to_string() : void

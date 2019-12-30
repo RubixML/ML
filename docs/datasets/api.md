@@ -1,7 +1,7 @@
 # Dataset Objects
-In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are extended table-like data structures employing an internal type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples where each row constitutes a single sample and each column represents the value of the feature indexed at that column.
+In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like data structures employing a high-level type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column.
 
-Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same data type. For example, a continuous feature column's value for height must be either an integer or floating point number. A stray string or other data type will throw an exception upon validation.
+Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. A stray string or other data type will throw an exception upon validation.
 
 **Example**
 
@@ -150,12 +150,12 @@ $dataset = Labeled::stack([
 ```
 
 ## Prepending and Appending
-To prepend a given dataset onto the beginning of another dataset:
+To prepend a dataset onto the beginning of another dataset:
 ```php
 public prepend(Dataset $dataset) : self
 ```
 
-To append a given dataset onto the end of another dataset:
+To append a dataset onto the end of another dataset:
 ```php
 public append(Dataset $dataset) : self
 ```
@@ -270,7 +270,7 @@ $batches = $dataset->batch(1000);
 ```
 
 ## Randomization
-Randomize the order of the Dataset and return it for method chaining:
+Randomize the order of the dataset and return it for method chaining:
 ```php
 public randomize() : self
 ```
@@ -378,22 +378,22 @@ array(3) {
 ```
 
 ## Dropping Rows and Columns
-Drop the row at the given index and return the new dataset:
+Drop the row at the given index:
 ```php
 public dropRow(int $index) : self
 ```
 
-Drop the rows at the given indices and return the new dataset:
+Drop the rows at the given indices:
 ```php
 public dropRows(array $indices) : self
 ```
 
-Drop the column at the given index and return the new dataset:
+Drop the column at the given index:
 ```php
 public dropColumn(int $index) : self
 ```
 
-Drop the columns at the given indices and return the new dataset:
+Drop the columns at the given indices:
 ```php
 public dropColumns(array $indices) : self
 ```
@@ -445,30 +445,30 @@ Array
 ```
 
 ## De-duplication
-Return a new dataset with duplicate rows removed:
+Remove duplicate rows from the dataset:
 ```php
 public deduplicate() : self
 ```
 
 ## Output Formats
-Return the dataset object as an associative array:
+Return the dataset object as a data table array:
 ```php
 public toArray() : array
 ```
 
 Return a JSON representation of the dataset:
 ```php
-public toJson(bool $pretty = false) : string
+public toJSON(bool $pretty = false) : string
 ```
 
 Return a newline delimited JSON representation of the dataset:
 ```php
-public toNdjson() : string
+public toNDJSON() : string
 ```
 
 Return the dataset as comma-separated values (CSV) string:
 ```php
-public toCsv(string $delimiter = ',', string $enclosure = '') : string
+public toCSV(string $delimiter = ',', string $enclosure = '"') : string
 ```
 
 ## Previewing in the Console

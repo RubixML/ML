@@ -11,7 +11,6 @@ use Generator;
 
 use function count;
 use function get_class;
-use function gettype;
 use function array_slice;
 
 use const Rubix\ML\PHI;
@@ -32,7 +31,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset with validation.
      *
-     * @param mixed[] $samples
+     * @param array[] $samples
      * @return self
      */
     public static function build(array $samples = []) : self
@@ -43,7 +42,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset foregoing validation.
      *
-     * @param mixed[] $samples
+     * @param array[] $samples
      * @return self
      */
     public static function quick(array $samples = []) : self
@@ -181,29 +180,41 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Prepend this dataset with another dataset.
+     * Prepend a dataset to this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @throws \InvalidArgumentException
      * @return \Rubix\ML\Datasets\Dataset<array>
      */
     public function prepend(Dataset $dataset) : Dataset
     {
+        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
+            throw new InvalidArgumentException('Can only prepend with dataset'
+                . ' that has the same number of columns.');
+        }
+
         return self::quick(array_merge($dataset->samples(), $this->samples));
     }
 
     /**
-     * Append this dataset with another dataset.
+     * Append a dataset to this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @throws \InvalidArgumentException
      * @return \Rubix\ML\Datasets\Dataset<array>
      */
     public function append(Dataset $dataset) : Dataset
     {
+        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
+            throw new InvalidArgumentException('Can only append with dataset'
+                . ' that has the same number of columns.');
+        }
+
         return self::quick(array_merge($this->samples, $dataset->samples()));
     }
 
     /**
-     * Drop the row at the given index and return the new dataset.
+     * Drop the row at the given index.
      *
      * @param int $index
      * @return self
@@ -214,66 +225,21 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Drop the rows at the given indices and return the new dataset.
+     * Drop the rows at the given indices.
      *
-     * @param mixed[] $indices
+     * @param int[] $indices
      * @throws \InvalidArgumentException
      * @return self
      */
     public function dropRows(array $indices) : self
     {
-        $samples = $this->samples;
-
         foreach ($indices as $index) {
-            if (!is_int($index)) {
-                throw new InvalidArgumentException('Index must be an'
-                    . ' integer, ' . gettype($index) . ' given.');
-            }
-
-            unset($samples[$index]);
+            unset($this->samples[$index]);
         }
 
-        return self::quick(array_values($samples));
-    }
+        $this->samples = array_values($this->samples);
 
-    /**
-     * Drop the column at the given index and return the new dataset.
-     *
-     * @param int $index
-     * @return self
-     */
-    public function dropColumn(int $index) : self
-    {
-        return $this->dropColumns([$index]);
-    }
-
-    /**
-     * Drop the columns at the given indices and return the new dataset.
-     *
-     * @param mixed[] $indices
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function dropColumns(array $indices) : self
-    {
-        $samples = [];
-
-        foreach ($indices as $index) {
-            if (!is_int($index)) {
-                throw new InvalidArgumentException('Index must be an'
-                    . ' integer, ' . gettype($index) . ' given.');
-            }
-        }
-
-        foreach ($this->samples as $sample) {
-            foreach ($indices as $index) {
-                unset($sample[$index]);
-            }
-
-            $samples[] = array_values($sample);
-        }
-
-        return self::quick($samples);
+        return $this;
     }
 
     /**
@@ -289,7 +255,8 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Run a filter over the dataset using the values of a given column.
+     * Filter the rows of the dataset using the values of a feature column as the
+     * argument to a callback.
      *
      * @param int $index
      * @param callable $callback
@@ -396,17 +363,12 @@ class Unlabeled extends Dataset
      * value.
      *
      * @param int $column
-     * @param mixed $value
+     * @param string|int|float $value
      * @throws \InvalidArgumentException
      * @return self[]
      */
     public function partition(int $column, $value) : array
     {
-        if (!is_string($value) and !is_numeric($value)) {
-            throw new InvalidArgumentException('Value must be a string or'
-                . ' numeric type, ' . gettype($value) . ' given.');
-        }
-
         $left = $right = [];
 
         if ($this->columnType($column) === DataType::CATEGORICAL) {
@@ -427,18 +389,15 @@ class Unlabeled extends Dataset
             }
         }
 
-        return [
-            self::quick($left),
-            self::quick($right),
-        ];
+        return [self::quick($left), self::quick($right)];
     }
 
     /**
      * Partition the dataset into left and right subsets based on their distance
      * between two centroids.
      *
-     * @param mixed[] $leftCentroid
-     * @param mixed[] $rightCentroid
+     * @param (string|int|float)[] $leftCentroid
+     * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
      * @return self[]
@@ -465,10 +424,7 @@ class Unlabeled extends Dataset
             }
         }
 
-        return [
-            self::quick($left),
-            self::quick($right),
-        ];
+        return [self::quick($left), self::quick($right)];
     }
 
     /**
@@ -573,79 +529,25 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Return a new dataset with all duplicate rows removed.
+     * Remove duplicate rows from the dataset.
      *
      * @return self
      */
     public function deduplicate() : self
     {
-        return self::quick(array_unique($this->samples, SORT_REGULAR));
+        $this->samples = array_values(array_unique($this->samples, SORT_REGULAR));
+
+        return $this;
     }
 
     /**
-     * Return the dataset object as an associative array.
+     * Return the dataset object as a data table array.
      *
-     * @return mixed[]
+     * @return array[]
      */
     public function toArray() : array
     {
         return $this->samples;
-    }
-
-    /**
-     * Return a JSON representation of the dataset.
-     *
-     * @param bool $pretty
-     * @return string
-     */
-    public function toJson(bool $pretty = false) : string
-    {
-        return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
-    }
-
-    /**
-     * Return a newline delimited JSON representation of the dataset.
-     *
-     * @return string
-     */
-    public function toNdjson() : string
-    {
-        $encode = function ($carry, $row) {
-            return $carry . json_encode($row) . PHP_EOL;
-        };
-
-        return array_reduce($this->samples, $encode, '');
-    }
-
-    /**
-     * Return the dataset as comma-separated values (CSV) string.
-     *
-     * @param string $delimiter
-     * @param string $enclosure
-     * @throws \InvalidArgumentException
-     * @return string
-     */
-    public function toCsv(string $delimiter = ',', string $enclosure = '') : string
-    {
-        $encode = function ($carry, $row) use ($enclosure, $delimiter) {
-            if (!empty($enclosure)) {
-                foreach ($row as &$value) {
-                    $value = $enclosure . $value . $enclosure;
-                }
-            }
-
-            return $carry . implode($delimiter, $row) . PHP_EOL;
-        };
-
-        return array_reduce($this->samples, $encode, '');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
     }
 
     /**

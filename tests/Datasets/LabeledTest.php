@@ -446,13 +446,13 @@ class LabeledTest extends TestCase
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
-        $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
+        $dataset = new Labeled([['nice', 'furry', 'friendly', 4.7]], ['not monster']);
 
         $merged = $this->dataset->prepend($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(0));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(0));
         $this->assertEquals('not monster', $merged->label(6));
     }
 
@@ -460,13 +460,13 @@ class LabeledTest extends TestCase
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
-        $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
+        $dataset = new Labeled([['nice', 'furry', 'friendly', 4.7]], ['not monster']);
 
         $merged = $this->dataset->append($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->sample(6));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
         $this->assertEquals('not monster', $merged->label(6));
     }
 
@@ -735,7 +735,7 @@ class LabeledTest extends TestCase
     {
         $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
             
-        $this->assertEquals($expected, $this->dataset->toJson());
+        $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
     public function test_to_ndjson() : void
@@ -747,7 +747,7 @@ class LabeledTest extends TestCase
         . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
         . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
             
-        $this->assertEquals($expected, $this->dataset->toNdjson());
+        $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
     public function test_to_csv() : void
@@ -759,7 +759,7 @@ class LabeledTest extends TestCase
             . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
             . 'nice,furry,loner,-5,not monster' . PHP_EOL;
             
-        $this->assertEquals($expected, $this->dataset->toCsv());
+        $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
     public function test_to_string() : void

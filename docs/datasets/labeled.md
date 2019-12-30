@@ -14,7 +14,7 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 
 ## Additional Methods
 
-#### Factory Methods
+### Factory Methods
 Build a new labeled dataset with validation:
 ```php
 public static build(array $samples = [], array $labels = []) : self
@@ -48,7 +48,7 @@ $dataset = Labeled::build($samples, $labels);  // With validation
 $dataset = Labeled::quick($samples, $labels);  // Without validation
 ```
 
-#### Selectors
+### Selectors
 Return an array of labels:
 ```php
 public labels() : array
@@ -102,7 +102,7 @@ array(2) {
 }
 ```
 
-#### Transform
+### Transform
 Transform the labels in the dataset using a callback function and return self for method chaining:
 ```php
 public transformLabels(callable $fn) : self
@@ -137,7 +137,7 @@ $dataset->transformLabels(function ($label) {
 });
 ```
 
-#### Filter
+### Filter
 Filter the dataset by label:
 ```php
 public filterByLabel(callable $fn) : self
@@ -154,13 +154,13 @@ $filtered = $dataset->filterByLabel(function ($label)) {
 });
 ```
 
-#### Sorting
+### Sorting
 Sort the dataset by label and return self for method chaining:
 ```php
 public sortByLabel(bool $descending = false) : self
 ```
 
-#### Stratification
+### Stratification
 Group samples by their label and return them in their own datasets:
 ```php
 public stratify() : array
