@@ -1,5 +1,7 @@
 # Preprocessing
-Sometimes, one or more preprocessing steps will need to be taken to condition the incoming data for a learner. Some examples of various types of data preprocessing are feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy to use interface. Say we wanted to transform the categorical features of a dataset to continuous ones using *one-hot* encoding - we can accomplish this in Rubix ML by passing a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to a [Dataset](datasets/api.md) object's `apply()` method like in the example below.
+Sometimes, one or more preprocessing steps will need to be taken to condition the incoming data for a learner. Some examples of various types of data preprocessing are feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy to use interface.
+
+Say we wanted to transform the categorical features of a dataset to continuous ones using *one-hot* encoding - we can accomplish this in Rubix ML by passing a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to a [Dataset](datasets/api.md) object's `apply()` method like in the example below.
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -7,7 +9,7 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $dataset->apply(new OneHotEncoder());
 ```
 
-You can chain transformations by calling the Dataset object API fluently.
+You can chain transformations by calling the dataset object API fluently.
 
 ```php
 use Rubix\ML\Transformers\NumericStringConverter;
@@ -20,31 +22,28 @@ $dataset->apply(new NumericStringConverter())
 ```
 
 ## Standardization and Normalization
-Often, the continuous features of a dataset will be on different scales due to different forms of measurement. For example, age (0 - 100) and income (0 - 1,000,000) are on two vastly different scales. The condition that all features are on the same scale matters to some learners such as [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), [K Means](clusterers/k-means.md), and [Multilayer Perceptron](classifiers/multilayer-perceptron.md) to name a few. Standardization is a transformation applied to the features of a dataset such that they are all on the same scale. Normalization is a special case where the transformed features have a range between 0 and 1. Standardization is often accompanied by a *centering* step which subtracts the mean. Depending on the transformer, it may either operate on the columns of a sample matrix or the rows.
+Often, the continuous features of a dataset will be on different scales because they are measured independently. For example, age (0 - 100) and income (0 - 1,000,000) are on two different scales. Standardization is the processes of transforming a dataset such that the features are all on one scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns of a dataset or the rows.
 
-**Column-wise Examples**
-
-- [Max Absolute Scaler](transformers/max-absolute-scaler.md)
-- [Min Max Normalizer](transformers/min-max-normalizer.md)
-- [Robust Standardizer](transformers/robust-standardizer.md)
-- [Z Scale Standardizer](transformers/z-scale-standardizer.md)
-
-**Row-wise Examples**
-
-- [L1 Normalizer](transformers/l1-normalizer.md)
-- [L2 Normalizer](transformers/l2-normalizer.md)
+| Transformer | Operates On |
+|---|---|
+| [L1 Normalizer](transformers/l1-normalizer.md) | Rows |
+| [L2 Normalizer](transformers/l2-normalizer.md) | Rows |
+| [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Columns |
+| [Min Max Normalizer](transformers/min-max-normalizer.md) | Columns |
+| [Robust Standardizer](transformers/robust-standardizer.md) | Columns |
+| [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns |
 
 ## Feature Conversion
 Sometimes we are stuck in a situation when we have a dataset with both categorical and continuous features but the learner is only compatible with one of those types. For this issue we'll need to convert the incompatible type to a compatible type in order to proceed to train the learner. Rubix ML provides a number of transformers that convert between types automatically.
 
-**Examples**
-
-- [Interval Discretizer](transformers/interval-discretizer.md)
-- [One Hot Encoder](transformers/one-hot-encoder.md)
-- [Numeric String Converter](transformers/numeric-string-converter.md)
+| Transformer | From | To |
+|---|---|---|
+| [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical |
+| [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous |
+| [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous |
 
 ## Imputation
-Although some learners are robust to missing data, the primary tool for handling missing data in Rubix ML is through a preprocessing step called *imputation*. Data imputation is the process of replacing missing values with a pretty good substitution such as the average value for the column or the sample's nearest neighbor's value. By imputing values rather than discarding or ignoring them, we are able to squeeze more value from the data and limit the introduction of bias in the process.
+A common technique for handling missing data is through a preprocessing step called *imputation*. Imputation is the process of replacing missing values with a pretty good substitution such as the average value for the feature or the sample's nearest neighbor's value. Imputing missing values, rather than ignoring them or discarding the entire sample, allows you to get the most from your data and limits the introduction of certain biases in the process.
 
 **Examples**
 
@@ -52,16 +51,8 @@ Although some learners are robust to missing data, the primary tool for handling
 - [Missing Data Imputer](transformers/missing-data-imputer.md)
 - [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md)
 
-## Feature Extraction
-Certain forms of data such as text blobs and images do not have directly analogous scalar feature representations. Thus, it is necessary to extract features from their original representation. For example, to extract a useful feature representation from a blob of text, the text must be encoded as some fixed-length feature vector. One way we can accomplish this in Rubix ML is by computing a fixed-length *vocabulary* from the training corpus and then encode each sample as a vector of word (or *token*) counts. This is exactly what the Word Count Vectorizer does under the hood.
-
-**Examples**
-
-- [Image Vectorizer](transformers/image-vectorizer.md)
-- [Word Count Vectorizer](transformers/word-count-vectorizer.md)
-
 ## Dimensionality Reduction
-Dimensionality reduction in machine learning is analogous to compressing a data stream before sending it over a wire. According to the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson%E2%80%93Lindenstrauss_lemma), for every sample in high dimensions, there exists some lower-dimensional embedding that nearly preserves the distances between the data points. In other words, datasets can almost always be represented with fewer but more informative features. Therefore, it is somewhat common to transform a dataset in a way that results in fewer but denser features in order to train and infer quicker relative to their high-dimensional counterparts.
+Dimensionality reduction in machine learning is analogous to *compression* in the context of sending data over a wire. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
 
 **Examples**
 
@@ -71,15 +62,30 @@ Dimensionality reduction in machine learning is analogous to compressing a data 
 - [Principal Component Analysis](transformers/principal-component-analysis.md)
 - [Sparse Random Projector](transformers/sparse-random-projector.md)
 
+## Feature Extraction
+Higher-order data such as images and text blobs are actually composites of many scalar features. Thus, it is often necessary to extract those features from their original representation in order to feed them to a learner. For example, we may want to extract color channel (RGB) data from an image or word counts from a blob of text.
+
+| Transformer | Extracts From |
+|---|---|
+| [Image Vectorizer](transformers/image-vectorizer.md) | Images |
+| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | Text Blobs |
+
 ## Feature Selection
-Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset as well, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection as a preprocessing step can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
+Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection as a preprocessing step can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
 
 **Examples**
 
 - [Variance Threshold Filter](transformers/variance-threshold-filter.md)
 
+## Image Processing
+For computer vision tasks, images may need to be processed to ensure they are the correct size. Other forms of image processing may include color correction and blurring/sharpening.
+
+**Example**
+
+- [Image Resizer](transformers/image-resizer.md)
+
 ## Text Cleaning
-For natural language processing (NLP) tasks, cleaning the text before extracting features will help to eliminate noise from the corpus. One such step could involve filtering out *stop words* or other uninformative tokens such as URLs and email addresses. Another common step is to *normalize* the text so that tokens like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
+For natural language processing (NLP) tasks, cleaning the text will help eliminate noise such as *stop words* or other uninformative tokens like URLs and email addresses from the corpus. Another common step is to *normalize* the text so that words like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
 
 **Examples**
 
@@ -89,7 +95,9 @@ For natural language processing (NLP) tasks, cleaning the text before extracting
 - [Stop Word Filter](transformers/stop-word-filter.md)
 
 ## Transformer Pipelines
-You can automate the application of a series of transformations to a dataset using the [Pipeline](pipeline.md) meta-estimator. Whenever a dataset is passed to an estimator wrapped in a Pipeline it will automatically be transformed before it hits the method context. Pipeline objects are also [Persistable](persistable.md) which allows you to save and load the state of the transformer fittings between processes. Let's say we wanted to build a pipeline to normalize some blobs of text, extract the word count vectors, and then transform them by their inverse document frequency - a common series of data transformations for natural language processing (NLP). We could build such a pipeline by passing the transformers in the order we want them applied along with a base estimator to Pipeline's constructor.
+You can automate the application of a series of transformations using the [Pipeline](pipeline.md) meta-estimator. In addition, Pipeline objects are [Persistable](persistable.md) which allow you to save and load the transformer fittings between processes.
+
+Let's say we wanted to build a pipeline to normalize some blobs of text, extract the word count vectors, and then transform them by their inverse document frequency - a common series of transformations for natural language processing (NLP). We could build such a pipeline by passing the transformers in the order we want them applied along with a base estimator to Pipeline's constructor like in the example below.
 
 ```php
 use Rubix\ML\Pipeline;
@@ -103,4 +111,18 @@ $estimator = new Pipeline([
     new WordCountVectorizer(10000),
     new TfIdfTransformer(),
 ], new GaussianNB());
+```
+
+When a dataset is passed to a method on an estimator wrapped in a Pipeline, it will automatically be transformed. Calling `train()` or `partial()` will result in the transformers being fitted and updated respectively before being passed to the underlying learner.
+
+```php
+$estimator->train($dataset); // Transformers fitted and applied automatically
+
+$estimator->partial($dataset); // Transformers updated and applied
+
+// ...
+
+$predictions = $estimator->predict($dataset); // Dataset automatically transformed
+
+$bar = $estimator->foo($dataset); // Dataset also transformed
 ```
