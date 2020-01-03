@@ -1,7 +1,9 @@
 # Training
-Most estimators in Rubix ML must be trained before they can make predictions. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Every learner has its own way of representing the problem. For example, nearest neighbors-based learners consider the closest samples in some abstract high-dimensional Euclidean space. Neural networks treat samples as the inputs to an interconnected network of neurons and synapses. No matter *how* the learner works under the hood the training API is the same.
+Most estimators in Rubix ML must be trained before they can make predictions. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners such as classifiers and regressors require a dataset with labels to act as a separate training signal. Unsupervised learners such as clusterers and anomaly detectors can be trained with either a labeled or unlabeled dataset but only really require the raw samples. Every learner has a unique way of approaching the problem space but no matter *how* the learner works under the hood the training API is the same.
 
 To begin training a learner, pass a dataset object to the `train()` method on the learner instance.
+
+**Example**
 
 ```php
 $estimator->train($dataset);
@@ -34,17 +36,3 @@ use Rubix\ML\Other\Loggers\Screen;
 
 $estimator->setLogger(new Screen('example'));
 ```
-
-## Ensemble Learning
-Some learners are actually collections or *ensembles* of learners that work together to form a unified model. Some ensembles such as [Bootstrap Aggregator](bootstrap-aggregator.md) and [Committee Machine](committee-machine.md) work by averaging the predictions of the base estimators. More sophisticated *boosting* ensembles such as [AdaBoost](classifiers/adaboost.md) and [Gradient Boost](regressors/gradient-boost.md) focus on iteratively improving the predictions of a *weak* learner by using many specialized weak learners.
-
-**Examples**
-
-| Learner | Estimator Type |
-|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | Meta-estimator |
-| [Committee Machine](committee-machine.md) | Meta-estimator |
-| [AdaBoost](classifiers/adaboost.md) | Classifier |
-| [Random Forest](classifiers/random-forest.md) | Classifier |
-| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Anomaly Detector |
-| [Gradient Boost](regressors/gradient-boost.md) | Regressor |

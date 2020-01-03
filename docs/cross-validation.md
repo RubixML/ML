@@ -4,12 +4,12 @@ Cross Validation (CV) or *out-of-sample* testing is the primary technique for as
 ## Metrics
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their ground-truth labels. There are different metrics for different estimator types as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* used as metrics such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* score to conform to this schema.
 
-| Task | Example Metrics |
+| Task | Metrics |
 |---|---|
 | Classification | [Accuracy](cross-validation/metrics/accuracy.md), [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md), [Informedness](cross-validation/metrics/informedness.md) |
 | Regression | [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md), [R Squared](cross-validation/metrics/r-squared.md), [SMAPE](cross-validation/metrics/smape.md) |
 | Clustering | [Homogeneity](cross-validation/metrics/homogeneity.md), [V Measure](cross-validation/metrics/v-measure.md), [Rand Index](cross-validation/metrics/rand-index.md) |
-| Anomaly Detection | [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md) |
+| Anomaly Detection | [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md), [Informedness](cross-validation/metrics/informedness.md) |
 
 **Example**
 
@@ -30,7 +30,7 @@ float(0.9484)
 ```
 
 ## Validators
-Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) as the scoring function. Validators automate cross validation by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm the validator employs under the hood. For example, a [K Fold](cross-validation/k-fold.md) validator will automatically select one of k *folds* of the dataset to use as a validation set and then use the rest of the folds to train the learner. It will do this until the model is trained and tested on every sample in the dataset at least once.
+Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm the validator employs under the hood. For example, a [K Fold](cross-validation/k-fold.md) validator will automatically select one of k *folds* of the dataset to use as a validation set and then use the rest of the folds to train the learner. It will do this until the model is trained and tested on every sample in the dataset at least once.
 
 **Example**
 

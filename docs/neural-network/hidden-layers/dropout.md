@@ -6,7 +6,7 @@ Dropout is a regularization technique to reduce overfitting in neural networks b
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | ratio | 0.5 | float | The ratio of neurons that are dropped during each training pass. |
+| 1 | ratio | 0.5 | float | The ratio of nodes that are dropped during each training pass. |
 
 ## Example
 ```php

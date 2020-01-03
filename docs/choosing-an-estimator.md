@@ -17,19 +17,19 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
-| [AdaBoost](classifiers/adaboost.md) | High | ● | | High precision, Boosts most classifiers | Sensitive to noise, Susceptible to overfitting |
+| [AdaBoost](classifiers/adaboost.md) | High | ● | | Boosts most classifiers, Learns influences and sample weights | Sensitive to noise, Susceptible to overfitting |
 | [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
 | [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Fast training, Lower variance | Similar to Classification Tree |
-| [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Quick to compute, Requires little data, Highly scalable | Feature independence assumption |
+| [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
 | [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Fast inference | Not compatible with certain distance kernels |
-| [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slow inference, Suffers from the curse of dimensionality |
+| [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Only handles 2 classes |
-| [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Universal function approximator | High computation and memory cost, Susceptible to overfitting, Black box |
-| [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Quick to compute, Requires little data, Highly scalable | Strong assumption on feature independence |
-| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
+| [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong feature independence assumption |
+| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | Stable, Computes reliable feature importances | High computation and memory cost |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
-| [SVC](classifiers/svc.md) | High | | | Works well in high dimensions, Fast inference speed | Not suitable for large datasets |
+| [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
 In terms of regression, flexibility is expressed as the ability of a model to fit a regression line to potentially complex non-linear data. Linear models such as Ridge tend to [underfit](cross-validation.md#underfitting) data that is non-linear while more flexible models such as Gradient Boost are prone to overfit the training data if not tuned properly. In general, it's best to choose the simplest regressor that doesn't underfit your dataset.
@@ -37,39 +37,46 @@ In terms of regression, flexibility is expressed as the ability of a model to fi
 | Regressor | Flexibility | Online | Advantages | Disadvantages |
 |---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | Interpretable model, Highly Scalable | Prone to underfitting |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Fast training Lower variance | Similar to Regression Tree |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Fast training, Lower variance | Similar to Regression Tree |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Fast inference | Not compatible with certain distance kernels |
-| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slow inference, Suffers from the curse of dimensionality |
-| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | Universal function approximator | High computation and memory cost, Prone to overfitting, Black box |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | Robust to outliers, quasi-anomaly detector | Not guaranteed to return a prediction |
+| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
+| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
 | [Regression Tree](regressors/regression-tree.md) | Moderate | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
 | [Ridge](regressors/ridge.md) | Low | | Interpretable model | Prone to underfitting |
-| [SVR](regressors/svr.md) | High | | Works well in high dimensions, Fast inference | Low Precision |
+| [SVR](regressors/svr.md) | High | | Handles high dimensional data, Fast inference | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers can be rated by their ability to represent the outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the hull of the cluster by allowing the surface of the hypersphere to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.
+Clusterers can be rated by their ability to represent an outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the outer shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
-| [DBSCAN](clusterers/dbscan.md) | High | | | Finds arbitrarily-shaped clusters | Cannot be trained, Slow inference |
-| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Fast inference, Soft clustering | Highly depends on initialization, Not suitable for large datasets |
+| [DBSCAN](clusterers/dbscan.md) | High | | | Finds arbitrarily-shaped clusters, Quasi-anomaly detector | Cannot be trained, Slower inference |
+| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Fast training and inference, Soft clustering | Solution highly depends on initialization, Not suitable for large datasets |
 | [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Captures non-spherical clusters | Higher memory cost |
-| [K Means](clusterers/k-means.md) | Low | ● | ● | Fast training and inference, Highly scalable | Has local minima, Prone to underfitting |
-| [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slow training |
+| [K Means](clusterers/k-means.md) | Low | ● | ● | Fast training and inference, Highly scalable | Has local minima |
+| [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
+Anomaly detectors can be thought of as belonging to one of two groups. There are the anomaly detectors that consider the entire training data when making a prediction, and there are those that only consider a *local region* of the training set. Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are more suited for real-time applications but may produce a higher number of false positives and/or negatives.
 
-On the map ...
-
+| Anomaly Detector | Scope | Ranking | Online | Advantages | Disadvantages |
+|---|---|---|---|---|---|
+| [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | Fast training and inference, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
+| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local | ● | | Fast training, Handles high dimensional data | Slower Inference |
+| [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | Intuitable model, Finds anomalies within clusters | Suffers from the curse of dimensionality |
+| [Loda](anomaly-detectors/loda.md) | Global | ● | ● | Highly scalable | High memory cost |
+| [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
+| [Robust Z Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
 
 ## Meta-estimators
 Sometimes, you'll want to enhance your estimator with added functionality such as the ability to save and load from storage. In other cases, you might want to train a bunch of models and average their predictions for greater accuracy. Meta-estimators allow you to wrap nearly any estimator and increase its ability.
 
 | Meta-estimator | Usage | Parallel | Verbose | Wraps |
 |---|---|---|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | Model Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
-| [Committee Machine](committee-machine.md) | Model Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
+| [Bootstrap Aggregator](bootstrap-aggregator.md) | Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
+| [Committee Machine](committee-machine.md) | Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
 | [Grid Search](grid-search.md) | Model Selection | ● | ● | Any |
 | [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
 | [Pipeline](pipelinemd) | Preprocessing | | ● | Any |

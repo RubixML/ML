@@ -6,7 +6,7 @@ Dense layers (or *fully connected* layers) are layers of neurons that connect to
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | neurons | None | int | The number of neurons in the layer. |
+| 1 | neurons | | int | The number of neurons in the layer. |
 | 2 | weight initializer | He | Initializer | The initializer of the weight parameter. |
 | 3 | bias initializer | Constant | Initializer | The initializer of the bias parameter. |
 

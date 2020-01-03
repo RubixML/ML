@@ -1,5 +1,5 @@
 # Preprocessing
-Sometimes, one or more preprocessing steps will need to be taken to condition the incoming data for a learner. Some examples of various types of data preprocessing are feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy to use interface.
+Sometimes, one or more preprocessing steps will need to be taken to condition your data for a learner. Some examples of preprocessing include feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy to use interface. They each perform a specific task that potentially involves altering the entire dataset in a single pass.
 
 Say we wanted to transform the categorical features of a dataset to continuous ones using *one-hot* encoding - we can accomplish this in Rubix ML by passing a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to a [Dataset](datasets/api.md) object's `apply()` method like in the example below.
 
@@ -22,7 +22,7 @@ $dataset->apply(new NumericStringConverter())
 ```
 
 ## Standardization and Normalization
-Often, the continuous features of a dataset will be on different scales because they are measured independently. For example, age (0 - 100) and income (0 - 1,000,000) are on two different scales. Standardization is the processes of transforming a dataset such that the features are all on one scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns of a dataset or the rows.
+Often, the continuous features of a dataset will be on different scales because they are measured independently. For example, age (0 - 100) and income (0 - 9,999,999) are on two widely different scales. Standardization is the processes of transforming a dataset such that the features are all on one scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns of the dataset or on the rows.
 
 | Transformer | Operates On |
 |---|---|
