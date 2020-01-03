@@ -1,5 +1,5 @@
 # Choosing an Estimator
-Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and can often be trained with data. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator that they wrap. Most estimators allow tuning by adjusting their hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters the estimator's constructor like in the example below.
+Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator that they wrap. Most estimators allow tuning by adjusting their hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
 
 **Example**
 
@@ -13,50 +13,50 @@ $estimator = new KNearestNeighbors(10, false, new Minkowski(2.0));
 It is important to note that not all estimators are created equal and choosing the right estimator for your project is important for achieving the best results. In the following sections, we'll break down the estimators available to you in Rubix ML and point out some of their advantages and disadvantages.
 
 ## Classifiers
-Classifiers can often be graded on their ability to form decision boundaries between the sample clusters that represent the classes in a classification problem. Simple linear classifiers such as Logistic Regression can only handle clusters that are *linearly seperable* whereas highly flexible models such as Multilayer Perceptron are called *universal function approximators* because they can theoretically handle any decision boundary. The tradeoff for flexibility is usually reduced interpretability, increased computational complexity, and susceptibility to [overfitting](cross-validation.md#overfitting). Below we list some of the classifiers in Rubix ML which range from simple interpretable models to highly complex black boxes.
+Classifiers can often be graded on their ability to form decision boundaries between areas that define the classes. Simple linear classifiers such as Logistic Regression can only handle classes that are *linearly separable*. On the other hand, highly flexible models such as the Multilayer Perceptron can theoretically handle any decision boundary. The tradeoff for increased flexibility is reduced interpretability, increased computational complexity, and greater susceptibility to [overfitting](cross-validation.md#overfitting).
 
-| Classifier | Advantages | Disadvantages |
-|---|---|---|
-| [AdaBoost](classifiers/adaboost.md) | High precision, Learns influences of base estimators, Boosts most base classifiers | Sensitive to noise, Prone to overfitting, Cannot be parallelized |
-| [Classification Tree](classifiers/classification-tree.md) | Interpretable model, automatic feature selection, handles both categorical and continuous data types, handles missing data | High variance, prone to overfitting |
-| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Faster growth and lower variance compared to Classification Tree | Similar to Classification Tree |
-| [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Quick to compute and update, Online, Highly scalable | Strong assumption on feature independence, Sensitive to noisy features |
-| [K-d Neighbors](classifiers/k-d-neighbors.md) | Faster inference speed compared to KNN | Not compatible with categorical distance kernels, cannot be partially trained |
-| [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Simple tuning, Intuitable model, Non-parametric, Zero-cost training, Can handle missing data | Slow inference, Requires features to be on the same scale, Suffers from the curse of dimensionality |
-| [Logistic Regression](classifiers/logistic-regression.md) | Interpretable model, Very efficient, Online, Scalable | Cannot handle non-linear decision boundaries, Prone to underfitting, Only supports 2 classes |
-| [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | Highly flexible model, Online, Universal function approximator | Requires a lot of data, High computation and memory cost, Black box interpretability |
-| [Naive Bayes](classifiers/naive-bayes.md) | Fast training and inference, Requires little data, Highly scalable | Strong assumption on feature independence |
-| [Radius Neighbors](classifiers/radius-neighbors.md) | More robust to outliers than KNN, quasi-anomaly detector | More difficult tuning compared to KNN, Not guaranteed to return a prediction |
-| [Random Forest](classifiers/random-forest.md) | Moderately flexible, Moderate to low variance, Hard to overfit, Parallelizable, Computes reliable feature importances | High computation and memory cost, Less interpretable than a single tree |
-| [Softmax Classifier](classifiers/softmax-classifier.md) | Probabilistic interpretation, Online, Multiclass, Scalable | Cannot handle non-linear decision boundaries, prone to underfitting |
-| [SVC](classifiers/svc.md) | Works well in high dimensions, Fast inference, Works well with small datasets | Difficult tuning, Not suitable for large datasets |
+| Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
+|---|---|---|---|---|---|
+| [AdaBoost](classifiers/adaboost.md) | High | ● | | High precision, Boosts most classifiers | Sensitive to noise, Susceptible to overfitting |
+| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
+| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Fast training, Lower variance | Similar to Classification Tree |
+| [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Quick to compute, Requires little data, Highly scalable | Feature independence assumption |
+| [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Fast inference | Not compatible with certain distance kernels |
+| [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slow inference, Suffers from the curse of dimensionality |
+| [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Only handles 2 classes |
+| [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Universal function approximator | High computation and memory cost, Susceptible to overfitting, Black box |
+| [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Quick to compute, Requires little data, Highly scalable | Strong assumption on feature independence |
+| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Random Forest](classifiers/random-forest.md) | High | ● | | Stable, Computes reliable feature importances | High computation and memory cost |
+| [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
+| [SVC](classifiers/svc.md) | High | | | Works well in high dimensions, Fast inference speed | Not suitable for large datasets |
 
 ## Regressors
-In much the same way that flexibility is sometimes required to separate data of different classes, greater flexibility can often be required to fit a regression line to a complex hyperplane. Linear models such as Ridge tend to [underfit](cross-validation.md#underfitting) data that is non-linear while more flexible models like Gradient Boost can sometimes overfit the training data if not properly tuned. In general, it's a good idea to choose the simplest regressor that doesn't underfit the dataset.
+In terms of regression, flexibility is expressed as the ability of a model to fit a regression line to potentially complex non-linear data. Linear models such as Ridge tend to [underfit](cross-validation.md#underfitting) data that is non-linear while more flexible models such as Gradient Boost are prone to overfit the training data if not tuned properly. In general, it's best to choose the simplest regressor that doesn't underfit your dataset.
 
-| Regressor | Advantages | Disadvantages |
-|---|---|---|
-| [Adaline](regressors/adaline.md) | Fast training and inference, Interpretable model, Online, Highly Scalable | Cannot handle non-linear data, Prone to underfitting |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Faster growth and lower variance compared to Regression Tree | Similar to Regression Tree |
-| [Gradient Boost](regressors/gradient-boost.md) | High precision, Flexible model, Works well with both categorical and continuous data, Handles missing data, Outputs feature importances | Prone to overfitting, High computation and memory cost, Cannot be parallelized |
-| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Faster inference speed compared to KNN | Not compatible with categorical distance kernels, cannot be partially trained |
-| [KNN Regressor](regressors/knn-regresor.md) | Simple tuning, Intuitable model, Non-parametric, Zero-cost training, Can handle missing data | Slow inference, Requires features to be on the same scale, Suffers from the curse of dimensionality |
-| [MLP Regressor](regressors/mlp-regressor.md) | Highly flexible model, Online, Universal function approximator | Requires a lot of data, High computation and memory cost, Black box interpretability |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | More robust to outliers than KNN, quasi-anomaly detector | More difficult tuning compared to KNN, Not guaranteed to return a prediction |
-| [Regression Tree](regressors/regression-tree.md) | Interpretable model, automatic feature selection, handles both categorical and continuous data types, handles missing data | High variance, prone to overfitting |
-| [Ridge](regressors/ridge.md) | Interpretable model, Optional regularization | Cannot handle non-linear data, Prone to underfitting, Cannot be partially trained |
-| [SVR](regressors/svr.md) | Works well in high dimensions, Fast inference | Difficult tuning |
+| Regressor | Flexibility | Online | Advantages | Disadvantages |
+|---|---|---|---|---|
+| [Adaline](regressors/adaline.md) | Low | ● | Interpretable model, Highly Scalable | Prone to underfitting |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Fast training Lower variance | Similar to Regression Tree |
+| [Gradient Boost](regressors/gradient-boost.md) | High | | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
+| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Fast inference | Not compatible with certain distance kernels |
+| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slow inference, Suffers from the curse of dimensionality |
+| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | Universal function approximator | High computation and memory cost, Prone to overfitting, Black box |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | Robust to outliers, quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Regression Tree](regressors/regression-tree.md) | Moderate | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
+| [Ridge](regressors/ridge.md) | Low | | Interpretable model | Prone to underfitting |
+| [SVR](regressors/svr.md) | High | | Works well in high dimensions, Fast inference | Low Precision |
 
 ## Clusterers
-Clusterers can be rated by their ability to represent the outer hull surrounding the samples in a clustering. Simple centroid-based models establish a uniform hypersphere around the points. More flexible clusterers such as Gaussian Mixture can better conform to the hull of the cluster by allowing the surface of the sphere to be irregular and *bumpy*. The tradeoff for flexibility results in more model parameters and with it increased computational complexity.
+Clusterers can be rated by their ability to represent the outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the hull of the cluster by allowing the surface of the hypersphere to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.
 
-| Clusterer | Advantages | Disadvantages |
-|---|---|---|
-| [DBSCAN](clusterers/dbscan.md) | Highly flexible, Capable of non-linear shaped clusters | Cannot be trained, Slow inference speed, Difficult tuning |
-| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Fast inference, Soft clustering, Probabilistic interpretation | Higher memory cost than K Means, Not suitable for large datasets |
-| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Simple tuning, Moderately flexible model, Captures non-spherical clusters | Higher memory cost |
-| [K Means](clusterers/k-means.md) | Fast training and inference, Online, Highly scalable | Clusters must be linearly separable |
-| [Mean Shift](clusterers/mean-shift.md) | Handles non-linear shaped clusters | Slow training speed, Difficult to tune |
+| Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
+|---|---|---|---|---|---|
+| [DBSCAN](clusterers/dbscan.md) | High | | | Finds arbitrarily-shaped clusters | Cannot be trained, Slow inference |
+| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Fast inference, Soft clustering | Highly depends on initialization, Not suitable for large datasets |
+| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Captures non-spherical clusters | Higher memory cost |
+| [K Means](clusterers/k-means.md) | Low | ● | ● | Fast training and inference, Highly scalable | Has local minima, Prone to underfitting |
+| [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slow training |
 
 ## Anomaly Detectors
 
@@ -64,5 +64,23 @@ On the map ...
 
 
 ## Meta-estimators
+Sometimes, you'll want to enhance your estimator with added functionality such as the ability to save and load from storage. In other cases, you might want to train a bunch of models and average their predictions for greater accuracy. Meta-estimators allow you to wrap nearly any estimator and increase its ability.
 
-On the map ...
+| Meta-estimator | Usage | Parallel | Verbose | Wraps |
+|---|---|---|---|---|
+| [Bootstrap Aggregator](bootstrap-aggregator.md) | Model Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
+| [Committee Machine](committee-machine.md) | Model Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
+| [Grid Search](grid-search.md) | Model Selection | ● | ● | Any |
+| [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
+| [Pipeline](pipelinemd) | Preprocessing | | ● | Any |
+
+In the example below, we'll wrap a Regression Tree in the Bootstrap Aggregator meta-estimator and tell it to train and average the predictions of 1,000 base estimators automatically.
+
+**Example**
+
+```php
+use Rubix\ML\BootstrapAggregator;
+use Rubix\ML\Regressors\RegressionTree;
+
+$estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
+```
