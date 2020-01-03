@@ -32,9 +32,8 @@ $dataset = new Labeled($samples, $labels);
 ## Choosing an Estimator
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
 
-In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called K Nearest Neighbors. KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be *married* or *divorced* since those are the class labels that we'll train it with.
+In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called K Nearest Neighbors. KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be `married` or `divorced` since those are the class labels that we'll train it with.
 
-## Instantiating the Learner
 Like most estimators in Rubix ML, the [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge of the problem space, or completely at random. The defaults provided in Rubix ML are a good place to start for most problems.
 
 The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that is most common. The hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the KNN learner, pass a set of hyper-parameters to the class's constructor. For this example, let's set *k* to 3 and leave the rest of the hyper-parameters as their default.
@@ -44,6 +43,8 @@ use Rubix\ML\Classifiers\KNearestNeighbors;
 
 $estimator = new KNearestNeighbors(3);
 ```
+
+> **Hint:** See the [Choosing an Estimator](choosing-an-estimator.md) section for an in-depth look at the estimators available to you in the library.
 
 ## Training
 Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction. In the case of K Nearest Neighbors, this representation is a high-dimensional Euclidean space in which each sample is considered a point. We define the *distance* between two points as their degree of dissimilarity. Thus, points in this space that are similar will be closer together.

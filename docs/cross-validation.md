@@ -4,7 +4,7 @@ Cross Validation (CV) or *out-of-sample* testing is the primary technique for as
 ## Metrics
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their ground-truth labels. There are different metrics for different estimator types as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* used as metrics such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* score to conform to this schema.
 
-| Task | Metrics |
+| Task | Example Metrics |
 |---|---|
 | Classification | [Accuracy](cross-validation/metrics/accuracy.md), [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md), [Informedness](cross-validation/metrics/informedness.md) |
 | Regression | [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md), [R Squared](cross-validation/metrics/r-squared.md), [SMAPE](cross-validation/metrics/smape.md) |
