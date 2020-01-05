@@ -36,7 +36,7 @@ class ContingencyTable implements Report
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return array[]
      */
     public function generate(array $predictions, array $labels) : array
     {

@@ -14,9 +14,9 @@ use Rubix\ML\Datasets\Unlabeled;
 trait ProbaSingle
 {
     /**
-     * Return the probabilities of a single sample.
+     * Predict the probabilities of a single sample and return the joint distribution.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return float[]
      */
     public function probaSample(array $sample) : array

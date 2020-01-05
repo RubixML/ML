@@ -165,7 +165,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     ];
 
     /**
-     * @param mixed[] $hidden
+     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
      * @param float $alpha

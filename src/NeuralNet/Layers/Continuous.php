@@ -200,7 +200,7 @@ class Continuous implements Output
      * @param (int|float)[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return mixed[]
+     * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {

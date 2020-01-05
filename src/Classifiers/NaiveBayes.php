@@ -105,7 +105,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * @param float $alpha
-     * @param mixed[]|null $priors
+     * @param float[]|null $priors
      * @throws \InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0, ?array $priors = null)
@@ -117,10 +117,10 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         if ($priors) {
             foreach ($priors as $weight) {
-                if (!is_int($weight) and !is_float($weight)) {
+                if (!is_float($weight)) {
                     throw new InvalidArgumentException('Weight must be'
-                        . ' an integer or float, ' . gettype($weight)
-                        . ' found.');
+                        . ' a floating point number, ' . gettype($weight)
+                        . ' given.');
                 }
             }
 

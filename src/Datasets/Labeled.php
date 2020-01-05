@@ -293,7 +293,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * The set of all possible labeled outcomes.
+     * The set of all possible labels.
      *
      * @return mixed[]
      */

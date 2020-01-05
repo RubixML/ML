@@ -266,7 +266,7 @@ abstract class CART implements DecisionTree
     /**
      * Search the decision tree for a leaf node and return it.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Outcome|null
      */
     public function search(array $sample) : ?Outcome

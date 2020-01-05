@@ -17,7 +17,7 @@ interface Spatial extends Tree
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @param int $k
      * @return array[]
      */
@@ -27,7 +27,7 @@ interface Spatial extends Tree
      * Return all samples, labels, and distances within a given radius of a
      * sample.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @param float $radius
      * @return array[]
      */

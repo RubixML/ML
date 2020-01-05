@@ -1,20 +1,14 @@
 # Probabilistic
-Estimators that implement the Probabilistic interface have additional methods (`proba()` and `probaSample()`)that return an array of joint probabilities for each possible class or cluster assignment. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular outcome and their joint distribution always sums to 1.
+Estimators that implement the Probabilistic interface have `proba()` and `probaSample()` methods that return an array of joint probability estimates for every possible class or cluster number. Probabilities are useful for ascertaining the degree to which the estimator is *certain* about a particular outcome. A value of 1 indicates that the estimator is 100% certain about a particular class or cluster number. Conversely, a value of 0 means that the estimator is 100% certain that its *not* that class or cluster number. When the probabilities are considered together they are called a *joint* distribution and always sum to 1.
 
 ### Predict Probabilities
-Return the probability estimates of a prediction:
+Return the joint probability estimates from a dataset:
 ```php
 public proba(Dataset $dataset) : array
 ```
 
 **Example**
 ```php
-use Rubix\ML\Datasets\Unlabeled;
-
-// Import unknown samples
-
-$dataset = new Unlabeled($samples);
-
 $probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
@@ -38,7 +32,7 @@ array(2) {
 ```
 
 ### Predict Probabilities of a Single Sample
-Predict the probabilities of a single sample and return the result:
+Predict the probabilities of a single sample and return the joint distribution:
 ```php
 public probaSample(array $sample) : array
 ```
@@ -46,7 +40,7 @@ public probaSample(array $sample) : array
 **Example**
 
 ```php
-$probabilities = $estimator->probaSample($dataset->sample(1));
+$probabilities = $estimator->probaSample(['mean', 'furry', 'loner', -0.25]);
 
 var_dump($probabilities);
 ```

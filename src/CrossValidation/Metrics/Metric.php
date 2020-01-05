@@ -21,8 +21,8 @@ interface Metric
     /**
      * Score a set of predictions.
      *
-     * @param mixed[] $predictions
-     * @param mixed[] $labels
+     * @param (string|int|float)[] $predictions
+     * @param (string|int|float)[] $labels
      * @return float
      */
     public function score(array $predictions, array $labels) : float;

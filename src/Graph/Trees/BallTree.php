@@ -168,7 +168,7 @@ class BallTree implements BST, Spatial
     /**
      * Search the tree for a leaf node or return null if not found.
      *
-     * @param mixed[] $sample
+     * @param (int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Cluster|null
      */
     public function search(array $sample) : ?Cluster
@@ -188,7 +188,7 @@ class BallTree implements BST, Spatial
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param mixed[] $sample
+     * @param (int|float)[] $sample
      * @return mixed[]
      */
     public function path(array $sample) : array
@@ -230,7 +230,7 @@ class BallTree implements BST, Spatial
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param mixed[] $sample
+     * @param (int|float)[] $sample
      * @param int $k
      * @throws \InvalidArgumentException
      * @return array[]
@@ -300,7 +300,7 @@ class BallTree implements BST, Spatial
      * Return all samples, labels, and distances within a given radius of a
      * sample.
      *
-     * @param mixed[] $sample
+     * @param (int|float)[] $sample
      * @param float $radius
      * @throws \InvalidArgumentException
      * @throws \RuntimeException

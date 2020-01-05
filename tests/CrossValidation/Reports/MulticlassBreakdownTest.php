@@ -28,7 +28,7 @@ class MulticlassBreakdownTest extends TestCase
     /**
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
-     * @param mixed[] $expected
+     * @param array[] $expected
      *
      * @dataProvider generate_report_provider
      */

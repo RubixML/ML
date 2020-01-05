@@ -3,7 +3,7 @@
 # SVC
 The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high-dimensional feature space using the *kernel trick*.
 
-> **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
+> **Note:** This learner requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md)
 
@@ -16,7 +16,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 2 | kernel | RBF | Kernel | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 5 | cache size | 100. | float | The size of the kernel cache in MB. |
+| 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
 
 ## Additional Methods
 Save the model data to the filesystem:

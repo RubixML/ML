@@ -241,7 +241,7 @@ class Multiclass implements Output
      * @param string[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return mixed[]
+     * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {

@@ -243,7 +243,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return array[]
      */
     protected function nearest(array $sample) : array

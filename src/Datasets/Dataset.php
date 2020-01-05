@@ -562,7 +562,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Drop the rows at the given indices.
      *
-     * @param mixed[] $indices
+     * @param int[] $indices
      * @return self
      */
     abstract public function dropRows(array $indices);
@@ -633,8 +633,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Partition the dataset into left and right subsets based on their distance
      * between two centroids.
      *
-     * @param mixed[] $leftCentroid
-     * @param mixed[] $rightCentroid
+     * @param (string|int|float)[] $leftCentroid
+     * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return self[]
      */

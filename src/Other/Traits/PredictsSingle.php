@@ -16,7 +16,7 @@ trait PredictsSingle
     /**
      * Predict a single sample and return the result.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return mixed
      */
     public function predictSample(array $sample)

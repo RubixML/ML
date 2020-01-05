@@ -28,7 +28,7 @@ class ResidualAnalysisTest extends TestCase
     /**
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
-     * @param mixed[] $expected
+     * @param (int|float)[] $expected
      *
      * @dataProvider generate_report_provider
      */

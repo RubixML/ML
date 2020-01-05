@@ -157,7 +157,7 @@ class ITree implements BST
     /**
      * Search the tree for a leaf node.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Cell|null
      */
     public function search(array $sample) : ?Cell

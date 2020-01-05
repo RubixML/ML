@@ -82,8 +82,8 @@ class AggregateReport implements Report
     /**
      * Generate the report.
      *
-     * @param mixed[] $predictions
-     * @param mixed[] $labels
+     * @param (string|int|float)[] $predictions
+     * @param (string|int|float)[] $labels
      * @return mixed[]
      */
     public function generate(array $predictions, array $labels) : array

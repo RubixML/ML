@@ -14,8 +14,8 @@ interface Distance
     /**
      * Compute the distance between two vectors.
      *
-     * @param mixed[] $a
-     * @param mixed[] $b
+     * @param (string|int|float)[] $a
+     * @param (string|int|float)[] $b
      * @return float
      */
     public function compute(array $a, array $b) : float;

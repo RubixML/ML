@@ -21,7 +21,7 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 | [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
 | [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Fast training, Lower variance | Similar to Classification Tree |
 | [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
-| [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Fast inference | Not compatible with certain distance kernels |
+| [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Faster inference | Not compatible with certain distance kernels |
 | [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Only handles 2 classes |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
@@ -39,13 +39,13 @@ In terms of regression, flexibility is expressed as the ability of a model to fi
 | [Adaline](regressors/adaline.md) | Low | ● | Interpretable model, Highly Scalable | Prone to underfitting |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Fast training, Lower variance | Similar to Regression Tree |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
-| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Fast inference | Not compatible with certain distance kernels |
+| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Faster inference | Not compatible with certain distance kernels |
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
 | [Regression Tree](regressors/regression-tree.md) | Moderate | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
 | [Ridge](regressors/ridge.md) | Low | | Interpretable model | Prone to underfitting |
-| [SVR](regressors/svr.md) | High | | Handles high dimensional data, Fast inference | Difficult to tune, Not suitable for large datasets |
+| [SVR](regressors/svr.md) | High | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
 Clusterers can be rated by their ability to represent an outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the outer shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.

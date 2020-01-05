@@ -9,7 +9,7 @@ interface BST extends BinaryTree
     /**
      * Search the tree for a leaf node or return null if not found.
      *
-     * @param mixed[] $sample
+     * @param (string|int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Leaf|null
      */
     public function search(array $sample);

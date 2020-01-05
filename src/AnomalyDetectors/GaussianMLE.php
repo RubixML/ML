@@ -220,7 +220,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * @param \Rubix\ML\Datasets\Dataset<array> $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return mixed[]
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
