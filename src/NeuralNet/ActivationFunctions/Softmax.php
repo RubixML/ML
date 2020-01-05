@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Softmax
  *
@@ -28,7 +26,7 @@ class Softmax extends Sigmoid
     {
         $zHat = $z->transpose()->exp();
 
-        $total = $zHat->sum()->clipLower(EPSILON);
+        $total = $zHat->sum();
 
         return $zHat->divide($total)->transpose();
     }
