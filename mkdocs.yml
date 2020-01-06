@@ -55,7 +55,7 @@ nav:
   - Loda: anomaly-detectors/loda.md
   - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
   - One Class SVM: anomaly-detectors/one-class-svm.md
-  - Robust Z Score: anomaly-detectors/robust-z-score.md
+  - Robust Z-Score: anomaly-detectors/robust-z-score.md
 - Classifiers:
   - AdaBoost: classifiers/adaboost.md
   - Classification Tree: classifiers/classification-tree.md

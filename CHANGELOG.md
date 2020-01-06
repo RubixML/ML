@@ -1,3 +1,6 @@
+- Unreleased
+    - Changed the default anomaly class for Radius Neighbors
+
 - 0.0.18-beta
     - Now requires PHP 7.2 and above
     - Added phpbench performance benchmarks
@@ -65,7 +68,7 @@
     - Added predict single sample method to Learner interface
     - Changed method signature of random subset without replacement
     - Changed K Means default max iterations
-    - Robust Z Score now uses weighted combination of scores
+    - Robust Z-Score now uses weighted combination of scores
     - Cross validators now stratify dataset automatically
     - Changed default k in K Fold validator
     - Changed order of Loda hyperparameters
@@ -121,13 +124,13 @@
 - 0.0.13-beta
     - Added documentation site
     - Added Regression and Classification Loss interfaces
-    - Robust Z Score is now a Ranking anomaly detector
+    - Robust Z-Score is now a Ranking anomaly detector
     - Loda now defaults to auto detect bin count
     - Removed tolerance param from Gradient Boost and AdaBoost
     - Screen logger timestamp format now configurable
     - Dropped Persistable contract between SVM-based learners
     - Random Forest feature importances now serial
-    - Removed Robust Z Score tolerance parameter
+    - Removed Robust Z-Score tolerance parameter
     - Added slice method to Dataset API
     - Loda now performs density estimation on the fly
     - Transform labels now returns self for method chaining
@@ -377,7 +380,7 @@
     - Added Bootstrap Aggregator Meta Estimator Ensemble
     - Added Gaussian Naive Bayes
     - Naive Bayes classifiers are now Online learners
-    - Added tolerance to Robust Z Score detector
+    - Added tolerance to Robust Z-Score detector
     - Added Concentration clustering metric (Calinski Harabasz)
 
 - 0.0.2-alpha

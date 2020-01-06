@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/OneHotEncoder.php">[source]</a></span>
 
 # One Hot Encoder
-The One Hot Encoder takes a categorical feature column and produces an n-dimensional continuous representation where *n* is equal to the number of unique categories represented in that column. A `0` in any location indicates that the category represented by that column is not present in the sample whereas a `1` indicates that a category is present.
+The One Hot Encoder takes a categorical feature column and produces an n-dimensional continuous representation where *n* is equal to the number of unique categories present in that column. A `0` in any location indicates that the category represented by that column is not present in the sample, whereas a `1` indicates that a category is present.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 

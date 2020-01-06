@@ -25,13 +25,12 @@ use const Rubix\ML\EPSILON;
 /**
  * K-d Neighbors
  *
- * A fast K Nearest Neighbors algorithm that uses a K-d tree to divide the
- * training set into neighborhoods whose max size are controlled by the max
- * leaf size parameter. K-d Neighbors does a binary search to locate the
- * nearest neighborhood and then prunes all neighborhoods whose bounding box
- * is further than the kth nearest neighbor found so far. The main advantage
- * K-d Neighbors has over regular brute force KNN is that it is faster, however
- * it cannot be partially trained.
+ * A fast k nearest neighbors algorithm that uses a binary search tree (BST) to divide the
+ * training set into *neighborhoods*. K-d Neighbors then does a binary search to locate the
+ * nearest neighborhood of an unknown sample and prunes all neighborhoods whose bounding box
+ * is further than the *k*'th nearest neighbor found so far. The main advantage of K-d
+ * Neighbors over brute force KNN is that it is much more efficient, however it cannot be
+ * partially trained.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

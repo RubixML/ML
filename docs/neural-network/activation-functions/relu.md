@@ -4,9 +4,7 @@
 Rectified Linear Units (ReLU) only output the positive signal of the input. They have the benefit of having a monotonic derivative and are cheap to compute.
 
 ## Parameters
-| # | Param | Default | Type | Description |
-|---|---|---|---|---|
-| 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
+This activation function does not have any parameters.
 
 ## Example
 ```php

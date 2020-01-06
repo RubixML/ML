@@ -27,7 +27,7 @@ To transform a dataset without having to pass the raw samples, pass a transforme
 $dataset->apply(new NumericStringConverter());
 ```
 
-# Stateful
+## Stateful
 For stateful transformers, the `fit()` method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* a learner.
 
 ### Fit a Dataset
@@ -63,7 +63,7 @@ To fit and apply a Stateful transformer to a dataset object at the same time, si
 $dataset->apply(new OneHotEncoder());
 ```
 
-# Elastic
+## Elastic
 Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer with new data even after it has previously been fitted. *Updating* is the transformer equivalent to *partially training* an online learner.
 
 ### Update a Fitting

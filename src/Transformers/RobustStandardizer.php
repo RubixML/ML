@@ -15,7 +15,7 @@ use const Rubix\ML\EPSILON;
  *
  * This Transformer standardizes continuous features by removing the median and
  * dividing over the median absolute deviation (MAD), a value referred to as
- * robust z score. The use of robust statistics makes this standardizer more
+ * robust Z-Score. The use of robust statistics makes this standardizer more
  * immune to outliers than the Z Scale Standardizer.
  *
  * @category    Machine Learning

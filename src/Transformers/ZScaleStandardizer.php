@@ -14,7 +14,7 @@ use const Rubix\ML\EPSILON;
  * Z Scale Standardizer
  *
  * A method of centering and scaling a dataset such that it has 0 mean and unit
- * variance (Z Score).
+ * variance (Z-Score).
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for

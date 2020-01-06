@@ -68,7 +68,7 @@ Anomaly detectors can be thought of as belonging to one of two groups. There are
 | [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | Intuitable model, Finds anomalies within clusters | Suffers from the curse of dimensionality |
 | [Loda](anomaly-detectors/loda.md) | Global | ● | ● | Highly scalable | High memory cost |
 | [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
-| [Robust Z Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
+| [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
 
 ## Meta-estimators
 Meta-estimators enhance other estimators with extra functionality. They include ensembles, model selectors, and other model enhancers that wrap a compatible base estimator.

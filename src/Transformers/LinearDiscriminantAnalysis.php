@@ -17,9 +17,10 @@ use const Rubix\ML\EPSILON;
 /**
  * Linear Discriminant Analysis
  *
- * A supervised dimensionality reduction technique that selects the most discriminating
- * features based on their class labels. In other words, LDA finds a linear combination
- * of features that characterizes or best separates two or more classes.
+ * Linear Discriminant Analysis (LDA) is a supervised dimensionality reduction technique that
+ * selects the most informative features based on their class labels. More formally, LDA finds
+ * a linear combination of features that characterizes or best *discriminates* two or more
+ * classes.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

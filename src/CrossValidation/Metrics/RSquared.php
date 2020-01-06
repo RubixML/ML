@@ -13,10 +13,9 @@ use const Rubix\ML\EPSILON;
 /**
  * R Squared
  *
- * The *coefficient of determination* or R Squared (R²) is the proportion of
- * the variance in the target labels that is explainable from the predictions.
- * In other words, it gives an indication as to how well the predictions
- * approximate the labels.
+ * The *coefficient of determination* or R Squared (R²) is the proportion of the variance in
+ * the target labels that is explainable from the predictions. It gives an indication as to
+ * how well the predictions approximate the labels.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

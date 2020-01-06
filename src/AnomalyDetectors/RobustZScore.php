@@ -18,17 +18,16 @@ use RuntimeException;
 use const Rubix\ML\EPSILON;
 
 /**
- * Robust Z Score
+ * Robust Z-Score
  *
- * A statistical anomaly detector that uses modified Z scores that are robust to
- * preexisting outliers. The modified Z score uses the median and median absolute
- * deviation (MAD) unlike the mean and standard deviation of a *standard* Z score
- * which are sensitive to outliers. Anomalies are flagged if their final weighted
- * Z score exceeds a user-defined threshold.
+ * A statistical anomaly detector that uses modified Z-Scores which are robust to preexisting
+ * outliers in the training set. The modified Z-Score uses the median and median absolute
+ * deviation (MAD) unlike the mean and standard deviation of a standard Z-Score - which are
+ * more sensitive to outliers. Anomalies are flagged if their final weighted Z-Score exceeds a
+ * user-defined threshold.
  *
- * > **Note:** An alpha value of 1 means the estimator only considers the maximum
- * absolute z score whereas a setting of 0 indicates that only the average z score
- * factors into the final score.
+ * > **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score,
+ * whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
  *
  * References:
  * [1] B. Iglewicz et al. (1993). How to Detect and Handle Outliers.

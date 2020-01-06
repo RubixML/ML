@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ClassificationTree.php">[source]</a></span>
 
 # Classification Tree
-A binary tree-based learner that greedily constructs a decision map for classification that minimizes the Gini impurity among the training labels within the leaf nodes. Classification Trees also serve as the base learner of ensemble methods such as [Random Forest](random-forest.md) and [AdaBoost](adaboost.md).
+A binary tree-based learner that greedily constructs a decision map for classification that minimizes the Gini impurity among the training labels within the leaf nodes. The height and *bushiness* of the tree can be determined by the user-defined `max depth` and `max leaf size` hyper-parameters. Classification Trees also serve as the base learner of ensemble methods such as [Random Forest](random-forest.md) and [AdaBoost](adaboost.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

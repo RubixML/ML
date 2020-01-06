@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ZScaleStandardizer.php">[source]</a></span>
 
 # Z Scale Standardizer
-A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
+A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z-Score.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
 

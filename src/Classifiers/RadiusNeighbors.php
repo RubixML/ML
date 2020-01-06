@@ -82,13 +82,14 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param float $radius
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param string $anomalyClass
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius = 1.0,
         bool $weighted = true,
         ?Spatial $tree = null,
-        string $anomalyClass = 'outlier'
+        string $anomalyClass = '?'
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'

@@ -3,7 +3,7 @@
 # K Nearest Neighbors
 A distance-based learning algorithm that locates the *k* nearest samples from the training set and predicts the class label that is most common.
 
-> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-accelerated version, see [KD Neighbors](kd-neighbors.md).
+> **Note:** KNN is considered a *lazy* learner because it does the majority of its computation during inference. For a faster spatial tree-accelerated version, see [KD Neighbors](kd-neighbors.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
