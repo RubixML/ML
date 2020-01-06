@@ -1,5 +1,5 @@
 # Choosing an Estimator
-Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator that they wrap. Most estimators allow tuning by adjusting their hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
+Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator they wrap. Most estimators allow tuning by adjusting their hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
 
 **Example**
 
@@ -19,7 +19,7 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 |---|---|---|---|---|---|
 | [AdaBoost](classifiers/adaboost.md) | High | ● | | Boosts most classifiers, Learns influences and sample weights | Sensitive to noise, Susceptible to overfitting |
 | [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
-| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Fast training, Lower variance | Similar to Classification Tree |
+| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Faster training, Lower variance | Similar to Classification Tree |
 | [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
 | [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Faster inference | Not compatible with certain distance kernels |
 | [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
@@ -37,7 +37,7 @@ In terms of regression, flexibility is expressed as the ability of a model to fi
 | Regressor | Flexibility | Online | Advantages | Disadvantages |
 |---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | Interpretable model, Highly Scalable | Prone to underfitting |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Fast training, Lower variance | Similar to Regression Tree |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Faster training, Lower variance | Similar to Regression Tree |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Faster inference | Not compatible with certain distance kernels |
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
@@ -71,7 +71,7 @@ Anomaly detectors can be thought of as belonging to one of two groups. There are
 | [Robust Z Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
 
 ## Meta-estimators
-Sometimes, you'll want to enhance your estimator with added functionality such as the ability to save and load from storage. In other cases, you might want to train a bunch of models and average their predictions for greater accuracy. Meta-estimators allow you to wrap nearly any estimator and increase its ability.
+Meta-estimators enhance other estimators with extra functionality. They include ensembles, model selectors, and other model enhancers that wrap a compatible base estimator.
 
 | Meta-estimator | Usage | Parallel | Verbose | Wraps |
 |---|---|---|---|---|
@@ -81,7 +81,7 @@ Sometimes, you'll want to enhance your estimator with added functionality such a
 | [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
 | [Pipeline](pipelinemd) | Preprocessing | | ● | Any |
 
-In the example below, we'll wrap a Regression Tree in the Bootstrap Aggregator meta-estimator and tell it to train and average the predictions of 1,000 base estimators automatically.
+In the example below, we'll wrap a Regression Tree in the Bootstrap Aggregator meta-estimator and tell it to train and average the predictions of 1,000 base estimators.
 
 **Example**
 
