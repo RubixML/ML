@@ -1,7 +1,7 @@
 # Dataset Objects
-In Rubix ML, data are passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like data structures employing a high-level type system and many operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Each dataset requires a table of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column.
+Data are passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like structures employing a high-level type system that have operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Datasets require a table of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column. They have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. A stray string or other data type will throw an exception upon validation.
 
-Dataset objects have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. A stray string or other data type will throw an exception upon validation.
+In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels to the constructor.
 
 **Example**
 
@@ -20,7 +20,7 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 ## Missing Values
-By convention, continuous missing values are denoted by `NaN` and categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
+By convention, missing continuous values are denoted by `NaN` and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
 
 **Example**
 
@@ -33,7 +33,7 @@ $samples = [
 ```
 
 ## Factory Methods
-Build a dataset with the data table from an iterator:
+Build a dataset with the rows from an iterable data table:
 ```php
 public static fromIterator(Traversable $iterator) : self
 ```
@@ -47,7 +47,7 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
-**Note:** The data must be in the format of a table where each row is an n-d array of values. By convention, labels are always the last column of the table.
+**Note:** The data must be in the format of a table where each row is an n-d array of values. By convention, labels are always the last column of the data table.
 
 ## Selecting
 Return all the samples in the dataset in a 2-dimensional array:

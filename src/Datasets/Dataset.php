@@ -50,7 +50,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     protected $samples;
 
     /**
-     * Build a dataset with the data table from an iterator.
+     * Build a dataset with the rows from an iterable data table.
      *
      * @param \Traversable<array> $iterator
      * @return self

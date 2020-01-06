@@ -53,6 +53,14 @@ A technique for handling missing data is a preprocessing step called *imputation
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | ● | ● | ● | |
 | [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | ● | ● | ● | ● |
 
+## Feature Extraction
+Higher-order data such as images and text blobs are actually composites of many features. Thus, it is often necessary to extract those features from their original representation in order to feed them to a learner.
+
+| Transformer | Source | Stateful | Elastic |
+|---|---|---|---|
+| [Image Vectorizer](transformers/image-vectorizer.md) | Images | | |
+| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | Text Blobs | ● | |
+
 ## Dimensionality Reduction
 Dimensionality reduction in machine learning is analogous to compression in the context of sending data over a wire. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
 
@@ -63,14 +71,6 @@ Dimensionality reduction in machine learning is analogous to compression in the 
 - [Linear Discriminant Analysis](transformers/linear-discriminant-analysis.md)
 - [Principal Component Analysis](transformers/principal-component-analysis.md)
 - [Sparse Random Projector](transformers/sparse-random-projector.md)
-
-## Feature Extraction
-Higher-order data such as images and text blobs are actually composites of many features. Thus, it is often necessary to extract those features from their original representation in order to feed them to a learner.
-
-| Transformer | From | Stateful | Elastic |
-|---|---|---|---|
-| [Image Vectorizer](transformers/image-vectorizer.md) | Images | | |
-| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | Text Blobs | ● | |
 
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.

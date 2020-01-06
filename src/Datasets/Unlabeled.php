@@ -51,7 +51,7 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Build a dataset with the data table from an iterator.
+     * Build a dataset with the rows from an iterable data table.
      *
      * @param \Traversable<array> $iterator
      * @return self

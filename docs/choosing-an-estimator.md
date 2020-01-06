@@ -79,7 +79,7 @@ Meta-estimators enhance other estimators with extra functionality. They include 
 | [Committee Machine](committee-machine.md) | Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
 | [Grid Search](grid-search.md) | Model Selection | ● | ● | Any |
 | [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
-| [Pipeline](pipelinemd) | Preprocessing | | ● | Any |
+| [Pipeline](pipeline.md) | Preprocessing | | ● | Any |
 
 In the example below, we'll wrap a Regression Tree in the Bootstrap Aggregator meta-estimator and tell it to train and average the predictions of 1,000 base estimators.
 
@@ -91,3 +91,6 @@ use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
 ```
+
+## No Free Lunch Theorem
+At some point you may ask yourself "Why do we need so many different learning algorithms? Can't we just use one that works all the time?" The answer to those questions can be understood by the *No Free Lunch* (NFL) theorem which states that, averaged over *all* possible problems, no learner performs better than the next. Another way of saying that is certain learners perform better at some tasks than others. This is explained by the fact that all learning algorithms have *some* prior knowledge inherent in them whether it be via the selection of certain hyper-parameters or the design of the algorithm. Another consequence of the No Free Lunch theorem is that no single estimator exists that performs better for all problems.

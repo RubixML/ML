@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">[source]</a></span>
 
 # Labeled
-A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset object API, a Labeled dataset can perform operations such as stratification and sorting the dataset by label.
+A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset by the label column.
 
-> **Note:** Labels can be of categorical or continuous data type but NaN values are not allowed.
+> **Note:** Labels can be either categorical or continuous data types but NaN values are not allowed.
 
 ## Parameters
 | # | Param | Default | Type | Description |

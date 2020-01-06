@@ -10,7 +10,7 @@ use function gettype;
 /**
  * Aggregate Report
  *
- * A report that aggregates the output of multiple reports into one report.
+ * A report that aggregates the output of multiple reports.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
