@@ -49,6 +49,7 @@ string(3) "cat"
 Sometimes, you may also want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a `proba()` method that outputs the joint probability estimates for each class or cluster number as shown in the example below.
 
 **Example**
+
 ```php
 $probabilities = $estimator->proba($dataset);  
 
@@ -69,7 +70,7 @@ array(2) {
 ```
 
 ## Ranking Samples
-Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output an anomaly score for each sample that can be used to sort the samples. Ranking is useful for identifying the top or bottom scoring samples. For example, you may want to set the top *k* anomalous samples aside for further analysis by a human expert.
+Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample. Higher anomaly scores equate to greater abnormality. Often, samples are sorted by their anomaly score and the top *k* samples are further analyzed by another system or human expert.
 
 **Example**
 
@@ -83,6 +84,6 @@ var_dump($scores);
 array(3) {
   [0]=> float(0.35033859096744)
   [1]=> float(0.40992076925443)
-  [2]=> float(0.68163357834096)
+  [2]=> float(1.68163357834096)
 }
 ```

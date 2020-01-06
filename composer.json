@@ -42,7 +42,7 @@
         "phpbench/phpbench": "0.16.*",
         "phpstan/phpstan": "0.12.*",
         "phpstan/phpstan-phpunit": "0.12.*",
-        "phpunit/phpunit": "8.4.*"
+        "phpunit/phpunit": "8.5.*"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",

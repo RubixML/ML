@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/PersitentModel.php">[source]</a></span>
 
 # Persistent Model
-The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow a [Persistable](persistable.md) learner to be saved and loaded from storage.
+The Persistent Model meta-estimator wraps a [Persistable](persistable.md) learner with additional functionality for saving and loading the model. It uses [Persister](persisters/api.md) objects to interface with various storage backends such as the [Filesystem](persisters/filesystem.md) or [Redis](persisters/redis-db.md).
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Probabilistic](probabilistic.md)
 
@@ -10,8 +10,8 @@ The Persistent Model wrapper gives the estimator two additional methods (`save()
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | | Learner | The instance of the base estimator to be persisted. |
-| 2 | persister | | Persister | The persister used to store the model data. |
+| 1 | base | | Learner | An instance of a persistable estimator. |
+| 2 | persister | | Persister | The persister object used interface with the storage medium. |
 
 ## Additional Methods
 Save the persistent model to storage:
@@ -27,10 +27,9 @@ public static load(Persister $persister) : self
 ## Example
 ```php
 use Rubix\ML\PersistentModel;
-use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Persisters\Filesystem;
 
-$estimator = new PersistentModel(new RandomForest(100), new Filesystem('example.model'));
+$estimator = PersistentModel::load(new Filesystem('example.model'));
 
 // Do something ...
 

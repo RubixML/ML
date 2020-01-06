@@ -1,7 +1,7 @@
 # Probabilistic
 Estimators that implement the Probabilistic interface have `proba()` and `probaSample()` methods that return an array of joint probability estimates for every possible class or cluster number. Probabilities are useful for ascertaining the degree to which the estimator is *certain* about a particular outcome. A value of 1 indicates that the estimator is 100% certain about a particular class or cluster number. Conversely, a value of 0 means that the estimator is 100% certain that its *not* that class or cluster number. When the probabilities are considered together they are called a *joint* distribution and always sum to 1.
 
-### Predict Probabilities
+## Predict Probabilities
 Return the joint probability estimates from a dataset:
 ```php
 public proba(Dataset $dataset) : array
@@ -31,7 +31,7 @@ array(2) {
 }
 ```
 
-### Predict Probabilities of a Single Sample
+## Joint Probabilities of a Single Sample
 Predict the probabilities of a single sample and return the joint distribution:
 ```php
 public probaSample(array $sample) : array

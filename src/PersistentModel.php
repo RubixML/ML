@@ -26,14 +26,14 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     use PredictsSingle, ProbaSingle;
     
     /**
-     * The underlying persistable estimator instance.
+     * An instance of a persistable estimator.
      *
      * @var \Rubix\ML\Learner
      */
     protected $base;
 
     /**
-     * The persister is responsible for saving and restoring the estimator.
+     * The persister object used interface with the storage medium.
      *
      * @var \Rubix\ML\Persisters\Persister
      */
