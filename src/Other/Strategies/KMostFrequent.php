@@ -50,16 +50,6 @@ class KMostFrequent implements Categorical
     }
 
     /**
-     * Return the k most frequent classes.
-     *
-     * @return string[]
-     */
-    public function classes() : array
-    {
-        return $this->classes;
-    }
-
-    /**
      * Fit the guessing strategy to a set of values.
      *
      * @param (string|int|float)[] $values

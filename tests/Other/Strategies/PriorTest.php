@@ -30,15 +30,7 @@ class PriorTest extends TestCase
     {
         $values = ['a', 'a', 'b', 'a', 'c'];
 
-        $expected = [
-            'a' => 0.6,
-            'b' => 0.2,
-            'c' => 0.2,
-        ];
-
         $this->strategy->fit($values);
-
-        $this->assertEquals($expected, $this->strategy->priors());
 
         $value = $this->strategy->guess();
 

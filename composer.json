@@ -8,7 +8,7 @@
         "php", "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",
         "regression", "clustering", "anomaly-detection", "neural-network", "manifold-learning",
         "dimensionality-reduction", "artificial-intelligence", "ai", "cross-validation", "feature-extraction",
-        "deep-learning", "rubix", "ml", "analytics"
+        "deep-learning", "rubix", "ml", "analytics", "naive-bayes", "k-means", "k-nearest-neighbors"
     ],
     "authors": [
         {
@@ -31,7 +31,7 @@
         "amphp/parallel": "^1.2",
         "intervention/image": "^2.4",
         "psr/log": "^1.1",
-        "rubix/tensor": "^2.0.1"
+        "rubix/tensor": "^2.0.2"
     },
     "require-dev": {
         "ext-gd": "*",

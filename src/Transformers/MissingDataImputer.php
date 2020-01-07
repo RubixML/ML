@@ -50,7 +50,7 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * The fitted guessing strategy for each feature column.
      *
-     * @var \Rubix\ML\Other\Strategies\Strategy[]|null
+     * @var mixed[]|null
      */
     protected $strategies;
 
@@ -147,7 +147,7 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->strategies === null) {
+        if (!$this->strategies) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

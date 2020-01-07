@@ -67,8 +67,8 @@ class KNNImputerTest extends TestCase
 
         $this->dataset->apply($this->transformer);
 
-        $this->assertEquals(30.1161413983789, $this->dataset[1][0]);
-        $this->assertEquals(-0.6514400548002053, $this->dataset[3][1]);
+        $this->assertEquals(29.80734050113017, $this->dataset[1][0]);
+        $this->assertEquals(-1.1980046085939537, $this->dataset[3][1]);
     }
 
     public function test_transform_unfitted() : void

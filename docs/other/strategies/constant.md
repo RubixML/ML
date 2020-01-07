@@ -10,9 +10,6 @@ Always guess the same value.
 |---|---|---|---|---|
 | 1 | value | 0.0 | float | The value to constantly guess. |
 
-## Additional Methods
-This strategy does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Other\Strategies\Constant;

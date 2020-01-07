@@ -30,11 +30,7 @@ class KMostFrequentTest extends TestCase
     {
         $values = ['a', 'a', 'b', 'b', 'c'];
 
-        $exptected = ['a', 'b'];
-
         $this->strategy->fit($values);
-
-        $this->assertEquals($exptected, $this->strategy->classes());
 
         $value = $this->strategy->guess();
 

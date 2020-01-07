@@ -1,5 +1,6 @@
 - Unreleased
     - Changed the default anomaly class for Radius Neighbors
+    - Removed additional methods from guessing Strategies
 
 - 0.0.18-beta
     - Now requires PHP 7.2 and above

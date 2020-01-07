@@ -8,9 +8,6 @@ This strategy always predicts the mean of the fitted data.
 ## Parameters
 This strategy does not have any parameters.
 
-## Additional Methods
-This strategy does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Other\Strategies\Mean;

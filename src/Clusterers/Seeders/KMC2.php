@@ -66,34 +66,30 @@ class KMC2 implements Seeder
      */
     public function seed(Dataset $dataset, int $k) : array
     {
+        $max = getrandmax();
+
         $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
 
         while (count($centroids) < $k) {
+            $target = end($centroids) ?: [];
+            
             $candidates = $dataset->randomSubsetWithReplacement($this->m)->samples();
 
             $x = array_pop($candidates) ?? [];
 
-            $target = end($centroids) ?: [];
-
             $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 
-            foreach ($candidates as $y) {
-                $yDistance = $this->kernel->compute($y, $target);
+            foreach ($candidates as $candidate) {
+                $yDistance = $this->kernel->compute($candidate, $target);
 
-                $probability = min(1., $yDistance / $xDistance);
+                $density = min(1., $yDistance / $xDistance);
 
-                if ($probability === 1.) {
+                $threshold = rand() / $max;
+
+                if ($density > $threshold) {
                     $xDistance = $yDistance;
-                    $x = $y;
 
-                    continue 1;
-                }
-
-                $threshold = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
-
-                if ($probability > $threshold) {
-                    $xDistance = $yDistance;
-                    $x = $y;
+                    $x = $candidate;
                 }
             }
 

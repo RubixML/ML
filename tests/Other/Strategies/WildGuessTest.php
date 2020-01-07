@@ -16,7 +16,7 @@ class WildGuessTest extends TestCase
 
     public function setUp() : void
     {
-        $this->strategy = new WildGuess(0.5);
+        $this->strategy = new WildGuess();
     }
 
     public function test_build_strategy() : void

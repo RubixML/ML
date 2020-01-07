@@ -21,7 +21,7 @@ class Prior implements Categorical
     /**
      * The counts of each unique class.
      *
-     * @var int[]
+     * @var int[]|null
      */
     protected $counts;
 
@@ -35,7 +35,7 @@ class Prior implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param (string|int|float)[] $values
+     * @param string[] $values
      * @throws \InvalidArgumentException
      */
     public function fit(array $values) : void
@@ -50,22 +50,6 @@ class Prior implements Categorical
     }
 
     /**
-     * Return the prior probabilities of each class.
-     *
-     * @return float[]
-     */
-    public function priors() : array
-    {
-        $priors = [];
-
-        foreach ($this->counts as $class => $count) {
-            $priors[$class] = $count / $this->n;
-        }
-
-        return $priors;
-    }
-
-    /**
      * Make a categorical guess.
      *
      * @throws \RuntimeException
@@ -73,11 +57,9 @@ class Prior implements Categorical
      */
     public function guess() : string
     {
-        if ($this->n === null or !$this->counts) {
+        if (!$this->counts or !$this->n) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
-
-        $class = current($this->counts);
 
         $r = rand(0, $this->n);
 
@@ -85,10 +67,10 @@ class Prior implements Categorical
             $r -= $count;
 
             if ($r <= 0) {
-                break 1;
+                return (string) $class;
             }
         }
 
-        return (string) $class;
+        return (string) key($this->counts);
     }
 }

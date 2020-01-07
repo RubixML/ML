@@ -42,7 +42,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.4);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.5);
 
         $this->estimator->setBackend(new Serial());
 

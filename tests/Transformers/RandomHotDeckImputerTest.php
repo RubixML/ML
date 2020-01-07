@@ -67,7 +67,7 @@ class RandomHotDeckImputerTest extends TestCase
 
         $this->dataset->apply($this->transformer);
 
-        $this->assertEquals(29.613723518670785, $this->dataset[1][0]);
+        $this->assertEquals(29.66289097709727, $this->dataset[1][0]);
         $this->assertEquals(-2.0, $this->dataset[3][1]);
     }
 
