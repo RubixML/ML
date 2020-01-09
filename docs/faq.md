@@ -42,19 +42,19 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
 ## Does Rubix ML support multiprocessing?
-Yes, Rubix ML supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood. Learners and other objects that implement the [Parallel](parallel.md) interface are able to take advantage of parallel computing backends.
+Yes, learners that support parallel processing (multiprocessing) do so by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood.
 
 ## Does Rubix ML support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.
 
 ## Does Rubix ML support Deep Learning?
-Yes. A number of learners in Rubix ML support Deep Learning including the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).
+Yes. A number of learners in the library support Deep Learning including the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).
 
 ## Does Rubix ML support Reinforcement Learning?
 Not currently. Rubix ML is for supervised and unsupervised learning only.
 
 ## Does Rubix ML support time series data?
-Yes and no. Currently, Rubix ML treats time series data like any other continuous feature. In the future, we may add algorithms that work specifically with a separate time component.
+Yes and no. Currently, the library treats time series data like any other continuous feature. In the future, we may add algorithms that work specifically with a separate time component.
 
 ## How can I contribute to the project?
-Whether you are a core engineer or a bug reporter, you can join us in bringing quality state-of-the-art machine learning tools to the PHP language. See the [CONTRIBUTING](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) file in the project root for more info.
+Join us in bringing machine learning tools to the PHP language. See the [CONTRIBUTING](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) file in the project root for more info.

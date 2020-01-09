@@ -103,12 +103,12 @@ array(4) {
 }
 ```
 
-The output of the estimator are the predicted class labels of the unknown samples. We could either trust these predictions as-is or we could proceed to further evaluate the model. As it usually best to validate your model, in the next section, we'll learn how to test its accuracy using a process called cross validation.
+The output of the estimator are the predicted class labels of the unknown samples. We could either trust these predictions as-is or we could proceed to further evaluate the model. In the next section, we'll learn how to test its accuracy using a process called cross validation.
 
 > **Hint:** Check out the section on [Inference](inference.md) for more info on making predictions.
 
 ## Model Evaluation
-Imagine we went out and collected enough data from our married and divorced friends to build a 50 sample dataset with labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. To measure our estimator's ability to generalize what it has learned during training to the real world, we use a process called *cross validation*. The goal of cross validation is to train and test the learner on samples it has never seen before in order to produce a validation score.
+Let's imagine we went out and collected enough data from our married and divorced friends to build a 50 sample dataset with labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. To measure our estimator's ability to generalize what it has learned during training to the real world, we use a process called *cross validation*. The goal of cross validation is to train and test the learner on samples it has never seen before in order to produce a validation score.
 
 For the purposes of the introduction, we will use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
@@ -120,7 +120,9 @@ use Rubix\ML\CrossValidation\HoldOut;
 $validator = new HoldOut(0.2);
 ```
 
-The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as a scoring function. To return a score from the Hold Out validator using the [Accuracy](cross-validation/metrics/accuracy.md) metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
+The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as a scoring function. One classification metric we could use to score our estimator is [Accuracy](cross-validation/metrics/accuracy.md) which is defined as the number of true positives over the total number of predictions. A score of 1 indicates that the estimator was perfect in predicting the correct class label. 
+
+To return a score from the Hold Out validator using the Accuracy metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
 
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -134,7 +136,7 @@ var_dump($score);
 float(0.85)
 ```
 
-The return value is the validation score (in this case accuracy) which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 85% accurate. Nice work!
+The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 85% accurate. Nice work!
 
 > **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 

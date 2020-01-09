@@ -1,4 +1,4 @@
-site_name: Rubix ML for PHP
+site_name: 'Rubix ML: Machine Learning for PHP'
 
 theme: readthedocs
 
@@ -49,57 +49,58 @@ nav:
     - Half Moon: datasets/generators/half-moon.md
     - Hyperplane: datasets/generators/hyperplane.md
     - Swiss Roll: datasets/generators/swiss-roll.md
-- Anomaly Detectors:
-  - Gaussian MLE: anomaly-detectors/gaussian-mle.md
-  - Isolation Forest: anomaly-detectors/isolation-forest.md
-  - Loda: anomaly-detectors/loda.md
-  - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
-  - One Class SVM: anomaly-detectors/one-class-svm.md
-  - Robust Z-Score: anomaly-detectors/robust-z-score.md
-- Classifiers:
-  - AdaBoost: classifiers/adaboost.md
-  - Classification Tree: classifiers/classification-tree.md
-  - Dummy Classifier: classifiers/dummy-classifier.md
-  - Extra Tree Classifier: classifiers/extra-tree-classifier.md
-  - Gaussian Naive Bayes: classifiers/gaussian-naive-bayes.md
-  - K-d Neighbors: classifiers/kd-neighbors.md
-  - K Nearest Neighbors: classifiers/k-nearest-neighbors.md
-  - Logistic Regression: classifiers/logistic-regression.md
-  - Multilayer Perceptron: classifiers/multilayer-perceptron.md
-  - Naive Bayes: classifiers/naive-bayes.md
-  - Radius Neighbors: classifiers/radius-neighbors.md
-  - Random Forest: classifiers/random-forest.md
-  - Softmax Classifier: classifiers/softmax-classifier.md
-  - SVC: classifiers/svc.md
-- Clusterers:
-  - DBSCAN: clusterers/dbscan.md
-  - Fuzzy C Means: clusterers/fuzzy-c-means.md
-  - Gaussian Mixture: clusterers/gaussian-mixture.md
-  - K Means: clusterers/k-means.md
-  - Mean Shift: clusterers/mean-shift.md
-  - Seeders:
-    - API Reference: clusterers/seeders/api.md
-    - K-MC2: clusterers/seeders/k-mc2.md
-    - Plus Plus: clusterers/seeders/plus-plus.md
-    - Random: clusterers/seeders/random.md
-- Regressors:
-  - Adaline: regressors/adaline.md
-  - Dummy Regressor: regressors/dummy-regressor.md
-  - Extra Tree Regressor: regressors/extra-tree-regressor.md
-  - Gradient Boost: regressors/gradient-boost.md
-  - K-d Neighbors Regressor: regressors/kd-neighbors-regressor.md
-  - KNN Regressor: regressors/knn-regressor.md
-  - MLP Regressor: regressors/mlp-regressor.md
-  - Radius Neighbors Regressor: regressors/radius-neighbors-regressor.md
-  - Regression Tree: regressors/regression-tree.md
-  - Ridge: regressors/ridge.md
-  - SVR: regressors/svr.md
-- Meta Estimators:
-  - Bootstrap Aggregator: bootstrap-aggregator.md
-  - Committee Machine: committee-machine.md
-  - Grid Search: grid-search.md
-  - Persistent Model: persistent-model.md
-  - Pipeline: pipeline.md
+- Estimators:
+  - Anomaly Detectors:
+    - Gaussian MLE: anomaly-detectors/gaussian-mle.md
+    - Isolation Forest: anomaly-detectors/isolation-forest.md
+    - Loda: anomaly-detectors/loda.md
+    - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
+    - One Class SVM: anomaly-detectors/one-class-svm.md
+    - Robust Z-Score: anomaly-detectors/robust-z-score.md
+  - Classifiers:
+    - AdaBoost: classifiers/adaboost.md
+    - Classification Tree: classifiers/classification-tree.md
+    - Dummy Classifier: classifiers/dummy-classifier.md
+    - Extra Tree Classifier: classifiers/extra-tree-classifier.md
+    - Gaussian Naive Bayes: classifiers/gaussian-naive-bayes.md
+    - K-d Neighbors: classifiers/kd-neighbors.md
+    - K Nearest Neighbors: classifiers/k-nearest-neighbors.md
+    - Logistic Regression: classifiers/logistic-regression.md
+    - Multilayer Perceptron: classifiers/multilayer-perceptron.md
+    - Naive Bayes: classifiers/naive-bayes.md
+    - Radius Neighbors: classifiers/radius-neighbors.md
+    - Random Forest: classifiers/random-forest.md
+    - Softmax Classifier: classifiers/softmax-classifier.md
+    - SVC: classifiers/svc.md
+  - Clusterers:
+    - DBSCAN: clusterers/dbscan.md
+    - Fuzzy C Means: clusterers/fuzzy-c-means.md
+    - Gaussian Mixture: clusterers/gaussian-mixture.md
+    - K Means: clusterers/k-means.md
+    - Mean Shift: clusterers/mean-shift.md
+    - Seeders:
+      - API Reference: clusterers/seeders/api.md
+      - K-MC2: clusterers/seeders/k-mc2.md
+      - Plus Plus: clusterers/seeders/plus-plus.md
+      - Random: clusterers/seeders/random.md
+  - Regressors:
+    - Adaline: regressors/adaline.md
+    - Dummy Regressor: regressors/dummy-regressor.md
+    - Extra Tree Regressor: regressors/extra-tree-regressor.md
+    - Gradient Boost: regressors/gradient-boost.md
+    - K-d Neighbors Regressor: regressors/kd-neighbors-regressor.md
+    - KNN Regressor: regressors/knn-regressor.md
+    - MLP Regressor: regressors/mlp-regressor.md
+    - Radius Neighbors Regressor: regressors/radius-neighbors-regressor.md
+    - Regression Tree: regressors/regression-tree.md
+    - Ridge: regressors/ridge.md
+    - SVR: regressors/svr.md
+  - Meta Estimators:
+    - Bootstrap Aggregator: bootstrap-aggregator.md
+    - Committee Machine: committee-machine.md
+    - Grid Search: grid-search.md
+    - Persistent Model: persistent-model.md
+    - Pipeline: pipeline.md
 - Embedders:
   - API Reference: embedders/api.md
   - t-SNE: embedders/t-sne.md
@@ -108,7 +109,7 @@ nav:
   - Dimensionality Reduction:
     - Dense Random Projector: transformers/dense-random-projector.md
     - Gaussian Random Projector: transformers/gaussian-random-projector.md
-    - Linear Disciminant Analysis: transformers/linear-discriminant-analysis.md
+    - Linear Discriminant Analysis: transformers/linear-discriminant-analysis.md
     - Principal Component Analysis: transformers/principal-component-analysis.md
     - Sparse Random Projector: transformers/sparse-random-projector.md
   - Feature Conversion:
@@ -142,18 +143,6 @@ nav:
     - Regex Filter: transformers/regex-filter.md
     - Text Normalizer: transformers/text-normalizer.md
     - Stop Word Filter: transformers/stop-word-filter.md
-- Persisters:
-  - API Reference: persisters/api.md
-  - Filesystem: persisters/filesystem.md
-  - Redis DB: persisters/redis-db.md
-  - Serializers:
-    - API Reference: persisters/serializers/api.md
-    - Igbinary: persisters/serializers/igbinary.md
-    - Native: persisters/serializers/native.md
-- Backends:
-  - API Reference: backends/api.md
-  - Amp: backends/amp.md
-  - Serial: backends/serial.md
 - Neural Network:
   - Activation Functions:
     - ELU: neural-network/activation-functions/elu.md
@@ -250,6 +239,18 @@ nav:
     - Contingency Table: cross-validation/reports/contingency-table.md
     - Multiclass Breakdown: cross-validation/reports/multiclass-breakdown.md
     - Residual Analysis: cross-validation/reports/residual-analysis.md
+- Persisters:
+  - API Reference: persisters/api.md
+  - Filesystem: persisters/filesystem.md
+  - Redis DB: persisters/redis-db.md
+  - Serializers:
+    - API Reference: persisters/serializers/api.md
+    - Igbinary: persisters/serializers/igbinary.md
+    - Native: persisters/serializers/native.md
+- Backends:
+  - API Reference: backends/api.md
+  - Amp: backends/amp.md
+  - Serial: backends/serial.md
 - Other:
   - Helpers:
     - Data Type: other/helpers/data-type.md

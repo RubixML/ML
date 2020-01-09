@@ -3,13 +3,17 @@ Sometimes, one or more preprocessing steps will need to be taken to condition yo
 
 A common transformation involves converting the categorical features of a dataset to continuous ones using a *one hot* encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) instance to a [Dataset](datasets/api.md) object's `apply()` method which automatically takes care of fitting and transforming the samples.
 
+**Example**
+
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
 $dataset->apply(new OneHotEncoder());
 ```
 
-You can chain transformations by calling the dataset object API fluently.
+Transformations can be chained by calling the `apply()` method fluently.
+
+**Example**
 
 ```php
 use Rubix\ML\Transformers\NumericStringConverter;
@@ -101,6 +105,8 @@ For natural language processing (NLP) tasks, cleaning the text will help elimina
 
 Let's say we wanted to build a pipeline to normalize some blobs of text, extract the term frequencies (TF), and then transform them by their inverse document frequency (IDF). We could build such a transformer Pipeline by passing the transformer instances in the order we want them applied along with a base estimator to its constructor like in the example below.
 
+**Example**
+
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\Transformers\TextNormalizer;
@@ -117,6 +123,8 @@ $estimator = new Pipeline([
 
 Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the underlying learner.
 
+**Example**
+
 ```php
 $estimator->train($dataset); // Transformers fitted and applied automatically
 
@@ -124,6 +132,8 @@ $estimator->partial($dataset); // Transformers updated and applied
 ```
 
 Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
+
+**Example**
 
 ```php
 $predictions = $estimator->predict($dataset); // Dataset automatically transformed

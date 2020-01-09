@@ -1,9 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/BootstrapAggregator.php">[source]</a></span>
 
 # Bootstrap Aggregator
-Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. Bagging works well with estimators that tend to have high variance by controlling the variance through averaging.
-
-> **Note:** Not compatible with clusterers.
+Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. Bagging works especially well with estimators that tend to have high variance by controlling the variance through averaging.
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Persistable](persistable.md)
 
@@ -24,7 +22,7 @@ This meta estimator does not have any additional methods.
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2);
+$estimator = new BootstrapAggregator(new RegressionTree(10), 300, 0.2);
 ```
 
 ### References

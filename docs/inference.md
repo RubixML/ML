@@ -14,7 +14,7 @@ All estimators implement the [Estimator](estimator.md) interface which provides 
 **Example**
 
 ```php
-// Import dataset of unknown samples
+// ...
 
 $predictions = $estimator->predict($dataset);
 
@@ -46,11 +46,13 @@ string(3) "cat"
 ```
 
 ## Estimation of Probabilities
-Sometimes, you may also want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a `proba()` method that outputs the joint probability estimates for each class or cluster number as shown in the example below.
+Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a `proba()` method that outputs the joint probability estimates for each class or cluster number as shown in the example below.
 
 **Example**
 
 ```php
+// ...
+
 $probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
@@ -75,6 +77,8 @@ Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/
 **Example**
 
 ```php
+// ...
+
 $scores = $estimator->rank($dataset);
 
 var_dump($scores);

@@ -16,5 +16,5 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Dense(100, new He(), new Constant(0.));
+$layer = new Dense(100, new He(), new Constant(0.0));
 ```

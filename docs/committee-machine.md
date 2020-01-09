@@ -5,8 +5,6 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > **Note:** Influence values can be arbitrary as they are normalized upon instantiation.
 
-> **Note:** Not compatible with clusterers.
-
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
 
 **Data Type Compatibility:** Depends on the base learners
@@ -15,7 +13,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
-| 2 | influences | Auto | array | The influence scores for each expert in the committee. The default is to weight each expert equally. |
+| 2 | influences | | array | The influences for each expert in the committee. The default is to weight each expert equally. |
 
 ## Additional Methods
 Return the learner instances of the committee:

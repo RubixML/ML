@@ -1,11 +1,13 @@
 # Training
-Most estimators have to be trained before they can make predictions. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners such as classifiers and regressors require a dataset with labels to act as a guide. Unsupervised learners such as clusterers and anomaly detectors can be trained with either a labeled or unlabeled dataset but only use the samples for training. Every learner has a unique way of approaching the problem space but no matter *how* the learner works under the hood the training API is the same.
+Most estimators have to be trained before they can make predictions. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners such as classifiers and regressors require a dataset with labels to act as a training guide. Unsupervised learners such as clusterers and anomaly detectors can be trained with either a labeled or unlabeled dataset but only the samples are used for training. Every learner has a unique way of approaching the problem but no matter *how* the learner works under the hood the training API is the same.
 
-To begin training a learner, pass a dataset object to the `train()` method on the learner instance.
+To begin training a learner, pass a dataset object to the `train()` method on the learner instance like in the example below.
 
 **Example**
 
 ```php
+// ...
+
 $estimator->train($dataset);
 ```
 
@@ -15,6 +17,8 @@ Batch learning is when a learner is trained in full using only one dataset in a 
 **Example**
 
 ```php
+// ...
+
 $folds = $dataset->fold(3);
 
 $estimator->partial($folds[0]);
@@ -33,6 +37,8 @@ Rubix ML comes built-in with a [Screen Logger](other/loggers/screen.md) that doe
 
 ```php
 use Rubix\ML\Other\Loggers\Screen;
+
+// ...
 
 $estimator->setLogger(new Screen('example'));
 ```

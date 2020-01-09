@@ -34,18 +34,18 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 ## Regressors
 In terms of regression, flexibility is expressed as the ability of a model to fit a regression line to potentially complex non-linear data. Linear models such as Ridge tend to [underfit](cross-validation.md#underfitting) data that is non-linear while more flexible models such as Gradient Boost are prone to overfit the training data if not tuned properly. In general, it's best to choose the simplest regressor that doesn't underfit your dataset.
 
-| Regressor | Flexibility | Online | Advantages | Disadvantages |
-|---|---|---|---|---|
-| [Adaline](regressors/adaline.md) | Low | ● | Interpretable model, Highly Scalable | Prone to underfitting |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | Faster training, Lower variance | Similar to Regression Tree |
-| [Gradient Boost](regressors/gradient-boost.md) | High | | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
-| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | Faster inference | Not compatible with certain distance kernels |
-| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
-| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
-| [Regression Tree](regressors/regression-tree.md) | Moderate | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
-| [Ridge](regressors/ridge.md) | Low | | Interpretable model | Prone to underfitting |
-| [SVR](regressors/svr.md) | High | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
+| Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
+|---|---|---|---|---|---|
+| [Adaline](regressors/adaline.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Faster training, Lower variance | Similar to Regression Tree |
+| [Gradient Boost](regressors/gradient-boost.md) | High | | ● | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
+| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Faster inference | Not compatible with certain distance kernels |
+| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
+| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
+| [Ridge](regressors/ridge.md) | Low | | | Interpretable model | Prone to underfitting |
+| [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
 Clusterers can be rated by their ability to represent an outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the outer shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.
@@ -71,9 +71,9 @@ Anomaly detectors can be thought of as belonging to one of two groups. There are
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
 
 ## Meta-estimators
-Meta-estimators enhance other estimators with extra functionality. They include ensembles, model selectors, and other model enhancers that wrap a compatible base estimator.
+Meta-estimators enhance other estimators with their own added functionality. They include ensembles, model selectors, and other model enhancers that wrap a compatible base estimator.
 
-| Meta-estimator | Usage | Parallel | Verbose | Wraps |
+| Meta-estimator | Usage | Parallel | Verbose | Compatibility |
 |---|---|---|---|---|
 | [Bootstrap Aggregator](bootstrap-aggregator.md) | Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
 | [Committee Machine](committee-machine.md) | Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
@@ -81,7 +81,7 @@ Meta-estimators enhance other estimators with extra functionality. They include 
 | [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
 | [Pipeline](pipeline.md) | Preprocessing | | ● | Any |
 
-In the example below, we'll wrap a Regression Tree in the Bootstrap Aggregator meta-estimator and tell it to train and average the predictions of 1,000 base estimators.
+In the example below, we'll use the Bootstrap Aggregator meta-estimator to wrap a Regression Tree.
 
 **Example**
 
@@ -93,4 +93,4 @@ $estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
 ```
 
 ## No Free Lunch Theorem
-At some point you may ask yourself "Why do we need so many different learning algorithms? Can't we just use one that works all the time?" The answer to those questions can be understood by the *No Free Lunch* (NFL) theorem which states that, averaged over *all* possible problems, no learner performs better than the next. Another way of saying that is certain learners perform better at some tasks than others. This is explained by the fact that all learning algorithms have *some* prior knowledge inherent in them whether it be via the selection of certain hyper-parameters or the design of the algorithm. Another consequence of the No Free Lunch theorem is that no single estimator exists that performs better for all problems.
+At some point you may ask yourself "Why do we need so many different learning algorithms? Can't we just use one that works all the time?" The answer to those questions can be understood by the *No Free Lunch* (NFL) theorem. The No Free Lunch theorem states that, when averaged over *all* possible problems, no learner performs any better than the next. Another way of saying that is certain learners perform better in some tasks and worse in others. This is explained by the fact that all learning algorithms have *some* prior knowledge inherent in them whether it be via the selection of certain hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.

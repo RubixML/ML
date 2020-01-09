@@ -1,5 +1,5 @@
 # Extracting Data
-Data needs to be loaded into your project before it can become useful. Data can be stored in many formats, but the most common formats are either structured plain-text such as CSV or NDJSON or in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. You have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. In addition, the library provides [Extractor](extractors/api.md) objects to help automate more common use cases.
+Data needs to be loaded into your project before it can become useful. Data can be stored in many formats, but the most common formats are either structured plain-text such as CSV or NDJSON format or in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. You have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help keep data extraction simple, the library provides a number of [Extractor](extractors/api.md) objects that handle more common formats.
 
 ## CSV
 A common format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV). A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. CSV files have the advantage of being able to be processed line by line. One disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default.
@@ -12,7 +12,7 @@ nice,furry,friendly,4,not monster
 mean,furry,loner,-1.5,monster
 ```
 
-Rubix ML provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format.
+The library provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format.
 
 **Example**
 

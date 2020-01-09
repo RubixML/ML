@@ -1,22 +1,34 @@
 # Cross Validation
-Cross Validation (CV) or *out-of-sample* testing is the primary technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
+Cross Validation (CV) or *out-of-sample* testing is a technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
 
 ## Metrics
-Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their ground-truth labels. There are different metrics for different estimator types as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* used as metrics such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* score to conform to this schema.
+Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
 
-| Task | Metrics |
-|---|---|
-| Classification | [Accuracy](cross-validation/metrics/accuracy.md), [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md), [Informedness](cross-validation/metrics/informedness.md) |
-| Regression | [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md), [R Squared](cross-validation/metrics/r-squared.md), [SMAPE](cross-validation/metrics/smape.md) |
-| Clustering | [Homogeneity](cross-validation/metrics/homogeneity.md), [V Measure](cross-validation/metrics/v-measure.md), [Rand Index](cross-validation/metrics/rand-index.md) |
-| Anomaly Detection | [F Beta](cross-validation/metrics/f-beta.md), [MCC](cross-validation/metrics/mcc.md), [Informedness](cross-validation/metrics/informedness.md) |
+| Metric | Classification | Regression | Clustering | Anomaly Detection | 
+|---|---|---|---|---|
+| [Accuracy](cross-validation/metrics/accuracy.md) | ● | | | |
+| [Completeness](cross-validation/metrics/completeness.md) | | | ● | |
+| [F Beta](cross-validation/metrics/f-beta.md) | ● | | | ● |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | | | ● | |
+| [Informedness](cross-validation/metrics/informedness.md) | ● | | | ● |
+| [MCC](cross-validation/metrics/mcc.md) | ● | | | ● |
+| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | | ● | | |
+| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | | ● | | |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | | ● | | |
+| [R Squared](cross-validation/metrics/r-squared.md) | | ● | | |
+| [Rand Index](cross-validation/metrics/rand-index.md) | | | ● | |
+| [RMSE](cross-validation/metrics/rmse.md) | | ● | | |
+| [SMAPE](cross-validation/metrics/smape.md) | | ● | | |
+| [V Measure](cross-validation/metrics/v-measure.md) | | | ● | |
+
+To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.
 
 **Example**
 
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-// Make predictions and import labels
+// ...
 
 $metric = new Accuracy();
 
@@ -26,11 +38,20 @@ var_dump($score);
 ```
 
 ```sh
-float(0.9484)
+float(0.85)
 ```
 
 ## Validators
-Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm the validator employs under the hood. For example, a [K Fold](cross-validation/k-fold.md) validator will automatically select one of k *folds* of the dataset to use as a validation set and then use the rest of the folds to train the learner. It will do this until the model is trained and tested on every sample in the dataset at least once.
+Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm employed under the hood.
+
+| Validator | Test Coverage | Parallel |
+|---|---|---|
+| [Hold Out](cross-validation/hold-out.md) | Partial | |
+| [K Fold](cross-validation/k-fold.md) | Full | ● |
+| [Leave P Out](cross-validation/leave-p-out.md) | Full | ● |
+| [Monte Carlo](cross-validation/monte-carlo.md) | Partial | ● |
+
+For example, K Fold automatically selects one of k *folds* of the dataset to use as a validation set and then use the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. To begin cross validation, pass an untrained learner, a dataset, and the chosen validation metric to the Validator's `test()` method.
 
 **Example**
 
@@ -38,7 +59,7 @@ Metrics can be used stand-alone or they can be used within a [Validator](cross-v
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-// Import labeled dataset
+// ...
 
 $validator = new KFold(10);
 
@@ -48,18 +69,22 @@ var_dump($score);
 ```
 
 ```sh
-float(0.869)
+float(0.9175)
 ```
 
 ## Reports
-Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense as to how a model is performing. They provide finer-grained details than a single metric but they can only be used stand-alone. As an example, we can use the [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) report to output a number of classification metrics broken down by class label.
+Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with finer-grained information than a Metric. The `generate()` method take a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with information. 
 
-| Task | Reports |
-|---|---|
-| Classification | [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md), [Confusion Matrix](cross-validation/reports/confusion-matrix.md) |
-| Regression | [Residual Analysis](cross-validation/reports/residual-analysis.md) |
-| Clustering | [Contingency Table](cross-validation/reports/contingency-table.md) |
-| Anomaly Detection | [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md), [Confusion Matrix](cross-validation/reports/confusion-matrix.md) |
+| Metric | Classification | Regression | Clustering | Anomaly Detection | 
+|---|---|---|---|---|
+| [Confusion Matrix](cross-validation/reports/confusion-matrix.md) | ● | | | ● |
+| [Contingency Table](cross-validation/reports/contingency-table.md) | | | ● | |
+| [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | ● | | | ● |
+| [Residual Analysis](cross-validation/reports/residual-analysis.md) | | ● | | |
+
+For example, the Multiclass Breakdown report outputs a number of classification metrics broken down by class label.
+
+**Example**
 
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
@@ -74,7 +99,6 @@ var_dump($result);
 ```
 
 ```sh
-...
 ['classes']=> array(2) {
 	['wolf']=> array(19) {
       	['accuracy']=> float(0.6)
@@ -97,21 +121,16 @@ var_dump($result);
       	['cardinality']=> int(3)
       	['density']=> float(0.6)
     }
-    ...
 ```
 
 ## Common Problems
 Here are some common problems that cross validation can help identify.
 
 ### Underfitting
-A poorly performing model can sometimes be explained as *underfiting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. Underfitting can occur when a simple model, such as the linear one learned by [Logistic Regression](classifiers/logistic-regression.md), is trained on data with complex non-linear processes. In such a case, either model constraints can be relaxed or a new learner with greater flexibility can be selected for the task instead. Adding more features such as by hand engineering or using a transformer like [Polynomial Expander](transformers/polynomial-expander.md) can also help.
+A poorly performing model can sometimes be explained as *underfiting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. Underfitting mostly occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features can sometimes help with underfitting, however if the problem is severe, a more flexible learner can be chosen for the problem instead.
 
 ### Overfitting
-When a model performs well during training but poorly during cross validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. Some degree of overfitting can occur with any model, but larger more flexible models are more prone to overfitting due to their ability to *memorize* individual samples.
-
-Most learners in Rubix ML employ strategies such as regularization, early stopping, or post-pruning to reduce overfitting. For example, some learners such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) and [Gradient Boost](regressors/gradient-boost.md) prevent overfitting by stopping at the point at which the validation score on a holdout set starts to decrease. Adding more samples to the dataset can also help to reduce overfitting.
+When a model performs well on training data but poorly during cross validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. Some degree of overfitting can occur with any model, but more flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, and/or post-pruning to control overfitting. Adding more samples to the dataset can also help.
 
 ### Selection Bias
-When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a neural network trained to classify pictures of cats and dogs is trained mostly (say 90%) with images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented.
-
-Although selection bias is largely determined through data collection, there are a number of things that you can do within Rubix ML to ensure that unbiased data remains unbiased. For example, the *stratified* methods on the [Labeled](datasets/labeled.md) dataset object split and fold the dataset while maintaining the proportions of labels in each subset.
+When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs with mostly (say 90%) images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented.
