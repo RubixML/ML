@@ -27,12 +27,18 @@ use function count;
 class OneHotEncoder implements Transformer, Stateful
 {
     /**
-     * The set of unique possible categories per feature column of the
-     * training set.
+     * The set of unique possible categories per feature column of the training set.
      *
      * @var array[]|null
      */
     protected $categories;
+
+    /**
+     * The null encoding for each feature column.
+     *
+     * @var array[]|null
+     */
+    protected $templates;
 
     /**
      * Return the data types that this transformer is compatible with.
@@ -73,7 +79,7 @@ class OneHotEncoder implements Transformer, Stateful
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $this->categories = [];
+        $this->categories = $this->templates = [];
 
         foreach ($dataset->types() as $column => $type) {
             if ($type === DataType::CATEGORICAL) {
@@ -82,6 +88,8 @@ class OneHotEncoder implements Transformer, Stateful
                 $categories = array_values(array_unique($values));
 
                 $this->categories[$column] = array_flip($categories);
+
+                $this->templates[$column] = array_fill(0, count($categories), 0);
             }
         }
     }
@@ -94,28 +102,22 @@ class OneHotEncoder implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->categories === null) {
+        if (!$this->categories or !$this->templates) {
             throw new RuntimeException('Transformer has not been fitted.');
-        }
-
-        $templates = [];
-
-        foreach ($this->categories as $column => $categories) {
-            $templates[$column] = array_fill(0, count($categories), 0);
         }
 
         foreach ($samples as &$sample) {
             $temp = [];
 
             foreach ($this->categories as $column => $categories) {
+                $template = $this->templates[$column];
                 $category = $sample[$column];
-                $features = $templates[$column];
 
                 if (isset($categories[$category])) {
-                    $features[$categories[$category]] = 1;
+                    $template[$categories[$category]] = 1;
                 }
 
-                $temp = array_merge($temp, $features);
+                $temp = array_merge($temp, $template);
 
                 unset($sample[$column]);
             }
