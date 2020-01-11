@@ -90,12 +90,10 @@ class VarianceThresholdFilter implements Transformer, Stateful
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
         
-        $n = $dataset->numColumns();
-        
         $this->selected = [];
 
-        for ($column = 0; $column < $n; ++$column) {
-            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::CONTINUOUS) {
                 $values = $dataset->column($column);
                 
                 if (Stats::variance($values) <= $this->threshold) {

@@ -127,13 +127,11 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
-        $n = $dataset->numColumns();
 
         $this->means = $this->variances = $this->stddevs = [];
 
-        for ($column = 0; $column < $n; ++$column) {
-            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::CONTINUOUS) {
                 $values = $dataset->column($column);
 
                 [$mean, $variance] = Stats::meanVar($values);

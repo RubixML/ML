@@ -156,10 +156,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
 
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $n = $dataset->numColumns();
-
-        for ($column = 0; $column < $n; ++$column) {
-            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::CONTINUOUS) {
                 $values = $dataset->column($column);
                 
                 $min = min($values);

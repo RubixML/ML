@@ -131,13 +131,11 @@ class WordCountVectorizer implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
-        $n = $dataset->numColumns();
 
         $this->vocabulary = [];
 
-        for ($column = 0; $column < $n; ++$column) {
-            if ($dataset->columnType($column) === DataType::CATEGORICAL) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::CATEGORICAL) {
                 $values = $dataset->column($column);
 
                 $tfs = $dfs = [];

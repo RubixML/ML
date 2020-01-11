@@ -72,13 +72,11 @@ class OneHotEncoder implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
-        $n = $dataset->numColumns();
 
         $this->categories = [];
 
-        for ($column = 0; $column < $n; ++$column) {
-            if ($dataset->columnType($column) === DataType::CATEGORICAL) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::CATEGORICAL) {
                 $values = $dataset->column($column);
                 
                 $categories = array_values(array_unique($values));
@@ -107,7 +105,7 @@ class OneHotEncoder implements Transformer, Stateful
         }
 
         foreach ($samples as &$sample) {
-            $vector = [];
+            $temp = [];
 
             foreach ($this->categories as $column => $categories) {
                 $category = $sample[$column];
@@ -117,12 +115,12 @@ class OneHotEncoder implements Transformer, Stateful
                     $features[$categories[$category]] = 1;
                 }
 
-                $vector = array_merge($vector, $features);
+                $temp = array_merge($temp, $features);
 
                 unset($sample[$column]);
             }
 
-            $sample = array_merge($sample, $vector);
+            $sample = array_merge($sample, $temp);
         }
     }
 }
