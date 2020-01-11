@@ -9,6 +9,8 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function is_null;
+
 /**
  * Variance Threshold Filter
  *
@@ -113,7 +115,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->selected === null) {
+        if (is_null($this->selected)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

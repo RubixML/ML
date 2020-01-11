@@ -13,9 +13,9 @@
 This transformer does not have any parameters.
 
 ## Additional Methods
-Return the inverse document frequencies calculated during fitting:
+Return the document frequencies calculated during fitting:
 ```php
-public idfs() : ?array
+public dfs() : ?array
 ```
 
 ## Example

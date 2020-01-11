@@ -8,6 +8,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 
+use function is_null;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -125,7 +127,7 @@ class RobustStandardizer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->medians === null or $this->mads === null) {
+        if (is_null($this->mads) or is_null($this->medians)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

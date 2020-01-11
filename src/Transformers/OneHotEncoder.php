@@ -8,6 +8,7 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 
 use function count;
+use function is_null;
 
 /**
  * One Hot Encoder
@@ -102,7 +103,7 @@ class OneHotEncoder implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (!$this->categories or !$this->templates) {
+        if (is_null($this->categories) or is_null($this->templates)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -117,12 +118,12 @@ class OneHotEncoder implements Transformer, Stateful
                     $template[$categories[$category]] = 1;
                 }
 
-                $temp = array_merge($temp, $template);
+                $temp[] = $template;
 
                 unset($sample[$column]);
             }
 
-            $sample = array_merge($sample, $temp);
+            $sample = array_merge($sample, ...$temp);
         }
     }
 }

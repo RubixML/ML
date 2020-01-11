@@ -8,6 +8,8 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function is_null;
+
 /**
  * TF-IDF Transformer
  *
@@ -74,13 +76,13 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     }
 
     /**
-     * Return the inverse document frequencies calculated during fitting.
+     * Return the document frequencies calculated during fitting.
      *
-     * @return float[]|null
+     * @return int[]|null
      */
-    public function idfs() : ?array
+    public function dfs() : ?array
     {
-        return $this->idfs;
+        return $this->dfs;
     }
 
     /**
@@ -144,7 +146,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
      */
     public function transform(array &$samples) : void
     {
-        if ($this->idfs === null) {
+        if (is_null($this->idfs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

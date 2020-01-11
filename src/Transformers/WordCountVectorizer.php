@@ -12,16 +12,15 @@ use RuntimeException;
 
 use function count;
 use function array_slice;
+use function is_null;
 
 /**
  * Word Count Vectorizer
  *
- * In machine learning, word counts are often used to represent natural language
- * as numerical vectors. The Word Count Vectorizer builds a vocabulary using
- * hash tables from the training samples during fitting and transforms an array
- * of strings (text blobs) into sparse feature vectors. Each feature column
- * represents a word from the vocabulary and the value denotes the number of times
- * that word appears in a given sample.
+ * The Word Count Vectorizer builds a vocabulary from the training samples and transforms text
+ * blobs into fixed length feature vectors. Each feature column represents a word or *token*
+ * from the vocabulary and the value denotes the number of times that word appears in a given
+ * document.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -45,7 +44,7 @@ class WordCountVectorizer implements Transformer, Stateful
     protected $minDocumentFrequency;
 
     /**
-     * The tokenizer used to extract text data into tokenable values.
+     * The tokenizer used to extract tokens from blobs of text.
      *
      * @var \Rubix\ML\Other\Tokenizers\Tokenizer
      */
@@ -56,7 +55,14 @@ class WordCountVectorizer implements Transformer, Stateful
      *
      * @var array[]|null
      */
-    protected $vocabulary;
+    protected $vocabularies;
+
+    /**
+     * The zero vectors for each feature column.
+     *
+     * @var array[]|null
+     */
+    protected $templates;
 
     /**
      * @param int $maxVocabulary
@@ -100,27 +106,17 @@ class WordCountVectorizer implements Transformer, Stateful
      */
     public function fitted() : bool
     {
-        return isset($this->vocabulary);
+        return isset($this->vocabularies);
     }
 
     /**
-     * Return an array of words in the vocabulary.
+     * Return an array of words in each of the vocabularies.
      *
-     * @return string[]
+     * @return array[]
      */
-    public function vocabulary() : array
+    public function vocabularies() : array
     {
-        return array_flip($this->vocabulary ?? []);
-    }
-
-    /**
-     * Return the size of the vocabulary in words.
-     *
-     * @return int
-     */
-    public function size() : int
-    {
-        return count($this->vocabulary ?? []);
+        return array_map('array_flip', $this->vocabularies ?? []);
     }
 
     /**
@@ -132,7 +128,7 @@ class WordCountVectorizer implements Transformer, Stateful
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $this->vocabulary = [];
+        $this->vocabularies = $this->templates = [];
 
         foreach ($dataset->types() as $column => $type) {
             if ($type === DataType::CATEGORICAL) {
@@ -140,8 +136,8 @@ class WordCountVectorizer implements Transformer, Stateful
 
                 $tfs = $dfs = [];
 
-                foreach ($values as $text) {
-                    $tokens = $this->tokenizer->tokenize($text);
+                foreach ($values as $blob) {
+                    $tokens = $this->tokenizer->tokenize($blob);
 
                     $counts = array_count_values($tokens);
 
@@ -170,10 +166,13 @@ class WordCountVectorizer implements Transformer, Stateful
                     $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
                 }
         
-                $this->vocabulary[$column] = array_combine(
+                $vocabulary = array_combine(
                     array_keys($tfs),
                     range(0, count($tfs) - 1)
                 ) ?: [];
+
+                $this->vocabularies[$column] = $vocabulary;
+                $this->templates[$column] = array_fill(0, count($vocabulary), 0);
             }
         }
     }
@@ -186,40 +185,33 @@ class WordCountVectorizer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->vocabulary === null) {
+        if (is_null($this->vocabularies) or is_null($this->templates)) {
             throw new RuntimeException('Transformer is not fitted.');
         }
 
-        $templates = [];
-
-        foreach ($this->vocabulary as $column => $vocabulary) {
-            $templates[$column] = array_fill(0, count($vocabulary), 0);
-        }
-
         foreach ($samples as &$sample) {
-            $vectors = [];
+            $temp = [];
 
-            foreach ($this->vocabulary as $column => $vocabulary) {
-                $text = $sample[$column];
+            foreach ($this->vocabularies as $column => $vocabulary) {
+                $template = $this->templates[$column];
+                $blob = $sample[$column];
 
-                $tokens = $this->tokenizer->tokenize($text);
+                $tokens = $this->tokenizer->tokenize($blob);
 
                 $counts = array_count_values($tokens);
 
-                $features = $templates[$column];
-
                 foreach ($counts as $token => $count) {
                     if (isset($vocabulary[$token])) {
-                        $features[$vocabulary[$token]] = $count;
+                        $template[$vocabulary[$token]] = $count;
                     }
                 }
 
-                $vectors[] = $features;
+                $temp[] = $template;
 
                 unset($sample[$column]);
             }
 
-            $sample = array_merge($sample, ...$vectors);
+            $sample = array_merge($sample, ...$temp);
         }
     }
 }

@@ -8,6 +8,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 
+use function is_null;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -192,7 +194,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
      */
     public function transform(array &$samples) : void
     {
-        if ($this->means === null or $this->stddevs === null) {
+        if (is_null($this->means) or is_null($this->stddevs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
