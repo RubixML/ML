@@ -28,8 +28,6 @@ To return a validation score from a Metric pass the predictions and labels to th
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-// ...
-
 $metric = new Accuracy();
 
 $score = $metric->score($predictions, $labels);
@@ -51,15 +49,13 @@ Metrics can be used stand-alone or they can be used within a [Validator](cross-v
 | [Leave P Out](cross-validation/leave-p-out.md) | Full | ● |
 | [Monte Carlo](cross-validation/monte-carlo.md) | Partial | ● |
 
-For example, K Fold automatically selects one of k *folds* of the dataset to use as a validation set and then use the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. To begin cross validation, pass an untrained learner, a dataset, and the chosen validation metric to the Validator's `test()` method.
+For example, K Fold automatically selects one of k *folds* of the dataset to use as a validation set and then uses the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. To begin cross validation, pass an untrained learner, a dataset, and the chosen validation metric to the Validator's `test()` method.
 
 **Example**
 
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-
-// ...
 
 $validator = new KFold(10);
 
@@ -73,7 +69,7 @@ float(0.9175)
 ```
 
 ## Reports
-Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with finer-grained information than a Metric. The `generate()` method take a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with information. 
+Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with finer-grained information than a Metric. The `generate()` method takes a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with information. 
 
 | Metric | Classification | Regression | Clustering | Anomaly Detection | 
 |---|---|---|---|---|
@@ -88,8 +84,6 @@ For example, the Multiclass Breakdown report outputs a number of classification 
 
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
-
-// Import labels and make predictions
 
 $report = new MulticlassBreakdown();
 

@@ -82,7 +82,7 @@ class MLPRegressorTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict_proba() : void
+    public function test_train_partial_predict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 

@@ -34,19 +34,7 @@ public load(string $path) : void
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
 
-$estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
-
-$estimator->train($dataset);
-
-$estimator->save('svm.model');
-
-// ...
-
-$estimator = new SVC();
-
-$estimator->load('svm.model');
-
-$predictions = $estimator->predict($dataset);
+$estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.0);
 ```
 
 ### References

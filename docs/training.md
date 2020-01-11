@@ -6,8 +6,6 @@ To begin training a learner, pass a dataset object to the `train()` method on th
 **Example**
 
 ```php
-// ...
-
 $estimator->train($dataset);
 ```
 
@@ -17,8 +15,6 @@ Batch learning is when a learner is trained in full using only one dataset in a 
 **Example**
 
 ```php
-// ...
-
 $folds = $dataset->fold(3);
 
 $estimator->partial($folds[0]);
@@ -37,8 +33,6 @@ Rubix ML comes built-in with a [Screen Logger](other/loggers/screen.md) that doe
 
 ```php
 use Rubix\ML\Other\Loggers\Screen;
-
-// ...
 
 $estimator->setLogger(new Screen('example'));
 ```

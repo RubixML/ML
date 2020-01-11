@@ -14,8 +14,6 @@ All estimators implement the [Estimator](estimator.md) interface which provides 
 **Example**
 
 ```php
-// ...
-
 $predictions = $estimator->predict($dataset);
 
 var_dump($predictions);
@@ -51,8 +49,6 @@ Sometimes, you may want to know how *certain* the model is about a particular ou
 **Example**
 
 ```php
-// ...
-
 $probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
@@ -77,8 +73,6 @@ Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/
 **Example**
 
 ```php
-// ...
-
 $scores = $estimator->rank($dataset);
 
 var_dump($scores);

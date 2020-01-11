@@ -49,8 +49,6 @@ The example below shows how you can instantiate a new dataset object using only 
 use Rubix\ML\Datasets\Unlabeled;
 use LimitIterator;
 
-// ...
-
 $iterator = new LimitIterator($extractor->getIterator(), 500, 1000);
 
 $dataset = Unlabeled::fromIterator($iterator);

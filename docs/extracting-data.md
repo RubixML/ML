@@ -1,8 +1,10 @@
 # Extracting Data
-Data needs to be loaded into your project before it can become useful. Data can be stored in many formats, but the most common formats are either structured plain-text such as CSV or NDJSON format or in a database such as MySQL or MongoDB. More advanced online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference to Rubix ML. You have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help keep data extraction simple, the library provides a number of [Extractor](extractors/api.md) objects that handle more common formats.
+Data are a first class citizen in Rubix ML. The library makes it easy to work with datasets through its [Dataset](datasets/api.md) object, which is a specialized data container that every learner can recognize. There are a number of ways to instantiate a new dataset object, but all of them require the data to be extracted from source into memory first.
+
+Data can be stored in many formats, but the most common formats are structured plain-text such as CSV or NDJSON format or in a database such as MySQL or MongoDB. Some online systems will have an ETL (*extract transform load*) pipeline set up to deliver the dataset in real-time or at regular intervals. The way in which your data is delivered makes no difference. You have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help make extraction simple for more common use cases, the library provides a number of [Extractor](extractors/api.md) objects that allow you to iterate over the rows of a data table.
 
 ## CSV
-A common format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV). A CSV file is a plain-text file that contains a table with samples indicated by rows and the values of the features as columns. The columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row which gives names to the feature columns. CSV files have the advantage of being able to be processed line by line. One disadvantage of CSV is that type information cannot be inferred from the format and thus all data is imported as categorical (strings) by default.
+A common plain-text format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) (CSV). A CSV file contains a table with samples indicated by rows and the values of the features as the columns. Columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row. CSV files have the advantage of being able to be processed line by line, however, their disadvantage is that type information cannot be inferred from the format. Thus, all data are imported as categorical (strings) by default.
 
 **Example**
 
@@ -12,7 +14,7 @@ nice,furry,friendly,4,not monster
 mean,furry,loner,-1.5,monster
 ```
 
-The library provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format and can be used in conjunction with a Dataset's `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format.
+The library provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format. Since extractors are iterators they can be used in conjunction with a Dataset's static `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format.
 
 **Example**
 
@@ -49,7 +51,7 @@ Javascript Object Notation (JSON) is a standardized lightweight plain-text forma
 ]
 ```
 
-The [JSON](extractors/json.md) extractor in Rubix ML handles loading data from JSON files.
+The [JSON](extractors/json.md) extractor handles loading data from JSON files.
 
 **Example**
 
