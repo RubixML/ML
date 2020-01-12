@@ -4,6 +4,7 @@
     - Numeric String Converter now uses fixed NaN placeholder
     - Missing Data Imputer now passes through other data types
     - Changed order of Missing Data Imputer params
+    - Renamed high-level resource type to image
 
 - 0.0.18-beta
     - Now requires PHP 7.2 and above

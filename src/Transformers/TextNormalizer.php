@@ -52,13 +52,13 @@ class TextNormalizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                if (is_string($feature)) {
+            foreach ($sample as &$value) {
+                if (is_string($value)) {
                     if ($this->trim) {
-                        $feature = preg_replace(self::SPACES_REGEX, self::SPACE, trim($feature)) ?: '';
+                        $value = preg_replace(self::SPACES_REGEX, self::SPACE, trim($value)) ?: '';
                     }
 
-                    $feature = strtolower($feature);
+                    $value = strtolower($value);
                 }
             }
         }

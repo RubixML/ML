@@ -35,7 +35,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
     /**
      * The indices of the feature columns that have been selected.
      *
-     * @var int[]|null
+     * @var bool[]|null
      */
     protected $selected;
 
@@ -98,11 +98,9 @@ class VarianceThresholdFilter implements Transformer, Stateful
             if ($type === DataType::CONTINUOUS) {
                 $values = $dataset->column($column);
                 
-                if (Stats::variance($values) <= $this->threshold) {
-                    continue 1;
+                if (Stats::variance($values) > $this->threshold) {
+                    $this->selected[$column] = true;
                 }
-
-                $this->selected[$column] = true;
             }
         }
     }
@@ -120,7 +118,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
         }
 
         foreach ($samples as &$sample) {
-            $sample = array_intersect_key($sample, $this->selected);
+            $sample = array_values(array_intersect_key($sample, $this->selected));
         }
     }
 }

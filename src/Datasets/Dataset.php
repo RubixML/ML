@@ -93,8 +93,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
                 foreach ($sample as $column => $value) {
                     if (DataType::determine($value) !== $types[$column]) {
-                        throw new InvalidArgumentException('Columns must contain'
-                            . ' feature values of the same data type.');
+                        throw new InvalidArgumentException("Column $column must"
+                            . ' contain feature values of the same data type.');
                     }
                 }
             }
@@ -395,11 +395,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
                     $desc['num_categories'] = count($counts);
                     $desc['densities'] = $densities;
-
-                    break 1;
-
-                case DataType::RESOURCE:
-                    $desc['php_type'] = get_resource_type(reset($values));
 
                     break 1;
             }

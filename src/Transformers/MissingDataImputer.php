@@ -95,7 +95,7 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function fitted() : bool
     {
-        return isset($this->strategies);
+        return isset($this->strategies) and isset($this->types);
     }
 
     /**

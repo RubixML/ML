@@ -33,9 +33,9 @@ class HTMLStripper implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                if (is_string($feature)) {
-                    $feature = strip_tags($feature);
+            foreach ($sample as &$value) {
+                if (is_string($value)) {
+                    $value = strip_tags($value);
                 }
             }
         }

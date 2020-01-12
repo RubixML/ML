@@ -12,19 +12,19 @@ class DataType
     public const OTHER = 0;
     public const CONTINUOUS = 1;
     public const CATEGORICAL = 2;
-    public const RESOURCE = 3;
+    public const IMAGE = 3;
 
     public const TYPES = [
         self::OTHER => 'other',
         self::CONTINUOUS => 'continuous',
         self::CATEGORICAL => 'categorical',
-        self::RESOURCE => 'resource',
+        self::IMAGE => 'image',
     ];
 
     public const ALL = [
         self::CONTINUOUS,
         self::CATEGORICAL,
-        self::RESOURCE,
+        self::IMAGE,
         self::OTHER,
     ];
 
@@ -47,8 +47,13 @@ class DataType
                 return self::CATEGORICAL;
 
             case 'resource':
-                return self::RESOURCE;
-
+                if (get_resource_type($data) === 'gd') {
+                    return self::IMAGE;
+                } else {
+                    return self::OTHER;
+                }
+                
+                // no break
             default:
                 return self::OTHER;
         }
@@ -82,9 +87,9 @@ class DataType
      * @param mixed $data
      * @return bool
      */
-    public static function isResource($data) : bool
+    public static function isImage($data) : bool
     {
-        return is_resource($data);
+        return is_resource($data) and get_resource_type($data) === 'gd';
     }
 
     /**
@@ -97,7 +102,7 @@ class DataType
     {
         return !is_string($data)
             and !is_numeric($data)
-            and !is_resource($data);
+            and !self::isImage($data);
     }
 
     /**
@@ -110,7 +115,7 @@ class DataType
     public static function asString(int $type) : string
     {
         if (!in_array($type, self::ALL)) {
-            throw new InvalidArgumentException('Unkown type given.');
+            throw new InvalidArgumentException('Unknown type given.');
         }
 
         return self::TYPES[$type];
