@@ -88,7 +88,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
-                . " to make a prediction, $k given.");
+                . " impute a value, $k given.");
         }
 
         if ($kernel and in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
@@ -137,8 +137,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
         $this->update($dataset);
 
         if (empty($this->samples)) {
-            throw new RuntimeException('No complete donor samples'
-                . ' could be found.');
+            throw new RuntimeException('No complete donors.');
         }
     }
 

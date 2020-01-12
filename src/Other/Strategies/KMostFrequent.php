@@ -42,8 +42,8 @@ class KMostFrequent implements Categorical
     public function __construct(int $k = 1)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Cannot guess less than'
-                . " 1 class, $k given.");
+            throw new InvalidArgumentException('Cannot guess from'
+                . " less than 1 class, $k given.");
         }
 
         $this->k = $k;

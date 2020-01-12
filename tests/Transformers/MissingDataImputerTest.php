@@ -4,7 +4,9 @@ namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Other\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -31,7 +33,7 @@ class MissingDataImputerTest extends TestCase
             [10, 'mean'],
         ]);
 
-        $this->transformer = new MissingDataImputer('?');
+        $this->transformer = new MissingDataImputer(new Mean(), new KMostFrequent(), '?');
     }
 
     public function test_build_transformer() : void

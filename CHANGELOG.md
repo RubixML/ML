@@ -1,6 +1,9 @@
 - Unreleased
     - Changed the default anomaly class for Radius Neighbors
     - Removed additional methods from guessing Strategies
+    - Numeric String Converter now uses fixed NaN placeholder
+    - Missing Data Imputer now passes through other data types
+    - Changed order of Missing Data Imputer params
 
 - 0.0.18-beta
     - Now requires PHP 7.2 and above

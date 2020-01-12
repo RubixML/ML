@@ -27,7 +27,7 @@ class NumericStringConverterTest extends TestCase
             ['100', '3.0', '200', 2.5],
         ]);
 
-        $this->transformer = new NumericStringConverter('NaN');
+        $this->transformer = new NumericStringConverter();
     }
 
     public function test_build_transformer() : void

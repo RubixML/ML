@@ -17,20 +17,7 @@ use Rubix\ML\DataType;
  */
 class NumericStringConverter implements Transformer
 {
-    /**
-     * The placeholder string for NaN values.
-     *
-     * @var string
-     */
-    protected $placeholder;
-
-    /**
-     * @param string $placeholder
-     */
-    public function __construct(string $placeholder = 'NaN')
-    {
-        $this->placeholder = $placeholder;
-    }
+    public const NAN_PLACEHOLDER = 'NaN';
 
     /**
      * Return the data types that this transformer is compatible with.
@@ -51,18 +38,18 @@ class NumericStringConverter implements Transformer
     {
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
-                switch (true) {
-                    case is_string($value) and is_numeric($value):
+                if (is_string($value)) {
+                    if (is_numeric($value)) {
                         $value = (int) $value == $value
                             ? (int) $value
                             : (float) $value;
 
-                        break 1;
-
-                    case $value === $this->placeholder:
+                        continue 1;
+                    }
+                    
+                    if ($value === self::NAN_PLACEHOLDER) {
                         $value = NAN;
-
-                        break 1;
+                    }
                 }
             }
         }
