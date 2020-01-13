@@ -30,7 +30,7 @@ class CompletenessTest extends TestCase
     /**
      * @test
      */
-    public function build_metric() : void
+    public function build() : void
     {
         $this->assertInstanceOf(Completeness::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);

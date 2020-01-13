@@ -49,7 +49,7 @@ class BlobTest extends TestCase
     /**
      * @test
      */
-    public function generate_dataset() : void
+    public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

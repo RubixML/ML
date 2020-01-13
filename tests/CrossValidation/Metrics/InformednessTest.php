@@ -67,7 +67,7 @@ class InformednessTest extends TestCase
      * @param (string|int)[] $labels
      * @param float $expected
      */
-    public function score_class(array $predictions, array $labels, float $expected) : void
+    public function score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 

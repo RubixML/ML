@@ -48,7 +48,7 @@ class KNNRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
         $this->estimator = new KNNRegressor(3, true, new Minkowski(3.0));
 
@@ -56,30 +56,48 @@ class KNNRegressorTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
     
     /**
      * @test
      */
-    public function build_regressor() : void
+    public function build() : void
     {
         $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
 
+    /**
+     * @test
+     */
+    public function type() : void
+    {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+    }
 
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
 
-        $this->assertFalse($this->estimator->trained());
+        $this->assertEquals($expected, $this->estimator->compatibility());
     }
         
     /**
      * @test
      */
-    public function train_partial_predict_proba() : void
+    public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -103,7 +121,7 @@ class KNNRegressorTest extends TestCase
     /**
      * @test
      */
-    public function train_with_unlabeled() : void
+    public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -113,7 +131,7 @@ class KNNRegressorTest extends TestCase
     /**
      * @test
      */
-    public function train_incompatible() : void
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -123,7 +141,7 @@ class KNNRegressorTest extends TestCase
     /**
      * @test
      */
-    public function predict_untrained() : void
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

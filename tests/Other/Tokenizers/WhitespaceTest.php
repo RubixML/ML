@@ -25,7 +25,7 @@ class WhitespaceTest extends TestCase
     /**
      * @test
      */
-    public function build_tokenizer() : void
+    public function build() : void
     {
         $this->assertInstanceOf(Whitespace::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);

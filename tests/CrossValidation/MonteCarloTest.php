@@ -62,7 +62,7 @@ class MonteCarloTest extends TestCase
     /**
      * @test
      */
-    public function build_validator() : void
+    public function build() : void
     {
         $this->assertInstanceOf(MonteCarlo::class, $this->validator);
         $this->assertInstanceOf(Validator::class, $this->validator);
