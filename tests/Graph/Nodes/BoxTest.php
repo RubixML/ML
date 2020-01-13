@@ -9,6 +9,10 @@ use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Box
+ */
 class BoxTest extends TestCase
 {
     protected const COLUMN = 1;
@@ -33,7 +37,10 @@ class BoxTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $groups = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
@@ -43,7 +50,10 @@ class BoxTest extends TestCase
         $this->node = new Box(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Box::class, $this->node);
         $this->assertInstanceOf(Hypercube::class, $this->node);
@@ -51,24 +61,36 @@ class BoxTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_split() : void
+    /**
+     * @test
+     */
+    public function split() : void
     {
         $node = Box::split(Labeled::quick(self::SAMPLES, self::LABELS));
 
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
-    public function test_column() : void
+    /**
+     * @test
+     */
+    public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    public function test_value() : void
+    /**
+     * @test
+     */
+    public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    public function test_groups() : void
+    /**
+     * @test
+     */
+    public function groups() : void
     {
         $expected = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
@@ -78,7 +100,10 @@ class BoxTest extends TestCase
         $this->assertEquals($expected, $this->node->groups());
     }
 
-    public function test_sides() : void
+    /**
+     * @test
+     */
+    public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
     }

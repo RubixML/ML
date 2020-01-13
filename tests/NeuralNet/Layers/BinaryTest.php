@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Binary
+ */
 class BinaryTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -45,8 +49,11 @@ class BinaryTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Binary
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class BinaryTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Binary::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-
+    }
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
+    {
         $this->layer->initialize($this->fanIn);
 
         $this->assertEquals(1, $this->layer->width());
-    }
-
-    public function test_forward_back_infer() : void
-    {
-        $this->layer->initialize($this->fanIn);
 
         $expected = [
             [0.5357798817266803, 0.053977226104562924, 0.6003099946844843],

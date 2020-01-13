@@ -10,9 +10,13 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Validators
+ * @covers \Rubix\ML\CrossValidation\HoldOut
+ */
 class HoldOutTest extends TestCase
 {
-    protected const TRAIN_SIZE = 50;
+    protected const DATASET_SIZE = 50;
 
     /**
      * @var \Rubix\ML\Datasets\Generators\Agglomerate
@@ -29,7 +33,15 @@ class HoldOutTest extends TestCase
      */
     protected $validator;
 
-    public function setUp() : void
+    /**
+     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     */
+    protected $metric;
+
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
@@ -39,20 +51,36 @@ class HoldOutTest extends TestCase
         $this->estimator = new DummyClassifier();
 
         $this->validator = new HoldOut(0.2);
+
+        $this->metric = new Accuracy();
     }
 
-    public function test_build_validator() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(HoldOut::class, $this->validator);
         $this->assertInstanceOf(Validator::class, $this->validator);
     }
 
-    public function test_test() : void
+    /**
+     * @test
+     */
+    public function test() : void
     {
-        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+        [$min, $max] = $this->metric->range();
 
-        $score = $this->validator->test($this->estimator, $dataset, new Accuracy());
+        $dataset = $this->generator->generate(self::DATASET_SIZE);
 
-        $this->assertEqualsWithDelta(.5, $score, .5);
+        $score = $this->validator->test($this->estimator, $dataset, $this->metric);
+
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
+        );
     }
 }

@@ -10,6 +10,10 @@ use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group CostFunctions
+ * @covers \Rubix\ML\NeuralNet\CostFunctions\HuberLoss
+ */
 class HuberLossTest extends TestCase
 {
     /**
@@ -17,25 +21,32 @@ class HuberLossTest extends TestCase
      */
     protected $costFn;
     
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->costFn = new HuberLoss(1.);
     }
-
-    public function test_build_cost_function() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(HuberLoss::class, $this->costFn);
         $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
      * @param float $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(Matrix $output, Matrix $target, float $expected) : void
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
@@ -45,7 +56,7 @@ class HuberLossTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [
             Matrix::quick([[0.99]]),
@@ -67,13 +78,14 @@ class HuberLossTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider differentiateProvider
+     *
      * @param \Tensor\Tensor<int|float> $output
      * @param \Tensor\Tensor<int|float> $target
      * @param array[] $expected
-     *
-     * @dataProvider differentiate_provider
      */
-    public function test_differentiate(Tensor $output, Tensor $target, array $expected) : void
+    public function differentiate(Tensor $output, Tensor $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
@@ -83,7 +95,7 @@ class HuberLossTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function differentiate_provider() : Generator
+    public function differentiateProvider() : Generator
     {
         yield [
             Vector::quick([0.99]),

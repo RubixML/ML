@@ -10,11 +10,15 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Average
+ */
 class AverageTest extends TestCase
 {
     protected const OUTCOME = 44.21;
 
-    protected const IMPURITY = 6.;
+    protected const IMPURITY = 6.0;
 
     protected const N = 3;
 
@@ -23,12 +27,18 @@ class AverageTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->node = new Average(self::OUTCOME, self::IMPURITY, self::N);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Average::class, $this->node);
         $this->assertInstanceOf(Outcome::class, $this->node);
@@ -38,17 +48,26 @@ class AverageTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_outcome() : void
+    /**
+     * @test
+     */
+    public function outcome() : void
     {
         $this->assertSame(self::OUTCOME, $this->node->outcome());
     }
 
-    public function test_impurity() : void
+    /**
+     * @test
+     */
+    public function impurity() : void
     {
         $this->assertSame(self::IMPURITY, $this->node->impurity());
     }
 
-    public function test_n() : void
+    /**
+     * @test
+     */
+    public function n() : void
     {
         $this->assertSame(self::N, $this->node->n());
     }

@@ -8,14 +8,18 @@ use Rubix\ML\Graph\Nodes\Isolator;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Isolator
+ */
 class IsolatorTest extends TestCase
 {
     protected const COLUMN = 1;
-    protected const VALUE = 3.;
+    protected const VALUE = 3.0;
 
     protected const SAMPLES = [
-        [5., 2., -3],
-        [6., 4., -5],
+        [5.0, 2.0, -3],
+        [6.0, 4.0, -5],
     ];
 
     /**
@@ -23,7 +27,10 @@ class IsolatorTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $groups = [
             Unlabeled::quick([self::SAMPLES[0]]),
@@ -33,14 +40,20 @@ class IsolatorTest extends TestCase
         $this->node = new Isolator(self::COLUMN, self::VALUE, $groups);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Isolator::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_split() : void
+    /**
+     * @test
+     */
+    public function split() : void
     {
         $dataset = Unlabeled::quick(self::SAMPLES);
 
@@ -49,12 +62,18 @@ class IsolatorTest extends TestCase
         $this->assertInstanceOf(Isolator::class, $node);
     }
 
-    public function test_column() : void
+    /**
+     * @test
+     */
+    public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    public function test_value() : void
+    /**
+     * @test
+     */
+    public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }

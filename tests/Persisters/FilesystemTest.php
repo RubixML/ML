@@ -9,6 +9,10 @@ use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Persisters\Serializers\Native;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Persisters
+ * @covers \Rubix\ML\Persisters\Filesystem
+ */
 class FilesystemTest extends TestCase
 {
     /**
@@ -25,8 +29,11 @@ class FilesystemTest extends TestCase
      * @var string
      */
     protected $path;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->path = __DIR__ . '/test.model';
 
@@ -35,32 +42,46 @@ class FilesystemTest extends TestCase
         $this->persister = new Filesystem($this->path, true, new Native());
     }
 
-    public function test_build_persister() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFileNotExists($this->path);
+    }
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Filesystem::class, $this->persister);
         $this->assertInstanceOf(Persister::class, $this->persister);
     }
-
-    public function test_save_and_load() : void
+    
+    /**
+     * @test
+     */
+    public function saveLoad() : void
     {
-        $this->assertFalse(file_exists($this->path));
-
-        $this->persister->save($this->persistable);
         $this->persister->save($this->persistable);
 
         $this->assertFileExists($this->path);
-
+        
         $model = $this->persister->load();
 
         $this->assertInstanceOf(DummyClassifier::class, $model);
         $this->assertInstanceOf(Persistable::class, $model);
+    }
+
+    /**
+     * @after
+     */
+    protected function tearDown() : void
+    {
+        if (file_exists($this->path)) {
+            unlink($this->path);
+        }
 
         foreach (glob("$this->path.*.old") ?: [] as $filename) {
             unlink($filename);
         }
-
-        unlink($this->path);
-
-        $this->assertFalse(file_exists($this->path));
     }
 }

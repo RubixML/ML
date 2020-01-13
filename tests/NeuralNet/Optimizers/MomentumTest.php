@@ -12,19 +12,29 @@ use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Optimizers
+ * @covers \Rubix\ML\NeuralNet\Optimizers\Momentum
+ */
 class MomentumTest extends TestCase
 {
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Momentum
      */
     protected $optimizer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->optimizer = new Momentum(0.001, 0.1);
     }
-
-    public function test_build_optimizer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Momentum::class, $this->optimizer);
         $this->assertInstanceOf(Adaptive::class, $this->optimizer);
@@ -32,13 +42,14 @@ class MomentumTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider stepProvider
+     *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param array[] $expected
-     *
-     * @dataProvider step_provider
      */
-    public function test_warm_step(Parameter $param, Tensor $gradient, array $expected) : void
+    public function step(Parameter $param, Tensor $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 
@@ -50,7 +61,7 @@ class MomentumTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function step_provider() : Generator
+    public function stepProvider() : Generator
     {
         yield [
             new MatrixParam(Matrix::quick([

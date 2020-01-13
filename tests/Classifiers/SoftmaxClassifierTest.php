@@ -22,6 +22,10 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\SoftmaxClassifier
+ */
 class SoftmaxClassifierTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
@@ -45,7 +49,10 @@ class SoftmaxClassifierTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -62,7 +69,15 @@ class SoftmaxClassifierTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(SoftmaxClassifier::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -71,16 +86,32 @@ class SoftmaxClassifierTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPartialPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -103,21 +134,30 @@ class SoftmaxClassifierTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_with_unlabeled() : void
+    /**
+     * @test
+     */
+    public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_train_incompatible() : void
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

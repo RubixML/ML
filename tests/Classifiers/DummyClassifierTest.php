@@ -13,11 +13,15 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Other\Strategies\Prior;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\DummyClassifier
+ */
 class DummyClassifierTest extends TestCase
 {
     protected const TRAIN_SIZE = 100;
     protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.;
+    protected const MIN_SCORE = 0.0;
 
     protected const RANDOM_SEED = 0;
 
@@ -36,12 +40,15 @@ class DummyClassifierTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new DummyClassifier(new Prior());
@@ -51,22 +58,42 @@ class DummyClassifierTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(DummyClassifier::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $this->assertEquals(DataType::ALL, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         

@@ -8,6 +8,10 @@ use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\CSV
+ */
 class CSVTest extends TestCase
 {
     /**
@@ -15,12 +19,18 @@ class CSVTest extends TestCase
      */
     protected $extractor;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->extractor = new CSV('tests/test.csv', true, ',', '"');
     }
 
-    public function test_build_extractor() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(CSV::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
@@ -28,7 +38,10 @@ class CSVTest extends TestCase
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }
 
-    public function test_extract() : void
+    /**
+     * @test
+     */
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],

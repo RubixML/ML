@@ -8,9 +8,16 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEmbedder;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEmbedder
+ */
 class SamplesAreCompatibleWithEmbedderTest extends TestCase
 {
-    public function test_check() : void
+    /**
+     * @test
+     */
+    public function check() : void
     {
         $embedder = new TSNE();
 

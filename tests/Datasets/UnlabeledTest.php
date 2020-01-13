@@ -13,6 +13,10 @@ use Countable;
 
 use function Rubix\ML\array_transpose;
 
+/**
+ * @group Datasets
+ * @covers \Rubix\ML\Datasets\Unlabeled
+ */
 class UnlabeledTest extends TestCase
 {
     protected const SAMPLES = [
@@ -42,14 +46,20 @@ class UnlabeledTest extends TestCase
      */
     protected $dataset;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled(self::SAMPLES, false);
 
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_dataset() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Unlabeled::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
@@ -57,14 +67,20 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
     }
 
-    public function test_from_iterator() : void
+    /**
+     * @test
+     */
+    public function fromIterator() : void
     {
         $dataset = Unlabeled::fromIterator(new NDJSON('tests/test.ndjson'));
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
     }
 
-    public function test_stack_datasets() : void
+    /**
+     * @test
+     */
+    public function stack() : void
     {
         $dataset1 = new Unlabeled([['sample1']]);
         $dataset2 = new Unlabeled([['sample2']]);
@@ -78,74 +94,113 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(1, $dataset->numColumns());
     }
 
-    public function test_get_samples() : void
+    /**
+     * @test
+     */
+    public function samples() : void
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());
     }
 
-    public function test_get_sample() : void
+    /**
+     * @test
+     */
+    public function sample() : void
     {
         $this->assertEquals(self::SAMPLES[2], $this->dataset->sample(2));
         $this->assertEquals(self::SAMPLES[5], $this->dataset->sample(5));
     }
 
-    public function test_num_rows() : void
+    /**
+     * @test
+     */
+    public function numRows() : void
     {
         $this->assertEquals(6, $this->dataset->numRows());
     }
 
-    public function test_get_column() : void
+    /**
+     * @test
+     */
+    public function column() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
         $this->assertEquals($expected, $this->dataset->column(2));
     }
 
-    public function test_get_num_columns() : void
+    /**
+     * @test
+     */
+    public function numColumns() : void
     {
         $this->assertEquals(4, $this->dataset->numColumns());
     }
 
-    public function test_column_types() : void
+    /**
+     * @test
+     */
+    public function columnTypes() : void
     {
         $this->assertEquals(self::TYPES, $this->dataset->types());
     }
 
-    public function test_unique_types() : void
+    /**
+     * @test
+     */
+    public function uniqueTypes() : void
     {
         $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
-    public function test_homogeneous() : void
+    /**
+     * @test
+     */
+    public function homogeneous() : void
     {
         $this->assertFalse($this->dataset->homogeneous());
     }
 
-    public function test_shape() : void
+    /**
+     * @test
+     */
+    public function shape() : void
     {
         $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
-    public function test_size() : void
+    /**
+     * @test
+     */
+    public function size() : void
     {
         $this->assertEquals(24, $this->dataset->size());
     }
 
-    public function test_column_type() : void
+    /**
+     * @test
+     */
+    public function columnType() : void
     {
         $this->assertEquals(self::TYPES[0], $this->dataset->columnType(0));
         $this->assertEquals(self::TYPES[1], $this->dataset->columnType(1));
         $this->assertEquals(self::TYPES[2], $this->dataset->columnType(2));
     }
 
-    public function test_columns() : void
+    /**
+     * @test
+     */
+    public function columns() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
         $this->assertEquals($expected, $this->dataset->columns());
     }
 
-    public function test_columns_by_type() : void
+    /**
+     * @test
+     */
+    public function columnsByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
@@ -154,12 +209,18 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $columns);
     }
 
-    public function test_empty() : void
+    /**
+     * @test
+     */
+    public function empty() : void
     {
         $this->assertFalse($this->dataset->empty());
     }
 
-    public function test_randomize() : void
+    /**
+     * @test
+     */
+    public function randomize() : void
     {
         $samples = $this->dataset->samples();
 
@@ -168,7 +229,10 @@ class UnlabeledTest extends TestCase
         $this->assertNotEquals($samples, $this->dataset->samples());
     }
 
-    public function test_filter_by_column() : void
+    /**
+     * @test
+     */
+    public function filterByColumn() : void
     {
         $isFriendly = function ($value) {
             return $value === 'friendly';
@@ -186,7 +250,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $filtered->samples());
     }
 
-    public function test_sort_by_column() : void
+    /**
+     * @test
+     */
+    public function sortByColumn() : void
     {
         $this->dataset->sortByColumn(2);
 
@@ -197,7 +264,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($sorted, $this->dataset->column(2));
     }
 
-    public function test_head() : void
+    /**
+     * @test
+     */
+    public function head() : void
     {
         $subset = $this->dataset->head(3);
 
@@ -205,7 +275,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_tail() : void
+    /**
+     * @test
+     */
+    public function tail() : void
     {
         $subset = $this->dataset->tail(3);
 
@@ -213,7 +286,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_take() : void
+    /**
+     * @test
+     */
+    public function take() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -224,7 +300,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $this->dataset);
     }
 
-    public function test_leave() : void
+    /**
+     * @test
+     */
+    public function leave() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -235,7 +314,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(1, $this->dataset);
     }
 
-    public function test_slice_dataset() : void
+    /**
+     * @test
+     */
+    public function slice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -246,7 +328,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(6, $this->dataset);
     }
 
-    public function test_splice_dataset() : void
+    /**
+     * @test
+     */
+    public function splice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -257,7 +342,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(4, $this->dataset);
     }
 
-    public function test_split_dataset() : void
+    /**
+     * @test
+     */
+    public function split() : void
     {
         [$left, $right] = $this->dataset->split(0.5);
 
@@ -265,7 +353,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $right);
     }
 
-    public function test_fold_dataset() : void
+    /**
+     * @test
+     */
+    public function fold() : void
     {
         $folds = $this->dataset->fold(2);
 
@@ -274,7 +365,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
-    public function test_batch_dataset() : void
+    /**
+     * @test
+     */
+    public function batch() : void
     {
         $batches = $this->dataset->batch(2);
 
@@ -284,7 +378,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
-    public function test_partition() : void
+    /**
+     * @test
+     */
+    public function partition() : void
     {
         [$left, $right] = $this->dataset->partition(2, 'loner');
 
@@ -295,9 +392,12 @@ class UnlabeledTest extends TestCase
         $this->assertCount(4, $right);
     }
 
-    public function test_spatial_partition() : void
+    /**
+     * @test
+     */
+    public function spatialPartition() : void
     {
-        $kernel = new Gower(9.);
+        $kernel = new Gower(9.0);
 
         [$left, $right] = $this->dataset->spatialPartition($this->dataset->sample(0), $this->dataset->sample(3), $kernel);
 
@@ -308,14 +408,20 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $right);
     }
 
-    public function test_random_subset() : void
+    /**
+     * @test
+     */
+    public function randomSubset() : void
     {
         $subset = $this->dataset->randomSubset(3);
 
         $this->assertCount(3, array_unique($subset->samples(), SORT_REGULAR));
     }
 
-    public function test_random_subset_with_replacement() : void
+    /**
+     * @test
+     */
+    public function randomSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);
 
@@ -323,7 +429,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_random_weighted_subset_with_replacement() : void
+    /**
+     * @test
+     */
+    public function randomWeightedSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, self::WEIGHTS);
 
@@ -331,7 +440,10 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_prepend_dataset() : void
+    /**
+     * @test
+     */
+    public function prepend() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
@@ -344,7 +456,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(0));
     }
 
-    public function test_append_dataset() : void
+    /**
+     * @test
+     */
+    public function append() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
@@ -357,7 +472,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
     }
 
-    public function test_drop_sample() : void
+    /**
+     * @test
+     */
+    public function dropRow() : void
     {
         $dataset = $this->dataset->dropRow(1);
 
@@ -373,7 +491,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($samples, $dataset->samples());
     }
 
-    public function test_drop_rows() : void
+    /**
+     * @test
+     */
+    public function dropRows() : void
     {
         $dataset = $this->dataset->dropRows([1, 5]);
 
@@ -388,7 +509,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($samples, $dataset->samples());
     }
 
-    public function test_drop_column() : void
+    /**
+     * @test
+     */
+    public function dropColumn() : void
     {
         $dataset = $this->dataset->dropColumn(2);
 
@@ -405,7 +529,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($samples, $dataset->samples());
     }
 
-    public function test_drop_columns() : void
+    /**
+     * @test
+     */
+    public function dropColumns() : void
     {
         $dataset = $this->dataset->dropColumns([0, 2]);
 
@@ -422,7 +549,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($samples, $dataset->samples());
     }
 
-    public function test_describe_dataset() : void
+    /**
+     * @test
+     */
+    public function describe() : void
     {
         $stats = $this->dataset->describe();
 
@@ -469,7 +599,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $stats);
     }
 
-    public function test_transform_column() : void
+    /**
+     * @test
+     */
+    public function transformColumn() : void
     {
         $dataset = $this->dataset->transformColumn(3, 'abs');
 
@@ -478,14 +611,20 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $dataset->column(3));
     }
 
-    public function test_deduplicate() : void
+    /**
+     * @test
+     */
+    public function deduplicate() : void
     {
         $dataset = $this->dataset->deduplicate();
 
         $this->assertCount(6, $dataset);
     }
 
-    public function test_to_array() : void
+    /**
+     * @test
+     */
+    public function toArray() : void
     {
         $expected = [
             ['nice', 'furry', 'friendly', 4.0],
@@ -499,14 +638,20 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toArray());
     }
 
-    public function test_to_json() : void
+    /**
+     * @test
+     */
+    public function toJson() : void
     {
         $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
             
         $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
-    public function test_to_ndjson() : void
+    /**
+     * @test
+     */
+    public function toNdjson() : void
     {
         $expected = '["nice","furry","friendly",4]' . PHP_EOL
         . '["mean","furry","loner",-1.5]' . PHP_EOL
@@ -518,7 +663,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
-    public function test_to_csv() : void
+    /**
+     * @test
+     */
+    public function toCsv() : void
     {
         $expected = 'nice,furry,friendly,4' . PHP_EOL
             . 'mean,furry,loner,-1.5' . PHP_EOL
@@ -530,7 +678,10 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
-    public function test_to_string() : void
+    /**
+     * @test
+     */
+    public function testToString() : void
     {
         $expected = PHP_EOL
             . '| Column 0    | Column 1    | Column 2    | Column 3    |' . PHP_EOL
@@ -551,20 +702,29 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, (string) $this->dataset);
     }
 
-    public function test_count() : void
+    /**
+     * @test
+     */
+    public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());
         $this->assertCount(6, $this->dataset);
     }
 
-    public function test_array_access() : void
+    /**
+     * @test
+     */
+    public function arrayAccess() : void
     {
         $expected = ['mean', 'furry', 'loner', -1.5];
 
         $this->assertEquals($expected, $this->dataset[1]);
     }
 
-    public function test_iterate() : void
+    /**
+     * @test
+     */
+    public function iterate() : void
     {
         $expected = [
             ['nice', 'furry', 'friendly', 4.0],

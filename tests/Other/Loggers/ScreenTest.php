@@ -8,6 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @group Loggers
+ * @covers \Rubix\ML\Other\Loggers\Screen
+ */
 class ScreenTest extends TestCase
 {
     /**
@@ -15,19 +19,25 @@ class ScreenTest extends TestCase
      */
     protected $logger;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $this->logger = new Screen('default', Screen::DEFAULT_TIMESTAMP_FORMAT);
     }
-
-    public function test_build_logger() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Screen::class, $this->logger);
         $this->assertInstanceOf(Logger::class, $this->logger);
         $this->assertInstanceOf(LoggerInterface::class, $this->logger);
     }
-
-    public function test_log() : void
+    
+    /**
+     * @test
+     */
+    public function log() : void
     {
         $this->expectOutputRegex('/\b(default.INFO: test)\b/');
 

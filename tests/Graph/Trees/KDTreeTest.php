@@ -11,6 +11,10 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Trees
+ * @covers \Rubix\ML\Graph\Trees\KDTree
+ */
 class KDTreeTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -25,7 +29,10 @@ class KDTreeTest extends TestCase
      */
     protected $tree;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'east' => new Blob([5, -2, -2]),
@@ -37,17 +44,26 @@ class KDTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_tree() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertEquals(0, $this->tree->height());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(KDTree::class, $this->tree);
         $this->assertInstanceOf(Spatial::class, $this->tree);
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
-
-        $this->assertEquals(0, $this->tree->height());
     }
 
-    public function test_grow_neighbors() : void
+    /**
+     * @test
+     */
+    public function growNeighborsRange() : void
     {
         $this->tree->grow($this->generator->generate(50));
 

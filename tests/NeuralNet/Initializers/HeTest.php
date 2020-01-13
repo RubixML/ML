@@ -7,6 +7,10 @@ use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Initializers
+ * @covers \Rubix\ML\NeuralNet\Initializers\He
+ */
 class HeTest extends TestCase
 {
     /**
@@ -14,18 +18,27 @@ class HeTest extends TestCase
      */
     protected $initializer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->initializer = new He();
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(He::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-
-    public function test_initialize() : void
+    
+    /**
+     * @test
+     */
+    public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);
 

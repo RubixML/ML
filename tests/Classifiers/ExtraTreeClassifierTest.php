@@ -18,6 +18,10 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\ExtraTreeClassifier
+ */
 class ExtraTreeClassifierTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
@@ -41,12 +45,15 @@ class ExtraTreeClassifierTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new ExtraTreeClassifier(10, 3, 3, 1e-7);
@@ -56,7 +63,15 @@ class ExtraTreeClassifierTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(ExtraTreeClassifier::class, $this->estimator);
         $this->assertInstanceOf(ExtraTree::class, $this->estimator);
@@ -65,18 +80,33 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
-
-        $this->assertEquals(0, $this->estimator->height());
     }
 
-    public function test_train_predict_feature_importances_rules() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -85,7 +115,6 @@ class ExtraTreeClassifierTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-
         $this->assertGreaterThan(0, $this->estimator->height());
 
         $predictions = $this->estimator->predict($testing);
@@ -104,14 +133,20 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertIsString($rules);
     }
 
-    public function test_train_with_unlabeled() : void
+    /**
+     * @test
+     */
+    public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

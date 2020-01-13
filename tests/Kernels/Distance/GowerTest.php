@@ -8,6 +8,10 @@ use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Distances
+ * @covers \Rubix\ML\Kernels\Distance\Gower
+ */
 class GowerTest extends TestCase
 {
     /**
@@ -15,12 +19,18 @@ class GowerTest extends TestCase
      */
     protected $kernel;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->kernel = new Gower(1.);
+        $this->kernel = new Gower(1.0);
     }
 
-    public function test_build_distance_kernel() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Gower::class, $this->kernel);
         $this->assertInstanceOf(NaNSafe::class, $this->kernel);
@@ -28,13 +38,14 @@ class GowerTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param (string|int|float)[] $a
      * @param (string|int|float)[] $b
      * @param float $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(array $a, array $b, $expected) : void
+    public function compute(array $a, array $b, $expected) : void
     {
         $distance = $this->kernel->compute($a, $b);
 
@@ -45,7 +56,7 @@ class GowerTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [['toast', 1., 0.5, NAN], ['pretzels', 1., 0.2, 0.1], 0.43333333333333335];
 

@@ -7,6 +7,10 @@ use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Distances
+ * @covers \Rubix\ML\Kernels\Distance\Hamming
+ */
 class HammingTest extends TestCase
 {
     /**
@@ -14,25 +18,32 @@ class HammingTest extends TestCase
      */
     protected $kernel;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->kernel = new Hamming();
     }
 
-    public function test_build_distance_kernel() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Hamming::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param string[] $a
      * @param string[] $b
      * @param float $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(array $a, array $b, $expected) : void
+    public function compute(array $a, array $b, $expected) : void
     {
         $distance = $this->kernel->compute($a, $b);
 
@@ -43,7 +54,7 @@ class HammingTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [['soup', 'turkey', 'broccoli', 'cake'], ['salad', 'turkey', 'broccoli', 'pie'], 2.0];
 

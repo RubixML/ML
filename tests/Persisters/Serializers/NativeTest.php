@@ -8,6 +8,10 @@ use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Serializers
+ * @covers \Rubix\ML\Persisters\Serializers\Native
+ */
 class NativeTest extends TestCase
 {
     /**
@@ -19,21 +23,30 @@ class NativeTest extends TestCase
      * @var \Rubix\ML\Persisters\Serializers\Native
      */
     protected $serializer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->serializer = new Native();
 
         $this->persistable = new DummyClassifier();
     }
-
-    public function test_build_serialzer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Native::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
-
-    public function test_serialize_unserialize() : void
+    
+    /**
+     * @test
+     */
+    public function serializeUnserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
         

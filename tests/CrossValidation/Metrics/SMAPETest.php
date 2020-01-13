@@ -2,11 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Metrics
+ * @covers \Rubix\ML\CrossValidation\Metrics\SMAPE
+ */
 class SMAPETest extends TestCase
 {
     /**
@@ -14,28 +19,54 @@ class SMAPETest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->metric = new SMAPE();
     }
 
-    public function test_build_metric() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(SMAPE::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
-
-        $this->assertNotEmpty(array_filter($this->metric->range(), 'is_numeric'));
-        $this->assertNotEmpty(array_filter($this->metric->compatibility(), 'is_int'));
     }
 
     /**
+     * @test
+     */
+    public function range() : void
+    {
+        $expected = [-100.0, 0.0];
+
+        $this->assertEquals($expected, $this->metric->range());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            Estimator::REGRESSOR,
+        ];
+
+        $this->assertEquals($expected, $this->metric->compatibility());
+    }
+
+    /**
+     * @test
+     * @dataProvider scoreProvider
+     *
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
      * @param float $expected
-     *
-     * @dataProvider score_provider
      */
-    public function test_score(array $predictions, array $labels, float $expected) : void
+    public function score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
@@ -55,7 +86,7 @@ class SMAPETest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function score_provider() : Generator
+    public function scoreProvider() : Generator
     {
         yield [
             [7, 9.5, -20, -500, .079],

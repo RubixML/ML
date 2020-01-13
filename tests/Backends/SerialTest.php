@@ -7,6 +7,10 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Backends
+ * @covers \Rubix\ML\Backends\Serial
+ */
 class SerialTest extends TestCase
 {
     /**
@@ -14,18 +18,27 @@ class SerialTest extends TestCase
      */
     protected $backend;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->backend = new Serial();
     }
 
-    public function test_build_backend() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Serial::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    public function test_enqueue_process() : void
+    /**
+     * @test
+     */
+    public function enqueueProcess() : void
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);
 

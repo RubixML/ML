@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Multiclass
+ */
 class MulticlassTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -45,8 +49,11 @@ class MulticlassTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Multiclass
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class MulticlassTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Multiclass::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-
-        $this->layer->initialize($this->fanIn);
-
-        $this->assertEquals(3, $this->layer->width());
     }
-
-    public function test_forward_back_infer() : void
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
+
+        $this->assertEquals($this->fanIn, $this->layer->width());
         
         $forward = $this->layer->forward($this->input);
 

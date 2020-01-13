@@ -11,6 +11,10 @@ use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\AlphaDropout
+ */
 class AlphaDropoutTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -40,7 +44,10 @@ class AlphaDropoutTest extends TestCase
      */
     protected $layer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class AlphaDropoutTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(AlphaDropout::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-
+    }
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
+    {
         $this->layer->initialize($this->fanIn);
 
         $this->assertEquals($this->fanIn, $this->layer->width());
-    }
-
-    public function test_forward_back_infer() : void
-    {
-        $this->layer->initialize($this->fanIn);
 
         $expected = [
             [1.0832554862072818, 2.465182260431849, 0.06984251844259906],
@@ -104,9 +115,9 @@ class AlphaDropoutTest extends TestCase
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ];
 
         $infer = $this->layer->infer($this->input);

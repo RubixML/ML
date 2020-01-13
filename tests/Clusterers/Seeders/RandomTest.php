@@ -8,6 +8,10 @@ use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Seeders
+ * @covers \Rubix\ML\Clusterers\Seeders\Random
+ */
 class RandomTest extends TestCase
 {
     /**
@@ -20,24 +24,33 @@ class RandomTest extends TestCase
      */
     protected $seeder;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 0, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 0, 255], 20.0),
         ], [3, 3, 4]);
 
         $this->seeder = new Random();
     }
 
-    public function test_build_seeder() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Random::class, $this->seeder);
         $this->assertInstanceOf(Seeder::class, $this->seeder);
     }
 
-    public function test_seed() : void
+    /**
+     * @test
+     */
+    public function seed() : void
     {
         $dataset = $this->generator->generate(100);
 

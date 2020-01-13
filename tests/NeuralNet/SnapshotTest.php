@@ -13,6 +13,10 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group NeuralNet
+ * @covers \Rubix\ML\NeuralNet\Snapshot
+ */
 class SnapshotTest extends TestCase
 {
     /**
@@ -24,8 +28,11 @@ class SnapshotTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->network = new FeedForward(new Placeholder1D(1), [
             new Dense(10),
@@ -34,8 +41,11 @@ class SnapshotTest extends TestCase
 
         $this->snapshot = new Snapshot($this->network);
     }
-
-    public function test_build_snapshot() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Snapshot::class, $this->snapshot);
         $this->assertCount(2, iterator_to_array($this->snapshot));

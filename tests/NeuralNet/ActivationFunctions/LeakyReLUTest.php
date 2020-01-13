@@ -8,6 +8,10 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU
+ */
 class LeakyReLUTest extends TestCase
 {
     /**
@@ -15,24 +19,31 @@ class LeakyReLUTest extends TestCase
      */
     protected $activationFn;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->activationFn = new LeakyReLU(0.01);
     }
 
-    public function test_build_activation_function() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(LeakyReLU::class, $this->activationFn);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param \Tensor\Matrix $input
      * @param array[] $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(Matrix $input, array $expected) : void
+    public function compute(Matrix $input, array $expected) : void
     {
         $activations = $this->activationFn->compute($input)->asArray();
 
@@ -42,7 +53,7 @@ class LeakyReLUTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -68,13 +79,14 @@ class LeakyReLUTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider differentiateProvider
+     *
      * @param \Tensor\Matrix $input
      * @param \Tensor\Matrix $activations
      * @param array[] $expected
-     *
-     * @dataProvider differentiate_provider
      */
-    public function test_differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
     {
         $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
@@ -84,7 +96,7 @@ class LeakyReLUTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function differentiate_provider() : Generator
+    public function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([

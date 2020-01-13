@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\BatchNorm
+ */
 class BatchNormTest extends TestCase
 {
     /**
@@ -38,8 +42,11 @@ class BatchNormTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\BatchNorm
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -61,22 +68,26 @@ class BatchNormTest extends TestCase
 
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(BatchNorm::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-
-        $this->layer->initialize($this->fanIn);
-        
-        $this->assertEquals($this->fanIn, $this->layer->width());
     }
-
-    public function test_forward_back_infer() : void
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
+
+        $this->assertEquals($this->fanIn, $this->layer->width());
 
         $expected = [
             [-0.12512224941797084, 1.2825030565342015, -1.1573808071162308],

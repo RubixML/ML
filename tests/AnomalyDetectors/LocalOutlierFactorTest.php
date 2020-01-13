@@ -17,6 +17,10 @@ use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group AnomalyDetectors
+ * @covers \Rubix\ML\AnomalyDetectors\LocalOutlierFactor
+ */
 class LocalOutlierFactorTest extends TestCase
 {
     const TRAIN_SIZE = 350;
@@ -40,11 +44,14 @@ class LocalOutlierFactorTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0., 0.], 0.5),
-            '1' => new Circle(0., 0., 8., 0.1),
+            '0' => new Blob([0.0, 0.0], 0.5),
+            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new LocalOutlierFactor(20, 0.1, new KDTree());
@@ -54,25 +61,47 @@ class LocalOutlierFactorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_detector() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
-
-        $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -81,7 +110,6 @@ class LocalOutlierFactorTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertGreaterThan(0, $this->estimator->tree()->height());
-
         $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
@@ -91,7 +119,10 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

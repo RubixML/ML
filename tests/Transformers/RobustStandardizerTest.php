@@ -9,6 +9,10 @@ use Rubix\ML\Transformers\RobustStandardizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\RobustStandardizer
+ */
 class RobustStandardizerTest extends TestCase
 {
     /**
@@ -21,21 +25,30 @@ class RobustStandardizerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
 
         $this->transformer = new RobustStandardizer(true);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(RobustStandardizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_fit_update_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitUpdateTransform() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -51,8 +64,11 @@ class RobustStandardizerTest extends TestCase
         $this->assertEqualsWithDelta(0, $sample[1], 6);
         $this->assertEqualsWithDelta(0, $sample[2], 6);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

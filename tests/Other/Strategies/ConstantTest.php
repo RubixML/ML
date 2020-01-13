@@ -7,31 +7,44 @@ use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Strategies
+ * @covers \Rubix\ML\Other\Strategies\Constant
+ */
 class ConstantTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Other\Strategies\Constant
      */
     protected $strategy;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->strategy = new Constant(17.);
+        $this->strategy = new Constant(17.0);
     }
-
-    public function test_build_strategy() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Constant::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-
-    public function test_guess() : void
+    
+    /**
+     * @test
+     */
+    public function fitGuess() : void
     {
         $this->strategy->fit([]);
 
         $guess = $this->strategy->guess();
 
-        $this->assertEquals(17., $guess);
+        $this->assertEquals(17.0, $guess);
     }
 }

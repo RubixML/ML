@@ -5,91 +5,129 @@ namespace Rubix\ML\Tests\Other\Helpers;
 use Rubix\ML\Other\Helpers\Stats;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Helpers
+ * @covers \Rubix\ML\Other\Helpers\Stats
+ */
 class StatsTest extends TestCase
 {
+    protected const VALUES = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
+    
     /**
-     * @var (int|float)[]
+     * @test
      */
-    protected $values;
-
-    public function setUp() : void
+    public function mean() : void
     {
-        $this->values = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
+        $this->assertEquals(8.75, Stats::mean(self::VALUES));
     }
-
-    public function test_mean() : void
-    {
-        $this->assertEquals(8.75, Stats::mean($this->values));
-    }
-
-    public function test_weighted_mean() : void
+    
+    /**
+     * @test
+     */
+    public function weightedMean() : void
     {
         $weights = [3, 2, 5, 1, 2, 4, 4, 2, 3, 5];
 
-        $this->assertEquals(9.225806451612904, Stats::weightedMean($this->values, $weights));
+        $this->assertEquals(9.225806451612904, Stats::weightedMean(self::VALUES, $weights));
     }
-
-    public function test_variance() : void
+    
+    /**
+     * @test
+     */
+    public function variance() : void
     {
-        $this->assertEquals(21.1125, Stats::variance($this->values));
+        $this->assertEquals(21.1125, Stats::variance(self::VALUES));
     }
-
-    public function test_median() : void
+    
+    /**
+     * @test
+     */
+    public function median() : void
     {
-        $this->assertEquals(9.75, Stats::median($this->values));
+        $this->assertEquals(9.75, Stats::median(self::VALUES));
     }
-
-    public function test_range() : void
+    
+    /**
+     * @test
+     */
+    public function range() : void
     {
-        $this->assertEquals(13.5, Stats::range($this->values));
+        $this->assertEquals(13.5, Stats::range(self::VALUES));
     }
-
-    public function test_percentile() : void
+    
+    /**
+     * @test
+     */
+    public function percentile() : void
     {
-        $this->assertEquals(9.75, Stats::percentile($this->values, 50.));
+        $this->assertEquals(9.75, Stats::percentile(self::VALUES, 50.));
     }
-
-    public function test_mode() : void
+    
+    /**
+     * @test
+     */
+    public function mode() : void
     {
-        $this->assertEquals(13, Stats::mode($this->values));
+        $this->assertEquals(13, Stats::mode(self::VALUES));
     }
-
-    public function test_mad() : void
+    
+    /**
+     * @test
+     */
+    public function mad() : void
     {
-        $this->assertEquals(3.5, Stats::mad($this->values));
+        $this->assertEquals(3.5, Stats::mad(self::VALUES));
     }
-
-    public function test_iqr() : void
+    
+    /**
+     * @test
+     */
+    public function iqr() : void
     {
-        $this->assertEquals(8., Stats::iqr($this->values));
+        $this->assertEquals(8., Stats::iqr(self::VALUES));
     }
-
-    public function test_skewness() : void
+    
+    /**
+     * @test
+     */
+    public function skewness() : void
     {
-        $this->assertEquals(-0.31891556974589724, Stats::skewness($this->values));
+        $this->assertEquals(-0.31891556974589724, Stats::skewness(self::VALUES));
     }
-
-    public function test_central_moment() : void
+    
+    /**
+     * @test
+     */
+    public function centralMoment() : void
     {
-        $this->assertEquals(747.26015625, Stats::centralMoment($this->values, 4));
+        $this->assertEquals(747.26015625, Stats::centralMoment(self::VALUES, 4));
     }
-
-    public function test_kurtosis() : void
+    
+    /**
+     * @test
+     */
+    public function kurtosis() : void
     {
-        $this->assertEquals(-1.3235426808299866, Stats::kurtosis($this->values));
+        $this->assertEquals(-1.3235426808299866, Stats::kurtosis(self::VALUES));
     }
-
-    public function test_mean_var() : void
+    
+    /**
+     * @test
+     */
+    public function meanVar() : void
     {
-        [$mean, $variance] = Stats::meanVar($this->values);
+        [$mean, $variance] = Stats::meanVar(self::VALUES);
 
         $this->assertEquals(8.75, $mean);
         $this->assertEquals(21.1125, $variance);
     }
-
-    public function test_med_mad() : void
+    
+    /**
+     * @test
+     */
+    public function medMad() : void
     {
-        [$median, $mad] = Stats::medianMad($this->values);
+        [$median, $mad] = Stats::medianMad(self::VALUES);
 
         $this->assertEquals(9.75, $median);
         $this->assertEquals(3.5, $mad);

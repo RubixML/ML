@@ -9,6 +9,10 @@ use Rubix\ML\Transformers\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\OneHotEncoder
+ */
 class OneHotEncoderTest extends TestCase
 {
     /**
@@ -21,7 +25,10 @@ class OneHotEncoderTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled([
             ['nice', 'furry', 'friendly'],
@@ -32,15 +39,21 @@ class OneHotEncoderTest extends TestCase
 
         $this->transformer = new OneHotEncoder();
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(OneHotEncoder::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -55,8 +68,11 @@ class OneHotEncoderTest extends TestCase
             [0, 1, 0, 1, 1, 0],
         ], $this->dataset->samples());
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

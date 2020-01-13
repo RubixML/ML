@@ -6,9 +6,16 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Helpers
+ * @covers \Rubix\ML\Other\Helpers\Params
+ */
 class ParamsTest extends TestCase
 {
-    public function test_generate_ints() : void
+    /**
+     * @test
+     */
+    public function ints() : void
     {
         $values = Params::ints(0, 100, 5);
 
@@ -18,8 +25,11 @@ class ParamsTest extends TestCase
         $this->assertThat($values[3], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
         $this->assertThat($values[4], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
     }
-
-    public function test_generate_floats() : void
+    
+    /**
+     * @test
+     */
+    public function floats() : void
     {
         $values = Params::floats(0, 100, 5);
 
@@ -29,8 +39,11 @@ class ParamsTest extends TestCase
         $this->assertThat($values[3], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
         $this->assertThat($values[4], $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100)));
     }
-
-    public function test_generate_grid() : void
+    
+    /**
+     * @test
+     */
+    public function grid() : void
     {
         $values = Params::grid(0, 100, 5);
 
@@ -40,15 +53,21 @@ class ParamsTest extends TestCase
         $this->assertEquals(75, $values[3]);
         $this->assertEquals(100, $values[4]);
     }
-
-    public function test_extract_args() : void
+    
+    /**
+     * @test
+     */
+    public function args() : void
     {
         $expected = ['k', 'weighted', 'kernel'];
 
         $this->assertEquals($expected, Params::args(new KNearestNeighbors()));
     }
-
-    public function test_stringify() : void
+    
+    /**
+     * @test
+     */
+    public function stringify() : void
     {
         $expected = 'learning_rate=0.1 alpha=0.0001';
 
@@ -57,8 +76,11 @@ class ParamsTest extends TestCase
             'alpha' => 1e-4,
         ]));
     }
-
-    public function test_get_short_name() : void
+    
+    /**
+     * @test
+     */
+    public function shortName() : void
     {
         $this->assertEquals('KNearestNeighbors', Params::shortName(new KNearestNeighbors()));
         $this->assertEquals('KNearestNeighbors', Params::shortName(KNearestNeighbors::class));

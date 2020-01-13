@@ -8,9 +8,16 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer
+ */
 class SamplesAreCompatibleWithTransformerTest extends TestCase
 {
-    public function test_check() : void
+    /**
+     * @test
+     */
+    public function check() : void
     {
         $transformer = new L1Normalizer();
 

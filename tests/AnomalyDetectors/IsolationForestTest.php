@@ -16,6 +16,10 @@ use Rubix\ML\AnomalyDetectors\IsolationForest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group AnomalyDetectors
+ * @covers \Rubix\ML\AnomalyDetectors\IsolationForest
+ */
 class IsolationForestTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
@@ -39,11 +43,14 @@ class IsolationForestTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0., 0.], 0.5),
-            '1' => new Circle(0., 0., 8., 0.1),
+            '0' => new Blob([0.0, 0.0], 0.5),
+            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new IsolationForest(100, 0.2, 0.1);
@@ -53,23 +60,48 @@ class IsolationForestTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_detector() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(IsolationForest::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -86,7 +118,10 @@ class IsolationForestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

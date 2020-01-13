@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Activation
+ */
 class ActivationTest extends TestCase
 {
     /**
@@ -39,14 +43,17 @@ class ActivationTest extends TestCase
      */
     protected $layer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->prevGrad = new Deferred(function () {
@@ -61,27 +68,31 @@ class ActivationTest extends TestCase
 
         $this->layer = new Activation(new ReLU());
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Activation::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-
-        $this->layer->initialize($this->fanIn);
-
-        $this->assertEquals($this->fanIn, $this->layer->width());
     }
-
-    public function test_forward_back_infer() : void
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
 
+        $this->assertEquals($this->fanIn, $this->layer->width());
+
         $expected = [
-            [1., 2.5, 0.],
-            [0.1, 0., 3.],
-            [0.002, 0., 0.],
+            [1.0, 2.5, 0.0],
+            [0.1, 0.0, 3.0],
+            [0.002, 0.0, 0.0],
         ];
 
         $forward = $this->layer->forward($this->input);
@@ -92,18 +103,18 @@ class ActivationTest extends TestCase
         $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
-            [0.25, 0.7, 0.],
-            [0.5, 0., 0.01],
-            [0.25, 0, 0.],
+            [0.25, 0.7, 0.0],
+            [0.5, 0.0, 0.01],
+            [0.25, 0, 0.0],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [1., 2.5, 0.],
-            [0.1, 0., 3.],
-            [0.002, 0., 0.],
+            [1.0, 2.5, 0.0],
+            [0.1, 0.0, 3.0],
+            [0.002, 0.0, 0.0],
         ];
 
         $infer = $this->layer->infer($this->input);

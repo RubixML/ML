@@ -21,6 +21,10 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group Clusterers
+ * @covers \Rubix\ML\Clusterers\KMeans
+ */
 class KMeansTest extends TestCase
 {
     protected const TRAIN_SIZE = 450;
@@ -44,12 +48,15 @@ class KMeansTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new KMeans(3, 100, 300, 1e-4, 5, new Euclidean(), new PlusPlus());
@@ -61,7 +68,15 @@ class KMeansTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_clusterer() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(KMeans::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
@@ -70,16 +85,32 @@ class KMeansTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_partial_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -100,14 +131,20 @@ class KMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_incompatible() : void
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

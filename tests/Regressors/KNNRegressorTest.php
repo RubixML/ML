@@ -16,6 +16,10 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group Regressors
+ * @covers \Rubix\ML\Regressors\KNNRegressor
+ */
 class KNNRegressorTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
@@ -39,7 +43,10 @@ class KNNRegressorTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
@@ -49,8 +56,11 @@ class KNNRegressorTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_regressor() : void
+    
+    /**
+     * @test
+     */
+    public function build_regressor() : void
     {
         $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -65,8 +75,11 @@ class KNNRegressorTest extends TestCase
 
         $this->assertFalse($this->estimator->trained());
     }
-    
-    public function test_train_partial_predict_proba() : void
+        
+    /**
+     * @test
+     */
+    public function train_partial_predict_proba() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -86,22 +99,31 @@ class KNNRegressorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-
-    public function test_train_with_unlabeled() : void
+    
+    /**
+     * @test
+     */
+    public function train_with_unlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
-
-    public function test_train_incompatible() : void
+    
+    /**
+     * @test
+     */
+    public function train_incompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-
-    public function test_predict_untrained() : void
+    
+    /**
+     * @test
+     */
+    public function predict_untrained() : void
     {
         $this->expectException(RuntimeException::class);
 

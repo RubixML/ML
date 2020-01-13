@@ -8,6 +8,10 @@ use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\JSON
+ */
 class JSONTest extends TestCase
 {
     /**
@@ -15,12 +19,18 @@ class JSONTest extends TestCase
      */
     protected $extractor;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->extractor = new JSON('tests/test.json');
     }
 
-    public function test_build_factory() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(JSON::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
@@ -28,7 +38,10 @@ class JSONTest extends TestCase
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }
 
-    public function test_extract() : void
+    /**
+     * @test
+     */
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],

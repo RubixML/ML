@@ -7,26 +7,39 @@ use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Percentile;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Strategies
+ * @covers \Rubix\ML\Other\Strategies\Percentile
+ */
 class PercentileTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Other\Strategies\Percentile
      */
     protected $strategy;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->strategy = new Percentile(50.);
     }
-
-    public function test_build_strategy() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Percentile::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-
-    public function test_guess() : void
+    
+    /**
+     * @test
+     */
+    public function fitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 

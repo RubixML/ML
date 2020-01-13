@@ -2,11 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Metrics
+ * @covers \Rubix\ML\CrossValidation\Metrics\VMeasure
+ */
 class VMeasureTest extends TestCase
 {
     /**
@@ -14,28 +19,54 @@ class VMeasureTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->metric = new VMeasure();
     }
 
-    public function test_build_metric() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(VMeasure::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
-
-        $this->assertNotEmpty(array_filter($this->metric->range(), 'is_numeric'));
-        $this->assertNotEmpty(array_filter($this->metric->compatibility(), 'is_int'));
     }
 
     /**
+     * @test
+     */
+    public function range() : void
+    {
+        $expected = [0.0, 1.0];
+
+        $this->assertEquals($expected, $this->metric->range());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            Estimator::CLUSTERER,
+        ];
+
+        $this->assertEquals($expected, $this->metric->compatibility());
+    }
+
+    /**
+     * @test
+     * @dataProvider scoreProvider
+     *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @param float $expected
-     *
-     * @dataProvider score_provider
      */
-    public function test_score(array $predictions, array $labels, float $expected) : void
+    public function score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
@@ -55,7 +86,7 @@ class VMeasureTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function score_provider() : Generator
+    public function scoreProvider() : Generator
     {
         yield [
             [0, 1, 1, 0, 1],

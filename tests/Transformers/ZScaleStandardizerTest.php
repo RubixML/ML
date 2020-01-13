@@ -10,6 +10,10 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\ZScaleStandardizer
+ */
 class ZScaleStandardizerTest extends TestCase
 {
     /**
@@ -22,22 +26,31 @@ class ZScaleStandardizerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
+        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
 
         $this->transformer = new ZScaleStandardizer(true);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(ZScaleStandardizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-
-    public function test_fit_update_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitUpdateTransform() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -55,8 +68,11 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertEqualsWithDelta(0, $sample[1], 6);
         $this->assertEqualsWithDelta(0, $sample[2], 6);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

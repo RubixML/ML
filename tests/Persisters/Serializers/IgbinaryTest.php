@@ -8,6 +8,11 @@ use Rubix\ML\Persisters\Serializers\Igbinary;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Serializers
+ * @requires extension igbinary
+ * @covers \Rubix\ML\Persisters\Serializers\Igbinary
+ */
 class IgbinaryTest extends TestCase
 {
     /**
@@ -19,21 +24,30 @@ class IgbinaryTest extends TestCase
      * @var \Rubix\ML\Persisters\Serializers\Igbinary
      */
     protected $serializer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->persistable = new DummyClassifier();
 
         $this->serializer = new Igbinary();
     }
-
-    public function test_build_serialzer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Igbinary::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
-
-    public function test_serialize_unserialize() : void
+    
+    /**
+     * @test
+     */
+    public function serializeUnserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
         

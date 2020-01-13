@@ -11,32 +11,43 @@ use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Optimizers
+ * @covers \Rubix\ML\NeuralNet\Optimizers\Stochastic
+ */
 class StochasticTest extends TestCase
 {
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Stochastic
      */
     protected $optimizer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->optimizer = new Stochastic(0.001);
     }
-
-    public function test_build_optimizer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Stochastic::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
     /**
+     * @test
+     * @dataProvider stepProvider
+     *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param array[] $expected
-     *
-     * @dataProvider step_provider
      */
-    public function test_step(Parameter $param, Tensor $gradient, array $expected) : void
+    public function step(Parameter $param, Tensor $gradient, array $expected) : void
     {
         $step = $this->optimizer->step($param, $gradient);
 
@@ -46,7 +57,7 @@ class StochasticTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function step_provider() : Generator
+    public function stepProvider() : Generator
     {
         yield [
             new MatrixParam(Matrix::quick([

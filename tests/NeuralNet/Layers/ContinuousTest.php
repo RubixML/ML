@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Continuous
+ */
 class ContinuousTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -45,8 +49,11 @@ class ContinuousTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Continuous
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class ContinuousTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Continuous::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-
+    }
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
+    {
         $this->layer->initialize($this->fanIn);
 
         $this->assertEquals(1, $this->layer->width());
-    }
-
-    public function test_forward_back_infer() : void
-    {
-        $this->layer->initialize($this->fanIn);
 
         $expected = [
             [0.1295445178808929, -2.587649055132072, 0.36754636758929626],

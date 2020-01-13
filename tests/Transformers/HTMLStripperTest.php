@@ -7,6 +7,10 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\HTMLStripper;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\HTMLStripper
+ */
 class HTMLStripperTest extends TestCase
 {
     /**
@@ -19,7 +23,10 @@ class HTMLStripperTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             ['The quick brown fox <br />jumped over the <b>lazy</b> man sitting at a bus'
@@ -29,14 +36,20 @@ class HTMLStripperTest extends TestCase
 
         $this->transformer = new HTMLStripper();
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(HTMLStripper::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_transform() : void
+    
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $this->dataset->apply($this->transformer);
     

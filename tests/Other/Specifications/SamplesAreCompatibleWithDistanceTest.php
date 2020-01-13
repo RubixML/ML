@@ -8,9 +8,16 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance
+ */
 class SamplesAreCompatibleWithDistanceTest extends TestCase
 {
-    public function test_check() : void
+    /**
+     * @test
+     */
+    public function check() : void
     {
         $kernel = new Euclidean();
 

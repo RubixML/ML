@@ -2,11 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Reports\Report;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Reports
+ * @covers \Rubix\ML\CrossValidation\Reports\MulticlassBreakdown
+ */
 class MulticlassBreakdownTest extends TestCase
 {
     /**
@@ -14,25 +19,45 @@ class MulticlassBreakdownTest extends TestCase
      */
     protected $report;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->report = new MulticlassBreakdown();
     }
 
-    public function test_build_report() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(MulticlassBreakdown::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
     /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            Estimator::CLASSIFIER,
+            Estimator::ANOMALY_DETECTOR,
+        ];
+
+        $this->assertEquals($expected, $this->report->compatibility());
+    }
+
+    /**
+     * @test
+     * @dataProvider generateProvider
+     *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @param array[] $expected
-     *
-     * @dataProvider generate_report_provider
      */
-    public function test_generate_report(array $predictions, array $labels, array $expected) : void
+    public function generate(array $predictions, array $labels, array $expected) : void
     {
         $result = $this->report->generate($predictions, $labels);
         
@@ -42,7 +67,7 @@ class MulticlassBreakdownTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function generate_report_provider() : Generator
+    public function generateProvider() : Generator
     {
         yield [
             ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],

@@ -7,6 +7,10 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\StopWordFilter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\StopWordFilter
+ */
 class StopWordFilterTest extends TestCase
 {
     /**
@@ -19,7 +23,10 @@ class StopWordFilterTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             ['the quick brown fox jumped over the lazy man sitting at a bus'
@@ -29,14 +36,20 @@ class StopWordFilterTest extends TestCase
 
         $this->transformer = new StopWordFilter(['a', 'quick', 'pig']);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(StopWordFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_transform() : void
+    
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $this->dataset->apply($this->transformer);
     

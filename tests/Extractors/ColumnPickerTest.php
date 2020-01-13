@@ -9,6 +9,10 @@ use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\ColumnPicker
+ */
 class ColumnPickerTest extends TestCase
 {
     /**
@@ -16,14 +20,20 @@ class ColumnPickerTest extends TestCase
      */
     protected $extractor;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->extractor = new ColumnPicker(new CSV('tests/test.csv', true), [
             'attitude', 'texture', 'class', 'rating',
         ]);
     }
 
-    public function test_build_extractor() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(ColumnPicker::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
@@ -31,7 +41,10 @@ class ColumnPickerTest extends TestCase
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }
 
-    public function test_extract() : void
+    /**
+     * @test
+     */
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'class' => 'not monster', 'rating' => '4'],

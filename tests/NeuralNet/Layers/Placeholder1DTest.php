@@ -8,6 +8,10 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Placeholder1D
+ */
 class Placeholder1DTest extends TestCase
 {
     /**
@@ -19,33 +23,42 @@ class Placeholder1DTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Placeholder1D
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->input = Matrix::quick([
-            [1., 2.5,],
-            [0.1, 0.],
-            [0.002, -6.],
+            [1.0, 2.5,],
+            [0.1, 0.0],
+            [0.002, -6.0],
         ]);
 
         $this->layer = new Placeholder1D(3);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->layer);
         $this->assertInstanceOf(Input::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
-
-        $this->assertEquals(3, $this->layer->width());
     }
-
-    public function test_forward_infer() : void
+    
+    /**
+     * @test
+     */
+    public function forwardInfer() : void
     {
+        $this->assertEquals(3, $this->layer->width());
+
         $expected = [
-            [1., 2.5,],
-            [0.1, 0.],
-            [0.002, -6.],
+            [1.0, 2.5,],
+            [0.1, 0.0],
+            [0.002, -6.0],
         ];
 
         $forward = $this->layer->forward($this->input);

@@ -10,23 +10,35 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\array_transpose;
 
+/**
+ * @group Functions
+ */
 class FunctionsTest extends TestCase
 {
-    public function test_argmin() : void
+    /**
+     * @test
+     */
+    public function argmin() : void
     {
         $value = argmin(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
 
         $this->assertEquals('maybe', $value);
     }
-
-    public function test_argmax() : void
+    
+    /**
+     * @test
+     */
+    public function argmax() : void
     {
         $value = argmax(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
 
         $this->assertEquals('yes', $value);
     }
-
-    public function test_logsumexp() : void
+    
+    /**
+     * @test
+     */
+    public function logsumexp() : void
     {
         $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
 
@@ -34,12 +46,13 @@ class FunctionsTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider arrayTransposeProvider
+     *
      * @param array[] $table
      * @param array[] $expected
-     *
-     * @dataProvider transpose_provider
      */
-    public function test_transpose(array $table, array $expected) : void
+    public function arrayTranspose(array $table, array $expected) : void
     {
         $this->assertEquals($expected, array_transpose($table));
     }
@@ -47,7 +60,7 @@ class FunctionsTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function transpose_provider() : Generator
+    public function arrayTransposeProvider() : Generator
     {
         yield [
             [

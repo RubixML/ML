@@ -7,6 +7,10 @@ use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Distances
+ * @covers \Rubix\ML\Kernels\Distance\Canberra
+ */
 class CanberraTest extends TestCase
 {
     /**
@@ -14,36 +18,43 @@ class CanberraTest extends TestCase
      */
     protected $kernel;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->kernel = new Canberra();
     }
 
-    public function test_build_distance_kernel() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Canberra::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param (int|float)[] $a
      * @param (int|float)[] $b
      * @param float $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(array $a, array $b, float $expected) : void
+    public function compute(array $a, array $b, float $expected) : void
     {
         $distance = $this->kernel->compute($a, $b);
 
-        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertGreaterThanOrEqual(0.0, $distance);
         $this->assertEquals($expected, $distance);
     }
 
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [[2, 1, 4, 0], [-2, 1, 8, -2], 2.333333333333333];
 

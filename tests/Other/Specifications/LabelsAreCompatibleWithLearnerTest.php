@@ -8,9 +8,16 @@ use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner
+ */
 class LabelsAreCompatibleWithLearnerTest extends TestCase
 {
-    public function test_check() : void
+    /**
+     * @test
+     */
+    public function check() : void
     {
         $estimator = new NaiveBayes();
 

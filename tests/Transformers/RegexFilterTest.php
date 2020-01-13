@@ -7,6 +7,10 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\RegexFilter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\RegexFilter
+ */
 class RegexFilterTest extends TestCase
 {
     /**
@@ -19,7 +23,10 @@ class RegexFilterTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             ['I was not proud of what I had learned, but I never doubted that it was worth knowing'],
@@ -34,14 +41,20 @@ class RegexFilterTest extends TestCase
             RegexFilter::HASHTAG,
         ]);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(RegexFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_transform() : void
+    
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $this->dataset->apply($this->transformer);
     

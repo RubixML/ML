@@ -9,6 +9,10 @@ use Rubix\ML\Transformers\GaussianRandomProjector;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\GaussianRandomProjector
+ */
 class GaussianRandomProjectorTest extends TestCase
 {
     /**
@@ -21,26 +25,38 @@ class GaussianRandomProjectorTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->generator = new Blob(array_fill(0, 10, 0.), 3.);
+        $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
 
         $this->transformer = new GaussianRandomProjector(5);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(GaussianRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_estimate_min_dimensions() : void
+    
+    /**
+     * @test
+     */
+    public function minDimensions() : void
     {
         $this->assertEquals(663, GaussianRandomProjector::minDimensions(1000000, 0.5));
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
@@ -54,8 +70,11 @@ class GaussianRandomProjectorTest extends TestCase
 
         $this->assertCount(5, $sample);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

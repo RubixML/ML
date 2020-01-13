@@ -10,6 +10,10 @@ use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\LinearDiscriminantAnalysis
+ */
 class LinearDiscriminantAnalysisTest extends TestCase
 {
     /**
@@ -22,25 +26,34 @@ class LinearDiscriminantAnalysisTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 0, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 0, 255], 20.0),
         ], [3, 4, 3]);
 
         $this->transformer = new LinearDiscriminantAnalysis(1);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(LinearDiscriminantAnalysis::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
 
@@ -54,8 +67,11 @@ class LinearDiscriminantAnalysisTest extends TestCase
 
         $this->assertCount(1, $sample);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -12,6 +12,10 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\PReLU
+ */
 class PReLUTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -40,8 +44,11 @@ class PReLUTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\PReLU
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -65,28 +72,32 @@ class PReLUTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(PReLU::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-
-        $this->layer->initialize($this->fanIn);
-
-        $this->assertEquals(3, $this->layer->width());
     }
-
-    public function test_forward_back_infer() : void
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
+
+        $this->assertEquals($this->fanIn, $this->layer->width());
 
         $forward = $this->layer->forward($this->input);
 
         $expected = [
-            [1., 2.5, -0.025],
-            [0.1, 0., 3.],
+            [1.0, 2.5, -0.025],
+            [0.1, 0.0, 3.0],
             [0.002, -1.5, -0.125],
         ];
 
@@ -105,8 +116,8 @@ class PReLUTest extends TestCase
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [1., 2.5, -0.025001000000000002],
-            [0.1, 0., 3.],
+            [1.0, 2.5, -0.025001000000000002],
+            [0.1, 0.0, 3.0],
             [0.002, -1.5062700000000002, -0.1255225],
         ];
 

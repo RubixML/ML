@@ -14,6 +14,10 @@ use Countable;
 
 use function Rubix\ML\array_transpose;
 
+/**
+ * @group Datasets
+ * @covers \Rubix\ML\Datasets\Labeled
+ */
 class LabeledTest extends TestCase
 {
     protected const SAMPLES = [
@@ -48,14 +52,20 @@ class LabeledTest extends TestCase
      */
     protected $dataset;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Labeled(self::SAMPLES, self::LABELS, false);
 
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_dataset() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Labeled::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
@@ -64,7 +74,10 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
     }
 
-    public function test_from_iterator() : void
+    /**
+     * @test
+     */
+    public function fromIterator() : void
     {
         $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'));
 
@@ -73,7 +86,10 @@ class LabeledTest extends TestCase
         $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
-    public function test_stack_datasets() : void
+    /**
+     * @test
+     */
+    public function stack() : void
     {
         $dataset1 = new Labeled([['sample1']], ['label1']);
         $dataset2 = new Labeled([['sample2']], ['label2']);
@@ -87,74 +103,113 @@ class LabeledTest extends TestCase
         $this->assertEquals(1, $dataset->numColumns());
     }
 
-    public function test_get_samples() : void
+    /**
+     * @test
+     */
+    public function samples() : void
     {
         $this->assertEquals(self::SAMPLES, $this->dataset->samples());
     }
 
-    public function test_get_sample() : void
+    /**
+     * @test
+     */
+    public function sample() : void
     {
         $this->assertEquals(self::SAMPLES[2], $this->dataset->sample(2));
         $this->assertEquals(self::SAMPLES[5], $this->dataset->sample(5));
     }
 
-    public function test_num_rows() : void
+    /**
+     * @test
+     */
+    public function numRows() : void
     {
         $this->assertEquals(6, $this->dataset->numRows());
     }
 
-    public function test_get_column() : void
+    /**
+     * @test
+     */
+    public function column() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
         $this->assertEquals($expected, $this->dataset->column(2));
     }
 
-    public function test_get_num_columns() : void
+    /**
+     * @test
+     */
+    public function numColumns() : void
     {
         $this->assertEquals(4, $this->dataset->numColumns());
     }
 
-    public function test_column_types() : void
+    /**
+     * @test
+     */
+    public function columnTypes() : void
     {
         $this->assertEquals(self::TYPES, $this->dataset->types());
     }
 
-    public function test_unique_types() : void
+    /**
+     * @test
+     */
+    public function uniqueTypes() : void
     {
         $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
-    public function test_homogeneous() : void
+    /**
+     * @test
+     */
+    public function homogeneous() : void
     {
         $this->assertFalse($this->dataset->homogeneous());
     }
 
-    public function test_shape() : void
+    /**
+     * @test
+     */
+    public function shape() : void
     {
         $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
-    public function test_size() : void
+    /**
+     * @test
+     */
+    public function size() : void
     {
         $this->assertEquals(24, $this->dataset->size());
     }
 
-    public function test_column_type() : void
+    /**
+     * @test
+     */
+    public function columnType() : void
     {
         $this->assertEquals(self::TYPES[0], $this->dataset->columnType(0));
         $this->assertEquals(self::TYPES[1], $this->dataset->columnType(1));
         $this->assertEquals(self::TYPES[2], $this->dataset->columnType(2));
     }
 
-    public function test_columns() : void
+    /**
+     * @test
+     */
+    public function columns() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
         $this->assertEquals($expected, $this->dataset->columns());
     }
 
-    public function test_columns_by_type() : void
+    /**
+     * @test
+     */
+    public function columnsByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
@@ -163,17 +218,26 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $columns);
     }
 
-    public function test_empty() : void
+    /**
+     * @test
+     */
+    public function empty() : void
     {
         $this->assertFalse($this->dataset->empty());
     }
 
-    public function test_get_labels() : void
+    /**
+     * @test
+     */
+    public function labels() : void
     {
         $this->assertEquals(self::LABELS, $this->dataset->labels());
     }
 
-    public function test_transform_labels() : void
+    /**
+     * @test
+     */
+    public function transformLabels() : void
     {
         $transformer = function ($label) {
             return $label === 'not monster' ? 0 : 1;
@@ -188,18 +252,27 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->labels());
     }
 
-    public function test_get_label() : void
+    /**
+     * @test
+     */
+    public function label() : void
     {
         $this->assertEquals('not monster', $this->dataset->label(0));
         $this->assertEquals('monster', $this->dataset->label(1));
     }
 
-    public function test_label_type() : void
+    /**
+     * @test
+     */
+    public function labelType() : void
     {
         $this->assertEquals(DataType::CATEGORICAL, $this->dataset->labelType());
     }
 
-    public function test_possible_outcomes() : void
+    /**
+     * @test
+     */
+    public function possibleOutcomes() : void
     {
         $this->assertEquals(
             ['not monster', 'monster'],
@@ -207,7 +280,10 @@ class LabeledTest extends TestCase
         );
     }
 
-    public function test_randomize() : void
+    /**
+     * @test
+     */
+    public function randomize() : void
     {
         $samples = $this->dataset->samples();
         $labels = $this->dataset->labels();
@@ -218,7 +294,10 @@ class LabeledTest extends TestCase
         $this->assertNotEquals($labels, $this->dataset->labels());
     }
 
-    public function test_filter_by_column() : void
+    /**
+     * @test
+     */
+    public function filterByColumn() : void
     {
         $isFriendly = function ($value) {
             return $value === 'friendly';
@@ -239,7 +318,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $filtered->labels());
     }
 
-    public function test_filter_by_label() : void
+    /**
+     * @test
+     */
+    public function filterByLabel() : void
     {
         $notMonster = function ($label) {
             return $label === 'not monster';
@@ -260,7 +342,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $filtered->labels());
     }
 
-    public function test_sort_by_column() : void
+    /**
+     * @test
+     */
+    public function sortByColumn() : void
     {
         $this->dataset->sortByColumn(1);
 
@@ -274,7 +359,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $this->dataset->labels());
     }
 
-    public function test_sort_by_label() : void
+    /**
+     * @test
+     */
+    public function sortByLabel() : void
     {
         $this->dataset->sortByLabel();
 
@@ -287,7 +375,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $this->dataset->labels());
     }
 
-    public function test_head() : void
+    /**
+     * @test
+     */
+    public function head() : void
     {
         $subset = $this->dataset->head(3);
 
@@ -295,7 +386,10 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_tail() : void
+    /**
+     * @test
+     */
+    public function tail() : void
     {
         $subset = $this->dataset->tail(3);
 
@@ -303,7 +397,10 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_take() : void
+    /**
+     * @test
+     */
+    public function take() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -313,7 +410,10 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $this->dataset);
     }
 
-    public function test_leave() : void
+    /**
+     * @test
+     */
+    public function leave() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -323,7 +423,10 @@ class LabeledTest extends TestCase
         $this->assertCount(1, $this->dataset);
     }
 
-    public function test_slice_dataset() : void
+    /**
+     * @test
+     */
+    public function slice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -334,7 +437,10 @@ class LabeledTest extends TestCase
         $this->assertCount(6, $this->dataset);
     }
 
-    public function test_splice_dataset() : void
+    /**
+     * @test
+     */
+    public function splice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -345,7 +451,10 @@ class LabeledTest extends TestCase
         $this->assertCount(4, $this->dataset);
     }
 
-    public function test_split_dataset() : void
+    /**
+     * @test
+     */
+    public function split() : void
     {
         [$left, $right] = $this->dataset->split(0.5);
 
@@ -353,15 +462,21 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $right);
     }
 
-    public function test_stratified_split() : void
+    /**
+     * @test
+     */
+    public function stratifiedSplit() : void
     {
-        [$left, $right] = $this->dataset->split(0.5);
+        [$left, $right] = $this->dataset->stratifiedSplit(0.5);
 
         $this->assertCount(3, $left);
         $this->assertCount(3, $right);
     }
 
-    public function test_fold_dataset() : void
+    /**
+     * @test
+     */
+    public function fold() : void
     {
         $folds = $this->dataset->fold(2);
 
@@ -370,7 +485,10 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
-    public function test_stratified_fold() : void
+    /**
+     * @test
+     */
+    public function stratifiedFold() : void
     {
         $folds = $this->dataset->stratifiedFold(2);
 
@@ -379,7 +497,10 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
-    public function test_stratify() : void
+    /**
+     * @test
+     */
+    public function stratify() : void
     {
         $strata = $this->dataset->stratify();
 
@@ -387,7 +508,10 @@ class LabeledTest extends TestCase
         $this->assertCount(4, $strata['not monster']);
     }
 
-    public function test_batch_dataset() : void
+    /**
+     * @test
+     */
+    public function batch() : void
     {
         $batches = $this->dataset->batch(2);
 
@@ -397,7 +521,10 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
-    public function test_partition() : void
+    /**
+     * @test
+     */
+    public function partition() : void
     {
         [$left, $right] = $this->dataset->partition(1, 'rough');
 
@@ -408,9 +535,12 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $right);
     }
 
-    public function test_spatial_partition() : void
+    /**
+     * @test
+     */
+    public function spatialPartition() : void
     {
-        $kernel = new Gower(9.);
+        $kernel = new Gower(9.0);
 
         [$left, $right] = $this->dataset->spatialPartition($this->dataset->sample(0), $this->dataset->sample(3), $kernel);
 
@@ -421,28 +551,40 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $right);
     }
 
-    public function test_random_subset() : void
+    /**
+     * @test
+     */
+    public function randomSubset() : void
     {
         $subset = $this->dataset->randomSubset(3);
 
         $this->assertCount(3, array_unique($subset->samples(), SORT_REGULAR));
     }
 
-    public function test_random_subset_with_replacement() : void
+    /**
+     * @test
+     */
+    public function randomSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);
 
         $this->assertCount(3, $subset);
     }
 
-    public function test_random_weighted_subset_with_replacement() : void
+    /**
+     * @test
+     */
+    public function randomWeightedSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, self::WEIGHTS);
 
         $this->assertCount(3, $subset);
     }
 
-    public function test_prepend_dataset() : void
+    /**
+     * @test
+     */
+    public function prepend() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
@@ -456,7 +598,10 @@ class LabeledTest extends TestCase
         $this->assertEquals('not monster', $merged->label(6));
     }
 
-    public function test_append_dataset() : void
+    /**
+     * @test
+     */
+    public function append() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
@@ -470,7 +615,10 @@ class LabeledTest extends TestCase
         $this->assertEquals('not monster', $merged->label(6));
     }
 
-    public function test_drop_row() : void
+    /**
+     * @test
+     */
+    public function dropRow() : void
     {
         $dataset = $this->dataset->dropRow(1);
 
@@ -489,7 +637,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
-    public function test_drop_rows() : void
+    /**
+     * @test
+     */
+    public function dropRows() : void
     {
         $dataset = $this->dataset->dropRows([1, 5]);
 
@@ -507,7 +658,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
-    public function test_drop_column() : void
+    /**
+     * @test
+     */
+    public function dropColumn() : void
     {
         $dataset = $this->dataset->dropColumn(2);
 
@@ -530,7 +684,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
-    public function test_drop_columns() : void
+    /**
+     * @test
+     */
+    public function dropColumns() : void
     {
         $dataset = $this->dataset->dropColumns([0, 2]);
 
@@ -553,7 +710,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($labels, $dataset->labels());
     }
 
-    public function test_describe() : void
+    /**
+     * @test
+     */
+    public function describe() : void
     {
         $stats = $this->dataset->describe();
 
@@ -600,7 +760,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $stats);
     }
 
-    public function test_describe_by_label() : void
+    /**
+     * @test
+     */
+    public function describeByLabel() : void
     {
         $expected = [
             'not monster' => [
@@ -685,7 +848,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->describeByLabel());
     }
 
-    public function test_transform_column() : void
+    /**
+     * @test
+     */
+    public function transformColumn() : void
     {
         $dataset = $this->dataset->transformColumn(3, 'abs');
 
@@ -694,7 +860,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $dataset->column(3));
     }
 
-    public function test_describe_labels() : void
+    /**
+     * @test
+     */
+    public function describeLabels() : void
     {
         $desc = $this->dataset->describeLabels();
 
@@ -710,14 +879,20 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $desc);
     }
 
-    public function test_deduplicate() : void
+    /**
+     * @test
+     */
+    public function deduplicate() : void
     {
         $dataset = $this->dataset->deduplicate();
 
         $this->assertCount(6, $dataset);
     }
 
-    public function test_to_array() : void
+    /**
+     * @test
+     */
+    public function toArray() : void
     {
         $expected = [
             ['nice', 'furry', 'friendly', 4.0, 'not monster'],
@@ -731,14 +906,20 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toArray());
     }
 
-    public function test_to_json() : void
+    /**
+     * @test
+     */
+    public function toJson() : void
     {
         $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
             
         $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
-    public function test_to_ndjson() : void
+    /**
+     * @test
+     */
+    public function toNdjson() : void
     {
         $expected = '["nice","furry","friendly",4,"not monster"]' . PHP_EOL
         . '["mean","furry","loner",-1.5,"monster"]' . PHP_EOL
@@ -750,7 +931,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
-    public function test_to_csv() : void
+    /**
+     * @test
+     */
+    public function toCsv() : void
     {
         $expected = 'nice,furry,friendly,4,not monster' . PHP_EOL
             . 'mean,furry,loner,-1.5,monster' . PHP_EOL
@@ -762,7 +946,10 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
-    public function test_to_string() : void
+    /**
+     * @test
+     */
+    public function testToString() : void
     {
         $expected = PHP_EOL
             . '| Column 0    | Column 1    | Column 2    | Column 3    | Label       |' . PHP_EOL
@@ -783,20 +970,29 @@ class LabeledTest extends TestCase
         $this->assertEquals($expected, (string) $this->dataset);
     }
 
-    public function test_count() : void
+    /**
+     * @test
+     */
+    public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());
         $this->assertCount(6, $this->dataset);
     }
 
-    public function test_array_access() : void
+    /**
+     * @test
+     */
+    public function arrayAccess() : void
     {
         $expected = ['mean', 'furry', 'loner', -1.5, 'monster'];
 
         $this->assertEquals($expected, $this->dataset[1]);
     }
 
-    public function test_iterate() : void
+    /**
+     * @test
+     */
+    public function iterate() : void
     {
         $expected = [
             ['nice', 'furry', 'friendly', 4.0, 'not monster'],

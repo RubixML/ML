@@ -10,6 +10,10 @@ use Rubix\ML\Transformers\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\WordCountVectorizer
+ */
 class WordCountVectorizerTest extends TestCase
 {
     /**
@@ -22,7 +26,10 @@ class WordCountVectorizerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
@@ -31,15 +38,21 @@ class WordCountVectorizerTest extends TestCase
 
         $this->transformer = new WordCountVectorizer(50, 1, new Word());
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(WordCountVectorizer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -54,8 +67,11 @@ class WordCountVectorizerTest extends TestCase
     
         $this->assertEquals($outcome, $this->dataset->samples());
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

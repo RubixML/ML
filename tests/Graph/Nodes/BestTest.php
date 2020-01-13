@@ -10,6 +10,10 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Best
+ */
 class BestTest extends TestCase
 {
     protected const OUTCOME = 'cat';
@@ -28,12 +32,18 @@ class BestTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->node = new Best(self::OUTCOME, self::PROBABILITIES, self::IMPURITY, self::N);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Best::class, $this->node);
         $this->assertInstanceOf(Outcome::class, $this->node);
@@ -43,22 +53,34 @@ class BestTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_outcome() : void
+    /**
+     * @test
+     */
+    public function outcome() : void
     {
         $this->assertEquals(self::OUTCOME, $this->node->outcome());
     }
 
-    public function test_probabilities() : void
+    /**
+     * @test
+     */
+    public function probabilities() : void
     {
         $this->assertEquals(self::PROBABILITIES, $this->node->probabilities());
     }
 
-    public function test_impurity() : void
+    /**
+     * @test
+     */
+    public function impurity() : void
     {
         $this->assertEquals(self::IMPURITY, $this->node->impurity());
     }
 
-    public function test_n() : void
+    /**
+     * @test
+     */
+    public function n() : void
     {
         $this->assertEquals(self::N, $this->node->n());
     }

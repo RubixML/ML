@@ -2,11 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Metrics
+ * @covers \Rubix\ML\CrossValidation\Metrics\Informedness
+ */
 class InformednessTest extends TestCase
 {
     /**
@@ -14,28 +19,55 @@ class InformednessTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->metric = new Informedness();
     }
 
-    public function test_build_metric() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Informedness::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
-
-        $this->assertNotEmpty(array_filter($this->metric->range(), 'is_numeric'));
-        $this->assertNotEmpty(array_filter($this->metric->compatibility(), 'is_int'));
     }
 
     /**
+     * @test
+     */
+    public function range() : void
+    {
+        $expected = [-1.0, 1.0];
+
+        $this->assertEquals($expected, $this->metric->range());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            Estimator::CLASSIFIER,
+            Estimator::ANOMALY_DETECTOR,
+        ];
+
+        $this->assertEquals($expected, $this->metric->compatibility());
+    }
+
+    /**
+     * @test
+     * @dataProvider scoreProvider
+     *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @param float $expected
-     *
-     * @dataProvider score_class_provider
      */
-    public function test_score_class(array $predictions, array $labels, float $expected) : void
+    public function score_class(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range();
 
@@ -55,7 +87,7 @@ class InformednessTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function score_class_provider() : Generator
+    public function scoreProvider() : Generator
     {
         yield [
             ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
@@ -74,37 +106,7 @@ class InformednessTest extends TestCase
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
             1.0,
         ];
-    }
 
-    /**
-     * @param (string|int)[] $predictions
-     * @param (string|int)[] $labels
-     * @param float $expected
-     *
-     * @dataProvider score_anomaly_provider
-     */
-    public function test_score_anomaly(array $predictions, array $labels, float $expected) : void
-    {
-        [$min, $max] = $this->metric->range();
-
-        $score = $this->metric->score($predictions, $labels);
-
-        $this->assertThat(
-            $score,
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-            )
-        );
-
-        $this->assertEquals($expected, $score);
-    }
-
-    /**
-     * @return \Generator<array>
-     */
-    public function score_anomaly_provider() : Generator
-    {
         yield [
             [0, 1, 0, 1, 0],
             [0, 0, 0, 1, 0],

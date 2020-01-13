@@ -13,6 +13,10 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Clusterers
+ * @covers \Rubix\ML\Clusterers\DBSCAN
+ */
 class DBSCANTest extends TestCase
 {
     protected const TEST_SIZE = 300;
@@ -35,12 +39,15 @@ class DBSCANTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new DBSCAN(25.0, 50, new BallTree());
@@ -50,18 +57,39 @@ class DBSCANTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_clusterer() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-    public function test_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function predict() : void
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -72,7 +100,10 @@ class DBSCANTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_predict_incompatible() : void
+    /**
+     * @test
+     */
+    public function predictIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

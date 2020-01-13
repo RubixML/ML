@@ -11,6 +11,10 @@ use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\MissingDataImputer
+ */
 class MissingDataImputerTest extends TestCase
 {
     /**
@@ -23,7 +27,10 @@ class MissingDataImputerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [30, 'friendly'],
@@ -35,15 +42,21 @@ class MissingDataImputerTest extends TestCase
 
         $this->transformer = new MissingDataImputer(new Mean(), new KMostFrequent(), '?');
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -54,8 +67,11 @@ class MissingDataImputerTest extends TestCase
         $this->assertThat($this->dataset[1][0], $this->logicalAnd($this->greaterThan(20), $this->lessThan(55)));
         $this->assertContains($this->dataset[3][1], ['friendly', 'mean']);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

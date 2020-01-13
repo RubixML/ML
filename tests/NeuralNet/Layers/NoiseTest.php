@@ -11,6 +11,10 @@ use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Noise
+ */
 class NoiseTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -39,8 +43,11 @@ class NoiseTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Noise
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class NoiseTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Noise::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-
-        $this->layer->initialize($this->fanIn);
-
-        $this->assertEquals(3, $this->layer->width());
     }
-
-    public function test_forward_back_infer() : void
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
+
+        $this->assertEquals($this->fanIn, $this->layer->width());
 
         $expected = [
             [0.9396596259960941, 2.408572590287506, -0.16793207202614419],

@@ -9,6 +9,10 @@ use Rubix\ML\Transformers\PrincipalComponentAnalysis;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\PrincipalComponentAnalysis
+ */
 class PrincipalComponentAnalysisTest extends TestCase
 {
     /**
@@ -21,21 +25,30 @@ class PrincipalComponentAnalysisTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Blob([0., 3000., -6., 25], [1., 30., 0.001, 10.]);
 
         $this->transformer = new PrincipalComponentAnalysis(2);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(PrincipalComponentAnalysis::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-
-    public function test_fit_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitTransform() : void
     {
         $this->assertEquals(4, $this->generator->dimensions());
 
@@ -49,8 +62,11 @@ class PrincipalComponentAnalysisTest extends TestCase
 
         $this->assertCount(2, $sample);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

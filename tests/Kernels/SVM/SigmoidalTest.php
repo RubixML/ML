@@ -6,6 +6,11 @@ use Rubix\ML\Kernels\SVM\Sigmoidal;
 use Rubix\ML\Kernels\SVM\Kernel;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Kernels
+ * @requires extension svm
+ * @covers \Rubix\ML\Kernels\SVM\Sigmoidal
+ */
 class SigmoidalTest extends TestCase
 {
     /**
@@ -13,23 +18,32 @@ class SigmoidalTest extends TestCase
      */
     protected $kernel;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->kernel = new Sigmoidal(1e-3);
     }
 
-    public function test_build_svm_kernel() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Sigmoidal::class, $this->kernel);
         $this->assertInstanceOf(Kernel::class, $this->kernel);
     }
 
-    public function test_get_options() : void
+    /**
+     * @test
+     */
+    public function options() : void
     {
         $options = [
             102 => 3,
             201 => 1e-3,
-            205 => 0.,
+            205 => 0.0,
         ];
 
         $this->assertEquals($options, $this->kernel->options());

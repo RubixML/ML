@@ -7,6 +7,10 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\PolynomialExpander;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\PolynomialExpander
+ */
 class PolynomialExpanderTest extends TestCase
 {
     /**
@@ -19,7 +23,10 @@ class PolynomialExpanderTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [1, 2, 3, 4],
@@ -29,14 +36,20 @@ class PolynomialExpanderTest extends TestCase
 
         $this->transformer = new PolynomialExpander(2);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_transform() : void
+    
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $this->dataset->apply($this->transformer);
 

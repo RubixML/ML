@@ -12,6 +12,10 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\KNNImputer
+ */
 class KNNImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -31,7 +35,10 @@ class KNNImputerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [30, 0.001],
@@ -48,16 +55,22 @@ class KNNImputerTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(KNNImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-
-    public function test_fit_update_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitUpdateTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -70,8 +83,11 @@ class KNNImputerTest extends TestCase
         $this->assertEquals(29.80734050113017, $this->dataset[1][0]);
         $this->assertEquals(-1.1980046085939537, $this->dataset[3][1]);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

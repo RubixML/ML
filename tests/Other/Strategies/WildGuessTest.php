@@ -7,26 +7,39 @@ use Rubix\ML\Other\Strategies\WildGuess;
 use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Strategies
+ * @covers \Rubix\ML\Other\Strategies\WildGuess
+ */
 class WildGuessTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Other\Strategies\WildGuess
      */
     protected $strategy;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->strategy = new WildGuess();
     }
-
-    public function test_build_strategy() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(WildGuess::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-
-    public function test_guess() : void
+    
+    /**
+     * @test
+     */
+    public function fitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 

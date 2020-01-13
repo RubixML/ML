@@ -7,6 +7,11 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\ImageResizer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Transformers
+ * @requires extension gd
+ * @covers \Rubix\ML\Transformers\ImageResizer
+ */
 class ImageResizerTest extends TestCase
 {
     /**
@@ -19,7 +24,10 @@ class ImageResizerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
             [imagecreatefromjpeg('tests/space.jpg')],
@@ -27,14 +35,20 @@ class ImageResizerTest extends TestCase
 
         $this->transformer = new ImageResizer(32, 32, 'gd');
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(ImageResizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-
-    public function test_transform() : void
+    
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $this->dataset->apply($this->transformer);
 

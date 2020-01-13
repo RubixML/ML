@@ -22,6 +22,10 @@ use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group MetaEstimators
+ * @covers \Rubix\ML\Pipeline
+ */
 class PipelineTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
@@ -45,7 +49,10 @@ class PipelineTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 0, 128], 30.),
@@ -66,7 +73,15 @@ class PipelineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_meta_estimator() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
@@ -75,14 +90,32 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-    public function test_train_partial_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+    
+    /**
+     * @test
+     */
+    public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -102,8 +135,11 @@ class PipelineTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-
-    public function test_predict_untrained() : void
+    
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

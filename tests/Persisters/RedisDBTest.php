@@ -7,6 +7,11 @@ use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Classifiers\DummyClassifier;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Persisters
+ * @requires extension redis
+ * @covers \Rubix\ML\Persisters\RedisDB
+ */
 class RedisDBTest extends TestCase
 {
     /**
@@ -19,14 +24,20 @@ class RedisDBTest extends TestCase
      */
     protected $persister;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->persistable = new DummyClassifier();
 
         $this->persister = $this->createMock(RedisDB::class);
     }
-
-    public function test_build_persister() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(RedisDB::class, $this->persister);
         $this->assertInstanceOf(Persister::class, $this->persister);

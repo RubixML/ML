@@ -18,6 +18,10 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\RandomForest
+ */
 class RandomForestTest extends TestCase
 {
     protected const TRAIN_SIZE = 450;
@@ -41,7 +45,10 @@ class RandomForestTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -58,23 +65,48 @@ class RandomForestTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_classifier() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict_feature_importances() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -93,17 +125,23 @@ class RandomForestTest extends TestCase
         $importances = $this->estimator->featureImportances();
 
         $this->assertCount(3, $importances);
-        $this->assertEquals(1., array_sum($importances));
+        $this->assertEquals(1.0, array_sum($importances));
     }
 
-    public function test_train_with_unlabeled() : void
+    /**
+     * @test
+     */
+    public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

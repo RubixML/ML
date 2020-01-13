@@ -16,9 +16,14 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @group AnomalyDetectors
+ * @requires extension svm
+ * @covers \Rubix\ML\AnomalyDetectors\OneClassSVM
+ */
 class OneClassSVMTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 300;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.5;
 
@@ -39,11 +44,14 @@ class OneClassSVMTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0., 0.], 0.5),
-            '1' => new Circle(0., 0., 8., 0.1),
+            '0' => new Blob([0.0, 0.0], 0.5),
+            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new OneClassSVM(0.01, new Polynomial(4, 1e-3), true, 1e-4);
@@ -53,21 +61,45 @@ class OneClassSVMTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_detector() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(OneClassSVM::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -84,14 +116,20 @@ class OneClassSVMTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_incompatible() : void
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    public function test_predict_untrained() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

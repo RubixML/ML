@@ -13,9 +13,13 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Embedders
+ * @covers \Rubix\ML\Embedders\TSNE
+ */
 class TSNETest extends TestCase
 {
-    protected const TRAIN_SIZE = 30;
+    protected const DATASET_SIZE = 30;
 
     protected const RANDOM_SEED = 0;
 
@@ -25,11 +29,14 @@ class TSNETest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Embedders\TSNE;
+     * @var \Rubix\ML\Embedders\TSNE
      */
     protected $embedder;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'red' => new Blob([255, 32, 0], 30.),
@@ -44,26 +51,44 @@ class TSNETest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_embedder() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
         $this->assertInstanceOf(Verbose::class, $this->embedder);
-
-        $this->assertNotContains(DataType::CATEGORICAL, $this->embedder->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->embedder->compatibility());
     }
 
-    public function test_embed() : void
+    /**
+     * @test
+     */
+    public function compatibility() : void
     {
-        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+        $expected = [
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->embedder->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function embed() : void
+    {
+        $dataset = $this->generator->generate(self::DATASET_SIZE);
 
         $samples = $this->embedder->embed($dataset);
 
-        $this->assertCount(self::TRAIN_SIZE, $samples);
+        $this->assertCount(self::DATASET_SIZE, $samples);
         $this->assertCount(1, $samples[0]);
     }
 
-    public function test_embed_incompatible() : void
+    /**
+     * @test
+     */
+    public function embedIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

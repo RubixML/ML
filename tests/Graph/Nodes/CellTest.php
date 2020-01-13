@@ -9,11 +9,15 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Cell
+ */
 class CellTest extends TestCase
 {
     protected const SAMPLES = [
-        [5., 2., -3],
-        [6., 4., -5],
+        [5.0, 2.0, -3],
+        [6.0, 4.0, -5],
         [-0.01, 0.1, -7],
     ];
 
@@ -26,12 +30,18 @@ class CellTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->node = new Cell(self::C);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Cell::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
@@ -39,7 +49,10 @@ class CellTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_terminate() : void
+    /**
+     * @test
+     */
+    public function terminate() : void
     {
         $dataset = Unlabeled::quick(self::SAMPLES);
 
@@ -48,7 +61,10 @@ class CellTest extends TestCase
         $this->assertEquals(self::C, $node->depth());
     }
 
-    public function test_depth() : void
+    /**
+     * @test
+     */
+    public function depth() : void
     {
         $this->assertEquals(self::C, $this->node->depth());
     }

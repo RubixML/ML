@@ -8,33 +8,54 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Generators
+ * @covers \Rubix\ML\Datasets\Generators\Blob
+ */
 class BlobTest extends TestCase
 {
+    protected const DATASET_SIZE = 30;
+
     /**
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->generator = new Blob([0, 0], 1.0);
+        $this->generator = new Blob([0, 0, 0], 1.0);
     }
 
-    public function test_build_generator() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Blob::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
-
-        $this->assertEquals(2, $this->generator->dimensions());
     }
 
-    public function test_generate_dataset() : void
+    /**
+     * @test
+     */
+    public function dimensions() : void
     {
-        $dataset = $this->generator->generate(30);
+        $this->assertEquals(3, $this->generator->dimensions());
+    }
+
+    /**
+     * @test
+     */
+    public function generate_dataset() : void
+    {
+        $dataset = $this->generator->generate(self::DATASET_SIZE);
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);
 
-        $this->assertCount(30, $dataset);
+        $this->assertCount(self::DATASET_SIZE, $dataset);
     }
 }

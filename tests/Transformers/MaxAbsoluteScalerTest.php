@@ -10,6 +10,10 @@ use Rubix\ML\Transformers\MaxAbsoluteScaler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\MaxAbsoluteScaler
+ */
 class MaxAbsoluteScalerTest extends TestCase
 {
     /**
@@ -22,22 +26,31 @@ class MaxAbsoluteScalerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
 
         $this->transformer = new MaxAbsoluteScaler();
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(MaxAbsoluteScaler::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-
-    public function test_fit_update_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitUpdateTransform() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -55,8 +68,11 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->assertEqualsWithDelta(0, $sample[1], 1);
         $this->assertEqualsWithDelta(0, $sample[2], 1);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

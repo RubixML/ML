@@ -11,6 +11,10 @@ use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Dropout
+ */
 class DropoutTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -39,8 +43,11 @@ class DropoutTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Dropout
      */
     protected $layer;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->fanIn = 3;
 
@@ -64,22 +71,26 @@ class DropoutTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_layer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Dropout::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-
+    }
+    
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
+    {
         $this->layer->initialize($this->fanIn);
 
         $this->assertEquals($this->fanIn, $this->layer->width());
-    }
-
-    public function test_forward_back_infer() : void
-    {
-        $this->layer->initialize($this->fanIn);
 
         $expected = [
             [1.0, 2.5, -0.1],

@@ -15,6 +15,10 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group NeuralNet
+ * @covers \Rubix\ML\NeuralNet\FeedForward
+ */
 class FeedForwardTest extends TestCase
 {
     /**
@@ -41,14 +45,17 @@ class FeedForwardTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Output
      */
     protected $output;
-
-    public function setUp() : void
+    
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
-        $this->dataset = new Labeled([
+        $this->dataset = Labeled::quick([
             [1., 2.5,],
             [0.1, 0.],
             [0.002, -6.],
-        ], ['yes', 'no', 'maybe'], false);
+        ], ['yes', 'no', 'maybe']);
 
         $this->input = new Placeholder1D(2);
 
@@ -63,39 +70,60 @@ class FeedForwardTest extends TestCase
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
-
-    public function test_build_network() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(FeedForward::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
-
-    public function test_depth() : void
+    
+    /**
+     * @test
+     */
+    public function depth() : void
     {
         $this->assertEquals(6, $this->network->depth());
     }
-
-    public function test_get_input_layer() : void
+    
+    /**
+     * @test
+     */
+    public function input() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
-
-    public function test_get_hidden_layers() : void
+    
+    /**
+     * @test
+     */
+    public function hidden() : void
     {
         $this->assertCount(4, $this->network->hidden());
     }
-
-    public function test_get_output_layer() : void
+    
+    /**
+     * @test
+     */
+    public function output() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }
-
-    public function test_get_parametric_layers() : void
+    
+    /**
+     * @test
+     */
+    public function parametric() : void
     {
         $this->assertCount(3, $this->network->parametric());
     }
-
-    public function test_roundtrip() : void
+    
+    /**
+     * @test
+     */
+    public function roundtrip() : void
     {
         $loss = $this->network->roundtrip($this->dataset);
 

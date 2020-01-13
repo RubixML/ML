@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
@@ -19,6 +20,10 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group MetaEstimators
+ * @covers \Rubix\ML\GridSearch
+ */
 class GridSearchTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
@@ -42,7 +47,10 @@ class GridSearchTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Agglomerate([
             'inner' => new Circle(0., 0., 1., 0.01),
@@ -63,18 +71,43 @@ class GridSearchTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_meta_estimator() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
 
+    /**
+     * @test
+     */
+    public function type() : void
+    {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $this->assertEquals(DataType::ALL, $this->estimator->compatibility());
+    }
+    
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         

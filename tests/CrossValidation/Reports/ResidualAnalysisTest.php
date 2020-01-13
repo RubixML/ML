@@ -2,11 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Reports\Report;
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Reports
+ * @covers \Rubix\ML\CrossValidation\Reports\ResidualAnalysis
+ */
 class ResidualAnalysisTest extends TestCase
 {
     /**
@@ -14,25 +19,44 @@ class ResidualAnalysisTest extends TestCase
      */
     protected $report;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->report = new ResidualAnalysis();
     }
 
-    public function test_build_report() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
     /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            Estimator::REGRESSOR,
+        ];
+
+        $this->assertEquals($expected, $this->report->compatibility());
+    }
+
+    /**
+     * @test
+     * @dataProvider generateProvider
+     *
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
      * @param (int|float)[] $expected
-     *
-     * @dataProvider generate_report_provider
      */
-    public function test_generate_report(array $predictions, array $labels, array $expected) : void
+    public function generate(array $predictions, array $labels, array $expected) : void
     {
         $result = $this->report->generate($predictions, $labels);
 
@@ -42,7 +66,7 @@ class ResidualAnalysisTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function generate_report_provider() : Generator
+    public function generateProvider() : Generator
     {
         yield [
             [10, 12, 15, 42, 56, 12, 17, 9, 1, 7,],

@@ -15,6 +15,10 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group MetaEstimators
+ * @covers \Rubix\ML\BootstrapAggregator
+ */
 class BootstrapAggregatorTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
@@ -38,7 +42,10 @@ class BootstrapAggregatorTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
@@ -51,20 +58,47 @@ class BootstrapAggregatorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_meta_estimator() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+    
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -80,8 +114,11 @@ class BootstrapAggregatorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-
-    public function test_predict_untrained() : void
+    
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

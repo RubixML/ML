@@ -14,6 +14,10 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Regressors
+ * @covers \Rubix\ML\Regressors\DummyRegressor
+ */
 class DummyRegressorTest extends TestCase
 {
     protected const TRAIN_SIZE = 100;
@@ -37,7 +41,10 @@ class DummyRegressorTest extends TestCase
      */
     protected $metric;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
@@ -48,22 +55,42 @@ class DummyRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function test_build_regressor() : void
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(DummyRegressor::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
-
-        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
-
-        $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_train_predict() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $this->assertEquals(DataType::ALL, $this->estimator->compatibility());
+    }
+    
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -79,8 +106,11 @@ class DummyRegressorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-
-    public function test_train_with_unlabeled() : void
+    
+    /**
+     * @test
+     */
+    public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

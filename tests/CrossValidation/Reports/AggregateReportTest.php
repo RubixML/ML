@@ -9,6 +9,10 @@ use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Reports
+ * @covers \Rubix\ML\CrossValidation\Reports\AggregateReport
+ */
 class AggregateReportTest extends TestCase
 {
     /**
@@ -16,7 +20,10 @@ class AggregateReportTest extends TestCase
      */
     protected $report;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->report = new AggregateReport([
             new ConfusionMatrix(),
@@ -24,13 +31,19 @@ class AggregateReportTest extends TestCase
         ]);
     }
 
-    public function test_build_report() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(AggregateReport::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
-    public function test_compatibility() : void
+    /**
+     * @test
+     */
+    public function compatibility() : void
     {
         $expected = [
             Estimator::CLASSIFIER,
@@ -40,7 +53,10 @@ class AggregateReportTest extends TestCase
         $this->assertEquals($expected, $this->report->compatibility());
     }
 
-    public function test_generate_report() : void
+    /**
+     * @test
+     */
+    public function generate() : void
     {
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 

@@ -7,6 +7,10 @@ use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Initializers
+ * @covers \Rubix\ML\NeuralNet\Initializers\Constant
+ */
 class ConstantTest extends TestCase
 {
     /**
@@ -14,18 +18,27 @@ class ConstantTest extends TestCase
      */
     protected $initializer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->initializer = new Constant(4.8);
     }
 
-    public function test_build_layer() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Constant::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-
-    public function test_initialize() : void
+    
+    /**
+     * @test
+     */
+    public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);
 

@@ -7,6 +7,10 @@ use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Backends
+ * @covers \Rubix\ML\Backends\Amp
+ */
 class AmpTest extends TestCase
 {
     /**
@@ -14,23 +18,35 @@ class AmpTest extends TestCase
      */
     protected $backend;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->backend = new Amp(4);
     }
 
-    public function test_build_backend() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Amp::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    public function test_workers() : void
+    /**
+     * @test
+     */
+    public function workers() : void
     {
         $this->assertEquals(4, $this->backend->workers());
     }
 
-    public function test_enqueue_process() : void
+    /**
+     * @test
+     */
+    public function enqueueProcess() : void
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);
 

@@ -5,6 +5,10 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Backends
+ * @covers \Rubix\ML\Deferred
+ */
 class DeferredTest extends TestCase
 {
     /**
@@ -12,20 +16,29 @@ class DeferredTest extends TestCase
      */
     protected $deferred;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->deferred = new Deferred(function ($a, $b) {
             return $a + $b;
         }, [1, 2]);
     }
-
-    public function test_build_deferred() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Deferred::class, $this->deferred);
         $this->assertIsCallable($this->deferred);
     }
-
-    public function test_compute() : void
+    
+    /**
+     * @test
+     */
+    public function compute() : void
     {
         $this->assertEquals(3, $this->deferred->compute());
     }

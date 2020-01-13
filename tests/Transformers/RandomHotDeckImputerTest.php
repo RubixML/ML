@@ -12,6 +12,10 @@ use Rubix\ML\Transformers\RandomHotDeckImputer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\RandomHotDeckImputer
+ */
 class RandomHotDeckImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -31,7 +35,10 @@ class RandomHotDeckImputerTest extends TestCase
      */
     protected $transformer;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->dataset = new Unlabeled([
             [30, 0.001],
@@ -48,16 +55,22 @@ class RandomHotDeckImputerTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-
-    public function test_build_transformer() : void
+    
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(RandomHotDeckImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-
-    public function test_fit_update_transform() : void
+    
+    /**
+     * @test
+     */
+    public function fitUpdateTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
@@ -70,8 +83,11 @@ class RandomHotDeckImputerTest extends TestCase
         $this->assertEquals(29.66289097709727, $this->dataset[1][0]);
         $this->assertEquals(-2.0, $this->dataset[3][1]);
     }
-
-    public function test_transform_unfitted() : void
+    
+    /**
+     * @test
+     */
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

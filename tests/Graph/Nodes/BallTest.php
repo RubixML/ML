@@ -10,16 +10,20 @@ use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Ball
+ */
 class BallTest extends TestCase
 {
     protected const SAMPLES = [
-        [5., 2., -3],
-        [6., 4., -5],
+        [5.0, 2.0, -3],
+        [6.0, 4.0, -5],
     ];
 
     protected const LABELS = [22, 13];
 
-    protected const CENTER = [5.5, 3., -4];
+    protected const CENTER = [5.5, 3.0, -4];
 
     protected const RADIUS = 1.5;
 
@@ -28,7 +32,10 @@ class BallTest extends TestCase
      */
     protected $node;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $groups = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
@@ -38,7 +45,10 @@ class BallTest extends TestCase
         $this->node = new Ball(self::CENTER, self::RADIUS, $groups);
     }
 
-    public function test_build_node() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(Ball::class, $this->node);
         $this->assertInstanceOf(Hypersphere::class, $this->node);
@@ -46,7 +56,10 @@ class BallTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_split() : void
+    /**
+     * @test
+     */
+    public function split() : void
     {
         $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
@@ -56,17 +69,26 @@ class BallTest extends TestCase
         $this->assertEquals(self::RADIUS, $node->radius());
     }
 
-    public function test_center() : void
+    /**
+     * @test
+     */
+    public function center() : void
     {
         $this->assertSame(self::CENTER, $this->node->center());
     }
 
-    public function test_radius() : void
+    /**
+     * @test
+     */
+    public function radius() : void
     {
         $this->assertSame(self::RADIUS, $this->node->radius());
     }
 
-    public function test_groups() : void
+    /**
+     * @test
+     */
+    public function groups() : void
     {
         $expected = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),

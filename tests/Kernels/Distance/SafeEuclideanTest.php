@@ -8,6 +8,10 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
+/**
+ * @group Distances
+ * @covers \Rubix\ML\Kernels\Distance\SafeEuclidean
+ */
 class SafeEuclideanTest extends TestCase
 {
     /**
@@ -15,12 +19,18 @@ class SafeEuclideanTest extends TestCase
      */
     protected $kernel;
 
-    public function setUp() : void
+    /**
+     * @before
+     */
+    protected function setUp() : void
     {
         $this->kernel = new SafeEuclidean();
     }
 
-    public function test_build_distance_kernel() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
         $this->assertInstanceOf(SafeEuclidean::class, $this->kernel);
         $this->assertInstanceOf(NaNSafe::class, $this->kernel);
@@ -28,13 +38,14 @@ class SafeEuclideanTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider computeProvider
+     *
      * @param (int|float)[] $a
      * @param (int|float)[] $b
      * @param float $expected
-     *
-     * @dataProvider compute_provider
      */
-    public function test_compute(array $a, array $b, float $expected) : void
+    public function compute(array $a, array $b, float $expected) : void
     {
         $distance = $this->kernel->compute($a, $b);
 
@@ -45,7 +56,7 @@ class SafeEuclideanTest extends TestCase
     /**
      * @return \Generator<array>
      */
-    public function compute_provider() : Generator
+    public function computeProvider() : Generator
     {
         yield [[2, 1, 4, NAN], [-2, 1, 8, -2], 6.531972647421808];
 

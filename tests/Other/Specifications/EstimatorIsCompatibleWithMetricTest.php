@@ -8,9 +8,16 @@ use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric
+ */
 class EstimatorIsCompatibleWithMetricTest extends TestCase
 {
-    public function test_check() : void
+    /**
+     * @test
+     */
+    public function check() : void
     {
         $estimator = new NaiveBayes();
 
