@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
  * @Groups({"Clusterers"})
+ * @BeforeMethods({"setUp"})
  */
 class FuzzyCMeansBench
 {
@@ -48,10 +49,9 @@ class FuzzyCMeansBench
     /**
      * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function train_predict() : void
+    public function trainPredict() : void
     {
         $this->estimator->train($this->training);
 

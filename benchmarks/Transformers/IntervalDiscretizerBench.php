@@ -4,13 +4,13 @@ namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Transformers\VarianceThresholdFilter;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
  * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
-class VarianceThresholdFilterBench
+class IntervalDiscretizerBench
 {
     protected const DATASET_SIZE = 10000;
 
@@ -20,7 +20,7 @@ class VarianceThresholdFilterBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\VarianceThresholdFilter
+     * @var \Rubix\ML\Transformers\IntervalDiscretizer
      */
     protected $transformer;
 
@@ -34,7 +34,7 @@ class VarianceThresholdFilterBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->transformer = new VarianceThresholdFilter(0.0);
+        $this->transformer = new IntervalDiscretizer(5);
     }
 
     /**

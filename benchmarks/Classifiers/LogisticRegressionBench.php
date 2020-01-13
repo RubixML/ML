@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
  * @Groups({"Classifiers"})
+ * @BeforeMethods({"setUp"})
  */
 class LogisticRegressionBench
 {
@@ -47,10 +48,9 @@ class LogisticRegressionBench
     /**
      * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function train_predict() : void
+    public function trainPredict() : void
     {
         $this->estimator->train($this->training);
 

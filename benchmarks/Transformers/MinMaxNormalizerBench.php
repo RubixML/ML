@@ -3,14 +3,14 @@
 namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Transformers\MinMaxNormalizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Transformers\VarianceThresholdFilter;
 
 /**
  * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
-class VarianceThresholdFilterBench
+class MinMaxNormalizerBench
 {
     protected const DATASET_SIZE = 10000;
 
@@ -20,7 +20,7 @@ class VarianceThresholdFilterBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\VarianceThresholdFilter
+     * @var \Rubix\ML\Transformers\MinMaxNormalizer
      */
     protected $transformer;
 
@@ -34,7 +34,7 @@ class VarianceThresholdFilterBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->transformer = new VarianceThresholdFilter(0.0);
+        $this->transformer = new MinMaxNormalizer();
     }
 
     /**

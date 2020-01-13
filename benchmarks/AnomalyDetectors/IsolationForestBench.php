@@ -8,6 +8,7 @@ use Rubix\ML\AnomalyDetectors\IsolationForest;
 
 /**
  * @Groups({"AnomalyDetectors"})
+ * @BeforeMethods({"setUp"})
  */
 class IsolationForestBench
 {
@@ -47,10 +48,9 @@ class IsolationForestBench
     /**
      * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function train_predict() : void
+    public function trainPredict() : void
     {
         $this->estimator->train($this->training);
 

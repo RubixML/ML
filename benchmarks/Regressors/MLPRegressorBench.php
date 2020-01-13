@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
 /**
  * @Groups({"Regressors"})
+ * @BeforeMethods({"setUp"})
  */
 class MLPRegressorBench
 {
@@ -49,10 +50,9 @@ class MLPRegressorBench
     /**
      * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUp"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function train_predict() : void
+    public function trainPredict() : void
     {
         $this->estimator->train($this->training);
 
