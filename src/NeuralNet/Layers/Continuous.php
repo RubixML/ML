@@ -105,7 +105,7 @@ class Continuous implements Output
         $this->alpha = $alpha;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->weightInitializer = $weightInitializer ?? new Xavier2();
-        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
     }
 
     /**

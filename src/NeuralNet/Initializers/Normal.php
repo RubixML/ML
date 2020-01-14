@@ -30,7 +30,7 @@ class Normal implements Initializer
      */
     public function __construct(float $stddev = 0.05)
     {
-        if ($stddev <= 0.) {
+        if ($stddev <= 0.0) {
             throw new InvalidArgumentException('Standard deviation cannot be'
                 . " less than or equal to 0, $stddev given.");
         }

@@ -162,16 +162,17 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
                 ->add($sW);
         }
 
-        $sB = Matrix::quick($dataset->samples())
+        $eig = Matrix::quick($dataset->samples())
             ->transpose()
             ->covariance()
-            ->subtract($sW);
+            ->subtract($sW)
+            ->eig(true);
 
-        [$eigenvalues, $eigenvectors] = $sB->eig(true);
+        $eigenvalues = $eig->eigenvalues();
+
+        $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVar = array_sum($eigenvalues);
-
-        $eigenvectors = $eigenvectors->asArray();
         
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 

@@ -30,7 +30,7 @@ class Uniform implements Initializer
      */
     public function __construct(float $beta = 0.5)
     {
-        if ($beta <= 0.) {
+        if ($beta <= 0.0) {
             throw new InvalidArgumentException('Beta cannot be less than'
                 . " or equal to 0, $beta given.");
         }

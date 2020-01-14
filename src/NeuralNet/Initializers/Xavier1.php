@@ -32,6 +32,6 @@ class Xavier1 implements Initializer
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
         return Matrix::uniform($fanOut, $fanIn)
-            ->multiply(sqrt(6. / ($fanOut + $fanIn)));
+            ->multiply(sqrt(6.0 / ($fanOut + $fanIn)));
     }
 }

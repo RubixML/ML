@@ -153,11 +153,13 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
 
         $xT = Matrix::build($dataset->samples())->transpose();
 
-        [$eigenvalues, $eigenvectors] = $xT->covariance()->eig(true);
+        $eig = $xT->covariance()->eig(true);
+
+        $eigenvalues = $eig->eigenvalues();
+
+        $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVar = array_sum($eigenvalues);
-
-        $eigenvectors = $eigenvectors->asArray();
         
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 

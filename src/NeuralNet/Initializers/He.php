@@ -34,6 +34,6 @@ class He implements Initializer
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
         return Matrix::uniform($fanOut, $fanIn)
-            ->multiply((6. / ($fanOut + $fanIn)) ** self::ETA);
+            ->multiply((6.0 / ($fanOut + $fanIn)) ** self::ETA);
     }
 }

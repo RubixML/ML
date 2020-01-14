@@ -25,7 +25,7 @@ class Constant implements Initializer
     /**
      * @param float $value
      */
-    public function __construct(float $value = 0.)
+    public function __construct(float $value = 0.0)
     {
         $this->value = $value;
     }

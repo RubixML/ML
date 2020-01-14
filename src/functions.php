@@ -66,4 +66,16 @@ namespace Rubix\ML
                 return $table;
         }
     }
+
+    /**
+     * Compute n choose k.
+     *
+     * @param int $n
+     * @param int $k
+     * @return int
+     */
+    function comb(int $n, int $k = 2) : int
+    {
+        return $k === 0 ? 1 : (int) (($n * comb($n - 1, $k - 1)) / $k);
+    }
 }

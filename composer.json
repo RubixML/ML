@@ -31,7 +31,7 @@
         "amphp/parallel": "^1.2",
         "intervention/image": "^2.4",
         "psr/log": "^1.1",
-        "rubix/tensor": "^2.0.2"
+        "rubix/tensor": "^2.0.3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.16.*",

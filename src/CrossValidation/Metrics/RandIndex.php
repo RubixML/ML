@@ -9,6 +9,7 @@ use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
 use function count;
+use function Rubix\ML\comb;
 
 /**
  * Rand Index
@@ -27,25 +28,13 @@ use function count;
 class RandIndex implements Metric
 {
     /**
-     * Compute n choose k.
-     *
-     * @param int $n
-     * @param int $k
-     * @return int
-     */
-    public static function comb(int $n, int $k = 2) : int
-    {
-        return $k === 0 ? 1 : (int) (($n * self::comb($n - 1, $k - 1)) / $k);
-    }
-
-    /**
      * Return a tuple of the min and max output value for this metric.
      *
      * @return float[]
      */
     public function range() : array
     {
-        return [-1., 1.];
+        return [-1.0, 1.0];
     }
 
     /**
@@ -71,7 +60,7 @@ class RandIndex implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         $n = count($predictions);
@@ -81,15 +70,17 @@ class RandIndex implements Metric
                 . ' must equal the number of predictions.');
         }
 
-        $table = Matrix::build((new ContingencyTable())->generate($predictions, $labels));
+        $report = new ContingencyTable();
 
-        $sigma = $table->map([self::class, 'comb'])->sum()->sum();
+        $table = Matrix::build($report->generate($predictions, $labels));
 
-        $alpha = $table->sum()->map([self::class, 'comb'])->sum();
-        $beta = $table->transpose()->sum()->map([self::class, 'comb'])->sum();
+        $sigma = $table->map('\Rubix\ML\comb')->sum()->sum();
 
-        $pHat = ($alpha * $beta) / self::comb($n);
-        $mean = ($alpha + $beta) / 2.;
+        $alpha = $table->sum()->map('\Rubix\ML\comb')->sum();
+        $beta = $table->transpose()->sum()->map('\Rubix\ML\comb')->sum();
+
+        $pHat = ($alpha * $beta) / comb($n);
+        $mean = ($alpha + $beta) / 2.0;
 
         return ($sigma - $pHat) / ($mean - $pHat);
     }
