@@ -3,14 +3,18 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
+
+use function is_null;
 
 /**
  * Image Vectorizer
  *
- * Image Vectorizer takes images and converts them into a flat vector
- * of raw color channel data.
+ * Image Vectorizer takes images of the same size and converts them into flat feature vectors
+ * of raw color channel intensities. Intensities range from 0 to 255 and can either be read
+ * from 1 channel (grayscale) or 3 channels (RGB color) per pixel.
  *
  * > **Note**: The GD extension is required to use this transformer.
  *
@@ -18,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ImageVectorizer implements Transformer
+class ImageVectorizer implements Transformer, Stateful
 {
     /**
      * The number of color channels to encode.
@@ -35,21 +39,25 @@ class ImageVectorizer implements Transformer
     protected $mu;
 
     /**
-     * @param int $channels
+     * The fixed width and height of the images for each image feature column.
+     *
+     * @var array[]|null
+     */
+    protected $sizes;
+
+    /**
+     * @param bool $grayscale
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function __construct(int $channels = 3)
+    public function __construct(bool $grayscale = false)
     {
         if (!extension_loaded('gd')) {
             throw new RuntimeException('GD extension is not loaded, check'
                 . ' PHP configuration.');
         }
 
-        if ($channels < 1 or $channels > 4) {
-            throw new InvalidArgumentException('The number of channels must'
-                . " be between 1 and 4, $channels given.");
-        }
+        $channels = $grayscale ? 1 : 3;
 
         $this->channels = $channels;
         $this->mu = ($channels - 1) * 8;
@@ -66,40 +74,78 @@ class ImageVectorizer implements Transformer
     }
 
     /**
+     * Is the transformer fitted?
+     *
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->sizes);
+    }
+
+    /**
+     * Fit the transformer to the dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @throws \InvalidArgumentException
+     */
+    public function fit(Dataset $dataset) : void
+    {
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+
+        $sample = $dataset->sample(0);
+
+        $this->sizes = [];
+
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataType::IMAGE) {
+                $value = $sample[$column];
+
+                $this->sizes[$column] = [
+                    imagesx($value),
+                    imagesy($value),
+                ];
+            }
+        }
+    }
+
+    /**
      * Transform the dataset in place.
      *
      * @param array[] $samples
+     * @throws \RuntimeException
      */
     public function transform(array &$samples) : void
     {
+        if (is_null($this->sizes)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             $vectors = [];
 
-            foreach ($sample as $column => $value) {
-                if (DataType::isImage($value)) {
-                    $width = imagesx($value);
-                    $height = imagesy($value);
+            foreach ($this->sizes as $column => [$width, $height]) {
+                $value = $sample[$column];
 
-                    $vector = [];
+                $vector = [];
 
-                    for ($x = 0; $x < $width; ++$x) {
-                        for ($y = 0; $y < $height; ++$y) {
-                            $pixel = imagecolorat($value, $x, $y);
+                for ($x = 0; $x < $width; ++$x) {
+                    for ($y = 0; $y < $height; ++$y) {
+                        $pixel = imagecolorat($value, $x, $y);
 
-                            $vector[] = $pixel & 0xFF;
-            
-                            for ($i = 8; $i <= $this->mu; $i *= 2) {
-                                $vector[] = ($pixel >> $i) & 0xFF;
-                            }
+                        $vector[] = $pixel & 0xFF;
+        
+                        for ($i = 8; $i <= $this->mu; $i *= 2) {
+                            $vector[] = ($pixel >> $i) & 0xFF;
                         }
                     }
-
-                    unset($sample[$column]);
-
-                    imagedestroy($value);
-
-                    $vectors[] = $vector;
                 }
+
+                unset($sample[$column]);
+
+                imagedestroy($value);
+
+                $vectors[] = $vector;
             }
 
             $sample = array_merge($sample, ...$vectors);

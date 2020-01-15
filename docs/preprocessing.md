@@ -62,7 +62,7 @@ Higher-order data such as images and text blobs are actually composites of many 
 
 | Transformer | Source | Stateful | Elastic |
 |---|---|---|---|
-| [Image Vectorizer](transformers/image-vectorizer.md) | Images | | |
+| [Image Vectorizer](transformers/image-vectorizer.md) | Images | ● | |
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | Text Blobs | ● | |
 
 ## Dimensionality Reduction
