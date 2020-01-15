@@ -75,16 +75,16 @@ class ImageVectorizer implements Transformer
         foreach ($samples as &$sample) {
             $vectors = [];
 
-            foreach ($sample as $column => $image) {
-                if (is_resource($image) and get_resource_type($image) === 'gd') {
-                    $width = imagesx($image);
-                    $height = imagesy($image);
+            foreach ($sample as $column => $value) {
+                if (DataType::isImage($value)) {
+                    $width = imagesx($value);
+                    $height = imagesy($value);
 
                     $vector = [];
 
                     for ($x = 0; $x < $width; ++$x) {
                         for ($y = 0; $y < $height; ++$y) {
-                            $pixel = imagecolorat($image, $x, $y);
+                            $pixel = imagecolorat($value, $x, $y);
 
                             $vector[] = $pixel & 0xFF;
             
@@ -96,7 +96,7 @@ class ImageVectorizer implements Transformer
 
                     unset($sample[$column]);
 
-                    imagedestroy($image);
+                    imagedestroy($value);
 
                     $vectors[] = $vector;
                 }

@@ -30,7 +30,7 @@ use const Rubix\ML\LOG_EPSILON;
  * Probability-based classifier that uses Bayes' Theorem and the strong assumption that
  * all features are independent. In practice, the independence assumption tends to work
  * out despite most features being correlated in the real world. This particular
- * implementation is based on a multinomial (categorical) distribution of input features.
+ * implementation is based on a categorical distribution of input features.
  *
  * > **Note:** Each partial train has the overhead of recomputing the probability
  * mass function for each feature per class. As such, it is better to train with

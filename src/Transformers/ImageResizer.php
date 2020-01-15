@@ -3,13 +3,13 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Intervention\Image\ImageManager;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Image Resizer
  *
- * The Image Resizer scales and crops images to a user specified width and height.
+ * Image Resizer fits (scales and crops) images in a dataset to a user-specified width and height.
  *
  * > **Note**: The GD extension is required to use this transformer.
  *
@@ -34,20 +34,24 @@ class ImageResizer implements Transformer
     protected $height;
 
     /**
-     * The Intervention image manager instance.
+     * The ratio of width to height.
      *
-     * @var \Intervention\Image\ImageManager
+     * @var float
      */
-    protected $intervention;
+    protected $ratio;
 
     /**
      * @param int $width
      * @param int $height
-     * @param string $driver
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $width = 32, int $height = 32, string $driver = 'gd')
+    public function __construct(int $width = 32, int $height = 32)
     {
+        if (!extension_loaded('gd')) {
+            throw new RuntimeException('GD extension is not loaded, check'
+                . ' PHP configuration.');
+        }
+
         if ($width < 1 or $height < 1) {
             throw new InvalidArgumentException('Width and height must be'
                 . " greater than 1 pixel, $width and $height given.");
@@ -55,7 +59,7 @@ class ImageResizer implements Transformer
 
         $this->width = $width;
         $this->height = $height;
-        $this->intervention = new ImageManager(['driver' => $driver]);
+        $this->ratio = $width / $height;
     }
 
     /**
@@ -72,22 +76,52 @@ class ImageResizer implements Transformer
      * Transform the dataset in place.
      *
      * @param array[] $samples
+     * @throws \RuntimeException
      */
     public function transform(array &$samples) : void
     {
+        $resized = imagecreatetruecolor($this->width, $this->height);
+
+        if (!$resized) {
+            throw new RuntimeException('Could not create resized image.');
+        }
+
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
-                if (is_resource($value) ? get_resource_type($value) === 'gd' : false) {
-                    $image = $this->intervention->make($value);
+                if (DataType::isImage($value)) {
+                    $width = imagesx($value);
+                    $height = imagesy($value);
 
-                    $resize = $image->getWidth() !== $this->width
-                        and $image->getHeight() !== $this->height;
-
-                    if ($resize) {
-                        $image = $image->fit($this->width, $this->height);
+                    if ($width === $this->width and $height == $this->height) {
+                        continue 1;
                     }
 
-                    $value = $image->getCore();
+                    if ($width / $height < $this->ratio) {
+                        $srcW = $width;
+                        $srcH = (int) ceil(($srcW * $this->height) / $this->width);
+                        $srcY = (int) ceil(($height - $srcH) / 2);
+                        $srcX = 0;
+                    } else {
+                        $srcH = $height;
+                        $srcW = (int) ceil(($srcH * $this->width) / $this->height);
+                        $srcX = (int) ceil(($width - $srcW) / 2);
+                        $srcY = 0;
+                    }
+
+                    imagecopyresampled(
+                        $resized,
+                        $value,
+                        0,
+                        0,
+                        $srcX,
+                        $srcY,
+                        $this->width,
+                        $this->height,
+                        $srcW,
+                        $srcH
+                    );
+
+                    $value = $resized;
                 }
             }
         }

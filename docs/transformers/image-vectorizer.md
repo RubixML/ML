@@ -7,7 +7,7 @@ Image Vectorizer takes images and converts them into a flat vector of raw color 
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Resource (Images)
+**Data Type Compatibility:** Image
 
 ## Parameters
 | # | Param | Default | Type | Description |

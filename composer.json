@@ -29,7 +29,6 @@
     "require": {
         "php": ">=7.2",
         "amphp/parallel": "^1.2",
-        "intervention/image": "^2.4",
         "psr/log": "^1.1",
         "rubix/tensor": "^2.0.3"
     },
