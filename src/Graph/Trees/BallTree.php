@@ -69,7 +69,7 @@ class BallTree implements BST, Spatial
                 . " to form a leaf node, $maxLeafSize given.");
         }
 
-        if ($kernel and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+        if ($kernel and !in_array(DataType::continuous(), $kernel->compatibility())) {
             throw new InvalidArgumentException('Distance kernel must be'
                 . ' compatible with continuous features.');
         }
@@ -133,7 +133,7 @@ class BallTree implements BST, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
-        if ($dataset->columnType(0) !== DataType::CONTINUOUS or !$dataset->homogeneous()) {
+        if ($dataset->columnType(0) != DataType::continuous() or !$dataset->homogeneous()) {
             throw new InvalidArgumentException('This tree only works with'
                 . ' continuous features.');
         }

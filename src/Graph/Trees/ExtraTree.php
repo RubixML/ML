@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Comparison;
 
@@ -42,7 +41,7 @@ abstract class ExtraTree extends CART
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+            if ($dataset->columnType($column)->isContinuous()) {
                 $min = (int) floor(min($values) * PHI);
                 $max = (int) ceil(max($values) * PHI);
     

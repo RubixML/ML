@@ -89,8 +89,8 @@ class GradientBoostTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            DataType::CONTINUOUS,
-            DataType::CATEGORICAL,
+            DataType::categorical(),
+            DataType::continuous(),
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());

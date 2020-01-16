@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -37,7 +36,7 @@ class HoldOut implements Validator
      */
     public function __construct(float $ratio = 0.2)
     {
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
@@ -60,7 +59,7 @@ class HoldOut implements Validator
 
         $dataset->randomize();
 
-        [$testing, $training] = $dataset->labelType() === DataType::CATEGORICAL
+        [$testing, $training] = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedSplit($this->ratio)
             : $dataset->split($this->ratio);
 

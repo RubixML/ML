@@ -140,9 +140,27 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
+    public function columnType() : void
+    {
+        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(0));
+        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(1));
+        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(2));
+        $this->assertEquals(DataType::continuous(), $this->dataset->columnType(3));
+    }
+
+    /**
+     * @test
+     */
     public function columnTypes() : void
     {
-        $this->assertEquals(self::TYPES, $this->dataset->types());
+        $expected = [
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::continuous(),
+        ];
+
+        $this->assertEquals($expected, $this->dataset->types());
     }
 
     /**
@@ -180,16 +198,6 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function columnType() : void
-    {
-        $this->assertEquals(self::TYPES[0], $this->dataset->columnType(0));
-        $this->assertEquals(self::TYPES[1], $this->dataset->columnType(1));
-        $this->assertEquals(self::TYPES[2], $this->dataset->columnType(2));
-    }
-
-    /**
-     * @test
-     */
     public function columns() : void
     {
         $expected = array_transpose(self::SAMPLES);
@@ -204,7 +212,7 @@ class UnlabeledTest extends TestCase
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
-        $columns = $this->dataset->columnsByType(DataType::CATEGORICAL);
+        $columns = $this->dataset->columnsByType(DataType::categorical());
 
         $this->assertEquals($expected, $columns);
     }

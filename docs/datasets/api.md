@@ -65,6 +65,24 @@ Select the values of a feature column at a given offset (offsets begin at 0):
 public column(int $index) : array
 ```
 
+Return the columns of the sample matrix:
+```php
+public columns() : array
+```
+
+Return the columns of the sample matrix of a particular type:
+```php
+public columnsByType(DataType $type) : array
+```
+
+**Example**
+
+```php
+use Rubix\ML\DataType;
+
+$columns = $dataset->columnsByType(DataType::continuous());
+```
+
 ## Properties
 Return the number of rows in the dataset:
 ```php
@@ -76,14 +94,14 @@ Return the number of columns in the dataset:
 public numColumns() : int
 ```
 
-Return the integer encoded column types for each feature column:
+Return the data types for each feature column:
 ```php
 public types() : array
 ```
 
-Return the integer encoded column type given a column index:
+Return the data type for a given column index:
 ```php
-public columnType(int $index) : int
+public columnType(int $index) : DataType
 ```
 
 ## Applying Transformations
@@ -140,12 +158,10 @@ public static stack(array $datasets) : self
 ```php
 use Rubix\ML\Datasets\Labeled;
 
-// Import training datasets
-
 $dataset = Labeled::stack([
-    $training1,
-    $training2,
-    $training3,
+    $dataset1,
+    $dataset2,
+    $dataset3,
 ]);
 ```
 

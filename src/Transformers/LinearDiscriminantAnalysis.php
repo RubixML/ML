@@ -80,12 +80,12 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 
@@ -145,7 +145,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
 
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        if ($dataset->labelType() !== DataType::CATEGORICAL) {
+        if ($dataset->labelType() != DataType::categorical()) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with categorical labels.');
         }

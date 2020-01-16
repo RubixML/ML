@@ -91,7 +91,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         ?Spatial $tree = null,
         string $anomalyClass = '?'
     ) {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
@@ -115,12 +115,12 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

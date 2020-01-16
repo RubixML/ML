@@ -108,7 +108,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 . ' given.');
         }
 
-        if ($ratio <= 0. or $ratio > 1.5) {
+        if ($ratio <= 0.0 or $ratio > 1.5) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1.5, $ratio given.");
         }
@@ -132,7 +132,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {

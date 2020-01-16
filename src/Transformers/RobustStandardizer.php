@@ -59,11 +59,11 @@ class RobustStandardizer implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -108,7 +108,7 @@ class RobustStandardizer implements Transformer, Stateful
         $this->medians = $this->mads = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CONTINUOUS) {
+            if ($type->isContinuous()) {
                 $values = $dataset->column($column);
                 
                 [$median, $mad] = Stats::medianMad($values);

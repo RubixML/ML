@@ -67,7 +67,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      */
     public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
     {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
@@ -90,12 +90,12 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

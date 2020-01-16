@@ -249,13 +249,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         $compatibility = array_intersect(
+            $this->booster->compatibility(),
             $this->base->compatibility(),
-            $this->booster->compatibility()
         );
 
         return array_values($compatibility);

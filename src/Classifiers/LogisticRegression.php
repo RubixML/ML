@@ -145,7 +145,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
                 . " 1 sample, $batchSize given.");
         }
 
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha must be 0 or greater'
                 . ", $alpha given.");
         }
@@ -155,7 +155,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
                 . " least 1 epoch, $epochs given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
@@ -187,12 +187,12 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

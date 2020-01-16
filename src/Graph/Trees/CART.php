@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Outcome;
@@ -414,7 +413,7 @@ abstract class CART implements DecisionTree
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+            if ($dataset->columnType($column)->isContinuous()) {
                 $values = Stats::percentiles($values, $p);
             } else {
                 $values = array_unique($values);

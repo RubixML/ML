@@ -5,7 +5,6 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Deferred;
 use Rubix\ML\Parallel;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
@@ -69,7 +68,7 @@ class KFold implements Validator, Parallel
 
         $dataset->randomize();
 
-        $folds = $dataset->labelType() === DataType::CATEGORICAL
+        $folds = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedFold($this->k)
             : $dataset->fold($this->k);
 

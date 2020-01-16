@@ -56,12 +56,12 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 
@@ -108,7 +108,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
+        if (!$dataset->homogeneous() or $dataset->columnType(0) != DataType::continuous()) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }

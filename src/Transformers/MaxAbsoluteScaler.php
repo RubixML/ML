@@ -31,11 +31,11 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -70,7 +70,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
         $this->maxabs = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CONTINUOUS) {
+            if ($type->isContinuous()) {
                 $this->maxabs[$column] = -INF;
             }
         }

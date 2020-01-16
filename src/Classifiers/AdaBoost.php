@@ -147,12 +147,12 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . ' classifier, ' . self::TYPES[$base->type()] . ' given.');
         }
 
-        if ($rate < 0.) {
+        if ($rate < 0.0) {
             throw new InvalidArgumentException('Learning rate must be greater'
                 . " than 0, $rate given.");
         }
 
-        if ($ratio <= 0. or $ratio > 1.) {
+        if ($ratio <= 0.0 or $ratio > 1.0) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
@@ -162,7 +162,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " 1 estimator, $estimators given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
@@ -187,7 +187,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {

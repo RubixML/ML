@@ -193,12 +193,12 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         if (!$this->trained()) {
-            return DataType::ALL;
+            return DataType::all();
         }
 
         return $this->estimator->compatibility();

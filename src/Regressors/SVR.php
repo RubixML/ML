@@ -72,31 +72,31 @@ class SVR implements Estimator, Learner
         ?Kernel $kernel = null,
         bool $shrinking = true,
         float $tolerance = 1e-3,
-        float $cacheSize = 100.
+        float $cacheSize = 100.0
     ) {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'
                 . ' PHP configuration.');
         }
 
-        if ($c < 0.) {
+        if ($c < 0.0) {
             throw new InvalidArgumentException('C cannot be less than 0,'
                 . " $c given.");
         }
 
-        if ($epsilon < 0.) {
+        if ($epsilon < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0'
                 . " $epsilon given.");
         }
 
         $kernel = $kernel ?? new RBF();
 
-        if ($tolerance < 0.) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'
                 . " $tolerance given.");
         }
 
-        if ($cacheSize <= 0.) {
+        if ($cacheSize <= 0.0) {
             throw new InvalidArgumentException('Cache size must be greater than'
                 . " 0M, {$cacheSize}M given.");
         }
@@ -129,12 +129,12 @@ class SVR implements Estimator, Learner
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

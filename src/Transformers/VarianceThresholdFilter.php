@@ -56,11 +56,11 @@ class VarianceThresholdFilter implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -95,7 +95,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
         $this->selected = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CONTINUOUS) {
+            if ($type->isContinuous()) {
                 $values = $dataset->column($column);
                 
                 if (Stats::variance($values) > $this->threshold) {

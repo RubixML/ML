@@ -28,12 +28,12 @@ class Cosine implements Distance
     /**
      * Return the data types that this kernel is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

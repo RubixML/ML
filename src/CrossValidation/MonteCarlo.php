@@ -5,7 +5,6 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Deferred;
 use Rubix\ML\Parallel;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
@@ -60,7 +59,7 @@ class MonteCarlo implements Validator, Parallel
                 . " simulations, $simulations given.");
         }
 
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
@@ -83,12 +82,14 @@ class MonteCarlo implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
+        $stratify = $dataset->labelType()->isCategorical();
+
         $this->backend->flush();
 
         for ($i = 0; $i < $this->simulations; ++$i) {
             $dataset->randomize();
 
-            [$testing, $training] = $dataset->labelType() === DataType::CATEGORICAL
+            [$testing, $training] = $stratify
                 ? $dataset->stratifiedSplit($this->ratio)
                 : $dataset->split($this->ratio);
     

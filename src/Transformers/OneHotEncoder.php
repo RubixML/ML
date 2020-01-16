@@ -44,11 +44,11 @@ class OneHotEncoder implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -83,7 +83,7 @@ class OneHotEncoder implements Transformer, Stateful
         $this->categories = $this->templates = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CATEGORICAL) {
+            if ($type->isCategorical()) {
                 $values = $dataset->column($column);
                 
                 $categories = array_values(array_unique($values));

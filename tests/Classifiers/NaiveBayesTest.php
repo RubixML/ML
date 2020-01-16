@@ -95,7 +95,7 @@ class NaiveBayesTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            DataType::CATEGORICAL,
+            DataType::categorical(),
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());

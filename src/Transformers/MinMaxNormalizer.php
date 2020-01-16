@@ -83,11 +83,11 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -132,7 +132,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
         $this->minimums = $this->maximums = $this->scales = $this->mins = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CONTINUOUS) {
+            if ($type->isContinuous()) {
                 $this->minimums[$column] = INF;
                 $this->maximums[$column] = -INF;
             }
@@ -157,7 +157,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CONTINUOUS) {
+            if ($type->isContinuous()) {
                 $values = $dataset->column($column);
                 
                 $min = min($values);

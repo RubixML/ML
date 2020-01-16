@@ -110,7 +110,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function __construct(float $alpha = 1.0, ?array $priors = null)
     {
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha cannot be less'
                 . " than 0, $alpha given.");
         }
@@ -151,12 +151,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CATEGORICAL,
+            DataType::categorical(),
         ];
     }
 

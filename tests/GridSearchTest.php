@@ -101,7 +101,7 @@ class GridSearchTest extends TestCase
      */
     public function compatibility() : void
     {
-        $this->assertEquals(DataType::ALL, $this->estimator->compatibility());
+        $this->assertEquals(DataType::all(), $this->estimator->compatibility());
     }
     
     /**

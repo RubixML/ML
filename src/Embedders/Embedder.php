@@ -9,7 +9,7 @@ interface Embedder
     /**
      * Return the data types that this embedder is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array;
 

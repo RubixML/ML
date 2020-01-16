@@ -96,8 +96,8 @@ class RandomForestTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            DataType::CATEGORICAL,
-            DataType::CONTINUOUS,
+            DataType::categorical(),
+            DataType::continuous(),
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());

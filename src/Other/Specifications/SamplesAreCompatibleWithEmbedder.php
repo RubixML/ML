@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Specifications;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Embedders\Embedder;
 use Rubix\ML\Other\Helpers\Params;
@@ -30,7 +29,7 @@ class SamplesAreCompatibleWithEmbedder
         if (count($same) < count($types)) {
             $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', array_map([DataType::class, 'asString'], $diff));
+            $diffString = implode(', ', $diff);
 
             throw new InvalidArgumentException(Params::shortName($embedder)
                 . " is not compatible with $diffString data types.");

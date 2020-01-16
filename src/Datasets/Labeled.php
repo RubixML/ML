@@ -131,14 +131,13 @@ class Labeled extends Dataset
 
             $type = DataType::determine($labels[0]);
 
-            if ($type !== DataType::CATEGORICAL and $type !== DataType::CONTINUOUS) {
+            if (!$type->isCategorical() and !$type->isContinuous()) {
                 throw new InvalidArgumentException('Label type must be'
-                    . ' categorical or continuous, ' . DataType::asString($type)
-                    . ' given.');
+                    . " categorical or continuous, $type given.");
             }
 
             foreach ($labels as $label) {
-                if (DataType::determine($label) !== $type) {
+                if (DataType::determine($label) != $type) {
                     throw new InvalidArgumentException('Labels must all be'
                         . ' of the same data type.');
                 }
@@ -185,9 +184,9 @@ class Labeled extends Dataset
      * Return the integer encoded data type of the label or null if empty.
      *
      * @throws \RuntimeException
-     * @return int
+     * @return \Rubix\ML\DataType
      */
-    public function labelType() : int
+    public function labelType() : DataType
     {
         if (!isset($this->labels[0])) {
             throw new RuntimeException('Dataset is empty.');
@@ -247,9 +246,9 @@ class Labeled extends Dataset
 
         $desc = [];
         
-        $desc['type'] = DataType::TYPES[$type];
+        $desc['type'] = (string) $type;
 
-        switch ($type) {
+        switch ($type->type()) {
             case DataType::CONTINUOUS:
                 [$mean, $variance] = Stats::meanVar($this->labels);
 
@@ -774,9 +773,9 @@ class Labeled extends Dataset
     {
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
-        if ($this->columnType($column) === DataType::CATEGORICAL) {
+        if ($this->columnType($column)->isContinuous()) {
             foreach ($this->samples as $i => $sample) {
-                if ($sample[$column] === $value) {
+                if ($sample[$column] < $value) {
                     $leftSamples[] = $sample;
                     $leftLabels[] = $this->labels[$i];
                 } else {
@@ -786,7 +785,7 @@ class Labeled extends Dataset
             }
         } else {
             foreach ($this->samples as $i => $sample) {
-                if ($sample[$column] < $value) {
+                if ($sample[$column] === $value) {
                     $leftSamples[] = $sample;
                     $leftLabels[] = $this->labels[$i];
                 } else {

@@ -92,7 +92,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 }
 
                 foreach ($sample as $column => $value) {
-                    if (DataType::determine($value) !== $types[$column]) {
+                    if (DataType::determine($value) != $types[$column]) {
                         throw new InvalidArgumentException("Column $column must"
                             . ' contain feature values of the same data type.');
                     }
@@ -163,7 +163,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Return an array of feature column data types autodectected using the first
      * sample in the dataset.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function types() : array
     {
@@ -173,7 +173,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return the unique data types.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function uniqueTypes() : array
     {
@@ -196,9 +196,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @param int $column
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return int
+     * @return \Rubix\ML\DataType
      */
-    public function columnType(int $column) : int
+    public function columnType(int $column) : DataType
     {
         if (empty($this->samples)) {
             throw new RuntimeException('Cannot determine data type'
@@ -248,17 +248,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return the columns that match a given data type.
      *
-     * @param int $type
+     * @param \Rubix\ML\DataType $type
      * @return array[]
      */
-    public function columnsByType(int $type) : array
+    public function columnsByType(DataType $type) : array
     {
         $n = $this->numColumns();
 
         $columns = [];
 
         for ($i = 0; $i < $n; ++$i) {
-            if ($this->columnType($i) === $type) {
+            if ($this->columnType($i) == $type) {
                 $columns[$i] = $this->column($i);
             }
         }
@@ -352,15 +352,15 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         $stats = [];
 
-        foreach ($this->columns() as $column => $values) {
-            $type = $this->columnType($column);
-
+        foreach ($this->types() as $column => $type) {
             $desc = [];
 
-            $desc['type'] = DataType::TYPES[$type];
+            $desc['type'] = (string) $type;
 
-            switch ($type) {
+            switch ($type->type()) {
                 case DataType::CONTINUOUS:
+                    $values = $this->column($column);
+
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $desc['mean'] = $mean;
@@ -383,6 +383,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                     break 1;
 
                 case DataType::CATEGORICAL:
+                    $values = $this->column($column);
+                    
                     $counts = array_count_values($values);
 
                     $total = count($values) ?: EPSILON;

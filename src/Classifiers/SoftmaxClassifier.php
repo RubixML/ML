@@ -143,7 +143,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . " 1 sample, $batchSize given.");
         }
 
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha must be 0 or greater'
                 . ", $alpha given.");
         }
@@ -153,7 +153,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . " least 1 epoch, $epochs given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
@@ -185,12 +185,12 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

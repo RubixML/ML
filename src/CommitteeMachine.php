@@ -67,7 +67,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * The data types that the committee is compatible with.
      *
-     * @var int[]
+     * @var \Rubix\ML\DataType[]
      */
     protected $compatibility;
 
@@ -169,7 +169,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {

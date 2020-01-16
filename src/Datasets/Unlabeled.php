@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
@@ -371,9 +370,9 @@ class Unlabeled extends Dataset
     {
         $left = $right = [];
 
-        if ($this->columnType($column) === DataType::CATEGORICAL) {
+        if ($this->columnType($column)->isContinuous()) {
             foreach ($this->samples as $sample) {
-                if ($sample[$column] === $value) {
+                if ($sample[$column] < $value) {
                     $left[] = $sample;
                 } else {
                     $right[] = $sample;
@@ -381,7 +380,7 @@ class Unlabeled extends Dataset
             }
         } else {
             foreach ($this->samples as $sample) {
-                if ($sample[$column] < $value) {
+                if ($sample[$column] === $value) {
                     $left[] = $sample;
                 } else {
                     $right[] = $sample;

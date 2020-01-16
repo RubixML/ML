@@ -91,7 +91,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
                 . " impute a value, $k given.");
         }
 
-        if ($kernel and in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
+        if ($kernel and in_array(DataType::continuous(), $kernel->compatibility())) {
             if (!$kernel instanceof NaNSafe) {
                 throw new InvalidArgumentException('Continuous distance kernels'
                     . ' must be NaN safe.');
@@ -107,7 +107,7 @@ class KNNImputer implements Transformer, Stateful, Elastic
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {

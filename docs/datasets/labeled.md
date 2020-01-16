@@ -59,9 +59,9 @@ Return a single label at the given row offset:
 public label(int $index) : mixed
 ```
 
-Return the type of the label encoded as an integer:
+Return the data type of the label:
 ```php
-public labelType() : int
+public labelType() : DataType
 ```
 
 Return all of the possible outcomes i.e. the unique labels in an array:

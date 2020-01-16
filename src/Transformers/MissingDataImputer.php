@@ -58,7 +58,7 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * The data types of the fitted feature columns.
      *
-     * @var int[]|null
+     * @var \Rubix\ML\DataType[]|null
      */
     protected $types;
 
@@ -81,11 +81,11 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -113,7 +113,7 @@ class MissingDataImputer implements Transformer, Stateful
         foreach ($dataset->types() as $column => $type) {
             $donors = [];
 
-            switch ($type) {
+            switch ($type->type()) {
                 case DataType::CONTINUOUS:
                     $strategy = clone $this->continuous;
 
@@ -171,7 +171,7 @@ class MissingDataImputer implements Transformer, Stateful
             foreach ($this->types as $column => $type) {
                 $value = &$sample[$column];
 
-                switch ($type) {
+                switch ($type->type()) {
                     case DataType::CONTINUOUS:
                         if (is_float($value) and is_nan($value)) {
                             $value = $this->strategies[$column]->guess();

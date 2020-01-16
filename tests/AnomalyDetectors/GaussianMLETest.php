@@ -94,7 +94,7 @@ class GaussianMLETest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());

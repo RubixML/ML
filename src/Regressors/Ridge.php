@@ -57,9 +57,9 @@ class Ridge implements Estimator, Learner, Persistable
      * @param float $alpha
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 1.)
+    public function __construct(float $alpha = 1.0)
     {
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha must be'
                 . " 0 or greater, $alpha given.");
         }
@@ -80,12 +80,12 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 
@@ -142,7 +142,7 @@ class Ridge implements Estimator, Learner, Persistable
 
         $alphas = array_fill(0, $x->n() - 1, $this->alpha);
 
-        $penalties = Matrix::diagonal(array_merge([0.], $alphas));
+        $penalties = Matrix::diagonal(array_merge([0.0], $alphas));
 
         $xT = $x->transpose();
 

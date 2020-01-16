@@ -49,9 +49,9 @@ class GaussianRandomProjector implements Transformer, Stateful
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
     {
-        $denominator = $maxDistortion ** 2 / 2. - $maxDistortion ** 3 / 3.;
+        $denominator = $maxDistortion ** 2 / 2.0 - $maxDistortion ** 3 / 3.0;
 
-        return (int) round(4. * log($n) / $denominator);
+        return (int) round(4.0 * log($n) / $denominator);
     }
 
     /**
@@ -71,12 +71,12 @@ class GaussianRandomProjector implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

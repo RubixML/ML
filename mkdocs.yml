@@ -253,7 +253,6 @@ nav:
   - Serial: backends/serial.md
 - Other:
   - Helpers:
-    - Data Type: other/helpers/data-type.md
     - Params: other/helpers/params.md
   - Loggers:
     - Screen: other/loggers/screen.md

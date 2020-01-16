@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
@@ -60,7 +59,7 @@ class Isolator implements BinaryNode
 
         $values = $dataset->column($column);
 
-        if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+        if ($dataset->columnType($column)->isContinuous()) {
             $min = (int) floor(min($values) * PHI);
             $max = (int) ceil(max($values) * PHI);
 

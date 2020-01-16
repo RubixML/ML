@@ -14,7 +14,7 @@ class DataType
     public const CATEGORICAL = 2;
     public const IMAGE = 3;
 
-    public const TYPES = [
+    public const TYPE_STRINGS = [
         self::OTHER => 'other',
         self::CONTINUOUS => 'continuous',
         self::CATEGORICAL => 'categorical',
@@ -29,95 +29,172 @@ class DataType
     ];
 
     /**
-     * Return the integer encoded data type.
+     * The integer-encoded data type.
      *
-     * @param mixed $data
-     * @return int
+     * @var int
      */
-    public static function determine($data) : int
-    {
-        switch (gettype($data)) {
-            case 'double':
-                return self::CONTINUOUS;
+    protected $type;
 
+    /**
+     * Build a new data type.
+     * @param int $type
+     */
+    public static function build(int $type) : self
+    {
+        return new self($type);
+    }
+
+    /**
+     * Build a data type object from an example value.
+     *
+     * @param mixed $value
+     * @return self
+     */
+    public static function determine($value) : self
+    {
+        switch (gettype($value)) {
+            case 'double':
             case 'integer':
-                return self::CONTINUOUS;
+                return new self(self::CONTINUOUS);
 
             case 'string':
-                return self::CATEGORICAL;
+                return new self(self::CATEGORICAL);
 
             case 'resource':
-                if (get_resource_type($data) === 'gd') {
-                    return self::IMAGE;
-                } else {
-                    return self::OTHER;
+                switch (get_resource_type($value)) {
+                    case 'gd':
+                        return new self(self::IMAGE);
+
+                    default:
+                        return new self(self::OTHER);
                 }
-                
+
                 // no break
             default:
-                return self::OTHER;
+                return new self(self::OTHER);
         }
     }
 
     /**
-     * Is the data continuous?
+     * Build a continuous data type.
      *
-     * @param mixed $data
-     * @return bool
+     * @return self
      */
-    public static function isContinuous($data) : bool
+    public static function continuous() : self
     {
-        return is_int($data) or is_float($data);
+        return new self(self::CONTINUOUS);
     }
 
     /**
-     * Is the data categorical?
+     * Build a categorical data type.
      *
-     * @param mixed $data
-     * @return bool
+     * @return self
      */
-    public static function isCategorical($data) : bool
+    public static function categorical() : self
     {
-        return is_string($data);
+        return new self(self::CATEGORICAL);
     }
 
     /**
-     * Is the data a resource?
+     * Build an image data type.
      *
-     * @param mixed $data
+     * @return self
+     */
+    public static function image() : self
+    {
+        return new self(self::IMAGE);
+    }
+
+    /**
+     * Build an other data type.
+     *
+     * @return self
+     */
+    public static function other() : self
+    {
+        return new self(self::OTHER);
+    }
+
+    /**
+     * Return an array with all the data types.
+     *
+     * @return self[]
+     */
+    public static function all() : array
+    {
+        return array_map([self::class, 'build'], self::ALL);
+    }
+
+    /**
+     * @param int $type
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(int $type)
+    {
+        if (!in_array($type, self::ALL)) {
+            throw new InvalidArgumentException('Invalid type specification.');
+        }
+
+        $this->type = $type;
+    }
+
+    /**
+     * Return the integer-encoded data type.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return $this->type;
+    }
+
+    /**
+     * Is the data type continuous?
+     *
      * @return bool
      */
-    public static function isImage($data) : bool
+    public function isContinuous() : bool
     {
-        return is_resource($data) and get_resource_type($data) === 'gd';
+        return $this->type === self::CONTINUOUS;
+    }
+
+    /**
+     * Is the data type categorical?
+     *
+     * @return bool
+     */
+    public function isCategorical() : bool
+    {
+        return $this->type === self::CATEGORICAL;
+    }
+
+    /**
+     * Is the data type an image resource?
+     *
+     * @return bool
+     */
+    public function isImage() : bool
+    {
+        return $this->type === self::IMAGE;
     }
 
     /**
      * Does the data not belong to any type?
      *
-     * @param mixed $data
      * @return bool
      */
-    public static function isOther($data) : bool
+    public function isOther() : bool
     {
-        return !is_string($data)
-            and !is_numeric($data)
-            and !self::isImage($data);
+        return $this->type === self::OTHER;
     }
 
     /**
-     * Return the integer type as a string.
+     * Return the data type as a string.
      *
-     * @param int $type
-     * @throws \InvalidArgumentException
      * @return string
      */
-    public static function asString(int $type) : string
+    public function __toString() : string
     {
-        if (!in_array($type, self::ALL)) {
-            throw new InvalidArgumentException('Unknown type given.');
-        }
-
-        return self::TYPES[$type];
+        return self::TYPE_STRINGS[$this->type];
     }
 }

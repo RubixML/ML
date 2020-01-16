@@ -18,5 +18,5 @@ namespace Rubix\ML\Transformers;
  */
 class DenseRandomProjector extends SparseRandomProjector
 {
-    protected const DISTRIBUTION = [-1., 1.];
+    protected const DISTRIBUTION = [-1.0, 1.0];
 }

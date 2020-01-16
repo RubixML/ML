@@ -82,19 +82,19 @@ class SVC implements Estimator, Learner
                 . ' PHP configuration.');
         }
 
-        if ($c < 0.) {
+        if ($c < 0.0) {
             throw new InvalidArgumentException('C cannot be less than 0,'
                 . " $c given.");
         }
 
         $kernel = $kernel ?? new RBF();
         
-        if ($tolerance < 0.) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'
                 . " $tolerance given.");
         }
 
-        if ($cacheSize <= 0.) {
+        if ($cacheSize <= 0.0) {
             throw new InvalidArgumentException('Cache size must be greater than'
                 . " 0M, {$cacheSize}M given.");
         }
@@ -126,12 +126,12 @@ class SVC implements Estimator, Learner
     /**
      * Return the data types that this estimator is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
         return [
-            DataType::CONTINUOUS,
+            DataType::continuous(),
         ];
     }
 

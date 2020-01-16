@@ -92,11 +92,11 @@ class WordCountVectorizer implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -131,7 +131,7 @@ class WordCountVectorizer implements Transformer, Stateful
         $this->vocabularies = $this->templates = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::CATEGORICAL) {
+            if ($type->isCategorical()) {
                 $values = $dataset->column($column);
 
                 $tfs = $dfs = [];

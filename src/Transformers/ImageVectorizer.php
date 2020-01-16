@@ -66,11 +66,11 @@ class ImageVectorizer implements Transformer, Stateful
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\DataType[]
      */
     public function compatibility() : array
     {
-        return DataType::ALL;
+        return DataType::all();
     }
 
     /**
@@ -98,7 +98,7 @@ class ImageVectorizer implements Transformer, Stateful
         $this->sizes = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataType::IMAGE) {
+            if ($type->isImage()) {
                 $value = $sample[$column];
 
                 $this->sizes[$column] = [
