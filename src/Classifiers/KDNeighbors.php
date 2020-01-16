@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -106,9 +105,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return $this->tree->kernel()->compatibility();
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -99,9 +98,7 @@ class DBSCAN implements Estimator
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return $this->tree->kernel()->compatibility();
     }
 
     /**

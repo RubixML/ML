@@ -15,6 +15,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -64,6 +65,16 @@ class LocalOutlierFactorTest extends TestCase
     protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new LocalOutlierFactor(-10);
     }
 
     /**

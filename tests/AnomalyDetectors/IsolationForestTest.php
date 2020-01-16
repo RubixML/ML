@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -75,6 +76,16 @@ class IsolationForestTest extends TestCase
         $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badNumEstimators() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new IsolationForest(-100);
     }
 
     /**

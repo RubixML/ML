@@ -57,7 +57,15 @@ class Ball implements BinaryNode, Hypersphere
      */
     public static function split(Labeled $dataset, Distance $kernel) : self
     {
-        $center = array_map([Stats::class, 'mean'], $dataset->columns());
+        $center = [];
+
+        foreach ($dataset->columns() as $column => $values) {
+            if ($dataset->columnType($column)->isContinuous()) {
+                $center[] = Stats::mean($values);
+            } else {
+                $center[] = argmax(array_count_values($values));
+            }
+        }
             
         $distances = [];
 
@@ -95,7 +103,7 @@ class Ball implements BinaryNode, Hypersphere
                 . ' not be empty.');
         }
 
-        if ($radius < 0.) {
+        if ($radius < 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }

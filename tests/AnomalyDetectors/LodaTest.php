@@ -55,7 +55,7 @@ class LodaTest extends TestCase
             '1' => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new Loda(100, null, 10.);
+        $this->estimator = new Loda(100, null, 10.0);
 
         $this->metric = new FBeta();
 
@@ -65,6 +65,26 @@ class LodaTest extends TestCase
     protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function badNumEstimators() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Loda(-100);
+    }
+
+    /**
+     * @test
+     */
+    public function badNumBins() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Loda(100, 0);
     }
 
     /**

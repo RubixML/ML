@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -92,9 +91,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return $this->tree->kernel()->compatibility();
     }
 
     /**

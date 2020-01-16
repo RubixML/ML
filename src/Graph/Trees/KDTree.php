@@ -130,7 +130,7 @@ class KDTree implements BST, Spatial
         }
 
         if ($dataset->columnType(0) != DataType::continuous() or !$dataset->homogeneous()) {
-            throw new InvalidArgumentException('This tree only works with'
+            throw new InvalidArgumentException('KD Tree only works with'
                 . ' continuous features.');
         }
 

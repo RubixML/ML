@@ -50,8 +50,8 @@ class RobustZScoreTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0., 0.], 0.5),
-            '1' => new Circle(0., 0., 6., 0.1),
+            '0' => new Blob([0.0, 0.0], 0.5),
+            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new RobustZScore(3.5, 0.5);
@@ -64,6 +64,26 @@ class RobustZScoreTest extends TestCase
     protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function badThreshold() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RobustZScore(-3.5);
+    }
+
+    /**
+     * @test
+     */
+    public function badAlpha() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RobustZScore(3.5, 1.5);
     }
 
     /**

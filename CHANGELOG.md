@@ -8,6 +8,7 @@
     - Added comb (n choose k) as a global function
     - Image Vectorizer now has grayscale option
     - Clusterers and Anomaly Detectors return integer predictions
+    - Ball Tree now compatible with categorical distance kernels
 
 - 0.0.18-beta
     - Now requires PHP 7.2 and above

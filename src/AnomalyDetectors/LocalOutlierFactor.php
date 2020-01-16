@@ -4,7 +4,6 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Ranking;
-use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -130,9 +129,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return $this->tree->kernel()->compatibility();
     }
 
     /**

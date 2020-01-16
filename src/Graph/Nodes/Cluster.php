@@ -9,6 +9,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 use function count;
+use function Rubix\ML\argmax;
 
 /**
  * Cluster
@@ -41,7 +42,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     /**
      * The centroid or multivariate mean of the cluster.
      *
-     * @var (int|float)[]
+     * @var (string|int|float)[]
      */
     protected $center;
 
@@ -61,7 +62,15 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
      */
     public static function terminate(Labeled $dataset, Distance $kernel) : self
     {
-        $center = array_map([Stats::class, 'mean'], $dataset->columns());
+        $center = [];
+
+        foreach ($dataset->columns() as $column => $values) {
+            if ($dataset->columnType($column)->isContinuous()) {
+                $center[] = Stats::mean($values);
+            } else {
+                $center[] = argmax(array_count_values($values));
+            }
+        }
 
         $distances = [];
 
@@ -77,7 +86,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     /**
      * @param array[] $samples
      * @param (string|int|float)[] $labels
-     * @param (int|float)[] $center
+     * @param (string|int|float)[] $center
      * @param float $radius
      * @throws \InvalidArgumentException
      */
@@ -92,7 +101,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
             throw new InvalidArgumentException('Center cannot be empty.');
         }
 
-        if ($radius < 0.) {
+        if ($radius < 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " 0 or greater, $radius given.");
         }
@@ -106,7 +115,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     /**
      * Return the center vector.
      *
-     * @return (int|float)[]
+     * @return (string|int|float)[]
      */
     public function center() : array
     {
@@ -136,7 +145,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     /**
      * Return the labels in the cluster.
      *
-     * @return (int|float|string)[]
+     * @return (string|int|float)[]
      */
     public function labels() : array
     {

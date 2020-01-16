@@ -110,7 +110,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, ?int $bins = null, float $threshold = 10.)
+    public function __construct(int $estimators = 100, ?int $bins = null, float $threshold = 10.0)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('At least 1 histogram is'

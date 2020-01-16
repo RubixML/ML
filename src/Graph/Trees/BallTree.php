@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Ball;
@@ -69,11 +68,6 @@ class BallTree implements BST, Spatial
                 . " to form a leaf node, $maxLeafSize given.");
         }
 
-        if ($kernel and !in_array(DataType::continuous(), $kernel->compatibility())) {
-            throw new InvalidArgumentException('Distance kernel must be'
-                . ' compatible with continuous features.');
-        }
-
         $this->maxLeafSize = $maxLeafSize;
         $this->kernel = $kernel ?? new Euclidean();
     }
@@ -131,11 +125,6 @@ class BallTree implements BST, Spatial
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
-        if ($dataset->columnType(0) != DataType::continuous() or !$dataset->homogeneous()) {
-            throw new InvalidArgumentException('This tree only works with'
-                . ' continuous features.');
         }
 
         $this->root = Ball::split($dataset, $this->kernel);
