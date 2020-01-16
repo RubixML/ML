@@ -238,7 +238,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -348,7 +348,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return mixed[]
      */

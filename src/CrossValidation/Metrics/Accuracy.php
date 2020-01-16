@@ -28,7 +28,7 @@ class Accuracy implements Metric
      */
     public function range() : array
     {
-        return [0., 1.];
+        return [0.0, 1.0];
     }
 
     /**
@@ -55,7 +55,7 @@ class Accuracy implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         if (count($predictions) !== count($labels)) {
@@ -63,7 +63,7 @@ class Accuracy implements Metric
                 . ' must equal the number of predictions.');
         }
 
-        $score = 0.;
+        $score = 0.0;
 
         foreach ($predictions as $i => $prediction) {
             if ($prediction == $labels[$i]) {

@@ -13,7 +13,7 @@ class LabelsAreCompatibleWithLearner
     /**
      * Perform a check of the specification.
      *
-     * @param \Rubix\ML\Datasets\Labeled<array> $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\Learner $estimator
      * @throws \InvalidArgumentException
      */

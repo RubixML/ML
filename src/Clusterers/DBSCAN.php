@@ -33,7 +33,7 @@ use function count;
  */
 class DBSCAN implements Estimator
 {
-    public const START_CLUSTER = '0';
+    public const START_CLUSTER = 0;
     
     public const NOISE = -1;
 
@@ -67,7 +67,7 @@ class DBSCAN implements Estimator
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Neighbor radius must be'
                 . " greater than 0, $radius given.");
         }
@@ -107,9 +107,9 @@ class DBSCAN implements Estimator
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -165,6 +165,6 @@ class DBSCAN implements Estimator
 
         $this->tree->destroy();
 
-        return array_map('strval', $predictions);
+        return $predictions;
     }
 }

@@ -10,7 +10,7 @@ interface Tree
      * Insert a root node and recursively split the dataset until a
      * terminating condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function grow(Dataset $dataset) : void;
 

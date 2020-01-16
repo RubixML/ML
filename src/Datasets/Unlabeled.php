@@ -182,9 +182,9 @@ class Unlabeled extends Dataset
     /**
      * Prepend a dataset to this dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset<array>
+     * @return \Rubix\ML\Datasets\Dataset
      */
     public function prepend(Dataset $dataset) : Dataset
     {
@@ -199,9 +199,9 @@ class Unlabeled extends Dataset
     /**
      * Append a dataset to this dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset<array>
+     * @return \Rubix\ML\Datasets\Dataset
      */
     public function append(Dataset $dataset) : Dataset
     {

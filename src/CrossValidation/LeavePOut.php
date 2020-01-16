@@ -89,7 +89,7 @@ class LeavePOut implements Validator, Parallel
      * Score an estimator on one of p slices of the dataset.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset<array> $training
+     * @param \Rubix\ML\Datasets\Dataset $training
      * @param \Rubix\ML\Datasets\Labeled $testing
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @return float

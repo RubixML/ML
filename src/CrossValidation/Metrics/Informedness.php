@@ -47,7 +47,7 @@ class Informedness implements Metric
      */
     public function range() : array
     {
-        return [-1., 1.];
+        return [-1.0, 1.0];
     }
 
     /**
@@ -74,7 +74,7 @@ class Informedness implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         if (count($predictions) !== count($labels)) {

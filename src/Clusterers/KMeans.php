@@ -161,7 +161,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 . " for at least 1 epoch, $epochs given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Min change cannot be less'
                 . " than 1, $minChange given.");
         }
@@ -246,7 +246,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -268,7 +268,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -386,10 +386,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -399,13 +399,13 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map('strval', array_map([self::class, 'assign'], $dataset->samples()));
+        return array_map([self::class, 'assign'], $dataset->samples());
     }
 
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
@@ -479,10 +479,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         $n = count($samples);
 
         if ($n < 1) {
-            return 0.;
+            return 0.0;
         }
 
-        $inertia = 0.;
+        $inertia = 0.0;
 
         foreach ($samples as $sample) {
             foreach ($this->centroids as $centroid) {

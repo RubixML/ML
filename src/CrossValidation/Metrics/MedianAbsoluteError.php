@@ -31,7 +31,7 @@ class MedianAbsoluteError implements Metric
      */
     public function range() : array
     {
-        return [-INF, 0.];
+        return [-INF, 0.0];
     }
 
     /**
@@ -57,7 +57,7 @@ class MedianAbsoluteError implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         if (count($predictions) !== count($labels)) {

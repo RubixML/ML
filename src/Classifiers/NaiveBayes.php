@@ -203,7 +203,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -221,7 +221,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -292,7 +292,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return string[]
@@ -313,7 +313,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]

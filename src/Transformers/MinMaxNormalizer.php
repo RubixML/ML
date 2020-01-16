@@ -123,7 +123,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -144,7 +144,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function update(Dataset $dataset) : void
     {

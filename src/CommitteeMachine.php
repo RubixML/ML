@@ -211,7 +211,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Train all the experts with the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -263,7 +263,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
@@ -347,7 +347,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      * Train a learner with a dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
     public static function _train(Learner $estimator, Dataset $dataset) : Learner
@@ -361,7 +361,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      * Return the predictions from an estimator.
      *
      * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array

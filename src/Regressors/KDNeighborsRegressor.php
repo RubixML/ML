@@ -118,7 +118,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -137,7 +137,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]

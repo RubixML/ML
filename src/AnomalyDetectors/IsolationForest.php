@@ -107,12 +107,12 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
                 . " cannot be less than 1, $estimators given.");
         }
 
-        if (isset($ratio) and ($ratio <= 0. or $ratio > 1.)) {
+        if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
 
-        if (isset($ratio) and ($contamination < 0. or $contamination > 0.5)) {
+        if (isset($ratio) and ($contamination < 0.0 or $contamination > 0.5)) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
@@ -158,7 +158,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -189,7 +189,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         if (isset($this->contamination)) {
             $scores = array_map([self::class, 'isolationScore'], $dataset->samples());
 
-            $threshold = Stats::percentile($scores, 100. * (1. - $this->contamination));
+            $threshold = Stats::percentile($scores, 100.0 * (1.0 - $this->contamination));
         }
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
@@ -198,10 +198,10 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -211,7 +211,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     /**
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return float[]
@@ -235,7 +235,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     protected function isolationScore(array $sample) : float
     {
-        $depth = 0.;
+        $depth = 0.0;
 
         foreach ($this->trees as $tree) {
             $node = $tree->search($sample);
@@ -245,17 +245,17 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $depth /= $this->delta;
 
-        return 2. ** -$depth;
+        return 2.0 ** -$depth;
     }
 
     /**
      * The decision function.
      *
      * @param float $score
-     * @return string
+     * @return int
      */
-    protected function decide(float $score) : string
+    protected function decide(float $score) : int
     {
-        return $score > $this->threshold ? '1' : '0';
+        return $score > $this->threshold ? 1 : 0;
     }
 }

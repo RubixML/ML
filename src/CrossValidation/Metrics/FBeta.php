@@ -59,9 +59,9 @@ class FBeta implements Metric
      * @param float $beta
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $beta = 1.)
+    public function __construct(float $beta = 1.0)
     {
-        if ($beta < 0.) {
+        if ($beta < 0.0) {
             throw new InvalidArgumentException('Beta cannot be less'
                 . " than 0, $beta given.");
         }
@@ -76,7 +76,7 @@ class FBeta implements Metric
      */
     public function range() : array
     {
-        return [0., 1.];
+        return [0.0, 1.0];
     }
 
     /**
@@ -108,7 +108,7 @@ class FBeta implements Metric
         }
 
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         $classes = array_unique(array_merge($predictions, $labels));
@@ -136,7 +136,7 @@ class FBeta implements Metric
             array_map([self::class, 'recall'], $truePos, $falseNeg)
         );
 
-        return (1. + $this->beta2) * $precision * $recall
+        return (1.0 + $this->beta2) * $precision * $recall
             / (($this->beta2 * $precision + $recall) ?: EPSILON);
     }
 }

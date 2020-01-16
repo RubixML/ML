@@ -56,7 +56,7 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled<array> $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return self
      */
     public static function terminate(Labeled $dataset) : self

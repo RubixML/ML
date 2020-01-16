@@ -30,7 +30,7 @@ class RSquared implements Metric
      */
     public function range() : array
     {
-        return [-INF, 1.];
+        return [-INF, 1.0];
     }
 
     /**
@@ -56,7 +56,7 @@ class RSquared implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         if (count($predictions) !== count($labels)) {
@@ -66,7 +66,7 @@ class RSquared implements Metric
 
         $mean = Stats::mean($labels);
 
-        $ssr = $sst = 0.;
+        $ssr = $sst = 0.0;
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
@@ -75,6 +75,6 @@ class RSquared implements Metric
             $sst += ($label - $mean) ** 2;
         }
 
-        return 1. - ($ssr / ($sst ?: EPSILON));
+        return 1.0 - ($ssr / ($sst ?: EPSILON));
     }
 }

@@ -88,7 +88,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -108,7 +108,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
     /**
      * Make a prediction of a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return string[]
      */
     public function predict(Dataset $dataset) : array

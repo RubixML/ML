@@ -51,7 +51,7 @@ class Isolator implements BinaryNode
      * Factory method to build a isolator node from a dataset
      * using a random split of the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return self
      */
     public static function split(Dataset $dataset) : self

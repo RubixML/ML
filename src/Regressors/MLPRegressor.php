@@ -291,7 +291,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -316,7 +316,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -431,7 +431,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Feed a sample through the network and make a prediction based on the
      * activation of the output neuron.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]

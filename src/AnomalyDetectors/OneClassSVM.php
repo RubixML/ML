@@ -72,19 +72,19 @@ class OneClassSVM implements Estimator, Learner
                 . ' PHP configuration.');
         }
 
-        if ($nu < 0. or $nu > 1.) {
+        if ($nu < 0.0 or $nu > 1.0) {
             throw new InvalidArgumentException('Nu must be between 0 and 1'
                 . ", $nu given.");
         }
 
         $kernel = $kernel ?? new RBF();
 
-        if ($tolerance < 0.) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'
                 . " $tolerance given.");
         }
 
-        if ($cacheSize <= 0.) {
+        if ($cacheSize <= 0.0) {
             throw new InvalidArgumentException('Cache size must be greater than'
                 . " 0M, {$cacheSize}M given.");
         }
@@ -138,7 +138,7 @@ class OneClassSVM implements Estimator, Learner
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -151,10 +151,10 @@ class OneClassSVM implements Estimator, Learner
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -167,7 +167,7 @@ class OneClassSVM implements Estimator, Learner
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
-            $predictions[] = $this->model->predict($sample) !== 1. ? '0' : '1';
+            $predictions[] = $this->model->predict($sample) !== 1.0 ? 0 : 1;
         }
 
         return $predictions;

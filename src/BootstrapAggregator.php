@@ -131,7 +131,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -166,7 +166,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return mixed[]
      */
@@ -217,7 +217,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Train a single learner and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
     public static function _train(Learner $estimator, Dataset $dataset) : Learner
@@ -231,7 +231,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Return the predictions from an estimator.
      *
      * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return mixed[]
      */
     public static function _predict(Estimator $estimator, Dataset $dataset) : array

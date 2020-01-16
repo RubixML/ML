@@ -129,7 +129,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -147,7 +147,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -167,7 +167,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (float|int)[]

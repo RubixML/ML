@@ -294,7 +294,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -423,7 +423,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * Make a prediction from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return (int|float)[]

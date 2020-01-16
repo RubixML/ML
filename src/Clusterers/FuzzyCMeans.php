@@ -134,7 +134,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 . " cluster, $c given.");
         }
 
-        if ($fuzz <= 1.) {
+        if ($fuzz <= 1.0) {
             throw new InvalidArgumentException('Fuzz factor must be greater'
                 . " than 1, $fuzz given.");
         }
@@ -144,14 +144,14 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 . " least 1 epoch, $epochs given.");
         }
         
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 
         $this->c = $c;
         $this->fuzz = $fuzz;
-        $this->rho = 2. / ($fuzz - 1.);
+        $this->rho = 2.0 / ($fuzz - 1.0);
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->kernel = $kernel ?? new Euclidean();
@@ -213,7 +213,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -244,7 +244,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 foreach ($columns as $column => $values) {
-                    $sigma = $total = 0.;
+                    $sigma = $total = 0.0;
 
                     foreach ($memberships as $i => $probabilities) {
                         $weight = $probabilities[$cluster] ** $this->fuzz;
@@ -284,18 +284,18 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
-     * @return string[]
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('strval', array_map('Rubix\ML\argmax', $this->proba($dataset)));
+        return array_map('Rubix\ML\argmax', $this->proba($dataset));
     }
 
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
@@ -328,13 +328,13 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         foreach ($this->centroids as $cluster => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
-            $sigma = 0.;
+            $sigma = 0.0;
 
             foreach ($deltas as $delta) {
                 $sigma += ($distance / $delta) ** $this->rho;
             }
 
-            $membership[$cluster] = 1. / ($sigma ?: EPSILON);
+            $membership[$cluster] = 1.0 / ($sigma ?: EPSILON);
         }
 
         return $membership;
@@ -353,10 +353,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $n = count($samples);
 
         if ($n < 1) {
-            return 0.;
+            return 0.0;
         }
 
-        $inertia = 0.;
+        $inertia = 0.0;
 
         foreach ($samples as $i => $sample) {
             $membership = $memberships[$i];

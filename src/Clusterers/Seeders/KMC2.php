@@ -59,7 +59,7 @@ class KMC2 implements Seeder
     /**
      * Seed k cluster centroids from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
      * @throws \RuntimeException
      * @return array[]

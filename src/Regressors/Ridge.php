@@ -122,7 +122,7 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -159,7 +159,7 @@ class Ridge implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]

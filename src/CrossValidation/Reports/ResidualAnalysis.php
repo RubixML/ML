@@ -55,7 +55,7 @@ class ResidualAnalysis implements Report
 
         $errors = $l1 = $l2 = $are = $sle = [];
 
-        $sse = $sst = 0.;
+        $sse = $sst = 0.0;
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
@@ -65,7 +65,7 @@ class ResidualAnalysis implements Report
             $l1[] = abs($error);
             $l2[] = $se = $error ** 2;
             $are[] = abs($error / ($prediction ?: EPSILON));
-            $sle[] = log((1. + $label) / ((1. + $prediction) ?: EPSILON)) ** 2;
+            $sle[] = log((1.0 + $label) / ((1.0 + $prediction) ?: EPSILON)) ** 2;
 
             $sse += $se;
             $sst += ($label - $muHat) ** 2;
@@ -83,12 +83,12 @@ class ResidualAnalysis implements Report
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
-            'mean_absolute_percentage_error' => 100. * Stats::mean($are),
+            'mean_absolute_percentage_error' => 100.0 * Stats::mean($are),
             'rms_error' => sqrt($mse),
             'mean_squared_log_error' => Stats::mean($sle),
-            'r_squared' => 1. - ($sse / ($sst ?: EPSILON)),
+            'r_squared' => 1.0 - ($sse / ($sst ?: EPSILON)),
             'error_mean' => $mean,
-            'error_midrange' => ($min + $max) / 2.,
+            'error_midrange' => ($min + $max) / 2.0,
             'error_median' => $median,
             'error_variance' => $variance,
             'error_mad' => $mad,

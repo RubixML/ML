@@ -19,7 +19,6 @@ In addition to PHP's internal type system, the library adds a layer on top which
 | Continuous | Integer or Float |
 | Categorical | String |
 | Image | GD Resource |
-| Other | Object, Bool, Null, etc. |
 
 ## Quantities
 A quantity is a property that describes either the magnitude or multitude of something. For example, `temperature`, `income`, and `age` are all quantitative features. In Rubix ML, quantities are represented as one of the continuous data types such as integers or floating point numbers and their *distances* are assumed to be equally-spaced. For example, the distance between 10 years old and 11 is exactly 1 year. Quantities can further be broken down into ratios, intervals, or counts depending on the feature they are describing.

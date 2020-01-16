@@ -122,7 +122,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -141,7 +141,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]

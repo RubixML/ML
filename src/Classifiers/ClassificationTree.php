@@ -103,7 +103,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -124,7 +124,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return string[]
@@ -153,7 +153,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array[]

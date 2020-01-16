@@ -160,7 +160,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -191,7 +191,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
         if (isset($this->contamination)) {
             $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
-            $threshold = Stats::percentile($lofs, 100. * (1. - $this->contamination));
+            $threshold = Stats::percentile($lofs, 100.0 * (1.0 - $this->contamination));
         }
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
@@ -200,10 +200,10 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -213,7 +213,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     /**
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return float[]
@@ -271,17 +271,17 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 
         $rds = array_map('max', $distances, $kdistances);
 
-        return 1. / (Stats::mean($rds) ?: EPSILON);
+        return 1.0 / (Stats::mean($rds) ?: EPSILON);
     }
 
     /**
      * The decision function.
      *
      * @param float $score
-     * @return string
+     * @return int
      */
-    protected function decide(float $score) : string
+    protected function decide(float $score) : int
     {
-        return $score > $this->threshold ? '1' : '0';
+        return $score > $this->threshold ? 1 : 0;
     }
 }

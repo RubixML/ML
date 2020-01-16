@@ -222,7 +222,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -247,7 +247,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -331,7 +331,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]

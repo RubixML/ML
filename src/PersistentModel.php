@@ -118,7 +118,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     /**
      * Train the underlying estimator.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -128,7 +128,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
@@ -139,7 +139,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array[]
      */

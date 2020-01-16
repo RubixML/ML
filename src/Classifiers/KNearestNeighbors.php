@@ -141,7 +141,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -153,7 +153,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -175,7 +175,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return string[]
@@ -212,7 +212,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]

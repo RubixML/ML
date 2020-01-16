@@ -406,7 +406,7 @@ class Labeled extends Dataset
     /**
      * Prepend a dataset to this dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -431,7 +431,7 @@ class Labeled extends Dataset
     /**
      * Append a dataset to this dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */

@@ -30,7 +30,7 @@ class VMeasure implements Metric
      */
     public function range() : array
     {
-        return [0., 1.];
+        return [0.0, 1.0];
     }
 
     /**
@@ -55,13 +55,13 @@ class VMeasure implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         $homogeneity = (new Homogeneity())->score($predictions, $labels);
         $completeness = (new Completeness())->score($predictions, $labels);
 
-        return 2. * ($homogeneity * $completeness)
+        return 2.0 * ($homogeneity * $completeness)
             / (($homogeneity + $completeness) ?: EPSILON);
     }
 }

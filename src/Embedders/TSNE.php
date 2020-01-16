@@ -249,7 +249,7 @@ class TSNE implements Embedder, Verbose
     /**
      * Embed a high dimensional dataset into a lower dimensional one.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return array[]
      */

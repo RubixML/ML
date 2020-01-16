@@ -82,12 +82,12 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      */
     public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
-        if ($threshold <= 0.) {
+        if ($threshold <= 0.0) {
             throw new InvalidArgumentException('Threshold must be greater'
                 . " than 0, $threshold given.");
         }
 
-        if ($alpha < 0. or $alpha > 1.) {
+        if ($alpha < 0.0 or $alpha > 1.0) {
             throw new InvalidArgumentException('Alpha must be between'
                 . " 0 and 1, $alpha given.");
         }
@@ -151,7 +151,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -171,10 +171,10 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -184,7 +184,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return float[]
      */
@@ -216,7 +216,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
             );
         }
 
-        return (1. - $this->alpha) * Stats::mean($z)
+        return (1.0 - $this->alpha) * Stats::mean($z)
             + $this->alpha * max($z);
     }
 
@@ -224,10 +224,10 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      * The decision function.
      *
      * @param float $score
-     * @return string
+     * @return int
      */
-    protected function decide(float $score) : string
+    protected function decide(float $score) : int
     {
-        return $score > $this->threshold ? '1' : '0';
+        return $score > $this->threshold ? 1 : 0;
     }
 }

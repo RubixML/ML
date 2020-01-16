@@ -101,7 +101,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -122,7 +122,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return string[]
@@ -151,7 +151,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array[]

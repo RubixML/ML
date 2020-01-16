@@ -127,7 +127,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * samples, for large datasets you can speed up the process by running it on
      * a smaller subset of the training data.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param float $percentile
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
@@ -135,10 +135,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public static function estimateRadius(
         Dataset $dataset,
-        float $percentile = 30.,
+        float $percentile = 30.0,
         ?Distance $kernel = null
     ) : float {
-        if ($percentile < 0. or $percentile > 100.) {
+        if ($percentile < 0.0 or $percentile > 100.0) {
             throw new InvalidArgumentException('Percentile must be between'
                 . " 0 and 100, $percentile given.");
         }
@@ -177,12 +177,12 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         ?Spatial $tree = null,
         ?Seeder $seeder = null
     ) {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio < 0.01 or $ratio > 1.0) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
@@ -192,13 +192,13 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " least 1 epoch, $epochs given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 
         $this->radius = $radius;
-        $this->delta = 2. * $radius ** 2;
+        $this->delta = 2.0 * $radius ** 2;
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -261,7 +261,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -354,10 +354,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -367,13 +367,13 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map('strval', array_map([self::class, 'assign'], $dataset->samples()));
+        return array_map([self::class, 'assign'], $dataset->samples());
     }
 
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
@@ -444,7 +444,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     protected function shift(array $current, array $previous) : float
     {
-        $shift = 0.;
+        $shift = 0.0;
 
         foreach ($current as $cluster => $centroid) {
             $prevCentroid = $previous[$cluster];

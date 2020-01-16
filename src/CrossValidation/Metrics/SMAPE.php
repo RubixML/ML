@@ -35,7 +35,7 @@ class SMAPE implements Metric
      */
     public function range() : array
     {
-        return [-100., 0.];
+        return [-100.0, 0.0];
     }
 
     /**
@@ -61,7 +61,7 @@ class SMAPE implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (empty($predictions)) {
-            return 0.;
+            return 0.0;
         }
 
         if (count($predictions) !== count($labels)) {
@@ -69,12 +69,12 @@ class SMAPE implements Metric
                 . ' must equal the number of predictions.');
         }
 
-        $error = 0.;
+        $error = 0.0;
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
-            $error += 100. * abs(($prediction - $label)
+            $error += 100.0 * abs(($prediction - $label)
                 / ((abs($label) + abs($prediction)) ?: EPSILON));
         }
 

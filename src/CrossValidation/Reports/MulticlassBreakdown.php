@@ -79,7 +79,7 @@ class MulticlassBreakdown implements Report
             'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
             'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
             'f1_score', 'mcc', 'informedness', 'markedness',
-        ], 0.);
+        ], 0.0);
 
         $counts = array_fill_keys([
             'true_positives', 'true_negatives', 'false_positives', 'false_negatives',
@@ -116,13 +116,13 @@ class MulticlassBreakdown implements Report
             $metrics['recall'] = $recall;
             $metrics['specificity'] = $specificity;
             $metrics['negative_predictive_value'] = $npv;
-            $metrics['false_discovery_rate'] = 1. - $precision;
-            $metrics['miss_rate'] = 1. - $recall;
-            $metrics['fall_out'] = 1. - $specificity;
-            $metrics['false_omission_rate'] = 1. - $npv;
+            $metrics['false_discovery_rate'] = 1.0 - $precision;
+            $metrics['miss_rate'] = 1.0 - $recall;
+            $metrics['fall_out'] = 1.0 - $specificity;
+            $metrics['false_omission_rate'] = 1.0 - $npv;
             $metrics['f1_score'] = $f1score;
-            $metrics['informedness'] = $recall + $specificity - 1.;
-            $metrics['markedness'] = $precision + $npv - 1.;
+            $metrics['informedness'] = $recall + $specificity - 1.0;
+            $metrics['markedness'] = $precision + $npv - 1.0;
             $metrics['mcc'] = $mcc;
             $metrics['true_positives'] = $tp;
             $metrics['true_negatives'] = $tn;
@@ -138,13 +138,13 @@ class MulticlassBreakdown implements Report
             $overall['recall'] += $recall;
             $overall['specificity'] += $specificity;
             $overall['negative_predictive_value'] += $npv;
-            $overall['false_discovery_rate'] += 1. - $precision;
-            $overall['miss_rate'] += 1. - $recall;
-            $overall['fall_out'] += 1. - $specificity;
-            $overall['false_omission_rate'] += 1. - $npv;
+            $overall['false_discovery_rate'] += 1.0 - $precision;
+            $overall['miss_rate'] += 1.0 - $recall;
+            $overall['fall_out'] += 1.0 - $specificity;
+            $overall['false_omission_rate'] += 1.0 - $npv;
             $overall['f1_score'] += $f1score;
-            $overall['informedness'] += $recall + $specificity - 1.;
-            $overall['markedness'] += $precision + $npv - 1.;
+            $overall['informedness'] += $recall + $specificity - 1.0;
+            $overall['markedness'] += $precision + $npv - 1.0;
             $overall['mcc'] += $mcc;
             $overall['true_positives'] += $tp;
             $overall['true_negatives'] += $tn;

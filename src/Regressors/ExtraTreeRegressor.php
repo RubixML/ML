@@ -90,7 +90,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, Persis
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -109,7 +109,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, Persis
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return (int|float)[]
      */

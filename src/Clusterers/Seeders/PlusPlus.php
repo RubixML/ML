@@ -44,7 +44,7 @@ class PlusPlus implements Seeder
     /**
      * Seed k cluster centroids from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
      * @return array[]
      */

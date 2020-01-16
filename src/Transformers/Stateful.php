@@ -9,7 +9,7 @@ interface Stateful extends Transformer
     /**
      * Fit the transformer to the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void;
 

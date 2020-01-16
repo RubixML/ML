@@ -85,12 +85,12 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function __construct(float $threshold = 3.5, float $contamination = 0.1)
     {
-        if ($threshold <= 0.) {
+        if ($threshold <= 0.0) {
             throw new InvalidArgumentException('Threshold must be'
                 . " greater than 0, $threshold given.");
         }
 
-        if ($contamination < 0. or $contamination > 0.5) {
+        if ($contamination < 0.0 or $contamination > 0.5) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
@@ -154,7 +154,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -176,7 +176,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
@@ -217,10 +217,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return string[]
+     * @return int[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -230,7 +230,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return float[]
      */
     public function rank(Dataset $dataset) : array
@@ -271,10 +271,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * The decision function.
      *
      * @param float $score
-     * @return string
+     * @return int
      */
-    protected function decide(float $score) : string
+    protected function decide(float $score) : int
     {
-        return $score > $this->threshold ? '1' : '0';
+        return $score > $this->threshold ? 1 : 0;
     }
 }

@@ -90,7 +90,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
@@ -109,7 +109,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param \Rubix\ML\Datasets\Dataset<array> $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return (int|float)[]
      */
