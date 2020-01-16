@@ -255,7 +255,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     {
         $compatibility = array_intersect(
             $this->booster->compatibility(),
-            $this->base->compatibility(),
+            $this->base->compatibility()
         );
 
         return array_values($compatibility);
