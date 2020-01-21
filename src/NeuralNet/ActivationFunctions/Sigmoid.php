@@ -46,7 +46,7 @@ class Sigmoid implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return 1. / (1. + exp(-$z));
+        return 1.0 / (1.0 + exp(-$z));
     }
 
     /**
@@ -55,6 +55,6 @@ class Sigmoid implements ActivationFunction
      */
     public function _differentiate(float $computed) : float
     {
-        return $computed * (1. - $computed);
+        return $computed * (1.0 - $computed);
     }
 }

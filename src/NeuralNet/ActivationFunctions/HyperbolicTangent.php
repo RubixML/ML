@@ -45,6 +45,6 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function _differentiate(float $computed) : float
     {
-        return 1. - ($computed ** 2);
+        return 1.0 - ($computed ** 2);
     }
 }

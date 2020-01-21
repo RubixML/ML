@@ -49,7 +49,7 @@ class Softsign implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z / (1. + abs($z));
+        return $z / (1.0 + abs($z));
     }
 
     /**
@@ -58,6 +58,6 @@ class Softsign implements ActivationFunction
      */
     public function _differentiate(float $z) : float
     {
-        return 1. / (1. + abs($z)) ** 2;
+        return 1.0 / (1.0 + abs($z)) ** 2;
     }
 }

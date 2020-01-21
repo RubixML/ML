@@ -48,7 +48,7 @@ class SoftPlus implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return log(1. + exp($z));
+        return log(1.0 + exp($z));
     }
 
     /**
@@ -57,6 +57,6 @@ class SoftPlus implements ActivationFunction
      */
     public function _differentiate(float $computed) : float
     {
-        return 1. / (1. + exp(-$computed));
+        return 1.0 / (1.0 + exp(-$computed));
     }
 }

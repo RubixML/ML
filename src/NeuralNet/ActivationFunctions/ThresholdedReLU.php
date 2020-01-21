@@ -34,7 +34,7 @@ class ThresholdedReLU implements ActivationFunction
      */
     public function __construct(float $threshold = 1.)
     {
-        if ($threshold < 0.) {
+        if ($threshold < 0.0) {
             throw new InvalidArgumentException('Threshold must be'
                 . " positive, $threshold given.");
         }
@@ -71,6 +71,6 @@ class ThresholdedReLU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > $this->threshold ? $z : 0.;
+        return $z > $this->threshold ? $z : 0.0;
     }
 }

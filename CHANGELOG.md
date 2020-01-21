@@ -1,4 +1,5 @@
 - Unreleased
+    - Added SiLU self-stabilizing activation function
     - Changed the default anomaly class for Radius Neighbors
     - Removed additional methods from guessing Strategies
     - Numeric String Converter now uses fixed NaN placeholder

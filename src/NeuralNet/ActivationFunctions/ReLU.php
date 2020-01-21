@@ -40,7 +40,7 @@ class ReLU implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->greater(0.);
+        return $z->greater(0.0);
     }
 
     /**
@@ -49,6 +49,6 @@ class ReLU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > 0. ? $z : 0.;
+        return $z > 0.0 ? $z : 0.0;
     }
 }

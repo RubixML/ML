@@ -33,9 +33,9 @@ class ELU implements ActivationFunction
      * @param float $alpha
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 1.)
+    public function __construct(float $alpha = 1.0)
     {
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha cannot be less than'
                 . " 0, $alpha given.");
         }
@@ -72,7 +72,7 @@ class ELU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > 0. ? $z : $this->alpha * (exp($z) - 1.);
+        return $z > 0.0 ? $z : $this->alpha * (exp($z) - 1.0);
     }
 
     /**
@@ -81,6 +81,6 @@ class ELU implements ActivationFunction
      */
     public function _differentiate(float $computed) : float
     {
-        return $computed > 0. ? 1. : $computed + $this->alpha;
+        return $computed > 0.0 ? 1.0 : $computed + $this->alpha;
     }
 }

@@ -36,7 +36,7 @@ class LeakyReLU implements ActivationFunction
      */
     public function __construct(float $leakage = 0.1)
     {
-        if ($leakage <= 0. or $leakage >= 1.) {
+        if ($leakage <= 0.0 or $leakage >= 1.0) {
             throw new InvalidArgumentException('Leakage must be between'
                 . " 0 and 1, $leakage given.");
         }
@@ -73,7 +73,7 @@ class LeakyReLU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > 0. ? $z : $this->leakage * $z;
+        return $z > 0.0 ? $z : $this->leakage * $z;
     }
 
     /**
@@ -82,6 +82,6 @@ class LeakyReLU implements ActivationFunction
      */
     public function _differentiate(float $z) : float
     {
-        return $z > 0. ? 1. : $this->leakage;
+        return $z > 0.0 ? 1.0 : $this->leakage;
     }
 }

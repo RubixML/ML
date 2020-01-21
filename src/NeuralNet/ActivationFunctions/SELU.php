@@ -55,7 +55,7 @@ class SELU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > 0. ? self::SCALE * $z : self::BETA * (exp($z) - 1.);
+        return $z > 0.0 ? self::SCALE * $z : self::BETA * (exp($z) - 1.0);
     }
 
     /**
@@ -64,6 +64,6 @@ class SELU implements ActivationFunction
      */
     public function _differentiate(float $computed) : float
     {
-        return $computed > 0. ? self::SCALE : self::SCALE * ($computed + self::ALPHA);
+        return $computed > 0.0 ? self::SCALE : self::SCALE * ($computed + self::ALPHA);
     }
 }
