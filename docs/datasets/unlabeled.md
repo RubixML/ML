@@ -10,19 +10,9 @@ Unlabeled datasets are used to train unsupervised learners and for feeding unkno
 | 2 | validate | true | bool | Should we validate the input? |
 
 ## Additional Methods
+This dataset does not have any additional methods.
 
-### Factory Methods
-Build a new unlabeled dataset with validation:
-```php
-public static build(array $samples = []) : self
-```
-
-Build a new unlabeled dataset foregoing validation:
-```php
-public static quick(array $samples = []) : self
-```
-
-**Example**
+## Example
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -33,11 +23,5 @@ $samples = [
     [0.001, -10, 'rough'],
 ];
 
-$dataset = new Unlabeled($samples); // With validation
-
-$dataset = new Unlabeled($samples, false); // Without validation
-
-$dataset = Unlabeled::build($samples);  // With validation
-
-$dataset = Unlabeled::quick($samples);  // Without validation
+$dataset = new Unlabeled($samples);
 ```

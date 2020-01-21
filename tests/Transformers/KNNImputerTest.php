@@ -3,12 +3,10 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\KNNImputer;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -49,9 +47,9 @@ class KNNImputerTest extends TestCase
             [100, 9.0],
         ]);
 
-        $this->generator = new Blob([30., 0.]);
+        $this->generator = new Blob([30.0, 0.0]);
 
-        $this->transformer = new KNNImputer(5, true, new SafeEuclidean(), '?');
+        $this->transformer = new KNNImputer(2, true, '?');
 
         srand(self::RANDOM_SEED);
     }
@@ -64,24 +62,21 @@ class KNNImputerTest extends TestCase
         $this->assertInstanceOf(KNNImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
     
     /**
      * @test
      */
-    public function fitUpdateTransform() : void
+    public function fitTransform() : void
     {
         $this->transformer->fit($this->dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
-        $this->transformer->update($this->generator->generate(30));
-
         $this->dataset->apply($this->transformer);
 
-        $this->assertEquals(29.80734050113017, $this->dataset[1][0]);
-        $this->assertEquals(-1.1980046085939537, $this->dataset[3][1]);
+        $this->assertEquals(23.692172188539388, $this->dataset[1][0]);
+        $this->assertEquals(-1.4826674509492581, $this->dataset[3][1]);
     }
     
     /**

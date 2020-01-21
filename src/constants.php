@@ -15,7 +15,7 @@ namespace Rubix\ML
     /**
      * Two multiplied by pi.
      */
-    const TWO_PI = 2. * M_PI;
+    const TWO_PI = 2.0 * M_PI;
 
     /**
      * Coefficient that determines floating point precision of

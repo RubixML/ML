@@ -50,7 +50,7 @@ $estimator = new KNearestNeighbors(3);
 > **Hint:** See the [Choosing an Estimator](choosing-an-estimator.md) section for an in-depth look at the estimators available to you in the library.
 
 ## Training
-Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction. In the case of K Nearest Neighbors, this representation is a high-dimensional Euclidean space in which each sample is considered a point. We define the *distance* between two points as their degree of dissimilarity. Conversely, points in this space that are similar will be closer together.
+Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction.
 
 To start training, pass the training dataset as a argument to the `train()` method on the learner instance.
 
@@ -68,12 +68,12 @@ var_dump($estimator->trained());
 bool(true)
 ```
 
-For our small training set, the entire training process should only take a matter of microseconds, but larger datasets with more features can take longer. Now that the learner is trained, in the next section we'll show how we can feed in unknown samples to generate predictions.
+For our small training set, the training process should only take a matter of microseconds, but larger datasets with more features can take longer. Now that the learner is trained, in the next section we'll show how we can feed in unknown samples to generate predictions.
 
 > **Hint:** See the [Training](training.md) section of the docs for a closer look at training a learner.
 
 ## Making Predictions
-Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on our newly trained estimator. The process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
+Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on our newly trained estimator. This process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 > **Note:** If you attempt to make predictions using an untrained learner, it will throw an exception.
 
@@ -108,9 +108,9 @@ The output of the estimator are the predicted class labels of the unknown sample
 > **Hint:** Check out the section on [Inference](inference.md) for more info on making predictions.
 
 ## Model Evaluation
-Let's imagine we went out and collected enough data from our married and divorced friends to build a 50 sample dataset with labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. To measure our estimator's ability to generalize what it has learned during training to the real world, we use a process called *cross validation*. The goal of cross validation is to train and test the learner on samples it has never seen before in order to produce a validation score.
+Let's imagine we went out and collected enough data from our married and divorced friends to build a  dataset consisting of 50 samples with their corresponding labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. By setting some data aside we are able to test the model on data it has never seen before. This technique is referred to as cross validation and its goal is to test an estimator's ability to generalize its training.
 
-For the purposes of the introduction, we will use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
+For the purposes of the introduction, we'll use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
 > **Note:** 20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
@@ -120,7 +120,7 @@ use Rubix\ML\CrossValidation\HoldOut;
 $validator = new HoldOut(0.2);
 ```
 
-The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as a scoring function. One classification metric we could use to score our estimator is [Accuracy](cross-validation/metrics/accuracy.md) which is defined as the number of true positives over the total number of predictions. A score of 1 indicates that the estimator was perfect in predicting the correct class label. 
+The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use to score our estimator is [Accuracy](cross-validation/metrics/accuracy.md) which is defined as the number of true positives over the total number of predictions. A score of 1 indicates that the estimator was perfect in predicting the correct class label. 
 
 To return a score from the Hold Out validator using the Accuracy metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
 

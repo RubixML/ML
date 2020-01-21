@@ -61,7 +61,7 @@ class Stats
 
         $total = array_sum($weights) ?: EPSILON;
 
-        $sigma = 0.;
+        $sigma = 0.0;
 
         foreach ($values as $i => $value) {
             $sigma += $value * $weights[$i];
@@ -78,7 +78,7 @@ class Stats
      */
     public static function midrange(array $values) : float
     {
-        return (min($values) + max($values)) / 2.;
+        return (min($values) + max($values)) / 2.0;
     }
 
     /**
@@ -120,7 +120,7 @@ class Stats
 
         $mean = $mean ?? self::mean($values);
 
-        $ssd = 0.;
+        $ssd = 0.0;
 
         foreach ($values as $value) {
             $ssd += ($value - $mean) ** 2;
@@ -151,7 +151,7 @@ class Stats
         if ($n % 2 === 1) {
             $median = $values[$mid];
         } else {
-            $median = ($values[$mid - 1] + $values[$mid]) / 2.;
+            $median = ($values[$mid - 1] + $values[$mid]) / 2.0;
         }
 
         return $median;
@@ -193,7 +193,7 @@ class Stats
         $percentiles = [];
 
         foreach ($p as $pHat) {
-            if ($pHat < 0. or $pHat > 100.) {
+            if ($pHat < 0.0 or $pHat > 100.0) {
                 throw new InvalidArgumentException('P must be between'
                     . " 0 and 100, $pHat given.");
             }
@@ -284,7 +284,7 @@ class Stats
 
         $mean = $mean ?? self::mean($values, $n);
 
-        $sigma = 0.;
+        $sigma = 0.0;
 
         foreach ($values as $value) {
             $sigma += ($value - $mean) ** $moment;
@@ -341,7 +341,7 @@ class Stats
         $numerator = self::centralMoment($values, 4, $mean, $n);
         $denominator = self::centralMoment($values, 2, $mean, $n) ** 2;
 
-        return $numerator / ($denominator ?: EPSILON) - 3.;
+        return $numerator / ($denominator ?: EPSILON) - 3.0;
     }
 
     /**

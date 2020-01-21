@@ -295,7 +295,7 @@ class KDTree implements BST, Spatial
      */
     public function range(array $sample, float $radius) : array
     {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }

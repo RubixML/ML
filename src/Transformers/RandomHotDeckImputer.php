@@ -2,18 +2,17 @@
 
 namespace Rubix\ML\Transformers;
 
-use RuntimeException;
+use Rubix\ML\DataType;
 
 use const Rubix\ML\PHI;
 
 /**
  * Random Hot Deck Imputer
  *
- * A method of imputation similar to KNN Imputer but instead of computing a
- * weighted average of the neighbors' features, Random Hot Deck picks a value
- * from the neighborhood at random. This makes Random Hot Deck Imputer slightly
- * less computationally complex while satisfying some balancing equations at
- * the same time.
+ * A method of imputation similar to KNN Imputer but instead of computing a weighted average
+ * of the neighbors' features, Random Hot Deck picks a value from the neighborhood randomly
+ * but sampled by distance. This makes Random Hot Deck Imputer slightly more computationally
+ * efficient while satisfying some balancing equations at the same time.
  *
  * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required
  * for continuous features.
@@ -32,23 +31,19 @@ class RandomHotDeckImputer extends KNNImputer
      *
      * @param (string|int|float)[] $values
      * @param float[] $distances
-     * @throws \RuntimeException
+     * @param \Rubix\ML\DataType $type
      * @return string|int|float
      */
-    protected function impute(array $values, array $distances)
+    protected function impute(array $values, array $distances, DataType $type)
     {
-        if (empty($values)) {
-            throw new RuntimeException('Cannot impute because of 0 donors.');
-        }
-
         if ($this->weighted) {
             $weights = [];
 
             foreach ($distances as $distance) {
-                $weights[] = 1. / (1. + $distance);
+                $weights[] = 1.0 / (1.0 + $distance);
             }
 
-            $value = $values[0];
+            $value = $type->isContinuous() ? NAN : '?';
 
             $max = (int) round(array_sum($weights) * PHI);
 
@@ -57,7 +52,7 @@ class RandomHotDeckImputer extends KNNImputer
             foreach ($weights as $index => $weight) {
                 $delta -= $weight;
 
-                if ($delta <= 0.) {
+                if ($delta <= 0.0) {
                     $value = $values[$index];
                         
                     break 1;

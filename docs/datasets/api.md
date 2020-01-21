@@ -104,6 +104,16 @@ Return the data type for a given column index:
 public columnType(int $index) : DataType
 ```
 
+**Example**
+
+```php
+echo $dataset->columnType(5);
+```
+
+```sh
+categorical
+```
+
 ## Applying Transformations
 You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object. The method returns self for chaining.
 
@@ -130,17 +140,13 @@ public transformColumn(int $column, callable $callback) : self
 **Example**
 
 ```php
-$dataset = $dataset->transformColumn(0, 'log1p'); // Log transform column 0
+$dataset = $dataset->transformColumn(0, 'log1p'); // Log transform
 
 $dataset = $dataset->transformColumn(6, function ($value) {
     return $value === 0 ? NAN : $value; // Replace 0 with NaN
 });
 
-$dataset = $dataset->transformColumn(15, function ($value) {
-    return $value === 'NA' ? '?' : $value; // Replace the 'NA' category with '?'
-});
-
-$dataset = $dataset->transformColumn(32, function ($value) {
+$dataset = $dataset->transformColumn(5, function ($value) {
     return min($value, 1000); // Cap values at 1000
 });
 ```
@@ -208,12 +214,12 @@ $subset = $dataset->tail(10);
 ```
 
 ## Taking and Leaving
-Remove **n** rows from the dataset and return them in a new dataset:
+Remove *n* rows from the dataset and return them in a new dataset:
 ```php
 public take(int $n = 1) : self
 ```
 
-Leave **n** samples on the dataset and return the rest in a new dataset:
+Leave *n* samples on the dataset and return the rest in a new dataset:
 ```php
 public leave(int $n = 1) : self
 ```
@@ -266,11 +272,9 @@ public fold(int $k = 10) : array
 ```php
 $folds = $dataset->fold(8);
 
-var_dump(count($folds));
-```
-
-```sh
-int(8)
+foreach ($folds as $fold) {
+    // ...
+}
 ```
 
 ## Batching
@@ -282,7 +286,11 @@ public batch(int $n = 50) : array
 **Example**
 
 ```php
-$batches = $dataset->batch(1000);
+$batches = $dataset->batch(250);
+
+foreach ($batches as $batch) {
+    // ...
+}
 ```
 
 ## Randomization
@@ -423,9 +431,7 @@ public describe() : array
 **Example**
 
 ```php
-$stats = $dataset->describe();
-
-print_r($stats);
+print_r($dataset->describe());
 ```
 
 ```sh
@@ -485,6 +491,16 @@ public toNDJSON() : string
 Return the dataset as comma-separated values (CSV) string:
 ```php
 public toCSV(string $delimiter = ',', string $enclosure = '"') : string
+```
+
+**Example**
+
+```php
+file_put_contents('dataset.csv', $dataset->toCSV());
+
+// ...
+
+file_put_contents('dataset.ndjson', $dataset->toNDJSON());
 ```
 
 ## Previewing in the Console

@@ -1,5 +1,6 @@
 - Unreleased
     - Added SiLU self-stabilizing activation function
+    - KNN-based imputers now accelerated by spatial tree
     - Changed the default anomaly class for Radius Neighbors
     - Removed additional methods from guessing Strategies
     - Numeric String Converter now uses fixed NaN placeholder

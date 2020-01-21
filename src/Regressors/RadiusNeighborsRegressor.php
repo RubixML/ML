@@ -166,7 +166,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
                 $weights = [];
 
                 foreach ($distances as $distance) {
-                    $weights[] = 1. / (1. + $distance);
+                    $weights[] = 1.0 / (1.0 + $distance);
                 }
 
                 $predictions[] = Stats::weightedMean($labels, $weights);

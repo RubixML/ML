@@ -191,10 +191,10 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             }
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
                 }
             } else {
                 $weights = array_count_values($labels);
@@ -223,7 +223,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        $template = array_fill_keys($this->classes, 0.);
+        $template = array_fill_keys($this->classes, 0.0);
 
         $probabilities = [];
 
@@ -233,7 +233,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             $dist = $template;
 
             if (empty($labels)) {
-                $dist[$this->anomalyClass] = 1.;
+                $dist[$this->anomalyClass] = 1.0;
 
                 $probabilities[] = $dist;
 
@@ -241,10 +241,10 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             }
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
                 }
             } else {
                 $weights = array_count_values($labels);

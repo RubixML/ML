@@ -157,7 +157,7 @@ class BallTree implements BST, Spatial
     /**
      * Search the tree for a leaf node or return null if not found.
      *
-     * @param (int|float)[] $sample
+     * @param (string|int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Cluster|null
      */
     public function search(array $sample) : ?Cluster
@@ -177,7 +177,7 @@ class BallTree implements BST, Spatial
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param (int|float)[] $sample
+     * @param (string|int|float)[] $sample
      * @return mixed[]
      */
     public function path(array $sample) : array
@@ -219,7 +219,7 @@ class BallTree implements BST, Spatial
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param (int|float)[] $sample
+     * @param (string|int|float)[] $sample
      * @param int $k
      * @throws \InvalidArgumentException
      * @return array[]
@@ -237,9 +237,7 @@ class BallTree implements BST, Spatial
 
         $stack = $this->path($sample);
 
-        while ($stack) {
-            $current = array_pop($stack);
-
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -289,7 +287,7 @@ class BallTree implements BST, Spatial
      * Return all samples, labels, and distances within a given radius of a
      * sample.
      *
-     * @param (int|float)[] $sample
+     * @param (string|int|float)[] $sample
      * @param float $radius
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -297,7 +295,7 @@ class BallTree implements BST, Spatial
      */
     public function range(array $sample, float $radius) : array
     {
-        if ($radius <= 0.) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }

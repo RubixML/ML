@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">[source]</a></span>
 
 # Labeled
-A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset by the label column.
+A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
 > **Note:** Labels can be either categorical or continuous data types but NaN values are not allowed.
 
@@ -13,40 +13,6 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 | 3 | validate | true | bool | Should we validate the data? |
 
 ## Additional Methods
-
-### Factory Methods
-Build a new labeled dataset with validation:
-```php
-public static build(array $samples = [], array $labels = []) : self
-```
-
-Build a new labeled dataset foregoing validation:
-```php
-public static quick(array $samples = [], array $labels = []) : self
-```
-
-**Example**
-
-```php
-use Rubix\ML\Datasets\Labeled;
-
-$samples = [
-    [0.1, 20, 'furry'],
-    [2.0, -5, 'rough'],
-    [0.01, 5, 'furry'],
-];
-
-$labels = ['not monster', 'monster', 'not monster'];
-
-
-$dataset = new Labeled($samples, $labels); // With validation
-
-$dataset = new Labeled($samples, $labels, false); // Without validation
-
-$dataset = Labeled::build($samples, $labels);  // With validation
-
-$dataset = Labeled::quick($samples, $labels);  // Without validation
-```
 
 ### Selectors
 Return an array of labels:
@@ -102,7 +68,7 @@ array(2) {
 }
 ```
 
-### Transform
+### Transform Labels
 Transform the labels in the dataset using a callback function and return self for method chaining:
 ```php
 public transformLabels(callable $fn) : self
@@ -293,4 +259,20 @@ Array
         )
 
 )
+```
+
+## Example
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$samples = [
+    [0.1, 20, 'furry'],
+    [2.0, -5, 'rough'],
+    [0.01, 5, 'furry'],
+];
+
+$labels = ['not monster', 'monster', 'not monster'];
+
+
+$dataset = new Labeled($samples, $labels);
 ```

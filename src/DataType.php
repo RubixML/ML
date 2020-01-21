@@ -9,19 +9,19 @@ use function in_array;
 
 class DataType
 {
-    public const OTHER = 0;
     public const CONTINUOUS = 1;
     public const CATEGORICAL = 2;
     public const IMAGE = 3;
+    public const OTHER = 0;
 
-    public const TYPE_STRINGS = [
+    protected const TYPE_STRINGS = [
         self::OTHER => 'other',
         self::CONTINUOUS => 'continuous',
         self::CATEGORICAL => 'categorical',
         self::IMAGE => 'image',
     ];
 
-    public const ALL = [
+    protected const ALL = [
         self::CONTINUOUS,
         self::CATEGORICAL,
         self::IMAGE,
@@ -64,12 +64,9 @@ class DataType
                 switch (get_resource_type($value)) {
                     case 'gd':
                         return new self(self::IMAGE);
-
-                    default:
-                        return new self(self::OTHER);
                 }
 
-                // no break
+                return new self(self::OTHER);
             default:
                 return new self(self::OTHER);
         }
