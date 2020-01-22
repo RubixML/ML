@@ -52,7 +52,7 @@ A technique for handling missing data is a preprocessing step called *imputation
 **Examples**
 
 | Transformer | Data Types | Stateful | Elastic |
-|---|---|---|---|---|
+|---|---|---|---|
 | [KNN Imputer](transformers/knn-imputer.md) | Continuous, Categorical | ● | |
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | Continuous, Categorical| ● | |
 | [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) |Continuous, Categorical | ● | |
