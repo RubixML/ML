@@ -47,7 +47,7 @@ class KDNeighborsRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
         $this->estimator = new KDNeighborsRegressor(5, true, new KDTree());
         
@@ -70,6 +70,16 @@ class KDNeighborsRegressorTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KDNeighborsRegressor(0);
     }
 
     /**

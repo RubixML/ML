@@ -85,6 +85,16 @@ class RandomForestTest extends TestCase
     /**
      * @test
      */
+    public function badNumEstimators() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RandomForest(null, -100);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

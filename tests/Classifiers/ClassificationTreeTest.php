@@ -85,6 +85,16 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
+    public function badMaxDepth() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ClassificationTree(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

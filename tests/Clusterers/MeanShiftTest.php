@@ -88,6 +88,16 @@ class MeanShiftTest extends TestCase
     /**
      * @test
      */
+    public function badRadius() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MeanShift(0.0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());

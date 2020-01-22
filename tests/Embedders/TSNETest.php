@@ -39,12 +39,12 @@ class TSNETest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->embedder = new TSNE(1, 10., 10, 12., 500, 1e-7, 10, new Euclidean());
+        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
 
@@ -58,6 +58,16 @@ class TSNETest extends TestCase
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
         $this->assertInstanceOf(Verbose::class, $this->embedder);
+    }
+
+    /**
+     * @test
+     */
+    public function badNumDimensions() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(0);
     }
 
     /**

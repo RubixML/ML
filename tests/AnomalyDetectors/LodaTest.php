@@ -70,6 +70,19 @@ class LodaTest extends TestCase
     /**
      * @test
      */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Loda::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Ranking::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badNumEstimators() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -85,19 +98,6 @@ class LodaTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new Loda(100, 0);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Loda::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Ranking::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     /**

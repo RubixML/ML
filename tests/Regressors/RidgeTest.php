@@ -74,6 +74,16 @@ class RidgeTest extends TestCase
     /**
      * @test
      */
+    public function badAlpha() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Ridge(-1e-4);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

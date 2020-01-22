@@ -70,16 +70,6 @@ class LocalOutlierFactorTest extends TestCase
     /**
      * @test
      */
-    public function badK() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new LocalOutlierFactor(-10);
-    }
-
-    /**
-     * @test
-     */
     public function build() : void
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
@@ -87,6 +77,16 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new LocalOutlierFactor(0);
     }
 
     /**

@@ -69,6 +69,18 @@ class RobustZScoreTest extends TestCase
     /**
      * @test
      */
+    public function build() : void
+    {
+        $this->assertInstanceOf(RobustZScore::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Ranking::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badThreshold() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -84,18 +96,6 @@ class RobustZScoreTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new RobustZScore(3.5, 1.5);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(RobustZScore::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Ranking::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     /**

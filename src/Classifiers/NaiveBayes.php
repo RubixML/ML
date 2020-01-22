@@ -19,7 +19,6 @@ use RuntimeException;
 
 use function Rubix\ML\logsumexp;
 use function count;
-use function gettype;
 
 use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
@@ -52,11 +51,11 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     protected $alpha;
 
     /**
-     * The class prior probabilities.
+     * The class prior log probabilities.
      *
      * @var float[]|null
      */
-    protected $priors;
+    protected $logPriors;
 
     /**
      * Should we compute the prior probabilities from the training set?
@@ -105,7 +104,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * @param float $alpha
-     * @param float[]|null $priors
+     * @param (int|float)[]|null $priors
      * @throws \InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0, ?array $priors = null)
@@ -116,25 +115,15 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($priors) {
-            foreach ($priors as $weight) {
-                if (!is_float($weight)) {
-                    throw new InvalidArgumentException('Weight must be'
-                        . ' a floating point number, ' . gettype($weight)
-                        . ' given.');
-                }
-            }
-
             $total = array_sum($priors) ?: EPSILON;
 
-            if ($total != 1) {
-                foreach ($priors as &$weight) {
-                    $weight = log($weight / $total);
-                }
+            foreach ($priors as &$prior) {
+                $prior = log($prior / $total);
             }
         }
         
         $this->alpha = $alpha;
-        $this->priors = $priors;
+        $this->logPriors = $priors;
         $this->fitPriors = is_null($priors);
     }
 
@@ -179,11 +168,11 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         $priors = [];
 
-        if ($this->priors) {
-            $total = logsumexp($this->priors);
+        if ($this->logPriors) {
+            $total = logsumexp($this->logPriors);
 
-            foreach ($this->priors as $class => $weight) {
-                $priors[$class] = exp($weight - $total);
+            foreach ($this->logPriors as $class => $prior) {
+                $priors[$class] = exp($prior - $total);
             }
         }
 
@@ -279,12 +268,14 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
+            $this->logPriors = [];
+            
             $total = (array_sum($this->weights)
                 + (count($this->weights) * $this->alpha))
                 ?: EPSILON;
 
             foreach ($this->weights as $class => $weight) {
-                $this->priors[$class] = log(($weight + $this->alpha) / $total);
+                $this->logPriors[$class] = log(($weight + $this->alpha) / $total);
             }
         }
     }
@@ -356,7 +347,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         $likelihoods = [];
 
         foreach ($this->probs as $class => $probs) {
-            $likelihood = $this->priors[$class] ?? LOG_EPSILON;
+            $likelihood = $this->logPriors[$class] ?? LOG_EPSILON;
 
             foreach ($sample as $column => $value) {
                 $likelihood += $probs[$column][$value] ?? LOG_EPSILON;

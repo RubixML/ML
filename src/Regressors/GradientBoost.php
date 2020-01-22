@@ -191,12 +191,12 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . ' with the ensemble.');
         }
 
-        if ($rate <= 0. or $rate > 1.) {
+        if ($rate <= 0.0 or $rate > 1.0) {
             throw new InvalidArgumentException('Learning rate must be between'
                 . " 0 and 1, $rate given.");
         }
 
-        if ($ratio <= 0. or $ratio > 1.) {
+        if ($ratio <= 0.0 or $ratio > 1.0) {
             throw new InvalidArgumentException('Ratio must be between 0 and 1,'
                 . " $ratio given.");
         }
@@ -206,7 +206,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " 1 estimator, $estimators given.");
         }
 
-        if ($minChange < 0.) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }

@@ -75,6 +75,16 @@ class RadiusNeighborsRegressorTest extends TestCase
     /**
      * @test
      */
+    public function badRadius() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RadiusNeighborsRegressor(0.0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

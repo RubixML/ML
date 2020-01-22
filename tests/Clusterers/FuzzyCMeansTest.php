@@ -88,6 +88,16 @@ class FuzzyCMeansTest extends TestCase
     /**
      * @test
      */
+    public function badC() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new FuzzyCMeans(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());

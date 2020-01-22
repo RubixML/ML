@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ class GradientBoostTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
 
         $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RSquared());
     
@@ -73,6 +74,26 @@ class GradientBoostTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function incompatibleBooster() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GradientBoost(new DummyRegressor());
+    }
+
+    /**
+     * @test
+     */
+    public function badLearningRate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GradientBoost(null, -1e-3);
     }
 
     /**

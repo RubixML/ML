@@ -82,6 +82,16 @@ class KDNeighborsTest extends TestCase
     /**
      * @test
      */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KDNeighbors(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

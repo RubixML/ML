@@ -56,7 +56,7 @@ class MLPRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
 
         $this->estimator = new MLPRegressor([
             new Dense(10),
@@ -88,6 +88,16 @@ class MLPRegressorTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badBatchSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MLPRegressor([], -100);
     }
 
     /**

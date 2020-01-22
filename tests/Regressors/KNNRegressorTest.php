@@ -77,6 +77,16 @@ class KNNRegressorTest extends TestCase
     /**
      * @test
      */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KNNRegressor(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

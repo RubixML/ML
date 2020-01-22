@@ -4,9 +4,9 @@ namespace Rubix\ML\Tests\Clusterers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -64,6 +64,16 @@ class DBSCANTest extends TestCase
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badRadius() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new DBSCAN(0.0);
     }
 
     /**

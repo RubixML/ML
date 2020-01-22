@@ -83,6 +83,16 @@ class AdalineTest extends TestCase
     /**
      * @test
      */
+    public function badBatchSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Adaline(-100);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

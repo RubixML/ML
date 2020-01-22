@@ -78,6 +78,16 @@ class ExtraTreeRegressorTest extends TestCase
     /**
      * @test
      */
+    public function badMaxDepth() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

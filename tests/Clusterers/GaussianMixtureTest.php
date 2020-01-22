@@ -87,6 +87,16 @@ class GaussianMixtureTest extends TestCase
     /**
      * @test
      */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GaussianMixture(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());

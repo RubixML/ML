@@ -90,6 +90,16 @@ class LogisticRegressionTest extends TestCase
     /**
      * @test
      */
+    public function badBatchSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new LogisticRegression(-100);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

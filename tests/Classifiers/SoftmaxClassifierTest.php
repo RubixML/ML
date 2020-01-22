@@ -91,6 +91,16 @@ class SoftmaxClassifierTest extends TestCase
     /**
      * @test
      */
+    public function badBatchSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new SoftmaxClassifier(-100);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

@@ -90,6 +90,16 @@ class KMeansTest extends TestCase
     /**
      * @test
      */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KMeans(0);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());

@@ -87,6 +87,16 @@ class AdaBoostTest extends TestCase
     /**
      * @test
      */
+    public function badLearningRate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new AdaBoost(null, -1e-3);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
