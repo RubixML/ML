@@ -22,6 +22,11 @@ use InvalidArgumentException;
  */
 class ITree implements BST
 {
+    /**
+     * The maximum size of a leaf node in the tree.
+     *
+     * @var int
+     */
     protected const MAX_LEAF_SIZE = 1;
     
     /**

@@ -29,6 +29,11 @@ use const Rubix\ML\EPSILON;
  */
 class Adam implements Optimizer, Adaptive
 {
+    /**
+     * The number of initial steps to perform bias correction.
+     *
+     * @var int
+     */
     protected const WARM_UP_STEPS = 50;
 
     /**
@@ -90,17 +95,17 @@ class Adam implements Optimizer, Adaptive
      */
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
-        if ($rate <= 0.) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
-        if ($momentumDecay <= 0. or $momentumDecay >= 1.) {
+        if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
             throw new InvalidArgumentException('Momentum decay must be between'
                 . " 0 and 1, $momentumDecay given.");
         }
 
-        if ($normDecay <= 0. or $normDecay >= 1.) {
+        if ($normDecay <= 0.0 or $normDecay >= 1.) {
             throw new InvalidArgumentException('Norm decay must be between'
                 . " 0 and 1, $normDecay given.");
         }
@@ -108,8 +113,8 @@ class Adam implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
-        $this->beta1 = 1. - $momentumDecay;
-        $this->beta2 = 1. - $normDecay;
+        $this->beta1 = 1.0 - $momentumDecay;
+        $this->beta2 = 1.0 - $normDecay;
     }
 
     /**
@@ -149,9 +154,9 @@ class Adam implements Optimizer, Adaptive
         if ($this->t < self::WARM_UP_STEPS) {
             ++$this->t;
             
-            $velocity = $velocity->divide(1. - $this->beta1 ** $this->t);
+            $velocity = $velocity->divide(1.0 - $this->beta1 ** $this->t);
 
-            $norm = $norm->divide(1. - $this->beta2 ** $this->t);
+            $norm = $norm->divide(1.0 - $this->beta2 ** $this->t);
         }
 
         return $velocity->multiply($this->rate)

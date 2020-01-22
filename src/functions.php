@@ -5,7 +5,7 @@ namespace Rubix\ML
     /**
      * Compute the argmin of the given values.
      *
-     * @param array<int|float> $values
+     * @param (int|float)[] $values
      * @return mixed
      */
     function argmin(array $values)
@@ -16,7 +16,7 @@ namespace Rubix\ML
     /**
      * Compute the argmax of the given values.
      *
-     * @param array<int|float> $values
+     * @param (int|float)[] $values
      * @return mixed
      */
     function argmax(array $values)
@@ -27,7 +27,7 @@ namespace Rubix\ML
     /**
      * Compute the log of the sum of exponential values.
      *
-     * @param array<int|float> $values
+     * @param (int|float)[] $values
      * @return float
      */
     function logsumexp(array $values) : float

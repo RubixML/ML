@@ -89,7 +89,7 @@ $dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com) or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object.
+Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com) or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
 
 **Example**
 

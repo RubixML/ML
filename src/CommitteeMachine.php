@@ -37,6 +37,11 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 
+    /**
+     * The integer-encoded estimator types this ensemble is compatible with.
+     *
+     * @var int[]
+     */
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
@@ -108,14 +113,14 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         if (!in_array($type, self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
                 . ' only supports classifiers, regressors, and anomaly'
-                . ' detectors, ' . self::TYPES[$type] . ' given.');
+                . ' detectors, ' . self::TYPE_STRINGS[$type] . ' given.');
         }
 
         foreach ($experts as $expert) {
             if ($expert->type() !== $type) {
                 throw new InvalidArgumentException('Experts must all be of'
-                    . ' the same type, ' . self::TYPES[$type] . ' expected'
-                    . ' but found ' . self::TYPES[$expert->type()] . '.');
+                    . ' the same type, ' . self::TYPE_STRINGS[$type] . ' expected'
+                    . ' but found ' . self::TYPE_STRINGS[$expert->type()] . '.');
             }
         }
 

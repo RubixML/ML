@@ -42,6 +42,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
 {
     use Multiprocessing, PredictsSingle, ProbaSingle;
 
+    /**
+     * The class names of the learners that the ensemble is compatible with.
+     *
+     * @var string[]
+     */
     public const COMPATIBLE_LEARNERS = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,

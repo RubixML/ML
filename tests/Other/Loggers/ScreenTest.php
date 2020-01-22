@@ -21,7 +21,7 @@ class ScreenTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->logger = new Screen('default', Screen::DEFAULT_TIMESTAMP_FORMAT);
+        $this->logger = new Screen('default');
     }
     
     /**

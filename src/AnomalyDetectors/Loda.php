@@ -42,6 +42,11 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 {
     use PredictsSingle, RankSingle;
     
+    /**
+     * The minimum dimensionality required to produce sparse projections.
+     *
+     * @var int
+     */
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
     /**

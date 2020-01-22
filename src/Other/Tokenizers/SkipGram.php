@@ -23,9 +23,25 @@ use function array_slice;
  */
 class SkipGram implements Tokenizer
 {
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+    /**
+     * The regular expression to match words in a sentence.
+     *
+     * @var string
+     */
     protected const WORD_REGEX = '/\w+/u';
 
+    /**
+     * The regular expression to match sentences in a blob of text.
+     *
+     * @var string
+     */
+    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+
+    /**
+     * The separator between words in the n-gram.
+     *
+     * @var string
+     */
     protected const SEPARATOR = ' ';
 
     /**

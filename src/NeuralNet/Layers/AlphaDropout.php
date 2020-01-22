@@ -23,6 +23,11 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
  */
 class AlphaDropout extends Dropout
 {
+    /**
+     * The negative saturation value of SELU.
+     *
+     * @var float
+     */
     protected const ALPHA_P = -SELU::ALPHA * SELU::SCALE;
 
     /**
@@ -46,7 +51,7 @@ class AlphaDropout extends Dropout
     {
         parent::__construct($ratio);
 
-        $this->alpha = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
+        $this->alpha = ((1.0 - $ratio) * (1.0 + $ratio * self::ALPHA_P ** 2)) ** -0.5;
         $this->beta = -$this->alpha * self::ALPHA_P * $ratio;
     }
 
@@ -79,6 +84,6 @@ class AlphaDropout extends Dropout
      */
     public function saturate(int $value) : float
     {
-        return $value === 0 ? self::ALPHA_P : 0.;
+        return $value === 0 ? self::ALPHA_P : 0.0;
     }
 }

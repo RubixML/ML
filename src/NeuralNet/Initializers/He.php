@@ -22,6 +22,11 @@ use Tensor\Matrix;
  */
 class He implements Initializer
 {
+    /**
+     * Half of the square root of 2.
+     *
+     * @var float
+     */
     protected const ETA = 0.70710678118;
     
     /**

@@ -40,6 +40,11 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle, RankSingle;
     
+    /**
+     * The expected value of the MAD as n goes to ∞.
+     *
+     * @var float
+     */
     protected const ETA = 0.6745;
 
     /**
@@ -50,8 +55,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     protected $threshold;
 
     /**
-     * The weight of the maximum per sample z score in the overall anomaly
-     * score.
+     * The weight of the maximum per sample z score in the overall anomaly score.
      *
      * @var float
      */

@@ -29,13 +29,41 @@ use const Rubix\ML\EPSILON;
  */
 abstract class CART implements DecisionTree
 {
+    /**
+     * The ratio of samples to use when evaluating a split on a continuous feature column.
+     *
+     * @var float
+     */
     protected const DOWNSAMPLE_RATIO = 0.25;
 
+    /**
+     * The amount of impurity to tolerate when determining a perfect split.
+     *
+     * @var float
+     */
     protected const IMPURITY_TOLERANCE = 1e-4;
 
+    /**
+     * The minimum number of percentiles to generate when evaluating a split of a continuous
+     * feature column.
+     *
+     * @var int
+     */
     protected const MIN_PERCENTILES = 3;
+
+    /**
+     * The maximum number of percentiles to generate when evaluating a split of a continuous
+     * feature column.
+     *
+     * @var int
+     */
     protected const MAX_PERCENTILES = 200;
 
+    /**
+     * The glyph that denotes a branch of the tree.
+     *
+     * @var string
+     */
     protected const BRANCH_INDENTER = '|---';
 
     /**

@@ -24,8 +24,18 @@ use function count;
  */
 class SparseRandomProjector extends GaussianRandomProjector
 {
+    /**
+     * The square root of 3.
+     *
+     * @var float
+     */
     protected const ROOT_3 = 1.73205080757;
     
+    /**
+     * The numbers to draw from when generating the random matrix.
+     *
+     * @var float[]
+     */
     protected const DISTRIBUTION = [-self::ROOT_3, 0.0, 0.0, 0.0, 0.0, self::ROOT_3];
 
     /**

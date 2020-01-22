@@ -21,9 +21,25 @@ use Tensor\Matrix;
  */
 class SELU implements ActivationFunction
 {
+    /**
+     * The value at which leakage starts to saturate.
+     *
+     * @var float
+     */
     public const ALPHA = 1.6732632423543772848170429916717;
+
+    /**
+     * The scaling coefficient.
+     *
+     * @var float
+     */
     public const SCALE = 1.0507009873554804934193349852946;
 
+    /**
+     * The scaling coefficient multiplied by alpha.
+     *
+     * @var float
+     */
     protected const BETA = self::SCALE * self::ALPHA;
 
     /**

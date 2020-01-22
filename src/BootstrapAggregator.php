@@ -78,7 +78,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
                 . ' only supports classifiers, regressors, and anomaly'
-                . ' detectors, ' . self::TYPES[$base->type()] . ' given.');
+                . ' detectors, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
         }
 
         if ($estimators < 1) {

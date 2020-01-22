@@ -39,6 +39,11 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle, RankSingle;
     
+    /**
+     * The default minimum anomaly score for a sample to be flagged.
+     *
+     * @var float
+     */
     protected const DEFAULT_THRESHOLD = 1.5;
 
     /**

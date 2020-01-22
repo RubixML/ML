@@ -17,6 +17,11 @@ use Rubix\ML\DataType;
  */
 class NumericStringConverter implements Transformer
 {
+    /**
+     * The numeric string representation of NaN.
+     *
+     * @var string
+     */
     public const NAN_PLACEHOLDER = 'NaN';
 
     /**

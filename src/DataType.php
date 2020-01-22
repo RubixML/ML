@@ -9,11 +9,39 @@ use function in_array;
 
 class DataType
 {
+    /**
+     * The continuous data type i.e. integers or floating point numbers.
+     *
+     * @var int
+     */
     public const CONTINUOUS = 1;
+
+    /**
+     * The categorical data type i.e. strings.
+     *
+     * @var int
+     */
     public const CATEGORICAL = 2;
+
+    /**
+     * The image data type i.e. a GD resource.
+     *
+     * @var int
+     */
     public const IMAGE = 3;
+
+    /**
+     * Any other data type that is not supported natively.
+     *
+     * @var int
+     */
     public const OTHER = 0;
 
+    /**
+     * The human-readable string representations of the high-level data types.
+     *
+     * @var string[]
+     */
     protected const TYPE_STRINGS = [
         self::OTHER => 'other',
         self::CONTINUOUS => 'continuous',
@@ -21,6 +49,11 @@ class DataType
         self::IMAGE => 'image',
     ];
 
+    /**
+     * An array of all the high-level data types.
+     *
+     * @var int[]
+     */
     protected const ALL = [
         self::CONTINUOUS,
         self::CATEGORICAL,

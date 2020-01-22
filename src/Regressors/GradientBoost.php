@@ -52,6 +52,11 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
+    /**
+     * The class names of the compatible learners to used as boosters.
+     *
+     * @var string[]
+     */
     public const COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
@@ -222,7 +227,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
         if ($base and $base->type() !== self::REGRESSOR) {
             throw new InvalidArgumentException('Base estimator must be a'
-                . ' regressor, ' . self::TYPES[$base->type()] . ' given.');
+                . ' regressor, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
         }
 
         $this->booster = $booster ?? new RegressionTree(3);

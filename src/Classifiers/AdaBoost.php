@@ -144,7 +144,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     ) {
         if ($base and $base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
-                . ' classifier, ' . self::TYPES[$base->type()] . ' given.');
+                . ' classifier, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
         }
 
         if ($rate < 0.0) {
@@ -268,7 +268,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $p = (int) round($this->ratio * $n);
         $k = count($this->classes);
 
-        $threshold = 1. - (1. / $k);
+        $threshold = 1.0 - (1.0 / $k);
         $prevLoss = INF;
 
         $this->ensemble = $this->influences = $this->steps = [];
@@ -284,7 +284,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $predictions = $estimator->predict($dataset);
             
-            $loss = 0.;
+            $loss = 0.0;
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction !== $labels[$i]) {
@@ -316,7 +316,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             }
 
             $influence = $this->rate
-                * (log((1. - $loss) / ($loss ?: EPSILON))
+                * (log((1.0 - $loss) / ($loss ?: EPSILON))
                 + log($k - 1));
 
             $this->ensemble[] = $estimator;
@@ -413,7 +413,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $scores = array_fill(
             0,
             $dataset->numRows(),
-            array_fill_keys($this->classes, 0.)
+            array_fill_keys($this->classes, 0.0)
         );
 
         foreach ($this->ensemble as $i => $estimator) {

@@ -42,16 +42,60 @@ class TSNE implements Embedder, Verbose
 {
     use LoggerAware;
 
+    /**
+     * The initial momentum coefficient.
+     *
+     * @var float
+     */
     protected const INIT_MOMENTUM = 0.5;
+
+    /**
+     * The amount of momentum added after the early exaggeration stage.
+     *
+     * @var float
+     */
     protected const MOMENTUM_BOOST = 0.3;
 
+    /**
+     * The maximum number of binary search attempts.
+     *
+     * @var int
+     */
     protected const MAX_BINARY_PRECISION = 100;
+
+    /**
+     * The amount of binary search error to tolerate.
+     *
+     * @var float
+     */
     protected const PERPLEXITY_TOLERANCE = 1e-5;
 
+    /**
+     * The scaling coefficient of the initial embedding.
+     *
+     * @var float
+     */
     protected const Y_INIT = 1e-4;
 
+    /**
+     * The amount of gain to add while the direction of the gradient is the same.
+     *
+     * @var float
+     */
     protected const GAIN_ACCELERATE = 0.2;
+
+    /**
+     * The amount of brake to apply when the direction of the gradient changes.
+     *
+     * @var float
+     */
     protected const GAIN_BRAKE = 0.8;
+
+    /**
+     * The minimum amount of gain to apply at each update.
+     *
+     * @var float
+     */
     protected const MIN_GAIN = 0.01;
 
     /**
@@ -166,9 +210,9 @@ class TSNE implements Embedder, Verbose
      */
     public function __construct(
         int $dimensions = 2,
-        float $rate = 100.,
+        float $rate = 100.0,
         int $perplexity = 30,
-        float $exaggeration = 12.,
+        float $exaggeration = 12.0,
         int $epochs = 1000,
         float $minGradient = 1e-7,
         int $window = 5,
@@ -179,7 +223,7 @@ class TSNE implements Embedder, Verbose
                 . " dimension, $dimensions given.");
         }
 
-        if ($rate <= 0.) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be greater'
                 . " than 0, $rate given.");
         }
@@ -189,7 +233,7 @@ class TSNE implements Embedder, Verbose
                 . " than 1, $perplexity given.");
         }
 
-        if ($exaggeration < 1.) {
+        if ($exaggeration < 1.0) {
             throw new InvalidArgumentException('Early exaggeration must be 1'
              . " or greater, $exaggeration given.");
         }
@@ -199,7 +243,7 @@ class TSNE implements Embedder, Verbose
                 . " least 1 epoch, $epochs given.");
         }
 
-        if ($minGradient < 0.) {
+        if ($minGradient < 0.0) {
             throw new InvalidArgumentException('Mminimum gradient must be'
                 . " 0 or greater, $minGradient given.");
         }
@@ -211,7 +255,7 @@ class TSNE implements Embedder, Verbose
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
-        $this->c = 2. * (1. + $this->degrees) / $this->degrees;
+        $this->c = 2.0 * (1. + $this->degrees) / $this->degrees;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
@@ -409,17 +453,17 @@ class TSNE implements Embedder, Verbose
         foreach ($distances as $i => $row) {
             $minBeta = -INF;
             $maxBeta = INF;
-            $beta = 1.;
+            $beta = 1.0;
 
             for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
                 $temp = [];
-                $pSigma = 0.;
+                $pSigma = 0.0;
 
                 foreach ($row as $k => $distance) {
                     if ($i !== $k) {
                         $affinity = exp(-$distance * $beta);
                     } else {
-                        $affinity = 0.;
+                        $affinity = 0.0;
                     }
 
                     $temp[] = $affinity;
@@ -427,11 +471,11 @@ class TSNE implements Embedder, Verbose
                     $pSigma += $affinity;
                 }
 
-                if ($pSigma === 0.) {
+                if ($pSigma === 0.0) {
                     $pSigma = EPSILON;
                 }
 
-                $distSigma = 0.;
+                $distSigma = 0.0;
 
                 foreach ($temp as $k => &$affinity) {
                     $affinity /= $pSigma;
@@ -447,21 +491,21 @@ class TSNE implements Embedder, Verbose
                     break 1;
                 }
 
-                if ($diff < 0.) {
+                if ($diff < 0.0) {
                     $minBeta = $beta;
 
                     if ($maxBeta === INF) {
-                        $beta *= 2.;
+                        $beta *= 2.0;
                     } else {
-                        $beta = ($beta + $maxBeta) / 2.;
+                        $beta = ($beta + $maxBeta) / 2.0;
                     }
                 } else {
                     $maxBeta = $beta;
 
                     if ($minBeta === -INF) {
-                        $beta /= 2.;
+                        $beta /= 2.0;
                     } else {
-                        $beta = ($beta + $minBeta) / 2.;
+                        $beta = ($beta + $minBeta) / 2.0;
                     }
                 }
             }

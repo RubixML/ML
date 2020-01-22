@@ -21,6 +21,11 @@ use RuntimeException;
  */
 class Filesystem implements Persister
 {
+    /**
+     * The extension to give files created as part of a persistable's save history.
+     *
+     * @var string
+     */
     public const HISTORY_EXT = '.old';
 
     /**

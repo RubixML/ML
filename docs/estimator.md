@@ -43,7 +43,7 @@ $type = $estimator->type();
 
 var_dump($type); // Dump integer-encoded type
 
-var_dump(Estimator::TYPES[$type]); // Dump human readable type
+var_dump(Estimator::TYPE_STRINGS[$type]); // Dump human readable type
 ```
 
 ```sh

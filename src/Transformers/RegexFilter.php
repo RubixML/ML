@@ -24,16 +24,46 @@ use function is_string;
  */
 class RegexFilter implements Transformer
 {
+    /**
+     * The default URL matching pattern.
+     *
+     * @var string
+     */
     public const URL = self::GRUBER_1;
 
+    /**
+     * The original Gruber URL matching pattern.
+     *
+     * @var string
+     */
     public const GRUBER_1 = '%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s';
 
+    /**
+     * The improved Gruber URL matching pattern.
+     *
+     * @var string
+     */
     public const GRUBER_2 = '%(?xi)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))%s';
 
+    /**
+     * A pattern to match email addresses.
+     *
+     * @var string
+     */
     public const EMAIL = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,4})(?:\.[a-z]{2})?/i';
 
+    /**
+     * A pattern to match Twitter-style mentions (ex. @RubixML).
+     *
+     * @var string
+     */
     public const MENTION = '/(@\w+)/';
 
+    /**
+     * A pattern to match Twitter-style hashtags (ex. #MachineLearning).
+     *
+     * @var string
+     */
     public const HASHTAG = '/(#\w+)/';
 
     /**

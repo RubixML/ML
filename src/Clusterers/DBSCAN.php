@@ -32,8 +32,18 @@ use function count;
  */
 class DBSCAN implements Estimator
 {
+    /**
+     * The starting cluster number.
+     *
+     * @var int
+     */
     public const START_CLUSTER = 0;
     
+    /**
+     * The cluster number assigned to noise samples.
+     *
+     * @var int
+     */
     public const NOISE = -1;
 
     /**

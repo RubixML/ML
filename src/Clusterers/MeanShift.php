@@ -48,6 +48,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 
+    /**
+     * The minimum number of samples from the training set to use as seeds.
+     *
+     * @var int
+     */
     protected const MIN_SEEDS = 15;
 
     /**

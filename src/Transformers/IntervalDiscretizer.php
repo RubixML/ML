@@ -27,6 +27,11 @@ use function ord;
  */
 class IntervalDiscretizer implements Transformer, Stateful
 {
+    /**
+     * The value of the starting category for each feature column.
+     *
+     * @var string
+     */
     protected const START_CATEGORY = 'a';
 
     /**

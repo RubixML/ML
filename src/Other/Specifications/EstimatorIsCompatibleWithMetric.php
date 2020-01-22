@@ -21,7 +21,7 @@ class EstimatorIsCompatibleWithMetric
         if (!in_array($estimator->type(), $metric->compatibility())) {
             throw new InvalidArgumentException(Params::shortName($metric)
                 . ' is not compatible with '
-                . Estimator::TYPES[$estimator->type()] . 's.');
+                . Estimator::TYPE_STRINGS[$estimator->type()] . 's.');
         }
     }
 }

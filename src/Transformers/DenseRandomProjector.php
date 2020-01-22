@@ -18,5 +18,10 @@ namespace Rubix\ML\Transformers;
  */
 class DenseRandomProjector extends SparseRandomProjector
 {
+    /**
+     * The numbers to draw from when generating the random matrix.
+     *
+     * @var float[]
+     */
     protected const DISTRIBUTION = [-1.0, 1.0];
 }

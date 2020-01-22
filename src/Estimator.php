@@ -6,12 +6,40 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Estimator
 {
+    /**
+     * The classifier estimator type.
+     *
+     * @var int
+     */
     public const CLASSIFIER = 1;
+
+    /**
+     * The regressor estimator type.
+     *
+     * @var int
+     */
     public const REGRESSOR = 2;
+
+    /**
+     * The clusterer estimator type.
+     *
+     * @var int
+     */
     public const CLUSTERER = 3;
+
+    /**
+     * The anomaly detector estimator type.
+     *
+     * @var int
+     */
     public const ANOMALY_DETECTOR = 4;
 
-    public const TYPES = [
+    /**
+     * An array of human-readable string representations of the estimator types.
+     *
+     * @var int
+     */
+    public const TYPE_STRINGS = [
         self::CLASSIFIER => 'classifier',
         self::REGRESSOR => 'regressor',
         self::CLUSTERER => 'clusterer',

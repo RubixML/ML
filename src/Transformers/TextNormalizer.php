@@ -16,7 +16,18 @@ use Rubix\ML\DataType;
  */
 class TextNormalizer implements Transformer
 {
+    /**
+     * A pattern to match whitespace.
+     *
+     * @var string
+     */
     protected const SPACES_REGEX = '/\s+/';
+
+    /**
+     * A whitespace character.
+     *
+     * @var string
+     */
     protected const SPACE = ' ';
 
     /**

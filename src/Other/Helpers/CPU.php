@@ -9,10 +9,25 @@ use function count;
 
 class CPU
 {
+    /**
+     * The command to return the number of processor cores on Windows OS.
+     *
+     * @var string
+     */
     protected const WIN_CORES = 'wmic cpu get NumberOfLogicalProcessors';
     
+    /**
+     * The command to return the number of processor cores on Linux.
+     *
+     * @var string
+     */
     protected const CPU_INFO = '/proc/cpuinfo';
 
+    /**
+     * The regular expression used to extract the core count.
+     *
+     * @var string
+     */
     protected const CORE_REGEX = '/^processor/m';
 
     /**

@@ -45,8 +45,18 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle, RankSingle;
     
+    /**
+     * The default sample size of each training subset.
+     *
+     * @var int
+     */
     protected const DEFAULT_SUBSAMPLE = 256;
 
+    /**
+     * The default minimum anomaly score for a sample to be flagged.
+     *
+     * @var float
+     */
     public const DEFAULT_THRESHOLD = 0.5;
 
     /**

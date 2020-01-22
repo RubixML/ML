@@ -4,15 +4,53 @@ namespace Rubix\ML\Other\Helpers;
 
 class Console
 {
+    /**
+     * The command to return the number of rows that the current terminal supports.
+     *
+     * @var string
+     */
     protected const SIZE_ROWS_COMMAND = 'tput lines';
+
+    /**
+     * The command to return the number of columns that the current terminal supports.
+     *
+     * @var string
+     */
     protected const SIZE_COLUMNS_COMMAND = 'tput cols';
 
+    /**
+     * The default number of rows in the terminal.
+     *
+     * @var int
+     */
     protected const DEFAULT_SIZE_ROWS = 24;
+
+    /**
+     * The default number of columns in the terminal.
+     *
+     * @var int
+     */
     protected const DEFAULT_SIZE_COLUMNS = 80;
 
+    /**
+     * The width of each cell in characters.
+     *
+     * @var int
+     */
     public const TABLE_CELL_WIDTH = 11;
     
+    /**
+     * The prefix to every table cell.
+     *
+     * @var string
+     */
     protected const TABLE_CELL_PREFIX = '| ';
+
+    /**
+     * The suffix of every table cell.
+     *
+     * @var string
+     */
     protected const TABLE_CELL_SUFFIX = ' ';
 
     /**

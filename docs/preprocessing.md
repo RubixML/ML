@@ -51,14 +51,14 @@ A technique for handling missing data is a preprocessing step called *imputation
 
 **Examples**
 
-| Transformer | Categorical | Continuous | Stateful | Elastic |
+| Transformer | Data Types | Stateful | Elastic |
 |---|---|---|---|---|
-| [KNN Imputer](transformers/knn-imputer.md) | ● | ● | ● | ● |
-| [Missing Data Imputer](transformers/missing-data-imputer.md) | ● | ● | ● | |
-| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | ● | ● | ● | ● |
+| [KNN Imputer](transformers/knn-imputer.md) | Continuous, Categorical | ● | |
+| [Missing Data Imputer](transformers/missing-data-imputer.md) | Continuous, Categorical| ● | |
+| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) |Continuous, Categorical | ● | |
 
 ## Feature Extraction
-Higher-order data such as images and text blobs are actually composites of many features. Thus, it is often necessary to extract those features from their original representation in order to feed them to a learner.
+Higher-order data such as images and text blobs are actually composites of many scalar features. Thus, it is often necessary to extract those features from their original representation in order to feed them to a learner.
 
 | Transformer | Source | Stateful | Elastic |
 |---|---|---|---|

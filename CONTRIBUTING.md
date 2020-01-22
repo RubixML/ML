@@ -33,7 +33,7 @@ $ composer test
 ### Learner Testing Guidelines
 Rubix ML uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to new data. Since not all learners are the same, choose a generator (dataset) and minimum validation score that is appropriate for a real world use case.
 
-> **Note:** Be sure to seed the random number generator with a known constant value in your tests.
+> **Note:** Be sure to seed the random number generator with a known constant in your tests.
 
 ### Bugfix Testing Guidelines
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
@@ -52,13 +52,13 @@ $ composer fix
 ```
 
 ### Class Organization
-Class organization should flow in the following order from the top of the page to the bottom - namespace declaration, class imports, function imports, constant imports, class definiton, traits, class constants, properties, static methods, constructor, regular methods, methods that implement a standard PHP interface, and finally, magic methods.
+Class organization should flow in the following order from the top of the page to the bottom - namespace declaration, class imports, function imports, constant imports, class definition, traits, class constants, properties, static methods, constructor, regular methods, methods that implement a standard PHP interface, and finally, magic methods.
 
 ### Mutability Policy
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
 
 ## Benchmarks
-Performance can be critical for some machine learning projects. Not only that, waiting sucks in general. To ensure that our users have the best user experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner to Rubix ML, be sure that it offers comparable performance to other learners in the library.
+Performance can be critical for some machine learning projects. Not only that, waiting sucks in general. To ensure that our users have the best user experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner to Rubix ML, include a benchmark.
 
 To run the benchmarking suite:
 ```sh

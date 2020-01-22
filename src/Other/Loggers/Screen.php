@@ -13,10 +13,6 @@ namespace Rubix\ML\Other\Loggers;
  */
 class Screen extends Logger
 {
-    public const DEFAULT_CHANNEL = 'main';
-    
-    public const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
-    
     /**
      * The channel name that appears on each line.
      *
@@ -36,8 +32,8 @@ class Screen extends Logger
      * @param string $format
      */
     public function __construct(
-        string $channel = self::DEFAULT_CHANNEL,
-        string $format = self::DEFAULT_TIMESTAMP_FORMAT
+        string $channel = 'main',
+        string $format = 'Y-m-d H:i:s'
     ) {
         $this->channel = trim($channel);
         $this->format = $format;

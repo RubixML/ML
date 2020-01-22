@@ -13,6 +13,11 @@ namespace Rubix\ML\Other\Tokenizers;
  */
 class Word implements Tokenizer
 {
+    /**
+     * The regular expression to match words in a sentence.
+     *
+     * @var string
+     */
     protected const WORD_REGEX = '/\w+/u';
 
     /**
