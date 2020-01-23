@@ -1,5 +1,6 @@
 - Unreleased
     - Added SiLU self-stabilizing activation function
+    - Dense hidden layers now have optional bias parameter
     - KNN-based imputers now accelerated by spatial tree
     - Changed the default anomaly class for Radius Neighbors
     - Removed additional methods from guessing Strategies

@@ -1,12 +1,13 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dense.php">[source]</a></span>
 
 # Dense
-Dense layers (or *fully connected* layers) are layers of neurons that connect to each node in the previous layer by a parameterized synapse. The majority of the trainable parameters in a standard feed forward neural network are contained within Dense layers.
+Dense (or *fully connected*) hidden layers are layers of neurons that connect to each node in the previous layer by a parameterized synapse. They perform a linear transformation on their input and are usually followed by an [Activation](activation.md) layer. The majority of the trainable parameters in a standard feed forward neural network are contained within Dense hidden layers.
 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | neurons | | int | The number of neurons in the layer. |
+| 1 | neurons | | int | The number of nodes in the layer. |
+| 2 | bias | true | bool | Should the layer include a bias parameter? |
 | 2 | weight initializer | He | Initializer | The initializer of the weight parameter. |
 | 3 | bias initializer | Constant | Initializer | The initializer of the bias parameter. |
 
@@ -16,5 +17,5 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Dense(100, new He(), new Constant(0.0));
+$layer = new Dense(100, true, new He(), new Constant(0.0));
 ```

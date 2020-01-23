@@ -115,14 +115,14 @@ class BatchNorm implements Hidden, Parametric
         ?Initializer $betaInitializer = null,
         ?Initializer $gammaInitializer = null
     ) {
-        if ($decay < 0. or $decay > 1.) {
+        if ($decay < 0.0 or $decay > 1.0) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }
 
         $this->decay = $decay;
-        $this->betaInitializer = $betaInitializer ?? new Constant(0.);
-        $this->gammaInitializer = $gammaInitializer ?? new Constant(1.);
+        $this->betaInitializer = $betaInitializer ?? new Constant(0.0);
+        $this->gammaInitializer = $gammaInitializer ?? new Constant(1.0);
     }
 
     /**
@@ -134,7 +134,7 @@ class BatchNorm implements Hidden, Parametric
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return $this->width;
@@ -149,7 +149,7 @@ class BatchNorm implements Hidden, Parametric
     public function parameters() : Generator
     {
         if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         yield $this->beta;
@@ -191,7 +191,7 @@ class BatchNorm implements Hidden, Parametric
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $mean = $input->mean();
@@ -229,7 +229,7 @@ class BatchNorm implements Hidden, Parametric
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->mean or !$this->variance or !$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $xHat = $input->subtract($this->mean)
@@ -251,7 +251,7 @@ class BatchNorm implements Hidden, Parametric
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         if (!$this->stdInv or !$this->xHat) {
@@ -312,7 +312,7 @@ class BatchNorm implements Hidden, Parametric
     public function read() : array
     {
         if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return [

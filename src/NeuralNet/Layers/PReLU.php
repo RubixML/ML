@@ -72,7 +72,7 @@ class PReLU implements Hidden, Parametric
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return $this->width;
@@ -87,7 +87,7 @@ class PReLU implements Hidden, Parametric
     public function parameters() : Generator
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initlaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         yield $this->alpha;
@@ -148,7 +148,7 @@ class PReLU implements Hidden, Parametric
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initlaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         if (!$this->input) {
@@ -193,7 +193,7 @@ class PReLU implements Hidden, Parametric
     protected function compute(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $alphas = $this->alpha->w();
@@ -227,7 +227,7 @@ class PReLU implements Hidden, Parametric
     protected function differentiate(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initlaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $alphas = $this->alpha->w();
@@ -258,7 +258,7 @@ class PReLU implements Hidden, Parametric
     public function read() : array
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initlaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
         
         return [

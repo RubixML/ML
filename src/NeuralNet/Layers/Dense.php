@@ -17,10 +17,10 @@ use Generator;
 /**
  * Dense
  *
- * Dense layers are fully connected layers of *neurons*, meaning each neuron is
- * connected to each other in the previous layer by a weighted *synapse*. The
- * majority of the parameters in a standard feedforward network are contained
- * within Dense layers.
+ * Dense (or *fully connected*) hidden layers are layers of neurons that connect to each node
+ * in the previous layer by a parameterized synapse. They perform a linear transformation on
+ * their input and are usually followed by an Activation layer. The majority of the trainable
+ * parameters in a standard feed forward neural network are contained within Dense hidden layers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -29,11 +29,18 @@ use Generator;
 class Dense implements Hidden, Parametric
 {
     /**
-     * The width of the layer. i.e. the number of neurons.
+     * The number of nodes in the layer.
      *
      * @var int
      */
     protected $neurons;
+
+    /**
+     * Should the layer include a bias parameter?
+     *
+     * @var bool
+     */
+    protected $bias;
 
     /**
      * The weight initializer.
@@ -43,7 +50,7 @@ class Dense implements Hidden, Parametric
     protected $weightInitializer;
 
     /**
-     * The weight initializer.
+     * The bias initializer.
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
@@ -64,7 +71,7 @@ class Dense implements Hidden, Parametric
     protected $biases;
 
     /**
-     * The memoized input matrix.
+     * The memoized inputs to the layer.
      *
      * @var \Tensor\Matrix|null
      */
@@ -72,12 +79,14 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
+     * @param bool $bias
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $neurons,
+        bool $bias = true,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
     ) {
@@ -87,8 +96,9 @@ class Dense implements Hidden, Parametric
         }
 
         $this->neurons = $neurons;
+        $this->bias = $bias;
         $this->weightInitializer = $weightInitializer ?? new He();
-        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
     }
 
     /**
@@ -109,12 +119,15 @@ class Dense implements Hidden, Parametric
      */
     public function parameters() : Generator
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+        if (!$this->weights) {
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         yield $this->weights;
-        yield $this->biases;
+
+        if ($this->biases) {
+            yield $this->biases;
+        }
     }
 
     /**
@@ -130,11 +143,14 @@ class Dense implements Hidden, Parametric
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
-
         $this->weights = new MatrixParam($w);
-        $this->biases = new VectorParam($b);
+
+        if ($this->bias) {
+            $b = $this->biasInitializer->initialize(1, $fanOut)
+                ->columnAsVector(0);
+
+            $this->biases = new VectorParam($b);
+        }
 
         return $fanOut;
     }
@@ -148,14 +164,19 @@ class Dense implements Hidden, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (!$this->weights or !$this->biases) {
+        if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
         $this->input = $input;
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        $z = $this->weights->w()->matmul($input);
+
+        if ($this->biases) {
+            $z = $z->add($this->biases->w());
+        }
+
+        return $z;
     }
 
     /**
@@ -167,12 +188,17 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (!$this->weights or !$this->biases) {
+        if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        $z = $this->weights->w()->matmul($input);
+
+        if ($this->biases) {
+            $z = $z->add($this->biases->w());
+        }
+
+        return $z;
     }
 
     /**
@@ -185,8 +211,8 @@ class Dense implements Hidden, Parametric
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+        if (!$this->weights) {
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         if (!$this->input) {
@@ -197,12 +223,16 @@ class Dense implements Hidden, Parametric
         $dOut = $prevGradient->compute();
 
         $dW = $dOut->matmul($this->input->transpose());
-        $dB = $dOut->sum();
 
         $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
-        $this->biases->update($optimizer->step($this->biases, $dB));
+
+        if ($this->biases) {
+            $dB = $dOut->sum();
+
+            $this->biases->update($optimizer->step($this->biases, $dB));
+        }
 
         unset($this->input);
 
@@ -229,14 +259,19 @@ class Dense implements Hidden, Parametric
      */
     public function read() : array
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+        if (!$this->weights) {
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
-        return [
+        $params = [
             'weights' => clone $this->weights,
-            'biases' => clone $this->biases,
         ];
+
+        if ($this->biases) {
+            $params['biases'] = clone $this->biases;
+        }
+
+        return $params;
     }
 
     /**
@@ -247,6 +282,6 @@ class Dense implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->weights = $parameters['weights'];
-        $this->biases = $parameters['biases'];
+        $this->biases = $parameters['biases'] ?? null;
     }
 }

@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -67,7 +68,7 @@ class DenseTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Dense(2, new He());
+        $this->layer = new Dense(2, true, new He(), new Constant(0.0));
 
         srand(self::RANDOM_SEED);
     }
