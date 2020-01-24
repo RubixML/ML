@@ -65,7 +65,7 @@ class Activation implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return $this->width;
@@ -149,8 +149,7 @@ class Activation implements Hidden
      */
     public function gradient(Matrix $input, Matrix $computed, Deferred $prevGradient) : Matrix
     {
-        return $this->activationFn
-            ->differentiate($input, $computed)
-            ->multiply($prevGradient->compute());
+        return $this->activationFn->differentiate($input, $computed)
+            ->multiply($prevGradient());
     }
 }

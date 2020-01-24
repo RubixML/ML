@@ -156,9 +156,9 @@ class PReLU implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient->compute();
+        $dOut = $prevGradient();
 
-        $dIn = $this->input->clipUpper(0.);
+        $dIn = $this->input->clipUpper(0.0);
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
@@ -190,13 +190,13 @@ class PReLU implements Hidden, Parametric
      * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function compute(Matrix $z) : Matrix
+    public function compute(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w();
+        $alphas = $this->alpha->w()->asArray();
 
         $computed = [];
 
@@ -206,7 +206,7 @@ class PReLU implements Hidden, Parametric
             $activations = [];
 
             foreach ($row as $value) {
-                $activations[] = $value > 0.
+                $activations[] = $value > 0.0
                     ? $value
                     : $alpha * $value;
             }
@@ -218,32 +218,32 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Calculate the partial derivatives of the activation function.
+     * Calculate the derivative of the activation function at a given output.
      *
      * @param \Tensor\Matrix $z
      * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function differentiate(Matrix $z) : Matrix
+    public function differentiate(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w();
+        $alphas = $this->alpha->w()->asArray();
 
         $gradient = [];
 
         foreach ($z as $i => $row) {
-            $alpha = $alphas[$i];
+            $leakage = $alphas[$i];
 
-            $temp = [];
+            $derivative = [];
 
             foreach ($row as $value) {
-                $temp[] = $value > 0. ? 1. : $alpha;
+                $derivative[] = $value > 0.0 ? 1.0 : $leakage;
             }
 
-            $gradient[] = $temp;
+            $gradient[] = $derivative;
         }
 
         return Matrix::quick($gradient);

@@ -60,13 +60,13 @@ class Dropout implements Hidden
      */
     public function __construct(float $ratio = 0.5)
     {
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Dropout ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
 
         $this->ratio = $ratio;
-        $this->scale = 1. / (1. - $ratio);
+        $this->scale = 1.0 / (1.0 - $ratio);
     }
 
     /**
@@ -78,7 +78,7 @@ class Dropout implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return $this->width;
@@ -156,6 +156,6 @@ class Dropout implements Hidden
      */
     public function gradient(Deferred $prevGradient, Matrix $mask)
     {
-        return $prevGradient->compute()->multiply($mask);
+        return $prevGradient()->multiply($mask);
     }
 }

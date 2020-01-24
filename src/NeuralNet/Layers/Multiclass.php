@@ -132,7 +132,7 @@ class Multiclass implements Output
                 . ' must be 2 or more, ' . count($classes) . ' given.');
         }
 
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization coefficient'
                 . " must be 0 or greater, $alpha given.");
         }
@@ -141,7 +141,7 @@ class Multiclass implements Output
         $this->alpha = $alpha;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->weightInitializer = $weightInitializer ?? new Xavier1();
-        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
         $this->activationFn = new Softmax();
     }
 
@@ -164,7 +164,7 @@ class Multiclass implements Output
     public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         yield $this->weights;
@@ -184,8 +184,7 @@ class Multiclass implements Output
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->weights = new MatrixParam($w);
         $this->biases = new VectorParam($b);
@@ -203,7 +202,7 @@ class Multiclass implements Output
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $this->input = $input;
@@ -226,7 +225,7 @@ class Multiclass implements Output
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $z = $this->weights->w()->matmul($input)
@@ -246,7 +245,7 @@ class Multiclass implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         if (!$this->input or !$this->z or !$this->computed) {
@@ -260,7 +259,7 @@ class Multiclass implements Output
             $temp = [];
 
             foreach ($labels as $label) {
-                $temp[] = $class === $label ? 1. : 0.;
+                $temp[] = $class === $label ? 1.0 : 0.0;
             }
 
             $expected[] = $temp;
@@ -325,7 +324,7 @@ class Multiclass implements Output
     public function read() : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return [

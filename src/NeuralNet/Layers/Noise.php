@@ -45,8 +45,8 @@ class Noise implements Hidden
      */
     public function __construct(float $stdDev)
     {
-        if ($stdDev < 0.) {
-            throw new InvalidArgumentException('Noise standard deviation must'
+        if ($stdDev < 0.0) {
+            throw new InvalidArgumentException('Standard deviation must'
                 . " be 0 or greater, $stdDev given.");
         }
 
@@ -62,7 +62,7 @@ class Noise implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer is not initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return $this->width;

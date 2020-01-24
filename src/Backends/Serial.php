@@ -52,7 +52,7 @@ class Serial implements Backend
         $results = [];
 
         foreach ($this->queue as [$deferred, $after]) {
-            $result = $deferred->compute();
+            $result = $deferred();
 
             if ($after) {
                 $after($result);

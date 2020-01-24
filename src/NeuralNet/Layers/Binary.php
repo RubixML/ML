@@ -133,7 +133,7 @@ class Binary implements Output
                 . ' must be exactly 2.');
         }
 
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization amount'
                 . " must be 0 or greater, $alpha given.");
         }
@@ -142,7 +142,7 @@ class Binary implements Output
         $this->alpha = $alpha;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->weightInitializer = $weightInitializer ?? new Xavier1();
-        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
         $this->activationFn = new Sigmoid();
     }
 
@@ -165,7 +165,7 @@ class Binary implements Output
     public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         yield $this->weights;
@@ -185,8 +185,7 @@ class Binary implements Output
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->weights = new MatrixParam($w);
         $this->biases = new VectorParam($b);
@@ -227,7 +226,7 @@ class Binary implements Output
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $z = $this->weights->w()->matmul($input)
@@ -247,7 +246,7 @@ class Binary implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         if (!$this->input or !$this->z or !$this->computed) {
@@ -320,7 +319,7 @@ class Binary implements Output
     public function read() : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         return [

@@ -220,7 +220,7 @@ class Dense implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient->compute();
+        $dOut = $prevGradient();
 
         $dW = $dOut->matmul($this->input->transpose());
 

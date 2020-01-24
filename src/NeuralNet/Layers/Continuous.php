@@ -97,7 +97,7 @@ class Continuous implements Output
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
     ) {
-        if ($alpha < 0.) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization amount'
                 . " must be 0 or greater, $alpha given.");
         }
@@ -147,8 +147,7 @@ class Continuous implements Output
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->weights = new MatrixParam($w);
         $this->biases = new VectorParam($b);
@@ -166,7 +165,7 @@ class Continuous implements Output
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $this->input = $input;
