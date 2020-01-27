@@ -81,9 +81,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     protected $trees;
 
     /**
-     * The possible class outcomes.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]|null
+     * @var float[]|null
      */
     protected $classes;
 
@@ -170,7 +170,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = $dataset->possibleOutcomes();
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+
         $this->featureCount = $dataset->numColumns();
         
         $k = (int) round($this->ratio * $dataset->numRows());
@@ -200,7 +201,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function predict(Dataset $dataset) : array
     {
         if (!$this->trees) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         $this->backend->flush();
@@ -233,14 +234,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function proba(Dataset $dataset) : array
     {
         if (!$this->trees or !$this->classes) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $probabilities = array_fill(
-            0,
-            $dataset->numRows(),
-            array_fill_keys($this->classes, 0.)
-        );
+        $probabilities = array_fill(0, $dataset->numRows(), $this->classes);
 
         $this->backend->flush();
 
@@ -280,10 +277,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function featureImportances() : array
     {
         if (!$this->trees or !$this->featureCount) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $importances = array_fill(0, $this->featureCount, 0.);
+        $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->trees as $tree) {
             foreach ($tree->featureImportances() as $column => $value) {

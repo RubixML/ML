@@ -187,8 +187,7 @@ class SVC implements Estimator, Learner
     public function predict(Dataset $dataset) : array
     {
         if (!$this->model) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
@@ -211,8 +210,7 @@ class SVC implements Estimator, Learner
     public function save(string $path) : void
     {
         if (!$this->model) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         $this->model->save($path);

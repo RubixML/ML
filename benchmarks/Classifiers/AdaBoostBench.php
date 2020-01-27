@@ -4,6 +4,7 @@ namespace Rubix\ML\Benchmarks\Classifiers;
 
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
@@ -43,7 +44,7 @@ class AdaBoostBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new AdaBoost();
+        $this->estimator = new AdaBoost(new ClassificationTree(2));
     }
 
     /**

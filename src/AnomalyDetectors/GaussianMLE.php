@@ -22,10 +22,10 @@ use const Rubix\ML\EPSILON;
 /**
  * Gaussian MLE
  *
- * The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by
- * computing a probability density function (PDF) over the features assuming they are
- * independent and normally (Gaussian) distributed. Assigning low probability density to
- * a sample translates to a high anomaly score.
+ * The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing
+ * a probability density function (PDF) over the features assuming they are independently
+ * and normally (Gaussian) distributed. Assigning low probability density to a sample
+ * translates to a high anomaly score.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for

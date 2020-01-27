@@ -69,36 +69,39 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $anomalyClass;
 
     /**
-     * The unique class outcomes.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]
+     * @var float[]|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * @param float $radius
      * @param bool $weighted
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param string $anomalyClass
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius = 1.0,
         bool $weighted = true,
-        ?Spatial $tree = null,
-        string $anomalyClass = '?'
+        string $anomalyClass = '?',
+        ?Spatial $tree = null
     ) {
         if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
+        if (empty($anomalyClass)) {
+            throw new InvalidArgumentException('Anomaly class'
+                . ' cannot be an empty string.');
+        }
+
         $this->radius = $radius;
         $this->weighted = $weighted;
+        $this->anomalyClass = $anomalyClass;
         $this->tree = $tree ?? new BallTree();
-        $this->anomalyClass = trim($anomalyClass);
     }
 
     /**
@@ -157,8 +160,16 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = $dataset->possibleOutcomes();
-        $this->classes[] = $this->anomalyClass;
+        $classes = $dataset->possibleOutcomes();
+
+        if (in_array($this->anomalyClass, $classes)) {
+            throw new RuntimeException('Training set must not contain'
+                . ' labels of the anomaly class.');
+        }
+
+        $classes[] = $this->anomalyClass;
+
+        $this->classes = array_fill_keys($classes, 0.0);
 
         $this->tree->grow($dataset);
     }
@@ -174,7 +185,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function predict(Dataset $dataset) : array
     {
         if ($this->tree->bare()) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
@@ -216,21 +227,19 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
+        if ($this->tree->bare() or !$this->classes) {
             throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        $template = array_fill_keys($this->classes, 0.0);
-
         $probabilities = [];
 
         foreach ($dataset->samples() as $sample) {
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
-            $dist = $template;
+            $dist = $this->classes;
 
             if (empty($labels)) {
                 $dist[$this->anomalyClass] = 1.0;

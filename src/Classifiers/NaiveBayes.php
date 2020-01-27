@@ -94,15 +94,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The possible class outcomes.
-     *
-     * @var string[]
-     */
-    protected $classes = [
-        //
-    ];
-
-    /**
      * @param float $alpha
      * @param (int|float)[]|null $priors
      * @throws \InvalidArgumentException
@@ -230,7 +221,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             } else {
                 $classCounts = $classProbs = array_fill(0, $stratum->numColumns(), []);
 
-                $this->classes[] = $class;
                 $this->weights[$class] = 0;
             }
 
@@ -290,8 +280,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->weights) or empty($this->probs)) {
-            throw new RuntimeException('The estimator has not been trained.');
+        if (!$this->weights or !$this->probs) {
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
@@ -311,8 +301,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->weights) or empty($this->probs)) {
-            throw new RuntimeException('The estimator has not been trained.');
+        if (!$this->weights or !$this->probs) {
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);

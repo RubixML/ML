@@ -85,15 +85,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The possible class labels.
-     *
-     * @var string[]
-     */
-    protected $classes = [
-        //
-    ];
-
-    /**
      * @param (int|float)[]|null $priors
      * @throws \InvalidArgumentException
      */

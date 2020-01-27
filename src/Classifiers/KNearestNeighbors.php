@@ -64,13 +64,11 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     protected $kernel;
 
     /**
-     * The unique class outcomes.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]
+     * @var float[]|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * The training samples that make up the neighborhood of the problem space.
@@ -142,10 +140,18 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
-        $this->classes = $this->samples = $this->labels = [];
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Learner requires a'
+                . ' labeled training set.');
+        }
+
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+
+        $this->samples = $this->labels = [];
 
         $this->partial($dataset);
     }
@@ -166,8 +172,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = array_unique(array_merge($this->classes, $dataset->possibleOutcomes()));
-
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
     }
@@ -182,7 +186,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->samples) or empty($this->labels)) {
+        if (!$this->samples or !$this->labels) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -194,10 +198,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($distances as $i => $distance) {
-                    $weights[$labels[$i]] += 1. / (1. + $distance);
+                    $weights[$labels[$i]] += 1.0 / (1.0 + $distance);
                 }
             } else {
                 $weights = array_count_values($labels);
@@ -219,13 +223,11 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->samples) or empty($this->labels)) {
+        if (!$this->samples or !$this->labels or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
-        $template = array_fill_keys($this->classes, 0.);
 
         $probabilities = [];
 
@@ -233,10 +235,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
                 }
             } else {
                 $weights = array_count_values($labels);
@@ -244,7 +246,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
             $total = array_sum($weights) ?: EPSILON;
 
-            $dist = $template;
+            $dist = $this->classes;
 
             foreach ($weights as $class => $weight) {
                 $dist[$class] = $weight / $total;

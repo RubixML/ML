@@ -43,13 +43,11 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     use PredictsSingle, ProbaSingle;
     
     /**
-     * The memoized class outcomes.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]
+     * @var float[]|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * @param int $maxDepth
@@ -116,7 +114,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = $dataset->possibleOutcomes();
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
         $this->grow($dataset);
     }
@@ -160,13 +158,11 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->bare() or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
-        $template = array_fill_keys($this->classes, 0.);
 
         $probabilities = [];
 
@@ -174,7 +170,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best
-                ? array_replace($template, $node->probabilities()) ?? []
+                ? array_replace($this->classes, $node->probabilities()) ?? []
                 : [];
         }
 
@@ -202,7 +198,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $probabilities[$class] = $count / $n;
         }
 
-        $impurity = 1. - (max($counts) / $n) ** 2;
+        $impurity = 1.0 - (max($counts) / $n) ** 2;
 
         return new Best($outcome, $probabilities, $impurity, $n);
     }
@@ -218,15 +214,15 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $n = $dataset->numRows();
 
         if ($n <= 1) {
-            return 0.;
+            return 0.0;
         }
 
         $counts = array_count_values($dataset->labels());
 
-        $gini = 0.;
+        $gini = 0.0;
 
         foreach ($counts as $count) {
-            $gini += 1. - ($count / $n) ** 2;
+            $gini += 1.0 - ($count / $n) ** 2;
         }
 
         return $gini;

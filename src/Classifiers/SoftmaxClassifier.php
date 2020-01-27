@@ -357,7 +357,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     public function proba(Dataset $dataset) : array
     {
         if (!$this->network or !$this->classes) {
-            throw new RuntimeException('The estimator has not been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);

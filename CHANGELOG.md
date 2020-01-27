@@ -1,7 +1,7 @@
 - Unreleased
     - Added SiLU self-stabilizing activation function
     - Dense hidden layers now have optional bias parameter
-    - KNN-based imputers now accelerated by spatial tree
+    - KNN-based imputers accelerated by spatial tree
     - Changed the default anomaly class for Radius Neighbors
     - Removed additional methods from guessing Strategies
     - Numeric String Converter now uses fixed NaN placeholder
@@ -13,6 +13,7 @@
     - Clusterers and Anomaly Detectors return integer predictions
     - Ball Tree now compatible with categorical distance kernels
     - Parallel Learners using Amp Backend are now persistable
+    - Changed order of Radius Neighbors hyper-parameters
 
 - 0.0.18-beta
     - Now requires PHP 7.2 and above

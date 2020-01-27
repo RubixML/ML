@@ -110,13 +110,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     ];
 
     /**
-     * The unique class labels from the training set.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]
+     * @var float[]|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * The average training loss at each epoch.
@@ -260,7 +258,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             ]));
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
         $labels = $dataset->labels();
         
@@ -356,15 +354,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The estimator has not been trained.');
-        }
-        
         return array_map('Rubix\ML\argmax', $this->score($dataset));
     }
 
@@ -372,15 +365,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The estimator has not been trained.');
-        }
-
         $scores = $this->score($dataset);
 
         $probabilities = [];
@@ -405,16 +393,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return array[]
      */
     protected function score(Dataset $dataset) : array
     {
-        $scores = array_fill(
-            0,
-            $dataset->numRows(),
-            array_fill_keys($this->classes, 0.0)
-        );
+        if (!$this->ensemble or !$this->influences or !$this->classes) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $scores = array_fill(0, $dataset->numRows(), $this->classes);
 
         foreach ($this->ensemble as $i => $estimator) {
             $influence = $this->influences[$i];

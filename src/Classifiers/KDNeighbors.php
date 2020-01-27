@@ -62,13 +62,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $tree;
 
     /**
-     * The unique class labels.
+     * The zero vector for the possible class outcomes.
      *
-     * @var string[]
+     * @var float[]|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * @param int $k
@@ -144,7 +142,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = $dataset->possibleOutcomes();
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
         $this->tree->grow($dataset);
     }
@@ -171,10 +169,10 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
             [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
                 }
             } else {
                 $weights = array_count_values($labels);
@@ -196,13 +194,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
+        if ($this->tree->bare() or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
-        $template = array_fill_keys($this->classes, 0.);
 
         $probabilities = [];
 
@@ -210,10 +206,10 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
             [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.);
+                $weights = array_fill_keys($labels, 0.0);
 
                 foreach ($labels as $i => $label) {
-                    $weights[$label] += 1. / (1. + $distances[$i]);
+                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
                 }
             } else {
                 $weights = array_count_values($labels);
@@ -221,7 +217,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
             $total = array_sum($weights) ?: EPSILON;
 
-            $dist = $template;
+            $dist = $this->classes;
 
             foreach ($weights as $class => $weight) {
                 $dist[$class] = $weight / $total;
