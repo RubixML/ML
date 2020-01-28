@@ -4,8 +4,6 @@ Thank you for considering a code contribution to Rubix ML. We strongly believe t
 ### Pull Request Checklist
 Here are a few things to check off before sending in a pull request ...
 
-- The change provides high value to Rubix ML engineers
-- The change does not introduce unnecessary complexity
 - Your changes pass [static analysis](#static-analysis)
 - All [unit tests](#unit-testing) pass
 - Your changes are consistent with our [coding style](#coding-style)
@@ -30,16 +28,16 @@ To run the unit tests:
 $ composer test
 ```
 
-### Learner Testing Guidelines
+### Learner Testing
 Rubix ML uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to new data. Since not all learners are the same, choose a generator (dataset) and minimum validation score that is appropriate for a real world use case.
 
 > **Note:** Be sure to seed the random number generator with a known constant in your tests.
 
-### Bugfix Testing Guidelines
+### Bugfix Testing
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
 
 ## Coding Style
-Rubix ML follows the PSR-2 coding style with additional rules. For any new class, include a class header that contains a title, a short description of what the class does, any references, and the author and package name. If you are making changes to an existing class, you may add your name to the author list under the last entry if you want.
+Rubix ML follows the PSR-2 coding style with additional rules to keep the codebase tidy and reduce cognitive load.
 
 To run the style checker:
 ```sh
@@ -52,10 +50,13 @@ $ composer fix
 ```
 
 ### Class Organization
-Class organization should flow in the following order from the top of the page to the bottom - namespace declaration, class imports, function imports, constant imports, class definition, traits, class constants, properties, static methods, constructor, regular methods, methods that implement a standard PHP interface, and finally, magic methods.
+For any new class, include a class header that contains a title, a short description of what the class does, any references, and the author and package name. If you are making changes to an existing class, you may add your name to the author list under the last entry if you want. Organization should flow in the following order from the top of the class to the bottom - namespace declaration, class imports, function imports, constant imports, class definition, traits, class constants, properties, static methods, constructor, regular methods, methods that implement a standard PHP interface, and finally, any other magic methods.
 
-### Mutability Policy
+### Mutability
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
+
+### Anonymous Classes and Functions
+Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a new named class or function.
 
 ## Benchmarks
 Performance can be critical for some machine learning projects. Not only that, waiting sucks in general. To ensure that our users have the best user experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner to Rubix ML, include a benchmark.

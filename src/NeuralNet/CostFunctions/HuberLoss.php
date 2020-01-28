@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Tensor;
 use Tensor\Matrix;
 use InvalidArgumentException;
 
@@ -42,7 +41,7 @@ class HuberLoss implements RegressionLoss
      */
     public function __construct(float $alpha = 0.9)
     {
-        if ($alpha <= 0.) {
+        if ($alpha <= 0.0) {
             throw new InvalidArgumentException('Alpha must be greater than'
                 . " 0, $alpha given.");
         }
@@ -58,7 +57,7 @@ class HuberLoss implements RegressionLoss
      */
     public function range() : array
     {
-        return [0., INF];
+        return [0.0, INF];
     }
 
     /**
@@ -76,11 +75,11 @@ class HuberLoss implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Tensor\Tensor<int|float|array> $output
-     * @param \Tensor\Tensor<int|float|array> $target
-     * @return \Tensor\Tensor<int|float|array>
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
+     * @return \Tensor\Matrix
      */
-    public function differentiate(Tensor $output, Tensor $target) : Tensor
+    public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
         $alpha = $output->subtract($target);
 
@@ -96,6 +95,6 @@ class HuberLoss implements RegressionLoss
      */
     public function _compute(float $z) : float
     {
-        return $this->alpha2 * (sqrt(1. + ($z / $this->alpha) ** 2) - 1.);
+        return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
     }
 }

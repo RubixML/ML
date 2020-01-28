@@ -97,18 +97,25 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 . ' least 1 expert.');
         }
 
+        $compatibilities = [];
+
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
                 throw new InvalidArgumentException('Expert must implement'
                     . ' the learner interface.');
             }
+
+            $compatibilities[] = $expert->compatibility();
         }
 
-        $prototype = reset($experts);
+        $compatibility = array_values(array_intersect(...$compatibilities));
 
-        $type = $prototype->type();
+        if (count($compatibility) < 1) {
+            throw new InvalidArgumentException('Committee must have at least'
+                . ' 1 data type that they are compatible with in common.');
+        }
 
-        $k = count($experts);
+        $type = reset($experts)->type();
 
         if (!in_array($type, self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
@@ -124,6 +131,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             }
         }
 
+        $k = count($experts);
+
         if ($influences) {
             if (count($influences) !== $k) {
                 throw new InvalidArgumentException('The number of influence'
@@ -135,7 +144,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
             if ($total <= 0) {
                 throw new InvalidArgumentException('Total influence must'
-                    . "be greater than 0, $total given.");
+                    . " be greater than 0, $total given.");
             }
 
             foreach ($influences as &$weight) {
@@ -145,19 +154,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             $influences = array_fill(0, $k, 1 / $k);
         }
 
-        $compatibility = array_intersect(...array_map(function ($estimator) {
-            return $estimator->compatibility();
-        }, $experts));
-
-        if (count($compatibility) < 1) {
-            throw new InvalidArgumentException('Committee must have at least'
-                . ' 1 data type that they are compatible with in common.');
-        }
-
         $this->experts = $experts;
         $this->influences = $influences;
         $this->type = $type;
-        $this->compatibility = array_values($compatibility);
+        $this->compatibility = $compatibility;
         $this->backend = new Serial();
     }
 
@@ -188,9 +188,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function trained() : bool
     {
-        $expert = end($this->experts);
-
-        return $expert instanceof Learner ? $expert->trained() : false;
+        return $this->experts ? end($this->experts)->trained() : false;
     }
 
     /**

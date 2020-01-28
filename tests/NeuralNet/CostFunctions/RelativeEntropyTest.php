@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use Tensor\Tensor;
-use Tensor\Vector;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -59,20 +57,32 @@ class RelativeEntropyTest extends TestCase
     public function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([[0.99, 0.01, 0.]]),
-            Matrix::quick([[1., 0., 0.]]),
+            Matrix::quick([
+                [0.99, 0.01, 0.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
             0.003350065899465309,
         ];
 
         yield [
-            Matrix::quick([[0.2, 0.4, 0.4]]),
-            Matrix::quick([[0., 1., 0.]]),
+            Matrix::quick([
+                [0.2, 0.4, 0.4],
+            ]),
+            Matrix::quick([
+                [0.0, 1.0, 0.0],
+            ]),
             0.3054301295726089,
         ];
 
         yield [
-            Matrix::quick([[0.0, 0.1, 0.9]]),
-            Matrix::quick([[1., 0., 0.]]),
+            Matrix::quick([
+                [0.0, 0.1, 0.9],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
             6.140226799872736,
         ];
 
@@ -95,11 +105,11 @@ class RelativeEntropyTest extends TestCase
      * @test
      * @dataProvider differentiateProvider
      *
-     * @param \Tensor\Tensor<int|float> $output
-     * @param \Tensor\Tensor<int|float> $target
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
      * @param array[] $expected
      */
-    public function differentiate(Tensor $output, Tensor $target, array $expected) : void
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
@@ -112,21 +122,39 @@ class RelativeEntropyTest extends TestCase
     public function differentiateProvider() : Generator
     {
         yield [
-            Vector::quick([0.99, 0.01, 0.]),
-            Vector::quick([1., 0., 0.]),
-            [-0.01010101010101011, 0.999999, 0.],
+            Matrix::quick([
+                [0.99, 0.01, 0.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-0.01010101010101011, 0.999999, 0.0],
+            ],
         ];
 
         yield [
-            Vector::quick([0.2, 0.4, 0.4]),
-            Vector::quick([0., 1., 0.]),
-            [0.9999999500000001, -1.4999999999999998, 0.999999975],
+            Matrix::quick([
+                [0.2, 0.4, 0.4],
+            ]),
+            Matrix::quick([
+                [0.0, 1.0, 0.0],
+            ]),
+            [
+                [0.9999999500000001, -1.4999999999999998, 0.999999975],
+            ],
         ];
 
         yield [
-            Vector::quick([0.0, 0.1, 0.9]),
-            Vector::quick([1., 0., 0.]),
-            [-99999999.0, 0.9999999, 0.9999999888888889],
+            Matrix::quick([
+                [0.0, 0.1, 0.9],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-99999999.0, 0.9999999, 0.9999999888888889],
+            ],
         ];
 
         yield [
@@ -142,7 +170,7 @@ class RelativeEntropyTest extends TestCase
             ]),
             [
                 [0.9999999500000001, 0.9999999, -0.42857142857142866],
-                [0., -0.11111111111111108, 0.9999999],
+                [0.0, -0.11111111111111108, 0.9999999],
                 [0.9999999, 0.9999999666666667, -0.6666666666666667],
             ],
         ];

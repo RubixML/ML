@@ -1,5 +1,5 @@
-- Unreleased
-    - Added SiLU self-stabilizing activation function
+- 0.0.19-beta
+    - Added SiLU self-stabilizing neural network activation function
     - Dense hidden layers now have optional bias parameter
     - KNN-based imputers accelerated by spatial tree
     - Changed the default anomaly class for Radius Neighbors
@@ -7,7 +7,7 @@
     - Numeric String Converter now uses fixed NaN placeholder
     - Missing Data Imputer now passes through other data types
     - Changed order of Missing Data Imputer params
-    - Renamed high-level resource type to image
+    - Renamed high-level resource type to image type
     - Added comb (n choose k) to global functions
     - Image Vectorizer now has grayscale option
     - Clusterers and Anomaly Detectors return integer predictions

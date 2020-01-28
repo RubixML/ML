@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Tensor;
 use Tensor\Matrix;
 
 use const Rubix\ML\EPSILON;
@@ -38,8 +37,8 @@ class RelativeEntropy implements ClassificationLoss
      */
     public function compute(Matrix $output, Matrix $target) : float
     {
-        $target = $target->clip(EPSILON, 1.);
-        $output = $output->clip(EPSILON, 1.);
+        $target = $target->clip(EPSILON, 1.0);
+        $output = $output->clip(EPSILON, 1.0);
 
         return $target->divide($output)->log()
             ->multiply($target)
@@ -50,14 +49,14 @@ class RelativeEntropy implements ClassificationLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Tensor\Tensor<int|float|array> $output
-     * @param \Tensor\Tensor<int|float|array> $target
-     * @return \Tensor\Tensor<int|float|array>
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
+     * @return \Tensor\Matrix
      */
-    public function differentiate(Tensor $output, Tensor $target) : Tensor
+    public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
-        $target = $target->clip(EPSILON, 1.);
-        $output = $output->clip(EPSILON, 1.);
+        $target = $target->clip(EPSILON, 1.0);
+        $output = $output->clip(EPSILON, 1.0);
 
         return $output->subtract($target)
             ->divide($output);

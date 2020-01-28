@@ -70,7 +70,7 @@ class RedisDB implements Persister
                 . ' PHP configuration.');
         }
 
-        if ($timeout <= 0.) {
+        if ($timeout <= 0.0) {
             throw new InvalidArgumentException('Timeout must be greater than'
                 . " 0, $timeout given.");
         }
@@ -120,8 +120,8 @@ class RedisDB implements Persister
         $success = $this->connector->set($this->key, $data);
 
         if (!$success) {
-            throw new RuntimeException('Failed to save persistable'
-                . ' object to the database.');
+            throw new RuntimeException('Failed to save '
+                . ' persistable to the database.');
         }
     }
 
@@ -138,8 +138,8 @@ class RedisDB implements Persister
         $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Persistable object could not'
-                . ' be reconstituted.');
+            throw new RuntimeException('Persistable could'
+                . ' not be reconstituted.');
         }
 
         return $persistable;

@@ -53,13 +53,13 @@ class ITree implements BST
     {
         switch (true) {
             case $n > 2:
-                return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
+                return 2.0 * (log($n - 1) + M_EULER) - 2.0 * ($n - 1) / $n;
 
             case $n === 2:
-                return 1.;
+                return 1.0;
 
             default:
-                return 0.;
+                return 0.0;
         }
     }
 

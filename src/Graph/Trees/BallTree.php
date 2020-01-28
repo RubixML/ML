@@ -10,7 +10,6 @@ use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
-use RuntimeException;
 use SplObjectStorage;
 
 use function array_slice;
@@ -186,7 +185,7 @@ class BallTree implements BST, Spatial
 
         $path = [];
 
-        while (true) {
+        while ($current) {
             $path[] = $current;
 
             if ($current instanceof Ball) {
@@ -237,7 +236,9 @@ class BallTree implements BST, Spatial
 
         $stack = $this->path($sample);
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+            
             if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -300,15 +301,13 @@ class BallTree implements BST, Spatial
                 . " greater than 0, $radius given.");
         }
 
-        if (empty($this->root)) {
-            throw new RuntimeException('Tree has not been grown yet.');
-        }
-
         $samples = $labels = $distances = [];
 
         $stack = [$this->root];
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
                     $distance = $this->kernel->compute($sample, $child->center());

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Tensor;
 use Tensor\Matrix;
 
 interface CostFunction
@@ -26,9 +25,9 @@ interface CostFunction
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Tensor\Tensor<int|float|array> $output
-     * @param \Tensor\Tensor<int|float|array> $target
-     * @return \Tensor\Tensor<int|float|array>
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
+     * @return \Tensor\Matrix
      */
-    public function differentiate(Tensor $output, Tensor $target) : Tensor;
+    public function differentiate(Matrix $output, Matrix $target) : Matrix;
 }

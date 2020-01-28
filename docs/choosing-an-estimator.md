@@ -78,7 +78,7 @@ Meta-estimators enhance other estimators with their own added functionality. The
 | [Bootstrap Aggregator](bootstrap-aggregator.md) | Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
 | [Committee Machine](committee-machine.md) | Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
 | [Grid Search](grid-search.md) | Model Selection | ● | ● | Any |
-| [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable model |
+| [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable estimator |
 | [Pipeline](pipeline.md) | Preprocessing | | ● | Any |
 
 In the example below, we'll use the Bootstrap Aggregator meta-estimator to wrap a Regression Tree.

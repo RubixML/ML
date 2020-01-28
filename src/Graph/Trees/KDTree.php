@@ -193,7 +193,7 @@ class KDTree implements BST, Spatial
 
         $path = [];
 
-        while (true) {
+        while ($current) {
             $path[] = $current;
 
             if ($current instanceof Box) {
@@ -236,7 +236,9 @@ class KDTree implements BST, Spatial
 
         $stack = $this->path($sample);
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+            
             if ($current instanceof Box) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -304,7 +306,9 @@ class KDTree implements BST, Spatial
 
         $stack = [$this->root];
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+            
             if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
                     if ($child instanceof Hypercube) {

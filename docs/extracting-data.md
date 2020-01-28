@@ -19,8 +19,8 @@ The library provides the [CSV](extractors/csv.md) extractor to help import data 
 **Example**
 
 ```php
-use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Transformers\NumericStringConverter;
 
 $dataset = Labeled::fromIterator(new CSV('example.csv', true))
@@ -28,7 +28,7 @@ $dataset = Labeled::fromIterator(new CSV('example.csv', true))
 ```
 
 ## JSON
-Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is used to represent structured data such as objects and arrays. The rows of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data as the proper type. One downside of the JSON format, however, is that the entire document must be read all at once.
+Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is used to represent structured data such as objects and arrays. The rows of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data in the proper type. One downside, however, is that the entire document must be read into memory at once.
 
 **Example**
 
@@ -56,8 +56,8 @@ The [JSON](extractors/json.md) extractor handles loading data from JSON files.
 **Example**
 
 ```php
-use Rubix\ML\Extractors\JSON;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\JSON;
 
 $dataset = Labeled::fromIterator(new JSON('example.json'));
 ```
@@ -89,7 +89,7 @@ $dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com) or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
+Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com), [PostgreSQL](https://www.postgresql.org), or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
 
 **Example**
 

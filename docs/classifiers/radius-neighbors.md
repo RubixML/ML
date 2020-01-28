@@ -12,8 +12,8 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
 | 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
-| 4 | anomaly class | '?' | string | The class label for any samples that have no neighbors within the specified radius. |
+| 3 | anomaly class | '?' | string | The class label for any samples that have no neighbors within the specified radius. |
+| 4 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Additional Methods
 Return the base spatial tree instance:
@@ -27,5 +27,5 @@ use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new RadiusNeighbors(50.0, false, new KDTree(100, new Manhattan()), '?');
+$estimator = new RadiusNeighbors(50.0, false, '?', new KDTree(100, new Manhattan()));
 ```

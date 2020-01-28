@@ -120,12 +120,15 @@ use Rubix\ML\CrossValidation\HoldOut;
 $validator = new HoldOut(0.2);
 ```
 
-The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use to score our estimator is [Accuracy](cross-validation/metrics/accuracy.md) which is defined as the number of true positives over the total number of predictions. A score of 1 indicates that the estimator was perfect in predicting the correct class label. 
+The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use to score the estimator with is the [Accuracy](cross-validation/metrics/accuracy.md) metric which is defined as the number of true positives over the total number of predictions. For example, a score of 1 indicates that the estimator was perfect in predicting the correct class label.
 
 To return a score from the Hold Out validator using the Accuracy metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
 
 ```php
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+
+$dataset = new Labeled($samples, $labels);
 
 $score = $validator->test($estimator, $dataset, new Accuracy());
 

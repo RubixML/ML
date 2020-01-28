@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use Tensor\Tensor;
-use Tensor\Vector;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -59,20 +57,32 @@ class CrossEntropyTest extends TestCase
     public function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([[0.99, 0.01, 0.]]),
-            Matrix::quick([[1., 0., 0.]]),
+            Matrix::quick([
+                [0.99, 0.01, 0.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
             0.00335011195116715,
         ];
 
         yield [
-            Matrix::quick([[0.2, 0.4, 0.4]]),
-            Matrix::quick([[0., 1., 0.]]),
+            Matrix::quick([
+                [0.2, 0.4, 0.4],
+            ]),
+            Matrix::quick([
+                [0.0, 1.0, 0.0],
+            ]),
             0.3054302439580517,
         ];
 
         yield [
-            Matrix::quick([[0.0, 0.1, 0.9]]),
-            Matrix::quick([[1., 0., 0.]]),
+            Matrix::quick([
+                [0.0, 0.1, 0.9],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
             6.140226914650789,
         ];
 
@@ -95,11 +105,11 @@ class CrossEntropyTest extends TestCase
      * @test
      * @dataProvider differentiateProvider
      *
-     * @param \Tensor\Tensor<int|float> $output
-     * @param \Tensor\Tensor<int|float> $target
+     * @param \Tensor\Matrix $output
+     * @param \Tensor\Matrix $target
      * @param array[] $expected
      */
-    public function differentiate(Tensor $output, Tensor $target, array $expected) : void
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
@@ -112,21 +122,39 @@ class CrossEntropyTest extends TestCase
     public function differentiateProvider() : Generator
     {
         yield [
-            Vector::quick([0.99, 0.01, 0.]),
-            Vector::quick([1., 0., 0.]),
-            [-1.01010101010101, 1.01010101010101, 0.],
+            Matrix::quick([
+                [0.99, 0.01, 0.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-1.01010101010101, 1.01010101010101, 0.0],
+            ],
         ];
 
         yield [
-            Vector::quick([0.2, 0.4, 0.4]),
-            Vector::quick([0., 1., 0.]),
-            [1.2499999999999998, -2.5, 1.6666666666666667],
+            Matrix::quick([
+                [0.2, 0.4, 0.4],
+            ]),
+            Matrix::quick([
+                [0.0, 1.0, 0.0],
+            ]),
+            [
+                [1.2499999999999998, -2.5, 1.6666666666666667],
+            ],
         ];
 
         yield [
-            Vector::quick([0.0, 0.1, 0.9]),
-            Vector::quick([1., 0., 0.]),
-            [-100000000.0, 1.111111111111111, 10.000000000000002],
+            Matrix::quick([
+                [0.0, 0.1, 0.9],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-100000000.0, 1.111111111111111, 10.000000000000002],
+            ],
         ];
 
         yield [
@@ -142,7 +170,7 @@ class CrossEntropyTest extends TestCase
             ]),
             [
                 [1.2499999999999998, 1.111111111111111, -1.4285714285714286],
-                [0., -1.1111111111111112, 1.111111111111111],
+                [0.0, -1.1111111111111112, 1.111111111111111],
                 [1.111111111111111, 1.4285714285714286, -1.6666666666666667],
             ],
         ];

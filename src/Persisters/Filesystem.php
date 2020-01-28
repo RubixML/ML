@@ -68,7 +68,7 @@ class Filesystem implements Persister
     }
 
     /**
-     * Save the persitable model.
+     * Save the persistable model.
      *
      * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
@@ -79,7 +79,7 @@ class Filesystem implements Persister
             $filename = $this->path . '.' . (string) time() . self::HISTORY_EXT;
 
             if (!rename($this->path, $filename)) {
-                throw new RuntimeException('Failed to rename history,'
+                throw new RuntimeException('Failed to rename history'
                  . ' file, check path and permissions.');
             }
         }
@@ -92,7 +92,7 @@ class Filesystem implements Persister
         $data = $this->serializer->serialize($persistable);
 
         if (!file_put_contents($this->path, $data, LOCK_EX)) {
-            throw new RuntimeException('Failed to save persistable to'
+            throw new RuntimeException('Failed to save file to'
                 . ' filesystem, check path and permissions.');
         }
     }
@@ -112,11 +112,16 @@ class Filesystem implements Persister
             
         $data = file_get_contents($this->path) ?: '';
 
+        if (empty($data)) {
+            throw new RuntimeException("File $this->path does not"
+                . ' contain any data.');
+        }
+
         $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Persistable object could not'
-                . ' be reconstituted.');
+            throw new RuntimeException('Persistable could not be'
+                . ' reconstituted.');
         }
 
         return $persistable;

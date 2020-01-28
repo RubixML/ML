@@ -3,8 +3,6 @@
 # Amp
 [Amp Parallel](https://amphp.org/parallel/) is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
 
-> **Note:** If no worker count is given, the backend will try to auto detect the number of processor cores and set the worker count to that value. Autodetection works on most Windows and *nix-based systems.
-
 > **Note:** The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
 ## Parameters
@@ -22,13 +20,5 @@ public workers() : int
 ```php
 use Rubix\ML\Backends\Amp;
 
-$backend = new Amp(); // Autodetect workers
-
 $backend = new Amp(16);
-
-var_dump($backend->workers());
-```
-
-```sh
-int(16)
 ```

@@ -435,7 +435,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->base->trained() or empty($this->ensemble)) {
+        if (!$this->base->trained() or !$this->ensemble) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -465,7 +465,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $importances = array_fill(0, $this->featureCount, 0.);
+        $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->ensemble as $tree) {
             foreach ($tree->featureImportances() as $column => $value) {
