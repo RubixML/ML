@@ -92,7 +92,7 @@ class ImageResizer implements Transformer
                     $width = imagesx($value);
                     $height = imagesy($value);
 
-                    if ($width === $this->width and $height == $this->height) {
+                    if ($width === $this->width and $height === $this->height) {
                         continue 1;
                     }
 
