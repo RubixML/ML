@@ -25,18 +25,11 @@ use function is_null;
 class ImageVectorizer implements Transformer, Stateful
 {
     /**
-     * The number of color channels to encode.
+     * Encode the images as grayscale?
      *
-     * @var int
+     * @var bool
      */
-    protected $channels;
-
-    /**
-     * The the number of bits to encode after the first 8.
-     *
-     * @var int
-     */
-    protected $mu;
+    protected $grayscale;
 
     /**
      * The fixed width and height of the images for each image feature column.
@@ -57,10 +50,7 @@ class ImageVectorizer implements Transformer, Stateful
                 . ' PHP configuration.');
         }
 
-        $channels = $grayscale ? 1 : 3;
-
-        $this->channels = $channels;
-        $this->mu = ($channels - 1) * 8;
+        $this->grayscale = $grayscale;
     }
 
     /**
@@ -134,9 +124,10 @@ class ImageVectorizer implements Transformer, Stateful
                         $pixel = imagecolorat($value, $x, $y);
 
                         $vector[] = $pixel & 0xFF;
-        
-                        for ($i = 8; $i <= $this->mu; $i *= 2) {
-                            $vector[] = ($pixel >> $i) & 0xFF;
+
+                        if (!$this->grayscale) {
+                            $vector[] = ($pixel >> 8) & 0xFF;
+                            $vector[] = ($pixel >> 16) & 0xFF;
                         }
                     }
                 }
