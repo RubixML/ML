@@ -2,16 +2,14 @@
 
 namespace Rubix\ML\Other\Traits;
 
-use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
 use Psr\Log\LoggerInterface;
 
 /**
  * Logger Aware
  *
- * This trait fulfills the requirements of the Verbose interface and
- * is suitable for most estimators including meta-estimators that
- * pass the logger instance to the base estimator.
+ * This trait fulfills the requirements of the Verbose interface and is suitable for most
+ * estimators.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -33,14 +31,6 @@ trait LoggerAware
      */
     public function setLogger(LoggerInterface $logger) : void
     {
-        if ($this instanceof Wrapper) {
-            $estimator = $this->base();
-            
-            if ($estimator instanceof Verbose) {
-                $estimator->setLogger($logger);
-            }
-        }
-
         $this->logger = $logger;
     }
 

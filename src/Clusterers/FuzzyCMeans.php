@@ -350,9 +350,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     protected function inertia(array $samples, array $memberships) : float
     {
-        $n = count($samples);
-
-        if ($n < 1) {
+        if (empty($samples)) {
             return 0.0;
         }
 
@@ -362,11 +360,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $membership = $memberships[$i];
 
             foreach ($this->centroids as $cluster => $centroid) {
-                $inertia += $membership[$cluster]
-                    * $this->kernel->compute($sample, $centroid);
+                $inertia += $membership[$cluster] * $this->kernel->compute($sample, $centroid);
             }
         }
 
-        return $inertia / $n;
+        return $inertia / count($samples);
     }
 }

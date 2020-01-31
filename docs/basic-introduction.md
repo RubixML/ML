@@ -20,9 +20,9 @@ $labels = ['married', 'divorced', 'married', 'divorced'];
 > **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
 
 ## The Dataset Object
-In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, transforming, randomizing, and sorting of the samples and labels for you. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*).
+In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, splitting, randomizing, and sorting of the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions.
 
-You could construct a [Labeled](datasets/labeled.md) dataset from the data we collected earlier by passing the samples and labels into the constructor like in the example below.
+You could construct a [Labeled](datasets/labeled.md) dataset from the data we collected earlier by passing the samples and their labels into the constructor like in the example below.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -37,7 +37,7 @@ $dataset = new Labeled($samples, $labels);
 
 In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be `married` or `divorced` since those are the class labels that we'll train it with.
 
-Like most estimators in Rubix ML, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge of the problem space, or completely at random. The defaults provided are a good place to start for most problems.
+Like most estimators in Rubix ML, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge or completely at random. The defaults provided are a good place to start for most problems.
 
 K Nearest Neighbors works by locating the closest training samples to an unknown sample and choosing the class label that is most common. The hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the learner, pass a set of hyper-parameters to the class's constructor. For this example, let's set *k* to 3 and leave the rest of the hyper-parameters as their default.
 

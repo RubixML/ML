@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Wrapper;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
@@ -53,9 +54,9 @@ class GridSearchTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'inner' => new Circle(0., 0., 1., 0.01),
-            'middle' => new Circle(0., 0., 5., 0.05),
-            'outer' => new Circle(0., 0., 10., 0.15),
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.15),
         ]);
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
@@ -84,6 +85,7 @@ class GridSearchTest extends TestCase
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Wrapper::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

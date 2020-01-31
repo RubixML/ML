@@ -465,9 +465,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      */
     protected function inertia(array $samples) : float
     {
-        $n = count($samples);
-
-        if ($n < 1) {
+        if (empty($samples)) {
             return 0.0;
         }
 
@@ -479,6 +477,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             }
         }
 
-        return $inertia / $n;
+        return $inertia / count($samples);
     }
 }

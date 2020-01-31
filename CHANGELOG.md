@@ -1,3 +1,6 @@
+- Unreleased
+    - Grid Search now implements the Wrapper interface
+
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function
     - Dense hidden layers now have optional bias parameter

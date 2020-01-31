@@ -7,7 +7,7 @@ A distance-based learning algorithm that locates the *k* nearest samples from th
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Depends on the distance kernel
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

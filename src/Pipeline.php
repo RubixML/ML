@@ -7,9 +7,9 @@ use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -40,7 +40,7 @@ use function gettype;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle;
 
     /**
      * The transformer middleware that preprocesses the data for the estimator.
@@ -52,7 +52,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     ];
 
     /**
-     * The wrapped estimator instance.
+     * The wrapped base estimator instance.
      *
      * @var \Rubix\ML\Estimator
      */
@@ -64,6 +64,13 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
      * @var bool
      */
     protected $elastic;
+
+    /**
+     * The PSR-3 logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface|null
+     */
+    protected $logger;
 
     /**
      * Whether or not the transformers have been fitted.
@@ -112,6 +119,30 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     public function compatibility() : array
     {
         return $this->estimator->compatibility();
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger) : void
+    {
+        if ($this->estimator instanceof Verbose) {
+            $this->estimator->setLogger($logger);
+        }
+
+        $this->logger = $logger;
+    }
+
+    /**
+     * Return if the logger is logging or not.
+     *
+     * @var bool
+     */
+    public function logging() : bool
+    {
+        return isset($this->logger);
     }
 
     /**

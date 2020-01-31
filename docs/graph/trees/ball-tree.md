@@ -5,7 +5,7 @@ A binary spatial tree that partitions a dataset into successively smaller and ti
 
 **Interfaces:** [Tree](api.md#tree), [Binary Tree](api.md#binary-tree), [BST](api.md#bst), [Spatial](api.md#spatial)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

@@ -1,23 +1,19 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php">[source]</a></span>
 
 # Grid Search
-Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one learner per combination of parameters and the best model is selected as the base estimator.
+Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood Grid Search trains a model for each combination of possible parameters and the best model is selected as the base estimator.
 
-> **Note:** You can choose the hyper-parameters manually or you can generate them randomly or in a grid using the [Params](other/helpers/params.md) helper.
-
-**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Persistable](persistable.md), [Verbose](verbose.md)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Persistable](persistable.md), [Verbose](verbose.md), [Wrapper](wrapper.md)
 
 **Data Type Compatibility:** Depends on base learner
 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | | string | The fully qualified class name of the base Estimator. |
-| 2 | grid | | array | An array of [tuples](faq.md#what-is-a-tuple) where each tuple contains the possible values of each parameter in the order they are given to the base learner's constructor. |
+| 1 | base | | string | The class name of the base learner. |
+| 2 | params | | array | An array of [tuples](faq.md#what-is-a-tuple) containing the possible values for each of the base learner's constructor parameters. |
 | 3 | metric | Auto | Metric | The validation metric used to score each set of hyper-parameters. |
-| 4 | validator | KFold | Validator | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
-
-> **Note:** The default validation metrics are [F Beta](cross-validation/metrics/f-beta.md) for classifiers and anomaly detectors, [R Squared](cross-validation/metrics/r-squared.md) for regressors, and [V Measure](cross-validation/metrics/v-measure.md) for clusterers.
+| 4 | validator | KFold | Validator | The validator used to test and score each trained model. |
 
 ## Additional Methods
 Return an array of every possible combination of hyper-parameters:
@@ -44,11 +40,11 @@ use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\KFold;
 
-$grid = [
+$params = [
 	[1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new GridSearch(KNearestNeighbors::class, $grid, new FBeta(), new KFold(5));
+$estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 
 $estimator->train($dataset);
 

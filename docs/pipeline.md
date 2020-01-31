@@ -5,7 +5,7 @@ Pipeline is a meta estimator responsible for transforming the input dataset by a
 
 > **Note:** Since transformations are applied to dataset objects in-place (without making a copy of the data), using a dataset in a program after it has been run through Pipeline may have unexpected results. If you need to keep a *clean* dataset in memory you can `clone` the dataset object before calling the method on Pipeline that consumes it.
 
-**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Online](online.md), [Probabilistic](probabilistic.md), [Persistable](persistable.md), [Verbose](verbose.md)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Online](online.md), [Probabilistic](probabilistic.md), [Persistable](persistable.md), [Verbose](verbose.md), [Wrapper](wrapper.md)
 
 **Data Type Compatibility:** Depends on base learner and transformers
 

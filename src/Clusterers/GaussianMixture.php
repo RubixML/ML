@@ -252,11 +252,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         }
 
         $samples = $dataset->samples();
-        $rotated = $dataset->columns();
+        $columns = $dataset->columns();
     
         $n = $dataset->numRows();
 
-        $this->priors = array_fill(0, $this->k, log(1. / $this->k));
+        $this->priors = array_fill(0, $this->k, log(1.0 / $this->k));
 
         [$this->means, $this->variances] = $this->initialize($dataset);
 
@@ -268,9 +268,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             $memberships = [];
 
             foreach ($dataset->samples() as $sample) {
-                $jll = $this->jointLogLikelihood($sample);
-
-                $memberships[] = array_map('exp', $jll);
+                $memberships[] = array_map('exp', $this->jointLogLikelihood($sample));
             }
 
             $loss = 0.0;
@@ -280,25 +278,27 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
                 $means = $variances = [];
 
-                foreach ($rotated as $values) {
-                    $a = $b = $total = 0.0;
+                foreach ($columns as $column) {
+                    $sigma = $total = 0.0;
 
-                    foreach ($values as $i => $value) {
+                    foreach ($column as $i => $value) {
                         $membership = $mHat[$i];
 
-                        $a += $membership * $value;
+                        $sigma += $membership * $value;
                         $total += $membership;
                     }
 
                     $total = $total ?: EPSILON;
 
-                    $mean = $a / $total;
+                    $mean = $sigma / $total;
 
-                    foreach ($values as $i => $value) {
-                        $b += $mHat[$i] * ($value - $mean) ** 2;
+                    $sigma = 0.0;
+
+                    foreach ($column as $i => $value) {
+                        $sigma += $mHat[$i] * ($value - $mean) ** 2;
                     }
 
-                    $variance = $b / $total;
+                    $variance = $sigma / $total;
 
                     $means[] = $mean;
                     $variances[] = $variance ?: EPSILON;

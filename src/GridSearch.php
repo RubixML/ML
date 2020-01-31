@@ -39,7 +39,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
+class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, Wrapper
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 
@@ -51,12 +51,12 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $base;
 
     /**
-     * An array of tuples where each tuple contains the possible values of each
-     * parameter in the order they are given to the base learner's constructor.
+     * An array of tuples containing the possible values for each of the base learner's
+     * constructor parameters.
      *
      * @var array[]
      */
-    protected $grid;
+    protected $params;
 
     /**
      * The validation metric used to score the estimator.
@@ -98,14 +98,14 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
     /**
      * @param class-string $base
-     * @param array[] $grid
+     * @param array[] $params
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
      * @throws \InvalidArgumentException
      */
     public function __construct(
         string $base,
-        array $grid,
+        array $params,
         ?Metric $metric = null,
         ?Validator $validator = null
     ) {
@@ -120,26 +120,14 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
         $args = Params::args($proxy);
 
-        if (count($grid) > count($args)) {
+        if (count($params) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied'
-                . ' for learner, ' . count($grid) . ' given but only '
-                . count($args) . ' required.');
+                . " for base learner's constructor, " . count($params)
+                . ' given but only ' . count($args) . ' required.');
         }
 
-        $grid = array_values($grid);
-
-        foreach ($grid as &$options) {
-            if (!is_array($options)) {
-                $options = [$options];
-
-                continue 1;
-            }
-
-            $options = array_values($options);
-
-            if (is_string($options[0]) or is_numeric($options[0])) {
-                $options = array_unique($options);
-            }
+        foreach ($params as &$tuple) {
+            $tuple = array_values(array_unique($tuple, SORT_REGULAR));
         }
 
         if ($metric) {
@@ -172,8 +160,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         }
 
         $this->base = $base;
-        $this->grid = $grid;
-        $this->args = array_slice($args, 0, count($grid));
+        $this->params = $params;
+        $this->args = array_slice($args, 0, count($params));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
         $this->estimator = $proxy;
@@ -229,7 +217,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      *
      * @return \Rubix\ML\Estimator
      */
-    public function estimator() : Estimator
+    public function base() : Estimator
     {
         return $this->estimator;
     }
@@ -259,9 +247,16 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             ]));
         }
 
-        $this->backend->flush();
-
         $combinations = $this->combinations();
+
+        if ($this->logger) {
+            $k = count($combinations);
+
+            $this->logger->info("Searching $k combinations"
+                . ' of hyper-parameters.');
+        }
+
+        $this->backend->flush();
 
         foreach ($combinations as $params) {
             $estimator = new $this->base(...$params);
@@ -306,8 +301,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         $estimator = new $this->base(...$bestParams);
 
         if ($this->logger) {
-            $this->logger->info('Training learner with best'
-                . ' params on full dataset');
+            $this->logger->info('Training on full dataset');
         }
 
         $estimator->train($dataset);
@@ -321,7 +315,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
     /**
      * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the user supplied parameter grid.
+     * Cartesian product of the user-supplied parameter array.
      *
      * @return array[]
      */
@@ -329,11 +323,11 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     {
         $combinations = [[]];
 
-        foreach ($this->grid as $i => $params) {
+        foreach ($this->params as $i => $tuple) {
             $append = [];
 
             foreach ($combinations as $product) {
-                foreach ($params as $param) {
+                foreach ($tuple as $param) {
                     $product[$i] = $param;
                     $append[] = $product;
                 }
