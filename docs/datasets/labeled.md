@@ -3,7 +3,7 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
-> **Note:** Labels can be either categorical or continuous data types but NaN values are not allowed.
+> **Note:** Due to a limitation of PHP, avoid using numeric strings (ex. '1') as labels as they may cause unexpected behavior.
 
 ## Parameters
 | # | Param | Default | Type | Description |

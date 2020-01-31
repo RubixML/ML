@@ -70,7 +70,7 @@ class Unlabeled extends Dataset
      */
     public static function stack(array $datasets) : self
     {
-        $samples = $labels = [];
+        $samples = [];
 
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Dataset) {
@@ -79,10 +79,10 @@ class Unlabeled extends Dataset
                     . ' given.');
             }
 
-            $samples = array_merge($samples, $dataset->samples());
+            $samples[] = $dataset->samples();
         }
 
-        return self::quick($samples);
+        return self::quick(array_merge(...$samples));
     }
 
     /**

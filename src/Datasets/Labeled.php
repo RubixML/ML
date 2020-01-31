@@ -101,15 +101,18 @@ class Labeled extends Dataset
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Dataset must be'
-                    . ' a instance of Labeled, ' . get_class($dataset)
+                    . ' an instance of Labeled, ' . get_class($dataset)
                     . ' given.');
             }
 
-            $samples = array_merge($samples, $dataset->samples());
-            $labels = array_merge($labels, $dataset->labels());
+            $samples[] = $dataset->samples();
+            $labels[] = $dataset->labels();
         }
 
-        return self::quick($samples, $labels);
+        return self::quick(
+            array_merge(...$samples),
+            array_merge(...$labels)
+        );
     }
 
     /**
@@ -188,11 +191,11 @@ class Labeled extends Dataset
      */
     public function labelType() : DataType
     {
-        if (!isset($this->labels[0])) {
+        if (empty($this->labels)) {
             throw new RuntimeException('Dataset is empty.');
         }
 
-        return DataType::determine($this->labels[0]);
+        return DataType::determine(reset($this->labels));
     }
 
     /**
@@ -607,7 +610,7 @@ class Labeled extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0 or $ratio >= 1) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Ratio must be strictly'
                 . " between 0 and 1, $ratio given.");
         }
@@ -635,7 +638,7 @@ class Labeled extends Dataset
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Ratio must be strictly'
                 . " between 0 and 1, $ratio given.");
         }
@@ -722,7 +725,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Stratifying subroutine groups samples by label.
+     * Stratifying subroutine groups samples by their categorical label.
      *
      * @throws \RuntimeException
      * @return array[]

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -12,6 +11,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
@@ -24,6 +24,7 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function Rubix\ML\array_transpose;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -293,33 +294,25 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             ]));
         }
 
-        $samples = $dataset->samples();
+        $labels = array_fill(0, $dataset->numRows(), 0);
 
-        $clusters = array_fill(0, $dataset->numRows(), 0);
-
-        $order = range(0, $dataset->numRows() - 1);
+        $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            shuffle($order);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
-            array_multisort($order, $samples, $clusters);
+            foreach ($batches as $i => &$batch) {
+                $assignments = array_map([self::class, 'assign'], $batch->samples());
 
-            $sBatches = array_chunk($samples, $this->batchSize, true);
-            $lBatches = array_chunk($clusters, $this->batchSize, true);
-
-            foreach ($sBatches as $i => $batch) {
-                $assignments = array_map([self::class, 'assign'], $batch);
-
-                $labels = $lBatches[$i];
+                $labels = $batch->labels();
 
                 foreach ($assignments as $j => $cluster) {
                     $expected = $labels[$j];
 
                     if ($cluster !== $expected) {
-                        $clusters[$j] = $cluster;
                         $labels[$j] = $cluster;
 
                         --$this->sizes[$expected];
@@ -327,27 +320,28 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                     }
                 }
 
-                $strata = Labeled::quick($batch, $labels)->stratify();
+                $batch = Labeled::quick($batch->samples(), $labels);
 
-                foreach ($strata as $cluster => $stratum) {
-                    $centroid = $this->centroids[$cluster];
+                $strata = $batch->stratify();
 
-                    $step = Matrix::quick($stratum->samples())
-                        ->transpose()
-                        ->mean()
-                        ->asArray();
+                foreach ($this->centroids as $cluster => $centroid) {
+                    $stratum = $strata[$cluster];
 
-                    $weight = 1. / ($this->sizes[$cluster] ?: EPSILON);
+                    $temp = array_transpose($stratum->samples());
+
+                    $step = array_map([Stats::class, 'mean'], $temp);
+
+                    $weight = 1.0 / (1 + $this->sizes[$cluster]);
 
                     foreach ($centroid as $i => &$mean) {
-                        $mean = (1. - $weight) * $mean + $weight * $step[$i];
+                        $mean = (1.0 - $weight) * $mean + $weight * $step[$i];
                     }
-
-                    $this->centroids[$cluster] = $centroid;
                 }
             }
 
-            $loss = $this->inertia($samples);
+            $dataset = Labeled::stack($batches);
+
+            $loss = $this->inertia($dataset->samples());
 
             $this->steps[] = $loss;
 
