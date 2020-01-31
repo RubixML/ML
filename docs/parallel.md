@@ -4,7 +4,7 @@ Multiprocessing is the use of two or more processes that execute in parallel. Ob
 > **Note:** Most parallel learners are configured to use the [Serial](backends/serial.md) backend by default.
 
 ## Set a Backend
-Parallelizable objects can utilize a parallel processing [Backend](backends/api.md) by passing it to the `setBackend()` method.
+Parallelizable objects can utilize a parallel processing Backend by passing it to the `setBackend()` method.
 
 To set the backend processing engine:
 ```php

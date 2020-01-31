@@ -10,7 +10,6 @@ use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 use Generator;
-use Closure;
 
 use function Amp\call;
 use function Amp\Promise\all;
@@ -81,10 +80,10 @@ class Amp implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Deferred $deferred
-     * @param \Closure|null $after
+     * @param callable|null $after
      * @throws \InvalidArgumentException
      */
-    public function enqueue(Deferred $deferred, ?Closure $after = null) : void
+    public function enqueue(Deferred $deferred, ?callable $after = null) : void
     {
         $task = new CallableTask($deferred, []);
 
@@ -97,10 +96,10 @@ class Amp implements Backend
      * Create a coroutine for a particular task.
      *
      * @param \Amp\Parallel\Worker\Task $task
-     * @param \Closure|null $after
+     * @param callable|null $after
      * @return \Generator<\Amp\Promise>
      */
-    public function coroutine(Task $task, ?Closure $after = null) : Generator
+    public function coroutine(Task $task, ?callable $after = null) : Generator
     {
         $result = yield $this->pool->enqueue($task);
 

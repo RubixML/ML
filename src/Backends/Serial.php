@@ -3,7 +3,6 @@
 namespace Rubix\ML\Backends;
 
 use Rubix\ML\Deferred;
-use Closure;
 
 /**
  * Serial
@@ -23,7 +22,7 @@ use Closure;
 class Serial implements Backend
 {
     /**
-     * A 2-tuple of deferred computations and their callbacks.
+     * A 2-tuple of deferred computations and their optional callbacks.
      *
      * @var array[]
      */
@@ -35,9 +34,9 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Deferred $deferred
-     * @param \Closure|null $after
+     * @param callable|null $after
      */
-    public function enqueue(Deferred $deferred, ?Closure $after = null) : void
+    public function enqueue(Deferred $deferred, ?callable $after = null) : void
     {
         $this->queue[] = [$deferred, $after];
     }

@@ -42,7 +42,7 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
 ## Does Rubix ML support multiprocessing?
-Yes, learners that support parallel processing (multiprocessing) do so by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood.
+Yes, learners that support parallel processing (multiprocessing) do so by utilizing a pluggable parallel computing backends under the hood.
 
 ## Does Rubix ML support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.

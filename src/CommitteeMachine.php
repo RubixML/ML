@@ -21,10 +21,10 @@ use function count;
  *
  * A voting ensemble that aggregates the predictions of a committee of heterogeneous
  * estimators (called *experts*). The committee uses a user-specified influence-based
- * scheme to sway final predictions.
+ * scheme to weight the final predictions.
  *
- * > **Note**: Influence values can be arbitrary as they are normalized upon object
- * creation.
+ * > **Note**: Influence values can be arbitrary as they are normalized upon
+ * instantiation.
  *
  * References:
  * [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
@@ -151,7 +151,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 $weight /= $total;
             }
         } else {
-            $influences = array_fill(0, $k, 1 / $k);
+            $influences = array_fill(0, $k, 1.0 / $k);
         }
 
         $this->experts = $experts;
@@ -244,11 +244,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                     [self::class, '_train'],
                     [$estimator, $dataset]
                 ),
-                function ($result) {
-                    if ($this->logger) {
-                        $this->logger->info(Params::shortName($result) . ' finished');
-                    }
-                }
+                [$this, 'afterTrain']
             );
         }
 
@@ -309,7 +305,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function decideClass(array $votes)
     {
-        $scores = array_fill_keys($this->classes, 0.);
+        $scores = array_fill_keys($this->classes, 0.0);
 
         foreach ($votes as $i => $vote) {
             $scores[$vote] += $this->influences[$i];
@@ -337,7 +333,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function decideAnomaly(array $votes) : string
     {
-        $scores = array_fill(0, 2, 0.);
+        $scores = array_fill(0, 2, 0.0);
 
         foreach ($votes as $i => $vote) {
             $scores[$vote] += $this->influences[$i];
@@ -358,6 +354,25 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $estimator->train($dataset);
 
         return $estimator;
+    }
+
+    /**
+     * The callback that executes after training a learner.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @throws \RuntimeException
+     */
+    public function afterTrain(Learner $estimator) : void
+    {
+        if (!$estimator->trained()) {
+            throw new RuntimeException('There was a problem'
+                . ' training ' . Params::shortName($estimator) . '.');
+        }
+
+        if ($this->logger) {
+            $this->logger->info(Params::shortName($estimator)
+                . ' finished training');
+        }
     }
     
     /**
