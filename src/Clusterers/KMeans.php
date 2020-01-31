@@ -24,7 +24,6 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Rubix\ML\array_transpose;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -322,14 +321,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
                 $batch = Labeled::quick($batch->samples(), $labels);
 
-                $strata = $batch->stratify();
+                foreach ($batch->stratify() as $cluster => $stratum) {
+                    $centroid = &$this->centroids[$cluster];
 
-                foreach ($this->centroids as $cluster => $centroid) {
-                    $stratum = $strata[$cluster];
-
-                    $temp = array_transpose($stratum->samples());
-
-                    $step = array_map([Stats::class, 'mean'], $temp);
+                    $step = array_map([Stats::class, 'mean'], $stratum->columns());
 
                     $weight = 1.0 / (1 + $this->sizes[$cluster]);
 
