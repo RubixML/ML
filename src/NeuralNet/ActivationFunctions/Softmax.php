@@ -26,7 +26,7 @@ class Softmax extends Sigmoid
      */
     public function compute(Matrix $z) : Matrix
     {
-        $zHat = $z->transpose()->exp();
+        $zHat = $z->exp()->transpose();
 
         $total = $zHat->sum()->clipLower(EPSILON);
 

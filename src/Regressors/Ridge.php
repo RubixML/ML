@@ -142,7 +142,9 @@ class Ridge implements Estimator, Learner, Persistable
 
         $alphas = array_fill(0, $x->n() - 1, $this->alpha);
 
-        $penalties = Matrix::diagonal(array_merge([0.0], $alphas));
+        array_unshift($alphas, 0.0);
+
+        $penalties = Matrix::diagonal($alphas);
 
         $xT = $x->transpose();
 

@@ -648,16 +648,22 @@ class Labeled extends Dataset
         foreach ($this->_stratify() as $label => $stratum) {
             $n = (int) floor($ratio * count($stratum));
 
-            $leftSamples = array_merge($leftSamples, array_splice($stratum, 0, $n));
-            $leftLabels = array_merge($leftLabels, array_fill(0, $n, $label));
+            $leftSamples[] = array_splice($stratum, 0, $n);
+            $leftLabels[] = array_fill(0, $n, $label);
 
-            $rightSamples = array_merge($rightSamples, $stratum);
-            $rightLabels = array_merge($rightLabels, array_fill(0, count($stratum), $label));
+            $rightSamples[] = $stratum;
+            $rightLabels[] = array_fill(0, count($stratum), $label);
         }
 
         return [
-            self::quick($leftSamples, $leftLabels),
-            self::quick($rightSamples, $rightLabels),
+            self::quick(
+                array_merge(...$leftSamples),
+                array_merge(...$leftLabels)
+            ),
+            self::quick(
+                array_merge(...$rightSamples),
+                array_merge(...$rightLabels)
+            ),
         ];
     }
 
@@ -714,11 +720,14 @@ class Labeled extends Dataset
             foreach ($this->_stratify() as $label => $stratum) {
                 $n = (int) floor(count($stratum) / $k);
 
-                $samples = array_merge($samples, array_slice($stratum, $i * $n, $n));
-                $labels = array_merge($labels, array_fill(0, $n, $label));
+                $samples[] = array_slice($stratum, $i * $n, $n);
+                $labels[] = array_fill(0, $n, $label);
             }
 
-            $folds[] = self::quick($samples, $labels);
+            $folds[] = self::quick(
+                array_merge(...$samples),
+                array_merge(...$labels)
+            );
         }
 
         return $folds;
@@ -1036,7 +1045,7 @@ class Labeled extends Dataset
             $row[] = $this->labels[$i];
         }
 
-        $table = array_merge([$header], $table);
+        array_unshift($table, $header);
 
         return Console::table($table);
     }

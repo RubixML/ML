@@ -602,7 +602,7 @@ class Unlabeled extends Dataset
             $row = array_slice($row, 0, $n);
         }
 
-        $table = array_merge([$header], $table);
+        array_unshift($table, $header);
 
         return Console::table($table);
     }
