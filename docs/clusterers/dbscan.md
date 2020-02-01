@@ -7,7 +7,7 @@
 
 **Interfaces:** [Estimator](../estimator.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

@@ -1,4 +1,5 @@
 - Unreleased
+    - t-SNE now compatible with categorical distance kernels
     - Grid Search now implements the Wrapper interface
 
 - 0.0.19-beta

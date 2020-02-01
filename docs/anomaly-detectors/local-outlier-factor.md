@@ -5,7 +5,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of an unknown
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

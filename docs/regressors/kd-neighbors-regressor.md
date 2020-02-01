@@ -5,7 +5,7 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

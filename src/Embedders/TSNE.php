@@ -4,7 +4,6 @@ namespace Rubix\ML\Embedders;
 
 use Tensor\Matrix;
 use Rubix\ML\Verbose;
-use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -274,9 +273,7 @@ class TSNE implements Embedder, Verbose
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return $this->kernel->compatibility();
     }
 
     /**
@@ -314,23 +311,23 @@ class TSNE implements Embedder, Verbose
             ]));
         }
 
-        $x = Matrix::build($dataset->samples());
+        $m = $dataset->numRows();
 
         if ($this->logger) {
             $this->logger->info('Computing high-dimensional'
                 . ' pairwise affinities');
         }
 
-        $distances = $this->pairwiseDistances($x);
+        $distances = $this->pairwiseDistances($dataset->samples());
 
         $p = $this->affinities($distances)
             ->multiply($this->exaggeration);
 
-        $y = $yHat = Matrix::gaussian($x->m(), $this->dimensions)
+        $y = $yHat = Matrix::gaussian($m, $this->dimensions)
             ->multiply(self::Y_INIT);
 
-        $velocity = Matrix::zeros($x->m(), $this->dimensions);
-        $gains = Matrix::ones($x->m(), $this->dimensions)->asArray();
+        $velocity = Matrix::zeros($m, $this->dimensions);
+        $gains = Matrix::ones($m, $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
@@ -339,17 +336,17 @@ class TSNE implements Embedder, Verbose
         $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $distances = $this->pairwiseDistances($y);
+            $distances = $this->pairwiseDistances($y->asArray());
 
-            $gradient = $this->gradient($p, $y, $distances);
+            $gradient = $this->gradient($p, $y, Matrix::quick($distances));
 
-            $directions = $velocity->multiply($gradient);
+            $directions = $velocity->multiply($gradient)->asArray();
 
             foreach ($gains as $i => &$row) {
                 $direction = $directions[$i];
 
                 foreach ($row as $j => &$gain) {
-                    $gain = $direction[$j] < 0.
+                    $gain = $direction[$j] < 0.0
                         ? $gain + self::GAIN_ACCELERATE
                         : $gain * self::GAIN_BRAKE;
 
@@ -411,73 +408,69 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
-     * Calculate the pairwise distances for each sample.
+     * Calculate the pairwise distances for each sample and return them in a 2-d array.
      *
-     * @param \Tensor\Matrix $samples
-     * @return \Tensor\Matrix
+     * @param array[] $samples
+     * @return array[]
      */
-    protected function pairwiseDistances(Matrix $samples) : Matrix
+    protected function pairwiseDistances(array $samples) : array
     {
         $distances = [];
 
         foreach ($samples as $i => $sampleA) {
-            $vector = [];
+            $row = [];
 
             foreach ($samples as $j => $sampleB) {
                 if ($i !== $j) {
-                    $vector[] = $this->kernel->compute($sampleA, $sampleB);
+                    $row[] = $this->kernel->compute($sampleA, $sampleB);
                 } else {
-                    $vector[] = 0.;
+                    $row[] = 0.0;
                 }
             }
 
-            $distances[] = $vector;
+            $distances[] = $row;
         }
 
-        return Matrix::quick($distances);
+        return $distances;
     }
 
     /**
      * Compute the conditional probabilities from the distance matrix such that
      * they approximately match the desired perplexity.
      *
-     * @param \Tensor\Matrix $distances
+     * @param array[] $distances
      * @return \Tensor\Matrix
      */
-    protected function affinities(Matrix $distances) : Matrix
+    protected function affinities(array $distances) : Matrix
     {
-        $zeros = array_fill(0, $distances->m(), 0);
-        
         $affinities = [];
 
         foreach ($distances as $i => $row) {
-            $minBeta = -INF;
+            $candidate = [];
             $maxBeta = INF;
+            $minBeta = -INF;
             $beta = 1.0;
 
             for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
-                $temp = [];
+                $candidate = [];
                 $pSigma = 0.0;
 
                 foreach ($row as $k => $distance) {
                     if ($i !== $k) {
                         $affinity = exp(-$distance * $beta);
+
+                        $candidate[] = $affinity;
+                        $pSigma += $affinity;
                     } else {
-                        $affinity = 0.0;
+                        $candidate[] = 0.0;
                     }
-
-                    $temp[] = $affinity;
-
-                    $pSigma += $affinity;
                 }
 
-                if ($pSigma === 0.0) {
-                    $pSigma = EPSILON;
-                }
+                $pSigma = $pSigma ?: EPSILON;
 
                 $distSigma = 0.0;
 
-                foreach ($temp as $k => &$affinity) {
+                foreach ($candidate as $k => &$affinity) {
                     $affinity /= $pSigma;
 
                     $distSigma += $row[$k] * $affinity;
@@ -510,7 +503,7 @@ class TSNE implements Embedder, Verbose
                 }
             }
 
-            $affinities[] = $temp ?? $zeros;
+            $affinities[] = $candidate;
         }
 
         return Matrix::quick($affinities);
@@ -528,10 +521,10 @@ class TSNE implements Embedder, Verbose
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
         $q = $distances->divide($this->degrees)
-            ->add(1.)
-            ->pow((1. + $this->degrees) / -2.);
+            ->add(1.0)
+            ->pow((1.0 + $this->degrees) / -2.0);
 
-        $q = $q->divide($q->sum()->multiply(2.))
+        $q = $q->divide($q->sum()->multiply(2.0))
             ->clipLower(EPSILON);
 
         $pqd = $p->subtract($q)->multiply($distances);

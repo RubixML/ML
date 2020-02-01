@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -227,7 +228,9 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public function compatibility() : array
     {
-        return $this->tree->kernel()->compatibility();
+        return [
+            DataType::continuous(),
+        ];
     }
 
     /**

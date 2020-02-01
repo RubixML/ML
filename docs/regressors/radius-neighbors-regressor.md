@@ -7,7 +7,7 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

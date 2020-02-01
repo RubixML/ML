@@ -39,9 +39,9 @@ class Gower implements Distance, NaNSafe
      * @param float $range
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $range = 1.)
+    public function __construct(float $range = 1.0)
     {
-        if ($range <= 0.) {
+        if ($range <= 0.0) {
             throw new InvalidArgumentException('Range must be greater'
                 . " than 0,  $range given.");
         }
@@ -71,10 +71,8 @@ class Gower implements Distance, NaNSafe
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0.;
+        $distance = 0.0;
         $nn = 0;
-
-        $n = count($a);
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
@@ -98,10 +96,12 @@ class Gower implements Distance, NaNSafe
 
                 default:
                     if ($valueA !== $valueB) {
-                        $distance += 1.;
+                        $distance += 1.0;
                     }
             }
         }
+
+        $n = count($a);
 
         if ($nn === $n) {
             return NAN;

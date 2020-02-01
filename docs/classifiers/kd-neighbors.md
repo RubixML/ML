@@ -5,7 +5,7 @@ A fast K Nearest Neighbors algorithm that uses a binary search tree (BST) to div
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 | # | Param | Default | Type | Description |

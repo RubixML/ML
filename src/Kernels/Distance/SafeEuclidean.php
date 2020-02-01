@@ -44,29 +44,28 @@ class SafeEuclidean implements Distance, NaNSafe
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0.;
+        $distance = 0.0;
         $nn = 0;
-
-        $n = count($a);
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
 
-            switch (true) {
-                case is_float($valueA) and is_nan($valueA):
-                    ++$nn;
+            if (is_float($valueA) and is_nan($valueA)) {
+                ++$nn;
 
-                    break 1;
-
-                case is_float($valueB) and is_nan($valueB):
-                    ++$nn;
-
-                    break 1;
-
-                default:
-                    $distance += ($valueA - $valueB) ** 2;
+                continue 1;
             }
+
+            if (is_float($valueB) and is_nan($valueB)) {
+                ++$nn;
+
+                continue 1;
+            }
+
+            $distance += ($valueA - $valueB) ** 2;
         }
+
+        $n = count($a);
 
         if ($nn === $n) {
             return NAN;
