@@ -9,6 +9,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
+use ErrorException;
 use Traversable;
 use Generator;
 
@@ -743,8 +744,12 @@ class Labeled extends Dataset
     {
         $strata = [];
 
-        foreach ($this->labels as $index => $label) {
-            $strata[$label][] = $this->samples[$index];
+        try {
+            foreach ($this->labels as $index => $label) {
+                $strata[$label][] = $this->samples[$index];
+            }
+        } catch (ErrorException $e) {
+            throw new RuntimeException('Label must be an integer or string.');
         }
 
         return $strata;

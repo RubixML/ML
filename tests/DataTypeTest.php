@@ -50,8 +50,6 @@ class DataTypeTest extends TestCase
 
         yield [-100, DataType::continuous()];
 
-        yield [imagecreatefromjpeg('tests/space.jpg'), DataType::image()];
-
         yield [null, DataType::other()];
 
         yield [false, DataType::other()];
@@ -59,6 +57,17 @@ class DataTypeTest extends TestCase
         yield [[], DataType::other()];
 
         yield [(object) [], DataType::other()];
+    }
+
+    /**
+     * @test
+     * @requires extension gd
+     */
+    public function determineImage() : void
+    {
+        $value = imagecreatefromjpeg('tests/space.jpg');
+
+        $this->assertEquals(DataType::image(), DataType::determine($value));
     }
 
     /**

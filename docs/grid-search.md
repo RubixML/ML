@@ -11,24 +11,19 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | string | The class name of the base learner. |
-| 2 | params | | array | An array of [tuples](faq.md#what-is-a-tuple) containing the possible values for each of the base learner's constructor parameters. |
+| 2 | params | | array | An array of [n-tuples](faq.md#what-is-a-tuple) containing the possible values for each of the base learner's constructor parameters. |
 | 3 | metric | Auto | Metric | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | Validator | The validator used to test and score each trained model. |
 
 ## Additional Methods
-Return an array of every possible combination of hyper-parameters:
+Return an array containing the validation scores and hyper-parameters under test for each combination resulting from the last search:
 ```php
-public combinations() : array
+public results() : ?array
 ```
 
-An [n-tuple](faq.md#what-is-a-tuple) containing the best parameters based on their validation score:
+Return an array containing the best parameters from the last search:
 ```php
-public best() : array
-```
-
-Return the underlying base estimator:
-```php
-public estimator() : Estimator
+public best() : ?array
 ```
 
 ## Example

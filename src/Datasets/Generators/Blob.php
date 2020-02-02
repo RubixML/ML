@@ -43,7 +43,7 @@ class Blob implements Generator
      * @param mixed $stddev
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $center = [0, 0], $stddev = 1.)
+    public function __construct(array $center = [0, 0], $stddev = 1.0)
     {
         if (empty($center)) {
             throw new InvalidArgumentException('Cannot generate data of less'

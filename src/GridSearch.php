@@ -82,12 +82,11 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     ];
 
     /**
-     * A 2-tuple containing the parameters with the highest validation score
-     * and the validation score.
+     * The results of the last hyper-parameter search.
      *
-     * @var (float|array)[]|null
+     * @var array[]|null
      */
-    protected $best;
+    protected $results;
 
     /**
      * The instance of the estimator with the best parameters.
@@ -114,8 +113,13 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         $proxy = $reflector->newInstanceWithoutConstructor();
 
         if (!$proxy instanceof Learner) {
-            throw new InvalidArgumentException('Base class must be an instance'
-                . ' of a learner.');
+            throw new InvalidArgumentException('Base class must be of'
+                . ' a learner.');
+        }
+
+        if (empty($params)) {
+            throw new InvalidArgumentException('Hyper-parameter array'
+                . ' must not be empty.');
         }
 
         $args = Params::args($proxy);
@@ -127,6 +131,11 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         }
 
         foreach ($params as &$tuple) {
+            if (empty($tuple)) {
+                throw new InvalidArgumentException('Must supply at least'
+                    . ' one possible value for a constructor argument.');
+            }
+
             $tuple = array_values(array_unique($tuple, SORT_REGULAR));
         }
 
@@ -163,7 +172,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         $this->params = $params;
         $this->args = array_slice($args, 0, count($params));
         $this->metric = $metric;
-        $this->validator = $validator ?? new KFold(5);
+        $this->validator = $validator ?? new KFold(3);
         $this->estimator = $proxy;
         $this->backend = new Serial();
     }
@@ -203,13 +212,24 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     }
 
     /**
-     * Return the parameters that had the highest validation score.
+     * Return an array containing the validation scores and hyper-parameters under test
+     * for each combination resulting from the last search.
      *
-     * @return (float|array)[]|null
+     * @return array[]|null
+     */
+    public function results() : ?array
+    {
+        return $this->results;
+    }
+
+    /**
+     * Return an array containing the best parameters from the last search.
+     *
+     * @return mixed[]|null
      */
     public function best() : ?array
     {
-        return $this->best;
+        return $this->results ? $this->results[0]['params'] : null;
     }
 
     /**
@@ -252,8 +272,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         if ($this->logger) {
             $k = count($combinations);
 
-            $this->logger->info("Searching $k combinations"
-                . ' of hyper-parameters.');
+            $this->logger->info("Searching $k combinations of"
+                . ' hyper-parameters.');
         }
 
         $this->backend->flush();
@@ -286,23 +306,24 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
 
         $scores = $this->backend->process();
 
-        $bestScore = -INF;
-        $bestParams = [];
+        array_multisort($scores, $combinations, SORT_DESC);
+
+        $results = [];
 
         foreach ($scores as $i => $score) {
-            if ($score > $bestScore) {
-                $bestParams = $combinations[$i];
-                $bestScore = $score;
-            }
+            $results[] = [
+                'score' => $score,
+                'params' => $combinations[$i],
+            ];
         }
 
-        $this->best = $bestParams;
-
-        $estimator = new $this->base(...$bestParams);
+        $this->results = $results;
 
         if ($this->logger) {
             $this->logger->info('Training on full dataset');
         }
+
+        $estimator = new $this->base(...reset($combinations));
 
         $estimator->train($dataset);
 
@@ -319,7 +340,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      *
      * @return array[]
      */
-    public function combinations() : array
+    protected function combinations() : array
     {
         $combinations = [[]];
 

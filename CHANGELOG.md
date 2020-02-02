@@ -1,6 +1,7 @@
 - Unreleased
     - t-SNE now compatible with categorical distance kernels
     - Grid Search now implements the Wrapper interface
+    - Grid Search now memoizes all results from last search
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function

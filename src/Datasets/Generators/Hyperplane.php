@@ -59,7 +59,7 @@ class Hyperplane implements Generator
                 . ' than 1 dimension.');
         }
 
-        if ($noise < 0.) {
+        if ($noise < 0.0) {
             throw new InvalidArgumentException('Noise factor must be'
                 . " greater than 0, $noise given.");
         }
