@@ -55,9 +55,9 @@ class SoftmaxClassifierTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new SoftmaxClassifier(10, new Adam(0.01), 1e-4, 300, 1e-4, 5, new CrossEntropy());
@@ -116,6 +116,24 @@ class SoftmaxClassifierTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'batch_size' => 10,
+            'optimizer' => new Adam(0.01),
+            'alpha' => 1e-4,
+            'epochs' => 300,
+            'min_change' => 1e-4,
+            'window' => 5,
+            'cost_fn' => new CrossEntropy(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
     }
 
     /**

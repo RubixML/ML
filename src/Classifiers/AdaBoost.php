@@ -193,6 +193,22 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'base' => $this->base,
+            'rate' => $this->rate,
+            'ratio' => $this->ratio,
+            'estimators' => $this->estimators,
+            'min_change' => $this->minChange,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -249,13 +265,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'base' => $this->base,
-                'estimators' => $this->estimators,
-                'rate' => $this->rate,
-                'ratio' => $this->ratio,
-                'min_change' => $this->minChange,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);

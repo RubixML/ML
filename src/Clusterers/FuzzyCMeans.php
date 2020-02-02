@@ -181,6 +181,23 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'c' => $this->c,
+            'fuzz' => $this->fuzz,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'kernel' => $this->kernel,
+            'seeder' => $this->seeder,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -221,14 +238,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'c' => $this->c,
-                'fuzz' => $this->fuzz,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'kernel' => $this->kernel,
-                'seeder' => $this->seeder,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $this->centroids = $this->seeder->seed($dataset, $this->c);

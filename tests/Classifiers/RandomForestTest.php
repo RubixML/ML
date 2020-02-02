@@ -51,9 +51,9 @@ class RandomForestTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 32, 255], 20.),
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
         $this->estimator = new RandomForest(new ClassificationTree(3), 100, 0.2);
@@ -111,6 +111,20 @@ class RandomForestTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'base' => new ClassificationTree(3),
+            'estimators' => 100,
+            'ratio' => 0.2,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
     }
 
     /**

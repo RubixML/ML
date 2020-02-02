@@ -90,6 +90,18 @@ class Ridge implements Estimator, Learner, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'alpha' => $this->alpha,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

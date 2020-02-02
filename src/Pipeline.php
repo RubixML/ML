@@ -122,6 +122,20 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'transformers' => $this->transformers,
+            'estimator' => $this->estimator,
+            'elastic' => $this->elastic,
+        ];
+    }
+
+    /**
      * Sets a logger instance on the object.
      *
      * @param \Psr\Log\LoggerInterface $logger

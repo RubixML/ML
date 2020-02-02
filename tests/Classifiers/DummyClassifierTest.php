@@ -93,6 +93,18 @@ class DummyClassifierTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'strategy' => new Prior(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

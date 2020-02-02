@@ -117,6 +117,21 @@ class GaussianMixtureTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 3,
+            'epochs' => 100,
+            'min_change' => 1e-3,
+            'seeder' => new KMC2(50),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

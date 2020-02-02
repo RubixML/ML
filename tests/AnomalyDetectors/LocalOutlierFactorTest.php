@@ -112,6 +112,21 @@ class LocalOutlierFactorTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 20,
+            'contamination' => 0.1,
+            'tree' => new KDTree(),
+
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -120,7 +135,6 @@ class LocalOutlierFactorTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertGreaterThan(0, $this->estimator->tree()->height());
         $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);

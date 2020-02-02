@@ -45,6 +45,13 @@ class OneClassSVM implements Estimator, Learner
     protected $svm;
 
     /**
+     * The memoized hyper-parameters of the model.
+     *
+     * @var mixed[]
+     */
+    protected $params;
+
+    /**
      * The trained model instance.
      *
      * @var \svmmodel|null
@@ -65,7 +72,7 @@ class OneClassSVM implements Estimator, Learner
         ?Kernel $kernel = null,
         bool $shrinking = true,
         float $tolerance = 1e-3,
-        float $cacheSize = 100.
+        float $cacheSize = 100.0
     ) {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'
@@ -97,10 +104,21 @@ class OneClassSVM implements Estimator, Learner
             svm::OPT_CACHE_SIZE => $cacheSize,
         ];
 
-        $options = array_replace($options, $kernel->options());
+        $options += $kernel->options();
 
-        $this->svm = new svm();
-        $this->svm->setOptions($options);
+        $svm = new svm();
+
+        $svm->setOptions($options);
+
+        $this->svm = $svm;
+
+        $this->params = [
+            'nu' => $nu,
+            'kernel' => $kernel,
+            'shrinking' => $shrinking,
+            'tolerance' => $tolerance,
+            'cache_size' => $cacheSize,
+        ];
     }
 
     /**
@@ -123,6 +141,16 @@ class OneClassSVM implements Estimator, Learner
         return [
             DataType::continuous(),
         ];
+    }
+
+    /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return $this->params;
     }
 
     /**

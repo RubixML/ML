@@ -135,6 +135,20 @@ class LodaTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'estimators' => 100,
+            'bins' => null,
+            'threshold' => 10.0,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

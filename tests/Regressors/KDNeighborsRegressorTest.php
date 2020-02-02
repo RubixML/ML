@@ -101,6 +101,20 @@ class KDNeighborsRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 5,
+            'weighted' => true,
+            'tree' => new KDTree(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
@@ -114,7 +128,6 @@ class KDNeighborsRegressorTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $predictions = $this->estimator->predict($testing);
 

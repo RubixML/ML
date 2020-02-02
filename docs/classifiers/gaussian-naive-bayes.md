@@ -15,7 +15,7 @@ A version of the [Naive Bayes](naive-bayes.md) classifier that places a probabil
 ## Additional Methods
 Return the class prior probabilities:
 ```php
-public priors() : array
+public priors() : ?array
 ```
 
 Return the running mean of each feature column for each class:

@@ -112,6 +112,20 @@ class DBSCAN implements Estimator
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'radius' => $this->radius,
+            'min_density' => $this->minDensity,
+            'tree' => $this->tree,
+        ];
+    }
+
+    /**
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset

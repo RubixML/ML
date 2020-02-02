@@ -118,6 +118,23 @@ class MeanShiftTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'radius' => 66.0,
+            'ratio' => 0.1,
+            'epochs' => 100,
+            'min_change' => 1e-4,
+            'tree' => new BallTree(),
+            'seeder' => new Random(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function estimateRadius() : void
     {
         $subset = $this->generator->generate(intdiv(self::TRAIN_SIZE, 3));

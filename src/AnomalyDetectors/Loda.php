@@ -161,6 +161,20 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'estimators' => $this->estimators,
+            'bins' => $this->bins,
+            'threshold' => $this->threshold,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

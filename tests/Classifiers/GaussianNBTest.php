@@ -103,6 +103,18 @@ class GaussianNBTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'priors' => null,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

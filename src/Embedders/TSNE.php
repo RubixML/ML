@@ -277,6 +277,25 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'dimensions' => $this->dimensions,
+            'rate' => $this->rate,
+            'perplexity' => $this->perplexity,
+            'exaggeration' => $this->exaggeration,
+            'epochs' => $this->epochs,
+            'min_gradient' => $this->minGradient,
+            'window' => $this->window,
+            'kernel' => $this->kernel,
+        ];
+    }
+
+    /**
      * Return the magnitudes of the gradient at each epoch from the last
      * embedding.
      *
@@ -299,16 +318,8 @@ class TSNE implements Embedder, Verbose
         SamplesAreCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Embedder init w/ ' . Params::stringify([
-                'dimensions' => $this->dimensions,
-                'rate' => $this->rate,
-                'perplexity' => $this->perplexity,
-                'exaggeration' => $this->exaggeration,
-                'epochs' => $this->epochs,
-                'min_gradient' => $this->minGradient,
-                'window' => $this->window,
-                'kernel' => $this->kernel,
-            ]));
+            $this->logger->info('Embedder init '
+                . Params::stringify($this->params()));
         }
 
         $m = $dataset->numRows();

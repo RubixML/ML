@@ -99,6 +99,20 @@ class DBSCANTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'radius' => 25.0,
+            'min_density' => 50,
+            'tree' => new BallTree(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function predict() : void
     {
         $testing = $this->generator->generate(self::TEST_SIZE);

@@ -119,6 +119,32 @@ class MLPRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'hidden_layers' => [
+                new Dense(10),
+                new Activation(new LeakyReLU()),
+                new Dense(10),
+                new Activation(new LeakyReLU()),
+            ],
+            'batch_size' => 10,
+            'optimizer' => new Adam(0.01),
+            'alpha' => 1e-4,
+            'epochs' => 100,
+            'min_change' => 1e-3,
+            'window' => 3,
+            'hold_out' => 0.1,
+            'cost_fn' => new LeastSquares(),
+            'metric' => new MeanSquaredError(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test

@@ -1,4 +1,5 @@
 - Unreleased
+    - Added params method to Estimator and Embedder interface
     - t-SNE now compatible with categorical distance kernels
     - Grid Search now implements the Wrapper interface
     - Grid Search now memoizes all results from last search

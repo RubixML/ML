@@ -123,6 +123,20 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'base' => $this->base,
+            'estimators' => $this->estimators,
+            'ratio' => $this->ratio,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

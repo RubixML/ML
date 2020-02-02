@@ -58,7 +58,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected $hidden = [
+    protected $hiddenLayers = [
         //
     ];
 
@@ -112,7 +112,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var float
      */
-    protected $holdout;
+    protected $holdOut;
 
     /**
      * The function that computes the loss associated with an erroneous
@@ -156,27 +156,27 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     ];
 
     /**
-     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
+     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
      * @param int $window
-     * @param float $holdout
+     * @param float $holdOut
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        array $hidden = [],
+        array $hiddenLayers = [],
         int $batchSize = 100,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 3,
-        float $holdout = 0.1,
+        float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
@@ -205,23 +205,23 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . " epoch, $window given.");
         }
 
-        if ($holdout < 0.01 or $holdout > 0.5) {
+        if ($holdOut < 0.01 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Holdout ratio must be between'
-                . " 0.01 and 0.5, $holdout given.");
+                . " 0.01 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
             EstimatorIsCompatibleWithMetric::check($this, $metric);
         }
 
-        $this->hidden = $hidden;
+        $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
-        $this->holdout = $holdout;
+        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RSquared();
     }
@@ -245,6 +245,27 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         return [
             DataType::continuous(),
+        ];
+    }
+
+    /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'hidden_layers' => $this->hiddenLayers,
+            'batch_size' => $this->batchSize,
+            'optimizer' => $this->optimizer,
+            'alpha' => $this->alpha,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'window' => $this->window,
+            'hold_out' => $this->holdOut,
+            'cost_fn' => $this->costFn,
+            'metric' => $this->metric,
         ];
     }
 
@@ -303,7 +324,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
-            $this->hidden,
+            $this->hiddenLayers,
             new Continuous($this->alpha, $this->costFn),
             $this->optimizer
         );
@@ -336,21 +357,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'hidden' => $this->hidden,
-                'batch_size' => $this->batchSize,
-                'optimizer' => $this->optimizer,
-                'alpha' => $this->alpha,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'window' => $this->window,
-                'hold_out' => $this->holdout,
-                'cost_fn' => $this->costFn,
-                'metric' => $this->metric,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
-        [$testing, $training] = $dataset->randomize()->split($this->holdout);
+        [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
         [$min, $max] = $this->metric->range();
 
@@ -364,7 +375,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.;
+            $loss = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);

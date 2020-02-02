@@ -50,7 +50,7 @@ class SVCTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
+            'male' => new Blob([69.2, 195.7, 40.0], [1.0, 3.0, 0.3]),
             'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
         ], [0.45, 0.55]);
 
@@ -94,6 +94,22 @@ class SVCTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'c' => 1.0,
+            'kernel' => new RBF(),
+            'shrinking' => true,
+            'tolerance' => 1e-3,
+            'cache_size' => 100.0,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
     }
 
     /**

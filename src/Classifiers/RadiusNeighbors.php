@@ -125,6 +125,21 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'radius' => $this->radius,
+            'weighted' => $this->weighted,
+            'anomaly_class' => $this->anomalyClass,
+            'tree' => $this->tree,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

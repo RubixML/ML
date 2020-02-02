@@ -156,6 +156,20 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'estimators' => $this->estimators,
+            'ratio' => $this->ratio,
+            'contamination' => $this->contamination,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

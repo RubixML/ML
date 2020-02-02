@@ -89,6 +89,21 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'max_depth' => $this->maxDepth,
+            'max_leaf_size' => $this->maxLeafSize,
+            'max_features' => $this->maxFeatures,
+            'min_purity_increase' => $this->minPurityIncrease,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

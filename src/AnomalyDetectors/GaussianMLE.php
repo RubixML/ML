@@ -122,6 +122,19 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'threshold' => $this->threshold,
+            'contamination' => exp($this->logPrior),
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

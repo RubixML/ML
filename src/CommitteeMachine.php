@@ -182,6 +182,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'experts' => $this->experts,
+            'influences' => $this->influences,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -229,11 +242,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'experts' => $this->experts,
-                'influences' => $this->influences,
-                'backend' => $this->backend,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $this->backend->flush();

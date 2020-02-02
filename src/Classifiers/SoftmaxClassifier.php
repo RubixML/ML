@@ -195,6 +195,24 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'batch_size' => $this->batchSize,
+            'optimizer' => $this->optimizer,
+            'alpha' => $this->alpha,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'window' => $this->window,
+            'cost_fn' => $this->costFn,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -274,15 +292,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'batch_size' => $this->batchSize,
-                'optimizer' => $this->optimizer,
-                'alpha' => $this->alpha,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'window' => $this->window,
-                'cost_fn' => $this->costFn,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $k = (int) ceil($dataset->numRows() / $this->batchSize);

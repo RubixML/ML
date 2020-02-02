@@ -234,6 +234,23 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'radius' => $this->radius,
+            'ratio' => $this->ratio,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'tree' => $this->tree,
+            'seeder' => $this->seeder,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -274,15 +291,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'radius' => $this->radius,
-                'ratio' => $this->ratio,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'tree' => $this->tree,
-                'kernel' => $this->tree->kernel(),
-                'seeder' => $this->seeder,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $n = $dataset->numRows();

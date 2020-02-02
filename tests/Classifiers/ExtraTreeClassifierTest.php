@@ -116,6 +116,21 @@ class ExtraTreeClassifierTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'max_depth' => 10,
+            'max_leaf_size' => 3,
+            'max_features' => 3,
+            'min_purity_increase' => 1.0E-7,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -125,7 +140,6 @@ class ExtraTreeClassifierTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-        $this->assertGreaterThan(0, $this->estimator->height());
 
         $predictions = $this->estimator->predict($testing);
 

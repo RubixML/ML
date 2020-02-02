@@ -173,6 +173,21 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'k' => $this->k,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'seeder' => $this->seeder,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -243,12 +258,8 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'k' => $this->k,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'seeder' => $this->seeder,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $samples = $dataset->samples();

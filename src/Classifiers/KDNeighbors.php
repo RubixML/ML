@@ -107,6 +107,20 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'k' => $this->k,
+            'weighted' => $this->weighted,
+            'tree' => $this->tree,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

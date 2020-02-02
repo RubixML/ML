@@ -18,7 +18,7 @@ Probability-based classifier that uses Bayes' Theorem and the strong assumption 
 ## Additional Methods
 Return the class prior probabilities:
 ```php
-public priors() : array
+public priors() : ?array
 ```
 
 Return the counts for each category per class:

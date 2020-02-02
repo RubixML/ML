@@ -118,6 +118,23 @@ class FuzzyCMeansTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'c' => 3,
+            'fuzz' => 2.0,
+            'epochs' => 300,
+            'min_change' => 1e-4,
+            'kernel' => new Euclidean(),
+            'seeder' => new Random(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

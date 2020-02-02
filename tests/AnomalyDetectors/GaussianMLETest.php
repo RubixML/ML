@@ -103,6 +103,19 @@ class GaussianMLETest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'threshold' => 3.5,
+            'contamination' => 0.10000000000000002,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

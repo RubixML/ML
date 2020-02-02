@@ -127,6 +127,20 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'k' => $this->k,
+            'weighted' => $this->weighted,
+            'kernel' => $this->kernel,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

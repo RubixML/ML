@@ -66,16 +66,6 @@ class DummyClassifier implements Estimator, Learner, Persistable
     }
 
     /**
-     * Has the learner been trained?
-     *
-     * @return bool
-     */
-    public function trained() : bool
-    {
-        return $this->trained;
-    }
-
-    /**
      * Return the data types that this estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
@@ -83,6 +73,28 @@ class DummyClassifier implements Estimator, Learner, Persistable
     public function compatibility() : array
     {
         return DataType::all();
+    }
+
+    /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'strategy' => $this->strategy,
+        ];
+    }
+
+    /**
+     * Has the learner been trained?
+     *
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->trained;
     }
 
     /**

@@ -114,6 +114,19 @@ class NaiveBayesTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'alpha' => 1.0,
+            'priors' => null,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);

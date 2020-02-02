@@ -103,6 +103,20 @@ class KNNRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 3,
+            'weighted' => true,
+            'kernel' => new Minkowski(3.0),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
         
     /**
      * @test

@@ -61,5 +61,39 @@ public compatibility() : array
 **Example**
 
 ```php
-$compatibility = $estimator->compatibility();
+var_dump($estimator->compatibility());
+```
+
+```sh
+array(2) {
+  [0]=>
+  object(Rubix\ML\DataType)#20257 (1) {
+    ["type":protected]=> int(2)
+  }
+  [1]=>
+  object(Rubix\ML\DataType)#20265 (1) {
+    ["type":protected]=> int(1)
+  }
+}
+```
+
+### Hyper-parameters
+Return the settings of the hyper-parameters in an associative array:
+```php
+public params() : array
+```
+
+**Example**
+
+```php
+var_dump($estimator->params());
+```
+
+```sh
+array(4) {
+  ["max_depth"]=> int(10)
+  ["max_leaf_size"]=> int(2)
+  ["max_features"]=> int(3)
+  ["min_purity_increase"]=> float(1.0E-7)
+}
 ```

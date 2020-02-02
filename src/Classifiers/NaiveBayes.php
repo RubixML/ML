@@ -141,6 +141,19 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'alpha' => $this->alpha,
+            'priors' => $this->priors(),
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -153,21 +166,11 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the class prior probabilities.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function priors() : array
+    public function priors() : ?array
     {
-        $priors = [];
-
-        if ($this->logPriors) {
-            $total = logsumexp($this->logPriors);
-
-            foreach ($this->logPriors as $class => $prior) {
-                $priors[$class] = exp($prior - $total);
-            }
-        }
-
-        return $priors;
+        return $this->logPriors ? array_map('exp', $this->logPriors) : null;
     }
 
     /**

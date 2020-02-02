@@ -120,6 +120,24 @@ class KMeansTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 3,
+            'batch_size' => 100,
+            'epochs' => 300,
+            'min_change' => 1e-4,
+            'window' => 5,
+            'kernel' => new Euclidean(),
+            'seeder' => new PlusPlus(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

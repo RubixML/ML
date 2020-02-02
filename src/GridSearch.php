@@ -202,6 +202,21 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'base' => $this->base,
+            'params' => $this->params,
+            'metric' => $this->metric,
+            'validator' => $this->validator,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -259,12 +274,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'base' => $this->estimator,
-                'metric' => $this->metric,
-                'validator' => $this->validator,
-                'backend' => $this->backend,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $combinations = $this->combinations();

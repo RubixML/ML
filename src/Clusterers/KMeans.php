@@ -203,6 +203,24 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'k' => $this->k,
+            'batch_size' => $this->batchSize,
+            'epochs' => $this->epochs,
+            'min_change' => $this->minChange,
+            'window' => $this->window,
+            'kernel' => $this->kernel,
+            'seeder' => $this->seeder,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -282,15 +300,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'k' => $this->k,
-                'batch_size' => $this->batchSize,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'window' => $this->window,
-                'kernel' => $this->kernel,
-                'seeder' => $this->seeder,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $labels = array_fill(0, $dataset->numRows(), 0);

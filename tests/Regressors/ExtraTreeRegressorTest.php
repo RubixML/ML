@@ -105,6 +105,21 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'max_depth' => 10,
+            'max_leaf_size' => 3,
+            'max_features' => 6,
+            'min_purity_increase' => 1.0E-7,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
@@ -118,8 +133,6 @@ class ExtraTreeRegressorTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-
-        $this->assertGreaterThan(0, $this->estimator->height());
 
         $predictions = $this->estimator->predict($testing);
 

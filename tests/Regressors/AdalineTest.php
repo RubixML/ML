@@ -113,6 +113,24 @@ class AdalineTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'batch_size' => 1,
+            'optimizer' => new Adam(0.01),
+            'alpha' => 1e-4,
+            'epochs' => 100,
+            'min_change' => 1e-3,
+            'window' => 5,
+            'cost_fn' => new HuberLoss(1.0),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

@@ -96,6 +96,19 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     }
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'base' => $this->base,
+            'persister' => $this->persister,
+        ];
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool

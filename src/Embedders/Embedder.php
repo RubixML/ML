@@ -14,6 +14,13 @@ interface Embedder
     public function compatibility() : array;
 
     /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array;
+
+    /**
      * Embed a high dimensional dataset into a lower dimensional one.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset

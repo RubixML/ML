@@ -85,6 +85,25 @@ class TSNETest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'dimensions' => 1,
+            'rate' => 10.0,
+            'perplexity' => 10,
+            'exaggeration' => 12.0,
+            'epochs' => 500,
+            'min_gradient' => 1.0E-7,
+            'window' => 10,
+            'kernel' => new Euclidean(),
+        ];
+
+        $this->assertEquals($expected, $this->embedder->params());
+    }
+
+    /**
+     * @test
+     */
     public function embed() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);

@@ -99,6 +99,22 @@ class OneClassSVMTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'nu' => 0.01,
+            'kernel' => new Polynomial(4, 1e-3),
+            'shrinking' => true,
+            'tolerance' => 0.0001,
+            'cache_size' => 100.0,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

@@ -86,6 +86,18 @@ class DummyRegressorTest extends TestCase
     {
         $this->assertEquals(DataType::all(), $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'strategy' => new Mean(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test

@@ -118,6 +118,22 @@ class AdaBoostTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'base' => new ClassificationTree(1),
+            'rate' => 1.0,
+            'ratio' => 0.8,
+            'estimators' => 100,
+            'min_change' => 0.0001,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

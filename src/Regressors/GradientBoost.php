@@ -112,7 +112,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      *
      * @var float
      */
-    protected $holdout;
+    protected $holdOut;
 
     /**
      * The metric used to score the generalization performance of the model
@@ -170,7 +170,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * @param int $estimators
      * @param float $minChange
      * @param int $window
-     * @param float $holdout
+     * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
@@ -182,7 +182,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         int $estimators = 1000,
         float $minChange = 1e-4,
         int $window = 10,
-        float $holdout = 0.1,
+        float $holdOut = 0.1,
         ?Metric $metric = null,
         ?Learner $base = null
     ) {
@@ -216,9 +216,9 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " epoch, $window given.");
         }
 
-        if ($holdout < 0.01 or $holdout > 0.5) {
+        if ($holdOut < 0.01 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Holdout ratio must be between'
-                . " 0.01 and 0.5, $holdout given.");
+                . " 0.01 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
@@ -236,7 +236,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $this->estimators = $estimators;
         $this->minChange = $minChange;
         $this->window = $window;
-        $this->holdout = $holdout;
+        $this->holdOut = $holdOut;
         $this->metric = $metric ?? new RSquared();
         $this->base = $base ?? new DummyRegressor(new Mean());
     }
@@ -264,6 +264,26 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         );
 
         return array_values($compatibility);
+    }
+
+    /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'booster' => $this->booster,
+            'rate' => $this->rate,
+            'ratio' => $this->ratio,
+            'estimators' => $this->estimators,
+            'min_change' => $this->minChange,
+            'window' => $this->window,
+            'hold_out' => $this->holdOut,
+            'metric' => $this->metric,
+            'base' => $this->base,
+        ];
     }
 
     /**
@@ -313,22 +333,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify([
-                'booster' => $this->booster,
-                'rate' => $this->rate,
-                'ratio' => $this->ratio,
-                'estimators' => $this->estimators,
-                'min_change' => $this->minChange,
-                'window' => $this->window,
-                'hold_out' => $this->holdout,
-                'metric' => $this->metric,
-                'base' => $this->base,
-            ]));
+            $this->logger->info('Learner init '
+                . Params::stringify($this->params()));
         }
 
         $this->featureCount = $dataset->numColumns();
 
-        [$testing, $training] = $dataset->randomize()->split($this->holdout);
+        [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
         [$min, $max] = $this->metric->range();
 

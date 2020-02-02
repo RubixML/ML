@@ -112,6 +112,21 @@ class RadiusNeighborsTest extends TestCase
     /**
      * @test
      */
+    public function params() : void
+    {
+        $expected = [
+            'radius' => 35.5,
+            'weighted' => true,
+            'anomaly_class' => 'outlier',
+            'tree' => new BallTree(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -121,7 +136,6 @@ class RadiusNeighborsTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $predictions = $this->estimator->predict($testing);
 
