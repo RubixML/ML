@@ -134,7 +134,6 @@ class ExtraTreeClassifierTest extends TestCase
     public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
@@ -150,7 +149,7 @@ class ExtraTreeClassifierTest extends TestCase
         $importances = $this->estimator->featureImportances();
 
         $this->assertCount(3, $importances);
-        $this->assertEquals(1., array_sum($importances));
+        $this->assertEquals(1.0, array_sum($importances));
 
         $rules = $this->estimator->rules();
 

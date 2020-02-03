@@ -18,11 +18,6 @@ use PHPUnit\Framework\TestCase;
 class PersistentModelTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Persisters\Persister
-     */
-    protected $persister;
-
-    /**
      * @var \Rubix\ML\PersistentModel
      */
     protected $estimator;
@@ -32,9 +27,7 @@ class PersistentModelTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->persister = $this->createMock(Filesystem::class);
-
-        $this->estimator = new PersistentModel(new DummyClassifier(), $this->persister);
+        $this->estimator = new PersistentModel(new DummyClassifier(), new Filesystem('test.model'));
     }
     
     /**
@@ -62,5 +55,18 @@ class PersistentModelTest extends TestCase
     public function compatibility() : void
     {
         $this->assertEquals(DataType::all(), $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'base' => new DummyClassifier(),
+            'persister' => new Filesystem('test.model'),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
     }
 }

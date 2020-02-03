@@ -35,9 +35,9 @@ class Params
      */
     public static function ints(int $min, int $max, int $n = 10) : array
     {
-        if (($max - $min) < 0) {
+        if ($max <= $min) {
             throw new InvalidArgumentException('Maximum cannot be'
-                . ' less than minimum.');
+                . ' less than or equal to minimum.');
         }
 
         if ($n < 1) {
@@ -47,7 +47,7 @@ class Params
 
         if ($n > ($max - $min + 1)) {
             throw new InvalidArgumentException('Cannot generate more'
-                . ' unique integers than within range.');
+                . ' unique integers than within range of.');
         }
 
         $dist = [];
@@ -74,14 +74,14 @@ class Params
      */
     public static function floats(float $min, float $max, int $n = 10) : array
     {
-        if (($max - $min) < 0.) {
+        if ($max <= $min) {
             throw new InvalidArgumentException('Maximum cannot be'
-                . ' less than minimum.');
+                . ' less than or equal to minimum.');
         }
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate less'
-                . ' than 1 parameter.');
+            throw new InvalidArgumentException('Cannot generate'
+                . ' less than 1 parameter.');
         }
 
         $min = (int) round($min * PHI);
@@ -107,9 +107,9 @@ class Params
      */
     public static function grid(float $min, float $max, int $n = 10) : array
     {
-        if ($min > $max) {
-            throw new InvalidArgumentException('Max cannot be less'
-                . ' then min.');
+        if ($max <= $min) {
+            throw new InvalidArgumentException('Maximum cannot be'
+                . ' less than or equal to minimum.');
         }
 
         if ($n < 2) {
@@ -154,11 +154,10 @@ class Params
      * an associative constructor array.
      *
      * @param mixed[] $constructor
-     * @param string $equator
      * @param string $separator
      * @return string
      */
-    public static function stringify(array $constructor, string $equator = '=', string $separator = ' ') : string
+    public static function stringify(array $constructor, string $separator = ' ') : string
     {
         $strings = [];
 
@@ -173,7 +172,7 @@ class Params
                 $param = '[' . self::stringify($temp) . ']';
             }
 
-            $strings[] = (string) $arg . $equator . (string) $param;
+            $strings[] = (string) $arg . '=' . (string) $param;
         }
 
         return implode($separator, $strings);

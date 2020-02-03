@@ -134,7 +134,6 @@ class ClassificationTreeTest extends TestCase
     public function trainPredictFeatureImportancesRules() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

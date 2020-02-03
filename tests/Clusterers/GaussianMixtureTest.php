@@ -61,8 +61,6 @@ class GaussianMixtureTest extends TestCase
 
         $this->metric = new VMeasure();
 
-        $this->estimator->setLogger(new BlackHole());
-
         srand(self::RANDOM_SEED);
     }
 
@@ -134,8 +132,9 @@ class GaussianMixtureTest extends TestCase
      */
     public function trainPredict() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setLogger(new BlackHole());
 
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

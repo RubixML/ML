@@ -108,13 +108,11 @@ class RadiusNeighborsRegressorTest extends TestCase
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $predictions = $this->estimator->predict($testing);
 

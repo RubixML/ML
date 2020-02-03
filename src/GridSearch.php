@@ -283,8 +283,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         if ($this->logger) {
             $k = count($combinations);
 
-            $this->logger->info("Searching $k combinations of"
-                . ' hyper-parameters.');
+            $this->logger->info("Searching $k sets of hyper-parameters");
         }
 
         $this->backend->flush();
@@ -296,28 +295,19 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
                 new Deferred(
                     [self::class, 'score'],
                     [
-                        $this->validator,
                         $estimator,
                         $dataset,
+                        $this->validator,
                         $this->metric,
                     ]
                 ),
-                function ($result) use ($params) {
-                    if ($this->logger) {
-                        $constructor = array_combine($this->args, $params);
-
-                        $this->logger->info(Params::stringify([
-                            'Params' => $constructor ?: [],
-                            Params::shortName($this->metric) => $result,
-                        ]));
-                    }
-                }
+                [$this, 'afterScore']
             );
         }
 
-        $scores = $this->backend->process();
+        [$scores, $params] = array_transpose($this->backend->process());
 
-        array_multisort($scores, $combinations, SORT_DESC);
+        array_multisort($scores, $params, SORT_DESC);
 
         $results = [];
 
@@ -386,15 +376,34 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     /**
      * Cross validate a learner with a given dataset and return the score.
      *
-     * @param \Rubix\ML\CrossValidation\Validator $validator
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\CrossValidation\Validator $validator
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return float
+     * @return mixed[]
      */
-    public static function score(Validator $validator, Learner $estimator, Labeled $dataset, Metric $metric) : float
+    public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
-        return $validator->test($estimator, $dataset, $metric);
+        return [$validator->test($estimator, $dataset, $metric), $estimator->params()];
+    }
+
+    /**
+     * The callback that executes after the scoring task.
+     *
+     * @param mixed[] $result
+     */
+    public function afterScore($result) : void
+    {
+        if ($this->logger) {
+            [$score, $params] = $result;
+
+            $constructor = array_combine($this->args, $params);
+
+            $this->logger->info(Params::stringify([
+                Params::shortName($this->metric) => $score,
+                'params' => $constructor ?: [],
+            ]));
+        }
     }
 
     /**

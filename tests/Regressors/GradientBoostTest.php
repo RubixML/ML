@@ -55,8 +55,6 @@ class GradientBoostTest extends TestCase
     
         $this->metric = new RSquared();
 
-        $this->estimator->setLogger(new BlackHole());
-
         srand(self::RANDOM_SEED);
     }
 
@@ -122,8 +120,9 @@ class GradientBoostTest extends TestCase
      */
     public function trainPredictFeatureImportances() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setLogger(new BlackHole());
 
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
@@ -139,7 +138,7 @@ class GradientBoostTest extends TestCase
         $importances = $this->estimator->featureImportances();
 
         $this->assertCount(3, $importances);
-        $this->assertEquals(1., array_sum($importances));
+        $this->assertEquals(1.0, array_sum($importances));
     }
     
     /**

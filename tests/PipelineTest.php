@@ -66,8 +66,6 @@ class PipelineTest extends TestCase
             new ZScaleStandardizer(),
         ], new SoftmaxClassifier(), true);
 
-        $this->estimator->setLogger(new BlackHole());
-
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
@@ -111,14 +109,33 @@ class PipelineTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'transformers' => [
+                new VarianceThresholdFilter(),
+                new PolynomialExpander(2),
+                new ZScaleStandardizer(),
+            ],
+            'estimator' => new SoftmaxClassifier(),
+            'elastic' => true,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
      */
     public function trainPartialPredict() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setLogger(new BlackHole());
 
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $folds = $training->stratifiedFold(3);

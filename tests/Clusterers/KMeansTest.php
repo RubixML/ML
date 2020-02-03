@@ -61,8 +61,6 @@ class KMeansTest extends TestCase
 
         $this->estimator = new KMeans(3, 100, 300, 1e-4, 5, new Euclidean(), new PlusPlus());
 
-        $this->estimator->setLogger(new BlackHole());
-
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
@@ -140,8 +138,9 @@ class KMeansTest extends TestCase
      */
     public function trainPartialPredict() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setLogger(new BlackHole());
         
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $folds = $training->stratifiedFold(3);

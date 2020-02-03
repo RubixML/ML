@@ -47,11 +47,9 @@ class BootstrapAggregatorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
 
         $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.5);
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new RSquared();
 
@@ -94,14 +92,29 @@ class BootstrapAggregatorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'base' => new RegressionTree(10),
+            'estimators' => 30,
+            'ratio' => 0.5,
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
      */
     public function trainPredict() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setBackend(new Serial());
 
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

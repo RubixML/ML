@@ -51,8 +51,8 @@ class LodaTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0.0, 0.0], 0.5),
-            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
+            0 => new Blob([0.0, 0.0], 0.5),
+            1 => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new Loda(100, null, 10.0);
@@ -152,7 +152,6 @@ class LodaTest extends TestCase
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $folds = $training->fold(3);

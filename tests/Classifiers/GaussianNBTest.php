@@ -118,7 +118,6 @@ class GaussianNBTest extends TestCase
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $folds = $training->stratifiedFold(3);

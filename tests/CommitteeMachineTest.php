@@ -65,10 +65,6 @@ class CommitteeMachineTest extends TestCase
             new GaussianNB(),
         ], [3, 4, 5]);
 
-        $this->estimator->setLogger(new BlackHole());
-
-        $this->estimator->setBackend(new Serial());
-
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
@@ -110,14 +106,37 @@ class CommitteeMachineTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'experts' => [
+                new ClassificationTree(10, 3, 2),
+                new KNearestNeighbors(3),
+                new GaussianNB(),
+            ],
+            'influences' => [
+                0.25,
+                0.3333333333333333,
+                0.4166666666666667,
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
      */
     public function trainPredict() : void
     {
+        $this->estimator->setLogger(new BlackHole());
+        $this->estimator->setBackend(new Serial());
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

@@ -51,8 +51,8 @@ class LocalOutlierFactorTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            '0' => new Blob([0.0, 0.0], 0.5),
-            '1' => new Circle(0.0, 0.0, 8.0, 0.1),
+            0 => new Blob([0.0, 0.0], 0.5),
+            1 => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
         $this->estimator = new LocalOutlierFactor(20, 0.1, new KDTree());
@@ -130,7 +130,6 @@ class LocalOutlierFactorTest extends TestCase
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

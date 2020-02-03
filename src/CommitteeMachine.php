@@ -367,7 +367,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
-     * The callback that executes after training a learner.
+     * The callback that executes after the training task.
      *
      * @param \Rubix\ML\Learner $estimator
      * @throws \RuntimeException

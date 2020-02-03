@@ -63,8 +63,6 @@ class LogisticRegressionTest extends TestCase
 
         $this->metric = new Accuracy();
 
-        $this->estimator->setLogger(new BlackHole());
-
         srand(self::RANDOM_SEED);
     }
 
@@ -141,6 +139,8 @@ class LogisticRegressionTest extends TestCase
      */
     public function trainPartialPredict() : void
     {
+        $this->estimator->setLogger(new BlackHole());
+        
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
         $dataset->apply(new ZScaleStandardizer());

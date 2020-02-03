@@ -61,8 +61,6 @@ class AdaBoostTest extends TestCase
 
         $this->metric = new Accuracy();
 
-        $this->estimator->setLogger(new BlackHole());
-
         srand(self::RANDOM_SEED);
     }
 
@@ -136,8 +134,9 @@ class AdaBoostTest extends TestCase
      */
     public function trainPredict() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->estimator->setLogger(new BlackHole());
         
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

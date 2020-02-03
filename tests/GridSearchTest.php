@@ -54,18 +54,14 @@ class GridSearchTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
-            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.05),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.10),
             'outer' => new Circle(0.0, 0.0, 10.0, 0.15),
         ]);
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
         ], new FBeta(), new HoldOut(0.2));
-
-        $this->estimator->setLogger(new BlackHole());
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new Accuracy();
 
@@ -105,14 +101,33 @@ class GridSearchTest extends TestCase
     {
         $this->assertEquals(DataType::all(), $this->estimator->compatibility());
     }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'base' => KNearestNeighbors::class,
+            'params' => [
+                [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
+            ],
+            'metric' => new FBeta(),
+            'validator' => new HoldOut(0.2),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
     
     /**
      * @test
      */
     public function trainPredict() : void
     {
+        $this->estimator->setLogger(new BlackHole());
+        $this->estimator->setBackend(new Serial());
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);

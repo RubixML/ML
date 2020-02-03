@@ -133,7 +133,6 @@ class RandomForestTest extends TestCase
     public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
