@@ -1,8 +1,10 @@
 - Unreleased
     - Added params method to Estimator and Embedder interface
     - t-SNE now compatible with categorical distance kernels
-    - Grid Search now implements the Wrapper interface
-    - Grid Search now memoizes all results from last search
+    - Grid Search implements the Wrapper interface
+    - Grid Search memoizes all results from last search
+    - Dataset fromIterator method accepts any iterable
+    - Column Picker throws exception if column not found
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function

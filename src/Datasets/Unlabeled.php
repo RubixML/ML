@@ -52,12 +52,14 @@ class Unlabeled extends Dataset
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param \Traversable<array> $iterator
+     * @param iterable<array> $iterator
      * @return self
      */
     public static function fromIterator(iterable $iterator) : self
     {
-        return self::build(iterator_to_array($iterator, false));
+        $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator);
+
+        return self::build($samples);
     }
 
     /**

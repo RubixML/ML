@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Extractors;
 
-use Traversable;
+use RuntimeException;
 use Generator;
 
 /**
@@ -21,7 +21,7 @@ class ColumnPicker implements Extractor
     /**
      * The base iterator.
      *
-     * @var \Traversable<array>
+     * @var iterable<array>
      */
     protected $iterator;
 
@@ -33,10 +33,10 @@ class ColumnPicker implements Extractor
     protected $keys;
 
     /**
-     * @param \Traversable<array> $iterator
+     * @param iterable<array> $iterator
      * @param (string|int)[] $keys
      */
-    public function __construct(Traversable $iterator, array $keys)
+    public function __construct(iterable $iterator, array $keys)
     {
         $this->iterator = $iterator;
         $this->keys = $keys;
@@ -49,16 +49,19 @@ class ColumnPicker implements Extractor
      */
     public function getIterator() : Generator
     {
-        foreach ($this->iterator as $record) {
-            $temp = [];
+        foreach ($this->iterator as $i => $record) {
+            $row = [];
 
             foreach ($this->keys as $key) {
-                if (isset($record[$key])) {
-                    $temp[$key] = $record[$key];
+                if (!isset($record[$key])) {
+                    throw new RuntimeException("Column $key not found"
+                        . " at row offset $i.");
                 }
+
+                $row[$key] = $record[$key];
             }
 
-            yield $temp;
+            yield $row;
         }
     }
 }

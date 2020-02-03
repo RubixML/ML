@@ -12,7 +12,6 @@ use IteratorAggregate;
 use JsonSerializable;
 use RuntimeException;
 use ArrayAccess;
-use Traversable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -52,10 +51,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param \Traversable<array> $iterator
+     * @param iterable<array> $iterator
      * @return self
      */
-    abstract public static function fromIterator(Traversable $iterator);
+    abstract public static function fromIterator(iterable $iterator);
 
     /**
      * Stack a number of datasets on top of each other to form a single

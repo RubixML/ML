@@ -10,7 +10,6 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
 use ErrorException;
-use Traversable;
 use Generator;
 
 use function count;
@@ -72,10 +71,10 @@ class Labeled extends Dataset
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param \Traversable<array> $iterator
+     * @param iterable<array> $iterator
      * @return self
      */
-    public static function fromIterator(Traversable $iterator) : self
+    public static function fromIterator(iterable $iterator) : self
     {
         $samples = $labels = [];
 
@@ -143,7 +142,7 @@ class Labeled extends Dataset
             foreach ($labels as $label) {
                 if (DataType::determine($label) != $type) {
                     throw new InvalidArgumentException('Labels must all be'
-                        . ' of the same data type.');
+                        . ' the same high-level data type.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
@@ -177,11 +176,11 @@ class Labeled extends Dataset
      */
     public function label(int $index)
     {
-        if (isset($this->labels[$index])) {
-            return $this->labels[$index];
+        if (!isset($this->labels[$index])) {
+            throw new InvalidArgumentException("Row at index $index not found.");
         }
 
-        throw new InvalidArgumentException("Row at index $index not found.");
+        return $this->labels[$index];
     }
 
     /**
