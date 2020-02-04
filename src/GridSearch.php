@@ -22,7 +22,6 @@ use InvalidArgumentException;
 use ReflectionClass;
 
 use function count;
-use function array_slice;
 
 /**
  * Grid Search
@@ -122,14 +121,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
                 . ' must not be empty.');
         }
 
-        $args = Params::args($proxy);
-
-        if (count($params) > count($args)) {
-            throw new InvalidArgumentException('Too many arguments supplied'
-                . " for base learner's constructor, " . count($params)
-                . ' given but only ' . count($args) . ' required.');
-        }
-
         foreach ($params as &$tuple) {
             if (empty($tuple)) {
                 throw new InvalidArgumentException('Must supply at least'
@@ -170,7 +161,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
 
         $this->base = $base;
         $this->params = $params;
-        $this->args = array_slice($args, 0, count($params));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(3);
         $this->estimator = $proxy;
@@ -397,11 +387,9 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         if ($this->logger) {
             [$score, $params] = $result;
 
-            $constructor = array_combine($this->args, $params);
-
             $this->logger->info(Params::stringify([
-                Params::shortName($this->metric) => $score,
-                'params' => $constructor ?: [],
+                'score' => $score,
+                'params' => $params,
             ]));
         }
     }

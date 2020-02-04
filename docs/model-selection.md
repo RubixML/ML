@@ -39,7 +39,7 @@ array(3) {
 ```
 
 ## Grid Search
-In contrast to *manual* search shown in the example above, when the values of the possible hyper-parameters are generated such that they are spaced out evenly, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically. Instead of choosing the values of *k* manually, for this example we'll generate a grid of values between 1 and 10 with a grid spacing of 2.
+In contrast to *manual* search shown in the example above, when the values of the possible hyper-parameters are generated such that they are spaced out evenly, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically. Instead of choosing the values of *k* manually, for this example we'll generate a grid of 5 values equally spaced between 1 and 10.
 
 **Example**
 
@@ -47,7 +47,7 @@ In contrast to *manual* search shown in the example above, when the values of th
 use Rubix\ML\Other\Helpers\Params;
 
 $params = [
-    Params::grid(1, 10, 2), [true, false], // ...
+    Params::grid(1, 10, 5), [true, false], // ...
 ];
 ```
 

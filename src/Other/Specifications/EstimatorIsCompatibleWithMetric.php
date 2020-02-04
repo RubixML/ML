@@ -7,6 +7,9 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
+use function get_class;
+use function in_array;
+
 class EstimatorIsCompatibleWithMetric
 {
     /**
@@ -19,9 +22,11 @@ class EstimatorIsCompatibleWithMetric
     public static function check(Estimator $estimator, Metric $metric) : void
     {
         if (!in_array($estimator->type(), $metric->compatibility())) {
-            throw new InvalidArgumentException(Params::shortName($metric)
+            throw new InvalidArgumentException(
+                Params::shortName(get_class($metric))
                 . ' is not compatible with '
-                . Estimator::TYPE_STRINGS[$estimator->type()] . 's.');
+                . Estimator::TYPE_STRINGS[$estimator->type()] . 's.'
+            );
         }
     }
 }

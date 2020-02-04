@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+use Rubix\ML\Estimator;
 use InvalidArgumentException;
-use ReflectionMethod;
-use ReflectionClass;
 
 use function count;
+use function in_array;
 use function get_class;
 use function gettype;
 
@@ -123,53 +123,51 @@ class Params
     }
 
     /**
-     * Extract the arguments from the model constructor for display.
-     *
-     * @param object $object
-     * @throws \InvalidArgumentException
-     * @return string[]
-     */
-    public static function args($object) : array
-    {
-        if (!is_object($object)) {
-            throw new InvalidArgumentException('Argument must be'
-                . ' an object ' . gettype($object) . ' found.');
-        }
-
-        $reflector = new ReflectionClass($object);
-
-        $constructor = $reflector->getConstructor();
-
-        if ($constructor instanceof ReflectionMethod) {
-            $args = array_column($constructor->getParameters(), 'name');
-        } else {
-            $args = [];
-        }
-
-        return $args;
-    }
-
-    /**
      * Return a string representation of the constructor arguments from
      * an associative constructor array.
      *
-     * @param mixed[] $constructor
+     * @param mixed[] $params
      * @param string $separator
      * @return string
      */
-    public static function stringify(array $constructor, string $separator = ' ') : string
+    public static function stringify(array $params, string $separator = ' ') : string
     {
         $strings = [];
 
-        foreach ($constructor as $arg => $param) {
-            if (is_object($param)) {
-                $param = self::shortName($param);
-            }
+        foreach ($params as $arg => $param) {
+            switch (gettype($param)) {
+                case 'object':
+                    if ($param instanceof Estimator) {
+                        $temp = '(' . self::stringify($param->params(), $separator) . ')';
+    
+                        $param = self::shortName(get_class($param)) . $temp;
+                    } else {
+                        $param = self::shortName(get_class($param));
+                    }
 
-            if (is_array($param)) {
-                $temp = array_combine(array_keys($param), $param) ?: [];
+                    break 1;
 
-                $param = '[' . self::stringify($temp) . ']';
+                case 'array':
+                    $param = '[' . self::stringify($param, $separator) . ']';
+
+                    break 1;
+
+                case 'string':
+                    if (class_exists($param)) {
+                        $param = self::shortName($param);
+                    }
+
+                    break 1;
+
+                case 'boolean':
+                    $param = $param ? 'true' : 'false';
+
+                    break 1;
+
+                case 'NULL':
+                    $param = 'null';
+
+                    break 1;
             }
 
             $strings[] = (string) $arg . '=' . (string) $param;
@@ -179,21 +177,13 @@ class Params
     }
 
     /**
-     * Return the short class name from a fully qualified class name (fqcn).
+     * Return the short class name from a fully qualified class name.
      *
-     * @param mixed $object
-     * @throws \InvalidArgumentException
+     * @param class-string $class
      * @return string
      */
-    public static function shortName($object) : string
+    public static function shortName(string $class) : string
     {
-        if (!is_object($object) and !is_string($object)) {
-            throw new InvalidArgumentException('Must provide an object'
-                . ' or class string ' . gettype($object) . ' given.');
-        }
-
-        $class = is_object($object) ? get_class($object) : $object;
-
         return substr(strrchr($class, '\\') ?: '', 1);
     }
 }

@@ -8,6 +8,7 @@ use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
 use function count;
+use function get_class;
 
 class SamplesAreCompatibleWithTransformer
 {
@@ -31,8 +32,10 @@ class SamplesAreCompatibleWithTransformer
 
             $diffString = implode(', ', $diff);
 
-            throw new InvalidArgumentException(Params::shortName($transformer)
-                . " is not compatible with $diffString data types.");
+            throw new InvalidArgumentException(
+                Params::shortName(get_class($transformer))
+                . " is not compatible with $diffString data types."
+            );
         }
     }
 }

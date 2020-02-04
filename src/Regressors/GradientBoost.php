@@ -23,6 +23,8 @@ use RuntimeException;
 
 use function count;
 use function array_slice;
+use function get_class;
+use function in_array;
 
 use const Rubix\ML\EPSILON;
 

@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function gettype;
+use function get_class;
 
 /**
  * Pipeline
@@ -260,7 +261,9 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
                 $transformer->fit($dataset);
 
                 if ($this->logger) {
-                    $this->logger->info('Fitted ' . Params::shortName($transformer));
+                    $this->logger->info(
+                        'Fitted ' . Params::shortName(get_class($transformer))
+                    );
                 }
             }
 
@@ -280,7 +283,9 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
                 $transformer->update($dataset);
 
                 if ($this->logger) {
-                    $this->logger->info('Updated ' . Params::shortName($transformer));
+                    $this->logger->info(
+                        'Updated ' . Params::shortName(get_class($transformer))
+                    );
                 }
             }
 

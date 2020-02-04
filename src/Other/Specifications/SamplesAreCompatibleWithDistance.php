@@ -8,6 +8,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 use function count;
+use function get_class;
 
 class SamplesAreCompatibleWithDistance
 {
@@ -31,8 +32,10 @@ class SamplesAreCompatibleWithDistance
 
             $diffString = implode(', ', $diff);
 
-            throw new InvalidArgumentException(Params::shortName($kernel)
-                . " is not compatible with $diffString data types.");
+            throw new InvalidArgumentException(
+                Params::shortName(get_class($kernel))
+                . " is not compatible with $diffString data types."
+            );
         }
     }
 }

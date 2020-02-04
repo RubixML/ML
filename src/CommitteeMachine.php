@@ -15,6 +15,8 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function get_class;
+use function in_array;
 
 /**
  * Committee Machine
@@ -375,12 +377,12 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     public function afterTrain(Learner $estimator) : void
     {
         if (!$estimator->trained()) {
-            throw new RuntimeException('There was a problem'
-                . ' training ' . Params::shortName($estimator) . '.');
+            throw new RuntimeException('There was a problem training '
+                . Params::shortName(get_class($estimator)) . '.');
         }
 
         if ($this->logger) {
-            $this->logger->info(Params::shortName($estimator)
+            $this->logger->info(Params::shortName(get_class($estimator))
                 . ' finished training');
         }
     }

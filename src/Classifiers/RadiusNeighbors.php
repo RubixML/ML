@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\argmax;
+use function in_array;
 
 use const Rubix\ML\EPSILON;
 

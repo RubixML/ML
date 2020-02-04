@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\argmax;
+use function in_array;
 use function is_null;
 
 /**

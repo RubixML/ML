@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use SplObjectStorage;
 
 use function array_slice;
+use function in_array;
 
 /**
  * K-d Tree

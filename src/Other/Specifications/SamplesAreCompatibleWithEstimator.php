@@ -8,6 +8,7 @@ use Rubix\ML\Other\Helpers\Params;
 use InvalidArgumentException;
 
 use function count;
+use function get_class;
 
 class SamplesAreCompatibleWithEstimator
 {
@@ -31,8 +32,10 @@ class SamplesAreCompatibleWithEstimator
 
             $diffString = implode(', ', $diff);
 
-            throw new InvalidArgumentException(Params::shortName($estimator)
-                . " is not compatible with $diffString data types.");
+            throw new InvalidArgumentException(
+                Params::shortName(get_class($estimator))
+                . " is not compatible with $diffString data types."
+            );
         }
     }
 }

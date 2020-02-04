@@ -12,6 +12,8 @@ use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function in_array;
+
 /**
  * Bootstrap Aggregator
  *
