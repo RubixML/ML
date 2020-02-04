@@ -259,7 +259,7 @@ class Multiclass implements Output
             $temp = [];
 
             foreach ($labels as $label) {
-                $temp[] = $class === $label ? 1.0 : 0.0;
+                $temp[] = $class == $label ? 1.0 : 0.0;
             }
 
             $expected[] = $temp;
