@@ -81,11 +81,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     protected $seeder;
 
     /**
-     * The precomputed prior probabilities of each cluster.
+     * The precomputed log prior probabilities of each cluster.
      *
      * @var float[]
      */
-    protected $priors = [
+    protected $logPriors = [
         //
     ];
 
@@ -204,21 +204,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function priors() : array
     {
-        $priors = [];
-
-        if (is_array($this->priors)) {
-            $total = logsumexp($this->priors);
-
-            foreach ($this->priors as $class => $probability) {
-                $priors[$class] = exp($probability - $total);
-            }
-        }
-
-        return $priors;
+        return array_map('exp', $this->logPriors);
     }
 
     /**
-     * Return the computed mean vectors of each component.
+     * Return the mean vectors of each component.
      *
      * @return array[]
      */
@@ -262,12 +252,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 . Params::stringify($this->params()));
         }
 
-        $samples = $dataset->samples();
-        $columns = $dataset->columns();
-    
         $n = $dataset->numRows();
 
-        $this->priors = array_fill(0, $this->k, log(1.0 / $this->k));
+        $columns = $dataset->columns();
+
+        $this->logPriors = array_fill(0, $this->k, log(1.0 / $this->k));
 
         [$this->means, $this->variances] = $this->initialize($dataset);
 
@@ -277,51 +266,57 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $memberships = [];
+            $loss = 0.0;
 
             foreach ($dataset->samples() as $sample) {
-                $memberships[] = array_map('exp', $this->jointLogLikelihood($sample));
+                $jll = $this->jointLogLikelihood($sample);
+    
+                $total = logsumexp($jll);
+
+                $loss -= $total;
+    
+                $dist = [];
+    
+                foreach ($jll as $cluster => $likelihood) {
+                    $dist[$cluster] = exp($likelihood - $total);
+                }
+    
+                $memberships[] = $dist;
             }
 
-            $loss = 0.0;
+            $loss / $n;
 
             for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
 
+                $total = array_sum($mHat) ?: EPSILON;
+
                 $means = $variances = [];
 
                 foreach ($columns as $column) {
-                    $sigma = $total = 0.0;
+                    $sigma = $ssd = 0.0;
 
                     foreach ($column as $i => $value) {
-                        $membership = $mHat[$i];
-
-                        $sigma += $membership * $value;
-                        $total += $membership;
+                        $sigma += $mHat[$i] * $value;
                     }
-
-                    $total = $total ?: EPSILON;
 
                     $mean = $sigma / $total;
 
-                    $sigma = 0.0;
-
                     foreach ($column as $i => $value) {
-                        $sigma += $mHat[$i] * ($value - $mean) ** 2;
+                        $ssd += $mHat[$i] * ($value - $mean) ** 2;
                     }
 
-                    $variance = $sigma / $total;
+                    $variance = $ssd / $total;
 
                     $means[] = $mean;
                     $variances[] = $variance ?: EPSILON;
-
-                    $loss += $total;
                 }
 
-                $prior = array_sum($mHat) / $n;
+                $logPrior = log($total / $n);
 
                 $this->means[$cluster] = $means;
                 $this->variances[$cluster] = $variances;
-                $this->priors[$cluster] = log($prior);
+                $this->logPriors[$cluster] = $logPrior;
             }
 
             $this->steps[] = $loss;
@@ -330,7 +325,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
@@ -356,7 +351,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->priors)) {
+        if (empty($this->logPriors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -377,7 +372,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->priors)) {
+        if (empty($this->logPriors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -413,7 +408,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     {
         $likelihoods = [];
 
-        foreach ($this->priors as $cluster => $prior) {
+        foreach ($this->logPriors as $cluster => $prior) {
             $means = $this->means[$cluster];
             $variances = $this->variances[$cluster];
 
@@ -444,9 +439,9 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     protected function initialize(Dataset $dataset) : array
     {
-        $centroids = $this->seeder->seed($dataset, $this->k);
-
         $kernel = new Euclidean();
+
+        $centroids = $this->seeder->seed($dataset, $this->k);
 
         $clusters = array_fill(0, $this->k, []);
 

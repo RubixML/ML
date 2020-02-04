@@ -53,9 +53,9 @@ Clusterers can be rated by their ability to represent an outer hull surrounding 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
 | [DBSCAN](clusterers/dbscan.md) | High | | | Finds arbitrarily-shaped clusters, Quasi-anomaly detector | Cannot be trained, Slower inference |
-| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Fast training and inference, Soft clustering | Solution highly depends on initialization, Not suitable for large datasets |
-| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Captures non-spherical clusters | Higher memory cost |
-| [K Means](clusterers/k-means.md) | Low | ● | ● | Fast training and inference, Highly scalable | Has local minima |
+| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Fast training and inference, Soft clustering | Solution depends highly on initialization, Not suitable for large datasets |
+| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Captures irregularly-shaped clusters, Fast training and inference | Strong Gaussian and feature independence assumption |
+| [K Means](clusterers/k-means.md) | Low | ● | ● | Highly scalable | Has local minima |
 | [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
