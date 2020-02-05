@@ -19,7 +19,7 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
-use ReflectionClass;
+use Exception;
 
 use function count;
 
@@ -107,18 +107,19 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         ?Metric $metric = null,
         ?Validator $validator = null
     ) {
-        $reflector = new ReflectionClass($base);
-
-        $proxy = $reflector->newInstanceWithoutConstructor();
-
-        if (!$proxy instanceof Learner) {
-            throw new InvalidArgumentException('Base class must be of'
-                . ' a learner.');
+        if (!class_exists($base)) {
+            throw new InvalidArgumentException("Class $base does not exist.");
         }
 
-        if (empty($params)) {
-            throw new InvalidArgumentException('Hyper-parameter array'
-                . ' must not be empty.');
+        try {
+            $proxy = new $base(...array_map('reset', $params));
+        } catch (Exception $e) {
+            throw new InvalidArgumentException('Fewer parameters given'
+                . ' than required by base constructor.');
+        }
+
+        if (!$proxy instanceof Learner) {
+            throw new InvalidArgumentException('Base class must be a learner.');
         }
 
         foreach ($params as &$tuple) {
@@ -297,14 +298,14 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
 
         [$scores, $params] = array_transpose($this->backend->process());
 
-        array_multisort($scores, $params, SORT_DESC);
+        array_multisort($scores, $params, $combinations, SORT_DESC);
 
         $results = [];
 
         foreach ($scores as $i => $score) {
             $results[] = [
                 'score' => $score,
-                'params' => $combinations[$i],
+                'params' => $params[$i],
             ];
         }
 
