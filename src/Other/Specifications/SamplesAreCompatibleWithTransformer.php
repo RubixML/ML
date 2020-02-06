@@ -21,20 +21,20 @@ class SamplesAreCompatibleWithTransformer
      */
     public static function check(Dataset $dataset, Transformer $transformer) : void
     {
-        $types = $dataset->uniqueTypes();
-
         $compatibility = $transformer->compatibility();
+        
+        $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
 
         if (count($same) < count($types)) {
             $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', $diff);
-
             throw new InvalidArgumentException(
                 Params::shortName(get_class($transformer))
-                . " is not compatible with $diffString data types."
+                . ' is only compatible with '
+                . implode(', ', $compatibility) . ' data types, '
+                . implode(', ', $diff) . ' given.'
             );
         }
     }

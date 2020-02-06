@@ -113,7 +113,7 @@ class MissingDataImputer implements Transformer, Stateful
         foreach ($dataset->types() as $column => $type) {
             $donors = [];
 
-            switch ($type->type()) {
+            switch ($type->code()) {
                 case DataType::CONTINUOUS:
                     $strategy = clone $this->continuous;
 
@@ -171,7 +171,7 @@ class MissingDataImputer implements Transformer, Stateful
             foreach ($this->types as $column => $type) {
                 $value = &$sample[$column];
 
-                switch ($type->type()) {
+                switch ($type->code()) {
                     case DataType::CONTINUOUS:
                         if (is_float($value) and is_nan($value)) {
                             $value = $this->strategies[$column]->guess();

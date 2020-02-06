@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\SVM\Linear;
@@ -77,7 +78,7 @@ class SVRTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     /**

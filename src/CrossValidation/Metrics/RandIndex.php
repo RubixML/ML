@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Tensor\Matrix;
 use Rubix\ML\Estimator;
-use Rubix\ML\Other\Functions\Comb;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
@@ -28,6 +28,17 @@ use function Rubix\ML\comb;
 class RandIndex implements Metric
 {
     /**
+     * Compute n choose 2.
+     *
+     * @param int $n
+     * @return int
+     */
+    public static function comb2(int $n) : int
+    {
+        return comb($n, 2);
+    }
+
+    /**
      * Return a tuple of the min and max output value for this metric.
      *
      * @return float[]
@@ -40,12 +51,12 @@ class RandIndex implements Metric
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::CLUSTERER,
+            EstimatorType::clusterer(),
         ];
     }
 
@@ -74,12 +85,12 @@ class RandIndex implements Metric
 
         $table = Matrix::build($report->generate($predictions, $labels));
 
-        $sigma = $table->map('\Rubix\ML\comb')->sum()->sum();
+        $sigma = $table->map([self::class, 'comb2'])->sum()->sum();
 
-        $alpha = $table->sum()->map('\Rubix\ML\comb')->sum();
-        $beta = $table->transpose()->sum()->map('\Rubix\ML\comb')->sum();
+        $alpha = $table->sum()->map([self::class, 'comb2'])->sum();
+        $beta = $table->transpose()->sum()->map([self::class, 'comb2'])->sum();
 
-        $pHat = ($alpha * $beta) / comb($n);
+        $pHat = ($alpha * $beta) / self::comb2($n);
         $mean = ($alpha + $beta) / 2.0;
 
         return ($sigma - $pHat) / ($mean - $pHat);

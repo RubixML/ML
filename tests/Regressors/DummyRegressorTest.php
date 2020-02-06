@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
@@ -76,7 +77,7 @@ class DummyRegressorTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     /**

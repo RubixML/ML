@@ -7,6 +7,7 @@ use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -103,7 +104,7 @@ class RobustZScoreTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
     /**

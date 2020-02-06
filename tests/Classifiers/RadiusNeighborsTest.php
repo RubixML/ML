@@ -7,8 +7,9 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -94,7 +95,7 @@ class RadiusNeighborsTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
     /**

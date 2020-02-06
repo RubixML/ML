@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
@@ -36,16 +37,16 @@ class Completeness implements Metric
     {
         return [0.0, 1.0];
     }
-
+    
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::CLUSTERER,
+            EstimatorType::clusterer(),
         ];
     }
 

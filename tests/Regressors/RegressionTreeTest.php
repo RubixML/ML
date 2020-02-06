@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\DecisionTree;
@@ -48,7 +49,7 @@ class RegressionTreeTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
         $this->estimator = new RegressionTree(10, 2, 3, 1e-7);
 
@@ -90,7 +91,7 @@ class RegressionTreeTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     /**

@@ -30,11 +30,11 @@ class SamplesAreCompatibleWithEstimator
         if (count($same) < count($types)) {
             $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', $diff);
-
             throw new InvalidArgumentException(
                 Params::shortName(get_class($estimator))
-                . " is not compatible with $diffString data types."
+                . ' is only compatible with '
+                . implode(', ', $compatibility) . ' data types, '
+                . implode(', ', $diff) . ' given.'
             );
         }
     }

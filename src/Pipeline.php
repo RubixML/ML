@@ -103,11 +103,11 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
         return $this->estimator->type();
     }

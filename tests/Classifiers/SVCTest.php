@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
@@ -81,9 +82,9 @@ class SVCTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
-
+    
     /**
      * @test
      */

@@ -13,8 +13,8 @@ use const Rubix\ML\EPSILON;
 /**
  * RMS Prop
  *
- * An adaptive gradient technique that divides the current gradient over a
- * rolling window of magnitudes of recent gradients.
+ * An adaptive gradient technique that divides the current gradient over a rolling window
+ * of magnitudes of recent gradients.
  *
  * References:
  * [1] T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the
@@ -63,23 +63,23 @@ class RMSProp implements Optimizer, Adaptive
      */
     public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
-        if ($rate <= 0.) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
-        if ($decay <= 0. or $decay >= 1.) {
+        if ($decay <= 0.0 or $decay >= 1.0) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->rho = 1. - $decay;
+        $this->rho = 1.0 - $decay;
     }
 
     /**
-     * warm the cache with a parameter.
+     * Warm the parameter cache.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */

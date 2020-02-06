@@ -15,14 +15,14 @@ class DataTypeTest extends TestCase
     /**
      * @var \Rubix\ML\DataType
      */
-    protected $dataType;
+    protected $type;
 
     /**
      * @before
      */
     protected function setUp() : void
     {
-        $this->dataType = new DataType(DataType::CONTINUOUS);
+        $this->type = new DataType(DataType::CONTINUOUS);
     }
 
     /**
@@ -73,9 +73,9 @@ class DataTypeTest extends TestCase
     /**
      * @test
      */
-    public function type() : void
+    public function code() : void
     {
-        $this->assertSame(DataType::CONTINUOUS, $this->dataType->type());
+        $this->assertSame(DataType::CONTINUOUS, $this->type->code());
     }
     
     /**
@@ -83,7 +83,7 @@ class DataTypeTest extends TestCase
      */
     public function isCategorical() : void
     {
-        $this->assertFalse($this->dataType->isCategorical());
+        $this->assertFalse($this->type->isCategorical());
     }
     
     /**
@@ -91,7 +91,7 @@ class DataTypeTest extends TestCase
      */
     public function isContinuous() : void
     {
-        $this->assertTrue($this->dataType->isContinuous());
+        $this->assertTrue($this->type->isContinuous());
     }
 
     /**
@@ -99,7 +99,7 @@ class DataTypeTest extends TestCase
      */
     public function isImage() : void
     {
-        $this->assertFalse($this->dataType->isImage());
+        $this->assertFalse($this->type->isImage());
     }
         
     /**
@@ -107,7 +107,7 @@ class DataTypeTest extends TestCase
      */
     public function isOther() : void
     {
-        $this->assertFalse($this->dataType->isOther());
+        $this->assertFalse($this->type->isOther());
     }
 
     /**
@@ -115,6 +115,6 @@ class DataTypeTest extends TestCase
      */
     public function testToString() : void
     {
-        $this->assertEquals('continuous', (string) $this->dataType);
+        $this->assertEquals('continuous', (string) $this->type);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\Report;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +42,7 @@ class ContingencyTableTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            Estimator::CLUSTERER,
+            EstimatorType::clusterer(),
         ];
 
         $this->assertEquals($expected, $this->report->compatibility());

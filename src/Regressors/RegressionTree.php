@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
@@ -55,13 +56,13 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::REGRESSOR;
+        return EstimatorType::regressor();
     }
 
     /**

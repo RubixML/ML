@@ -7,7 +7,7 @@ interface Report
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array;
 

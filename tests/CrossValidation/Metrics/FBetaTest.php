@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
@@ -52,8 +52,8 @@ class FBetaTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            Estimator::CLASSIFIER,
-            Estimator::ANOMALY_DETECTOR,
+            EstimatorType::classifier(),
+            EstimatorType::anomalyDetector(),
         ];
 
         $this->assertEquals($expected, $this->metric->compatibility());

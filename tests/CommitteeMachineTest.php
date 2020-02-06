@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Unlabeled;
@@ -54,9 +55,9 @@ class CommitteeMachineTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'inner' => new Circle(0., 0., 1., 0.01),
-            'middle' => new Circle(0., 0., 5., 0.05),
-            'outer' => new Circle(0., 0., 10., 0.15),
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.15),
         ], [3, 3, 4]);
 
         $this->estimator = new CommitteeMachine([
@@ -92,7 +93,7 @@ class CommitteeMachineTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
     /**

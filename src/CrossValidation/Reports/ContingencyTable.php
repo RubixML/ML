@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
 
 /**
@@ -21,12 +22,12 @@ class ContingencyTable implements Report
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::CLUSTERER,
+            EstimatorType::clusterer(),
         ];
     }
 

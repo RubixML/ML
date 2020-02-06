@@ -32,7 +32,7 @@ bool(true)
 ```
 
 ### Predict a Single Sample
-Pass a single sample and return the prediction:
+Pass a single sample through the model and return the prediction:
 ```php
 public predictSample(array $sample) : mixed
 ```
@@ -40,13 +40,7 @@ public predictSample(array $sample) : mixed
 **Example**
 
 ```php
-use Rubix\ML\Datasets\Unlabeled;
-
-// Import samples
-
-$dataset = new Unlabeled($samples);
-
-$prediction = $estimator->predictSample($dataset->sample(2)); // Predict the third sample in the dataset
+$prediction = $estimator->predictSample([4, 'furry', 'loner', 8.65]);
 
 var_dump($prediction);
 ```

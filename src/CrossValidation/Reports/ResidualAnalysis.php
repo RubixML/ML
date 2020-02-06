@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -27,12 +28,12 @@ class ResidualAnalysis implements Report
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::REGRESSOR,
+            EstimatorType::regressor(),
         ];
     }
 

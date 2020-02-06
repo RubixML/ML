@@ -9,6 +9,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
@@ -91,7 +92,7 @@ class GridSearchTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
     /**

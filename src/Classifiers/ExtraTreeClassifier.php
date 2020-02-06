@@ -7,6 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
@@ -64,13 +65,13 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::CLASSIFIER;
+        return EstimatorType::classifier();
     }
 
     /**

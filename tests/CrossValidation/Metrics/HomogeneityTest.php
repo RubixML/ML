@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +52,7 @@ class HomogeneityTest extends TestCase
     public function compatibility() : void
     {
         $expected = [
-            Estimator::CLUSTERER,
+            EstimatorType::clusterer(),
         ];
 
         $this->assertEquals($expected, $this->metric->compatibility());

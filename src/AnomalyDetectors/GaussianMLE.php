@@ -8,6 +8,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
@@ -100,13 +101,13 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::ANOMALY_DETECTOR;
+        return EstimatorType::anomalyDetector();
     }
 
     /**

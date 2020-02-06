@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\KDTree;
@@ -118,13 +119,13 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::ANOMALY_DETECTOR;
+        return EstimatorType::anomalyDetector();
     }
 
     /**

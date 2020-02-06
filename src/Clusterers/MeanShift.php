@@ -8,6 +8,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
@@ -212,13 +213,13 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::CLUSTERER;
+        return EstimatorType::clusterer();
     }
 
     /**
@@ -326,14 +327,12 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 }
 
                 foreach ($centroids as $j => $neighbor) {
-                    if ($i === $j) {
-                        continue 1;
-                    }
-                    
-                    $distance = $this->tree->kernel()->compute($centroid, $neighbor);
+                    if ($i !== $j) {
+                        $distance = $this->tree->kernel()->compute($centroid, $neighbor);
 
-                    if ($distance < $this->radius) {
-                        unset($centroids[$j]);
+                        if ($distance < $this->radius) {
+                            unset($centroids[$j]);
+                        }
                     }
                 }
             }

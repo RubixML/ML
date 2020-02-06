@@ -7,24 +7,31 @@ use InvalidArgumentException;
 use function gettype;
 use function in_array;
 
+/**
+ * Data Type
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class DataType
 {
     /**
-     * The continuous data type i.e. integers or floating point numbers.
+     * The continuous data type code.
      *
      * @var int
      */
     public const CONTINUOUS = 1;
 
     /**
-     * The categorical data type i.e. strings.
+     * The categorical data type code.
      *
      * @var int
      */
     public const CATEGORICAL = 2;
 
     /**
-     * The image data type i.e. a GD resource.
+     * The image data type code.
      *
      * @var int
      */
@@ -50,7 +57,7 @@ class DataType
     ];
 
     /**
-     * An array of all the high-level data types.
+     * An array of all the high-level data type codes.
      *
      * @var int[]
      */
@@ -66,15 +73,16 @@ class DataType
      *
      * @var int
      */
-    protected $type;
+    protected $code;
 
     /**
-     * Build a new data type.
-     * @param int $type
+     * Build a new data type object.
+     *
+     * @param int $code
      */
-    public static function build(int $type) : self
+    public static function build(int $code) : self
     {
-        return new self($type);
+        return new self($code);
     }
 
     /**
@@ -146,7 +154,7 @@ class DataType
     }
 
     /**
-     * Return an array with all the data types.
+     * Return an array with all possible data types.
      *
      * @return self[]
      */
@@ -156,16 +164,16 @@ class DataType
     }
 
     /**
-     * @param int $type
+     * @param int $code
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $type)
+    public function __construct(int $code)
     {
-        if (!in_array($type, self::ALL)) {
-            throw new InvalidArgumentException('Invalid type specification.');
+        if (!in_array($code, self::ALL)) {
+            throw new InvalidArgumentException('Invalid type code specification.');
         }
 
-        $this->type = $type;
+        $this->code = $code;
     }
 
     /**
@@ -173,9 +181,9 @@ class DataType
      *
      * @return int
      */
-    public function type() : int
+    public function code() : int
     {
-        return $this->type;
+        return $this->code;
     }
 
     /**
@@ -185,7 +193,7 @@ class DataType
      */
     public function isContinuous() : bool
     {
-        return $this->type === self::CONTINUOUS;
+        return $this->code === self::CONTINUOUS;
     }
 
     /**
@@ -195,7 +203,7 @@ class DataType
      */
     public function isCategorical() : bool
     {
-        return $this->type === self::CATEGORICAL;
+        return $this->code === self::CATEGORICAL;
     }
 
     /**
@@ -205,7 +213,7 @@ class DataType
      */
     public function isImage() : bool
     {
-        return $this->type === self::IMAGE;
+        return $this->code === self::IMAGE;
     }
 
     /**
@@ -215,7 +223,7 @@ class DataType
      */
     public function isOther() : bool
     {
-        return $this->type === self::OTHER;
+        return $this->code === self::OTHER;
     }
 
     /**
@@ -225,6 +233,6 @@ class DataType
      */
     public function __toString() : string
     {
-        return self::TYPE_STRINGS[$this->type];
+        return self::TYPE_STRINGS[$this->code];
     }
 }

@@ -729,7 +729,7 @@ class LabeledTest extends TestCase
             [
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'densities' => [
+                'probabilities' => [
                     'nice' => 0.6666666666666666,
                     'mean' => 0.3333333333333333,
                 ],
@@ -737,7 +737,7 @@ class LabeledTest extends TestCase
             [
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'densities' => [
+                'probabilities' => [
                     'furry' => 0.5,
                     'rough' => 0.5,
                 ],
@@ -745,7 +745,7 @@ class LabeledTest extends TestCase
             [
                 'type' => 'categorical',
                 'num_categories' => 2,
-                'densities' => [
+                'probabilities' => [
                     'friendly' => 0.6666666666666666,
                     'loner' => 0.3333333333333333,
                 ],
@@ -778,14 +778,14 @@ class LabeledTest extends TestCase
                 [
                     'type' => 'categorical',
                     'num_categories' => 1,
-                    'densities' => [
+                    'probabilities' => [
                         'nice' => 1,
                     ],
                 ],
                 [
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'densities' => [
+                    'probabilities' => [
                         'furry' => 0.5,
                         'rough' => 0.5,
                     ],
@@ -793,7 +793,7 @@ class LabeledTest extends TestCase
                 [
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'densities' => [
+                    'probabilities' => [
                         'friendly' => 0.75,
                         'loner' => 0.25,
                     ],
@@ -816,14 +816,14 @@ class LabeledTest extends TestCase
                 [
                     'type' => 'categorical',
                     'num_categories' => 1,
-                    'densities' => [
+                    'probabilities' => [
                         'mean' => 1,
                     ],
                 ],
                 [
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'densities' => [
+                    'probabilities' => [
                         'furry' => 0.5,
                         'rough' => 0.5,
                     ],
@@ -831,7 +831,7 @@ class LabeledTest extends TestCase
                 [
                     'type' => 'categorical',
                     'num_categories' => 2,
-                    'densities' => [
+                    'probabilities' => [
                         'friendly' => 0.5,
                         'loner' => 0.5,
                     ],
@@ -878,7 +878,7 @@ class LabeledTest extends TestCase
         $expected = [
             'type' => 'categorical',
             'num_categories' => 2,
-            'densities' => [
+            'probabilities' => [
                 'monster' => 0.3333333333333333,
                 'not monster' => 0.6666666666666666,
             ],

@@ -7,6 +7,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
@@ -57,7 +58,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     /**
      * The class names of the compatible learners to used as boosters.
      *
-     * @var string[]
+     * @var class-string[]
      */
     public const COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
@@ -227,9 +228,9 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             EstimatorIsCompatibleWithMetric::check($this, $metric);
         }
 
-        if ($base and $base->type() !== self::REGRESSOR) {
+        if ($base and $base->type() != EstimatorType::regressor()) {
             throw new InvalidArgumentException('Base estimator must be a'
-                . ' regressor, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
+                . " regressor, {$base->type()} given.");
         }
 
         $this->booster = $booster ?? new RegressionTree(3);
@@ -244,13 +245,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::REGRESSOR;
+        return EstimatorType::regressor();
     }
 
     /**

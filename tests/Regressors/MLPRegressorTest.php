@@ -8,6 +8,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
@@ -105,7 +106,7 @@ class MLPRegressorTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     /**

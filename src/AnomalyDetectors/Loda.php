@@ -10,6 +10,7 @@ use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -141,11 +142,11 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * Return the integer encoded estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::ANOMALY_DETECTOR;
+        return EstimatorType::anomalyDetector();
     }
 
     /**
@@ -196,6 +197,10 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         [$m, $n] = $dataset->shape();
 
+        if ($this->fitBins) {
+            $this->bins = self::estimateBins($m);
+        }
+
         $this->r = Matrix::gaussian($n, $this->estimators);
 
         if ($n >= self::MIN_SPARSE_DIMENSIONS) {
@@ -208,10 +213,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
-
-        if ($this->fitBins) {
-            $this->bins = self::estimateBins($m);
-        }
 
         foreach ($projections as $values) {
             $start = min($values) - EPSILON;

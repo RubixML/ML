@@ -47,7 +47,7 @@ class AdaGrad implements Optimizer, Adaptive
      */
     public function __construct(float $rate = 0.01)
     {
-        if ($rate <= 0.) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
@@ -56,7 +56,7 @@ class AdaGrad implements Optimizer, Adaptive
     }
     
     /**
-     * Warm the cache.
+     * Warm the parameter cache.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */

@@ -79,7 +79,7 @@ class Cyclical implements Optimizer
         int $steps = 2000,
         float $decay = 0.99994
     ) {
-        if ($lower <= 0.) {
+        if ($lower <= 0.0) {
             throw new InvalidArgumentException('The lower bound must'
                 . " be greater than 0, $lower given.");
         }
@@ -94,7 +94,7 @@ class Cyclical implements Optimizer
                 . " cycle must be greater than 0, $steps given.");
         }
 
-        if ($decay <= 0. or $decay >= 1.) {
+        if ($decay <= 0.0 or $decay >= 1.0) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }

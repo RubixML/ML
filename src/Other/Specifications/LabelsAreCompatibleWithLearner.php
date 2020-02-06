@@ -4,7 +4,7 @@ namespace Rubix\ML\Other\Specifications;
 
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
@@ -22,7 +22,7 @@ class LabelsAreCompatibleWithLearner
         $labelType = $dataset->labelType();
 
         switch ($estimator->type()) {
-            case Estimator::CLASSIFIER:
+            case EstimatorType::classifier():
                 if ($labelType != DataType::categorical()) {
                     throw new InvalidArgumentException('Classifiers require'
                         . " categorical labels, $labelType given.");
@@ -30,7 +30,7 @@ class LabelsAreCompatibleWithLearner
 
                 break 1;
 
-            case Estimator::REGRESSOR:
+            case EstimatorType::regressor():
                 if ($labelType != DataType::continuous()) {
                     throw new InvalidArgumentException('Regressors require'
                         . " continuous labels, $labelType given.");

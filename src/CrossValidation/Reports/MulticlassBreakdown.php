@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
 
 use function count;
@@ -25,13 +26,13 @@ class MulticlassBreakdown implements Report
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::CLASSIFIER,
-            Estimator::ANOMALY_DETECTOR,
+            EstimatorType::classifier(),
+            EstimatorType::anomalyDetector(),
         ];
     }
 

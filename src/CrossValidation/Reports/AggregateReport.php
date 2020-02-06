@@ -31,7 +31,7 @@ class AggregateReport implements Report
     /**
      * The estimator compatibility of the aggregate.
      *
-     * @var int[]
+     * @var \Rubix\ML\EstimatorType[]
      */
     protected $compatibility;
 
@@ -72,7 +72,7 @@ class AggregateReport implements Report
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {

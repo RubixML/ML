@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -81,7 +82,7 @@ class OneClassSVMTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
     /**

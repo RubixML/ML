@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Clusterers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
@@ -81,7 +82,7 @@ class DBSCANTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
     /**

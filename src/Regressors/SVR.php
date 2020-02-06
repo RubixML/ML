@@ -5,6 +5,7 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
@@ -136,13 +137,13 @@ class SVR implements Estimator, Learner
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::REGRESSOR;
+        return EstimatorType::regressor();
     }
 
     /**

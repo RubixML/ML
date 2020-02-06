@@ -6,6 +6,7 @@ use Rubix\ML\Wrapper;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Classifiers\DummyClassifier;
@@ -46,7 +47,7 @@ class PersistentModelTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
     /**

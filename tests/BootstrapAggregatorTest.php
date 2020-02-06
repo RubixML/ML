@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
@@ -77,7 +78,7 @@ class BootstrapAggregatorTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     /**

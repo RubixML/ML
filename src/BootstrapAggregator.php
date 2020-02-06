@@ -39,9 +39,9 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * @var int[]
      */
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
-        self::CLASSIFIER,
-        self::REGRESSOR,
-        self::ANOMALY_DETECTOR,
+        EstimatorType::CLASSIFIER,
+        EstimatorType::REGRESSOR,
+        EstimatorType::ANOMALY_DETECTOR,
     ];
 
     /**
@@ -82,10 +82,10 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
-        if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
+        if (!in_array($base->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
-                . ' only supports classifiers, regressors, and anomaly'
-                . ' detectors, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
+                . ' only supports classifiers, regressors, and'
+                . " anomaly detectors, {$base->type()} given.");
         }
 
         if ($estimators < 1) {
@@ -93,7 +93,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
                 . " least 1 estimator, $estimators given.");
         }
         
-        if ($ratio <= 0. or $ratio > 1.5) {
+        if ($ratio <= 0.0 or $ratio > 1.5) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1.5, $ratio given.");
         }
@@ -105,11 +105,11 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
         return $this->base->type();
     }
@@ -157,7 +157,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($this->type() === self::CLASSIFIER or $this->type() === self::REGRESSOR) {
+        if ($this->type()->isClassifier() or $this->type()->isRegressor()) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Learner requires a'
                     . ' labeled training set.');
@@ -209,13 +209,13 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $aggregate = array_transpose($this->backend->process());
         
         switch ($this->type()) {
-            case self::CLASSIFIER:
+            case EstimatorType::classifier():
                 return array_map([self::class, 'decideDiscrete'], $aggregate);
 
-            case self::REGRESSOR:
+            case EstimatorType::regressor():
                 return array_map([Stats::class, 'mean'], $aggregate);
 
-            case self::ANOMALY_DETECTOR:
+            case EstimatorType::anomalyDetector():
                 return array_map([self::class, 'decideDiscrete'], $aggregate);
 
             default:

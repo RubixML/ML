@@ -118,7 +118,7 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
-     * Warm the cache.
+     * Warm the parameter cache.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */
@@ -126,10 +126,7 @@ class Adam implements Optimizer, Adaptive
     {
         $zeros = get_class($param->w())::zeros(...$param->w()->shape());
 
-        $velocity = clone $zeros;
-        $norm = clone $zeros;
-
-        $this->cache[$param->id()] = [$velocity, $norm];
+        $this->cache[$param->id()] = [clone $zeros, $zeros];
     }
 
     /**

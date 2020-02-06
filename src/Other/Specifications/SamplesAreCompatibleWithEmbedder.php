@@ -21,20 +21,20 @@ class SamplesAreCompatibleWithEmbedder
      */
     public static function check(Dataset $dataset, Embedder $embedder) : void
     {
-        $types = $dataset->uniqueTypes();
-
         $compatibility = $embedder->compatibility();
+
+        $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
 
         if (count($same) < count($types)) {
             $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', $diff);
-
             throw new InvalidArgumentException(
                 Params::shortName(get_class($embedder))
-                . " is not compatible with $diffString data types."
+                . ' is only compatible with '
+                . implode(', ', $compatibility) . ' data types, '
+                . implode(', ', $diff) . ' given.'
             );
         }
     }

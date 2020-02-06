@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
 
 use function count;
@@ -41,12 +42,12 @@ class SMAPE implements Metric
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::REGRESSOR,
+            EstimatorType::regressor(),
         ];
     }
 

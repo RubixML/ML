@@ -76,11 +76,11 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
         return $this->base->type();
     }

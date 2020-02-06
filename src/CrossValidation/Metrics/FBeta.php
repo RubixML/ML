@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -82,13 +83,13 @@ class FBeta implements Metric
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return int[]
+     * @return \Rubix\ML\EstimatorType[]
      */
     public function compatibility() : array
     {
         return [
-            Estimator::CLASSIFIER,
-            Estimator::ANOMALY_DETECTOR,
+            EstimatorType::classifier(),
+            EstimatorType::anomalyDetector(),
         ];
     }
 

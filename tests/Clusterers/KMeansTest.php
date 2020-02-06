@@ -9,6 +9,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -100,7 +101,7 @@ class KMeansTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
+        $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
     /**

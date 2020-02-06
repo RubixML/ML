@@ -21,20 +21,20 @@ class SamplesAreCompatibleWithDistance
      */
     public static function check(Dataset $dataset, Distance $kernel) : void
     {
-        $types = $dataset->uniqueTypes();
-
         $compatibility = $kernel->compatibility();
+
+        $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
 
         if (count($same) < count($types)) {
             $diff = array_diff($types, $compatibility);
 
-            $diffString = implode(', ', $diff);
-
             throw new InvalidArgumentException(
                 Params::shortName(get_class($kernel))
-                . " is not compatible with $diffString data types."
+                . ' is only compatible with '
+                . implode(', ', $compatibility) . ' data types, '
+                . implode(', ', $diff) . ' given.'
             );
         }
     }

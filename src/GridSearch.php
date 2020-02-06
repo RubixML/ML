@@ -135,22 +135,22 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
             EstimatorIsCompatibleWithMetric::check($proxy, $metric);
         } else {
             switch ($proxy->type()) {
-                case self::CLASSIFIER:
+                case EstimatorType::classifier():
                     $metric = new FBeta();
 
                     break 1;
     
-                case self::REGRESSOR:
+                case EstimatorType::regressor():
                     $metric = new RSquared();
 
                     break 1;
                 
-                case self::CLUSTERER:
+                case EstimatorType::clusterer():
                     $metric = new VMeasure();
 
                     break 1;
     
-                case self::ANOMALY_DETECTOR:
+                case EstimatorType::anomalyDetector():
                     $metric = new FBeta();
                     
                     break 1;
@@ -169,11 +169,11 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
         return $this->estimator->type();
     }
@@ -279,6 +279,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
 
         $this->backend->flush();
 
+        $this->results = [];
+
         foreach ($combinations as $params) {
             $estimator = new $this->base(...$params);
 
@@ -298,18 +300,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
 
         [$scores, $params] = array_transpose($this->backend->process());
 
-        array_multisort($scores, $params, $combinations, SORT_DESC);
-
-        $results = [];
-
-        foreach ($scores as $i => $score) {
-            $results[] = [
-                'score' => $score,
-                'params' => $params[$i],
-            ];
-        }
-
-        $this->results = $results;
+        array_multisort($scores, $combinations, SORT_DESC);
 
         if ($this->logger) {
             $this->logger->info('Training on full dataset');
@@ -385,14 +376,19 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      */
     public function afterScore($result) : void
     {
-        if ($this->logger) {
-            [$score, $params] = $result;
+        [$score, $params] = $result;
 
+        if ($this->logger) {
             $this->logger->info(Params::stringify([
                 'score' => $score,
                 'params' => $params,
             ]));
         }
+
+        $this->results[] = [
+            'score' => $score,
+            'params' => $params,
+        ];
     }
 
     /**

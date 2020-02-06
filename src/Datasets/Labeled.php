@@ -251,7 +251,7 @@ class Labeled extends Dataset
         
         $desc['type'] = (string) $type;
 
-        switch ($type->type()) {
+        switch ($type->code()) {
             case DataType::CONTINUOUS:
                 [$mean, $variance] = Stats::meanVar($this->labels);
 
@@ -279,14 +279,14 @@ class Labeled extends Dataset
 
                 $total = count($this->labels) ?: EPSILON;
 
-                $densities = [];
+                $probabilities = [];
 
                 foreach ($counts as $class => $count) {
-                    $densities[$class] = $count / $total;
+                    $probabilities[$class] = $count / $total;
                 }
 
                 $desc['num_categories'] = count($counts);
-                $desc['densities'] = $densities;
+                $desc['probabilities'] = $probabilities;
 
                 break 1;
         }

@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
@@ -140,9 +141,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         int $estimators = 100,
         float $minChange = 1e-4
     ) {
-        if ($base and $base->type() !== self::CLASSIFIER) {
+        if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base estimator must be a'
-                . ' classifier, ' . self::TYPE_STRINGS[$base->type()] . ' given.');
+                . " classifier, {$base->type()} given.");
         }
 
         if ($rate < 0.0) {
@@ -173,13 +174,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the estimator type.
      *
-     * @return int
+     * @return \Rubix\ML\EstimatorType
      */
-    public function type() : int
+    public function type() : EstimatorType
     {
-        return self::CLASSIFIER;
+        return EstimatorType::classifier();
     }
 
     /**

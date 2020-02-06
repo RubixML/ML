@@ -47,7 +47,7 @@ class AdaMax extends Adam
         if ($this->t < self::WARM_UP_STEPS) {
             ++$this->t;
 
-            $rate = $this->rate / (1. - $this->beta1 ** $this->t);
+            $rate = $this->rate / (1.0 - $this->beta1 ** $this->t);
         } else {
             $rate = $this->rate;
         }

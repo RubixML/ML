@@ -51,3 +51,5 @@ $estimator = PersistentModel::load(new Filesystem('example.model'));
 
 $estimator->save();
 ```
+## Caveats
+Since model data are exported with the current class definition in mind, problems may occur when loading a model using a different version of the library than the one it was trained and saved on. For example, when upgrading to a new version, a previously saved estimator may not be able to be deserialized if the model is not compatible with the new class definition. For maximum interoperability among systems, ensure that each system is running the same version of Rubix ML.

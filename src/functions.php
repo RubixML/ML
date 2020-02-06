@@ -74,7 +74,7 @@ namespace Rubix\ML
      * @param int $k
      * @return int
      */
-    function comb(int $n, int $k = 2) : int
+    function comb(int $n, int $k) : int
     {
         return $k === 0 ? 1 : (int) (($n * comb($n - 1, $k - 1)) / $k);
     }
