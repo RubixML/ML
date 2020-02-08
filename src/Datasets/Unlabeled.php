@@ -301,7 +301,7 @@ class Unlabeled extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Split ratio must be strictly'
                 . " between 0 and 1, $ratio given.");
         }
@@ -518,7 +518,7 @@ class Unlabeled extends Dataset
             foreach ($weights as $index => $weight) {
                 $delta -= $weight;
 
-                if ($delta <= 0.) {
+                if ($delta <= 0.0) {
                     $subset[] = $this->samples[$index];
                     
                     break 1;
@@ -594,7 +594,7 @@ class Unlabeled extends Dataset
 
         $header = [];
 
-        for ($column = '0'; $column < $n; ++$column) {
+        for ($column = 0; $column < $n; ++$column) {
             $header[] = "Column $column";
         }
 

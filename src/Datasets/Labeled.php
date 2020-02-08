@@ -142,7 +142,8 @@ class Labeled extends Dataset
             foreach ($labels as $label) {
                 if (DataType::determine($label) != $type) {
                     throw new InvalidArgumentException('Labels must all be'
-                        . ' the same high-level data type.');
+                        . " the same high-level data type, expected $type"
+                        . ' but ' . DataType::determine($label) . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
@@ -251,14 +252,13 @@ class Labeled extends Dataset
         
         $desc['type'] = (string) $type;
 
-        switch ($type->code()) {
-            case DataType::CONTINUOUS:
+        switch ($type) {
+            case DataType::continuous():
                 [$mean, $variance] = Stats::meanVar($this->labels);
 
                 $desc['mean'] = $mean;
                 $desc['variance'] = $variance;
                 $desc['std_dev'] = sqrt($variance ?: EPSILON);
-
                 $desc['skewness'] = Stats::skewness($this->labels, $mean);
                 $desc['kurtosis'] = Stats::kurtosis($this->labels, $mean);
 
@@ -274,7 +274,7 @@ class Labeled extends Dataset
 
                 break 1;
 
-            case DataType::CATEGORICAL:
+            case DataType::categorical():
                 $counts = array_count_values($this->labels);
 
                 $total = count($this->labels) ?: EPSILON;
@@ -951,7 +951,7 @@ class Labeled extends Dataset
             foreach ($weights as $index => $weight) {
                 $delta -= $weight;
 
-                if ($delta <= 0.) {
+                if ($delta <= 0.0) {
                     $samples[] = $this->samples[$index];
                     $labels[] = $this->labels[$index];
 
@@ -1035,7 +1035,7 @@ class Labeled extends Dataset
 
         $header = [];
 
-        for ($column = '0'; $column < $n; ++$column) {
+        for ($column = 0; $column < $n; ++$column) {
             $header[] = "Column $column";
         }
 

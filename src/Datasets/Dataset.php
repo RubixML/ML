@@ -81,19 +81,21 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
             $types = array_map([DataType::class, 'determine'], $proto);
 
-            foreach ($samples as &$sample) {
+            foreach ($samples as $row => &$sample) {
                 $sample = array_values($sample);
 
                 if (count($sample) !== $n) {
-                    throw new InvalidArgumentException('The number of feature'
-                        . " columns must be equal for all samples, $n expected "
+                    throw new InvalidArgumentException("Row $row must have"
+                        . " an equal number of columns, expected $n but "
                         . count($sample) . ' given.');
                 }
 
                 foreach ($sample as $column => $value) {
                     if (DataType::determine($value) != $types[$column]) {
                         throw new InvalidArgumentException("Column $column must"
-                            . ' contain feature values of the same data type.');
+                            . ' contain values of the same data type, expected'
+                            . " $types[$column] but " . DataType::determine($value)
+                            . ' given.');
                     }
                 }
             }
@@ -275,7 +277,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function transformColumn(int $column, callable $callback) : self
     {
-        if ($column < 0 or $column > $this->numColumns()) {
+        if ($column < 0 or $column >= $this->numColumns()) {
             throw new InvalidArgumentException('Column number must'
                 . " be between 0 and {$this->numColumns()}, $column"
                 . ' given.');
@@ -365,7 +367,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                     $desc['mean'] = $mean;
                     $desc['variance'] = $variance;
                     $desc['std_dev'] = sqrt($variance ?: EPSILON);
-
                     $desc['skewness'] = Stats::skewness($values, $mean);
                     $desc['kurtosis'] = Stats::kurtosis($values, $mean);
 
