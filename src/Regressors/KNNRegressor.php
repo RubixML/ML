@@ -47,8 +47,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     protected $k;
 
     /**
-     * Should we use the inverse distances as confidence scores when
-     * making predictions?
+     * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */

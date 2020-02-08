@@ -48,8 +48,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $radius;
 
     /**
-     * Should we use the inverse distances as confidence scores when making
-     * predictions?
+     * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */

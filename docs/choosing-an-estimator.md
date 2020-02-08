@@ -83,8 +83,6 @@ Meta-estimators enhance other estimators with their own added functionality. The
 
 In the example below, we'll use the Bootstrap Aggregator meta-estimator to wrap a Regression Tree.
 
-**Example**
-
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;

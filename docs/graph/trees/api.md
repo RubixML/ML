@@ -12,8 +12,6 @@ public grow(Dataset $dataset) : void
 ```php
 use Rubix\ML\Datasets\Labeled;
 
-// Import samples and labels
-
 $dataset = new Labeled($samples, $labels);
 
 $tree->grow($dataset);
@@ -30,10 +28,11 @@ Is the tree bare?
 public bare() : bool
 ```
 
-**Example**
+**Examples**
 
 ```php
 var_dump($tree->height());
+
 var_dump($tree->bare());
 ```
 
@@ -41,12 +40,6 @@ var_dump($tree->bare());
 int(10)
 
 bool(false)
-```
-
-### Destroy the Tree
-Remove the root node and its descendants from the tree:
-```php
-public destroy() : void
 ```
 
 # Binary Tree
@@ -66,7 +59,7 @@ var_dump($tree->balance());
 ```
 
 ```sh
-int(-1)
+int(-3)
 ```
 
 # BST
@@ -81,44 +74,8 @@ public search(array $sample) : Leaf
 # Spatial
 Spatial trees are constructed in such a way as to maximize performance on spatial queries such as nearest neighbor or radius searches. They do so by embedding spatial metadata within each node that enable fast search and pruning.
 
-### Nearest Neighbors
-Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple:
-```php
-public nearest(array $sample, int $k) : array;
-```
-
-**Example**
-
-```php
-[$samples, $labels, $distances] = $tree->nearest($sample, 5);
-```
-
-### Radius Query
-Return all samples, labels, and distances within a given radius of a sample:
-```php
-public range(array $sample, float $radius) : array
-```
-
-**Example**
-
-```php
-[$samples, $labels, $distances] = $tree->range($sample, 25.0);
-```
-
 # Decision Tree
 A learner that induces a hierarchy of conditional control statements (called decision *rules*) is called a Decision Tree. A Decision Tree can be visualized as a flowchart in which each internal node represents a binary comparison on a particular feature (ex. height < 1.8288 or height >= 1.8288), and each leaf node represents the final outcome of a decision.
-
-### Search
-Search the decision tree for a leaf node and return it:
-```php
-public search(array $sample) : ?Outcome
-```
-
-**Example**
-
-```php
-$node = $tree->search($sample);
-```
 
 ### Feature Importances
 Return an array indexed by feature column that contains the normalized importance score of that feature:

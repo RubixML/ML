@@ -4,22 +4,22 @@ Cross Validation (CV) or *out-of-sample* testing is a technique for assessing th
 ## Metrics
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
 
-| Metric | Classification | Regression | Clustering | Anomaly Detection | 
-|---|---|---|---|---|
-| [Accuracy](cross-validation/metrics/accuracy.md) | ● | | | |
-| [Completeness](cross-validation/metrics/completeness.md) | | | ● | |
-| [F Beta](cross-validation/metrics/f-beta.md) | ● | | | ● |
-| [Homogeneity](cross-validation/metrics/homogeneity.md) | | | ● | |
-| [Informedness](cross-validation/metrics/informedness.md) | ● | | | ● |
-| [MCC](cross-validation/metrics/mcc.md) | ● | | | ● |
-| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | | ● | | |
-| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | | ● | | |
-| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | | ● | | |
-| [R Squared](cross-validation/metrics/r-squared.md) | | ● | | |
-| [Rand Index](cross-validation/metrics/rand-index.md) | | | ● | |
-| [RMSE](cross-validation/metrics/rmse.md) | | ● | | |
-| [SMAPE](cross-validation/metrics/smape.md) | | ● | | |
-| [V Measure](cross-validation/metrics/v-measure.md) | | | ● | |
+| Metric | Range | Use Cases | 
+|---|---|---|
+| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | Classification |
+| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | Clustering |
+| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | Classification, Anomaly Detection |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | Clustering |
+| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | Classification, Anomaly Detection |
+| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | Classification, Anomaly Detection |
+| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | Regression |
+| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | Regression |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | Regression |
+| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | Regression |
+| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | Clustering |
+| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | Regression | 
+| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | Regression |
+| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | Clustering |
 
 To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.
 

@@ -3,8 +3,6 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
-> **Note:** Due to a limitation of PHP, avoid using numeric strings (ex. '1') as labels as they may cause unexpected behavior.
-
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
@@ -35,21 +33,14 @@ Return all of the possible outcomes i.e. the unique labels in an array:
 public possibleOutcomes() : array
 ```
 
-**Example**
+**Examples**
 
 ```php
-// Return the labels in the dataset
-$labels = $dataset->labels();
+var_dump($dataset->labels());
 
-// Return the label at row offset 3
-$label = $dataset->label(3);
+var_dump($dataset->label(3));
 
-// Return an array of unique labels
-$outcomes = $dataset->possibleOutcomes();
-
-var_dump($labels);
-var_dump($label);
-var_dump($outcomes);
+var_dump($dataset->possibleOutcomes());
 ```
 
 ```sh
@@ -76,28 +67,29 @@ public transformLabels(callable $fn) : self
 
 > **Note:** The callback function is given a label as its only argument and should return the transformed label as a continuous or categorical value.
 
-**Example**
+**Examples**
 
 ```php
-$dataset->transformLabels('intval'); // To integers
+$dataset->transformLabels('intval');
 
-$dataset->transformLabels('floatval'); // To floats
+$dataset->transformLabels('floatval');
 
-// From integers to discrete classes
 $dataset->transformLabels(function ($label) {
 	switch ($label) {
+		case 0:
+			return 'disagree';
+
 		case 1:
-			return 'male';
-
-		case 2:
-			return 'female';
-
-		default:
-			return 'other';
+            return 'neutral';
+            
+        case 2:
+            return 'agree';
+            
+        default:
+            return '?';
 	}
 });
 
-// From a continuous value to binary classes
 $dataset->transformLabels(function ($label) {
 	return $label > 0.5 ? 'yes' : 'no';
 });
@@ -114,7 +106,6 @@ public filterByLabel(callable $fn) : self
 **Example**
 
 ```php
-// Remove rows with label values greater than 10000
 $filtered = $dataset->filterByLabel(function ($label)) {
 	return $label > 10000 ? false : true;
 });
@@ -142,19 +133,15 @@ Return *k* equal size subsets of the dataset:
 public stratifiedFold($k = 10) : array
 ```
 
-**Example**
+**Examples**
 
 ```php
-// Put each sample with a given label into its own dataset
 $strata = $dataset->stratify();
 
-// Fold the dataset into 5 equal-sized stratified subsets
 $folds = $dataset->stratifiedFold(5);
 
-// Split the dataset into two 50/50 stratified subsets
 [$left, $right] = $dataset->stratifiedSplit(0.5);
 
-// Split the dataset into two stratified training and testing sets
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
@@ -180,7 +167,7 @@ Array
                 (
                     [type] => categorical
                     [num_categories] => 1
-                    [densities] => Array
+                    [probabilities] => Array
                         (
                             [nice] => 1
                         )
@@ -191,7 +178,7 @@ Array
                 (
                     [type] => categorical
                     [num_categories] => 2
-                    [densities] => Array
+                    [probabilities] => Array
                         (
                             [furry] => 0.5
                             [rough] => 0.5
@@ -203,7 +190,7 @@ Array
                 (
                     [type] => categorical
                     [num_categories] => 2
-                    [densities] => Array
+                    [probabilities] => Array
                         (
                             [friendly] => 0.75
                             [loner] => 0.25
@@ -252,7 +239,7 @@ Array
 (
     [type] => categorical
     [num_categories] => 2
-    [densities] => Array
+    [probabilities] => Array
         (
             [monster] => 0.33333333333333
             [not monster] => 0.66666666666667

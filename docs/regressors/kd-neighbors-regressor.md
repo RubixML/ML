@@ -11,7 +11,7 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
 ## Additional Methods

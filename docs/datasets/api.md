@@ -3,26 +3,21 @@ Data are passed in specialized in-memory containers called Dataset objects. Data
 
 In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels to the constructor.
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Labeled;
 
 $samples = [
     [0.1, 20, 'furry'],
     [2.0, -5, 'rough'],
-    // ...
 ];
 
-$labels = ['not monster', 'monster']; // ...
+$labels = ['not monster', 'monster'];
 
 $dataset = new Labeled($samples, $labels);
 ```
 
 ## Missing Values
 By convention, missing continuous values are denoted by `NaN` and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
-
-**Example**
 
 ```php
 $samples = [
@@ -33,7 +28,7 @@ $samples = [
 ```
 
 ## Factory Methods
-Build a dataset with the rows from an iterable data table:
+Build a dataset with the rows from a 2-dimensional iterable data table:
 ```php
 public static fromIterator(Traversable $iterator) : self
 ```
@@ -137,17 +132,17 @@ You can also transform a single feature column using a callback function with th
 public transformColumn(int $column, callable $callback) : self
 ```
 
-**Example**
+**Examples**
 
 ```php
-$dataset = $dataset->transformColumn(0, 'log1p'); // Log transform
+$dataset = $dataset->transformColumn(0, 'log1p');
 
 $dataset = $dataset->transformColumn(6, function ($value) {
-    return $value === 0 ? NAN : $value; // Replace 0 with NaN
+    return $value === 0 ? NAN : $value;
 });
 
 $dataset = $dataset->transformColumn(5, function ($value) {
-    return min($value, 1000); // Cap values at 1000
+    return min($value, 1000);
 });
 ```
 
@@ -168,6 +163,7 @@ $dataset = Labeled::stack([
     $dataset1,
     $dataset2,
     $dataset3,
+    // ...
 ]);
 ```
 
@@ -184,7 +180,7 @@ public append(Dataset $dataset) : self
 
 > **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
 
-**Example**
+**Examples**
 
 ```php
 $dataset = $training->append($testing); // Append the testing set to the training set
@@ -203,7 +199,7 @@ Return the *last* **n** rows of data in a new dataset object:
 public tail(int $n = 10) : self
 ```
 
-**Example**
+**Examples**
 
 ```php
 // Return the first 5 rows in a new dataset
@@ -246,7 +242,7 @@ Partition the dataset into left and right subsets based on the value of a featur
 public partition(int $index, mixed $value) : array
 ```
 
-**Example**
+**Examples**
 
 ```php
 // Split the dataset 50/50 into left and right subsets
@@ -320,17 +316,15 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 // Randomize and split the dataset into two subsets
 [$left, $right] = $dataset->randomize()->split(0.6);
 
-// Generate a random unique subset of 50 random samples
 $subset = $dataset->randomSubset(50);
 
-// Generate a 'bootstrap' dataset of 500 random samples
 $subset = $dataset->randomSubsetWithReplacement(500);
 
 // Sample a random subset according to a user-defined weight distribution
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 
 // Sample a random subset using the values of a column as sample weights
-$subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(1));
+$subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(5));
 ```
 
 ## Filtering
@@ -358,7 +352,7 @@ public sortByColumn(int $index, bool $descending = false) : self
 ```php
 var_dump($dataset->samples());
 
-$dataset->sortByColumn(2, false);
+$dataset->sortByColumn(2);
 
 var_dump($dataset->samples());
 ```
@@ -402,12 +396,12 @@ array(3) {
 ```
 
 ## Dropping Rows and Columns
-Drop the row at the given index:
+Drop the row at the given offset:
 ```php
 public dropRow(int $index) : self
 ```
 
-Drop the rows at the given indices:
+Drop the rows at the given offsets:
 ```php
 public dropRows(array $indices) : self
 ```
@@ -441,7 +435,7 @@ Array
         (
             [type] => categorical
             [num_categories] => 2
-            [densities] => Array
+            [probabilities] => Array
                 (
                     [friendly] => 0.66666666666667
                     [loner] => 0.33333333333333

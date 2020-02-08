@@ -12,8 +12,6 @@ public embed(Dataset $dataset) : array
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-// Import high dimensional samples
-
 $dataset = new Unlabeled($samples);
 
 $samples = $embedder->embed($dataset);

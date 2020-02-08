@@ -13,7 +13,7 @@ A distance-based learning algorithm that locates the *k* nearest samples from th
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Additional Methods

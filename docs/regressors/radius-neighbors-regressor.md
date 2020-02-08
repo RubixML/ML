@@ -13,7 +13,7 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
-| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Additional Methods

@@ -16,8 +16,6 @@ mean,furry,loner,-1.5,monster
 
 The library provides the [CSV](extractors/csv.md) extractor to help import data from the CSV format. Since extractors are iterators they can be used in conjunction with a Dataset's static `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format.
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\CSV;
@@ -53,8 +51,6 @@ Javascript Object Notation (JSON) is a standardized lightweight plain-text forma
 
 The [JSON](extractors/json.md) extractor handles loading data from JSON files.
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\JSON;
@@ -74,8 +70,6 @@ Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](ht
 
 The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file. Optionally, it can be combined with the standard PHP library's [Limit Iterator](https://www.php.net/manual/en/class.limititerator.php) to only load a portion of the data into memory. In the example below, we load the first 1,000 rows of data from an NDJSON file into an [Unlabeled](datasets/unlabeled.md) dataset.
 
-**Example**
-
 ```php
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
@@ -89,9 +83,7 @@ $dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com), [PostgreSQL](https://www.postgresql.org), or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows fo data from the `patients` table. Then we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
-
-**Example**
+Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com), [PostgreSQL](https://www.postgresql.org), or [SQLite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows of data from the `patients` table. Then, we'll load those sample into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -108,9 +100,7 @@ $dataset = new Unlabeled($samples);
 ```
 
 ## Images
-Some machine learning tasks such as image recognition involve data that are stored in image files. PHP offers a number of functions to import images as PHP resources such as `imagecreatefromjpeg()` and `imagecreatefrompng()` that come with the [GD](https://www.php.net/manual/en/book.image.php) extension. The example below loops over all the `.png` files in the `train` folder, imports the images as resources and labels them with the part of their filename after the underscore. The samples are then converted into raw color channel data by apply the [Image Vectorizer](transformers/image-vectorizer.md) to the newly instantiated dataset object.
-
-**Example**
+Some machine learning tasks such as image recognition involve data that are stored in image files. PHP offers a number of functions to import images as PHP resources such as `imagecreatefromjpeg()` and `imagecreatefrompng()` that come with the [GD](https://www.php.net/manual/en/book.image.php) extension. The example below imports the `.png` images in the `train` folder and labels them using part of their filename. The samples and labels are then put into a [Labeled](datasets/labeled.md) dataset using the chainable `build()` factory method and then converted into raw color channel data by applying the [Image Vectorizer](transformers/image-vectorizer.md).
 
 ```php
 use Rubix\ML\Datasets\Labeled;

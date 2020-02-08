@@ -11,7 +11,7 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
-| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | anomaly class | '?' | string | The class label for any samples that have no neighbors within the specified radius. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
