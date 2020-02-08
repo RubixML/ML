@@ -83,6 +83,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected $minChange;
 
     /**
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
+     *
+     * @var int
+     */
+    protected $window;
+
+    /**
      * The ensemble of *weak* classifiers.
      *
      * @var \Rubix\ML\Learner[]
@@ -132,6 +140,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param float $ratio
      * @param int $estimators
      * @param float $minChange
+     * @param int $window
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -139,7 +148,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $rate = 1.0,
         float $ratio = 0.8,
         int $estimators = 100,
-        float $minChange = 1e-4
+        float $minChange = 1e-4,
+        int $window = 5
     ) {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base estimator must be a'
@@ -166,11 +176,17 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than 0, $minChange given.");
         }
 
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
+        }
+
         $this->base = $base ?? new ClassificationTree(1);
         $this->rate = $rate;
         $this->ratio = $ratio;
         $this->estimators = $estimators;
         $this->minChange = $minChange;
+        $this->window = $window;
     }
 
     /**
@@ -206,6 +222,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
             'min_change' => $this->minChange,
+            'window' => $this->window,
         ];
     }
 
@@ -279,7 +296,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $k = count($this->classes);
 
         $threshold = 1.0 - (1.0 / $k);
-        $prevLoss = INF;
+        $prevLoss = $bestLoss = INF;
+        $nu = 0;
 
         $this->ensemble = $this->influences = $this->steps = [];
 
@@ -297,7 +315,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $loss = 0.0;
 
             foreach ($predictions as $i => $prediction) {
-                if ($prediction !== $labels[$i]) {
+                if ($prediction != $labels[$i]) {
                     $loss += $this->weights[$i];
                 }
             }
@@ -314,6 +332,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if (is_nan($loss)) {
                 break 1;
+            }
+
+            if ($loss > $bestLoss) {
+                $bestLoss = $loss;
+
+                $nu = 0;
+            } else {
+                ++$nu;
             }
 
             if ($loss >= $threshold) {
@@ -340,10 +366,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break 1;
             }
 
+            if ($nu >= $this->window) {
+                break 1;
+            }
+
             $step = exp($influence);
 
             foreach ($predictions as $i => $prediction) {
-                if ($prediction !== $labels[$i]) {
+                if ($prediction != $labels[$i]) {
                     $this->weights[$i] *= $step;
                 }
             }
@@ -381,11 +411,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function proba(Dataset $dataset) : array
     {
-        $scores = $this->score($dataset);
-
         $probabilities = [];
 
-        foreach ($scores as $scores) {
+        foreach ($this->score($dataset) as $scores) {
             $total = array_sum($scores) ?: EPSILON;
 
             $dist = [];

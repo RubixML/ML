@@ -409,11 +409,11 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($loss < EPSILON or $score >= $max) {
                 break 1;
             }
 
-            if ($loss < EPSILON or $score >= $max) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 

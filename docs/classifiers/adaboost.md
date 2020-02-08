@@ -17,6 +17,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 3 | ratio | 0.8 | float | The ratio of samples to subsample from the training set to train each *weak* learner. |
 | 4 | estimators | 100 | int | The maximum number of *weak* learners to train in the ensemble. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
+| 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 
 ## Additional Methods
 Return the calculated weight values of the samples in the last training set:
@@ -39,7 +40,7 @@ public steps() : array
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3);
+$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 10);
 ```
 
 ### References

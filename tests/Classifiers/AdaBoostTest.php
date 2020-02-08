@@ -58,7 +58,7 @@ class AdaBoostTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.8, 100, 1e-4);
+        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.8, 100, 1e-4, 5);
 
         $this->metric = new Accuracy();
 
@@ -125,6 +125,7 @@ class AdaBoostTest extends TestCase
             'ratio' => 0.8,
             'estimators' => 100,
             'min_change' => 0.0001,
+            'window' => 5,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
