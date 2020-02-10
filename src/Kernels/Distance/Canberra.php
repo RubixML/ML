@@ -44,7 +44,7 @@ class Canberra implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0.;
+        $distance = 0.0;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];

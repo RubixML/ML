@@ -376,13 +376,17 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
             $booster->train($subset);
 
-            $out = Vector::quick($booster->predict($training))
+            $predictions = $booster->predict($training);
+
+            $out = Vector::quick($predictions)
                 ->multiply($this->rate)
                 ->add($prevOut);
 
             $loss = $gradient->square()->mean();
 
-            $pred = Vector::quick($booster->predict($testing))
+            $predictions = $booster->predict($testing);
+
+            $pred = Vector::quick($predictions)
                 ->multiply($this->rate)
                 ->add($prevPred);
 

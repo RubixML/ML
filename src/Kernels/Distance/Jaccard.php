@@ -40,7 +40,7 @@ class Jaccard implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = $min = $max = 0.;
+        $distance = $min = $max = 0.0;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
@@ -49,6 +49,6 @@ class Jaccard implements Distance
             $max += max($valueA, $valueB);
         }
 
-        return 1. - ($min / ($max ?: EPSILON));
+        return 1.0 - ($min / ($max ?: EPSILON));
     }
 }

@@ -254,7 +254,11 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $memberships = array_map([self::class, 'membership'], $dataset->samples());
 
+            $loss = $this->inertia($dataset->samples(), $memberships);
+
             foreach ($this->centroids as $cluster => &$centroid) {
+                $means = [];
+                
                 foreach ($columns as $column => $values) {
                     $sigma = $total = 0.0;
 
@@ -265,11 +269,11 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                         $total += $weight;
                     }
 
-                    $centroid[$column] = $sigma / ($total ?: EPSILON);
+                    $means[] = $sigma / ($total ?: EPSILON);
                 }
-            }
 
-            $loss = $this->inertia($dataset->samples(), $memberships);
+                $centroid = $means;
+            }
 
             $this->steps[] = $loss;
 
@@ -331,19 +335,17 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     protected function membership(array $sample) : array
     {
-        $membership = $deltas = [];
+        $membership = $distances = [];
 
         foreach ($this->centroids as $centroid) {
-            $deltas[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
+            $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
         }
 
-        foreach ($this->centroids as $cluster => $centroid) {
-            $distance = $this->kernel->compute($sample, $centroid);
-
+        foreach ($distances as $cluster => $distanceA) {
             $sigma = 0.0;
 
-            foreach ($deltas as $delta) {
-                $sigma += ($distance / $delta) ** $this->rho;
+            foreach ($distances as $distanceB) {
+                $sigma += ($distanceA / $distanceB) ** $this->rho;
             }
 
             $membership[$cluster] = 1.0 / ($sigma ?: EPSILON);

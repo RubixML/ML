@@ -52,21 +52,23 @@ class PlusPlus implements Seeder
     {
         $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
 
+        $samples = $dataset->samples();
+
         while (count($centroids) < $k) {
             $weights = [];
 
-            foreach ($dataset->samples() as $sample) {
-                $closest = INF;
+            foreach ($samples as $sample) {
+                $bestDistance = INF;
 
                 foreach ($centroids as $centroid) {
                     $distance = $this->kernel->compute($sample, $centroid);
 
-                    if ($distance < $closest) {
-                        $closest = $distance;
+                    if ($distance < $bestDistance) {
+                        $bestDistance = $distance;
                     }
                 }
 
-                $weights[] = $closest ** 2;
+                $weights[] = $bestDistance ** 2;
             }
 
             $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);

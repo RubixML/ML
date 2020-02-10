@@ -150,9 +150,9 @@ class DBSCAN implements Estimator
                 continue 1;
             }
 
-            [$samples, $neighbors, $distances] = $this->tree->range($sample, $this->radius);
+            [$samples, $indices, $distances] = $this->tree->range($sample, $this->radius);
 
-            if (count($neighbors) < $this->minDensity) {
+            if (count($samples) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
 
                 continue 1;
@@ -160,8 +160,8 @@ class DBSCAN implements Estimator
 
             $predictions[$i] = $cluster;
 
-            while ($neighbors) {
-                $index = array_pop($neighbors);
+            while ($indices) {
+                $index = array_pop($indices);
 
                 if (isset($predictions[$index])) {
                     if ($predictions[$index] === self::NOISE) {
@@ -178,7 +178,7 @@ class DBSCAN implements Estimator
                 [$samples, $seeds, $distances] = $this->tree->range($neighbor, $this->radius);
 
                 if (count($seeds) >= $this->minDensity) {
-                    $neighbors = array_unique(array_merge($neighbors, $seeds));
+                    $indices = array_unique(array_merge($indices, $seeds));
                 }
             }
 

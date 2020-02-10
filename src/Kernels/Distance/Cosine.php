@@ -49,6 +49,6 @@ class Cosine implements Distance
         $a = Vector::quick($a);
         $b = Vector::quick($b);
 
-        return 1. - ($a->dot($b) / (($a->l2Norm() * $b->l2Norm()) ?: EPSILON));
+        return 1.0 - ($a->dot($b) / (($a->l2Norm() * $b->l2Norm()) ?: EPSILON));
     }
 }

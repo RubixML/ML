@@ -82,7 +82,7 @@ class KMC2 implements Seeder
             foreach ($candidates as $candidate) {
                 $yDistance = $this->kernel->compute($candidate, $target);
 
-                $density = min(1., $yDistance / $xDistance);
+                $density = min(1.0, $yDistance / $xDistance);
 
                 $threshold = rand() / $max;
 

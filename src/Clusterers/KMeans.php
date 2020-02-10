@@ -315,6 +315,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
+            $loss = 0.0;
+
             foreach ($batches as $i => &$batch) {
                 $assignments = array_map([self::class, 'assign'], $batch->samples());
 
@@ -333,22 +335,20 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
                 $batch = Labeled::quick($batch->samples(), $labels);
 
+                $loss += $this->inertia($batch->samples(), $labels);
+
                 foreach ($batch->stratify() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
-                    $step = array_map([Stats::class, 'mean'], $stratum->columns());
+                    $means = array_map([Stats::class, 'mean'], $stratum->columns());
 
                     $weight = 1.0 / (1 + $this->sizes[$cluster]);
 
                     foreach ($centroid as $i => &$mean) {
-                        $mean = (1.0 - $weight) * $mean + $weight * $step[$i];
+                        $mean = (1.0 - $weight) * $mean + $weight * $means[$i];
                     }
                 }
             }
-
-            $dataset = Labeled::stack($batches);
-
-            $loss = $this->inertia($dataset->samples());
 
             $this->steps[] = $loss;
 
@@ -375,6 +375,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             if ($nu >= $this->window) {
                 break 1;
             }
+
+            $dataset = Labeled::stack($batches);
 
             $prevLoss = $loss;
         }
@@ -413,7 +415,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->centroids)) {
+        if (!$this->centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -473,9 +475,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * centroid.
      *
      * @param array[] $samples
+     * @param int[] $labels
      * @return float
      */
-    protected function inertia(array $samples) : float
+    protected function inertia(array $samples, array $labels) : float
     {
         if (empty($samples)) {
             return 0.0;
@@ -483,10 +486,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         $inertia = 0.0;
 
-        foreach ($samples as $sample) {
-            foreach ($this->centroids as $centroid) {
-                $inertia += $this->kernel->compute($sample, $centroid);
-            }
+        foreach ($samples as $i => $sample) {
+            $centroid = $this->centroids[$labels[$i]];
+
+            $inertia += $this->kernel->compute($sample, $centroid);
         }
 
         return $inertia / count($samples);

@@ -11,7 +11,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
@@ -26,6 +25,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\array_transpose;
 
 use const Rubix\ML\EPSILON;
 
@@ -311,24 +312,22 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         $previous = $centroids;
  
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            foreach ($centroids as $i => &$centroid) {
-                [$samples, $indices, $distances] = $this->tree->range($centroid, $this->radius);
+            foreach ($centroids as $i => &$centroidA) {
+                [$samples, $indices, $distances] = $this->tree->range($centroidA, $this->radius);
 
-                $columns = Unlabeled::quick($samples)->columns();
-
-                $step = array_map([Stats::class, 'mean'], $columns);
+                $means = array_map([Stats::class, 'mean'], array_transpose($samples));
 
                 $mu2 = Stats::mean($distances) ** 2;
 
                 $weight = exp(-$mu2 / $this->delta);
 
-                foreach ($centroid as $column => &$mean) {
-                    $mean = ($weight * $step[$column]) / $weight;
+                foreach ($centroidA as $column => &$mean) {
+                    $mean = ($weight * $means[$column]) / $weight;
                 }
 
-                foreach ($centroids as $j => $neighbor) {
+                foreach ($centroids as $j => $centroidB) {
                     if ($i !== $j) {
-                        $distance = $this->tree->kernel()->compute($centroid, $neighbor);
+                        $distance = $this->tree->kernel()->compute($centroidA, $centroidB);
 
                         if ($distance < $this->radius) {
                             unset($centroids[$j]);
