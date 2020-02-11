@@ -12,6 +12,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -72,11 +73,12 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     protected $fitBins;
 
     /**
-     * The minimum negative log likelihood score necessary to flag an anomaly.
+     * The proportion of outliers that are assumed to be present in the
+     * training set.
      *
      * @var float
      */
-    protected $threshold;
+    protected $contamination;
 
     /**
      * The sparse random projection matrix.
@@ -88,9 +90,18 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * The edges, and bin counts of each histogram.
      *
-     * @var array[]|null
+     * @var array[]
      */
-    protected $histograms;
+    protected $histograms = [
+        //
+    ];
+
+    /**
+     * The minimum negative log likelihood score necessary to flag an anomaly.
+     *
+     * @var float|null
+     */
+    protected $threshold;
 
     /**
      * The number of samples that have been learned so far.
@@ -113,10 +124,10 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * @param int $estimators
      * @param int|null $bins
-     * @param float $threshold
+     * @param float $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, ?int $bins = null, float $threshold = 10.0)
+    public function __construct(int $estimators = 100, ?int $bins = null, float $contamination = 0.1)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('At least 1 histogram is'
@@ -128,15 +139,15 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
                 . " be less than 1, $bins given.");
         }
 
-        if ($threshold < 0.0) {
-            throw new InvalidArgumentException('Threshold must be'
-                . " greater than 0, $threshold given.");
+        if ($contamination < 0.0 or $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be'
+                . " between 0 and 0.5, $contamination given.");
         }
 
         $this->estimators = $estimators;
         $this->bins = $bins;
         $this->fitBins = is_null($bins);
-        $this->threshold = $threshold;
+        $this->contamination = $contamination;
     }
 
     /**
@@ -171,7 +182,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
         return [
             'estimators' => $this->estimators,
             'bins' => $this->bins,
-            'threshold' => $this->threshold,
+            'contamination' => $this->contamination,
         ];
     }
 
@@ -182,7 +193,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return $this->r and $this->histograms;
+        return $this->r and $this->histograms and $this->threshold;
     }
 
     /**
@@ -214,7 +225,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             ->matmul($this->r)
             ->transpose();
 
-        foreach ($projections as $values) {
+        foreach ($projections->asArray() as $values) {
             $start = min($values) - EPSILON;
             $end = max($values) + EPSILON;
 
@@ -242,6 +253,10 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
         }
 
         $this->n = $m;
+
+        $densities = $this->densities($projections);
+
+        $this->threshold = Stats::percentile($densities, 100.0 * (1.0 - $this->contamination));
     }
 
     /**
@@ -252,7 +267,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$this->r or !$this->histograms) {
+        if (!$this->r or !$this->histograms or !$this->threshold) {
             $this->train($dataset);
 
             return;
@@ -264,8 +279,8 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             ->matmul($this->r)
             ->transpose();
 
-        foreach ($projections as $i => $values) {
-            [$edges, $counts] = $this->histograms[$i];
+        foreach ($projections->asArray() as $i => $values) {
+            [$edges, &$counts] = $this->histograms[$i];
 
             $interior = array_slice($edges, 1, $this->bins, true);
 
@@ -280,11 +295,19 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
                 ++$counts[$this->bins];
             }
-
-            $this->histograms[$i] = [$edges, $counts];
         }
 
-        $this->n += $dataset->numRows();
+        $n = $dataset->numRows();
+
+        $this->n += $n;
+
+        $densities = $this->densities($projections);
+
+        $threshold = Stats::percentile($densities, 100.0 * (1.0 - $this->contamination));
+
+        $weight = $n / $this->n;
+
+        $this->threshold = (1.0 - $weight) * $this->threshold + $weight * $threshold;
     }
 
     /**
@@ -310,7 +333,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if (!$this->r or !$this->histograms) {
+        if (!$this->r or !$this->histograms or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -320,9 +343,20 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             ->matmul($this->r)
             ->transpose();
 
+        return $this->densities($projections);
+    }
+
+    /**
+     * Compute the densities from a projection matrix.
+     *
+     * @param \Tensor\Matrix $projections
+     * @return float[]
+     */
+    protected function densities(Matrix $projections) : array
+    {
         $densities = array_fill(0, $projections->n(), 0.0);
     
-        foreach ($projections as $i => $values) {
+        foreach ($projections->asArray() as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {

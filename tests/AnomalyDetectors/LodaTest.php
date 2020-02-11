@@ -56,7 +56,7 @@ class LodaTest extends TestCase
             1 => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new Loda(100, null, 10.0);
+        $this->estimator = new Loda(100, null, 0.1);
 
         $this->metric = new FBeta();
 
@@ -141,7 +141,7 @@ class LodaTest extends TestCase
         $expected = [
             'estimators' => 100,
             'bins' => null,
-            'threshold' => 10.0,
+            'contamination' => 0.1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

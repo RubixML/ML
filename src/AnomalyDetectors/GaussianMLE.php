@@ -41,7 +41,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     use PredictsSingle, RankSingle;
 
     /**
-     * The proportion of outliers that are presumed to be present in the
+     * The proportion of outliers that are assumed to be present in the
      * training set.
      *
      * @var float
@@ -222,6 +222,8 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
             $this->variances[$column] = $vHat ?: EPSILON;
         }
 
+        $this->n += $n;
+
         $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
 
         $threshold = Stats::percentile($lls, 100.0 * (1.0 - $this->contamination));
@@ -229,8 +231,6 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
         $weight = $n / $this->n;
 
         $this->threshold = (1.0 - $weight) * $this->threshold + $weight * $threshold;
-
-        $this->n += $n;
     }
 
     /**
@@ -254,7 +254,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if (!$this->means or !$this->variances) {
+        if (!$this->means or !$this->variances or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
