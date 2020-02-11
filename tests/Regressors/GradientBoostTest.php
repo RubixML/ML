@@ -12,6 +12,7 @@ use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Regressors\DummyRegressor;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +53,7 @@ class GradientBoostTest extends TestCase
     {
         $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RSquared());
+        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RMSE());
     
         $this->metric = new RSquared();
 
@@ -114,6 +115,26 @@ class GradientBoostTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'booster' => new RegressionTree(3),
+            'rate' => 0.3,
+            'ratio' => 0.3,
+            'estimators' => 300,
+            'min_change' => 0.0001,
+            'window' => 10,
+            'hold_out' => 0.1,
+            'metric' => new RMSE(),
+            'base' => new DummyRegressor(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
     }
     
     /**

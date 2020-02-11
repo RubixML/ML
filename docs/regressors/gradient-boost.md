@@ -19,7 +19,7 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 7 | holdout | 0.1 | float | The proportion of training samples to use for validation and progress monitoring. |
-| 8 | metric | RSquared | Metric | The metric used to score the generalization performance of the model during training. |
+| 8 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 | 9 | base | DummyRegressor | Learner | The *weak* base learner to be boosted. |
 
 ## Additional Methods

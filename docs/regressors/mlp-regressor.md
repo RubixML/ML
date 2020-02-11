@@ -19,7 +19,7 @@ A multilayer feed forward neural network with a continuous output layer suitable
 | 7 | window | 3 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 8 | holdout | 0.1 | float | The proportion of training samples to use for validation and progress monitoring. |
 | 9 | cost fn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 10 | metric | RSquared | Metric | The metric used to score the generalization performance of the model during training. |
+| 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Additional Methods
 Return the training loss at each epoch:

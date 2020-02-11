@@ -14,8 +14,8 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -240,7 +240,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $this->minChange = $minChange;
         $this->window = $window;
         $this->holdOut = $holdOut;
-        $this->metric = $metric ?? new RSquared();
+        $this->metric = $metric ?? new RMSE();
         $this->base = $base ?? new DummyRegressor(new Mean());
     }
 

@@ -20,10 +20,10 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
@@ -224,7 +224,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
-        $this->metric = $metric ?? new RSquared();
+        $this->metric = $metric ?? new RMSE();
     }
 
     /**

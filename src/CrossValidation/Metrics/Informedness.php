@@ -38,7 +38,7 @@ class Informedness implements Metric
      */
     public static function compute(int $tp, int $tn, int $fp, int $fn) : float
     {
-        return $tp / (($tp + $fn) ?: EPSILON) + $tn / (($tn + $fp) ?: EPSILON) - 1.;
+        return $tp / (($tp + $fn) ?: EPSILON) + $tn / (($tn + $fp) ?: EPSILON) - 1.0;
     }
     
     /**

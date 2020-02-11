@@ -10,6 +10,8 @@
     - Column Picker throws exception if column not found
     - Better hyper-parameter stringification
     - Improved Dataset exception messages
+    - RMSE now default validation Metric for Regressors
+    - Added balanced accuracy and threat score to Multi-class report
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function
