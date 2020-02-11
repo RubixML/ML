@@ -286,8 +286,9 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $k = (int) ceil($dataset->numRows() / $this->batchSize);

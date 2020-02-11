@@ -370,10 +370,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
-        }
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
 
+            $this->logger->info('Training started');
+        }
+        
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
 
         [$min, $max] = $this->metric->range();

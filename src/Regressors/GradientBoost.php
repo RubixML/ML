@@ -336,8 +336,9 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $this->featureCount = $dataset->numColumns();

@@ -292,8 +292,9 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $n = $dataset->numRows();

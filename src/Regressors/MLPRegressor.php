@@ -314,7 +314,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Train the estimator with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -339,7 +338,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Train the network using mini-batch gradient descent with backpropagation.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -353,13 +351,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
-
+        
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);

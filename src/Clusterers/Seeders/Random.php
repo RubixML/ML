@@ -24,6 +24,6 @@ class Random implements Seeder
      */
     public function seed(Dataset $dataset, int $k) : array
     {
-        return $dataset->randomize()->head($k)->samples();
+        return $dataset->randomSubset($k)->samples();
     }
 }

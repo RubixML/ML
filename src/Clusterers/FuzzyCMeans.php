@@ -239,8 +239,9 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $this->centroids = $this->seeder->seed($dataset, $this->c);

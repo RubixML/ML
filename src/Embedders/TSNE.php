@@ -318,18 +318,18 @@ class TSNE implements Embedder, Verbose
         SamplesAreCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Embedder init '
-                . Params::stringify($this->params()));
-        }
+            $this->logger->info('Embedder init ' . Params::stringify($this->params()));
 
-        $m = $dataset->numRows();
-
-        if ($this->logger) {
-            $this->logger->info('Computing high-dimensional'
-                . ' pairwise affinities');
+            $this->logger->info('Computing high-dimensional pairwise affinities');
         }
 
         $distances = $this->pairwiseDistances($dataset->samples());
+
+        if ($this->logger) {
+            $this->logger->info('Embedding started');
+        }
+
+        $m = $dataset->numRows();
 
         $p = $this->affinities($distances)
             ->multiply($this->exaggeration);

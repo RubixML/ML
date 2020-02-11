@@ -295,8 +295,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $k = (int) ceil($dataset->numRows() / $this->batchSize);
