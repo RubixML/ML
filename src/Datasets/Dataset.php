@@ -115,18 +115,18 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Return the sample at the given row index.
+     * Return the sample at the given row offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return mixed[]
      */
-    public function sample(int $index) : array
+    public function sample(int $offset) : array
     {
-        if (isset($this->samples[$index])) {
-            return $this->samples[$index];
+        if (isset($this->samples[$offset])) {
+            return $this->samples[$offset];
         }
 
-        throw new InvalidArgumentException("Sample at offset $index not found.");
+        throw new InvalidArgumentException("Sample at offset $offset not found.");
     }
 
     /**
@@ -140,14 +140,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Return the feature column at the given index.
+     * Return the feature column at the given offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return mixed[]
      */
-    public function column(int $index) : array
+    public function column(int $offset) : array
     {
-        return array_column($this->samples, $index);
+        return array_column($this->samples, $offset);
     }
 
     /**
@@ -192,26 +192,26 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Get the datatype for a feature column given a column index.
+     * Get the datatype for a feature column at the given offset.
      *
-     * @param int $column
+     * @param int $offset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \Rubix\ML\DataType
      */
-    public function columnType(int $column) : DataType
+    public function columnType(int $offset) : DataType
     {
         if (empty($this->samples)) {
             throw new RuntimeException('Cannot determine data type'
                 . ' of an empty dataset.');
         }
 
-        if (!isset($this->samples[0][$column])) {
-            throw new InvalidArgumentException("Column $column does"
-                . ' not exist.');
+        if (!isset($this->samples[0][$offset])) {
+            throw new InvalidArgumentException('Column at offset'
+                . " $offset does not exist.");
         }
 
-        return DataType::determine($this->samples[0][$column]);
+        return DataType::determine($this->samples[0][$offset]);
     }
 
     /**
@@ -293,28 +293,28 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Drop the column at the given index.
+     * Drop the column at the given offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return self
      */
-    public function dropColumn(int $index) : self
+    public function dropColumn(int $offset) : self
     {
-        return $this->dropColumns([$index]);
+        return $this->dropColumns([$offset]);
     }
 
     /**
-     * Drop the columns at the given indices.
+     * Drop the columns at the given offsets.
      *
-     * @param int[] $indices
+     * @param int[] $offsets
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function dropColumns(array $indices) : self
+    public function dropColumns(array $offsets) : self
     {
         foreach ($this->samples as &$sample) {
-            foreach ($indices as $index) {
-                unset($sample[$index]);
+            foreach ($offsets as $offset) {
+                unset($sample[$offset]);
             }
 
             $sample = array_values($sample);
@@ -549,12 +549,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function append(Dataset $dataset);
 
     /**
-     * Drop the row at the given index.
+     * Drop the row at the given offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return self
      */
-    abstract public function dropRow(int $index);
+    abstract public function dropRow(int $offset);
 
     /**
      * Drop the rows at the given indices.
@@ -575,20 +575,20 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Filter the rows of the dataset using the values of a feature column as the
      * argument to a callback.
      *
-     * @param int $index
+     * @param int $offset
      * @param callable $fn
      * @return self
      */
-    abstract public function filterByColumn(int $index, callable $fn);
+    abstract public function filterByColumn(int $offset, callable $fn);
 
     /**
      * Sort the dataset by a column in the sample matrix.
      *
-     * @param int $index
+     * @param int $offset
      * @param bool $descending
      * @return self
      */
-    abstract public function sortByColumn(int $index, bool $descending = false);
+    abstract public function sortByColumn(int $offset, bool $descending = false);
 
     /**
      * Split the dataset into two subsets with a given ratio of samples.
@@ -620,11 +620,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Partition the dataset into left and right subsets by a specified feature
      * column.
      *
-     * @param int $index
+     * @param int $offset
      * @param mixed $value
      * @return self[]
      */
-    abstract public function partition(int $index, $value) : array;
+    abstract public function partition(int $offset, $value) : array;
 
     /**
      * Partition the dataset into left and right subsets based on their distance
@@ -695,11 +695,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * @param mixed $index
+     * @param mixed $offset
      * @param mixed[] $values
      * @throws \RuntimeException
      */
-    public function offsetSet($index, $values) : void
+    public function offsetSet($offset, $values) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
@@ -707,19 +707,19 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Does a given row exist in the dataset.
      *
-     * @param mixed $index
+     * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($index) : bool
+    public function offsetExists($offset) : bool
     {
-        return isset($this->samples[$index]);
+        return isset($this->samples[$offset]);
     }
 
     /**
-     * @param mixed $index
+     * @param mixed $offset
      * @throws \RuntimeException
      */
-    public function offsetUnset($index) : void
+    public function offsetUnset($offset) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }

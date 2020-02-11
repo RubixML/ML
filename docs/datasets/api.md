@@ -52,12 +52,12 @@ public samples() : array
 
 Select a single row containing the sample at a given offset (offsets begin at 0):
 ```php
-public sample(int $index) : array
+public sample(int $offset) : array
 ```
 
 Select the values of a feature column at a given offset (offsets begin at 0):
 ```php
-public column(int $index) : array
+public column(int $offset) : array
 ```
 
 Return the columns of the sample matrix:
@@ -94,9 +94,9 @@ Return the data types for each feature column:
 public types() : array
 ```
 
-Return the data type for a given column index:
+Return the data type for a given column offset:
 ```php
-public columnType(int $index) : DataType
+public columnType(int $offset) : DataType
 ```
 
 **Example**
@@ -239,7 +239,7 @@ public split(float $ratio = 0.5) : array
 
 Partition the dataset into left and right subsets based on the value of a feature in a specified column:
 ```php
-public partition(int $index, mixed $value) : array
+public partition(int $offset, mixed $value) : array
 ```
 
 **Examples**
@@ -251,7 +251,7 @@ public partition(int $index, mixed $value) : array
 // Split the dataset into training and testing sets 80/20.
 [$training, $testing] = $dataset->split(0.8);
 
-// Partition the dataset by the feature column at index 4 by value '50'
+// Partition the dataset by the feature column at offset 4 by value '50'
 [$left, $right] = $dataset->partition(4, 50);
 ```
 
@@ -328,9 +328,9 @@ $subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(5)
 ```
 
 ## Filtering
-To filter a Dataset by a feature column:
+Filter the rows of the dataset using the values of a feature column at the given offset as the arguments to a filter callback. The callback should return false for rows that should be filtered.
 ```php
-public filterByColumn(int $index, callable $fn) : self
+public filterByColumn(int $offset, callable $fn) : self
 ```
 
 **Example**
@@ -344,7 +344,7 @@ $tallPeople = $dataset->filterByColumn(3, function ($value) {
 ## Sorting
 To sort a dataset in place by a specific feature column:
 ```php
-public sortByColumn(int $index, bool $descending = false) : self
+public sortByColumn(int $offset, bool $descending = false) : self
 ```
 
 **Example**
@@ -398,7 +398,7 @@ array(3) {
 ## Dropping Rows and Columns
 Drop the row at the given offset:
 ```php
-public dropRow(int $index) : self
+public dropRow(int $offset) : self
 ```
 
 Drop the rows at the given offsets:
@@ -406,9 +406,9 @@ Drop the rows at the given offsets:
 public dropRows(array $indices) : self
 ```
 
-Drop the column at the given index:
+Drop the column at the given offset:
 ```php
-public dropColumn(int $index) : self
+public dropColumn(int $offset) : self
 ```
 
 Drop the columns at the given indices:
