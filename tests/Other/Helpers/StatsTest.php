@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Other\Helpers;
 
 use Rubix\ML\Other\Helpers\Stats;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 /**
  * @group Helpers
@@ -11,24 +12,51 @@ use PHPUnit\Framework\TestCase;
  */
 class StatsTest extends TestCase
 {
-    protected const VALUES = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
+    protected const TEST_VALUES = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
     
     /**
      * @test
+     * @dataProvider meanProvider
+     *
+     * @param (int|float)[] $values
+     * @param float $expected
      */
-    public function mean() : void
+    public function mean(array $values, float $expected) : void
     {
-        $this->assertEquals(8.75, Stats::mean(self::VALUES));
+        $this->assertSame($expected, Stats::mean($values));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function meanProvider() : Generator
+    {
+        yield [self::TEST_VALUES, 8.75];
+
+        yield [[5.0], 5.0];
     }
     
     /**
      * @test
+     * @dataProvider weightedMeanProvider
+     *
+     * @param (int|float)[] $values
+     * @param (int|float)[] $weights
+     * @param float $expected
      */
-    public function weightedMean() : void
+    public function weightedMean(array $values, array $weights, float $expected) : void
     {
-        $weights = [3, 2, 5, 1, 2, 4, 4, 2, 3, 5];
+        $this->assertSame($expected, Stats::weightedMean($values, $weights));
+    }
 
-        $this->assertEquals(9.225806451612904, Stats::weightedMean(self::VALUES, $weights));
+    /**
+     * @return \Generator<array>
+     */
+    public function weightedMeanProvider() : Generator
+    {
+        yield [self::TEST_VALUES, [3, 2, 5, 1, 2, 4, 4, 2, 3, 5], 9.225806451612904];
+
+        yield [self::TEST_VALUES, array_fill(0, count(self::TEST_VALUES), 1), 8.75];
     }
     
     /**
@@ -36,15 +64,15 @@ class StatsTest extends TestCase
      */
     public function variance() : void
     {
-        $this->assertEquals(21.1125, Stats::variance(self::VALUES));
+        $this->assertSame(21.1125, Stats::variance(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
     public function median() : void
     {
-        $this->assertEquals(9.75, Stats::median(self::VALUES));
+        $this->assertSame(9.75, Stats::median(self::TEST_VALUES));
     }
     
     /**
@@ -52,15 +80,32 @@ class StatsTest extends TestCase
      */
     public function range() : void
     {
-        $this->assertEquals(13.5, Stats::range(self::VALUES));
+        $this->assertSame(13.5, Stats::range(self::TEST_VALUES));
     }
     
     /**
      * @test
+     * @dataProvider percentileProvider
+     *
+     * @param (int|float)[] $values
+     * @param float $p
+     * @param float $expected
      */
-    public function percentile() : void
+    public function percentile(array $values, float $p, float $expected) : void
     {
-        $this->assertEquals(9.75, Stats::percentile(self::VALUES, 50.0));
+        $this->assertSame($expected, Stats::percentile($values, $p));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function percentileProvider() : Generator
+    {
+        yield [self::TEST_VALUES, 50.0, 9.75];
+
+        yield [self::TEST_VALUES, 99.0, 14.82];
+
+        yield [[5.0], 50.0, 5.0];
     }
     
     /**
@@ -68,7 +113,7 @@ class StatsTest extends TestCase
      */
     public function mode() : void
     {
-        $this->assertEquals(13, Stats::mode(self::VALUES));
+        $this->assertEquals(13, Stats::mode(self::TEST_VALUES));
     }
     
     /**
@@ -76,7 +121,7 @@ class StatsTest extends TestCase
      */
     public function mad() : void
     {
-        $this->assertEquals(3.5, Stats::mad(self::VALUES));
+        $this->assertEquals(3.5, Stats::mad(self::TEST_VALUES));
     }
     
     /**
@@ -84,7 +129,7 @@ class StatsTest extends TestCase
      */
     public function iqr() : void
     {
-        $this->assertEquals(8., Stats::iqr(self::VALUES));
+        $this->assertEquals(8., Stats::iqr(self::TEST_VALUES));
     }
     
     /**
@@ -92,15 +137,34 @@ class StatsTest extends TestCase
      */
     public function skewness() : void
     {
-        $this->assertEquals(-0.31891556974589724, Stats::skewness(self::VALUES));
+        $this->assertEquals(-0.31891556974589724, Stats::skewness(self::TEST_VALUES));
     }
     
     /**
      * @test
+     * @dataProvider centralMomentProvider
+     *
+     * @param (int|float)[] $values
+     * @param int $moment
+     * @param float $expected
      */
-    public function centralMoment() : void
+    public function centralMoment(array $values, int $moment, float $expected) : void
     {
-        $this->assertEquals(747.26015625, Stats::centralMoment(self::VALUES, 4));
+        $this->assertEquals($expected, Stats::centralMoment($values, $moment));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function centralMomentProvider() : Generator
+    {
+        yield [self::TEST_VALUES, 1, 0.0];
+
+        yield [self::TEST_VALUES, 2, 21.1125];
+
+        yield [self::TEST_VALUES, 3, -30.9375];
+
+        yield [self::TEST_VALUES, 4, 747.26015625];
     }
     
     /**
@@ -108,7 +172,7 @@ class StatsTest extends TestCase
      */
     public function kurtosis() : void
     {
-        $this->assertEquals(-1.3235426808299866, Stats::kurtosis(self::VALUES));
+        $this->assertEquals(-1.3235426808299866, Stats::kurtosis(self::TEST_VALUES));
     }
     
     /**
@@ -116,7 +180,7 @@ class StatsTest extends TestCase
      */
     public function meanVar() : void
     {
-        [$mean, $variance] = Stats::meanVar(self::VALUES);
+        [$mean, $variance] = Stats::meanVar(self::TEST_VALUES);
 
         $this->assertEquals(8.75, $mean);
         $this->assertEquals(21.1125, $variance);
@@ -127,7 +191,7 @@ class StatsTest extends TestCase
      */
     public function medMad() : void
     {
-        [$median, $mad] = Stats::medianMad(self::VALUES);
+        [$median, $mad] = Stats::medianMad(self::TEST_VALUES);
 
         $this->assertEquals(9.75, $median);
         $this->assertEquals(3.5, $mad);

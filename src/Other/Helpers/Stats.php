@@ -282,6 +282,10 @@ class Stats
             throw new InvalidArgumentException('Central moment is undefined for empty set.');
         }
 
+        if ($moment < 1) {
+            throw new InvalidArgumentException('Moment cannot be less than 1.');
+        }
+
         $mean = $mean ?? self::mean($values, $n);
 
         $sigma = 0.0;
