@@ -280,7 +280,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             ->transpose();
 
         foreach ($projections->asArray() as $i => $values) {
-            [$edges, &$counts] = $this->histograms[$i];
+            [$edges, $counts] = $this->histograms[$i];
 
             $interior = array_slice($edges, 1, $this->bins, true);
 
@@ -295,6 +295,8 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
                 ++$counts[$this->bins];
             }
+
+            $this->histograms[$i] = [$edges, $counts];
         }
 
         $n = $dataset->numRows();
