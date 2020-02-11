@@ -1,4 +1,5 @@
 - Unreleased
+    - Gaussian MLE now has automatic and adaptive threshold
     - Added early stopping window to AdaBoost
     - Added params method to Estimator and Embedder interface
     - t-SNE now compatible with categorical distance kernels

@@ -60,7 +60,7 @@ class StatsTest extends TestCase
      */
     public function percentile() : void
     {
-        $this->assertEquals(9.75, Stats::percentile(self::VALUES, 50.));
+        $this->assertEquals(9.75, Stats::percentile(self::VALUES, 50.0));
     }
     
     /**

@@ -41,18 +41,12 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     use PredictsSingle, RankSingle;
 
     /**
-     * The minimum log likelihood score necessary to flag an anomaly.
+     * The proportion of outliers that are presumed to be present in the
+     * training set.
      *
      * @var float
      */
-    protected $threshold;
-
-    /**
-     * The prior log probability of an outlier.
-     *
-     * @var float
-     */
-    protected $logPrior;
+    protected $contamination;
 
     /**
      * The precomputed means of each feature column of the training set.
@@ -73,6 +67,13 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     ];
 
     /**
+     * The minimum log likelihood score necessary to flag an anomaly.
+     *
+     * @var float|null
+     */
+    protected $threshold;
+
+    /**
      * The number of samples that have passed through training so far.
      *
      * @var int
@@ -80,24 +81,17 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     protected $n = 0;
 
     /**
-     * @param float $threshold
      * @param float $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $threshold = 3.5, float $contamination = 0.1)
+    public function __construct(float $contamination = 0.1)
     {
-        if ($threshold <= 0.0) {
-            throw new InvalidArgumentException('Threshold must be'
-                . " greater than 0, $threshold given.");
-        }
-
         if ($contamination < 0.0 or $contamination > 0.5) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 
-        $this->threshold = $threshold;
-        $this->logPrior = log($contamination);
+        $this->contamination = $contamination;
     }
 
     /**
@@ -130,8 +124,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     public function params() : array
     {
         return [
-            'threshold' => $this->threshold,
-            'contamination' => exp($this->logPrior),
+            'contamination' => $this->contamination,
         ];
     }
 
@@ -184,6 +177,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
             $this->variances[$column] = $variance ?: EPSILON;
         }
 
+        $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
+
+        $this->threshold = Stats::percentile($lls, 100.0 * (1.0 - $this->contamination));
+
         $this->n = $dataset->numRows();
     }
 
@@ -195,7 +192,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$this->means or !$this->variances) {
+        if (!$this->means or !$this->variances or !$this->threshold) {
             $this->train($dataset);
 
             return;
@@ -224,6 +221,14 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 
             $this->variances[$column] = $vHat ?: EPSILON;
         }
+
+        $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
+
+        $threshold = Stats::percentile($lls, 100.0 * (1.0 - $this->contamination));
+
+        $weight = $n / $this->n;
+
+        $this->threshold = (1.0 - $weight) * $this->threshold + $weight * $threshold;
 
         $this->n += $n;
     }
@@ -266,7 +271,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      */
     protected function logLikelihood(array $sample) : float
     {
-        $likelihood = $this->logPrior;
+        $likelihood = 0.0;
 
         foreach ($sample as $column => $value) {
             $mean = $this->means[$column];

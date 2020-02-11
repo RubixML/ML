@@ -108,7 +108,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
                 . " to form a local region, $k given.");
         }
 
-        if (isset($contamination) and ($contamination < 0. or $contamination > 0.5)) {
+        if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
@@ -159,9 +159,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return !$this->tree->bare()
-            and $this->kdistances
-            and $this->lrds;
+        return !$this->tree->bare() and $this->kdistances and $this->lrds;
     }
 
     /**

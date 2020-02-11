@@ -10,8 +10,7 @@ The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by comp
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | threshold | 5.0 | float | The minimum log likelihood to be flagged as an anomaly. |
-| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 1 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
 
 ## Additional Methods
 Return the column means computed from the training set:

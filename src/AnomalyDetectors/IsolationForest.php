@@ -123,7 +123,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
                 . " 0 and 1, $ratio given.");
         }
 
-        if (isset($ratio) and ($contamination < 0.0 or $contamination > 0.5)) {
+        if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }

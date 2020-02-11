@@ -11,7 +11,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of an unknown
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
-| 2 | contamination | null | float | The proportion of outliers that are presumed to be present in the training set. |
+| 2 | contamination | null | float | The proportion of outliers that are assumed to be present in the training set. |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
 ## Additional Methods

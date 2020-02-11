@@ -56,7 +56,7 @@ class GaussianMLETest extends TestCase
             1 => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new GaussianMLE(3.5, 0.1);
+        $this->estimator = new GaussianMLE(0.1);
 
         $this->metric = new FBeta();
 
@@ -107,8 +107,7 @@ class GaussianMLETest extends TestCase
     public function params() : void
     {
         $expected = [
-            'threshold' => 3.5,
-            'contamination' => 0.10000000000000002,
+            'contamination' => 0.1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

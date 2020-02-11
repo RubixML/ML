@@ -52,15 +52,14 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
-     * The minimum number of samples from the training set to use as seeds.
+     * The minimum number of centroid seeds.
      *
      * @var int
      */
-    protected const MIN_SEEDS = 15;
+    protected const MIN_SEEDS = 10;
 
     /**
-     * The bandwidth of the radial basis function kernel. i.e. The maximum
-     * distance between two points to be considered neighbors.
+     * The maximum distance between two points to be considered neighbors.
      *
      * @var float
      */
