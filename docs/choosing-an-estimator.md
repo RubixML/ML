@@ -17,17 +17,17 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
-| [AdaBoost](classifiers/adaboost.md) | High | ● | | Boosts most classifiers, Learns influences and sample weights | Sensitive to noise, Susceptible to overfitting |
-| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
+| [AdaBoost](classifiers/adaboost.md) | High | ● | | Boosts most classifiers, Learns sample weights | Sensitive to noise, Susceptible to overfitting |
+| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, Automatic feature selection | High variance |
 | [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Faster training, Lower variance | Similar to Classification Tree |
 | [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
 | [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Faster inference | Not compatible with certain distance kernels |
 | [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
-| [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Only handles 2 classes |
+| [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Limited to binary classification |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong feature independence assumption |
 | [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
-| [Random Forest](classifiers/random-forest.md) | High | ● | | Stable, Computes reliable feature importances | High computation and memory cost |
+| [Random Forest](classifiers/random-forest.md) | High | ● | | Handles imbalanced datasets, Computes reliable feature importances | High computation and memory cost |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
@@ -43,7 +43,7 @@ In terms of regression, flexibility is expressed as the ability of a model to fi
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
-| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, automatic feature selection | High variance, Susceptible to overfitting |
+| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, Automatic feature selection | High variance |
 | [Ridge](regressors/ridge.md) | Low | | | Interpretable model | Prone to underfitting |
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 

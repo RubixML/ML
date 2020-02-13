@@ -1,4 +1,5 @@
 - Unreleased
+    - Random Forest now handles imbalanced datasets
     - Added early stopping window to AdaBoost
     - Gaussian MLE now has automatic and adaptive threshold
     - Loda now has automatic and adaptive threshold

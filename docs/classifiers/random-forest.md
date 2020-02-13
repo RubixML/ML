@@ -15,6 +15,7 @@ An ensemble classifier that trains Decision Trees ([Classification Trees](classi
 | 1 | base | ClassificationTree | Learner | The base tree learner. |
 | 2 | estimators | 100 | int | The number of learners to train in the ensemble. |
 | 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each base learner on. |
+| 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
 ## Additional Methods
 Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
@@ -27,23 +28,10 @@ public featureImportances() : array
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(new ClassificationTree(10), 300, 0.1);
-
-// Train the learner
-
-$importances = $estimator->featureImportances();
-
-var_dump($importances);
-```
-
-```sh
-array(3) {
-  [0]=> float(0.39250395133811)
-  [1]=> float(0.1555633977313)
-  [2]=> float(0.45193265093059)
-}
+$estimator = new RandomForest(new ClassificationTree(10), 300, 0.1, true);
 ```
 
 ### References
 >- L. Breiman. (2001). Random Forests.
 >- L. Breiman et al. (2005). Extremely Randomized Trees.
+>- N. V. Chawla et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique.

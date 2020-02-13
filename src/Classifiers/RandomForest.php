@@ -36,6 +36,7 @@ use function in_array;
  * References:
  * [1] L. Breiman. (2001). Random Forests.
  * [2] L. Breiman et al. (2005). Extremely Randomized Trees.
+ * [3] N. V. Chawla et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -77,6 +78,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     protected $ratio;
 
     /**
+     * Should we sample the bootstrap set to compensate for imbalanced class labels?
+     *
+     * @var bool
+     */
+    protected $balanced;
+
+    /**
      * The decision trees that make up the forest.
      *
      * @var mixed[]|null
@@ -101,10 +109,15 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param \Rubix\ML\Learner|null $base
      * @param int $estimators
      * @param float $ratio
+     * @param bool $balanced
      * @throws \InvalidArgumentException
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.2)
-    {
+    public function __construct(
+        ?Learner $base = null,
+        int $estimators = 100,
+        float $ratio = 0.2,
+        bool $balanced = false
+    ) {
         if ($base and !in_array(get_class($base), self::COMPATIBLE_LEARNERS)) {
             throw new InvalidArgumentException('Base learner is not'
                 . ' compatible with ensemble.');
@@ -124,6 +137,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $this->base = $base ?? new ClassificationTree();
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->balanced = $balanced;
         $this->backend = new Serial();
     }
 
@@ -158,6 +172,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
             'base' => $this->base,
             'estimators' => $this->estimators,
             'ratio' => $this->ratio,
+            'balanced' => $this->balanced,
         ];
     }
 
@@ -188,9 +203,17 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+        if ($this->balanced) {
+            $counts = array_count_values($dataset->labels());
 
-        $this->featureCount = $dataset->numColumns();
+            $min = min($counts);
+
+            $weights = [];
+
+            foreach ($dataset->labels() as $label) {
+                $weights[] = $min / $counts[$label];
+            }
+        }
         
         $k = (int) round($this->ratio * $dataset->numRows());
 
@@ -199,7 +222,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomSubsetWithReplacement($k);
+            if (isset($weights)) {
+                $subset = $dataset->randomWeightedSubsetWithReplacement($k, $weights);
+            } else {
+                $subset = $dataset->randomSubsetWithReplacement($k);
+            }
 
             $this->backend->enqueue(new Deferred(
                 [self::class, '_train'],
@@ -208,6 +235,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         }
 
         $this->trees = $this->backend->process();
+
+        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+
+        $this->featureCount = $dataset->numColumns();
     }
 
     /**
