@@ -46,15 +46,14 @@ class MulticlassBreakdown implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        $n = count($predictions);
-
-        if ($n !== count($labels)) {
+        if (count($predictions) !== count($labels)) {
             throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
+                . ' must be equal to the number of predictions.');
         }
 
         $classes = array_unique(array_merge($predictions, $labels));
 
+        $n = count($predictions);
         $k = count($classes);
 
         $truePos = $trueNeg = $falsePos = $falseNeg = array_fill_keys($classes, 0);
@@ -77,16 +76,16 @@ class MulticlassBreakdown implements Report
         }
 
         $averages = array_fill_keys([
-            'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
-            'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
-            'f1_score', 'mcc', 'informedness', 'markedness',
+            'accuracy', 'accuracy_balanced', 'f1_score', 'precision', 'recall', 'specificity',
+            'negative_predictive_value', 'false_discovery_rate', 'miss_rate', 'fall_out',
+            'false_omission_rate', 'threat_score', 'mcc', 'informedness', 'markedness',
         ], 0.0);
 
         $counts = array_fill_keys([
             'true_positives', 'true_negatives', 'false_positives', 'false_negatives',
         ], 0);
 
-        $overall = array_replace($averages, $counts);
+        $overall = $averages + $counts;
 
         $table = [];
 
@@ -101,7 +100,9 @@ class MulticlassBreakdown implements Report
             $specificity = $tn / (($tn + $fp) ?: EPSILON);
             $npv = $tn / (($tn + $fn) ?: EPSILON);
 
-            $f1score = 2. * (($precision * $recall))
+            $threatScore = $tp / ($tp + $fn + $fp);
+
+            $f1score = 2.0 * (($precision * $recall))
                 / (($precision + $recall) ?: EPSILON);
 
             $mcc = ($tp * $tn - $fp * $fn)
@@ -110,31 +111,33 @@ class MulticlassBreakdown implements Report
 
             $cardinality = $tp + $fn;
 
-            $metrics = [];
-
-            $metrics['accuracy'] = $accuracy;
-            $metrics['precision'] = $precision;
-            $metrics['recall'] = $recall;
-            $metrics['specificity'] = $specificity;
-            $metrics['negative_predictive_value'] = $npv;
-            $metrics['false_discovery_rate'] = 1.0 - $precision;
-            $metrics['miss_rate'] = 1.0 - $recall;
-            $metrics['fall_out'] = 1.0 - $specificity;
-            $metrics['false_omission_rate'] = 1.0 - $npv;
-            $metrics['f1_score'] = $f1score;
-            $metrics['informedness'] = $recall + $specificity - 1.0;
-            $metrics['markedness'] = $precision + $npv - 1.0;
-            $metrics['mcc'] = $mcc;
-            $metrics['true_positives'] = $tp;
-            $metrics['true_negatives'] = $tn;
-            $metrics['false_positives'] = $fp;
-            $metrics['false_negatives'] = $fn;
-            $metrics['cardinality'] = $cardinality;
-            $metrics['density'] = $cardinality / $n;
-
-            $table[$label] = $metrics;
+            $table[$label] = [
+                'accuracy' => $accuracy,
+                'accuracy_balanced' => ($recall + $specificity) / 2.0,
+                'f1_score' => $f1score,
+                'precision' => $precision,
+                'recall' => $recall,
+                'specificity' => $specificity,
+                'negative_predictive_value' => $npv,
+                'false_discovery_rate' => 1.0 - $precision,
+                'miss_rate' => 1.0 - $recall,
+                'fall_out' => 1.0 - $specificity,
+                'false_omission_rate' => 1.0 - $npv,
+                'threat_score' => $threatScore,
+                'informedness' => $recall + $specificity - 1.0,
+                'markedness' => $recall + $specificity - 1.0,
+                'mcc' => $mcc,
+                'true_positives' => $tp,
+                'true_negatives' => $tn,
+                'false_positives' => $fp,
+                'false_negatives' => $fn,
+                'cardinality' => $cardinality,
+                'percentage' => $cardinality / $n * 100.00,
+            ];
 
             $overall['accuracy'] += $accuracy;
+            $overall['accuracy_balanced'] += ($recall + $specificity) / 2.0;
+            $overall['f1_score'] += $f1score;
             $overall['precision'] += $precision;
             $overall['recall'] += $recall;
             $overall['specificity'] += $specificity;
@@ -143,7 +146,7 @@ class MulticlassBreakdown implements Report
             $overall['miss_rate'] += 1.0 - $recall;
             $overall['fall_out'] += 1.0 - $specificity;
             $overall['false_omission_rate'] += 1.0 - $npv;
-            $overall['f1_score'] += $f1score;
+            $overall['threat_score'] += $threatScore;
             $overall['informedness'] += $recall + $specificity - 1.0;
             $overall['markedness'] += $precision + $npv - 1.0;
             $overall['mcc'] += $mcc;
@@ -157,7 +160,9 @@ class MulticlassBreakdown implements Report
             $overall[$metric] /= $k;
         }
 
-        $overall['cardinality'] = $n;
+        $overall += [
+            'cardinality' => $n,
+        ];
 
         return [
             'overall' => $overall,

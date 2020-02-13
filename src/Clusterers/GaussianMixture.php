@@ -249,12 +249,14 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $n = $dataset->numRows();
 
+        $samples = $dataset->samples();
         $columns = $dataset->columns();
 
         $this->logPriors = array_fill(0, $this->k, log(1.0 / $this->k));
@@ -269,7 +271,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             $memberships = [];
             $loss = 0.0;
 
-            foreach ($dataset->samples() as $sample) {
+            foreach ($samples as $sample) {
                 $jll = $this->jointLogLikelihood($sample);
     
                 $total = logsumexp($jll);

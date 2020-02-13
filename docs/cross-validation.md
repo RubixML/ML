@@ -74,14 +74,14 @@ float(0.9175)
 ## Reports
 Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with finer-grained information than a Metric. The `generate()` method takes a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with information. 
 
-| Metric | Classification | Regression | Clustering | Anomaly Detection | 
-|---|---|---|---|---|
-| [Confusion Matrix](cross-validation/reports/confusion-matrix.md) | ● | | | ● |
-| [Contingency Table](cross-validation/reports/contingency-table.md) | | | ● | |
-| [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | ● | | | ● |
-| [Residual Analysis](cross-validation/reports/residual-analysis.md) | | ● | | |
+| Report | Use Cases | 
+|---|---|
+| [Confusion Matrix](cross-validation/reports/confusion-matrix.md) | Classification, Anomaly Detection |
+| [Contingency Table](cross-validation/reports/contingency-table.md) | Clustering |
+| [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | Classification, Anomaly Detection |
+| [Residual Analysis](cross-validation/reports/residual-analysis.md) | Regression |
 
-For example, the Multiclass Breakdown report outputs a number of classification metrics broken down by class label.
+For example, the Multi-class Breakdown report outputs a number of classification metrics broken down by class label.
 
 **Example**
 
@@ -96,9 +96,12 @@ var_dump($result);
 ```
 
 ```sh
+...
 ['classes']=> array(2) {
 	['wolf']=> array(19) {
       	['accuracy']=> float(0.6)
+		['accuracy_balanced']=> float(0.5833333333333333)
+		['f1_score']=> float(0.66666666666667)
       	['precision']=> float(0.66666666666667)
       	['recall']=> float(0.66666666666667)
       	['specificity']=> float(0.5)
@@ -107,7 +110,7 @@ var_dump($result);
       	['miss_rate']=> float(0.33333333333333)
       	['fall_out']=> float(0.5)
       	['false_omission_rate']=> float(0.5)
-     	['f1_score']=> float(0.66666666666667)
+		['threat_score']=> float(0.5)
       	['mcc']=> float(0.16666666666667)
       	['informedness']=> float(0.16666666666667)
       	['markedness']=> float(0.16666666666667)
@@ -116,8 +119,9 @@ var_dump($result);
       	['false_positives']=> int(1)
       	['false_negatives']=> int(1)
       	['cardinality']=> int(3)
-      	['density']=> float(0.6)
+      	['percentage']=> float(60.0)
     }
+...
 ```
 
 ## Common Problems

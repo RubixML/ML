@@ -20,7 +20,7 @@ public labels() : array
 
 Return a single label at the given row offset:
 ```php
-public label(int $index) : mixed
+public label(int $offset) : mixed
 ```
 
 Return the data type of the label:

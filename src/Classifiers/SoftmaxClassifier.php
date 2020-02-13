@@ -300,8 +300,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $k = (int) ceil($dataset->numRows() / $this->batchSize);

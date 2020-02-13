@@ -215,27 +215,27 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Drop the row at the given index.
+     * Drop the row at the given offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return self
      */
-    public function dropRow(int $index) : self
+    public function dropRow(int $offset) : self
     {
-        return $this->dropRows([$index]);
+        return $this->dropRows([$offset]);
     }
 
     /**
      * Drop the rows at the given indices.
      *
-     * @param int[] $indices
+     * @param int[] $offsets
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function dropRows(array $indices) : self
+    public function dropRows(array $offsets) : self
     {
-        foreach ($indices as $index) {
-            unset($this->samples[$index]);
+        foreach ($offsets as $offset) {
+            unset($this->samples[$offset]);
         }
 
         $this->samples = array_values($this->samples);
@@ -259,16 +259,16 @@ class Unlabeled extends Dataset
      * Filter the rows of the dataset using the values of a feature column as the
      * argument to a callback.
      *
-     * @param int $index
+     * @param int $offset
      * @param callable $callback
      * @return self
      */
-    public function filterByColumn(int $index, callable $callback) : self
+    public function filterByColumn(int $offset, callable $callback) : self
     {
         $samples = [];
 
         foreach ($this->samples as $sample) {
-            if ($callback($sample[$index])) {
+            if ($callback($sample[$offset])) {
                 $samples[] = $sample;
             }
         }
@@ -279,13 +279,13 @@ class Unlabeled extends Dataset
     /**
      * Sort the dataset in place by a column in the sample matrix.
      *
-     * @param int $index
+     * @param int $offset
      * @param bool $descending
      * @return self
      */
-    public function sortByColumn(int $index, bool $descending = false) : self
+    public function sortByColumn(int $offset, bool $descending = false) : self
     {
-        $column = $this->column($index);
+        $column = $this->column($offset);
 
         array_multisort($column, $this->samples, $descending ? SORT_DESC : SORT_ASC);
 
@@ -447,14 +447,14 @@ class Unlabeled extends Dataset
                 . " of more than {$this->numRows()}, $n given.");
         }
 
-        $indices = array_rand($this->samples, $n);
+        $offsets = array_rand($this->samples, $n);
 
-        $indices = is_array($indices) ? $indices : [$indices];
+        $offsets = is_array($offsets) ? $offsets : [$offsets];
         
         $samples = [];
 
-        foreach ($indices as $index) {
-            $samples[] = $this->samples[$index];
+        foreach ($offsets as $offset) {
+            $samples[] = $this->samples[$offset];
         }
 
         return self::quick($samples);
@@ -474,12 +474,12 @@ class Unlabeled extends Dataset
                 . " less than 1 sample, $n given.");
         }
 
-        $maxIndex = $this->numRows() - 1;
+        $maxOffset = $this->numRows() - 1;
 
         $subset = [];
 
         while (count($subset) < $n) {
-            $subset[] = $this->samples[rand(0, $maxIndex)];
+            $subset[] = $this->samples[rand(0, $maxOffset)];
         }
 
         return self::quick($subset);
@@ -515,11 +515,11 @@ class Unlabeled extends Dataset
         while (count($subset) < $n) {
             $delta = rand(0, $max) / PHI;
 
-            foreach ($weights as $index => $weight) {
+            foreach ($weights as $offset => $weight) {
                 $delta -= $weight;
 
                 if ($delta <= 0.0) {
-                    $subset[] = $this->samples[$index];
+                    $subset[] = $this->samples[$offset];
                     
                     break 1;
                 }
@@ -552,19 +552,19 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Return a sample from the dataset given by index.
+     * Return a row from the dataset at the given offset.
      *
-     * @param mixed $index
+     * @param mixed $offset
      * @throws \InvalidArgumentException
      * @return array[]
      */
-    public function offsetGet($index) : array
+    public function offsetGet($offset) : array
     {
-        if (isset($this->samples[$index])) {
-            return $this->samples[$index];
+        if (isset($this->samples[$offset])) {
+            return $this->samples[$offset];
         }
 
-        throw new InvalidArgumentException("Row at offset $index not found.");
+        throw new InvalidArgumentException("Row at offset $offset not found.");
     }
 
     /**

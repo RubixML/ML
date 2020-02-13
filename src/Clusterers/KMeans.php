@@ -301,8 +301,9 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $labels = array_fill(0, $dataset->numRows(), 0);

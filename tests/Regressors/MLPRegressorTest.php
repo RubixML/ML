@@ -15,12 +15,12 @@ use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
-use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -64,7 +64,7 @@ class MLPRegressorTest extends TestCase
             new Activation(new LeakyReLU()),
             new Dense(10),
             new Activation(new LeakyReLU()),
-        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, 3, 0.1, new LeastSquares(), new MeanSquaredError());
+        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, 3, 0.1, new LeastSquares(), new RMSE());
 
         $this->metric = new RSquared();
 
@@ -141,7 +141,7 @@ class MLPRegressorTest extends TestCase
             'window' => 3,
             'hold_out' => 0.1,
             'cost_fn' => new LeastSquares(),
-            'metric' => new MeanSquaredError(),
+            'metric' => new RMSE(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

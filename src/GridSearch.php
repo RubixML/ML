@@ -11,10 +11,10 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -136,12 +136,12 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         } else {
             switch ($proxy->type()) {
                 case EstimatorType::classifier():
-                    $metric = new FBeta();
+                    $metric = new FBeta(1.0);
 
                     break 1;
     
                 case EstimatorType::regressor():
-                    $metric = new RSquared();
+                    $metric = new RMSE();
 
                     break 1;
                 
@@ -151,7 +151,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
                     break 1;
     
                 case EstimatorType::anomalyDetector():
-                    $metric = new FBeta();
+                    $metric = new FBeta(1.0);
                     
                     break 1;
     

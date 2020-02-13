@@ -169,19 +169,19 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return a label given by row index.
+     * Return a label at the given row offset.
      *
-     * @param int $index
+     * @param int $offset
      * @throws \InvalidArgumentException
      * @return int|float|string
      */
-    public function label(int $index)
+    public function label(int $offset)
     {
-        if (!isset($this->labels[$index])) {
-            throw new InvalidArgumentException("Row at index $index not found.");
+        if (!isset($this->labels[$offset])) {
+            throw new InvalidArgumentException("Row at offset $offset not found.");
         }
 
-        return $this->labels[$index];
+        return $this->labels[$offset];
     }
 
     /**
@@ -456,27 +456,27 @@ class Labeled extends Dataset
     }
 
     /**
-     * Drop the row at the given index.
+     * Drop the row at the given offset.
      *
-     * @param int $index
+     * @param int $offset
      * @return self
      */
-    public function dropRow(int $index) : self
+    public function dropRow(int $offset) : self
     {
-        return $this->dropRows([$index]);
+        return $this->dropRows([$offset]);
     }
 
     /**
      * Drop the rows at the given indices.
      *
-     * @param int[] $indices
+     * @param int[] $offsets
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function dropRows(array $indices) : self
+    public function dropRows(array $offsets) : self
     {
-        foreach ($indices as $index) {
-            unset($this->samples[$index], $this->labels[$index]);
+        foreach ($offsets as $offset) {
+            unset($this->samples[$offset], $this->labels[$offset]);
         }
 
         $this->samples = array_values($this->samples);
@@ -502,19 +502,20 @@ class Labeled extends Dataset
     }
 
     /**
-     * Filter the rows of the dataset using the values of a feature column as the
-     * argument to a callback.
+     * Filter the rows of the dataset using the values of a feature column at the given
+     * offset as the arguments to a filter callback. The callback should return false
+     * for rows that should be filtered.
      *
-     * @param int $index
+     * @param int $offset
      * @param callable $callback
      * @return self
      */
-    public function filterByColumn(int $index, callable $callback) : self
+    public function filterByColumn(int $offset, callable $callback) : self
     {
         $samples = $labels = [];
 
         foreach ($this->samples as $i => $sample) {
-            if ($callback($sample[$index])) {
+            if ($callback($sample[$offset])) {
                 $samples[] = $sample;
                 $labels[] = $this->labels[$i];
             }
@@ -546,13 +547,13 @@ class Labeled extends Dataset
     /**
      * Sort the dataset in place by a column in the sample matrix.
      *
-     * @param int $index
+     * @param int $offset
      * @param bool $descending
      * @return self
      */
-    public function sortByColumn(int $index, bool $descending = false) : self
+    public function sortByColumn(int $offset, bool $descending = false) : self
     {
-        $order = $this->column($index);
+        $order = $this->column($offset);
 
         array_multisort(
             $order,
@@ -744,8 +745,8 @@ class Labeled extends Dataset
         $strata = [];
 
         try {
-            foreach ($this->labels as $index => $label) {
-                $strata[$label][] = $this->samples[$index];
+            foreach ($this->labels as $i => $label) {
+                $strata[$label][] = $this->samples[$i];
             }
         } catch (ErrorException $e) {
             throw new RuntimeException('Label must be an integer or string.');
@@ -876,15 +877,15 @@ class Labeled extends Dataset
                 . " of more than {$this->numRows()}, $n given.");
         }
 
-        $indices = array_rand($this->samples, $n);
+        $offsets = array_rand($this->samples, $n);
 
-        $indices = is_array($indices) ? $indices : [$indices];
+        $offsets = is_array($offsets) ? $offsets : [$offsets];
 
         $samples = $labels = [];
 
-        foreach ($indices as $index) {
-            $samples[] = $this->samples[$index];
-            $labels[] = $this->labels[$index];
+        foreach ($offsets as $offset) {
+            $samples[] = $this->samples[$offset];
+            $labels[] = $this->labels[$offset];
         }
 
         return self::quick($samples, $labels);
@@ -904,15 +905,15 @@ class Labeled extends Dataset
                 . " subset of less than 1 sample, $n given.");
         }
 
-        $maxIndex = $this->numRows() - 1;
+        $maxOffset = $this->numRows() - 1;
 
         $samples = $labels = [];
 
         while (count($samples) < $n) {
-            $index = rand(0, $maxIndex);
+            $offset = rand(0, $maxOffset);
 
-            $samples[] = $this->samples[$index];
-            $labels[] = $this->labels[$index];
+            $samples[] = $this->samples[$offset];
+            $labels[] = $this->labels[$offset];
         }
 
         return self::quick($samples, $labels);
@@ -948,12 +949,12 @@ class Labeled extends Dataset
         while (count($samples) < $n) {
             $delta = rand(0, $max) / PHI;
 
-            foreach ($weights as $index => $weight) {
+            foreach ($weights as $offset => $weight) {
                 $delta -= $weight;
 
                 if ($delta <= 0.0) {
-                    $samples[] = $this->samples[$index];
-                    $labels[] = $this->labels[$index];
+                    $samples[] = $this->samples[$offset];
+                    $labels[] = $this->labels[$offset];
 
                     break 1;
                 }
@@ -989,19 +990,19 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return a sample from the dataset given by index.
+     * Return a row from the dataset at the given offset.
      *
-     * @param mixed $index
+     * @param mixed $offset
      * @throws \InvalidArgumentException
      * @return mixed[]
      */
-    public function offsetGet($index) : array
+    public function offsetGet($offset) : array
     {
-        if (isset($this->samples[$index])) {
-            return array_merge($this->samples[$index], [$this->labels[$index]]);
+        if (isset($this->samples[$offset])) {
+            return array_merge($this->samples[$offset], [$this->labels[$offset]]);
         }
 
-        throw new InvalidArgumentException("Row at offset $index not found.");
+        throw new InvalidArgumentException("Row at offset $offset not found.");
     }
 
     /**

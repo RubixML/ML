@@ -1,6 +1,6 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php">[source]</a></span>
 
-# Multiclass Breakdown
+# Multi-class Breakdown
 A classification and anomaly detection report that drills down into unique class statistics as well as provide an overall picture. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
@@ -11,8 +11,6 @@ This report does not have any parameters.
 ## Example
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
-
-// Import labels and make predictions
 
 $report = new MulticlassBreakdown();
 
@@ -26,6 +24,8 @@ var_dump($result);
 ['classes']=> array(2) {
 	['wolf']=> array(19) {
       	['accuracy']=> float(0.6)
+		['accuracy_balanced']=> float(0.5833333333333333)
+		['f1_score']=> float(0.66666666666667)
       	['precision']=> float(0.66666666666667)
       	['recall']=> float(0.66666666666667)
       	['specificity']=> float(0.5)
@@ -34,7 +34,7 @@ var_dump($result);
       	['miss_rate']=> float(0.33333333333333)
       	['fall_out']=> float(0.5)
       	['false_omission_rate']=> float(0.5)
-     	['f1_score']=> float(0.66666666666667)
+		['threat_score']=> float(0.5)
       	['mcc']=> float(0.16666666666667)
       	['informedness']=> float(0.16666666666667)
       	['markedness']=> float(0.16666666666667)
@@ -43,7 +43,7 @@ var_dump($result);
       	['false_positives']=> int(1)
       	['false_negatives']=> int(1)
       	['cardinality']=> int(3)
-      	['density']=> float(0.6)
+      	['percentage']=> float(60.0)
     }
-    ...
+...
 ```
