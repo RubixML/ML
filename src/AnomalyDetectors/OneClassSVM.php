@@ -192,8 +192,6 @@ class OneClassSVM implements Estimator, Learner
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {

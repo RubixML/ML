@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 
@@ -135,6 +136,7 @@ class DBSCAN implements Estimator
      */
     public function predict(Dataset $dataset) : array
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $labels = range(0, $dataset->numRows() - 1);

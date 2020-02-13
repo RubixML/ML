@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -191,6 +192,7 @@ class SVR implements Estimator, Learner
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -209,7 +211,6 @@ class SVR implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]
      */
@@ -218,8 +219,6 @@ class SVR implements Estimator, Learner
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([$this->model, 'predict'], $dataset->samples());
     }

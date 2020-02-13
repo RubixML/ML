@@ -9,6 +9,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEmbedder;
 use InvalidArgumentException;
 
@@ -315,6 +316,7 @@ class TSNE implements Embedder, Verbose
      */
     public function embed(Dataset $dataset) : array
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {

@@ -18,6 +18,7 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -242,10 +243,10 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -349,7 +350,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -357,8 +357,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         if (empty($this->logPriors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $jlls = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
@@ -369,7 +367,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -378,8 +375,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         if (empty($this->logPriors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

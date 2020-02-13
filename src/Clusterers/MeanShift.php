@@ -22,6 +22,7 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -285,10 +286,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -368,7 +369,6 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return int[]
      */
@@ -378,8 +378,6 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
         return array_map([self::class, 'assign'], $dataset->samples());
     }
 
@@ -387,7 +385,6 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -396,8 +393,6 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'membership'], $dataset->samples());
     }

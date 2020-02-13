@@ -214,8 +214,6 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
         return array_map([self::class, 'z'], $dataset->samples());
     }
 
