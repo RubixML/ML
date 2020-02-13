@@ -23,6 +23,6 @@ trait ProbaSingle
     {
         $probabilities = $this->proba(Unlabeled::build([$sample]));
 
-        return reset($probabilities) ?: [];
+        return current($probabilities) ?: [];
     }
 }

@@ -26,6 +26,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -314,6 +315,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Train the estimator with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -321,6 +323,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             throw new InvalidArgumentException('Learner requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsNotEmpty::check($dataset);
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
@@ -338,6 +342,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * Train the network using mini-batch gradient descent with backpropagation.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -352,6 +357,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . ' labeled training set.');
         }
         
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -368,9 +374,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $k = (int) ceil($dataset->numRows() / $this->batchSize);
 
         $bestScore = $min;
-        $bestSnapshot = null;
+        $bestEpoch = $nu = 0;
+        $snapshot = null;
         $prevLoss = INF;
-        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -396,7 +402,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestSnapshot = new Snapshot($this->network);
+                $bestEpoch = $epoch;
+
+                $snapshot = new Snapshot($this->network);
 
                 $nu = 0;
             } else {
@@ -423,13 +431,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         }
 
         if (end($this->scores) < $bestScore) {
-            if ($bestSnapshot) {
-                $this->network->restore($bestSnapshot);
-
+            if ($snapshot) {
                 if ($this->logger) {
-                    $this->logger->info('Network restored from'
-                        . ' previous snapshot');
+                    $this->logger->info('Restoring parameters from'
+                        . " snapshot at epoch $bestEpoch.");
                 }
+
+                $this->network->restore($snapshot);
             }
         }
 
@@ -443,7 +451,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * activation of the output neuron.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]
      */
@@ -452,8 +459,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         if (!$this->network) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $xT = Matrix::quick($dataset->samples())->transpose();
 

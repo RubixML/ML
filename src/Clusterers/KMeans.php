@@ -21,6 +21,7 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -266,10 +267,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
@@ -288,7 +289,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -298,6 +298,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             return;
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -391,7 +392,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return int[]
      */
@@ -401,8 +401,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
         return array_map([self::class, 'assign'], $dataset->samples());
     }
 
@@ -410,7 +408,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -419,8 +416,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         if (!$this->centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'membership'], $dataset->samples());
     }

@@ -64,7 +64,7 @@ class Agglomerate implements Generator
             }
         }
 
-        $dimensions = reset($generators)->dimensions();
+        $dimensions = current($generators)->dimensions();
 
         $k = count($generators);
 
@@ -101,7 +101,7 @@ class Agglomerate implements Generator
                 $weight /= $total;
             }
         } else {
-            $weights = array_fill(0, $k, 1. / $k);
+            $weights = array_fill(0, $k, 1.0 / $k);
         }
 
         $this->generators = $generators;

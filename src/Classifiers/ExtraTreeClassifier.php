@@ -15,6 +15,7 @@ use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -125,6 +126,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -138,7 +140,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -146,8 +147,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -167,7 +166,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -175,8 +173,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         if ($this->bare() or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 
@@ -222,7 +218,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Compute the impurity of a labeled dataset.
+     * Compute the entropy of a labeled dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return float

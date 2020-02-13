@@ -13,6 +13,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -144,15 +145,9 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
-        }
-
         $this->samples = $this->labels = [];
 
         $this->partial($dataset);
@@ -171,6 +166,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -182,17 +178,14 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * Make a prediction based on the nearest neighbors.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (float|int)[]
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->samples) or empty($this->labels)) {
+        if (!$this->samples or !$this->labels) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

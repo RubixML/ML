@@ -14,6 +14,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -279,6 +280,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -302,12 +304,12 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->ensemble = $this->influences = $this->steps = [];
 
-        $this->weights = array_fill(0, $n, 1 / $n);
+        $weights = array_fill(0, $n, 1 / $n);
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $this->weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $estimator->train($subset);
 
@@ -317,11 +319,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction != $labels[$i]) {
-                    $loss += $this->weights[$i];
+                    $loss += $weights[$i];
                 }
             }
 
-            $total = array_sum($this->weights) ?: EPSILON;
+            $total = array_sum($weights) ?: EPSILON;
 
             $loss /= $total;
 
@@ -375,18 +377,20 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction != $labels[$i]) {
-                    $this->weights[$i] *= $step;
+                    $weights[$i] *= $step;
                 }
             }
 
-            $total = array_sum($this->weights) ?: EPSILON;
+            $total = array_sum($weights) ?: EPSILON;
 
-            foreach ($this->weights as &$weight) {
+            foreach ($weights as &$weight) {
                 $weight /= $total;
             }
 
             $prevLoss = $loss;
         }
+
+        $this->weights = $weights;
 
         if ($this->logger) {
             $this->logger->info('Training complete');

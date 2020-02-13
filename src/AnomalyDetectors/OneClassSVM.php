@@ -10,6 +10,7 @@ use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -172,6 +173,7 @@ class OneClassSVM implements Estimator, Learner
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $this->model = $this->svm->train($dataset->samples());
@@ -181,7 +183,6 @@ class OneClassSVM implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return int[]
      */
@@ -190,8 +191,6 @@ class OneClassSVM implements Estimator, Learner
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

@@ -13,6 +13,7 @@ use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -184,10 +185,10 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $n = $dataset->numRows();
@@ -224,8 +225,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -237,7 +236,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return float[]
      */
@@ -246,8 +244,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         if (empty($this->trees)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-        
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'isolationScore'], $dataset->samples());
     }

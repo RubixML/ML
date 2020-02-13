@@ -21,6 +21,7 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -251,6 +252,8 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
+
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
             [],
@@ -282,6 +285,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -299,7 +303,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
-            $loss = 0.;
+            $loss = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
@@ -345,7 +349,6 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]
      */
@@ -354,8 +357,6 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         if (!$this->network) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $xT = Matrix::quick($dataset->samples())->transpose();
 

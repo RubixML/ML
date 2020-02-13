@@ -18,6 +18,7 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -232,10 +233,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -313,7 +314,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -322,8 +322,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'membership'], $dataset->samples());
     }

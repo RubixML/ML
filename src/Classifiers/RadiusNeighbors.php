@@ -13,6 +13,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -165,6 +166,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function train(Dataset $dataset) : void
     {
@@ -173,6 +175,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -195,7 +198,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -203,8 +205,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         if ($this->tree->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -237,7 +237,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -247,8 +246,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

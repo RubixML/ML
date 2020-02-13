@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -148,6 +149,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -158,17 +160,14 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * Make a prediction based on the nearest neighbors.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
     {
         if ($this->tree->bare()) {
-            throw new RuntimeException('Estimator has not been trainied.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

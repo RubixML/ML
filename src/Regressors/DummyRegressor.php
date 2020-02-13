@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use InvalidArgumentException;
 use RuntimeException;
@@ -111,6 +112,7 @@ class DummyRegressor implements Estimator, Learner, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         $this->strategy->fit($dataset->labels());

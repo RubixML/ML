@@ -16,6 +16,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -332,6 +333,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -432,11 +434,12 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if (end($this->scores) < $bestScore) {
-            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
-
             if ($this->logger) {
-                $this->logger->info("Ensemble restored to epoch $bestEpoch");
+                $this->logger->info('Restoring ensemble state'
+                    . " to epoch $bestEpoch");
             }
+
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
         }
 
         if ($this->logger) {
@@ -449,7 +452,6 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return (int|float)[]
      */
     public function predict(Dataset $dataset) : array
@@ -457,8 +459,6 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         if (!$this->base->trained() or !$this->ensemble) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = $this->base->predict($dataset);
 

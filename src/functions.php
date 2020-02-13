@@ -45,25 +45,21 @@ namespace Rubix\ML
     {
         $m = count($table);
 
-        switch (true) {
-            case $m > 1:
-                return array_map(null, ...$table);
+        switch ($m) {
+            case 0:
+                return $table;
 
-            case $m === 1:
-                $row = reset($table) ?: [];
-
-                $n = count($row);
-
+            case 1:
                 $columns = [];
 
-                for ($i = 0; $i < $n; ++$i) {
-                    $columns[] = [$row[$i]];
+                foreach (current($table) as $row) {
+                    $columns[] = [$row];
                 }
 
                 return $columns;
             
             default:
-                return $table;
+                return array_map(null, ...$table);
         }
     }
 

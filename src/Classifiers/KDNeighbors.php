@@ -13,6 +13,7 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -153,6 +154,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -166,7 +168,6 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -174,8 +175,6 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         if ($this->tree->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -202,7 +201,6 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -211,8 +209,6 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         if ($this->tree->bare() or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 
