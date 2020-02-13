@@ -15,6 +15,7 @@ use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -127,6 +128,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -140,7 +142,6 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -148,8 +149,6 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -169,7 +168,6 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -177,8 +175,6 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         if ($this->bare() or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 
@@ -220,7 +216,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     }
 
     /**
-     * Compute the impurity of a labeled dataset.
+     * Compute the gini impurity of a labeled dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return float

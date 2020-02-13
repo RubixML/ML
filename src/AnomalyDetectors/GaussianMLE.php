@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -162,10 +163,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $this->means = $this->variances = [];
@@ -188,7 +189,6 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -198,6 +198,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
             return;
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $n = $dataset->numRows();
@@ -237,8 +238,6 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -250,6 +249,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
      * @return float[]
      */
     public function rank(Dataset $dataset) : array
@@ -257,8 +257,6 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
         if (!$this->means or !$this->variances or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'logLikelihood'], $dataset->samples());
     }

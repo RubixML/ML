@@ -23,6 +23,7 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
@@ -256,14 +257,19 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . ' labeled training set.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        DatasetIsNotEmpty::check($dataset);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
+
+        $classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
             [],
-            new Multiclass($this->classes, $this->alpha, $this->costFn),
+            new Multiclass($classes, $this->alpha, $this->costFn),
             $this->optimizer
         );
+
+        $this->classes = $classes;
 
         $this->steps = [];
 
@@ -289,6 +295,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -305,7 +312,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
-            $loss = 0.;
+            $loss = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
@@ -362,7 +369,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -371,8 +377,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         if (!$this->network or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $xT = Matrix::quick($dataset->samples())->transpose();
 

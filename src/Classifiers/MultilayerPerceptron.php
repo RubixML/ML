@@ -27,6 +27,7 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
@@ -333,14 +334,19 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' labeled training set.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        DatasetIsNotEmpty::check($dataset);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
+
+        $classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
             $this->hiddenLayers,
-            new Multiclass($this->classes, $this->alpha, $this->costFn),
+            new Multiclass($classes, $this->alpha, $this->costFn),
             $this->optimizer
         );
+
+        $this->classes = $classes;
 
         $this->scores = $this->steps = [];
 
@@ -366,6 +372,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -381,9 +388,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $k = (int) ceil($dataset->numRows() / $this->batchSize);
 
         $bestScore = $min;
-        $bestSnapshot = null;
+        $bestEpoch = $nu = 0;
+        $snapshot = null;
         $prevLoss = INF;
-        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -409,7 +416,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestSnapshot = new Snapshot($this->network);
+                $bestEpoch = $epoch;
+
+                $snapshot = new Snapshot($this->network);
 
                 $nu = 0;
             } else {
@@ -436,13 +445,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         if (end($this->scores) < $bestScore) {
-            if ($bestSnapshot) {
-                $this->network->restore($bestSnapshot);
-
+            if ($snapshot) {
                 if ($this->logger) {
-                    $this->logger->info('Network restored from'
-                        . ' previous snapshot');
+                    $this->logger->info('Restoring parameters from'
+                        . " snapshot at epoch $bestEpoch.");
                 }
+
+                $this->network->restore($snapshot);
             }
         }
 
@@ -466,7 +475,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -475,8 +483,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if (!$this->network or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $xT = Matrix::quick($dataset->samples())->transpose();
 

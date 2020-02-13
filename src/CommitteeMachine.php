@@ -117,7 +117,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 . ' 1 data type that they are compatible with in common.');
         }
 
-        $type = reset($experts)->type();
+        $type = current($experts)->type();
 
         if (!in_array($type->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'

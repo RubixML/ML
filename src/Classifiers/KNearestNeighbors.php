@@ -14,6 +14,7 @@ use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -163,6 +164,9 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
+        LabelsAreCompatibleWithLearner::check($dataset, $this);
+
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
         $this->samples = $this->labels = [];
@@ -183,6 +187,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -195,7 +200,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -203,8 +207,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         if (!$this->samples or !$this->labels) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -231,7 +233,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -240,8 +241,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         if (!$this->samples or !$this->labels or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

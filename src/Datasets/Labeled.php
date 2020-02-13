@@ -196,7 +196,7 @@ class Labeled extends Dataset
             throw new RuntimeException('Dataset is empty.');
         }
 
-        return DataType::determine(reset($this->labels));
+        return DataType::determine(current($this->labels));
     }
 
     /**

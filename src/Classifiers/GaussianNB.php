@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -190,6 +191,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -245,6 +247,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -292,7 +295,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * choose the class with the highest likelihood as the prediction.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return string[]
      */
@@ -301,8 +303,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         if (!$this->means or !$this->variances) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
@@ -313,7 +313,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -322,8 +321,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         if (!$this->means or !$this->variances) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

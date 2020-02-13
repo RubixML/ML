@@ -369,9 +369,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $k = (int) ceil($dataset->numRows() / $this->batchSize);
 
         $bestScore = $min;
-        $bestSnapshot = null;
+        $bestEpoch = $nu = 0;
+        $snapshot = null;
         $prevLoss = INF;
-        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -397,7 +397,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestSnapshot = new Snapshot($this->network);
+                $bestEpoch = $epoch;
+
+                $snapshot = new Snapshot($this->network);
 
                 $nu = 0;
             } else {
@@ -424,13 +426,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         }
 
         if (end($this->scores) < $bestScore) {
-            if ($bestSnapshot) {
-                $this->network->restore($bestSnapshot);
-
+            if ($snapshot) {
                 if ($this->logger) {
-                    $this->logger->info('Network restored from'
-                        . ' previous snapshot');
+                    $this->logger->info('Restoring parameters from'
+                        . " snapshot at epoch $bestEpoch.");
                 }
+
+                $this->network->restore($snapshot);
             }
         }
 

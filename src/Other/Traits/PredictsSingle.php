@@ -23,6 +23,6 @@ trait PredictsSingle
     {
         $predictions = $this->predict(Unlabeled::build([$sample]));
 
-        return reset($predictions) ?: null;
+        return current($predictions) ?: null;
     }
 }

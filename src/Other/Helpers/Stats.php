@@ -169,7 +169,7 @@ class Stats
     {
         $percentiles = self::percentiles($values, [$p]);
 
-        return (float) reset($percentiles) ?: NAN;
+        return (float) current($percentiles) ?: NAN;
     }
 
     /**

@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -188,15 +189,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
-        }
-
         $this->weights = $this->counts = $this->probs = [];
 
         $this->partial($dataset);
@@ -215,6 +210,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -278,7 +274,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return string[]
      */
@@ -287,8 +282,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         if (!$this->weights or !$this->probs) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
@@ -299,7 +292,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Estimate probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array[]
      */
@@ -308,8 +300,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         if (!$this->weights or !$this->probs) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

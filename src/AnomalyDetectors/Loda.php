@@ -15,10 +15,12 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function Rubix\ML\array_transpose;
 use function array_slice;
 
 use const Rubix\ML\EPSILON;
@@ -200,10 +202,10 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         [$m, $n] = $dataset->shape();
@@ -223,9 +225,9 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->asArray();
 
-        foreach ($projections->asArray() as $values) {
+        foreach (array_transpose($projections) as $values) {
             $start = min($values) - EPSILON;
             $end = max($values) + EPSILON;
 
@@ -263,7 +265,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -273,13 +274,14 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             return;
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->asArray();
 
-        foreach ($projections->asArray() as $i => $values) {
+        foreach (array_transpose($projections) as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 
             $interior = array_slice($edges, 1, $this->bins, true);
@@ -316,8 +318,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -329,7 +329,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return float[]
      */
@@ -339,35 +338,34 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->asArray();
 
         return $this->densities($projections);
     }
 
     /**
-     * Compute the densities from a projection matrix.
+     * Estimate the probability density function of each 1-dimensional projection
+     * using the histograms generated during training.
      *
-     * @param \Tensor\Matrix $projections
+     * @param array[] $projections
      * @return float[]
      */
-    protected function densities(Matrix $projections) : array
+    protected function densities(array $projections) : array
     {
-        $densities = array_fill(0, $projections->n(), 0.0);
+        $densities = array_fill(0, count($projections), 0.0);
     
-        foreach ($projections->asArray() as $i => $values) {
-            [$edges, $counts] = $this->histograms[$i];
-
+        foreach ($projections as $i => $values) {
             foreach ($values as $j => $value) {
+                [$edges, $counts] = $this->histograms[$j];
+
                 foreach ($edges as $k => $edge) {
                     if ($value < $edge) {
                         $count = $counts[$k];
 
-                        $densities[$j] += $count > 0
-                            ? -log($counts[$k] / $this->n)
+                        $densities[$i] += $count > 0
+                            ? -log($count / $this->n)
                             : -LOG_EPSILON;
 
                         break 1;

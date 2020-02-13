@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -176,10 +177,10 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $labels = range(0, $dataset->numRows() - 1);
@@ -216,8 +217,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -229,7 +228,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return float[]
      */
@@ -238,8 +236,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
         if ($this->tree->bare() or empty($this->lrds)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-        
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'localOutlierFactor'], $dataset->samples());
     }
@@ -249,7 +245,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      * nearest neighbors.
      *
      * @param (int|float)[] $sample
-     * @throws \RuntimeException
      * @return float
      */
     protected function localOutlierFactor(array $sample) : float
@@ -273,7 +268,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      *
      * @param int[] $indices
      * @param float[] $distances
-     * @throws \RuntimeException
      * @return float
      */
     protected function localReachabilityDensity(array $indices, array $distances) : float
