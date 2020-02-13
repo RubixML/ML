@@ -10,4 +10,5 @@ parameters:
         - 'benchmarks'
     excludes_analyse:
         - src/Graph/Trees/BallTree.php
+        - src/Graph/Trees/ITree.php
         - src/Graph/Trees/KDTree.php

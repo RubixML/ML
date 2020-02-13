@@ -36,7 +36,7 @@ class Cell implements BinaryNode, Leaf
      */
     public static function terminate(Dataset $dataset, int $depth) : self
     {
-        $depth += ITree::c($dataset->numRows()) - 1.;
+        $depth += ITree::c($dataset->numRows()) - 1.0;
 
         return new self($depth);
     }
@@ -47,7 +47,7 @@ class Cell implements BinaryNode, Leaf
      */
     public function __construct(float $depth)
     {
-        if ($depth < 0.) {
+        if ($depth < 0.0) {
             throw new InvalidArgumentException('Depth cannot be less'
                 . " than 0, $depth given.");
         }

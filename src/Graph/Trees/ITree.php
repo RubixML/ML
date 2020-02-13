@@ -122,7 +122,7 @@ class ITree implements BST
         $stack = [[$this->root, 1]];
 
         while ($stack) {
-            [$current, $depth] = array_pop($stack) ?? [];
+            [$current, $depth] = array_pop($stack);
 
             [$left, $right] = $current->groups();
 
