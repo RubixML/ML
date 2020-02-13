@@ -298,7 +298,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $p = (int) round($this->ratio * $n);
         $k = count($this->classes);
 
-        $threshold = 1.0 - (1.0 / $k);
+        $maxLoss = 1.0 - (1.0 / $k);
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
@@ -345,7 +345,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 ++$nu;
             }
 
-            if ($loss >= $threshold) {
+            if ($loss >= $maxLoss) {
                 if ($this->logger) {
                     $this->logger->info('Estimator dropped due'
                         . ' to high training loss');

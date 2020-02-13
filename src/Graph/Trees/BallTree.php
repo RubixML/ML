@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
+use function Rubix\ML\array_last;
 use function array_slice;
 
 /**
@@ -161,9 +162,7 @@ class BallTree implements BST, Spatial
      */
     public function search(array $sample) : ?Cluster
     {
-        $path = $this->path($sample);
-        
-        $node = end($path);
+        $node = array_last($this->path($sample));
 
         if ($node instanceof Cluster) {
             return $node;
@@ -236,9 +235,7 @@ class BallTree implements BST, Spatial
 
         $stack = $this->path($sample);
 
-        while ($stack) {
-            $current = array_pop($stack);
-            
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -305,9 +302,7 @@ class BallTree implements BST, Spatial
 
         $stack = [$this->root];
 
-        while ($stack) {
-            $current = array_pop($stack);
-
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
                     $distance = $this->kernel->compute($sample, $child->center());

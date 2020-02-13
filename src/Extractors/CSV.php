@@ -113,19 +113,19 @@ class CSV implements Extractor
         $line = 0;
 
         if ($this->header) {
-            ++$line;
-
             $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
 
             if (!$header) {
-                throw new RuntimeException("Header not found on line $line.");
+                throw new RuntimeException('Header not found the first line.');
             }
+
+            ++$line;
         }
 
         while (!feof($this->handle)) {
-            ++$line;
-
             $record = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
+
+            ++$line;
 
             if (empty($record)) {
                 continue 1;

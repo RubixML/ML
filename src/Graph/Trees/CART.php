@@ -52,7 +52,7 @@ abstract class CART implements DecisionTree
     protected const MIN_PERCENTILES = 3;
 
     /**
-     * The maximum number of percentiles to generate when evaluating a split of a continuous
+     * The maximum number of percentiles to generate when evaluating a split on a continuous
      * feature column.
      *
      * @var int
@@ -142,7 +142,7 @@ abstract class CART implements DecisionTree
                 . " $maxLeafSize given.");
         }
 
-        if ($minPurityIncrease < 0.) {
+        if ($minPurityIncrease < 0.0) {
             throw new InvalidArgumentException('Min purity increase'
                 . ' must be greater than or equal to 0,'
                 . " $minPurityIncrease given.");
@@ -342,7 +342,7 @@ abstract class CART implements DecisionTree
             throw new RuntimeException('Tree has not been constructed.');
         }
 
-        $importances = array_fill(0, $this->featureCount, 0.);
+        $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->dump() as $node) {
             if ($node instanceof Comparison) {
@@ -483,7 +483,7 @@ abstract class CART implements DecisionTree
     {
         $n = array_sum(array_map('count', $groups));
 
-        $impurity = 0.;
+        $impurity = 0.0;
 
         foreach ($groups as $dataset) {
             $m = $dataset->numRows();

@@ -34,4 +34,3 @@ $estimator = new RandomForest(new ClassificationTree(10), 300, 0.1, true);
 ### References
 >- L. Breiman. (2001). Random Forests.
 >- L. Breiman et al. (2005). Extremely Randomized Trees.
->- N. V. Chawla et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique.

@@ -67,9 +67,9 @@ class NDJSON implements Extractor
         $line = 0;
 
         while (!feof($this->handle)) {
-            ++$line;
-
             $data = rtrim(fgets($this->handle) ?: '');
+
+            ++$line;
 
             if (empty($data)) {
                 continue 1;

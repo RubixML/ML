@@ -36,7 +36,6 @@ use function in_array;
  * References:
  * [1] L. Breiman. (2001). Random Forests.
  * [2] L. Breiman et al. (2005). Extremely Randomized Trees.
- * [3] N. V. Chawla et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
