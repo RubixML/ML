@@ -34,7 +34,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     use Multiprocessing, PredictsSingle;
 
     /**
-     * The estimator types that this ensemble is compatible with.
+     * The estimator type codes that the ensemble is compatible with.
      *
      * @var int[]
      */

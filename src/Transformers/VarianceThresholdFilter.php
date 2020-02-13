@@ -14,9 +14,7 @@ use function is_null;
 /**
  * Variance Threshold Filter
  *
- * A type of feature selector that selects feature columns that have a greater
- * variance than the user-specified threshold. As an extreme example, if a
- * feature column has a variance of 0 then that feature will all be valued equally.
+ * A type of feature selector that selects features with the greatest variance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -25,32 +23,31 @@ use function is_null;
 class VarianceThresholdFilter implements Transformer, Stateful
 {
     /**
-     * Feature columns with a variance greater than this threshold will be
-     * selected.
+     * A type of feature selector that selects the top *k* features with the greatest variance.
      *
-     * @var float
+     * @var int
      */
-    protected $threshold;
+    protected $maxFeatures;
 
     /**
-     * The indices of the feature columns that have been selected.
+     * The variances of the selected feature columns.
      *
-     * @var bool[]|null
+     * @var float[]|null
      */
-    protected $selected;
+    protected $variances;
 
     /**
-     * @param float $threshold
+     * @param int $maxFeatures
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $threshold = 0.)
+    public function __construct(int $maxFeatures)
     {
-        if ($threshold < 0.) {
-            throw new InvalidArgumentException('Threshold must be 0 or greater'
-                . ", $threshold given.");
+        if ($maxFeatures < 1) {
+            throw new InvalidArgumentException('Must select at least'
+                . " one feature, $maxFeatures given.");
         }
 
-        $this->threshold = $threshold;
+        $this->maxFeatures = $maxFeatures;
     }
 
     /**
@@ -70,17 +67,27 @@ class VarianceThresholdFilter implements Transformer, Stateful
      */
     public function fitted() : bool
     {
-        return isset($this->selected);
+        return isset($this->variances);
     }
 
     /**
-     * Return the column indexes that have been selected during fitting.
+     * Return the offsets of the columns that were selected during fitting.
      *
      * @return int[]
      */
     public function selected() : array
     {
-        return array_keys($this->selected ?: []);
+        return array_keys($this->variances ?: []);
+    }
+
+    /**
+     * Return the variances of the selected feature columns.
+     *
+     * @return float[]|null
+     */
+    public function variances() : ?array
+    {
+        return $this->variances;
     }
 
     /**
@@ -91,18 +98,18 @@ class VarianceThresholdFilter implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
-        $this->selected = [];
+
+        $variances = [];
 
         foreach ($dataset->types() as $column => $type) {
             if ($type->isContinuous()) {
-                $values = $dataset->column($column);
-                
-                if (Stats::variance($values) > $this->threshold) {
-                    $this->selected[$column] = true;
-                }
+                $variances[$column] = Stats::variance($dataset->column($column));
             }
         }
+
+        arsort($variances);
+
+        $this->variances = array_slice($variances, 0, $this->maxFeatures, true);
     }
 
     /**
@@ -113,12 +120,12 @@ class VarianceThresholdFilter implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->selected)) {
+        if (is_null($this->variances)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            $sample = array_values(array_intersect_key($sample, $this->selected));
+            $sample = array_values(array_intersect_key($sample, $this->variances));
         }
     }
 }

@@ -32,7 +32,7 @@ class VarianceThresholdFilterTest extends TestCase
     {
         $this->generator = new Blob([0.0, 0.0, 0.0], [1.0, 5.0, 0.001]);
 
-        $this->transformer = new VarianceThresholdFilter(0.1);
+        $this->transformer = new VarianceThresholdFilter(2);
     }
     
     /**

@@ -34,7 +34,7 @@ class VarianceThresholdFilterBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->transformer = new VarianceThresholdFilter(0.0);
+        $this->transformer = new VarianceThresholdFilter(3);
     }
 
     /**

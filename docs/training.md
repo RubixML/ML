@@ -13,12 +13,14 @@ Batch learning is when a learner is trained in full using only one dataset in a 
 ```php
 $folds = $dataset->fold(3);
 
-$estimator->partial($folds[0]);
+$estimator->train($folds[0]);
 
 $estimator->partial($folds[1]);
 
 $estimator->partial($folds[2]);
 ```
+
+> **Note:** After the initial training, the learner will expect subsequent datasets to contain the same count and order of features.
 
 ## Monitoring Progress
 Since training is often an iterative process, it is useful to obtain real-time feedback as to how the learner is progressing. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback can indicate model overfitting or improperly tuned hyper-parameters. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with a [Screen Logger](other/loggers/screen.md) that does the job for most cases.

@@ -19,7 +19,6 @@ use Rubix\ML\Transformers\PolynomialExpander;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -56,13 +55,12 @@ class PipelineTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 128], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([64, 32, 255], 20.),
+            'red' => new Blob([255, 0, 128], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([64, 32, 255], 20.0),
         ]);
 
         $this->estimator = new Pipeline([
-            new VarianceThresholdFilter(),
             new PolynomialExpander(2),
             new ZScaleStandardizer(),
         ], new SoftmaxClassifier(), true);
@@ -118,7 +116,6 @@ class PipelineTest extends TestCase
     {
         $expected = [
             'transformers' => [
-                new VarianceThresholdFilter(),
                 new PolynomialExpander(2),
                 new ZScaleStandardizer(),
             ],
