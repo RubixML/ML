@@ -454,13 +454,17 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         $membership = $distances = [];
 
         foreach ($this->centroids as $centroid) {
-            $distances[] = $this->kernel->compute($sample, $centroid);
+            $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
         }
 
-        $total = array_sum($distances) ?: EPSILON;
+        foreach ($distances as $distanceA) {
+            $sigma = 0.0;
 
-        foreach ($distances as $distance) {
-            $membership[] = $distance / $total;
+            foreach ($distances as $distanceB) {
+                $sigma += $distanceA / $distanceB;
+            }
+
+            $membership[] = 1.0 / ($sigma ?: EPSILON);
         }
 
         return $membership;

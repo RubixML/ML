@@ -300,9 +300,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $n = $dataset->numRows();
 
-        $dataset = Labeled::quick($dataset->samples(), range(0, $n - 1));
+        $labels = range(0, $n - 1);
 
-        $k = max(min(self::MIN_SEEDS, $n), (int) round($this->ratio * $n));
+        $dataset = Labeled::quick($dataset->samples(), $labels);
+
+        $k = max(self::MIN_SEEDS, (int) round($this->ratio * $n));
 
         $centroids = $this->seeder->seed($dataset, $k);
 
@@ -431,13 +433,17 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         $membership = $distances = [];
 
         foreach ($this->centroids as $centroid) {
-            $distances[] = $this->tree->kernel()->compute($sample, $centroid);
+            $distances[] = $this->tree->kernel()->compute($sample, $centroid) ?: EPSILON;
         }
 
-        $total = array_sum($distances) ?: EPSILON;
+        foreach ($distances as $distanceA) {
+            $sigma = 0.0;
 
-        foreach ($distances as $distance) {
-            $membership[] = $distance / $total;
+            foreach ($distances as $distanceB) {
+                $sigma += $distanceA / $distanceB;
+            }
+
+            $membership[] = 1.0 / ($sigma ?: EPSILON);
         }
 
         return $membership;

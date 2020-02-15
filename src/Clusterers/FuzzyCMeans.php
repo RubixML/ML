@@ -340,14 +340,14 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
         }
 
-        foreach ($distances as $cluster => $distanceA) {
+        foreach ($distances as $distanceA) {
             $sigma = 0.0;
 
             foreach ($distances as $distanceB) {
                 $sigma += ($distanceA / $distanceB) ** $this->rho;
             }
 
-            $membership[$cluster] = 1.0 / ($sigma ?: EPSILON);
+            $membership[] = 1.0 / ($sigma ?: EPSILON);
         }
 
         return $membership;
