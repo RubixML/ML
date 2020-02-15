@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -19,32 +20,27 @@ use function get_class;
 /**
  * Pipeline
  *
- * Pipeline is a meta estimator responsible for transforming the input
- * data by applying a series of transformer middleware. Pipeline accepts
- * a base estimator and a list of transformers to apply to the input
- * data before it is fed to the estimator. Under the hood, Pipeline will
- * automatically fit the training set upon training and transform any
- * Dataset object supplied as an argument to one of the base Estimator's
- * methods, including `train()` and `predict()`. With the *elastic* mode
- * enabled, Pipeline can update the fitting of certain transformers during
- * online (*partial*) training.
+ * Pipeline is a meta-estimator capable of transforming an input dataset by applying a
+ * series of Transformer *middleware*. Under the hood, Pipeline will automatically fit the
+ * training set and transform any Dataset object supplied as an argument to one of the base
+ * estimator's methods before hitting the method context. With *elastic* mode enabled,
+ * Pipeline will update the fitting of Elastic transformers during partial training.
  *
- * > **Note**: Since transformations are applied to dataset objects in place
- * (without making a copy), using the dataset in a program after it has been
- * run through Pipeline may have unexpected results. If you need a *clean*
- * dataset object to call multiple methods with, you can use the PHP clone
- * syntax to keep an original (untransformed) copy in memory.
+ * > **Note:** Since transformations are applied to dataset objects in-place (without making a
+ * copy of the data), using a dataset in a program after it has been run through Pipeline may
+ * have unexpected results. If you need to keep a *clean* dataset in memory you can clone
+ * the dataset object before calling the method on Pipeline that consumes it.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
+class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, Verbose
 {
-    use PredictsSingle, ProbaSingle;
+    use PredictsSingle, ProbaSingle, RankSingle;
 
     /**
-     * The transformer middleware that preprocesses the data for the estimator.
+     * A list of transformers to be applied in order.
      *
      * @var \Rubix\ML\Transformers\Transformer[]
      */
@@ -53,7 +49,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     ];
 
     /**
-     * The wrapped base estimator instance.
+     * An instance of a base estimator to receive the transformed data.
      *
      * @var \Rubix\ML\Estimator
      */
@@ -74,7 +70,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     protected $logger;
 
     /**
-     * Whether or not the transformers have been fitted.
+     * Whether or not the transformer pipeline has been fitted.
      *
      * @var bool
      */
@@ -99,7 +95,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
         $this->transformers = $transformers;
         $this->estimator = $estimator;
         $this->elastic = $elastic;
-        $this->fitted = false;
     }
 
     /**
@@ -167,9 +162,9 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
      */
     public function trained() : bool
     {
-        return ($this->estimator instanceof Learner
-            and $this->estimator->trained() and $this->fitted)
-            or $this->fitted;
+        return $this->estimator instanceof Learner
+            ? $this->estimator->trained()
+            : true;
     }
 
     /**
@@ -195,8 +190,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
         if ($this->estimator instanceof Learner) {
             $this->estimator->train($dataset);
         }
-
-        $this->fitted = true;
     }
 
     /**
@@ -212,6 +205,46 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 
         if ($this->estimator instanceof Online) {
             $this->estimator->partial($dataset);
+        }
+    }
+
+    /**
+     * Fit the transformer pipeline to a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     */
+    public function fit(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            if ($transformer instanceof Stateful) {
+                $transformer->fit($dataset);
+
+                if ($this->logger) {
+                    $this->logger->info('Fitted ' . Params::shortName(get_class($transformer)));
+                }
+            }
+
+            $dataset->apply($transformer);
+        }
+    }
+
+    /**
+     * Update the fittings of the transformers.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     */
+    public function update(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            if ($transformer instanceof Elastic) {
+                $transformer->update($dataset);
+
+                if ($this->logger) {
+                    $this->logger->info('Updated ' . Params::shortName(get_class($transformer)));
+                }
+            }
+
+            $dataset->apply($transformer);
         }
     }
 
@@ -237,68 +270,37 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
      */
     public function proba(Dataset $dataset) : array
     {
-        $base = $this->base();
-
-        if (!$base instanceof Probabilistic) {
+        if (!$this->estimator instanceof Probabilistic) {
             throw new RuntimeException('Base estimator must'
-                . ' implement the probabilistic interface.');
+                . ' implement the Probabilistic interface.');
         }
 
-        $this->preprocess($dataset);
+        return $this->estimator->proba($dataset);
+    }
+
+    /**
+     * Apply an arbitrary unnormalized scoring function over the dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        if (!$this->estimator instanceof Ranking) {
+            throw new RuntimeException('Base estimator must'
+                . ' implement the Ranking interface.');
+        }
             
-        return $base->proba($dataset);
+        return $this->estimator->rank($dataset);
     }
 
     /**
-     * Fit the transformer middelware to a dataset.
+     * Apply the transformer stack to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
-    protected function fit(Dataset $dataset) : void
-    {
-        foreach ($this->transformers as $transformer) {
-            if ($transformer instanceof Stateful) {
-                $transformer->fit($dataset);
-
-                if ($this->logger) {
-                    $this->logger->info(
-                        'Fitted ' . Params::shortName(get_class($transformer))
-                    );
-                }
-            }
-
-            $dataset->apply($transformer);
-        }
-    }
-
-    /**
-     * Update the fitting of the transformer middleware.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     */
-    protected function update(Dataset $dataset) : void
-    {
-        foreach ($this->transformers as $transformer) {
-            if ($transformer instanceof Elastic) {
-                $transformer->update($dataset);
-
-                if ($this->logger) {
-                    $this->logger->info(
-                        'Updated ' . Params::shortName(get_class($transformer))
-                    );
-                }
-            }
-
-            $dataset->apply($transformer);
-        }
-    }
-
-    /**
-     * Apply the transformer middleware over a dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     */
-    protected function preprocess(Dataset $dataset) : void
+    public function preprocess(Dataset $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);

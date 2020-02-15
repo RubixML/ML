@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
@@ -21,19 +22,19 @@ use function gettype;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking
 {
-    use PredictsSingle, ProbaSingle;
+    use PredictsSingle, ProbaSingle, RankSingle;
     
     /**
-     * An instance of a persistable estimator.
+     * The persistable learner.
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected $estimator;
 
     /**
-     * The persister object used interface with the storage medium.
+     * The persister object used to interface with the storage medium.
      *
      * @var \Rubix\ML\Persisters\Persister
      */
@@ -51,27 +52,26 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
         $learner = $persister->load();
 
         if (!$learner instanceof Learner) {
-            throw new InvalidArgumentException('Peristable object must'
-                . ' be an instance of a learner, ' . gettype($learner)
-                . ' found.');
+            throw new InvalidArgumentException('Persistable must be an'
+                . ' instance of Learner, ' . gettype($learner) . ' given.');
         }
 
         return new self($learner, $persister);
     }
 
     /**
-     * @param \Rubix\ML\Learner $base
+     * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Persisters\Persister $persister
      * @throws \InvalidArgumentException
      */
-    public function __construct(Learner $base, Persister $persister)
+    public function __construct(Learner $estimator, Persister $persister)
     {
-        if (!$base instanceof Persistable) {
-            throw new InvalidArgumentException('Base estimator implement'
-                . ' the persistable interface.');
+        if (!$estimator instanceof Persistable) {
+            throw new InvalidArgumentException('Base learner must'
+                . ' implement the Persistable interface.');
         }
 
-        $this->base = $base;
+        $this->estimator = $estimator;
         $this->persister = $persister;
     }
 
@@ -82,7 +82,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function type() : EstimatorType
     {
-        return $this->base->type();
+        return $this->estimator->type();
     }
 
     /**
@@ -92,7 +92,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function compatibility() : array
     {
-        return $this->base->compatibility();
+        return $this->estimator->compatibility();
     }
 
     /**
@@ -103,7 +103,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
     public function params() : array
     {
         return [
-            'base' => $this->base,
+            'estimator' => $this->estimator,
             'persister' => $this->persister,
         ];
     }
@@ -115,7 +115,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function trained() : bool
     {
-        return $this->base->trained();
+        return $this->estimator->trained();
     }
 
     /**
@@ -125,17 +125,17 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function base() : Estimator
     {
-        return $this->base;
+        return $this->estimator;
     }
 
     /**
-     * Train the underlying estimator.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
-        $this->base->train($dataset);
+        $this->estimator->train($dataset);
     }
 
     /**
@@ -146,7 +146,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function predict(Dataset $dataset) : array
     {
-        return $this->base->predict($dataset);
+        return $this->estimator->predict($dataset);
     }
 
     /**
@@ -158,14 +158,29 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function proba(Dataset $dataset) : array
     {
-        $base = $this->base();
-
-        if (!$base instanceof Probabilistic) {
+        if (!$this->estimator instanceof Probabilistic) {
             throw new RuntimeException('Base estimator must'
-                . ' implement the probabilistic interface.');
+                . ' implement the Probabilistic interface.');
         }
 
-        return $base->proba($dataset);
+        return $this->estimator->proba($dataset);
+    }
+
+    /**
+     * Apply an arbitrary unnormalized scoring function over the dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        if (!$this->estimator instanceof Ranking) {
+            throw new RuntimeException('Base estimator must'
+                . ' implement the Ranking interface.');
+        }
+            
+        return $this->estimator->rank($dataset);
     }
 
     /**
@@ -173,8 +188,8 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function save() : void
     {
-        if ($this->base instanceof Persistable) {
-            $this->persister->save($this->base);
+        if ($this->estimator instanceof Persistable) {
+            $this->persister->save($this->estimator);
         }
     }
 
@@ -187,6 +202,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->base->$name(...$arguments);
+        return $this->estimator->$name(...$arguments);
     }
 }

@@ -10,6 +10,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -79,9 +80,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     protected $compatibility;
 
     /**
-     * The possible class labels.
+     * The zero vector of each possible discrete outcome.
      *
-     * @var string[]
+     * @var float[]
      */
     protected $classes = [
         //
@@ -113,8 +114,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $compatibility = array_values(array_intersect(...$compatibilities));
 
         if (count($compatibility) < 1) {
-            throw new InvalidArgumentException('Committee must have at least'
-                . ' 1 data type that they are compatible with in common.');
+            throw new InvalidArgumentException('Committee must have at'
+                . ' least 1 compatible data type in common.');
         }
 
         $type = current($experts)->type();
@@ -241,11 +242,13 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             }
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+
+            $this->logger->info('Training started');
         }
 
         $this->backend->flush();
@@ -262,8 +265,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         $this->experts = $this->backend->process();
 
-        if ($this->type->isClassifier() and $dataset instanceof Labeled) {
-            $this->classes = $dataset->possibleOutcomes();
+        switch ($this->type) {
+            case EstimatorType::classifier():
+                if ($dataset instanceof Labeled) {
+                    $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+                }
+
+                break 1;
+
+            case EstimatorType::regressor():
+                $this->classes = [0 => 0.0, 1 => 0.0];
+
+                break 1;
+
         }
 
         if ($this->logger) {
@@ -296,28 +310,26 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         switch ($this->type) {
             case EstimatorType::classifier():
-                return array_map([$this, 'decideClass'], $aggregate);
+            case EstimatorType::anomalyDetector():
+                return array_map([$this, 'decideDiscrete'], $aggregate);
 
             case EstimatorType::regressor():
-                return array_map([$this, 'decideValue'], $aggregate);
-
-            case EstimatorType::anomalyDetector():
-                return array_map([$this, 'decideAnomaly'], $aggregate);
+                return array_map([$this, 'decideContinuous'], $aggregate);
 
             default:
-                throw new RuntimeException('Invalid estimator type.');
+                throw new RuntimeException('Invalid base estimator type.');
         }
     }
 
     /**
-     * Decide on a class outcome.
+     * Decide on a discrete outcome.
      *
-     * @param string[] $votes
+     * @param (int|string)[] $votes
      * @return string
      */
-    public function decideClass(array $votes)
+    public function decideDiscrete(array $votes)
     {
-        $scores = array_fill_keys($this->classes, 0.0);
+        $scores = $this->classes;
 
         foreach ($votes as $i => $vote) {
             $scores[$vote] += $this->influences[$i];
@@ -327,31 +339,14 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
-     * Decide on a real valued outcome.
+     * Decide on a real-valued outcome.
      *
      * @param (int|float)[] $votes
      * @return float
      */
-    public function decideValue(array $votes) : float
+    public function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
-    }
-
-    /**
-     * Decide on an anomaly outcome.
-     *
-     * @param string[] $votes
-     * @return string
-     */
-    public function decideAnomaly(array $votes) : string
-    {
-        $scores = array_fill(0, 2, 0.0);
-
-        foreach ($votes as $i => $vote) {
-            $scores[$vote] += $this->influences[$i];
-        }
-
-        return argmax($scores);
     }
 
     /**

@@ -202,6 +202,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
+        $k = (int) round($this->ratio * $dataset->numRows());
+
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
 
@@ -213,8 +215,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 $weights[] = $min / $counts[$label];
             }
         }
-        
-        $k = (int) round($this->ratio * $dataset->numRows());
 
         $this->backend->flush();
 

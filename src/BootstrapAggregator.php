@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -164,6 +165,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             }
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $p = (int) round($this->ratio * $dataset->numRows());
@@ -210,16 +212,14 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         
         switch ($this->type()) {
             case EstimatorType::classifier():
+            case EstimatorType::anomalyDetector():
                 return array_map([self::class, 'decideDiscrete'], $aggregate);
 
             case EstimatorType::regressor():
                 return array_map([Stats::class, 'mean'], $aggregate);
 
-            case EstimatorType::anomalyDetector():
-                return array_map([self::class, 'decideDiscrete'], $aggregate);
-
             default:
-                throw new RuntimeException('Invalid estimator type.');
+                throw new RuntimeException('Invalid base estimator type.');
         }
     }
 
@@ -229,7 +229,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * @param string[] $votes
      * @return string
      */
-    public function decideDiscrete($votes) : string
+    public function decideDiscrete(array $votes) : string
     {
         return argmax(array_count_values($votes));
     }

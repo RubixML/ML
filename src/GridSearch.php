@@ -16,6 +16,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
+use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -262,19 +263,16 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
                 . ' labeled training set.');
         }
 
+        DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
-
-        if ($this->logger) {
-            $this->logger->info('Learner init '
-                . Params::stringify($this->params()));
-        }
 
         $combinations = $this->combinations();
 
         if ($this->logger) {
-            $k = count($combinations);
+            $this->logger->info('Learner init ' . Params::stringify($this->params()));
 
-            $this->logger->info("Searching $k sets of hyper-parameters");
+            $this->logger->info('Searching ' . count($combinations)
+                . ' combinations of hyper-parameters');
         }
 
         $this->backend->flush();
@@ -303,7 +301,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         array_multisort($scores, $combinations, SORT_DESC);
 
         if ($this->logger) {
-            $this->logger->info('Training on full dataset');
+            $this->logger->info('Training base learner');
         }
 
         $estimator = new $this->base(...reset($combinations));
@@ -323,7 +321,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      *
      * @return array[]
      */
-    protected function combinations() : array
+    public function combinations() : array
     {
         $combinations = [[]];
 
