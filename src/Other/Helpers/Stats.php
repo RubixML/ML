@@ -158,47 +158,45 @@ class Stats
     }
 
     /**
-     * Calculate the pth percentile of a given set of values.
+     * Calculate the q'th quantile of a given set of values.
      *
      * @param mixed[] $values
-     * @param float $p
+     * @param float $q
      * @throws \InvalidArgumentException
      * @return float
      */
-    public static function percentile(array $values, float $p) : float
+    public static function quantile(array $values, float $q) : float
     {
-        $percentiles = self::percentiles($values, [$p]);
-
-        return (float) current($percentiles) ?: NAN;
+        return (float) current(self::quantiles($values, [$q])) ?: NAN;
     }
 
     /**
-     * Calculate the pth percentiles of a given set of values.
+     * Calculate the q'th quantiles of a given set of values.
      *
      * @param mixed[] $values
-     * @param mixed[] $p
+     * @param float[] $qs
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return (int|float)[]
      */
-    public static function percentiles(array $values, array $p) : array
+    public static function quantiles(array $values, array $qs) : array
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Percentile is undefined for an empty set.');
+            throw new InvalidArgumentException('Quantile is undefined for empty set.');
         }
-
-        sort($values);
 
         $n = count($values);
 
-        $percentiles = [];
+        sort($values);
 
-        foreach ($p as $pHat) {
-            if ($pHat < 0.0 or $pHat > 100.0) {
-                throw new InvalidArgumentException('P must be between'
-                    . " 0 and 100, $pHat given.");
+        $quantiles = [];
+
+        foreach ($qs as $q) {
+            if ($q < 0.0 or $q > 1.0) {
+                throw new InvalidArgumentException('Quantile must be'
+                    . " between 0 and 1, $q given.");
             }
 
-            $x = ($pHat / 100) * ($n - 1) + 1;
+            $x = $q * ($n - 1) + 1;
 
             $xHat = (int) $x;
 
@@ -207,10 +205,10 @@ class Stats
             $a = $values[$xHat - 1];
             $b = $values[$xHat] ?? end($values);
 
-            $percentiles[] = $a + $remainder * ($b - $a);
+            $quantiles[] = $a + $remainder * ($b - $a);
         }
 
-        return $percentiles;
+        return $quantiles;
     }
 
     /**

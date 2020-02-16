@@ -164,7 +164,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             }
         }
 
-        return Stats::percentile($distances, $percentile);
+        return Stats::quantile($distances, $percentile / 100.0);
     }
 
     /**

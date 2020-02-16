@@ -44,20 +44,20 @@ abstract class CART implements DecisionTree
     protected const IMPURITY_TOLERANCE = 1e-4;
 
     /**
-     * The minimum number of percentiles to generate when evaluating a split of a continuous
+     * The minimum number of quantiles to generate when evaluating a split of a continuous
      * feature column.
      *
      * @var int
      */
-    protected const MIN_PERCENTILES = 3;
+    protected const MIN_QUANTILES = 3;
 
     /**
-     * The maximum number of percentiles to generate when evaluating a split on a continuous
+     * The maximum number of quantiles to generate when evaluating a split on a continuous
      * feature column.
      *
      * @var int
      */
-    protected const MAX_PERCENTILES = 200;
+    protected const MAX_QUANTILES = 200;
 
     /**
      * The glyph that denotes a branch of the tree.
@@ -425,9 +425,9 @@ abstract class CART implements DecisionTree
     {
         $n = (int) ceil($dataset->numRows() * self::DOWNSAMPLE_RATIO);
 
-        $k = max(self::MIN_PERCENTILES, min(self::MAX_PERCENTILES, $n));
+        $k = max(self::MIN_QUANTILES, min(self::MAX_QUANTILES, $n));
 
-        $p = range(0, 100, 100 / ($k - 1));
+        $q = range(0.0, 1.0, 1.0 / ($k - 1.0));
 
         shuffle($this->columns);
 
@@ -442,7 +442,7 @@ abstract class CART implements DecisionTree
             $values = $dataset->column($column);
 
             if ($dataset->columnType($column)->isContinuous()) {
-                $values = Stats::percentiles($values, $p);
+                $values = Stats::quantiles($values, $q);
             } else {
                 $values = array_unique($values);
             }

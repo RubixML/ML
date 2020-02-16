@@ -370,15 +370,15 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                     $desc['skewness'] = Stats::skewness($values, $mean);
                     $desc['kurtosis'] = Stats::kurtosis($values, $mean);
 
-                    $percentiles = Stats::percentiles($values, [
-                        0, 25, 50, 75, 100,
+                    $quartiles = Stats::quantiles($values, [
+                        0.0, 0.25, 0.5, 0.75, 1.0,
                     ]);
 
-                    $desc['min'] = $percentiles[0];
-                    $desc['25%'] = $percentiles[1];
-                    $desc['median'] = $percentiles[2];
-                    $desc['75%'] = $percentiles[3];
-                    $desc['max'] = $percentiles[4];
+                    $desc['min'] = $quartiles[0];
+                    $desc['25%'] = $quartiles[1];
+                    $desc['median'] = $quartiles[2];
+                    $desc['75%'] = $quartiles[3];
+                    $desc['max'] = $quartiles[4];
 
                     break 1;
 

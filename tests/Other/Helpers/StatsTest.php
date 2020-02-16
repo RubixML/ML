@@ -85,27 +85,27 @@ class StatsTest extends TestCase
     
     /**
      * @test
-     * @dataProvider percentileProvider
+     * @dataProvider quantileProvider
      *
      * @param (int|float)[] $values
-     * @param float $p
+     * @param float $q
      * @param float $expected
      */
-    public function percentile(array $values, float $p, float $expected) : void
+    public function quantile(array $values, float $q, float $expected) : void
     {
-        $this->assertSame($expected, Stats::percentile($values, $p));
+        $this->assertSame($expected, Stats::quantile($values, $q));
     }
 
     /**
      * @return \Generator<array>
      */
-    public function percentileProvider() : Generator
+    public function quantileProvider() : Generator
     {
-        yield [self::TEST_VALUES, 50.0, 9.75];
+        yield [self::TEST_VALUES, 0.5, 9.75];
 
-        yield [self::TEST_VALUES, 99.0, 14.82];
+        yield [self::TEST_VALUES, 0.99, 14.82];
 
-        yield [[5.0], 50.0, 5.0];
+        yield [[5.0], 0.5, 5.0];
     }
     
     /**

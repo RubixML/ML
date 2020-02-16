@@ -121,7 +121,7 @@ class GaussianMLETest extends TestCase
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $folds = $training->fold(3);
+        $folds = $training->stratifiedFold(3);
 
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);

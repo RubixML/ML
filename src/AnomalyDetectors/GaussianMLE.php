@@ -180,7 +180,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 
         $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
 
-        $this->threshold = Stats::percentile($lls, 100.0 * (1.0 - $this->contamination));
+        $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
 
         $this->n = $dataset->numRows();
     }
@@ -227,7 +227,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 
         $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
 
-        $threshold = Stats::percentile($lls, 100.0 * (1.0 - $this->contamination));
+        $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
 
         $weight = $n / $this->n;
 

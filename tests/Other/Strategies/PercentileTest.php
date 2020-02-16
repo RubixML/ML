@@ -23,7 +23,7 @@ class PercentileTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->strategy = new Percentile(50.);
+        $this->strategy = new Percentile(50.0);
     }
     
     /**

@@ -37,7 +37,7 @@ class Percentile implements Continuous
      */
     public function __construct(float $p = 50.0)
     {
-        if ($p < 0. or $p > 100.) {
+        if ($p < 0.0 or $p > 100.0) {
             throw new InvalidArgumentException('Percentile must be between'
                 . " 0 and 100, $p given.");
         }
@@ -58,7 +58,7 @@ class Percentile implements Continuous
                 . ' to at least 1 value.');
         }
 
-        $this->percentile = Stats::percentile($values, $this->p);
+        $this->percentile = Stats::quantile($values, $this->p / 100.0);
     }
 
     /**

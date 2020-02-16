@@ -258,7 +258,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $densities = $this->densities($projections);
 
-        $this->threshold = Stats::percentile($densities, 100.0 * (1.0 - $this->contamination));
+        $this->threshold = Stats::quantile($densities, 1.0 - $this->contamination);
     }
 
     /**
@@ -307,7 +307,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $densities = $this->densities($projections);
 
-        $threshold = Stats::percentile($densities, 100.0 * (1.0 - $this->contamination));
+        $threshold = Stats::quantile($densities, 1.0 - $this->contamination);
 
         $weight = $n / $this->n;
 

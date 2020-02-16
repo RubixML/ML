@@ -215,7 +215,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         if (isset($this->contamination)) {
             $scores = array_map([self::class, 'isolationScore'], $dataset->samples());
 
-            $threshold = Stats::percentile($scores, 100.0 * (1.0 - $this->contamination));
+            $threshold = Stats::quantile($scores, 1.0 - $this->contamination);
         }
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;

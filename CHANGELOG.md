@@ -15,6 +15,7 @@
     - RMSE now default validation Metric for Regressors
     - Added balanced accuracy and threat score to Multi-class report
     - Pipeline and Persistent Model now implement Ranking
+    - Changed percentile to quantile in Stats helper
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function

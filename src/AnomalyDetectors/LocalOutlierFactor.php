@@ -207,7 +207,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
         if (isset($this->contamination)) {
             $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
-            $threshold = Stats::percentile($lofs, 100.0 * (1.0 - $this->contamination));
+            $threshold = Stats::quantile($lofs, 1.0 - $this->contamination);
         }
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
