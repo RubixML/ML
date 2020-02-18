@@ -21,9 +21,9 @@ use RuntimeException;
 /**
  * Ridge
  *
- * L2 penalized ordinary least squares linear regression (OLS) solved using the closed-form
- * equation. The addition of regularization, controlled by the *alpha* parameter, makes Ridge
- * less prone to overfitting than non-regularized linear regression.
+ * L2 regularized least squares linear model solved using a closed-form solution. The addition
+ * of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting
+ * than ordinary linear regression.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -34,15 +34,14 @@ class Ridge implements Estimator, Learner, Persistable
     use PredictsSingle;
     
     /**
-     * The regularization parameter that controls the penalty to the size of the
-     * coeffecients. i.e. the ridge penalty.
+     * The strength of the L2 regularization penalty.
      *
      * @var float
      */
     protected $alpha;
 
     /**
-     * The y intercept.
+     * The y intercept i.e. the bias added to the decision function.
      *
      * @var float|null
      */
@@ -53,7 +52,7 @@ class Ridge implements Estimator, Learner, Persistable
      *
      * @var \Tensor\Vector|null
      */
-    protected $weights;
+    protected $coefficients;
 
     /**
      * @param float $alpha
@@ -110,21 +109,21 @@ class Ridge implements Estimator, Learner, Persistable
      */
     public function trained() : bool
     {
-        return $this->bias and $this->weights;
+        return $this->coefficients and isset($this->bias);
     }
 
     /**
-     * Return the weights of the model.
+     * Return the weights of features in the decision function.
      *
      * @return (int|float)[]|null
      */
-    public function weights() : ?array
+    public function coefficients() : ?array
     {
-        return $this->weights ? $this->weights->asArray() : null;
+        return $this->coefficients ? $this->coefficients->asArray() : null;
     }
 
     /**
-     * Return the bias parameter of the regression line.
+     * Return the bias added to the decision function.
      *
      * @return float|null
      */
@@ -170,7 +169,7 @@ class Ridge implements Estimator, Learner, Persistable
             ->asArray();
 
         $this->bias = (float) array_shift($coefficients);
-        $this->weights = Vector::quick($coefficients);
+        $this->coefficients = Vector::quick($coefficients);
     }
 
     /**
@@ -182,12 +181,12 @@ class Ridge implements Estimator, Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->weights or $this->bias === null) {
+        if (!$this->coefficients or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         return Matrix::build($dataset->samples())
-            ->dot($this->weights)
+            ->dot($this->coefficients)
             ->add($this->bias)
             ->asArray();
     }

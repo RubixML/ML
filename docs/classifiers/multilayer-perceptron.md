@@ -13,7 +13,7 @@ A multiclass feed forward neural network classifier with user-defined hidden lay
 | 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
-| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the parameters of the network. |
+| 4 | alpha | 1e-4 | float | The strength of the L2 regularization penalty. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 7 | window | 3 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |

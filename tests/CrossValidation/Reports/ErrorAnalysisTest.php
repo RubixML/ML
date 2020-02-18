@@ -4,18 +4,18 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 /**
  * @group Reports
- * @covers \Rubix\ML\CrossValidation\Reports\ResidualAnalysis
+ * @covers \Rubix\ML\CrossValidation\Reports\ErrorAnalysis
  */
-class ResidualAnalysisTest extends TestCase
+class ErrorAnalysisTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\ResidualAnalysis
+     * @var \Rubix\ML\CrossValidation\Reports\ErrorAnalysis
      */
     protected $report;
 
@@ -24,7 +24,7 @@ class ResidualAnalysisTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->report = new ResidualAnalysis();
+        $this->report = new ErrorAnalysis();
     }
 
     /**
@@ -32,7 +32,7 @@ class ResidualAnalysisTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
+        $this->assertInstanceOf(ErrorAnalysis::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
@@ -73,10 +73,10 @@ class ResidualAnalysisTest extends TestCase
             [11, 12, 14, 40, 55, 12, 16, 10, 2, 7],
             [
                 'mean_absolute_error' => 0.8,
-                'median_absolute_error' => 1.,
-                'mean_squared_error' => 1.,
+                'median_absolute_error' => 1.0,
+                'mean_squared_error' => 1.0,
                 'mean_absolute_percentage_error' => 14.02077497665733,
-                'rms_error' => 1.,
+                'rms_error' => 1.0,
                 'mean_squared_log_error' => 0.019107097505647368,
                 'r_squared' => 0.9958930551562692,
                 'error_mean' => -0.2,

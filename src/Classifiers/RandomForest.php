@@ -332,8 +332,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->trees as $tree) {
-            foreach ($tree->featureImportances() as $column => $value) {
-                $importances[$column] += $value;
+            foreach ($tree->featureImportances() as $column => $importance) {
+                $importances[$column] += $importance;
             }
         }
 

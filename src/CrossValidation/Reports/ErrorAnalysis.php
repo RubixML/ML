@@ -12,18 +12,17 @@ use function count;
 use const Rubix\ML\EPSILON;
 
 /**
- * Residual Analysis
+ * Error Analysis
  *
- * Residual Analysis is a report that measures the differences between the predicted
- * and target values of a regression problem in detail. In one report, you get
- * multiple error measurements (MAE, MSE, MAPE, R2, etc.) as well as statistics
- * regarding the distribution of errors.
+ * The Error Analysis report measures the differences between the predicted and target values
+ * of a regression problem using multiple error measurements (MAE, MSE, RMSE, MAPE, etc.) as
+ * well as statistics regarding the distribution of errors.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ResidualAnalysis implements Report
+class ErrorAnalysis implements Report
 {
     /**
      * The estimator types that this report is compatible with.

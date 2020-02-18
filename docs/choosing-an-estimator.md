@@ -1,7 +1,5 @@
 # Choosing an Estimator
-Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Some meta-estimators such as [Pipeline](pipeline.md) and [Grid Search](grid-search.md) are *polymorphic* i.e. they bear the type of the base estimator they wrap. Most estimators allow tuning by adjusting their hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
-
-**Example**
+Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Most estimators allow tuning by adjusting their user-defined hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
 
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -10,10 +8,10 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $estimator = new KNearestNeighbors(10, false, new Minkowski(2.0));
 ```
 
-It is important to note that not all estimators are created equal and choosing the right estimator for your project is important for achieving the best results. In the following sections, we'll break down the estimators available to you in Rubix ML and point out some of their advantages and disadvantages.
+Choosing the right estimator for your project will help achieve the best results. A common theme among all estimator types is the notion of model *flexibility*. How flexibility is expressed depends on the estimator type but greater flexibility usually includes the capacity to handle more difficult tasks. The tradeoff for increased flexibility is often increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). For most use cases, we recommend selecting the simplest model that does not [underfit](cross-validation.md#underfitting) your dataset. In the next sections, we'll break down the estimators available to you in Rubix ML by type, grade their flexibility, and describe some of their advantages and disadvantages.
 
 ## Classifiers
-Classifiers can often be graded on their ability to form decision boundaries between areas that define the classes. Simple linear classifiers such as Logistic Regression can only handle classes that are *linearly separable*. On the other hand, highly flexible models such as the Multilayer Perceptron can theoretically handle any decision boundary. The tradeoff for increased flexibility is reduced interpretability, increased computational complexity, and greater susceptibility to [overfitting](cross-validation.md#overfitting).
+Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. Simple linear classifiers such as [Logistic Regression](classifiers/logistic-regresion.md) can only handle classes that are *linearly separable*. On the other hand, highly flexible models such as the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) can theoretically learn any decision boundary.
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -32,11 +30,11 @@ Classifiers can often be graded on their ability to form decision boundaries bet
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
-In terms of regression, flexibility is expressed as the ability of a model to fit a regression line to potentially complex non-linear data. Linear models such as Ridge tend to [underfit](cross-validation.md#underfitting) data that is non-linear while more flexible models such as Gradient Boost are prone to overfit the training data if not tuned properly. In general, it's best to choose the simplest regressor that doesn't underfit your dataset.
+In regression, flexibility is expressed in the ability of a regressor to model the process that generated the outcomes of the training data. Simple models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and outcome and tend to underfit data that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex processes but are more prone to overfitting if not tuned properly.
 
 | Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
 |---|---|---|---|---|---|
-| [Adaline](regressors/adaline.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting |
+| [Adaline](regressors/adaline.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Faster training, Lower variance | Similar to Regression Tree |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Faster inference | Not compatible with certain distance kernels |
@@ -48,7 +46,7 @@ In terms of regression, flexibility is expressed as the ability of a model to fi
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers can be rated by their ability to represent an outer hull surrounding the samples in the cluster. Simple centroid-based models such as K Means establish a uniform hypersphere around the clusters. More flexible clusterers such as Gaussian Mixture can better conform to the outer shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*. The tradeoff for flexibility typically results in more model parameters and with it increased computational complexity.
+Clusterers express flexibility by their ability to represent an outer hull surrounding the samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters. This is great for clusters that are linearly separable, however, breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -59,7 +57,7 @@ Clusterers can be rated by their ability to represent an outer hull surrounding 
 | [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
-Anomaly detectors can be thought of as belonging to one of two groups. There are the anomaly detectors that consider the entire training data when making a prediction, and there are those that only consider a *local region* of the training set. Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are more suited for real-time applications but may produce a higher number of false positives and/or negatives.
+Anomaly Detectors fall into one of two groups - there are those that consider the entire training data when determining an anomaly, and there are those that only consider a *local region* of the training set. Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are more suited for real-time applications but may produce a higher number of false positives and/or negatives.
 
 | Anomaly Detector | Scope | Ranking | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -68,10 +66,10 @@ Anomaly detectors can be thought of as belonging to one of two groups. There are
 | [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | Intuitable model, Finds anomalies within clusters | Suffers from the curse of dimensionality |
 | [Loda](anomaly-detectors/loda.md) | Global | ● | ● | Highly scalable | High memory cost |
 | [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
-| [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Requires little data, Robust to outliers | Has problem with skewed datasets  |
+| [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Interpretable model, Robust to outliers in the training set | Problems with highly skewed dataset  |
 
 ## Meta-estimators
-Meta-estimators enhance other estimators with their own added functionality. They include ensembles, model selectors, and other model enhancers that wrap a compatible base estimator.
+Meta-estimators wrap and enhance other estimators with extra functionality. They are polymorphic in the sense that they take on the type of the base estimator they wrap. A characteristic feature of meta-estimators that implement the [Wrapper](wrapper.md) interface is that they allow methods to be called on the base estimator by calling them from the meta-estimator.
 
 | Meta-estimator | Usage | Parallel | Verbose | Compatibility |
 |---|---|---|---|---|
@@ -81,7 +79,7 @@ Meta-estimators enhance other estimators with their own added functionality. The
 | [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable estimator |
 | [Pipeline](pipeline.md) | Preprocessing | | ● | Any |
 
-In the example below, we'll use the Bootstrap Aggregator meta-estimator to wrap a Regression Tree.
+In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to create a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
@@ -91,4 +89,4 @@ $estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
 ```
 
 ## No Free Lunch Theorem
-At some point you may ask yourself "Why do we need so many different learning algorithms? Can't we just use one that works all the time?" The answer to those questions can be understood by the *No Free Lunch* (NFL) theorem. The No Free Lunch theorem states that, when averaged over *all* possible problems, no learner performs any better than the next. Another way of saying that is certain learners perform better in some tasks and worse in others. This is explained by the fact that all learning algorithms have *some* prior knowledge inherent in them whether it be via the selection of certain hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.
+At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the *No Free Lunch* (NFL) theorem which states that, when averaged over the space of *all* possible problems, no learner performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.

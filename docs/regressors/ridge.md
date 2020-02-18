@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php">[source]</a></span>
 
 # Ridge
-L2 penalized ordinary least squares linear regression (OLS) solved using the closed-form equation. The addition of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting than non-regularized linear regression.
+L2 regularized Least Squares linear model solved using a closed-form solution. The addition of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting than ordinary linear regression.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
@@ -10,15 +10,15 @@ L2 penalized ordinary least squares linear regression (OLS) solved using the clo
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | alpha | 1.0 | float | The L2 regularization penalty amount to be added to the weight coefficients. |
+| 1 | alpha | 1.0 | float | The strength of the L2 regularization penalty. |
 
 ## Additional Methods
-Return the weights of the model:
+Return the weights of features in the decision function.
 ```php
-public weights() : array|null
+public coefficients() : array|null
 ```
 
-Return the bias parameter:
+Return the bias added to the decision function.
 ```php
 public bias() : float|null
 ```

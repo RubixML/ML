@@ -79,7 +79,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected $optimizer;
 
     /**
-     * The amount of L2 regularization to apply to the parameters of the network.
+     * The strength of the L2 regularization penalty.
      *
      * @var float
      */

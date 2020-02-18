@@ -487,8 +487,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->ensemble as $tree) {
-            foreach ($tree->featureImportances() as $column => $value) {
-                $importances[$column] += $value;
+            foreach ($tree->featureImportances() as $column => $importance) {
+                $importances[$column] += $importance;
             }
         }
 

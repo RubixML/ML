@@ -16,6 +16,7 @@
     - Added balanced accuracy and threat score to Multi-class report
     - Pipeline and Persistent Model now implement Ranking
     - Changed percentile to quantile in Stats helper
+    - Renamed Residual Analysis report to Error Analysis
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function

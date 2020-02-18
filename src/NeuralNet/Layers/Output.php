@@ -7,7 +7,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 interface Output extends Parametric
 {
     /**
-     * Calculate the gradients for each output neuron and update.
+     * Compute the gradient and loss at the output.
      *
      * @param (string|int|float)[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer

@@ -238,8 +238,8 @@ nav:
     - Aggregate Report: cross-validation/reports/aggregate-report.md
     - Confusion Matrix: cross-validation/reports/confusion-matrix.md
     - Contingency Table: cross-validation/reports/contingency-table.md
+    - Error Analysis: cross-validation/reports/error-analysis.md
     - Multiclass Breakdown: cross-validation/reports/multiclass-breakdown.md
-    - Residual Analysis: cross-validation/reports/residual-analysis.md
 - Persisters:
   - API Reference: persisters/api.md
   - Filesystem: persisters/filesystem.md

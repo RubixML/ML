@@ -81,7 +81,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected $optimizer;
 
     /**
-     * The amount of L2 regularization to apply to the parameters of the network.
+     * The strength of the L2 regularization penalty.
      *
      * @var float
      */

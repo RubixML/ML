@@ -3,7 +3,7 @@
 # Random Forest
 An ensemble classifier that trains Decision Trees ([Classification Trees](classification-tree.md) or [Extra Trees](extra-tree-classifier.md)) on random subsets (*bootstrap* set) of the training data. Predictions are based on the probability scores returned from each tree in the forest, averaged and weighted equally.
 
-> **Note:** The default base tree learner is a fully grown Classification Tree.
+> **Note:** The default base tree learner is a fully grown [Classification Tree](classifiers/classification-tree.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 

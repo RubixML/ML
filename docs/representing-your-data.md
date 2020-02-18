@@ -12,7 +12,7 @@ $samples = [
 ```
 
 ## High-level Data Types
-In addition to PHP's internal type system, the library adds a layer on top which distinguishes types that are continuous (numerical), categorical (discrete), or some other type. Continuous features represent some *quantitative* property of the sample such as `age` or `velocity`, whereas, categorical features form a *qualitative* property such as `rough` or `furry`. We make this distinction because different learners are compatible with different data types. For example, the [Naive Bayes](classifiers/naive-bayes.md) classifier is compatible with only categorical features but [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) is compatible with continuous - and [Random Forest](classifiers/random-forest.md) is compatible with both.
+In addition to PHP's internal type system, the library adds a layer on top which distinguishes types that are continuous (numerical), categorical (discrete), or some other data type. Continuous features represent some *quantitative* property of the sample such as *age* or *velocity*, whereas, categorical features form a *qualitative* property such as *rough* or *furry*. We draw this distinction because different learners can be compatible with different data types.
 
 | Rubix ML Data Type | PHP Internal Type |
 |---|---|
@@ -21,10 +21,10 @@ In addition to PHP's internal type system, the library adds a layer on top which
 | Image | GD Resource |
 
 ## Quantities
-A quantity is a property that describes either the magnitude or multitude of something. For example, `temperature`, `income`, and `age` are all quantitative features. In Rubix ML, quantities are represented as one of the continuous data types such as integers or floating point numbers and their *distances* are assumed to be equally-spaced. For example, the distance between 10 years old and 11 is exactly 1 year. Quantities can further be broken down into ratios, intervals, or counts depending on the feature they are describing.
+A quantity is a property that describes either the magnitude or multitude of something. For example, *temperature*, *income*, and *age* are all quantitative features. In Rubix ML, quantities are represented as one of the continuous data types such as integers or floating point numbers and their *distances* are assumed to be equally-spaced. Quantities can further be broken down into ratios, intervals, or counts depending on the feature they are describing.
 
 ## Categories
-Categories are discrete values that describe some qualitative property of a sample such as `species`, `gender`, or `nationality`. They are represented as strings and have no numerical relationship between the values. Unlike ratios and intervals, which can take on an infinite number of values, categorical variables can only take on 1 of a finite set of values.
+Categories are discrete values that describe some qualitative property of a sample such as *species*, *gender*, or *nationality*. They are represented as strings and have no numerical relationship between the values. Unlike ratios and intervals, which can take on an infinite number of values, categorical variables can only take on 1 of a finite set of values.
 
 ## Booleans
 A boolean (or *binary*) variable is a special case of a categorical variable in which the number of possible categories is strictly two. For example, to denote if a subject is tall or not you can use the `tall` and `not tall` categories respectively.

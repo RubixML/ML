@@ -194,7 +194,7 @@ class Continuous implements Output
     }
 
     /**
-     * Calculate the gradients for each output neuron and update.
+     * Compute the gradient and loss at the output.
      *
      * @param (int|float)[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer

@@ -4,7 +4,7 @@ Here you will find answers to the most frequently asked questions.
 ## What environment (SAPI) should I run Rubix ML in?
 All Rubix ML projects are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
 
-If you would like to serve your models in production, the preferred method is to use the [Server](https://github.com/RubixML/Server) library to spin up a high-performance standalone model server from the command line. If you plan to implement your own model server, we recommend using an asynchronous event loop such as [React PHP](https://reactphp.org/) or [Swoole](https://www.swoole.co.uk/) to prevent the model from having to be loaded on each request.
+If you would like to serve your models in production, the preferred method is to use the [Server](https://github.com/RubixML/Server) library to spin up a high-performance standalone model server from the command line. If you plan to implement your own model server, we recommend using an asynchronous event loop such as [React PHP](https://reactphp.org/) or [Swoole](https://www.swoole.co.uk/) to prevent the model from having to be loaded into memory on each request.
 
 To run a PHP script using the command line interface (CLI), open a terminal window and enter:
 ```sh

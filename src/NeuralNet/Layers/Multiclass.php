@@ -235,7 +235,7 @@ class Multiclass implements Output
     }
 
     /**
-     * Calculate the gradients for each output neuron and update.
+     * Compute the gradient and loss at the output.
      *
      * @param string[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
