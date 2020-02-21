@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php">[source]</a></span>
 
 # Naive Bayes
-Probability-based classifier that uses Bayes' Theorem and the strong assumption that all features are independent. In practice, the independence assumption tends to work out despite most features being correlated in the real world. This implementation is based on a categorical distribution of input features.
+Categorical Naive Bayes is a probability-based classifier that uses counting and Bayes' Theorem to derive the probabilities of a class given a sample of categorical features. The term *naive* refers to the fact that Naive Bayes treats each feature as if it was independent of the others even though this is usually not the case in real life.
 
 > **Note:** Each partial train has the overhead of recomputing the probability mass function for each feature per class. As such, it is better to train with fewer but larger training sets.
 
@@ -13,7 +13,7 @@ Probability-based classifier that uses Bayes' Theorem and the strong assumption 
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing applied to the probabilities. |
-| 2 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
+| 2 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training set. |
 
 ## Additional Methods
 Return the class prior probabilities:

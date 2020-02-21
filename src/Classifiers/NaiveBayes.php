@@ -28,14 +28,13 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Naive Bayes
  *
- * Probability-based classifier that uses Bayes' Theorem and the strong assumption that
- * all features are independent. In practice, the independence assumption tends to work
- * out despite most features being correlated in the real world. This particular
- * implementation is based on a categorical distribution of input features.
+ * Categorical Naive Bayes is a probability-based classifier that uses counting and Bayes' Theorem
+ * to derive the probabilities of a class given a sample of categorical features. The term *naive*
+ * refers to the fact that Naive Bayes treats each feature as if it was independent of the others
+ * even though this is usually not the case in real life.
  *
- * > **Note:** Each partial train has the overhead of recomputing the probability
- * mass function for each feature per class. As such, it is better to train with
- * fewer but larger training sets.
+ * > **Note:** Each partial train has the overhead of recomputing the probability mass function for
+ * each feature per class. As such, it is better to train with fewer but larger training sets.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

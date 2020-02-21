@@ -39,13 +39,13 @@ class L2Normalizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $norm = 0.;
+            $sigma = 0.0;
 
             foreach ($sample as &$value) {
-                $norm += $value ** 2;
+                $sigma += $value ** 2;
             }
 
-            $norm = sqrt($norm ?: EPSILON);
+            $norm = sqrt($sigma ?: EPSILON);
 
             foreach ($sample as &$value) {
                 $value /= $norm;

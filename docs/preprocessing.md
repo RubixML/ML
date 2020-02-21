@@ -13,26 +13,59 @@ $dataset->apply(new OneHotEncoder());
 Transformations can be chained by calling the `apply()` method fluently.
 
 ```php
-use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\Transformers\RandomHotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 
-$dataset->apply(new NumericStringConverter())
-    ->apply(new RandomHotDeckImputer(2))
-    ->apply(new OneHotEncoder());
+$dataset->apply(new RandomHotDeckImputer(5))
+    ->apply(new OneHotEncoder())
+    ->apply(new ZScaleStandardizer());
+```
+
+## Transformer Pipelines
+[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) which allow you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will transparently be fitted and/or transformed in the background before it arrives in the method context.
+
+Let's apply the same 3 transformers as in the example above by passing the transformer instances in the order we want them applied along with a base estimator to the constructor of Pipeline like in the example below.
+
+```php
+use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+
+$estimator = new Pipeline([
+    new RandomHotDeckImputer(5),
+    new OneHotEncoder(),
+    new ZScaleStandardizer(),
+], new SoftmaxClassifier(200));
+```
+
+Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.
+
+```php
+$estimator->train($dataset); // Transformers fitted and applied automatically
+
+$estimator->partial($dataset); // Transformers updated and applied
+```
+
+Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
+
+```php
+$predictions = $estimator->predict($dataset); // Dataset automatically transformed
 ```
 
 ## Standardization and Normalization
 Oftentimes, the continuous features of a dataset will be on different scales because they were measured by different methods. For example, age (0 - 100) and income (0 - 9,999,999) are on two widely different scales. Standardization is the processes of transforming a dataset such that the features are all on one scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns or the rows of the dataset.
 
-| Transformer | Operates On | Stateful | Elastic |
-|---|---|---|---|
-| [L1 Normalizer](transformers/l1-normalizer.md) | Rows | | |
-| [L2 Normalizer](transformers/l2-normalizer.md) | Rows | | |
-| [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Columns | ● | ● |
-| [Min Max Normalizer](transformers/min-max-normalizer.md) | Columns | ● | ● |
-| [Robust Standardizer](transformers/robust-standardizer.md) | Columns | ● | |
-| [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns | ● | ● |
+| Transformer | Operates On | Range | Stateful | Elastic |
+|---|---|---|---|---|
+| [L1 Normalizer](transformers/l1-normalizer.md) | Rows | [0, 1] | | |
+| [L2 Normalizer](transformers/l2-normalizer.md) | Rows | [0, 1] | | |
+| [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Columns | [-1, 1] | ● | ● |
+| [Min Max Normalizer](transformers/min-max-normalizer.md) | Columns | [min, max] | ● | ● |
+| [Robust Standardizer](transformers/robust-standardizer.md) | Columns | [-∞, ∞] | ● | |
+| [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns | [-∞, ∞] | ● | ● |
 
 ## Feature Conversion
 Since learners can be compatible with different data types, it may be necessary to convert features of an incompatible type to a compatible one. Feature converters do just that for all the columns of a dataset in a fast and efficient manner.
@@ -49,8 +82,8 @@ One technique for handling missing data is a preprocessing step called *imputati
 | Transformer | Data Types | Stateful | Elastic |
 |---|---|---|---|
 | [KNN Imputer](transformers/knn-imputer.md) | Continuous, Categorical | ● | |
-| [Missing Data Imputer](transformers/missing-data-imputer.md) | Continuous, Categorical| ● | |
-| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) |Continuous, Categorical | ● | |
+| [Missing Data Imputer](transformers/missing-data-imputer.md) | Continuous, Categorical | ● | |
+| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | Continuous, Categorical | ● | |
 
 ## Feature Extraction
 Higher-order data such as images and text blobs are actually composites of many scalar features. Thus, it is often necessary to extract those features from their original representation in order to train a learner.
@@ -63,7 +96,7 @@ Higher-order data such as images and text blobs are actually composites of many 
 ## Dimensionality Reduction
 Dimensionality reduction in machine learning is analogous to compression in the context of sending data over a wire. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
 
-| Transformer | Requires Labels? | Stateful | Elastic |
+| Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
 | [Dense Random Projector](transformers/dense-random-projector.md) | | ● | |
 | [Gaussian Random Projector](transformers/gaussian-random-projector.md) | | ● | |
@@ -78,13 +111,6 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 - [Variance Threshold Filter](transformers/variance-threshold-filter.md)
 
-## Image Processing
-For computer vision tasks, images may need to be processed to ensure they are the correct size and shape. Other forms of image processing may include color correction and blurring/sharpening.
-
-**Examples**
-
-- [Image Resizer](transformers/image-resizer.md)
-
 ## Text Cleaning
 For natural language processing (NLP) tasks, cleaning the text will help eliminate noise such as *stop words* or other uninformative tokens like URLs and email addresses from the corpus. Another common step is to *normalize* the text so that words like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
 
@@ -95,35 +121,9 @@ For natural language processing (NLP) tasks, cleaning the text will help elimina
 - [Text Normalizer](transformers/text-normalizer.md)
 - [Stop Word Filter](transformers/stop-word-filter.md)
 
-## Transformer Pipelines
-[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) which allow you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will transparently be fitted and/or transformed in the background before it arrives in the method context.
+## Image Processing
+For computer vision tasks, images may need to be processed to ensure they are the correct size and shape. Other forms of image processing may include color correction and blurring/sharpening.
 
-Let's say we wanted to build a pipeline to normalize some blobs of text, extract the term frequencies (TF), and then transform them by their inverse document frequency (IDF). We could build such a transformer Pipeline by passing the transformer instances in the order we want them applied along with a base estimator to its constructor like in the example below.
+**Examples**
 
-```php
-use Rubix\ML\Pipeline;
-use Rubix\ML\Transformers\TextNormalizer;
-use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Transformers\TfIdfTransformer;
-use Rubix\ML\Classifiers\GaussianNB;
-
-$estimator = new Pipeline([
-    new TextNormalizer(),
-    new WordCountVectorizer(10000),
-    new TfIdfTransformer(),
-], new GaussianNB());
-```
-
-Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the underlying learner.
-
-```php
-$estimator->train($dataset); // Transformers fitted and applied automatically
-
-$estimator->partial($dataset); // Transformers updated and applied
-```
-
-Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
-
-```php
-$predictions = $estimator->predict($dataset); // Dataset automatically transformed
-```
+- [Image Resizer](transformers/image-resizer.md)

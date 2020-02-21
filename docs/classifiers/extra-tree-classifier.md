@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ExtraTreeClassifier.php">[source]</a></span>
 
 # Extra Tree Classifier
-An Extremely Randomized Classification Tree that recursively chooses node splits with the least entropy among a set of *k* (given by max features) completely random split points. Extra Trees are useful in ensembles such as [Random Forest](random-forest.md) or [AdaBoost](adaboost.md) as the *weak* learner or they can be used on their own. The strength of Extra Trees as compared to standard decision trees are their computational efficiency and lower variance.
+An *Extremely Randomized* Classification Tree that recursively chooses node splits with the least entropy among a set of *k* (given by max features) random split points. Extra Trees are useful in ensembles such as [Random Forest](random-forest.md) or [AdaBoost](adaboost.md) as the *weak* learner or they can be used on their own. The strength of Extra Trees as compared to standard decision trees are their computational efficiency and lower variance.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

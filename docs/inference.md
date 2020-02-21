@@ -1,18 +1,18 @@
 # Inference
-Inference is the process of making predictions using an estimator. You can think of an estimator as *inferring* the outcome of a sample given the input features and the estimator's hidden state created during training.
+Inference is the process of making predictions using an estimator. You can think of an estimator as *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators can take on any one of these types depending on the base estimator that it wraps.
 
 | Estimator Type | Output Prediction | Examples |
 |---|---|---|
-| Classifier | A categorical class label | `cat`, `dog`, `ship` |
-| Regressor | A continuous value | `490,000` or `1.67592` |
-| Clusterer | A discrete cluster number | `0`, `1`, `2`, etc. |
-| Anomaly Detector | `1` for an anomaly, `0` otherwise | `0` or `1` |
+| Classifier | A categorical class label | cat, dog, ship |
+| Regressor | A continuous value | 490,000 or 1.67592 |
+| Clusterer | A discrete cluster number | 0, 1, 2, ..., n |
+| Anomaly Detector | 1 for an anomaly, 0 otherwise | 0 or 1 |
 
 ## Making Predictions
-All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model. To return the predictions, pass the estimator a dataset containing samples with features present in the same order they were given to the learner during training.
+All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array. To return the predictions, pass the estimator a dataset containing unknown (unlabeled) samples with the same features that were used to train the model.
 
 ```php
 $predictions = $estimator->predict($dataset);
@@ -32,7 +32,7 @@ array(3) {
 ```
 
 ## Single Predictions
-Sometimes, you'll just want to make a prediction on a single sample instead of an entire dataset. To return a single prediction from the model, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface ensuring that the features are in the same order as when the learner was trained.
+Sometimes, you'll just want to make a prediction on a single sample instead of an entire dataset. To return a single prediction from the model, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface ensuring that the features are given in the same order as when the learner was trained.
 
 ```php
 $prediction = $estimator->predictSample([0.25, 3, 'furry']);

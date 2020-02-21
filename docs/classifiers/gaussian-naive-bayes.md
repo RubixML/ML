@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/GaussianNB.php">[source]</a></span>
 
 # Gaussian Naive Bayes
-A version of the [Naive Bayes](naive-bayes.md) classifier that places a probability density function over continuous input features. Aside from feature independence, Gaussian NB comes with the additional assumption that all features are normally (Gaussian) distributed.
+Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifier for continuous features. It places a probability density function over the input features on a class basis and uses Bayes' Theorem to derive the class probabilities. In addition to feature independence, Gaussian NB comes with the additional assumption that all features are normally (Gaussian) distributed.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
@@ -10,7 +10,7 @@ A version of the [Naive Bayes](naive-bayes.md) classifier that places a probabil
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | priors | Auto | array | The user-defined class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
+| 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training set. |
 
 ## Additional Methods
 Return the class prior probabilities:

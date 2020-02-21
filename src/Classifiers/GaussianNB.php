@@ -29,8 +29,9 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Gaussian Naive Bayes
  *
- * A version of the Naive Bayes classifier that places a probability density function over
- * continuous input features. Aside from feature independence, Gaussian NB comes with the
+ * Gaussian Naive Bayes is a version of the Naive Bayes classifier for continuous features. It places
+ * a probability density function over the input features on a class basis and uses Bayes' Theorem to
+ * derive the class probabilities. In addition to feature independence, Gaussian NB comes with the
  * additional assumption that all features are normally (Gaussian) distributed.
  *
  * References:
