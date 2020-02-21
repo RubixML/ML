@@ -7,7 +7,6 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 use function count;
-use function gettype;
 
 use const Rubix\ML\PHI;
 
@@ -77,27 +76,15 @@ class Isolator implements BinaryNode
 
     /**
      * @param int $column
-     * @param mixed $value
+     * @param string|int|float $value
      * @param \Rubix\ML\Datasets\Dataset[] $groups
      * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups)
     {
-        if (!is_string($value) and !is_numeric($value)) {
-            throw new InvalidArgumentException('Split value must be a string'
-                . ' or numeric type, ' . gettype($value) . ' given.');
-        }
-
         if (count($groups) !== 2) {
             throw new InvalidArgumentException('The number of groups'
                 . ' must be exactly 2.');
-        }
-
-        foreach ($groups as $group) {
-            if (!$group instanceof Dataset) {
-                throw new InvalidArgumentException('Sample groups must be'
-                    . ' dataset objects, ' . gettype($group) . ' given.');
-            }
         }
 
         $this->column = $column;

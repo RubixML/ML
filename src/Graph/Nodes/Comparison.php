@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
@@ -59,28 +58,16 @@ class Comparison implements Decision
 
     /**
      * @param int $column
-     * @param mixed $value
+     * @param string|int|float $value
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param float $impurity
      * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups, float $impurity)
     {
-        if (!is_string($value) and !is_numeric($value)) {
-            throw new InvalidArgumentException('Split value must be a string'
-                . ' or numeric type, ' . gettype($value) . ' given.');
-        }
-
         if (count($groups) !== 2) {
             throw new InvalidArgumentException('The number of groups'
                 . ' must be exactly 2.');
-        }
-
-        foreach ($groups as $group) {
-            if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Group must be a'
-                    . ' labeled dataset, ' . gettype($group) . ' given.');
-            }
         }
 
         $this->column = $column;
@@ -150,13 +137,11 @@ class Comparison implements Decision
         $impurity = $this->impurity;
 
         if ($this->left instanceof Decision) {
-            $impurity -= $this->left->impurity()
-                * ($this->left->n() / $this->n);
+            $impurity -= $this->left->impurity() * ($this->left->n() / $this->n);
         }
 
         if ($this->right instanceof Decision) {
-            $impurity -= $this->right->impurity()
-                * ($this->right->n() / $this->n);
+            $impurity -= $this->right->impurity() * ($this->right->n() / $this->n);
         }
 
         return $impurity;

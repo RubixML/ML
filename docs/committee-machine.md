@@ -3,7 +3,7 @@
 # Committee Machine
 A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence scheme to weight the final predictions.
 
-> **Note:** Influence values can be arbitrary as they are normalized upon instantiation.
+> **Note:** Influence values can be arbitrary as they are automatically normalized upon instantiation.
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
 
@@ -13,7 +13,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
-| 2 | influences | | array | The influences for each expert in the committee. The default is to weight each expert equally. |
+| 2 | influences | null | array | The influence values for each expert in the committee. If null, each expert will be weighted equally. |
 
 ## Additional Methods
 Return the learner instances of the committee:
@@ -41,7 +41,7 @@ $estimator = new CommitteeMachine([
     new KDNeighbors(3),
     new SoftmaxClassifier(100),
 ], [
-    1, 4, 3, 2,
+    0.2, 0.4, 0.3, 0.1,
 ]);
 ```
 

@@ -9,7 +9,6 @@ use Generator;
 
 use function Rubix\ML\argmax;
 use function count;
-use function gettype;
 
 /**
  * Hypercube
@@ -89,7 +88,7 @@ class Box implements BinaryNode, Hypercube
 
     /**
      * @param int $column
-     * @param mixed $value
+     * @param string|int|float $value
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param (int|float)[] $min
      * @param (int|float)[] $max
@@ -97,21 +96,9 @@ class Box implements BinaryNode, Hypercube
      */
     public function __construct(int $column, $value, array $groups, array $min, array $max)
     {
-        if (!is_string($value) and !is_numeric($value)) {
-            throw new InvalidArgumentException('Split value must be a string'
-                . ' or numeric type, ' . gettype($value) . ' given.');
-        }
-
         if (count($groups) !== 2) {
             throw new InvalidArgumentException('The number of groups'
                 . ' must be exactly 2.');
-        }
-
-        foreach ($groups as $group) {
-            if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Group must be a'
-                    . ' Labeled dataset, ' . gettype($group) . ' given.');
-            }
         }
 
         if (count($min) !== count($max)) {

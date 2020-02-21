@@ -10,7 +10,6 @@ use InvalidArgumentException;
 
 use function Rubix\ML\argmax;
 use function count;
-use function gettype;
 
 /**
  * Hypersphere
@@ -111,13 +110,6 @@ class Ball implements BinaryNode, Hypersphere
         if (count($groups) !== 2) {
             throw new InvalidArgumentException('The number of groups'
                 . ' must be exactly 2.');
-        }
-
-        foreach ($groups as $group) {
-            if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Group must be a'
-                    . ' Labeled dataset, ' . gettype($group) . ' given.');
-            }
         }
 
         $this->center = $center;
