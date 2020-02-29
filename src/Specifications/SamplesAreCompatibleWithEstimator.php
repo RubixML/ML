@@ -1,27 +1,27 @@
 <?php
 
-namespace Rubix\ML\Other\Specifications;
+namespace Rubix\ML\Specifications;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 use function count;
 use function get_class;
 
-class SamplesAreCompatibleWithDistance
+class SamplesAreCompatibleWithEstimator
 {
     /**
      * Perform a check of the specification.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param \Rubix\ML\Estimator $estimator
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Distance $kernel) : void
+    public static function check(Dataset $dataset, Estimator $estimator) : void
     {
-        $compatibility = $kernel->compatibility();
+        $compatibility = $estimator->compatibility();
 
         $types = $dataset->uniqueTypes();
 
@@ -31,7 +31,7 @@ class SamplesAreCompatibleWithDistance
             $diff = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                Params::shortName(get_class($kernel))
+                Params::shortName(get_class($estimator))
                 . ' is only compatible with '
                 . implode(', ', $compatibility) . ' data types, '
                 . implode(', ', $diff) . ' given.'

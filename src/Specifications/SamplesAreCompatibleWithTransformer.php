@@ -1,28 +1,28 @@
 <?php
 
-namespace Rubix\ML\Other\Specifications;
+namespace Rubix\ML\Specifications;
 
-use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
 use function count;
 use function get_class;
 
-class SamplesAreCompatibleWithEstimator
+class SamplesAreCompatibleWithTransformer
 {
     /**
      * Perform a check of the specification.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\Transformers\Transformer $transformer
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Estimator $estimator) : void
+    public static function check(Dataset $dataset, Transformer $transformer) : void
     {
-        $compatibility = $estimator->compatibility();
-
+        $compatibility = $transformer->compatibility();
+        
         $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);
@@ -31,7 +31,7 @@ class SamplesAreCompatibleWithEstimator
             $diff = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                Params::shortName(get_class($estimator))
+                Params::shortName(get_class($transformer))
                 . ' is only compatible with '
                 . implode(', ', $compatibility) . ' data types, '
                 . implode(', ', $diff) . ' given.'

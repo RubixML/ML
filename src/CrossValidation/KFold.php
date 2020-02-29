@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
 /**

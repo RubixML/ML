@@ -18,8 +18,8 @@ use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 

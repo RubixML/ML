@@ -6,7 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
 use ErrorException;
@@ -941,7 +941,12 @@ class Labeled extends Dataset
                 . ' but ' . count($weights) . ' given.');
         }
 
-        $total = array_sum($weights);
+        $numLevels = (int) round(sqrt(count($weights)));
+
+        $levels = array_chunk($weights, $numLevels, true);
+        $levelTotals = array_map('array_sum', $levels);
+
+        $total = array_sum($levelTotals);
         $max = (int) round($total * PHI);
 
         $samples = $labels = [];
@@ -949,14 +954,24 @@ class Labeled extends Dataset
         while (count($samples) < $n) {
             $delta = rand(0, $max) / PHI;
 
-            foreach ($weights as $offset => $weight) {
-                $delta -= $weight;
+            foreach ($levels as $i => $level) {
+                $levelTotal = $levelTotals[$i];
 
-                if ($delta <= 0.0) {
-                    $samples[] = $this->samples[$offset];
-                    $labels[] = $this->labels[$offset];
+                if ($delta - $levelTotal > 0) {
+                    $delta -= $levelTotal;
 
-                    break 1;
+                    continue 1;
+                }
+
+                foreach ($level as $offset => $weight) {
+                    $delta -= $weight;
+    
+                    if ($delta <= 0.0) {
+                        $samples[] = $this->samples[$offset];
+                        $labels[] = $this->labels[$offset];
+    
+                        break 2;
+                    }
                 }
             }
         }

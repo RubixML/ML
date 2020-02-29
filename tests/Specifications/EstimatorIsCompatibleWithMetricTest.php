@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Other\Specifications;
+namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
-use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric
+ * @covers \Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric
  */
 class EstimatorIsCompatibleWithMetricTest extends TestCase
 {

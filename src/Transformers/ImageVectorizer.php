@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 
 use function is_null;

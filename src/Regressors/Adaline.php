@@ -20,11 +20,11 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 

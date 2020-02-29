@@ -19,12 +19,12 @@ class FuzzyCMeansBench
     /**
      * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $training;
+    protected $training;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $testing;
+    protected $testing;
 
     /**
      * @var \Rubix\ML\Clusterers\FuzzyCMeans

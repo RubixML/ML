@@ -16,9 +16,9 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use Exception;
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Other\Specifications;
+namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\L1Normalizer;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer
+ * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer
  */
 class SamplesAreCompatibleWithTransformerTest extends TestCase
 {

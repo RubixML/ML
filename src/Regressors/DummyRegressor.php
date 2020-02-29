@@ -12,8 +12,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use InvalidArgumentException;
 use RuntimeException;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Specifications;
+namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Embedders\Embedder;

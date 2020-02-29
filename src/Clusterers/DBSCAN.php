@@ -9,8 +9,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 
 use function count;

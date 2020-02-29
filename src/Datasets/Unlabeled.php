@@ -4,7 +4,7 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use Generator;
 
@@ -476,13 +476,13 @@ class Unlabeled extends Dataset
 
         $maxOffset = $this->numRows() - 1;
 
-        $subset = [];
+        $samples = [];
 
-        while (count($subset) < $n) {
-            $subset[] = $this->samples[rand(0, $maxOffset)];
+        while (count($samples) < $n) {
+            $samples[] = $this->samples[rand(0, $maxOffset)];
         }
 
-        return self::quick($subset);
+        return self::quick($samples);
     }
 
     /**
@@ -507,26 +507,41 @@ class Unlabeled extends Dataset
                 . ' but ' . count($weights) . ' given.');
         }
 
-        $total = array_sum($weights);
+        $numLevels = (int) round(sqrt(count($weights)));
+
+        $levels = array_chunk($weights, $numLevels, true);
+        $levelTotals = array_map('array_sum', $levels);
+
+        $total = array_sum($levelTotals);
         $max = (int) round($total * PHI);
 
-        $subset = [];
+        $samples = [];
 
-        while (count($subset) < $n) {
+        while (count($samples) < $n) {
             $delta = rand(0, $max) / PHI;
 
-            foreach ($weights as $offset => $weight) {
-                $delta -= $weight;
+            foreach ($levels as $i => $level) {
+                $levelTotal = $levelTotals[$i];
 
-                if ($delta <= 0.0) {
-                    $subset[] = $this->samples[$offset];
-                    
-                    break 1;
+                if ($delta - $levelTotal > 0) {
+                    $delta -= $levelTotal;
+
+                    continue 1;
+                }
+
+                foreach ($level as $offset => $weight) {
+                    $delta -= $weight;
+
+                    if ($delta <= 0.0) {
+                        $samples[] = $this->samples[$offset];
+                        
+                        break 1;
+                    }
                 }
             }
         }
 
-        return self::quick($subset);
+        return self::quick($samples);
     }
 
     /**

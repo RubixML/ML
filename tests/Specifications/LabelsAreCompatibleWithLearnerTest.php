@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Other\Specifications;
+namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\NaiveBayes;
-use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner
+ * @covers \Rubix\ML\Specifications\LabelsAreCompatibleWithLearner
  */
 class LabelsAreCompatibleWithLearnerTest extends TestCase
 {

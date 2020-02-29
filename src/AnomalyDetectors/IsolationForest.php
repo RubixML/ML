@@ -13,8 +13,8 @@ use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 

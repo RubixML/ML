@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Other\Specifications;
+namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithDistance
+ * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithDistance
  */
 class SamplesAreCompatibleWithDistanceTest extends TestCase
 {

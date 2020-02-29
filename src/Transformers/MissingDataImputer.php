@@ -8,7 +8,7 @@ use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\KMostFrequent;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 

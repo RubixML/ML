@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.20-rc1
     - Random Forest now handles imbalanced datasets
     - Added early stopping window to AdaBoost
     - Gaussian MLE now has automatic and adaptive threshold
@@ -17,6 +17,7 @@
     - Pipeline and Persistent Model now implement Ranking
     - Changed percentile to quantile in Stats helper
     - Renamed Residual Analysis report to Error Analysis
+    - Changed namespace of specification objects
 
 - 0.0.19-beta
     - Added SiLU self-stabilizing neural network activation function

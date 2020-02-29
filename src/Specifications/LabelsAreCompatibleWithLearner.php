@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Specifications;
+namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;

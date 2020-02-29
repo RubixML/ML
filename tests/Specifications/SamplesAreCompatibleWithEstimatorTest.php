@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Other\Specifications;
+namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator
+ * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator
  */
 class SamplesAreCompatibleWithEstimatorTest extends TestCase
 {

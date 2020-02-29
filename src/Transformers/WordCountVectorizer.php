@@ -6,7 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 

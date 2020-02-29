@@ -17,7 +17,7 @@ class DBSCANBench
     /**
      * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $testing;
+    protected $testing;
 
     /**
      * @var \Rubix\ML\Clusterers\DBSCAN

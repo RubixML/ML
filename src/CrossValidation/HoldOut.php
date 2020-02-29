@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
 /**

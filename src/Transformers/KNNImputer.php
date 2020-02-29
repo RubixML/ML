@@ -11,7 +11,7 @@ use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithTransformer;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
 

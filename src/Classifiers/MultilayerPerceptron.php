@@ -26,12 +26,12 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\Other\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
-use Rubix\ML\Other\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Other\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
