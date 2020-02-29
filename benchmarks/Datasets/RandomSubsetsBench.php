@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class RandomSubsetsBench
 {
-    protected const DATASET_SIZE = 15000;
+    protected const DATASET_SIZE = 25000;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
@@ -34,7 +34,7 @@ class RandomSubsetsBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->weights = Vector::uniform(self::DATASET_SIZE)->asArray();
+        $this->weights = Vector::uniform($this->dataset->numRows())->asArray();
     }
 
     /**

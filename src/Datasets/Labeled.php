@@ -749,7 +749,7 @@ class Labeled extends Dataset
                 $strata[$label][] = $this->samples[$i];
             }
         } catch (ErrorException $e) {
-            throw new RuntimeException('Label must be an integer or string.');
+            throw new RuntimeException('Label must be a string or integer type.');
         }
 
         return $strata;
