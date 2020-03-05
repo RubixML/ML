@@ -152,8 +152,8 @@ class Agglomerate implements Generator
         }
 
         return Labeled::quick(
-            array_merge(...$samples),
-            array_merge(...$labels)
+            $samples ? array_merge(...$samples) : [],
+            $labels ? array_merge(...$labels) : []
         );
     }
 }
