@@ -34,7 +34,7 @@ class RandomSubsetsBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->weights = Vector::uniform($this->dataset->numRows())->asArray();
+        $this->weights = Vector::rand($this->dataset->numRows())->asArray();
     }
 
     /**

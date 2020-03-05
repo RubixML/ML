@@ -94,7 +94,7 @@ class Agglomerate implements Generator
 
             if ($total == 0) {
                 throw new InvalidArgumentException('Total weight for the'
-                    . ' agglomerate cannot be 0.');
+                    . ' agglomerate must not be 0.');
             }
 
             foreach ($weights as &$weight) {
@@ -137,7 +137,7 @@ class Agglomerate implements Generator
      */
     public function generate(int $n) : Labeled
     {
-        $dataset = Labeled::quick();
+        $samples = $labels = [];
 
         foreach ($this->generators as $label => $generator) {
             $p = (int) round($this->weights[$label] * $n);
@@ -146,13 +146,14 @@ class Agglomerate implements Generator
                 continue 1;
             }
 
-            $samples = $generator->generate($p)->samples();
+            $samples[] = $generator->generate($p)->samples();
 
-            $labels = array_fill(0, $p, $label);
-
-            $dataset = $dataset->append(Labeled::quick($samples, $labels));
+            $labels[] = array_fill(0, $p, $label);
         }
 
-        return $dataset;
+        return Labeled::quick(
+            array_merge(...$samples),
+            array_merge(...$labels)
+        );
     }
 }

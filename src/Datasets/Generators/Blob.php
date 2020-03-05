@@ -8,7 +8,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use InvalidArgumentException;
 
 use function count;
-use function gettype;
 
 /**
  * Blob
@@ -40,7 +39,7 @@ class Blob implements Generator
 
     /**
      * @param (int|float)[] $center
-     * @param mixed $stddev
+     * @param int|float|(int|float)[] $stddev
      * @throws \InvalidArgumentException
      */
     public function __construct(array $center = [0, 0], $stddev = 1.0)
@@ -57,11 +56,6 @@ class Blob implements Generator
             }
 
             foreach ($stddev as $value) {
-                if (!is_int($value) and !is_float($value)) {
-                    throw new InvalidArgumentException('Standard deviation must be'
-                        . ' an integer or float, ' . gettype($value) . ' given.');
-                }
-    
                 if ($value <= 0) {
                     throw new InvalidArgumentException('Standard deviation must be'
                         . " greater than 0, $value given.");
@@ -70,10 +64,9 @@ class Blob implements Generator
 
             $stddev = Vector::quick($stddev);
         } else {
-            if (!is_int($stddev) and !is_float($stddev)) {
-                throw new InvalidArgumentException('Standard deviation must'
-                    . ' be an integer or floating point number, '
-                    . gettype($stddev) . ' given');
+            if ($stddev <= 0) {
+                throw new InvalidArgumentException('Standard deviation must be'
+                    . " greater than 0, $stddev given.");
             }
         }
 

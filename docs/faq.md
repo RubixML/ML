@@ -41,11 +41,8 @@ A *tuple* is a way to denote an immutable sequential heterogeneous list with a p
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
-## Does Rubix ML support multiprocessing?
-Yes, learners that support parallel processing (multiprocessing) do so by utilizing a pluggable parallel computing backends under the hood.
-
-## Does Rubix ML support multithreading?
-Not currently, however we plan to add CPU and GPU multithreading in the future.
+## Does Rubix ML support multiprocessing/multithreading?
+Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend or extension under the hood.
 
 ## Does Rubix ML support Deep Learning?
 Yes. A number of learners in the library support Deep Learning including the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).
