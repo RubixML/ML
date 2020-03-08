@@ -30,13 +30,6 @@ use const Rubix\ML\EPSILON;
 abstract class CART implements DecisionTree
 {
     /**
-     * The ratio of samples to use when evaluating a split on a continuous feature column.
-     *
-     * @var float
-     */
-    protected const DOWNSAMPLE_RATIO = 0.25;
-
-    /**
      * The amount of impurity to tolerate when determining a perfect split.
      *
      * @var float
@@ -49,7 +42,7 @@ abstract class CART implements DecisionTree
      *
      * @var int
      */
-    protected const MIN_QUANTILES = 3;
+    protected const MIN_QUANTILES = 2;
 
     /**
      * The maximum number of quantiles to generate when evaluating a split on a continuous
@@ -57,7 +50,7 @@ abstract class CART implements DecisionTree
      *
      * @var int
      */
-    protected const MAX_QUANTILES = 200;
+    protected const MAX_QUANTILES = 100;
 
     /**
      * The glyph that denotes a branch of the tree.
@@ -423,7 +416,7 @@ abstract class CART implements DecisionTree
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        $n = (int) ceil($dataset->numRows() * self::DOWNSAMPLE_RATIO);
+        $n = (int) ceil(sqrt($dataset->numRows()));
 
         $k = max(self::MIN_QUANTILES, min(self::MAX_QUANTILES, $n));
 
