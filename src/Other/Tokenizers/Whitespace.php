@@ -7,8 +7,7 @@ use InvalidArgumentException;
 /**
  * Whitespace
  *
- * Separate each token by a user-specified delimiter such as a single
- * whitespace.
+ * Separate each token by a user-specified delimiter such as a whitespace character.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

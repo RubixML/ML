@@ -1,6 +1,7 @@
 - Unreleased
     - Tuned CART continuous feature quantile-based split finding
-    
+    - N-gram and SkipGram use configurable base word tokenizer
+
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets
     - Added early stopping window to AdaBoost

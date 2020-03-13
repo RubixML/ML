@@ -113,7 +113,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
                 . ' with continuous features.');
         }
 
-        if ($this->dfs === null or $this->n === null) {
+        if (is_null($this->dfs) or is_null($this->n)) {
             $this->fit($dataset);
             
             return;
@@ -132,7 +132,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
         $idfs = [];
 
         foreach ($this->dfs as $df) {
-            $idfs[] = log($this->n / $df) + 1.;
+            $idfs[] = 1.0 + log($this->n / $df);
         }
 
         $this->idfs = $idfs;

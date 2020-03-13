@@ -24,13 +24,6 @@ use function array_slice;
 class SkipGram implements Tokenizer
 {
     /**
-     * The regular expression to match words in a sentence.
-     *
-     * @var string
-     */
-    protected const WORD_REGEX = '/\w+/u';
-
-    /**
      * The regular expression to match sentences in a blob of text.
      *
      * @var string
@@ -59,11 +52,19 @@ class SkipGram implements Tokenizer
     protected $skip;
 
     /**
+     * The word tokenizer.
+     *
+     * @var \Rubix\ML\Other\Tokenizers\Word
+     */
+    protected $wordTokenizer;
+
+    /**
      * @param int $n
      * @param int $skip
+     * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $n = 2, int $skip = 2)
+    public function __construct(int $n = 2, int $skip = 2, Word $wordTokenizer = null)
     {
         if ($n < 2) {
             throw new InvalidArgumentException('The number of words'
@@ -77,6 +78,7 @@ class SkipGram implements Tokenizer
 
         $this->n = $n;
         $this->skip = $skip;
+        $this->wordTokenizer = $wordTokenizer ?? new Word();
     }
 
     /**
@@ -92,11 +94,7 @@ class SkipGram implements Tokenizer
         $tokens = [];
 
         foreach ($sentences as $sentence) {
-            $words = [];
-
-            preg_match_all(self::WORD_REGEX, $sentence, $words);
-
-            $words = $words[0];
+            $words = $this->wordTokenizer->tokenize($sentence);
 
             $length = count($words) - ($this->n + $this->skip);
 

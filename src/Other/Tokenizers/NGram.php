@@ -20,13 +20,6 @@ use function count;
 class NGram implements Tokenizer
 {
     /**
-     * The regular expression to match words in a sentence.
-     *
-     * @var string
-     */
-    protected const WORD_REGEX = '/\w+/u';
-
-    /**
      * The regular expression to match sentences in a blob of text.
      *
      * @var string
@@ -55,24 +48,33 @@ class NGram implements Tokenizer
     protected $max;
 
     /**
+     * The word tokenizer.
+     *
+     * @var \Rubix\ML\Other\Tokenizers\Word
+     */
+    protected $wordTokenizer;
+
+    /**
      * @param int $min
      * @param int $max
+     * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $min = 2, int $max = 2)
+    public function __construct(int $min = 2, int $max = 2, Word $wordTokenizer = null)
     {
         if ($min < 1) {
             throw new InvalidArgumentException('Minimum cannot be less'
-                . ' than minimum.');
+                . ' than 1.');
         }
 
-        if ($min > $max) {
-            throw new InvalidArgumentException('Minimum cannot be greater'
-                . ' than maximum.');
+        if ($max < $min) {
+            throw new InvalidArgumentException('Maximum cannot be less'
+                . ' than minimum.');
         }
 
         $this->min = $min;
         $this->max = $max;
+        $this->wordTokenizer = $wordTokenizer ?? new Word();
     }
 
     /**
@@ -88,11 +90,7 @@ class NGram implements Tokenizer
         $tokens = [];
 
         foreach ($sentences as $sentence) {
-            $words = [];
-
-            preg_match_all(self::WORD_REGEX, $sentence, $words);
-
-            $words = $words[0];
+            $words = $this->wordTokenizer->tokenize($sentence);
 
             $n = count($words);
 
