@@ -295,7 +295,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $labels = $dataset->labels();
         
         $n = $dataset->numRows();
-        $p = (int) round($this->ratio * $n);
+        $p = (int) ceil($this->ratio * $n);
         $k = count($this->classes);
 
         $maxLoss = 1.0 - (1.0 / $k);

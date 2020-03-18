@@ -27,7 +27,7 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## Documentation
-Read the docs for the latest version [here](https://docs.rubixml.com).
+Read the latest docs [here](https://docs.rubixml.com).
 
 ## What is Rubix ML?
 Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, validation, and production with over 40 supervised and unsupervised learning algorithms.

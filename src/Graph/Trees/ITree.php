@@ -71,7 +71,7 @@ class ITree implements BST
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have a depth'
-                . " less than 1, $maxDepth given.");
+                . " of less than 1, $maxDepth given.");
         }
 
         $this->maxDepth = $maxDepth;

@@ -362,7 +362,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
         $prevPred = Vector::quick($this->base->predict($testing));
 
-        $k = (int) round($this->ratio * $training->numRows());
+        $k = (int) ceil($this->ratio * $training->numRows());
 
         $bestScore = $min;
         $bestEpoch = $nu = 0;

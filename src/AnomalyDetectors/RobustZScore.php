@@ -202,7 +202,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Apply an arbitrary unnormalized scoring function over the dataset.
+     * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException

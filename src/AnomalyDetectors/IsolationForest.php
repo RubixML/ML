@@ -120,8 +120,8 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         }
 
         if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be strictly'
+                . " between 0 and 1, $ratio given.");
         }
 
         if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
@@ -193,10 +193,10 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $n = $dataset->numRows();
 
-        $k = $this->ratio ? (int) round($this->ratio * $n)
+        $k = $this->ratio ? (int) ceil($this->ratio * $n)
             : min(self::DEFAULT_SUBSAMPLE, $n);
 
-        $maxDepth = (int) ceil(log(max($n, 2), 2));
+        $maxDepth = (int) max(1, round(log($k, 2)));
 
         $this->trees = [];
 
@@ -233,7 +233,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Apply an arbitrary unnormalized scoring function over the dataset.
+     * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException

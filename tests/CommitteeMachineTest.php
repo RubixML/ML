@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Parallel;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -83,6 +84,7 @@ class CommitteeMachineTest extends TestCase
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

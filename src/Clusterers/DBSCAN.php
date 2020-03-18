@@ -131,7 +131,6 @@ class DBSCAN implements Estimator
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @return int[]
      */
     public function predict(Dataset $dataset) : array
@@ -144,10 +143,10 @@ class DBSCAN implements Estimator
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $this->tree->grow($dataset);
-
-        $predictions = [];
         
         $cluster = self::START_CLUSTER;
+
+        $predictions = [];
 
         foreach ($dataset->samples() as $i => $sample) {
             if (isset($predictions[$i])) {

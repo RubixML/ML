@@ -2,7 +2,7 @@
 A Ranking anomaly detector is one that assigns anomaly scores to samples in a dataset. The interface provides the `rank()` method which returns a set of scores from a dataset object.
 
 ## Score a Dataset
-Return the anomaly scores for each sample in a dataset:
+Return the anomaly scores assigned to the samples in a dataset:
 ```php
 public rank(Dataset $dataset) : array
 ```

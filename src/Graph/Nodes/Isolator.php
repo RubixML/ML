@@ -64,8 +64,6 @@ class Isolator implements BinaryNode
 
             $value = rand($min, $max) / PHI;
         } else {
-            $values = array_unique($values);
-            
             $value = $values[array_rand($values)];
         }
 

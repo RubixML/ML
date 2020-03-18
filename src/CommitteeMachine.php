@@ -66,13 +66,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     protected $influences;
 
     /**
-     * The type of estimator this is.
-     *
-     * @var \Rubix\ML\EstimatorType
-     */
-    protected $type;
-
-    /**
      * The data types that the committee is compatible with.
      *
      * @var \Rubix\ML\DataType[]
@@ -100,12 +93,26 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 . ' least 1 expert.');
         }
 
+        $proto = current($experts);
+
         $compatibilities = [];
 
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
                 throw new InvalidArgumentException('Expert must implement'
                     . ' the learner interface.');
+            }
+
+            if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
+                throw new InvalidArgumentException('Committee only supports'
+                    . ' classifiers, regressors, and anomaly detectors, '
+                    . " {$expert->type()} given.");
+            }
+
+            if ($expert->type() != $proto->type()) {
+                throw new InvalidArgumentException('Experts must all be of'
+                    . " the same type, {$proto->type()} expected but"
+                    . " {$expert->type()} given.");
             }
 
             $compatibilities[] = $expert->compatibility();
@@ -116,22 +123,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         if (count($compatibility) < 1) {
             throw new InvalidArgumentException('Committee must have at'
                 . ' least 1 compatible data type in common.');
-        }
-
-        $type = current($experts)->type();
-
-        if (!in_array($type->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
-            throw new InvalidArgumentException('This meta estimator'
-                . ' only supports classifiers, regressors, and anomaly'
-                . " detectors, $type given.");
-        }
-
-        foreach ($experts as $expert) {
-            if ($expert->type() != $type) {
-                throw new InvalidArgumentException('Experts must all be of'
-                    . " the same type, $type expected"
-                    . " but found {$expert->type()}.");
-            }
         }
 
         $k = count($experts);
@@ -159,7 +150,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         $this->experts = $experts;
         $this->influences = $influences;
-        $this->type = $type;
         $this->compatibility = $compatibility;
         $this->backend = new Serial();
     }
@@ -171,7 +161,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function type() : EstimatorType
     {
-        return $this->type;
+        return current($this->experts)->type();
     }
 
     /**
@@ -235,7 +225,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function train(Dataset $dataset) : void
     {
-        if ($this->type->isClassifier() or $this->type->isRegressor()) {
+        if ($this->type()->isClassifier() or $this->type()->isRegressor()) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Learner requires a'
                     . ' labeled training set.');
@@ -265,7 +255,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         $this->experts = $this->backend->process();
 
-        switch ($this->type) {
+        switch ($this->type()) {
             case EstimatorType::classifier():
                 if ($dataset instanceof Labeled) {
                     $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
@@ -308,7 +298,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         $aggregate = array_transpose($this->backend->process());
 
-        switch ($this->type) {
+        switch ($this->type()) {
             case EstimatorType::classifier():
             case EstimatorType::anomalyDetector():
                 return array_map([$this, 'decideDiscrete'], $aggregate);

@@ -168,7 +168,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        $p = (int) round($this->ratio * $dataset->numRows());
+        $p = (int) ceil($this->ratio * $dataset->numRows());
 
         $this->backend->flush();
 
