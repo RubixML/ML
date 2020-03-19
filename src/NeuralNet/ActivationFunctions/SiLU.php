@@ -53,10 +53,24 @@ class SiLU implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        $ones = Matrix::ones(...$computed->shape());
+        $derivative = [];
+        
+        foreach ($z->asArray() as $i => $rowZ) {
+            $rowComputed = $computed[$i];
 
-        return $this->sigmoid->compute($z)
-            ->multiply($ones->subtract($computed))
-            ->add($computed);
+            $temp = [];
+
+            foreach ($rowComputed as $j => $valueComputed) {
+                $valueZ = $rowZ[$j];
+
+                $temp[] = $valueZ !== 0.0
+                    ? $valueComputed / $valueZ * (1.0 - $valueComputed) + $valueComputed
+                    : 0.5;
+            }
+
+            $derivative[] = $temp;
+        }
+
+        return Matrix::quick($derivative);
     }
 }
