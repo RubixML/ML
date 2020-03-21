@@ -84,6 +84,6 @@ class AlphaDropout extends Dropout
      */
     public function saturate(int $value) : float
     {
-        return $value === 0 ? self::ALPHA_P : 0.0;
+        return $value == 0 ? self::ALPHA_P : 0.0;
     }
 }

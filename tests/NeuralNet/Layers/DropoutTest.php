@@ -52,9 +52,9 @@ class DropoutTest extends TestCase
         $this->fanIn = 3;
 
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->prevGrad = new Deferred(function () {
@@ -93,9 +93,9 @@ class DropoutTest extends TestCase
         $this->assertEquals($this->fanIn, $this->layer->width());
 
         $expected = [
-            [1.0, 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6.0, 0.],
+            [2.0, 5.0, -0.2],
+            [0.2, 0.0, 6.0],
+            [0.004, -12.0, 0.0],
         ];
 
         $forward = $this->layer->forward($this->input);
@@ -106,18 +106,18 @@ class DropoutTest extends TestCase
         $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
-            [0.25, 0.7, 0.1],
-            [0.5, 0.2, 0.01],
-            [0.25, 0.1, 0.0],
+            [0.5, 1.4, 0.2],
+            [1.0, 0.4, 0.02],
+            [0.5, 0.2, 0.0],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ];
 
         $infer = $this->layer->infer($this->input);

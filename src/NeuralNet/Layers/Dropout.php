@@ -61,8 +61,8 @@ class Dropout implements Hidden
     public function __construct(float $ratio = 0.5)
     {
         if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Dropout ratio must be between'
-                . " 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be strictly'
+                . " between 0 and 1, $ratio given.");
         }
 
         $this->ratio = $ratio;
@@ -109,7 +109,8 @@ class Dropout implements Hidden
     public function forward(Matrix $input) : Matrix
     {
         $this->mask = Matrix::rand(...$input->shape())
-            ->greater($this->ratio);
+            ->greater($this->ratio)
+            ->multiply($this->scale);
 
         return $this->mask->multiply($input);
     }
