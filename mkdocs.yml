@@ -171,7 +171,6 @@ nav:
     - Xavier 2: neural-network/initializers/xavier-2.md
   - Hidden Layers:
     - Activation: neural-network/hidden-layers/activation.md
-    - Alpha Dropout: neural-network/hidden-layers/alpha-dropout.md
     - Batch Norm: neural-network/hidden-layers/batch-norm.md
     - Dense: neural-network/hidden-layers/dense.md
     - Dropout: neural-network/hidden-layers/dropout.md

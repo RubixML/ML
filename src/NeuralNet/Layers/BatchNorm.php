@@ -205,17 +205,16 @@ class BatchNorm implements Hidden, Parametric
             $this->variance = $variance;
         }
 
-        $this->mean = $this->mean->multiply(1. - $this->decay)
+        $this->mean = $this->mean->multiply(1.0 - $this->decay)
             ->add($mean->multiply($this->decay));
 
-        $this->variance = $this->variance->multiply(1. - $this->decay)
+        $this->variance = $this->variance->multiply(1.0 - $this->decay)
             ->add($variance->multiply($this->decay));
 
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return $this->gamma->w()
-            ->multiply($xHat)
+        return $this->gamma->w()->multiply($xHat)
             ->add($this->beta->w());
     }
 
@@ -235,8 +234,7 @@ class BatchNorm implements Hidden, Parametric
         $xHat = $input->subtract($this->mean)
             ->divide($this->variance->sqrt());
 
-        return $this->gamma->w()
-            ->multiply($xHat)
+        return $this->gamma->w()->multiply($xHat)
             ->add($this->beta->w());
     }
 
