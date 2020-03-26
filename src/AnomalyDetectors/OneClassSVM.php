@@ -47,7 +47,7 @@ class OneClassSVM implements Estimator, Learner
     protected $svm;
 
     /**
-     * The memoized hyper-parameters of the model.
+     * The hyper-parameters of the model.
      *
      * @var mixed[]
      */
@@ -77,25 +77,25 @@ class OneClassSVM implements Estimator, Learner
         float $cacheSize = 100.0
     ) {
         if (!extension_loaded('svm')) {
-            throw new RuntimeException('SVM extension is not loaded, check'
-                . ' PHP configuration.');
+            throw new RuntimeException('SVM extension not loaded'
+                . ',  check PHP configuration.');
         }
 
         if ($nu < 0.0 or $nu > 1.0) {
-            throw new InvalidArgumentException('Nu must be between 0 and 1'
-                . ", $nu given.");
+            throw new InvalidArgumentException('Nu must be between'
+                . "0 and 1, $nu given.");
         }
 
         $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.0) {
-            throw new InvalidArgumentException('Tolerance cannot be less than 0,'
-                . " $tolerance given.");
+            throw new InvalidArgumentException('Tolerance must be,'
+                . " greater than 0, $tolerance given.");
         }
 
         if ($cacheSize <= 0.0) {
-            throw new InvalidArgumentException('Cache size must be greater than'
-                . " 0M, {$cacheSize}M given.");
+            throw new InvalidArgumentException('Cache size must be'
+                . " greater than 0M, {$cacheSize}M given.");
         }
 
         $options = [
@@ -210,8 +210,8 @@ class OneClassSVM implements Estimator, Learner
     public function save(string $path) : void
     {
         if (!$this->model) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Learner must be'
+                . ' trained before saving.');
         }
 
         $this->model->save($path);

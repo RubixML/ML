@@ -47,8 +47,8 @@ class ErrorAnalysis implements Report
     public function generate(array $predictions, array $labels) : array
     {
         if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
         }
 
         $muHat = Stats::mean($labels);

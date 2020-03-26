@@ -236,7 +236,7 @@ abstract class CART implements DecisionTree
             ++$depth;
 
             if ($left->empty() or $right->empty()) {
-                $node = $this->terminate($left->append($right));
+                $node = $this->terminate($left->merge($right));
     
                 $current->attachLeft($node);
                 $current->attachRight($node);

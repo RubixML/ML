@@ -14,7 +14,7 @@ class CPU
      *
      * @var string
      */
-    protected const WIN_CORES = 'wmic cpu get NumberOfLogicalProcessors';
+    protected const WIN_CORES = 'wmic cpu get NumberOfCores';
     
     /**
      * The command to return the number of processor cores on Linux.

@@ -131,7 +131,7 @@ class EstimatorType
     public function __construct(int $code)
     {
         if (!in_array($code, self::ALL)) {
-            throw new InvalidArgumentException('Invalid type code specification.');
+            throw new InvalidArgumentException('Invalid type code.');
         }
 
         $this->code = $code;

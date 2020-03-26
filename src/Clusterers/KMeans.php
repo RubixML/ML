@@ -149,28 +149,28 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
-            throw new InvalidArgumentException('Must target at least 1'
-                . " cluster, $k given.");
+            throw new InvalidArgumentException('K must be greater'
+                . " than 0, $k given.");
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size must be greater'
-                . " than 0, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be'
+                . " greater than 0, $batchSize given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train'
-                . " for at least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
-
+        
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Min change cannot be less'
-                . " than 1, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be at least 1'
-                . " epoch, $window given.");
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
         }
 
         $this->k = $k;

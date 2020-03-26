@@ -5,7 +5,6 @@ namespace Rubix\ML\CrossValidation\Reports;
 use InvalidArgumentException;
 
 use function count;
-use function gettype;
 
 /**
  * Aggregate Report
@@ -42,16 +41,16 @@ class AggregateReport implements Report
     public function __construct(array $reports)
     {
         if (empty($reports)) {
-            throw new InvalidArgumentException('Cannot generate an aggregate'
-                . ' of less than 1 report.');
+            throw new InvalidArgumentException('Aggregate must contain'
+                . ' at least 1 sub report.');
         }
 
         $compatibilities = [];
 
         foreach ($reports as $report) {
             if (!$report instanceof Report) {
-                throw new InvalidArgumentException('Can only aggregate report'
-                    . 'objects, ' . gettype($report) . ' found.');
+                throw new InvalidArgumentException('Sub report must'
+                    . ' implement the Report interface.');
             }
 
             $compatibilities[] = $report->compatibility();
@@ -60,9 +59,9 @@ class AggregateReport implements Report
         $compatibility = array_intersect(...$compatibilities);
 
         if (count($compatibility) < 1) {
-            throw new InvalidArgumentException('Aggregate must only contain'
-                . ' reports that share at least 1 estimator they are'
-                . ' compatible in common with.');
+            throw new InvalidArgumentException('Report must contain'
+                . ' sub reports that have at least 1 compatible'
+                . ' Estimator type in common.');
         }
 
         $this->reports = $reports;
@@ -88,12 +87,12 @@ class AggregateReport implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        $results = [];
+        $report = [];
 
-        foreach ($this->reports as $index => $report) {
-            $results[$index] = $report->generate($predictions, $labels);
+        foreach ($this->reports as $name => $subReport) {
+            $report[$name] = $subReport->generate($predictions, $labels);
         }
 
-        return $results;
+        return $report;
     }
 }

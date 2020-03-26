@@ -44,8 +44,8 @@ class LeavePOut implements Validator, Parallel
     public function __construct(int $p = 10)
     {
         if ($p < 1) {
-            throw new InvalidArgumentException('P cannot be less'
-                . " than 1, $p given.");
+            throw new InvalidArgumentException('P must be greater'
+                . " than 0, $p given.");
         }
 
         $this->p = $p;

@@ -14,7 +14,6 @@ use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function gettype;
 use function get_class;
 
 /**
@@ -86,9 +85,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
-                throw new InvalidArgumentException('Transformer must implement'
-                    . ' the Transformer interface, ' . gettype($transformer)
-                    . ' given.');
+                throw new InvalidArgumentException('Transformer must'
+                    . ' implement the Transformer interface.');
             }
         }
 
@@ -271,7 +269,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     public function proba(Dataset $dataset) : array
     {
         if (!$this->estimator instanceof Probabilistic) {
-            throw new RuntimeException('Base estimator must'
+            throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
 
@@ -288,7 +286,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     public function rank(Dataset $dataset) : array
     {
         if (!$this->estimator instanceof Ranking) {
-            throw new RuntimeException('Base estimator must'
+            throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
             

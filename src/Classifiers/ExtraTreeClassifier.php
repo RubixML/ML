@@ -123,7 +123,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

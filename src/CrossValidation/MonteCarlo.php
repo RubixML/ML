@@ -54,14 +54,14 @@ class MonteCarlo implements Validator, Parallel
      */
     public function __construct(int $simulations = 10, float $ratio = 0.2)
     {
-        if ($simulations < 2) {
-            throw new InvalidArgumentException('Must run at least 2'
-                . " simulations, $simulations given.");
+        if ($simulations < 1) {
+            throw new InvalidArgumentException('Number of simulations'
+                . " must be greater than 0, $simulations given.");
         }
 
         if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be'
+                . " between 0 and 1, $ratio given.");
         }
 
         $this->simulations = $simulations;

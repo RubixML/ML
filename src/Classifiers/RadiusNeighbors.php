@@ -172,7 +172,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);
@@ -182,7 +182,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         $classes = $dataset->possibleOutcomes();
 
         if (in_array($this->anomalyClass, $classes)) {
-            throw new RuntimeException('Training set must not contain'
+            throw new RuntimeException('Training set cannot contain'
                 . ' labels of the anomaly class.');
         }
 
@@ -243,8 +243,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function proba(Dataset $dataset) : array
     {
         if ($this->tree->bare() or !$this->classes) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         $probabilities = [];

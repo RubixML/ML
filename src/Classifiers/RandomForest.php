@@ -118,14 +118,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         bool $balanced = false
     ) {
         if ($base and !in_array(get_class($base), self::COMPATIBLE_LEARNERS)) {
-            throw new InvalidArgumentException('Base learner is not'
+            throw new InvalidArgumentException('Base Learner must be'
                 . ' compatible with ensemble.');
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('The number of estimators'
-                . " in the ensemble cannot be less than 1, $estimators"
-                . ' given.');
+            throw new InvalidArgumentException('Number of estimators'
+                . " must be greater than 0, $estimators given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.5) {
@@ -195,7 +194,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

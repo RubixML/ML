@@ -49,16 +49,20 @@ class Circle implements Generator
      * @param float $noise
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $x = 0.0, float $y = 0.0, float $scale = 1.0, float $noise = 0.1)
-    {
+    public function __construct(
+        float $x = 0.0,
+        float $y = 0.0,
+        float $scale = 1.0,
+        float $noise = 0.1
+    ) {
         if ($scale < 0.0) {
-            throw new InvalidArgumentException('Scaling factor must be greater'
-                . " than 0, $scale given.");
+            throw new InvalidArgumentException('Scale must be'
+                . " greater than 0, $scale given.");
         }
 
         if ($noise < 0.0) {
-            throw new InvalidArgumentException('Noise factor must be greater'
-                . " than 0, $noise given.");
+            throw new InvalidArgumentException('Noise must be'
+                . " greater than 0, $noise given.");
         }
 
         $this->center = Vector::quick([$x, $y]);

@@ -132,12 +132,12 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     public function __construct(int $estimators = 100, ?int $bins = null, float $contamination = 0.1)
     {
         if ($estimators < 1) {
-            throw new InvalidArgumentException('At least 1 histogram is'
-                . " requied to make a prediction, $estimators given.");
+            throw new InvalidArgumentException('Number of estimators'
+                . " must be greater than 0, $estimators given.");
         }
 
         if (isset($bins) and $bins < 1) {
-            throw new InvalidArgumentException('The number of bins cannot'
+            throw new InvalidArgumentException('Number of bins cannot'
                 . " be less than 1, $bins given.");
         }
 

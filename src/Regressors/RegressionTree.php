@@ -114,7 +114,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

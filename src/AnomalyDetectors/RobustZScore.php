@@ -89,13 +89,13 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
         if ($threshold <= 0.0) {
-            throw new InvalidArgumentException('Threshold must be greater'
-                . " than 0, $threshold given.");
+            throw new InvalidArgumentException('Threshold must be'
+                . " greater than 0, $threshold given.");
         }
 
         if ($alpha < 0.0 or $alpha > 1.0) {
-            throw new InvalidArgumentException('Alpha must be between'
-                . " 0 and 1, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " between 0 and 1, $alpha given.");
         }
 
         $this->threshold = $threshold;

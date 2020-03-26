@@ -48,8 +48,8 @@ class KMC2 implements Seeder
     public function __construct(int $m = 50, ?Distance $kernel = null)
     {
         if ($m < 1) {
-            throw new InvalidArgumentException('The number of candidates'
-                . " m must be greater than 1, $m given.");
+            throw new InvalidArgumentException('M must be greater'
+                . " than 0, $m given.");
         }
 
         $this->m = $m;

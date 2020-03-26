@@ -136,28 +136,28 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         ?RegressionLoss $costFn = null
     ) {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size must be at least'
-                . " 1 sample, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be'
+                . " greater than 0, $batchSize given.");
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be 0 or greater'
-                . ", $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Learner must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . " than 0, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be at least 1'
-                . " epoch, $window given.");
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
         }
 
         $this->batchSize = $batchSize;
@@ -249,7 +249,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);
@@ -282,7 +282,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
 
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

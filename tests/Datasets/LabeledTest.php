@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
@@ -592,35 +593,43 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function prepend() : void
+    public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
         $dataset = new Labeled([['nice', 'furry', 'friendly', 4.7]], ['not monster']);
 
-        $merged = $this->dataset->prepend($dataset);
+        $merged = $this->dataset->merge($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(0));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
         $this->assertEquals('not monster', $merged->label(6));
     }
 
     /**
      * @test
      */
-    public function append() : void
+    public function augment() : void
     {
-        $this->assertCount(count(self::SAMPLES), $this->dataset);
+        $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numColumns());
 
-        $dataset = new Labeled([['nice', 'furry', 'friendly', 4.7]], ['not monster']);
+        $dataset = new Unlabeled([
+            [1],
+            [2],
+            [3],
+            [4],
+            [5],
+            [6],
+        ]);
 
-        $merged = $this->dataset->append($dataset);
+        $augmented = $this->dataset->augment($dataset);
 
-        $this->assertCount(count(self::SAMPLES) + 1, $merged);
+        $this->assertEquals(count(current(self::SAMPLES)) + 1, $augmented->numColumns());
 
-        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
-        $this->assertEquals('not monster', $merged->label(6));
+        $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $augmented->sample(1));
+        $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $augmented->sample(2));
+        $this->assertEquals(self::LABELS, $augmented->labels());
     }
 
     /**

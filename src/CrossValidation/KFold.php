@@ -46,7 +46,8 @@ class KFold implements Validator, Parallel
     public function __construct(int $k = 5)
     {
         if ($k < 2) {
-            throw new InvalidArgumentException("K cannot be less than 2, $k given.");
+            throw new InvalidArgumentException('K must be greater'
+                 . " than 1, $k given.");
         }
 
         $this->k = $k;
@@ -76,15 +77,14 @@ class KFold implements Validator, Parallel
 
         for ($i = 0; $i < $this->k; ++$i) {
             $training = Labeled::quick();
-            $testing = Labeled::quick();
     
             foreach ($folds as $j => $fold) {
-                if ($i === $j) {
-                    $testing = $testing->append($fold);
-                } else {
-                    $training = $training->append($fold);
+                if ($i !== $j) {
+                    $training = $training->merge($fold);
                 }
             }
+
+            $testing = $folds[$i];
             
             $this->backend->enqueue(new Deferred(
                 [self::class, 'score'],

@@ -146,8 +146,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         ?Distance $kernel = null
     ) : float {
         if ($percentile < 0.0 or $percentile > 100.0) {
-            throw new InvalidArgumentException('Percentile must be between'
-                . " 0 and 100, $percentile given.");
+            throw new InvalidArgumentException('Percentile must be'
+                . " between 0 and 100, $percentile given.");
         }
 
         $kernel = $kernel ?? new Euclidean();
@@ -185,23 +185,23 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         ?Seeder $seeder = null
     ) {
         if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Cluster radius must be'
+            throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+        if ($ratio <= 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
+                . " between 0 and 1, $ratio given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Learner must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . " than 0, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         $this->radius = $radius;

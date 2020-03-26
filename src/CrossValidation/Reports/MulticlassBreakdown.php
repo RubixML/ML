@@ -47,8 +47,8 @@ class MulticlassBreakdown implements Report
     public function generate(array $predictions, array $labels) : array
     {
         if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must be equal to the number of predictions.');
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
         }
 
         $classes = array_unique(array_merge($predictions, $labels));

@@ -146,7 +146,7 @@ $dataset = $dataset->transformColumn(5, function ($value) {
 });
 ```
 
-## Stacking
+## Stacking Datasets
 Stack any number of dataset objects on top of each other to form a single dataset:
 ```php
 public static stack(array $datasets) : self
@@ -167,25 +167,30 @@ $dataset = Labeled::stack([
 ]);
 ```
 
-## Prepending and Appending
-To prepend a dataset onto the beginning of another dataset:
+## Merging Datasets
+To merge the rows of this dataset with another dataset:
 ```php
-public prepend(Dataset $dataset) : self
+public merge(Dataset $dataset) : self
 ```
 
-To append a dataset onto the end of another dataset:
+> **Note:** Datasets must have same number of columns to merge.
+
+To merge the columns of this dataset with another dataset:
 ```php
-public append(Dataset $dataset) : self
+public augment(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
+> **Note:** Datasets must have same number of rows to augment.
 
 **Examples**
 
 ```php
-$dataset = $training->append($testing); // Append the testing set to the training set
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 
-$dataset = $dataset->prepend($new); // Prepend a new dataset to the current dataset
+$dataset = $dataset->merge(new Labeled($samples,  $labels));
+
+$dataset = $dataset->augment(new Unlabeled($samples));
 ```
 
 ## Head and Tail

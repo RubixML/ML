@@ -102,8 +102,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function __construct(float $alpha = 1.0, ?array $priors = null)
     {
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha cannot be less'
-                . " than 0, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         if ($priors) {
@@ -206,7 +206,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

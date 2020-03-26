@@ -115,8 +115,8 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
     {
         if ($estimators < 1) {
-            throw new InvalidArgumentException('The number of estimators'
-                . " cannot be less than 1, $estimators given.");
+            throw new InvalidArgumentException('Number of estimators'
+                . " must be greater than 0, $estimators given.");
         }
 
         if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {

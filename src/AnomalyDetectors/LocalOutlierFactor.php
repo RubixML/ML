@@ -105,8 +105,8 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . " to form a local region, $k given.");
+            throw new InvalidArgumentException('At least 1 neighbor'
+                . " is required to form a local region, $k given.");
         }
 
         if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {

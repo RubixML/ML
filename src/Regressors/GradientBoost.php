@@ -196,18 +196,18 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($rate <= 0.0 or $rate > 1.0) {
-            throw new InvalidArgumentException('Learning rate must be between'
-                . " 0 and 1, $rate given.");
+            throw new InvalidArgumentException('Learning rate must be'
+                . " greater than 0, $rate given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
-            throw new InvalidArgumentException('Ratio must be between 0 and 1,'
-                . " $ratio given.");
+            throw new InvalidArgumentException('Ratio must be'
+                . " between 0 and 1, $ratio given.");
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . " 1 estimator, $estimators given.");
+            throw new InvalidArgumentException('Number of estimators'
+                . " must be greater than 0, $estimators given.");
         }
 
         if ($minChange < 0.0) {
@@ -216,13 +216,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be at least 1'
-                . " epoch, $window given.");
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.01 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Holdout ratio must be between'
-                . " 0.01 and 0.5, $holdOut given.");
+        if ($holdOut <= 0.0 or $holdOut > 0.5) {
+            throw new InvalidArgumentException('Hold out ratio must be'
+                . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
@@ -230,7 +230,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($base and $base->type() != EstimatorType::regressor()) {
-            throw new InvalidArgumentException('Base estimator must be a'
+            throw new InvalidArgumentException('Base Estimator must be a'
                 . " regressor, {$base->type()} given.");
         }
 
@@ -330,7 +330,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

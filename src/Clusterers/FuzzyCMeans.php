@@ -132,23 +132,23 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         ?Seeder $seeder = null
     ) {
         if ($c < 1) {
-            throw new InvalidArgumentException('Must target at least one'
-                . " cluster, $c given.");
+            throw new InvalidArgumentException('C must be greater'
+                . " than 0, $c given.");
         }
 
         if ($fuzz <= 1.0) {
-            throw new InvalidArgumentException('Fuzz factor must be greater'
-                . " than 1, $fuzz given.");
+            throw new InvalidArgumentException('Fuzz factor must be'
+                . " greater than 1, $fuzz given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
         
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . " than 0, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         $this->c = $c;

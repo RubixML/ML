@@ -63,8 +63,8 @@ class FBeta implements Metric
     public function __construct(float $beta = 1.0)
     {
         if ($beta < 0.0) {
-            throw new InvalidArgumentException('Beta cannot be less'
-                . " than 0, $beta given.");
+            throw new InvalidArgumentException('Beta must be'
+                . " greater than 0, $beta given.");
         }
 
         $this->beta2 = $beta ** 2;
@@ -104,8 +104,8 @@ class FBeta implements Metric
     public function score(array $predictions, array $labels) : float
     {
         if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
         }
 
         if (empty($predictions)) {

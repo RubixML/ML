@@ -2,6 +2,8 @@
     - Tuned CART continuous feature quantile-based split finding
     - N-gram and SkipGram use configurable base word tokenizer
     - Moved Alpha Dropout hidden layer to Extras package
+    - Added Dataset merge and augment methods
+    - Removed Dataset prepend and append methods
 
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets

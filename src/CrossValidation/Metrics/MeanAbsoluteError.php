@@ -56,13 +56,13 @@ class MeanAbsoluteError implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (empty($predictions)) {
-            return 0.0;
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
         }
 
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
+        if (empty($predictions)) {
+            return 0.0;
         }
 
         $error = 0.0;

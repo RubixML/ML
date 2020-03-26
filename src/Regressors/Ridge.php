@@ -62,7 +62,7 @@ class Ridge implements Estimator, Learner, Persistable
     {
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha must be'
-                . " 0 or greater, $alpha given.");
+                . " greater than 0, $alpha given.");
         }
 
         $this->alpha = $alpha;
@@ -142,7 +142,7 @@ class Ridge implements Estimator, Learner, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

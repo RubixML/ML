@@ -124,9 +124,9 @@ class Labeled extends Dataset
     public function __construct(array $samples = [], array $labels = [], bool $validate = true)
     {
         if (count($samples) !== count($labels)) {
-            throw new InvalidArgumentException('The proportion of samples to'
-             . ' labels must be equal, ' . count($samples) . ' samples and '
-             . count($labels) . ' labels given.');
+            throw new InvalidArgumentException('Number of samples'
+             . ' and labels must be equal, ' . count($samples)
+             . ' samples but ' . count($labels) . ' labels given.');
         }
 
         if ($validate and $labels) {
@@ -141,9 +141,9 @@ class Labeled extends Dataset
 
             foreach ($labels as $label) {
                 if (DataType::determine($label) != $type) {
-                    throw new InvalidArgumentException('Labels must all be'
-                        . " the same high-level data type, expected $type"
-                        . ' but ' . DataType::determine($label) . ' given.');
+                    throw new InvalidArgumentException('Labels must be'
+                        . " the same data type, $type expected but "
+                        . DataType::determine($label) . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
@@ -406,53 +406,55 @@ class Labeled extends Dataset
     }
 
     /**
-     * Prepend a dataset to this dataset.
+     * Merge the rows of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function prepend(Dataset $dataset) : self
+    public function merge(Dataset $dataset) : self
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only prepend with another'
-                . ' labeled dataset.');
+            throw new InvalidArgumentException('Can only merge'
+                . ' with another Labeled dataset.');
         }
 
-        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
-            throw new InvalidArgumentException('Can only append with dataset'
-                . ' that has the same number of columns.');
-        }
-
-        return self::quick(
-            array_merge($dataset->samples(), $this->samples),
-            array_merge($dataset->labels(), $this->labels)
-        );
-    }
-
-    /**
-     * Append a dataset to this dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function append(Dataset $dataset) : self
-    {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only append with another'
-                . ' labeled dataset.');
-        }
-
-        if ((!$dataset->empty() and !$this->empty()) and $dataset->numColumns() !== $this->numColumns()) {
-            throw new InvalidArgumentException('Can only append with dataset'
-                . ' that has the same number of columns.');
+        if (!$dataset->empty() and !$this->empty()) {
+            if ($dataset->numColumns() !== $this->numColumns()) {
+                throw new InvalidArgumentException('Datasets must have'
+                    . " the same number of columns, {$this->numColumns()}"
+                    . " expected, but {$dataset->numColumns()} given.");
+            }
         }
 
         return self::quick(
             array_merge($this->samples, $dataset->samples()),
             array_merge($this->labels, $dataset->labels())
         );
+    }
+
+    /**
+     * Merge the columns of this dataset with another dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function augment(Dataset $dataset) : self
+    {
+        if ($dataset->numRows() !== $this->numRows()) {
+            throw new InvalidArgumentException('Datasets must have'
+                . " the same number of rows, {$this->numRows()}"
+                . " expected, but {$dataset->numRows()} given.");
+        }
+
+        $samples = [];
+
+        foreach ($this->samples as $i => $sample) {
+            $samples[] = array_merge($sample, $dataset->sample($i));
+        }
+
+        return self::quick($samples, $this->labels);
     }
 
     /**

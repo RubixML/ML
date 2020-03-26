@@ -90,8 +90,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at'
-                . " least 1 estimator, $estimators given.");
+            throw new InvalidArgumentException('Number of estimators'
+                . " must be greater than 0, $estimators given.");
         }
         
         if ($ratio <= 0.0 or $ratio > 1.5) {
@@ -161,7 +161,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         if ($this->type()->isClassifier() or $this->type()->isRegressor()) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Learner requires a'
-                    . ' labeled training set.');
+                    . ' Labeled training set.');
             }
         }
 
@@ -219,7 +219,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
                 return array_map([Stats::class, 'mean'], $aggregate);
 
             default:
-                throw new RuntimeException('Invalid base estimator type.');
+                throw new RuntimeException('Invalid base Estimator type.');
         }
     }
 

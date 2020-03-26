@@ -451,33 +451,41 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function prepend() : void
+    public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
         $dataset = new Unlabeled([['nice', 'furry', 'friendly', 4.7]]);
 
-        $merged = $this->dataset->prepend($dataset);
+        $merged = $this->dataset->merge($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(0));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
     }
 
     /**
      * @test
      */
-    public function append() : void
+    public function augment() : void
     {
-        $this->assertCount(count(self::SAMPLES), $this->dataset);
+        $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numColumns());
 
-        $dataset = new Unlabeled([['nice', 'furry', 'friendly', 4.7]]);
+        $dataset = new Unlabeled([
+            [1],
+            [2],
+            [3],
+            [4],
+            [5],
+            [6],
+        ]);
 
-        $merged = $this->dataset->append($dataset);
+        $augmented = $this->dataset->augment($dataset);
 
-        $this->assertCount(count(self::SAMPLES) + 1, $merged);
+        $this->assertEquals(count(current(self::SAMPLES)) + 1, $augmented->numColumns());
 
-        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
+        $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $augmented->sample(1));
+        $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $augmented->sample(2));
     }
 
     /**

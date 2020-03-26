@@ -6,7 +6,6 @@ use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 use function count;
-use function gettype;
 
 /**
  * Agglomerate
@@ -52,15 +51,14 @@ class Agglomerate implements Generator
     public function __construct(array $generators = [], ?array $weights = null)
     {
         if (empty($generators)) {
-            throw new InvalidArgumentException('Agglomerate must consist'
-                . ' of at least 1 generator.');
+            throw new InvalidArgumentException('Agglomerate must contain'
+                . ' at least 1 Generator.');
         }
 
         foreach ($generators as $generator) {
             if (!$generator instanceof Generator) {
-                throw new InvalidArgumentException('Cannot add a non generator'
-                    . ' to the agglomerate, ' . gettype($generator)
-                    . ' given.');
+                throw new InvalidArgumentException('Generator must'
+                    . ' implement the Generator interface.');
             }
         }
 
@@ -70,31 +68,32 @@ class Agglomerate implements Generator
 
         foreach ($generators as $generator) {
             if ($generator->dimensions() !== $dimensions) {
-                throw new InvalidArgumentException('Generators must have the'
-                    . " same dimensionality, $dimensions needed but "
+                throw new InvalidArgumentException('Agglomerate must contain'
+                    . ' Generators that produce samples of the same'
+                    . " dimensionality, $dimensions expected but "
                     . " {$generator->dimensions()} given.");
             }
         }
 
         if (is_array($weights)) {
             if (count($weights) !== $k) {
-                throw new InvalidArgumentException('The number of weights must'
-                    . " equal the number of generators, $k needed but found "
-                    . count($weights) . '.');
+                throw new InvalidArgumentException('The number of weights'
+                    . " and Generators must be equal, $k expected but "
+                    . count($weights) . ' given.');
             }
 
             foreach ($weights as $weight) {
                 if ($weight < 0) {
-                    throw new InvalidArgumentException('Weights must all be'
-                        . " positive, $weight found.");
+                    throw new InvalidArgumentException('Weights must be'
+                        . " positive, $weight given.");
                 }
             }
 
             $total = array_sum($weights);
 
             if ($total == 0) {
-                throw new InvalidArgumentException('Total weight for the'
-                    . ' agglomerate must not be 0.');
+                throw new InvalidArgumentException('Total weight must'
+                    . ' not be equal to 0.');
             }
 
             foreach ($weights as &$weight) {

@@ -70,27 +70,23 @@ class RandIndex implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
+        }
+
         if (empty($predictions)) {
             return 0.0;
         }
 
-        $n = count($predictions);
-
-        if ($n !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
-        }
-
-        $report = new ContingencyTable();
-
-        $table = Matrix::build($report->generate($predictions, $labels));
+        $table = Matrix::build((new ContingencyTable())->generate($labels, $predictions));
 
         $sigma = $table->map([self::class, 'comb2'])->sum()->sum();
 
         $alpha = $table->sum()->map([self::class, 'comb2'])->sum();
         $beta = $table->transpose()->sum()->map([self::class, 'comb2'])->sum();
 
-        $pHat = ($alpha * $beta) / self::comb2($n);
+        $pHat = ($alpha * $beta) / self::comb2(count($predictions));
         $mean = ($alpha + $beta) / 2.0;
 
         return ($sigma - $pHat) / ($mean - $pHat);

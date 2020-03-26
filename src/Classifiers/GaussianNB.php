@@ -189,7 +189,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);
@@ -245,7 +245,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

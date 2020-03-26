@@ -55,12 +55,12 @@ class Hyperplane implements Generator
         float $noise = 0.1
     ) {
         if (empty($coefficients)) {
-            throw new InvalidArgumentException('Cannot generate data of less'
-                . ' than 1 dimension.');
+            throw new InvalidArgumentException('Cannot generate samples'
+                . ' with dimensionality less than 1.');
         }
 
         if ($noise < 0.0) {
-            throw new InvalidArgumentException('Noise factor must be'
+            throw new InvalidArgumentException('Noise must be'
                 . " greater than 0, $noise given.");
         }
 

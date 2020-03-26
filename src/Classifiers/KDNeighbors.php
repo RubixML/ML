@@ -78,8 +78,8 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . " to make a prediction, $k given.");
+            throw new InvalidArgumentException('At least 1 neighbor'
+                . " is required to make a prediction, $k given.");
         }
 
         $this->k = $k;
@@ -151,7 +151,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

@@ -10,8 +10,6 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function gettype;
-
 /**
  * Persistent Model
  *
@@ -52,8 +50,8 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
         $learner = $persister->load();
 
         if (!$learner instanceof Learner) {
-            throw new InvalidArgumentException('Persistable must be an'
-                . ' instance of Learner, ' . gettype($learner) . ' given.');
+            throw new InvalidArgumentException('Persistable must'
+                . ' implement the Learner interface.');
         }
 
         return new self($learner, $persister);
@@ -159,7 +157,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     public function proba(Dataset $dataset) : array
     {
         if (!$this->estimator instanceof Probabilistic) {
-            throw new RuntimeException('Base estimator must'
+            throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
 
@@ -176,7 +174,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     public function rank(Dataset $dataset) : array
     {
         if (!$this->estimator instanceof Ranking) {
-            throw new RuntimeException('Base estimator must'
+            throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
             

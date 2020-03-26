@@ -79,13 +79,13 @@ class MCC implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (empty($predictions)) {
-            return 0.0;
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('Number of predictions'
+                . ' and labels must be equal.');
         }
 
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('The number of labels'
-                . ' must equal the number of predictions.');
+        if (empty($predictions)) {
+            return 0.0;
         }
 
         $classes = array_unique(array_merge($predictions, $labels));
@@ -109,8 +109,8 @@ class MCC implements Metric
             }
         }
 
-        return Stats::mean(
-            array_map([self::class, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg)
-        );
+        $scores = array_map([self::class, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg);
+
+        return Stats::mean($scores);
     }
 }

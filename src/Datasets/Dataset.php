@@ -85,17 +85,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 $sample = array_values($sample);
 
                 if (count($sample) !== $n) {
-                    throw new InvalidArgumentException("Row $row must have"
-                        . " an equal number of columns, expected $n but "
-                        . count($sample) . ' given.');
+                    throw new InvalidArgumentException('Number of columns'
+                        . " must be equal for all samples, $n expected but"
+                        . ' ' . count($sample) . ' given.');
                 }
 
                 foreach ($sample as $column => $value) {
                     if (DataType::determine($value) != $types[$column]) {
                         throw new InvalidArgumentException("Column $column must"
-                            . ' contain values of the same data type, expected'
-                            . " $types[$column] but " . DataType::determine($value)
-                            . ' given.');
+                            . ' contain values of the same data type,'
+                            . " $types[$column] expected but "
+                            . DataType::determine($value) . ' given.');
                     }
                 }
             }
@@ -533,20 +533,20 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function splice(int $offset, int $n);
 
     /**
-     * Prepend a dataset onto this dataset.
+     * Merge another dataset with this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    abstract public function prepend(Dataset $dataset);
+    abstract public function merge(Dataset $dataset);
 
     /**
-     * Append a dataset onto this dataset.
+     * Merge the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    abstract public function append(Dataset $dataset);
+    abstract public function augment(Dataset $dataset);
 
     /**
      * Drop the row at the given offset.

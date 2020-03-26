@@ -140,7 +140,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This estimator requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         SamplesAreCompatibleWithTransformer::check($dataset, $this);

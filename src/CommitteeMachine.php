@@ -100,7 +100,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
                 throw new InvalidArgumentException('Expert must implement'
-                    . ' the learner interface.');
+                    . ' the Learner interface.');
             }
 
             if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
@@ -228,7 +228,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         if ($this->type()->isClassifier() or $this->type()->isRegressor()) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Learner requires a'
-                    . ' labeled training set.');
+                    . ' Labeled training set.');
             }
         }
 
@@ -307,7 +307,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 return array_map([$this, 'decideContinuous'], $aggregate);
 
             default:
-                throw new RuntimeException('Invalid base estimator type.');
+                throw new RuntimeException('Invalid base Estimator type.');
         }
     }
 

@@ -79,7 +79,7 @@ class DBSCAN implements Estimator
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Neighbor radius must be'
+            throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 

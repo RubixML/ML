@@ -71,13 +71,13 @@ class SwissRoll implements Generator
         float $noise = 0.1
     ) {
         if ($scale < 0.0) {
-            throw new InvalidArgumentException('Scaling factor must be greater'
-                . " than 0, $scale given.");
+            throw new InvalidArgumentException('Scale must be'
+                . " greater than 0, $scale given.");
         }
 
         if ($depth < 0) {
-            throw new InvalidArgumentException('Depth cannot be less than 0'
-                . " $depth given.");
+            throw new InvalidArgumentException('Depth must be'
+                . " greater than 0, $depth given.");
         }
 
         if ($noise < 0.0) {

@@ -45,28 +45,28 @@ class Blob implements Generator
     public function __construct(array $center = [0, 0], $stddev = 1.0)
     {
         if (empty($center)) {
-            throw new InvalidArgumentException('Cannot generate data of less'
-                . ' than 1 dimension.');
+            throw new InvalidArgumentException('Cannot generate samples'
+                . ' with dimensionality less than 1.');
         }
 
         if (is_array($stddev)) {
             if (count($center) !== count($stddev)) {
-                throw new InvalidArgumentException('The number of center'
-                    . ' coordinates and standard deviations must equal.');
+                throw new InvalidArgumentException('Number of center'
+                    . ' coordinates and standard deviations must be equal.');
             }
 
             foreach ($stddev as $value) {
-                if ($value <= 0) {
-                    throw new InvalidArgumentException('Standard deviation must be'
-                        . " greater than 0, $value given.");
+                if ($value < 0) {
+                    throw new InvalidArgumentException('Standard deviation'
+                        . " must be greater than 0, $value given.");
                 }
             }
 
             $stddev = Vector::quick($stddev);
         } else {
             if ($stddev <= 0) {
-                throw new InvalidArgumentException('Standard deviation must be'
-                    . " greater than 0, $stddev given.");
+                throw new InvalidArgumentException('Standard deviation'
+                    . " must be greater than 0, $stddev given.");
             }
         }
 

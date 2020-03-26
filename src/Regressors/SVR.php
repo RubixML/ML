@@ -84,30 +84,30 @@ class SVR implements Estimator, Learner
         float $cacheSize = 100.0
     ) {
         if (!extension_loaded('svm')) {
-            throw new RuntimeException('SVM extension is not loaded, check'
-                . ' PHP configuration.');
+            throw new RuntimeException('SVM extension not loaded'
+                . ', check PHP configuration.');
         }
 
         if ($c < 0.0) {
-            throw new InvalidArgumentException('C cannot be less than 0,'
-                . " $c given.");
+            throw new InvalidArgumentException('C must be greater'
+                . " than 0, $c given.");
         }
 
         if ($epsilon < 0.0) {
-            throw new InvalidArgumentException('Epsilon cannot be less than 0'
-                . " $epsilon given.");
+            throw new InvalidArgumentException('Epsilon must be'
+                . " greater than 0, $epsilon given.");
         }
 
         $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.0) {
-            throw new InvalidArgumentException('Tolerance cannot be less than 0,'
-                . " $tolerance given.");
+            throw new InvalidArgumentException('Tolerance must be'
+                . " greater than 0, $tolerance given.");
         }
 
         if ($cacheSize <= 0.0) {
-            throw new InvalidArgumentException('Cache size must be greater than'
-                . " 0M, {$cacheSize}M given.");
+            throw new InvalidArgumentException('Cache size must be'
+                . " greater than 0M, {$cacheSize}M given.");
         }
 
         $options = [
@@ -189,7 +189,7 @@ class SVR implements Estimator, Learner
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);
@@ -232,8 +232,8 @@ class SVR implements Estimator, Learner
     public function save(string $path) : void
     {
         if (!$this->model) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Learner must be'
+                . ' trained before saving.');
         }
 
         $this->model->save($path);

@@ -20,7 +20,6 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
-use Exception;
 
 use function count;
 
@@ -112,24 +111,19 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
             throw new InvalidArgumentException("Class $base does not exist.");
         }
 
-        try {
-            $proxy = new $base(...array_map('reset', $params));
-        } catch (Exception $e) {
-            throw new InvalidArgumentException('Fewer parameters given'
-                . ' than required by base constructor.');
-        }
+        $proxy = new $base(...array_map('current', $params));
 
         if (!$proxy instanceof Learner) {
-            throw new InvalidArgumentException('Base class must be a learner.');
+            throw new InvalidArgumentException('Base class must'
+                . ' implement the Learner Interface.');
         }
 
         foreach ($params as &$tuple) {
             if (empty($tuple)) {
-                throw new InvalidArgumentException('Must supply at least'
-                    . ' one possible value for a constructor argument.');
+                $tuple = [null];
+            } else {
+                $tuple = array_values(array_unique($tuple, SORT_REGULAR));
             }
-
-            $tuple = array_values(array_unique($tuple, SORT_REGULAR));
         }
 
         if ($metric) {
@@ -260,7 +254,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

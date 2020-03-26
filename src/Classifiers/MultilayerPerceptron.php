@@ -192,34 +192,41 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
     ) {
+        foreach ($hiddenLayers as $layer) {
+            if (!$layer instanceof Hidden) {
+                throw new InvalidArgumentException('Hidden layer'
+                    . ' must implement the Hidden interface.');
+            }
+        }
+
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size must be at least'
-                . " 1 sample, $batchSize given.");
+            throw new InvalidArgumentException('Batch size must be'
+                . " greater than 0, $batchSize given.");
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be 0 or greater'
-                . ", $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Learner must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . " than 0, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be at least 1'
-                . " epoch, $window given.");
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.01 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be between'
-                . " 0.01 and 0.5, $holdOut given.");
+        if ($holdOut <= 0.0 or $holdOut > 0.5) {
+            throw new InvalidArgumentException('Hold out ratio must be'
+                . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
@@ -331,7 +338,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);
@@ -369,7 +376,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
-                . ' labeled training set.');
+                . ' Labeled training set.');
         }
 
         DatasetIsNotEmpty::check($dataset);

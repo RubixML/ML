@@ -219,43 +219,43 @@ class TSNE implements Embedder, Verbose
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Cannot target less than 1'
-                . " dimension, $dimensions given.");
+            throw new InvalidArgumentException('Dimensions must be'
+                . " greater than 0, $dimensions given.");
         }
 
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be greater'
-                . " than 0, $rate given.");
+            throw new InvalidArgumentException('Learning rate must be'
+                . " greater than 0, $rate given.");
         }
 
         if ($perplexity < 1) {
-            throw new InvalidArgumentException('Perplexity cannot be less'
-                . " than 1, $perplexity given.");
+            throw new InvalidArgumentException('Perplexity must be'
+                . " greater than 0, $perplexity given.");
         }
 
         if ($exaggeration < 1.0) {
-            throw new InvalidArgumentException('Early exaggeration must be 1'
-             . " or greater, $exaggeration given.");
+            throw new InvalidArgumentException('Exaggeration must be'
+             . " greater than 1, $exaggeration given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minGradient < 0.0) {
-            throw new InvalidArgumentException('Mminimum gradient must be'
-                . " 0 or greater, $minGradient given.");
+            throw new InvalidArgumentException('Minimum gradient must be'
+                . " greater than 0, $minGradient given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be at least 1'
-                . " epoch, $window given.");
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
         }
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
-        $this->c = 2.0 * (1. + $this->degrees) / $this->degrees;
+        $this->c = 2.0 * (1.0 + $this->degrees) / $this->degrees;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
