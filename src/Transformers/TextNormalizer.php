@@ -7,8 +7,7 @@ use Rubix\ML\DataType;
 /**
  * Text Normalizer
  *
- * This transformer converts all text to lowercase and *optionally* removes
- * extra whitespace.
+ * This transformer converts all text to lowercase and removes extra whitespace.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -31,21 +30,6 @@ class TextNormalizer implements Transformer
     protected const SPACE = ' ';
 
     /**
-     * Should we trim excess whitespace?
-     *
-     * @var bool
-     */
-    protected $trim;
-
-    /**
-     * @param bool $trim
-     */
-    public function __construct(bool $trim = false)
-    {
-        $this->trim = $trim;
-    }
-
-    /**
      * Return the data types that this transformer is compatible with.
      *
      * @return \Rubix\ML\DataType[]
@@ -65,11 +49,7 @@ class TextNormalizer implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (is_string($value)) {
-                    if ($this->trim) {
-                        $value = preg_replace(self::SPACES_REGEX, self::SPACE, trim($value)) ?: '';
-                    }
-
-                    $value = strtolower($value);
+                    $value = strtolower(preg_replace(self::SPACES_REGEX, self::SPACE, trim($value)) ?: '');
                 }
             }
         }

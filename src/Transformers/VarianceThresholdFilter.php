@@ -43,8 +43,8 @@ class VarianceThresholdFilter implements Transformer, Stateful
     public function __construct(int $maxFeatures)
     {
         if ($maxFeatures < 1) {
-            throw new InvalidArgumentException('Must select at least'
-                . " one feature, $maxFeatures given.");
+            throw new InvalidArgumentException('Maximum features'
+                . " must be greater than 0, $maxFeatures given.");
         }
 
         $this->maxFeatures = $maxFeatures;

@@ -41,12 +41,11 @@ class MissingDataImputer implements Transformer, Stateful
     protected $categorical;
 
     /**
-     * The placeholder variable denoting the category that contains missing
-     * categorical values.
+     * The placeholder category that denotes missing values.
      *
      * @var string
      */
-    protected $placeholder;
+    protected $categoricalPlaceholder;
 
     /**
      * The fitted guessing strategy for each feature column.
@@ -65,17 +64,17 @@ class MissingDataImputer implements Transformer, Stateful
     /**
      * @param \Rubix\ML\Other\Strategies\Continuous|null $continuous
      * @param \Rubix\ML\Other\Strategies\Categorical|null $categorical
-     * @param string $placeholder
+     * @param string $categoricalPlaceholder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Continuous $continuous = null,
         ?Categorical $categorical = null,
-        string $placeholder = '?'
+        string $categoricalPlaceholder = '?'
     ) {
         $this->continuous = $continuous ?? new Mean();
         $this->categorical = $categorical ?? new KMostFrequent(1);
-        $this->placeholder = $placeholder;
+        $this->categoricalPlaceholder = $categoricalPlaceholder;
     }
 
     /**
@@ -131,7 +130,7 @@ class MissingDataImputer implements Transformer, Stateful
                     $strategy = clone $this->categorical;
 
                     foreach ($dataset->column($column) as $value) {
-                        if ($value !== $this->placeholder) {
+                        if ($value !== $this->categoricalPlaceholder) {
                             $donors[] = $value;
                         }
                     }
@@ -180,7 +179,7 @@ class MissingDataImputer implements Transformer, Stateful
                         break 1;
 
                     case DataType::CATEGORICAL:
-                        if ($value === $this->placeholder) {
+                        if ($value === $this->categoricalPlaceholder) {
                             $value = $this->strategies[$column]->guess();
                         }
 

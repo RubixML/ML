@@ -51,7 +51,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
     protected $variances;
 
     /**
-     *  The number of samples that this tranformer has fitted.
+     *  The number of samples that this transformer has fitted.
      *
      * @var int|null
      */

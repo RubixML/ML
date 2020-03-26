@@ -18,7 +18,7 @@ use InvalidArgumentException;
 class Uniform implements Initializer
 {
     /**
-     * The minimum and maximum bound on the random distribution.
+     * The upper and lower bound of the distribution.
      *
      * @var float
      */

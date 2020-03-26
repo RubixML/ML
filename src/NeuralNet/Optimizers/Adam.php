@@ -101,13 +101,13 @@ class Adam implements Optimizer, Adaptive
         }
 
         if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
-            throw new InvalidArgumentException('Momentum decay must be between'
-                . " 0 and 1, $momentumDecay given.");
+            throw new InvalidArgumentException('Momentum decay must be'
+                . " between 0 and 1, $momentumDecay given.");
         }
 
-        if ($normDecay <= 0.0 or $normDecay >= 1.) {
-            throw new InvalidArgumentException('Norm decay must be between'
-                . " 0 and 1, $normDecay given.");
+        if ($normDecay <= 0.0 or $normDecay >= 1.0) {
+            throw new InvalidArgumentException('Norm decay must be'
+                . " between 0 and 1, $normDecay given.");
         }
 
         $this->rate = $rate;

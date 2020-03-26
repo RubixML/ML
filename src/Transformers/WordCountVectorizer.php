@@ -75,13 +75,13 @@ class WordCountVectorizer implements Transformer, Stateful
         ?Tokenizer $tokenizer = null
     ) {
         if ($maxVocabulary < 1) {
-            throw new InvalidArgumentException('The size of the vocabular must'
-                . " be at least 1, $maxVocabulary given.");
+            throw new InvalidArgumentException('Max vocabulary must be'
+                . " greater than 0, $maxVocabulary given.");
         }
 
         if ($minDocumentFrequency < 1) {
-            throw new InvalidArgumentException('Minimum document frequency must'
-            . " be at least 1, $minDocumentFrequency given.");
+            throw new InvalidArgumentException('Minimum document frequency'
+                . " must be greater than 0, $minDocumentFrequency given.");
         }
 
         $this->maxVocabulary = $maxVocabulary;
@@ -186,7 +186,7 @@ class WordCountVectorizer implements Transformer, Stateful
     public function transform(array &$samples) : void
     {
         if (is_null($this->vocabularies) or is_null($this->templates)) {
-            throw new RuntimeException('Transformer is not fitted.');
+            throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {

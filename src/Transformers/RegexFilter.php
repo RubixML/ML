@@ -15,8 +15,7 @@ use function is_string;
  *
  * References:
  * [1] J. Gruber. (2009). A Liberal, Accurate Regex Pattern for Matching URLs.
- * [2] J. Gruber. (2010). An Improved Liberal, Accurate Regex Pattern for Matching
- * URLs.
+ * [2] J. Gruber. (2010). An Improved Liberal, Accurate Regex Pattern for Matching URLs.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -82,7 +81,7 @@ class RegexFilter implements Transformer
     {
         if (empty($patterns)) {
             throw new InvalidArgumentException('Must specify at least'
-                . ' 1 pattern, none given.');
+                . ' 1 pattern.');
         }
 
         foreach ($patterns as $pattern) {

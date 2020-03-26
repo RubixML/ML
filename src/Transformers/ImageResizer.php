@@ -48,13 +48,13 @@ class ImageResizer implements Transformer
     public function __construct(int $width = 32, int $height = 32)
     {
         if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension is not loaded, check'
-                . ' PHP configuration.');
+            throw new RuntimeException('GD extension is not loaded'
+                . ', check PHP configuration.');
         }
 
         if ($width < 1 or $height < 1) {
             throw new InvalidArgumentException('Width and height must be'
-                . " greater than 1 pixel, $width and $height given.");
+                . " greater than 0, $width and $height given.");
         }
 
         $this->width = $width;

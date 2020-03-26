@@ -46,8 +46,8 @@ class ImageVectorizer implements Transformer, Stateful
     public function __construct(bool $grayscale = false)
     {
         if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension is not loaded, check'
-                . ' PHP configuration.');
+            throw new RuntimeException('GD extension is not loaded'
+                . ', check PHP configuration.');
         }
 
         $this->grayscale = $grayscale;

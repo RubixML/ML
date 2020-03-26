@@ -4,6 +4,8 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
+use function is_string;
+
 /**
  * HTML Stripper
  *

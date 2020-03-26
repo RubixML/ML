@@ -4,6 +4,8 @@
     - Moved Alpha Dropout hidden layer to Extras package
     - Added Dataset merge and augment methods
     - Removed Dataset prepend and append methods
+    - Lambda Function transformer now takes any callable
+    - Text Normalizer trim extra whitespace not optional
 
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets

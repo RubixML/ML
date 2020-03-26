@@ -31,10 +31,10 @@ class TextNormalizerTest extends TestCase
         $this->dataset = Unlabeled::quick([
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
-            ['with a Dandy   ubrella'],
+            ['with a Dandy   umbrella '],
         ]);
 
-        $this->transformer = new TextNormalizer(true);
+        $this->transformer = new TextNormalizer();
     }
     
     /**
@@ -56,7 +56,7 @@ class TextNormalizerTest extends TestCase
         $outcome = [
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
-            ['with a dandy ubrella'],
+            ['with a dandy umbrella'],
         ];
     
         $this->assertEquals($outcome, $this->dataset->samples());

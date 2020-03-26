@@ -109,8 +109,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     public function update(Dataset $dataset) : void
     {
         if (!$dataset->homogeneous() or $dataset->columnType(0) != DataType::continuous()) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with continuous features.');
+            throw new InvalidArgumentException('This Transformer is'
+                . ' only compatible with continuous data types.');
         }
 
         if (is_null($this->dfs) or is_null($this->n)) {

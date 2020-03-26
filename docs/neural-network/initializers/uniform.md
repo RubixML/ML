@@ -6,7 +6,7 @@ Generates a random uniform distribution centered at 0 and bounded at both ends b
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | beta | 0.05 | float | The minimum and maximum bound on the random distribution. |
+| 1 | beta | 0.05 | float | The upper and lower bound of the distribution. |
 
 ## Example
 ```php

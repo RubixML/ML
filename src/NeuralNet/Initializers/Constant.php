@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use InvalidArgumentException;
 
 /**
  * Constant
@@ -24,9 +25,15 @@ class Constant implements Initializer
 
     /**
      * @param float $value
+     * @throws \InvalidArgumentException
      */
     public function __construct(float $value = 0.0)
     {
+        if (is_nan($value)) {
+            throw new InvalidArgumentException('Cannot initialize'
+                . ' weight values to NaN.');
+        }
+
         $this->value = $value;
     }
 

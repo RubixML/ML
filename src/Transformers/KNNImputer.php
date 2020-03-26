@@ -53,12 +53,11 @@ class KNNImputer implements Transformer, Stateful
     protected $weighted;
 
     /**
-     * The categorical placeholder variable denoting the category that
-     * contains missing values.
+     * The placeholder category that denotes missing values.
      *
-     * @var mixed
+     * @var string
      */
-    protected $placeholder;
+    protected $categoricalPlaceholder;
 
     /**
      * The spatial tree used to run nearest neighbor searches.
@@ -77,14 +76,14 @@ class KNNImputer implements Transformer, Stateful
     /**
      * @param int $k
      * @param bool $weighted
-     * @param string $placeholder
+     * @param string $categoricalPlaceholder
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $k = 5,
         bool $weighted = true,
-        string $placeholder = '?',
+        string $categoricalPlaceholder = '?',
         ?Spatial $tree = null
     ) {
         if ($k < 1) {
@@ -97,13 +96,13 @@ class KNNImputer implements Transformer, Stateful
 
             if (!$kernel instanceof NaNSafe) {
                 throw new InvalidArgumentException('Continuous distance kernels'
-                    . ' must be NaN safe.');
+                    . ' must implement the NaNSafe interface.');
             }
         }
 
         $this->k = $k;
         $this->weighted = $weighted;
-        $this->placeholder = $placeholder;
+        $this->categoricalPlaceholder = $categoricalPlaceholder;
         $this->tree = new BallTree(30, new SafeEuclidean());
     }
 
@@ -141,8 +140,14 @@ class KNNImputer implements Transformer, Stateful
 
         foreach ($dataset->samples() as $sample) {
             foreach ($sample as $value) {
-                if ((is_float($value) and is_nan($value)) or $value === $this->placeholder) {
-                    continue 2;
+                if (is_float($value)) {
+                    if (is_nan($value)) {
+                        continue 2;
+                    }
+                } else {
+                    if ($value === $this->categoricalPlaceholder) {
+                        continue 2;
+                    }
                 }
             }
 
@@ -178,7 +183,7 @@ class KNNImputer implements Transformer, Stateful
             $neighbors = $distances = [];
 
             foreach ($sample as $column => &$value) {
-                if ((is_float($value) and is_nan($value)) or $value === $this->placeholder) {
+                if ((is_float($value) and is_nan($value)) or $value === $this->categoricalPlaceholder) {
                     if (empty($neighbors)) {
                         [$neighbors, $labels, $distances] = $this->tree->nearest($sample, $this->k);
                     }

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Closure;
 
 use function call_user_func;
 
@@ -21,16 +20,16 @@ use function call_user_func;
 class LambdaFunction implements Transformer
 {
     /**
-     * The user specified lambda function.
+     * A user-specified lambda function.
      *
-     * @var Closure
+     * @var callable
      */
     protected $lambda;
 
     /**
-     * @param Closure $lambda
+     * @param callable $lambda
      */
-    public function __construct(Closure $lambda)
+    public function __construct(callable $lambda)
     {
         $this->lambda = $lambda;
     }

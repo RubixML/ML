@@ -12,7 +12,7 @@ Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categoric
 |---|---|---|---|---|
 | 1 | continuous strategy | Mean | Continuous | The guessing strategy to employ for continuous feature columns. |
 | 2 | categorical strategy | K Most Frequent | Categorical | The guessing strategy to employ for categorical feature columns. |
-| 3 | placeholder | '?' | string | The categorical placeholder variable denoting the category that contains missing values. |
+| 3 | categorical placeholder | '?' | string | The placeholder category that denotes missing values. |
 
 ## Additional Methods
 This transformer does not have any additional methods.

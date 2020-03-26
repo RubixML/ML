@@ -81,8 +81,8 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
     public function __construct(int $dimensions)
     {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Cannot project onto less than'
-                . " 1 dimension, $dimensions given.");
+            throw new InvalidArgumentException('Dimensions must be'
+                . " greater than 0, $dimensions given.");
         }
 
         $this->dimensions = $dimensions;

@@ -69,7 +69,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
      * @param float $max
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $min = 0., float $max = 1.)
+    public function __construct(float $min = 0.0, float $max = 1.0)
     {
         if ($min > $max) {
             throw new InvalidArgumentException('Minimum cannot be greater'

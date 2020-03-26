@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 /**
  * Numeric String Converter
  *
- * Convert all numeric strings into their integer and floating point Countertypes.
+ * Convert all numeric strings to their equivalent integer and floating point types.
  * Useful for when extracting from a source that only recognizes data as string
  * types such as CSV.
  *

@@ -70,8 +70,8 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     public function __construct(int $dimensions)
     {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Cannot project onto less than'
-                . ' 1 dimension.');
+            throw new InvalidArgumentException('Dimensions must be'
+                . " greater than 0, $dimensions given.");
         }
 
         $this->dimensions = $dimensions;
@@ -139,15 +139,15 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Estimator requires a'
                 . ' Labeled training set.');
         }
 
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         if ($dataset->labelType() != DataType::categorical()) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with categorical labels.');
+            throw new InvalidArgumentException('Transformer requires'
+                . " categorical labels, {$dataset->labelType()} given.");
         }
 
         [$m, $n] = $dataset->shape();
