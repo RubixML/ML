@@ -44,7 +44,7 @@ class Amp implements Backend
     ];
 
     /**
-     * The memoized results of the last parallel computation.
+     * The memorized results of the last parallel computation.
      *
      * @var mixed[]
      */
@@ -135,7 +135,7 @@ class Amp implements Backend
     }
 
     /**
-     * Flush the queue and clear the memoized results.
+     * Flush the queue and clear the memorized results.
      */
     public function flush() : void
     {

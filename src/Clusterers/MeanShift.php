@@ -53,11 +53,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
-     * The minimum number of centroid seeds.
+     * The minimum number of initial centroids.
      *
      * @var int
      */
-    protected const MIN_SEEDS = 10;
+    protected const MIN_SEEDS = 20;
 
     /**
      * The maximum distance between two points to be considered neighbors.
@@ -450,7 +450,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
-     * Calculate the magnitude (l1) of centroid shift from the previous epoch.
+     * Calculate the amount of centroid shift from the previous epoch.
      *
      * @param array[] $current
      * @param array[] $previous

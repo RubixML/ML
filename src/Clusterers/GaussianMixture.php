@@ -470,7 +470,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 [$mean, $variance] = Stats::meanVar($values);
 
                 $mHat[] = $mean;
-                $vHat[] = $variance;
+                $vHat[] = $variance ?: EPSILON;
             }
 
             $means[$cluster] = $mHat;

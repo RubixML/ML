@@ -56,7 +56,7 @@ For any new class, include a class header that contains a title, a short descrip
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
 
 ### Anonymous Classes and Functions
-Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a new named class or function.
+Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.
 
 ## Benchmarks
 Performance can be critical for some machine learning projects. Not only that, waiting sucks in general. To ensure that our users have the best user experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner to Rubix ML, include a benchmark.

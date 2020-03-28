@@ -42,8 +42,8 @@ class Gower implements Distance, NaNSafe
     public function __construct(float $range = 1.0)
     {
         if ($range <= 0.0) {
-            throw new InvalidArgumentException('Range must be greater'
-                . " than 0,  $range given.");
+            throw new InvalidArgumentException('Range must be'
+                . " greater than 0, $range given.");
         }
 
         $this->range = $range;
