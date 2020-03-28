@@ -393,8 +393,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         [$min, $max] = $this->metric->range();
 
-        $k = (int) ceil($dataset->numRows() / $this->batchSize);
-
         $bestScore = $min;
         $bestEpoch = $nu = 0;
         $snapshot = null;
@@ -409,7 +407,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $k;
+            $loss /= count($batches);
 
             $predictions = $this->predict($testing);
 

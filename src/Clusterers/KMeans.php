@@ -352,6 +352,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 }
             }
 
+            $loss /= count($batches);
+
             $this->steps[] = $loss;
 
             if ($this->logger) {

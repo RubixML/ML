@@ -307,8 +307,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
             $this->logger->info('Training started');
         }
 
-        $k = (int) ceil($dataset->numRows() / $this->batchSize);
-
         $prevLoss = $bestLoss = INF;
         $nu = 0;
 
@@ -321,7 +319,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $k;
+            $loss /= count($batches);
 
             $this->steps[] = $loss;
 

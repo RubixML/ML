@@ -294,8 +294,6 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
 
             $this->logger->info('Training started');
         }
-
-        $k = (int) ceil($dataset->numRows() / $this->batchSize);
         
         $prevLoss = $bestLoss = INF;
         $nu = 0;
@@ -309,7 +307,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $k;
+            $loss /= count($batches);
 
             $this->steps[] = $loss;
             

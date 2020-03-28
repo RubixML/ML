@@ -7,6 +7,7 @@
     - Lambda Function transformer now takes any callable
     - Text Normalizer trim extra whitespace not optional
     - Mean Shift minimum seeds now set at 20
+    - Standardized K Means inertial loss over batch count
 
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets

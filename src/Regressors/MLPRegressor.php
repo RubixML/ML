@@ -378,8 +378,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         [$min, $max] = $this->metric->range();
 
-        $k = (int) ceil($dataset->numRows() / $this->batchSize);
-
         $bestScore = $min;
         $bestEpoch = $nu = 0;
         $snapshot = null;
@@ -394,7 +392,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $k;
+            $loss /= count($batches);
 
             $predictions = $this->predict($testing);
 
