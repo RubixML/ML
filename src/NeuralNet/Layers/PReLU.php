@@ -14,8 +14,8 @@ use Generator;
 /**
  * PReLU
  *
- * Parametric Rectified Linear Units are leaky rectifiers whose leakage coefficient
- * is learned during training.
+ * Parametric Rectified Linear Units are leaky rectifiers whose leakage coefficients
+ * are learned during training.
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level

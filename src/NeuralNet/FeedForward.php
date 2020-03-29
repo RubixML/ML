@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Tensor\Tensor;
 use Tensor\Matrix;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
@@ -185,6 +185,27 @@ class FeedForward implements Network
     }
 
     /**
+     * Run an inference pass and return the activations at the output layer.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Tensor\Matrix
+     */
+    public function infer(Dataset $dataset) : Matrix
+    {
+        $input = Matrix::quick($dataset->samples())->transpose();
+
+        $input = $this->input->infer($input);
+
+        foreach ($this->hidden as $hidden) {
+            $input = $hidden->infer($input);
+        }
+
+        $activations = $this->output->infer($input)->transpose();
+
+        return $activations;
+    }
+
+    /**
      * Perform a forward and backward pass of the network in one call. Returns
      * the loss from the backward pass.
      *
@@ -193,7 +214,9 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $this->feed(Matrix::quick($dataset->samples())->transpose());
+        $input = Matrix::quick($dataset->samples())->transpose();
+
+        $this->feed($input);
         
         $loss = $this->backpropagate($dataset->labels());
 
@@ -215,25 +238,6 @@ class FeedForward implements Network
         }
 
         $activations = $this->output->forward($input);
-
-        return $activations;
-    }
-
-    /**
-     * Run an inference pass and return the activations at the output layer.
-     *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
-     */
-    public function infer(Matrix $input) : Tensor
-    {
-        $input = $this->input->infer($input);
-
-        foreach ($this->hidden as $hidden) {
-            $input = $hidden->infer($input);
-        }
-
-        $activations = $this->output->infer($input);
 
         return $activations;
     }

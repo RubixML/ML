@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -30,7 +29,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function is_nan;
+use function count;
 
 /**
  * Logistic Regression
@@ -308,7 +308,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
         }
 
         $prevLoss = $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -330,12 +330,16 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -343,7 +347,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -379,15 +383,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
-
-        $y = $this->network->infer($xT)->row(0);
-
         [$classA, $classB] = $this->classes;
+
+        $activations = $this->network->infer($dataset);
 
         $probabilities = [];
 
-        foreach ($y as $activation) {
+        foreach ($activations->column(0) as $activation) {
             $probabilities[] = [
                 $classA => 1.0 - $activation,
                 $classB => $activation,

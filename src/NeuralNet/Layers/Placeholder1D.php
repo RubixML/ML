@@ -31,8 +31,8 @@ class Placeholder1D implements Input
     public function __construct(int $inputs)
     {
         if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of input nodes must'
-            . " be greater than 0, $inputs given.");
+            throw new InvalidArgumentException('Number of input nodes'
+            . " must be greater than 0, $inputs given.");
         }
 
         $this->inputs = $inputs;
@@ -68,9 +68,9 @@ class Placeholder1D implements Input
     public function forward(Matrix $input) : Matrix
     {
         if ($input->m() !== $this->inputs) {
-            throw new InvalidArgumentException('The number of feature columns'
-                . ' must equal the number of inputs. '
-                . " {$input->m()} found, but $this->inputs needed.");
+            throw new InvalidArgumentException('The number of features'
+                . ' and input nodes must be equal,'
+                . " $this->inputs expected but {$input->m()} given.");
         }
 
         return $input;

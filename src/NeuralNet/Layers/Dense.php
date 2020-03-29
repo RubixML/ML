@@ -146,8 +146,7 @@ class Dense implements Hidden, Parametric
         $this->weights = new MatrixParam($w);
 
         if ($this->bias) {
-            $b = $this->biasInitializer->initialize(1, $fanOut)
-                ->columnAsVector(0);
+            $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
             $this->biases = new VectorParam($b);
         }

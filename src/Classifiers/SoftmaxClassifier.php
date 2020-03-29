@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -30,7 +29,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function is_nan;
+use function count;
 
 /**
  * Softmax Classifier
@@ -306,7 +306,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         }
 
         $prevLoss = $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -328,12 +328,16 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -341,7 +345,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -377,14 +381,12 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
-
-        $yT = $this->network->infer($xT)->transpose();
+        $activations = $this->network->infer($dataset);
 
         $probabilities = [];
 
-        foreach ($yT as $activations) {
-            $probabilities[] = array_combine($this->classes, $activations) ?: [];
+        foreach ($activations->asArray() as $dist) {
+            $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 
         return $probabilities;

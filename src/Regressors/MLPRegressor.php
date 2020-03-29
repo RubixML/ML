@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Regressors;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -33,7 +32,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function is_nan;
+use function count;
 
 /**
  * MLP Regressor
@@ -379,7 +379,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         [$min, $max] = $this->metric->range();
 
         $bestScore = $min;
-        $bestEpoch = $nu = 0;
+        $bestEpoch = $delta = 0;
         $snapshot = null;
         $prevLoss = INF;
 
@@ -411,16 +411,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
                 $snapshot = new Snapshot($this->network);
 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if ($loss < EPSILON or $score >= $max) {
+            if ($loss <= 0.0 or $score >= $max) {
                 break 1;
             }
 
@@ -428,7 +428,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -465,8 +465,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
-
-        return $this->network->infer($xT)->row(0);
+        return $this->network->infer($dataset)->column(0);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -35,7 +34,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function is_nan;
+use function count;
 
 /**
  * Multilayer Perceptron
@@ -394,7 +394,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         [$min, $max] = $this->metric->range();
 
         $bestScore = $min;
-        $bestEpoch = $nu = 0;
+        $bestEpoch = $delta = 0;
         $snapshot = null;
         $prevLoss = INF;
 
@@ -426,16 +426,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
                 $snapshot = new Snapshot($this->network);
 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if ($loss < EPSILON or $score >= $max) {
+            if ($loss <= 0.0 or $score >= $max) {
                 break 1;
             }
 
@@ -443,7 +443,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -490,14 +490,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
-
-        $yT = $this->network->infer($xT)->transpose();
+        $activations = $this->network->infer($dataset);
 
         $probabilities = [];
 
-        foreach ($yT as $activations) {
-            $probabilities[] = array_combine($this->classes, $activations) ?: [];
+        foreach ($activations->asArray() as $dist) {
+            $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 
         return $probabilities;

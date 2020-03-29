@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Regressors;
 
-use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -28,7 +27,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function is_nan;
+use function count;
 
 /**
  * Adaline
@@ -296,7 +296,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         }
         
         $prevLoss = $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -318,12 +318,16 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -331,7 +335,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -356,8 +360,6 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
-
-        return $this->network->infer($xT)->row(0);
+        return $this->network->infer($dataset)->column(0);
     }
 }
