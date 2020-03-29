@@ -272,6 +272,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
+        
+        $this->preprocess($dataset);
 
         return $this->estimator->proba($dataset);
     }
