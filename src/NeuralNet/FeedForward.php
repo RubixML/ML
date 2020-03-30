@@ -16,7 +16,6 @@ use InvalidArgumentException;
 use Generator;
 
 use function count;
-use function get_class;
 
 /**
  * Feed Forward
@@ -79,8 +78,8 @@ class FeedForward implements Network
     {
         foreach ($hidden as $layer) {
             if (!$layer instanceof Hidden) {
-                throw new InvalidArgumentException('Cannot use '
-                    . get_class($layer) . ' as a hidden layer.');
+                throw new InvalidArgumentException('Hidden layer must'
+                    . ' implement the Hidden interface.');
             }
         }
 
@@ -104,8 +103,8 @@ class FeedForward implements Network
 
         $this->input = $input;
         $this->hidden = $hidden;
-        $this->backPass = array_reverse($hidden);
         $this->output = $output;
+        $this->backPass = array_reverse($hidden);
         $this->optimizer = $optimizer;
     }
 

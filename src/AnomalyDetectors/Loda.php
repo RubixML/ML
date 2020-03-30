@@ -23,7 +23,6 @@ use RuntimeException;
 use function Rubix\ML\array_transpose;
 use function array_slice;
 
-use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
 
 /**
@@ -228,8 +227,8 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
             ->asArray();
 
         foreach (array_transpose($projections) as $values) {
-            $start = min($values) - EPSILON;
-            $end = max($values) + EPSILON;
+            $start = min($values);
+            $end = max($values);
 
             $edges = Vector::linspace($start, $end, $this->bins + 1)->asArray();
 
@@ -241,7 +240,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
-                    if ($value < $edge) {
+                    if ($value <= $edge) {
                         ++$counts[$k];
 
                         continue 2;
@@ -288,7 +287,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
-                    if ($value < $edge) {
+                    if ($value <= $edge) {
                         ++$counts[$k];
 
                         continue 2;
@@ -361,7 +360,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
                 [$edges, $counts] = $this->histograms[$j];
 
                 foreach ($edges as $k => $edge) {
-                    if ($value < $edge) {
+                    if ($value <= $edge) {
                         $count = $counts[$k];
 
                         $densities[$i] += $count > 0

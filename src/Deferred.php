@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-use function call_user_func;
+use function call_user_func_array;
 
 /**
  * Deferred
@@ -47,7 +47,7 @@ class Deferred
      */
     public function compute()
     {
-        return call_user_func($this->fn, ...$this->args);
+        return call_user_func_array($this->fn, $this->args);
     }
 
     /**

@@ -268,12 +268,12 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function proba(Dataset $dataset) : array
     {
+        $this->preprocess($dataset);
+
         if (!$this->estimator instanceof Probabilistic) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
-        
-        $this->preprocess($dataset);
 
         return $this->estimator->proba($dataset);
     }
@@ -287,6 +287,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function rank(Dataset $dataset) : array
     {
+        $this->preprocess($dataset);
+        
         if (!$this->estimator instanceof Ranking) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');

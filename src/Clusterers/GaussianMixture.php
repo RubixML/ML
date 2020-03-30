@@ -25,6 +25,7 @@ use RuntimeException;
 
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\array_transpose;
+use function is_nan;
 
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
@@ -288,7 +289,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $memberships[] = $dist;
             }
 
-            $loss / $n;
+            $loss /= $n;
 
             for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
@@ -330,6 +331,10 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             }
 
             if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 

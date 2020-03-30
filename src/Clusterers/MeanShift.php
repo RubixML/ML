@@ -28,6 +28,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function Rubix\ML\array_transpose;
+use function is_nan;
 
 use const Rubix\ML\EPSILON;
 
@@ -74,7 +75,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $delta;
 
     /**
-     * The ratio of samples from the training set to seed the algorithm with.
+     * The ratio of samples from the training set to use as initial centroids.
      *
      * @var float
      */
@@ -88,11 +89,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $epochs;
 
     /**
-     * The minimum change in the centroids necessary to continue training.
+     * The minimum shift in the position of the centroids necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected $minShift;
 
     /**
      * The spatial tree used to run range searches.
@@ -171,7 +172,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param float $radius
      * @param float $ratio
      * @param int $epochs
-     * @param float $minChange
+     * @param float $minShift
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
@@ -180,7 +181,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         float $radius,
         float $ratio = 0.1,
         int $epochs = 100,
-        float $minChange = 1e-4,
+        float $minShift = 1e-4,
         ?Spatial $tree = null,
         ?Seeder $seeder = null
     ) {
@@ -199,16 +200,16 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " must be greater than 0, $epochs given.");
         }
 
-        if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
-                . " greater than 0, $minChange given.");
+        if ($minShift < 0.0) {
+            throw new InvalidArgumentException('Minimum shift must be'
+                . " greater than 0, $minShift given.");
         }
 
         $this->radius = $radius;
         $this->delta = 2.0 * $radius ** 2;
         $this->ratio = $ratio;
         $this->epochs = $epochs;
-        $this->minChange = $minChange;
+        $this->minShift = $minShift;
         $this->tree = $tree ?? new BallTree();
         $this->seeder = $seeder ?? new Random();
     }
@@ -246,7 +247,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             'radius' => $this->radius,
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min_shift' => $this->minShift,
             'tree' => $this->tree,
             'seeder' => $this->seeder,
         ];
@@ -347,11 +348,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
-            if ($loss < $this->minChange) {
+            if ($loss < $this->minShift) {
                 break 1;
             }
 

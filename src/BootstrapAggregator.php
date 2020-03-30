@@ -18,10 +18,10 @@ use function in_array;
 /**
  * Bootstrap Aggregator
  *
- * Bootstrap Aggregating (or *bagging* for short) is a model averaging
- * technique designed to improve the stability and performance of a
- * user-specified base estimator by training a number of them on a unique
- * *bootstrapped* training set sampled at random with replacement.
+ * Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed
+ * to improve the stability and performance of a user-specified base estimator by training
+ * a number of them on a unique *bootstrapped* training set sampled at random with
+ * replacement.
  *
  * References:
  * [1] L. Breiman. (1996). Bagging Predictors.

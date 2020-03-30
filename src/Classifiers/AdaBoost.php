@@ -21,6 +21,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function is_nan;
 
 use const Rubix\ML\EPSILON;
 
@@ -300,7 +301,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $maxLoss = 1.0 - (1.0 / $k);
         $prevLoss = $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         $this->ensemble = $this->influences = $this->steps = [];
 
@@ -340,9 +341,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             if ($loss > $bestLoss) {
                 $bestLoss = $loss;
 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
             if ($loss >= $maxLoss) {
@@ -361,7 +362,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
-            if ($loss < EPSILON) {
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -369,7 +370,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 

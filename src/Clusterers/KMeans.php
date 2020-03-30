@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function is_nan;
 
 use const Rubix\ML\EPSILON;
 
@@ -368,7 +369,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 ++$nu;
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 

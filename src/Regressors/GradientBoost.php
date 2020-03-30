@@ -24,11 +24,10 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function is_nan;
 use function array_slice;
 use function get_class;
 use function in_array;
-
-use const Rubix\ML\EPSILON;
 
 /**
  * Gradient Boost
@@ -365,7 +364,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $k = (int) ceil($this->ratio * $training->numRows());
 
         $bestScore = $min;
-        $bestEpoch = $nu = 0;
+        $bestEpoch = $delta = 0;
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
@@ -407,16 +406,16 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 $bestScore = $score;
                 $bestEpoch = $epoch;
 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if ($loss < EPSILON or $score >= $max) {
+            if ($loss <= 0.0 or $score >= $max) {
                 break 1;
             }
 
@@ -424,7 +423,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 

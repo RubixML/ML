@@ -120,7 +120,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         }
 
         if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {
-            throw new InvalidArgumentException('Ratio must be strictly'
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 

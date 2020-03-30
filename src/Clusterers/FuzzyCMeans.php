@@ -24,6 +24,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 use function count;
+use function is_nan;
 
 use const Rubix\ML\EPSILON;
 
@@ -283,7 +284,11 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 

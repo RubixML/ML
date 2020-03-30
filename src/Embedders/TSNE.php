@@ -344,7 +344,7 @@ class TSNE implements Embedder, Verbose
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         $this->steps = [];
 
@@ -385,9 +385,9 @@ class TSNE implements Embedder, Verbose
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $nu = 0;
+                $delta = 0;
             } else {
-                ++$nu;
+                ++$delta;
             }
 
             if (is_nan($loss)) {
@@ -398,7 +398,7 @@ class TSNE implements Embedder, Verbose
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($delta >= $this->window) {
                 break 1;
             }
 
