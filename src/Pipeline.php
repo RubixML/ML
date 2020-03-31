@@ -144,13 +144,13 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     }
 
     /**
-     * Return if the logger is logging or not.
+     * Return the logger or null if not set.
      *
-     * @var bool
+     * @return \Psr\Log\LoggerInterface|null
      */
-    public function logging() : bool
+    public function logger() : ?LoggerInterface
     {
-        return isset($this->logger);
+        return $this->logger;
     }
 
     /**

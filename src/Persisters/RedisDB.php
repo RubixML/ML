@@ -70,6 +70,10 @@ class RedisDB implements Persister
                 . ' PHP configuration.');
         }
 
+        if (empty($key)) {
+            throw new InvalidArgumentException('Key cannot be an empty string.');
+        }
+
         if ($timeout <= 0.0) {
             throw new InvalidArgumentException('Timeout must be greater than'
                 . " 0, $timeout given.");
@@ -89,7 +93,7 @@ class RedisDB implements Persister
         }
 
         if (!$connector->select($db)) {
-            throw new RuntimeException("Failed selecting database $db.");
+            throw new RuntimeException("Failed to select database $db.");
         }
 
         $this->key = $key;
@@ -98,17 +102,7 @@ class RedisDB implements Persister
     }
 
     /**
-     * Return an associative array of info from the Redis server.
-     *
-     * @return mixed[]
-     */
-    public function info() : array
-    {
-        return $this->connector->info();
-    }
-
-    /**
-     * Save the persitable object.
+     * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
@@ -136,11 +130,6 @@ class RedisDB implements Persister
         $data = $this->connector->get($this->key) ?: '';
 
         $persistable = $this->serializer->unserialize($data);
-
-        if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Persistable could'
-                . ' not be reconstituted.');
-        }
 
         return $persistable;
     }

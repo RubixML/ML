@@ -4,10 +4,11 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -20,56 +21,64 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Verbose
 {
     use PredictsSingle, ProbaSingle, RankSingle;
     
     /**
-     * The persistable learner.
+     * The persistable base learner.
      *
-     * @var \Rubix\ML\Learner
+     * @var \Rubix\ML\Persistable
      */
-    protected $estimator;
+    protected $base;
 
     /**
-     * The persister object used to interface with the storage medium.
+     * The persister used to interface with the storage medium.
      *
      * @var \Rubix\ML\Persisters\Persister
      */
     protected $persister;
 
     /**
+     * The PSR-3 logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface|null
+     */
+    protected $logger;
+
+    /**
      * Factory method to restore the model from persistence.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
-     * @throws \InvalidArgumentException
      * @return self
      */
     public static function load(Persister $persister) : self
     {
-        $learner = $persister->load();
+        $base = $persister->load();
 
-        if (!$learner instanceof Learner) {
-            throw new InvalidArgumentException('Persistable must'
-                . ' implement the Learner interface.');
+        $estimator = new self($base, $persister);
+
+        if ($base instanceof Verbose) {
+            $logger = $base->logger();
+
+            if (isset($logger)) {
+                $logger->info('Model loaded from ' . Params::shortName(get_class($persister)));
+
+                $estimator->setLogger($logger);
+            }
         }
 
-        return new self($learner, $persister);
+        return $estimator;
     }
 
     /**
-     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Persistable $base
      * @param \Rubix\ML\Persisters\Persister $persister
      * @throws \InvalidArgumentException
      */
-    public function __construct(Learner $estimator, Persister $persister)
+    public function __construct(Persistable $base, Persister $persister)
     {
-        if (!$estimator instanceof Persistable) {
-            throw new InvalidArgumentException('Base learner must'
-                . ' implement the Persistable interface.');
-        }
-
-        $this->estimator = $estimator;
+        $this->base = $base;
         $this->persister = $persister;
     }
 
@@ -80,7 +89,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function type() : EstimatorType
     {
-        return $this->estimator->type();
+        return $this->base->type();
     }
 
     /**
@@ -90,7 +99,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function compatibility() : array
     {
-        return $this->estimator->compatibility();
+        return $this->base->compatibility();
     }
 
     /**
@@ -101,7 +110,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     public function params() : array
     {
         return [
-            'estimator' => $this->estimator,
+            'base' => $this->base,
             'persister' => $this->persister,
         ];
     }
@@ -113,7 +122,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function trained() : bool
     {
-        return $this->estimator->trained();
+        return $this->base->trained();
     }
 
     /**
@@ -123,7 +132,53 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function base() : Estimator
     {
-        return $this->estimator;
+        return $this->base;
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger) : void
+    {
+        if ($this->base instanceof Verbose) {
+            $this->base->setLogger($logger);
+        }
+
+        $this->logger = $logger;
+    }
+
+    /**
+     * Return the logger or null if not set.
+     *
+     * @return \Psr\Log\LoggerInterface|null
+     */
+    public function logger() : ?LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * Set the storage driver used to save the model.
+     *
+     * @param \Rubix\ML\Persisters\Persister $persister
+     */
+    public function setPersister(Persister $persister) : void
+    {
+        $this->persister = $persister;
+    }
+
+    /**
+     * Save the model to storage.
+     */
+    public function save() : void
+    {
+        $this->persister->save($this->base);
+
+        if ($this->logger) {
+            $this->logger->info('Model saved to ' . Params::shortName(get_class($this->persister)));
+        }
     }
 
     /**
@@ -133,7 +188,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function train(Dataset $dataset) : void
     {
-        $this->estimator->train($dataset);
+        $this->base->train($dataset);
     }
 
     /**
@@ -144,7 +199,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function predict(Dataset $dataset) : array
     {
-        return $this->estimator->predict($dataset);
+        return $this->base->predict($dataset);
     }
 
     /**
@@ -156,12 +211,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->estimator instanceof Probabilistic) {
+        if (!$this->base instanceof Probabilistic) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
 
-        return $this->estimator->proba($dataset);
+        return $this->base->proba($dataset);
     }
 
     /**
@@ -173,22 +228,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function rank(Dataset $dataset) : array
     {
-        if (!$this->estimator instanceof Ranking) {
+        if (!$this->base instanceof Ranking) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
             
-        return $this->estimator->rank($dataset);
-    }
-
-    /**
-     * Save the model using the user-provided persister.
-     */
-    public function save() : void
-    {
-        if ($this->estimator instanceof Persistable) {
-            $this->persister->save($this->estimator);
-        }
+        return $this->base->rank($dataset);
     }
 
     /**
@@ -200,6 +245,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->estimator->$name(...$arguments);
+        return $this->base->$name(...$arguments);
     }
 }

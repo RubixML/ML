@@ -2,14 +2,15 @@
 
 namespace Rubix\ML;
 
+use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 
 interface Verbose extends LoggerAwareInterface
 {
     /**
-     * Return if the logger is logging or not.
+     * Return the logger or null if not set.
      *
-     * @var bool
+     * @return \Psr\Log\LoggerInterface|null
      */
-    public function logging() : bool;
+    public function logger() : ?LoggerInterface;
 }

@@ -37,10 +37,10 @@ trait LoggerAware
     /**
      * Return if the logger is logging or not.
      *
-     * @var bool
+     * @return \Psr\Log\LoggerInterface|null
      */
-    public function logging() : bool
+    public function logger() : ?LoggerInterface
     {
-        return isset($this->logger);
+        return $this->logger;
     }
 }

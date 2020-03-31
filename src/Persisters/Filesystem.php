@@ -26,7 +26,7 @@ class Filesystem implements Persister
      *
      * @var string
      */
-    public const HISTORY_EXT = '.old';
+    public const HISTORY_EXT = 'old';
 
     /**
      * The path to the model file on the filesystem.
@@ -76,11 +76,18 @@ class Filesystem implements Persister
     public function save(Persistable $persistable) : void
     {
         if ($this->history and is_file($this->path)) {
-            $filename = $this->path . '.' . (string) time() . self::HISTORY_EXT;
+            $timestamp = (string) time();
+            
+            $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
+
+            $num = 0;
+
+            while (file_exists($filename)) {
+                $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
+            }
 
             if (!rename($this->path, $filename)) {
-                throw new RuntimeException('Failed to rename history'
-                 . ' file, check path and permissions.');
+                throw new RuntimeException('Failed to create history file.');
             }
         }
 
@@ -92,8 +99,8 @@ class Filesystem implements Persister
         $data = $this->serializer->serialize($persistable);
 
         if (!file_put_contents($this->path, $data, LOCK_EX)) {
-            throw new RuntimeException('Failed to save file to'
-                . ' filesystem, check path and permissions.');
+            throw new RuntimeException('Failed to write data to'
+                . ' the filesystem');
         }
     }
 
@@ -106,8 +113,7 @@ class Filesystem implements Persister
     public function load() : Persistable
     {
         if (!is_readable($this->path)) {
-            throw new RuntimeException("File $this->path does not"
-                . ' exist or is a folder, check path and permissions.');
+            throw new RuntimeException("File $this->path is not readable.");
         }
             
         $data = file_get_contents($this->path) ?: '';
@@ -118,11 +124,6 @@ class Filesystem implements Persister
         }
 
         $persistable = $this->serializer->unserialize($data);
-
-        if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Persistable could not be'
-                . ' reconstituted.');
-        }
 
         return $persistable;
     }

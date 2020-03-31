@@ -1,4 +1,5 @@
 - Unreleased
+    - Persistent Model now implements Verbose interface
     - Tuned CART continuous feature quantile-based split finding
     - N-gram and SkipGram use configurable base word tokenizer
     - Moved Alpha Dropout hidden layer to Extras package
@@ -8,6 +9,7 @@
     - Text Normalizer trim extra whitespace not optional
     - Mean Shift minimum seeds now set at 20
     - Standardized K Means inertial loss over batch count
+    - Added set persister method to Persistent Model
 
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets

@@ -198,7 +198,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->weights = array_fill_keys($classes, 0.);
+        $this->weights = array_fill_keys($classes, 0.0);
 
         $this->means = $this->variances = array_fill_keys($classes, []);
 
