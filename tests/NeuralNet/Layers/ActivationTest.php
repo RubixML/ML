@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\TestCase;
@@ -77,7 +76,6 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Activation::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Nonparametric::class, $this->layer);
     }
     
     /**

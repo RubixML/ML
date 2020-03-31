@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Generator;
 
-interface Parametric extends Nonparametric
+interface Parametric
 {
     /**
      * Return the parameters of the layer.

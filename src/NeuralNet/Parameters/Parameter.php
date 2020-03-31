@@ -26,6 +26,16 @@ abstract class Parameter
     }
 
     /**
+     * Return the unique identifier of the parameter.
+     *
+     * @return int
+     */
+    public function id() : int
+    {
+        return $this->id;
+    }
+
+    /**
      * Return the parameter tensor.
      *
      * @return mixed
@@ -38,14 +48,4 @@ abstract class Parameter
      * @param \Tensor\Tensor<mixed> $step
      */
     abstract public function update(Tensor $step) : void;
-
-    /**
-     * Return the unique identifier of the parameter.
-     *
-     * @return int
-     */
-    public function id() : int
-    {
-        return $this->id;
-    }
 }

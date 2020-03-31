@@ -46,7 +46,7 @@ class FeedForward implements Network
     ];
 
     /**
-     * The memoized pathing of the backward pass through the hidden layers.
+     * The pathing of the backward pass through the hidden layers.
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */

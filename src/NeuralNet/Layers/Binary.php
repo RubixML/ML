@@ -30,7 +30,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Binary implements Output
+class Binary implements Output, Parametric
 {
     /**
      * The labels of either of the possible outcomes.
@@ -129,13 +129,13 @@ class Binary implements Output
         $classes = array_unique($classes);
 
         if (count($classes) !== 2) {
-            throw new InvalidArgumentException('The number of unique classes'
-                . ' must be exactly 2.');
+            throw new InvalidArgumentException('Number of classes'
+                . ' must be 2, ' . count($classes) . ' given.');
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('L2 regularization amount'
-                . " must be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         $this->classes = array_flip(array_values($classes));
@@ -260,19 +260,19 @@ class Binary implements Output
             $expected[] = $this->classes[$label];
         }
 
-        $target = Matrix::quick([$expected]);
+        $expected = Matrix::quick([$expected]);
 
         $dPenalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
             $dA = $this->computed
-                ->subtract($target)
+                ->subtract($expected)
                 ->add($dPenalties)
                 ->divide($this->computed->n());
         } else {
             $dL = $this->costFn
-                ->differentiate($this->computed, $target)
+                ->differentiate($this->computed, $expected)
                 ->add($dPenalties)
                 ->divide($this->computed->n());
 
@@ -291,7 +291,7 @@ class Binary implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 
-        $loss = $this->costFn->compute($this->computed, $target);
+        $loss = $this->costFn->compute($this->computed, $expected);
 
         unset($this->input, $this->z, $this->computed);
 

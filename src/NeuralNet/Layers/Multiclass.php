@@ -29,7 +29,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Multiclass implements Output
+class Multiclass implements Output, Parametric
 {
     /**
      * The unique class labels.
@@ -128,13 +128,14 @@ class Multiclass implements Output
         $classes = array_values(array_unique($classes));
 
         if (count($classes) < 2) {
-            throw new InvalidArgumentException('The number of unique classes'
-                . ' must be 2 or more, ' . count($classes) . ' given.');
+            throw new InvalidArgumentException('Number of classes'
+                . ' must be greater than 1, ' . count($classes)
+                . ' given.');
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('L2 regularization coefficient'
-                . " must be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         $this->classes = $classes;
@@ -265,19 +266,19 @@ class Multiclass implements Output
             $expected[] = $temp;
         }
 
-        $target = Matrix::quick($expected);
+        $expected = Matrix::quick($expected);
 
         $dPenalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
             $dA = $this->computed
-                ->subtract($target)
+                ->subtract($expected)
                 ->add($dPenalties)
                 ->divide($this->computed->n());
         } else {
             $dL = $this->costFn
-                ->differentiate($this->computed, $target)
+                ->differentiate($this->computed, $expected)
                 ->add($dPenalties)
                 ->divide($this->computed->n());
 
@@ -296,7 +297,7 @@ class Multiclass implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 
-        $loss = $this->costFn->compute($this->computed, $target);
+        $loss = $this->costFn->compute($this->computed, $expected);
 
         unset($this->input, $this->z, $this->computed);
 

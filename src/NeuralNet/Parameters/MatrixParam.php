@@ -52,6 +52,6 @@ class MatrixParam extends Parameter
      */
     public function update(Tensor $step) : void
     {
-        $this->w = $this->w()->subtract($step);
+        $this->w = $this->w->subtract($step);
     }
 }

@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Dropout;
-use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
@@ -80,7 +79,6 @@ class DropoutTest extends TestCase
         $this->assertInstanceOf(Dropout::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Nonparametric::class, $this->layer);
     }
     
     /**

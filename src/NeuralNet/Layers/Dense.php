@@ -167,13 +167,13 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $this->input = $input;
-
         $z = $this->weights->w()->matmul($input);
 
         if ($this->biases) {
             $z = $z->add($this->biases->w());
         }
+
+        $this->input = $input;
 
         return $z;
     }

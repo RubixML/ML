@@ -26,7 +26,7 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Continuous implements Output
+class Continuous implements Output, Parametric
 {
     /**
      * The L2 regularization parameter.
@@ -98,8 +98,8 @@ class Continuous implements Output
         ?Initializer $biasInitializer = null
     ) {
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('L2 regularization amount'
-                . " must be 0 or greater, $alpha given.");
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
         }
 
         $this->alpha = $alpha;
@@ -212,13 +212,13 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $target = Matrix::quick([$labels]);
+        $expected = Matrix::quick([$labels]);
 
         $dPenalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn
-            ->differentiate($this->z, $target)
+            ->differentiate($this->z, $expected)
             ->add($dPenalties)
             ->divide($this->z->n());
 
@@ -232,7 +232,7 @@ class Continuous implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
 
-        $loss = $this->costFn->compute($this->z, $target);
+        $loss = $this->costFn->compute($this->z, $expected);
 
         unset($this->input, $this->z);
 

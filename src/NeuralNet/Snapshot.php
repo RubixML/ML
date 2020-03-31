@@ -22,12 +22,12 @@ class Snapshot implements IteratorAggregate
     /**
      * The layer of the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Layer[]
+     * @var \Rubix\ML\NeuralNet\Layers\Parametric[]
      */
     protected $layers;
 
     /**
-     * The parameters cooresponding to each layer in the network at the
+     * The parameters corresponding to each layer in the network at the
      * time of the snapshot.
      *
      * @var array[]

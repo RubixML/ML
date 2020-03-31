@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
@@ -80,7 +79,6 @@ class NoiseTest extends TestCase
         $this->assertInstanceOf(Noise::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Nonparametric::class, $this->layer);
     }
     
     /**

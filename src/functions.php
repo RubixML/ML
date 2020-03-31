@@ -43,9 +43,7 @@ namespace Rubix\ML
      */
     function array_transpose(array $table) : array
     {
-        $m = count($table);
-
-        switch ($m) {
+        switch (count($table)) {
             case 0:
                 return $table;
 

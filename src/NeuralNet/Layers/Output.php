@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-interface Output extends Parametric
+interface Output extends Layer
 {
     /**
      * Compute the gradient and loss at the output.
