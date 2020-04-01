@@ -119,22 +119,6 @@ class Continuous implements Output, Parametric
     }
 
     /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
-        }
-
-        yield $this->weights;
-        yield $this->biases;
-    }
-
-    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
@@ -252,21 +236,19 @@ class Continuous implements Output, Parametric
     }
 
     /**
-     * Return the parameters of the layer in an associative array.
+     * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
-    public function read() : array
+    public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
-        return [
-            'weights' => clone $this->weights,
-            'biases' => clone $this->biases,
-        ];
+        yield 'weights' => $this->weights;
+        yield 'biases' => $this->biases;
     }
 
     /**

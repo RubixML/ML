@@ -112,25 +112,6 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->weights) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
-        yield $this->weights;
-
-        if ($this->biases) {
-            yield $this->biases;
-        }
-    }
-
-    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
@@ -251,26 +232,22 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Return the parameters of the layer in an associative array.
+     * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
-    public function read() : array
+    public function parameters() : Generator
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $params = [
-            'weights' => clone $this->weights,
-        ];
+        yield 'weights' => $this->weights;
 
         if ($this->biases) {
-            $params['biases'] = clone $this->biases;
+            yield 'biases' => $this->biases;
         }
-
-        return $params;
     }
 
     /**

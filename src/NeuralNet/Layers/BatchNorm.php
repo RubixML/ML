@@ -141,22 +141,6 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
-        yield $this->beta;
-        yield $this->gamma;
-    }
-
-    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
@@ -302,21 +286,19 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Return the parameters of the layer in an associative array.
+     * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
-    public function read() : array
+    public function parameters() : Generator
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        return [
-            'beta' => clone $this->beta,
-            'gamma' => clone $this->gamma,
-        ];
+        yield 'beta' => $this->beta;
+        yield 'gamma' => $this->gamma;
     }
 
     /**

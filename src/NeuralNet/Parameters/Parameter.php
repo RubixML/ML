@@ -14,7 +14,7 @@ abstract class Parameter
     protected $id;
 
     /**
-     * The class auto incrementing id.
+     * The auto incrementing id.
      *
      * @var int
      */

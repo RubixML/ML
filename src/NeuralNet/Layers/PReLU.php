@@ -79,21 +79,6 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
-        yield $this->alpha;
-    }
-
-    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
@@ -250,20 +235,18 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Read the parameters and return them in an associative array.
+     * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
      */
-    public function read() : array
+    public function parameters() : Generator
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
-        
-        return [
-            'alpha' => clone $this->alpha,
-        ];
+
+        yield 'alpha' => $this->alpha;
     }
 
     /**

@@ -15,8 +15,6 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use Generator;
 
-use function count;
-
 /**
  * Feed Forward
  *
@@ -155,35 +153,6 @@ class FeedForward implements Network
     }
 
     /**
-     * The parametric layers of the network. i.e. the layers that have weights.
-     *
-     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Parametric>
-     */
-    public function parametric() : Generator
-    {
-        foreach ($this->hidden as $layer) {
-            if ($layer instanceof Parametric) {
-                yield $layer;
-            }
-        }
-
-        if ($this->output instanceof Parametric) {
-            yield $this->output;
-        }
-    }
-
-    /**
-     * The depth of the network. i.e. the number of layers including
-     * input, hidden, and output.
-     *
-     * @return int
-     */
-    public function depth() : int
-    {
-        return count($this->hidden) + 2;
-    }
-
-    /**
      * Run an inference pass and return the activations at the output layer.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -242,8 +211,7 @@ class FeedForward implements Network
     }
 
     /**
-     * Backpropagate the gradient produced by the cost function and return
-     * the loss calculated by the output layer's cost function.
+     * Backpropagate the gradient produced by the cost function and return the loss.
      *
      * @param (string|int|float)[] $labels
      * @return float
@@ -257,19 +225,5 @@ class FeedForward implements Network
         }
 
         return $loss;
-    }
-
-    /**
-     * Restore the network parameters from a snapshot.
-     *
-     * @param \Rubix\ML\NeuralNet\Snapshot<array> $snapshot
-     */
-    public function restore(Snapshot $snapshot) : void
-    {
-        foreach ($snapshot as [$layer, $params]) {
-            if ($layer instanceof Parametric) {
-                $layer->restore($params);
-            }
-        }
     }
 }

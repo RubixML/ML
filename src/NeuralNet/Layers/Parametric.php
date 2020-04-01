@@ -14,14 +14,7 @@ interface Parametric
     public function parameters() : Generator;
 
     /**
-     * Return the parameters of the layer in an associative array.
-     *
-     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
-     */
-    public function read() : array;
-
-    /**
-     * Restore the parameters in the layer from an associative array.
+     * Restore the parameters on the layer from an associative array.
      *
      * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
      */

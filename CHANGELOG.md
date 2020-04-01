@@ -20,7 +20,7 @@
     - Added params method to Estimator and Embedder interface
     - t-SNE now compatible with categorical distance kernels
     - Grid Search implements the Wrapper interface
-    - Grid Search memoizes all results from last search
+    - Grid Search memorizes all results from last search
     - Dataset fromIterator method accepts any iterable
     - Column Picker throws exception if column not found
     - Better hyper-parameter stringification

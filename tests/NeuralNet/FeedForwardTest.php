@@ -83,9 +83,9 @@ class FeedForwardTest extends TestCase
     /**
      * @test
      */
-    public function depth() : void
+    public function layers() : void
     {
-        $this->assertEquals(6, $this->network->depth());
+        $this->assertCount(6, $this->network->layers());
     }
     
     /**
@@ -110,14 +110,6 @@ class FeedForwardTest extends TestCase
     public function output() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
-    }
-    
-    /**
-     * @test
-     */
-    public function parametric() : void
-    {
-        $this->assertCount(3, $this->network->parametric());
     }
     
     /**

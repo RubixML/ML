@@ -322,7 +322,7 @@ class TSNE implements Embedder, Verbose
         if ($this->logger) {
             $this->logger->info('Embedder init ' . Params::stringify($this->params()));
 
-            $this->logger->info('Computing high-dimensional pairwise affinities');
+            $this->logger->info('Computing high-dimensional affinities');
         }
 
         $distances = $this->pairwiseDistances($dataset->samples());

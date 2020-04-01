@@ -437,12 +437,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         if (end($this->scores) < $bestScore) {
             if ($snapshot) {
+                $snapshot->restore();
+
                 if ($this->logger) {
-                    $this->logger->info('Restoring parameters from'
+                    $this->logger->info('Parameters restored from'
                         . " snapshot at epoch $bestEpoch.");
                 }
-
-                $this->network->restore($snapshot);
             }
         }
 

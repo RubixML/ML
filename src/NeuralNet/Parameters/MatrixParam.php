@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Tensor\Tensor;
 
 /**
- * Parameter
+ * Matrix Parameter
  *
  * This wrapper enables parameters to be identified by object hash and thus
  * used as cache keys by adaptive gradient descent optimizers such as Adam,
@@ -53,5 +53,13 @@ class MatrixParam extends Parameter
     public function update(Tensor $step) : void
     {
         $this->w = $this->w->subtract($step);
+    }
+
+    /**
+     * Perform a deep copy of the object.
+     */
+    public function __clone()
+    {
+        $this->w = clone $this->w;
     }
 }

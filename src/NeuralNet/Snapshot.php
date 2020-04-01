@@ -3,8 +3,6 @@
 namespace Rubix\ML\NeuralNet;
 
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use IteratorAggregate;
-use Generator;
 
 /**
  * Snapshot
@@ -14,10 +12,8 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- *
- * @implements IteratorAggregate<int, array>
  */
-class Snapshot implements IteratorAggregate
+class Snapshot
 {
     /**
      * The layer of the network.
@@ -41,26 +37,30 @@ class Snapshot implements IteratorAggregate
     {
         $layers = $params = [];
 
-        foreach ($network->parametric() as $layer) {
+        foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
+                $temp = [];
+
+                foreach ($layer->parameters() as $key => $param) {
+                    $temp[$key] = clone $param;
+                }
+
                 $layers[] = $layer;
-                $params[] = $layer->read();
+                $params[] = $temp;
             }
         }
-
+        
         $this->layers = $layers;
         $this->params = $params;
     }
 
     /**
-     * Get an iterator over the layers and parameters of the snapshot.
-     *
-     * @return \Generator<array>
+     * Restore the network parameters.
      */
-    public function getIterator() : Generator
+    public function restore() : void
     {
         foreach ($this->layers as $i => $layer) {
-            yield [$layer, $this->params[$i]];
+            $layer->restore($this->params[$i]);
         }
     }
 }

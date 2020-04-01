@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class SnapshotTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Snapshot<array>
+     * @var \Rubix\ML\NeuralNet\Snapshot
      */
     protected $snapshot;
 
@@ -48,7 +48,5 @@ class SnapshotTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Snapshot::class, $this->snapshot);
-        $this->assertCount(2, iterator_to_array($this->snapshot));
-        $this->assertEquals(4, $this->network->depth());
     }
 }
