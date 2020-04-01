@@ -8,9 +8,7 @@ use Tensor\Tensor;
 /**
  * Vector Parameter
  *
- * This wrapper enables parameters to be identified by object hash and thus
- * used as cache keys by adaptive gradient descent optimizers such as Adam,
- * AdaGrad, and RMS Prop.
+ * This wrapper enables parameters to be identified by gradient descent optimizers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -19,16 +19,6 @@ use const Rubix\ML\EPSILON;
 class RelativeEntropy implements ClassificationLoss
 {
     /**
-     * Return a tuple of the min and max output value for this function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [-INF, INF];
-    }
-
-    /**
      * Compute the loss.
      *
      * @param \Tensor\Matrix $output

@@ -10,6 +10,7 @@
     - Mean Shift minimum seeds now set at 20
     - Standardized K Means inertial loss over batch count
     - Added set persister method to Persistent Model
+    - Removed range() from neural network Cost Function interface
 
 - 0.0.20-rc1
     - Random Forest now handles imbalanced datasets

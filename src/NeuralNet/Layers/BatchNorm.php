@@ -116,8 +116,8 @@ class BatchNorm implements Hidden, Parametric
         ?Initializer $gammaInitializer = null
     ) {
         if ($decay < 0.0 or $decay > 1.0) {
-            throw new InvalidArgumentException('Decay must be between'
-                . " 0 and 1, $decay given.");
+            throw new InvalidArgumentException('Decay must be'
+                . " between 0 and 1, $decay given.");
         }
 
         $this->decay = $decay;
@@ -151,11 +151,8 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->betaInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
-
-        $gamma = $this->gammaInitializer->initialize(1, $fanOut)
-            ->columnAsVector(0);
+        $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
+        $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->beta = new VectorParam($beta);
         $this->gamma = new VectorParam($gamma);

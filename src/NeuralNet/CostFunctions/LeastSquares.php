@@ -17,16 +17,6 @@ use Tensor\Matrix;
 class LeastSquares implements RegressionLoss
 {
     /**
-     * Return a tuple of the min and max output value for this function.
-     *
-     * @return float[]
-     */
-    public function range() : array
-    {
-        return [0.0, INF];
-    }
-
-    /**
      * Compute the loss score.
      *
      * @param \Tensor\Matrix $output

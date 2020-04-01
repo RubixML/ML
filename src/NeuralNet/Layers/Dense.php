@@ -91,8 +91,8 @@ class Dense implements Hidden, Parametric
         ?Initializer $biasInitializer = null
     ) {
         if ($neurons < 1) {
-            throw new InvalidArgumentException('The number of neurons cannot be'
-                . ' less than 1.');
+            throw new InvalidArgumentException('Number of neurons'
+                . " must be greater than 0, $neurons given.");
         }
 
         $this->neurons = $neurons;

@@ -7,13 +7,6 @@ use Tensor\Matrix;
 interface CostFunction
 {
     /**
-     * Return a tuple of the min and max output value for this function.
-     *
-     * @return float[]
-     */
-    public function range() : array;
-
-    /**
      * Compute the loss score.
      *
      * @param \Tensor\Matrix $output
