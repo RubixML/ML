@@ -43,6 +43,13 @@ class TSNE implements Embedder, Verbose
     use LoggerAware;
 
     /**
+     * The maximum number of epochs with early exaggeration.
+     *
+     * @var int
+     */
+    protected const MAX_EARLY_EPOCHS = 250;
+
+    /**
      * The initial momentum coefficient.
      *
      * @var float
@@ -75,7 +82,7 @@ class TSNE implements Embedder, Verbose
      *
      * @var float
      */
-    protected const Y_INIT = 1e-4;
+    protected const Y_INIT_SCALE = 1e-4;
 
     /**
      * The amount of gain to add while the direction of the gradient is the same.
@@ -110,7 +117,7 @@ class TSNE implements Embedder, Verbose
      *
      * @var int
      */
-    protected $degrees;
+    protected $dofs;
 
     /**
      * The precomputed c factor of the gradient computation.
@@ -253,15 +260,17 @@ class TSNE implements Embedder, Verbose
                 . " greater than 0, $window given.");
         }
 
+        $dofs = max($dimensions - 1, 1);
+
         $this->dimensions = $dimensions;
-        $this->degrees = max($dimensions - 1, 1);
-        $this->c = 2.0 * (1.0 + $this->degrees) / $this->degrees;
+        $this->dofs = $dofs;
+        $this->c = 2.0 * (1.0 + $dofs) / $dofs;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
-        $this->early = min(250, (int) round($epochs / 4));
+        $this->early = min(self::MAX_EARLY_EPOCHS, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
         $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
@@ -327,20 +336,18 @@ class TSNE implements Embedder, Verbose
 
         $distances = $this->pairwiseDistances($dataset->samples());
 
+        $p = Matrix::quick($this->affinities($distances))
+            ->multiply($this->exaggeration);
+
         if ($this->logger) {
             $this->logger->info('Embedding started');
         }
 
-        $m = $dataset->numRows();
+        $y = Matrix::gaussian($dataset->numRows(), $this->dimensions)
+            ->multiply(self::Y_INIT_SCALE);
 
-        $p = $this->affinities($distances)
-            ->multiply($this->exaggeration);
-
-        $y = Matrix::gaussian($m, $this->dimensions)
-            ->multiply(self::Y_INIT);
-
-        $velocity = Matrix::zeros($m, $this->dimensions);
-        $gains = Matrix::ones($m, $this->dimensions)->asArray();
+        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
+        $gains = Matrix::ones($dataset->numRows(), $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
@@ -452,9 +459,9 @@ class TSNE implements Embedder, Verbose
      * they approximately match the desired perplexity.
      *
      * @param array[] $distances
-     * @return \Tensor\Matrix
+     * @return array[]
      */
-    protected function affinities(array $distances) : Matrix
+    protected function affinities(array $distances) : array
     {
         $affinities = [];
 
@@ -519,7 +526,7 @@ class TSNE implements Embedder, Verbose
             $affinities[] = $candidate;
         }
 
-        return Matrix::quick($affinities);
+        return $affinities;
     }
 
     /**
@@ -533,9 +540,9 @@ class TSNE implements Embedder, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $q = $distances->divide($this->degrees)
+        $q = $distances->divide($this->dofs)
             ->add(1.0)
-            ->pow((1.0 + $this->degrees) / -2.0);
+            ->pow((1.0 + $this->dofs) / -2.0);
 
         $q = $q->divide($q->sum()->multiply(2.0))
             ->clipLower(EPSILON);

@@ -1,18 +1,18 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Clusterers;
+namespace Rubix\ML\Benchmarks\Embedders;
 
-use Rubix\ML\Clusterers\DBSCAN;
+use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
- * @Groups({"Clusterers"})
+ * @Groups({"Embedders"})
  * @BeforeMethods({"setUp"})
  */
-class DBSCANBench
+class TSNEBench
 {
-    protected const TESTING_SIZE = 10000;
+    protected const TESTING_SIZE = 1000;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
@@ -20,9 +20,9 @@ class DBSCANBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\DBSCAN
+     * @var \Rubix\ML\Embedders\TSNE
      */
-    protected $estimator;
+    protected $embedder;
 
     public function setUp() : void
     {
@@ -34,7 +34,7 @@ class DBSCANBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new DBSCAN(0.1);
+        $this->embedder = new TSNE(1);
     }
 
     /**
@@ -42,8 +42,8 @@ class DBSCANBench
      * @Iterations(3)
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function predict() : void
+    public function embed() : void
     {
-        $this->estimator->predict($this->testing);
+        $this->embedder->embed($this->testing);
     }
 }

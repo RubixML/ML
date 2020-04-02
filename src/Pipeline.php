@@ -199,6 +199,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         if ($this->elastic) {
             $this->update($dataset);
+        } else {
+            $this->preprocess($dataset);
         }
 
         if ($this->estimator instanceof Online) {

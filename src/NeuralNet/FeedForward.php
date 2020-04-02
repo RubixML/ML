@@ -205,9 +205,7 @@ class FeedForward implements Network
             $input = $hidden->forward($input);
         }
 
-        $activations = $this->output->forward($input);
-
-        return $activations;
+        return $this->output->forward($input);
     }
 
     /**

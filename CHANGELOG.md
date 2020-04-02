@@ -1,4 +1,4 @@
-- Unreleased
+- 0.1.0-rc2
     - Persistent Model now implements Verbose interface
     - Tuned CART continuous feature quantile-based split finding
     - N-gram and SkipGram use configurable base word tokenizer
@@ -12,7 +12,7 @@
     - Added set persister method to Persistent Model
     - Removed range() from neural network Cost Function interface
 
-- 0.0.20-rc1
+- 0.1.0-rc1
     - Random Forest now handles imbalanced datasets
     - Added early stopping window to AdaBoost
     - Gaussian MLE now has automatic and adaptive threshold
