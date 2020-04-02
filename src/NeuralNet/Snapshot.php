@@ -3,11 +3,12 @@
 namespace Rubix\ML\NeuralNet;
 
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use InvalidArgumentException;
 
 /**
  * Snapshot
  *
- * A snapshot represents the state of a nerual network at a moment in time.
+ * A snapshot represents the state of a neural network at a moment in time.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -16,42 +17,56 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 class Snapshot
 {
     /**
-     * The layer of the network.
+     * The parametric layers of the network.
      *
      * @var \Rubix\ML\NeuralNet\Layers\Parametric[]
      */
     protected $layers;
 
     /**
-     * The parameters corresponding to each layer in the network at the
-     * time of the snapshot.
+     * The parameters corresponding to each layer in the network at the time of the snapshot.
      *
      * @var array[]
      */
-    protected $params;
+    protected $parameters;
 
     /**
      * @param \Rubix\ML\NeuralNet\Network $network
      */
-    public function __construct(Network $network)
+    public static function take(Network $network) : self
     {
-        $layers = $params = [];
+        $layers = $parameters = [];
 
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
-                $temp = [];
+                $params = [];
 
-                foreach ($layer->parameters() as $key => $param) {
-                    $temp[$key] = clone $param;
+                foreach ($layer->parameters() as $key => $parameter) {
+                    $params[$key] = clone $parameter;
                 }
 
                 $layers[] = $layer;
-                $params[] = $temp;
+                $parameters[] = $params;
             }
         }
         
+        return new self($layers, $parameters);
+    }
+
+    /**
+     * @param \Rubix\ML\NeuralNet\Layers\Parametric[] $layers
+     * @param array[] $parameters
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $layers, array $parameters)
+    {
+        if (count($layers) !== count($parameters)) {
+            throw new InvalidArgumentException('Number of layers'
+                . ' and parameter groups must be equal');
+        }
+
         $this->layers = $layers;
-        $this->params = $params;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -60,7 +75,7 @@ class Snapshot
     public function restore() : void
     {
         foreach ($this->layers as $i => $layer) {
-            $layer->restore($this->params[$i]);
+            $layer->restore($this->parameters[$i]);
         }
     }
 }

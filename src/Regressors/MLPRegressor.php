@@ -409,7 +409,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $bestScore = $score;
                 $bestEpoch = $epoch;
 
-                $snapshot = new Snapshot($this->network);
+                $snapshot = Snapshot::take($this->network);
 
                 $delta = 0;
             } else {

@@ -122,23 +122,26 @@ abstract class CART implements DecisionTree
      * @param float $minPurityIncrease
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $maxDepth, int $maxLeafSize, ?int $maxFeatures, float $minPurityIncrease)
-    {
+    public function __construct(
+        int $maxDepth,
+        int $maxLeafSize,
+        ?int $maxFeatures,
+        float $minPurityIncrease
+    ) {
         if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have'
-                . " depth of less than 1, $maxDepth given.");
+            throw new InvalidArgumentException('Tree must have'
+                . " depth greater than 0, $maxDepth given.");
         }
 
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample'
-                . ' is required to create a leaf node, '
+                . ' is required to form a leaf node, '
                 . " $maxLeafSize given.");
         }
 
         if ($minPurityIncrease < 0.0) {
             throw new InvalidArgumentException('Min purity increase'
-                . ' must be greater than or equal to 0,'
-                . " $minPurityIncrease given.");
+                . " must be greater than 0, $minPurityIncrease given.");
         }
 
         if (isset($maxFeatures) and $maxFeatures < 1) {

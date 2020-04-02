@@ -30,23 +30,17 @@ class SnapshotTest extends TestCase
     protected $network;
     
     /**
-     * @before
+     * @test
      */
-    protected function setUp() : void
+    public function take() : void
     {
-        $this->network = new FeedForward(new Placeholder1D(1), [
+        $network = new FeedForward(new Placeholder1D(1), [
             new Dense(10),
             new Activation(new ELU()),
         ], new Binary(['yes', 'no'], 1e-4, new CrossEntropy()), new Stochastic());
 
-        $this->snapshot = new Snapshot($this->network);
-    }
-    
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Snapshot::class, $this->snapshot);
+        $snapshot = Snapshot::take($network);
+
+        $this->assertInstanceOf(Snapshot::class, $snapshot);
     }
 }

@@ -424,7 +424,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $bestScore = $score;
                 $bestEpoch = $epoch;
 
-                $snapshot = new Snapshot($this->network);
+                $snapshot = Snapshot::take($this->network);
 
                 $delta = 0;
             } else {

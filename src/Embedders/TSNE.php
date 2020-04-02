@@ -336,7 +336,7 @@ class TSNE implements Embedder, Verbose
         $p = $this->affinities($distances)
             ->multiply($this->exaggeration);
 
-        $y = $yHat = Matrix::gaussian($m, $this->dimensions)
+        $y = Matrix::gaussian($m, $this->dimensions)
             ->multiply(self::Y_INIT);
 
         $velocity = Matrix::zeros($m, $this->dimensions);
