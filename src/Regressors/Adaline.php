@@ -127,7 +127,7 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $batchSize = 100,
+        int $batchSize = 200,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,

@@ -10,7 +10,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | batch size | 100 | int | The number of training samples to process at a time. |
+| 1 | batch size | 200 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 3 | alpha | 1e-4 | float | The strength of the L2 regularization penalty. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |

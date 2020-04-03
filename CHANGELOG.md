@@ -11,6 +11,7 @@
     - Standardized K Means inertial loss over batch count
     - Added set persister method to Persistent Model
     - Removed range() from neural network Cost Function interface
+    - Increased default neural net learner batch size to 200
 
 - 0.1.0-rc1
     - Random Forest now handles imbalanced datasets

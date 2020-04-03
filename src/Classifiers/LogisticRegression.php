@@ -134,7 +134,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $batchSize = 100,
+        int $batchSize = 200,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,
