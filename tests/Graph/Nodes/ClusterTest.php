@@ -38,7 +38,9 @@ class ClusterTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->node = new Cluster(self::SAMPLES, self::LABELS, self::CENTER, self::RADIUS);
+        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
+
+        $this->node = new Cluster($dataset, self::CENTER, self::RADIUS);
     }
 
     /**
@@ -62,8 +64,8 @@ class ClusterTest extends TestCase
 
         $node = Cluster::terminate($dataset, new Euclidean());
 
-        $this->assertEquals(self::SAMPLES, $node->samples());
-        $this->assertEquals(self::LABELS, $node->labels());
+        $this->assertInstanceOf(Cluster::class, $node);
+        $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::CENTER, $node->center());
         $this->assertEquals(self::RADIUS, $node->radius());
     }
@@ -71,17 +73,11 @@ class ClusterTest extends TestCase
     /**
      * @test
      */
-    public function samples() : void
+    public function dataset() : void
     {
-        $this->assertEquals(self::SAMPLES, $this->node->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function labels() : void
-    {
-        $this->assertEquals(self::LABELS, $this->node->labels());
+        $this->assertInstanceOf(Labeled::class, $this->node->dataset());
+        $this->assertEquals(self::SAMPLES, $this->node->dataset()->samples());
+        $this->assertEquals(self::LABELS, $this->node->dataset()->labels());
     }
 
     /**

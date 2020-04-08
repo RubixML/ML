@@ -14,8 +14,7 @@ use function Rubix\ML\argmax;
 /**
  * Cluster
  *
- * A Ball Tree leaf node that contains all of the points that fall
- * within radius of the node's center.
+ * A leaf node that contains all of the points that fall within radius of the node's center.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -26,18 +25,11 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     use HasBinaryChildren;
     
     /**
-     * The samples that make up the cluster.
+     * The dataset stored in the node.
      *
-     * @var array[]
+     * @var \Rubix\ML\Datasets\Labeled
      */
-    protected $samples;
-
-    /**
-     * The labels that make up the cluster.
-     *
-     * @var (string|int|float)[]
-     */
-    protected $labels;
+    protected $dataset;
 
     /**
      * The centroid or multivariate mean of the cluster.
@@ -80,25 +72,22 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
 
         $radius = max($distances);
 
-        return new self($dataset->samples(), $dataset->labels(), $center, $radius);
+        return new self($dataset, $center, $radius);
     }
 
     /**
-     * @param array[] $samples
-     * @param (string|int|float)[] $labels
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param (string|int|float)[] $center
      * @param float $radius
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples, array $labels, array $center, float $radius)
+    public function __construct(Labeled $dataset, array $center, float $radius)
     {
-        if (count($samples) !== count($labels)) {
-            throw new InvalidArgumentException('The number of samples'
-                . ' must be equal to the number of labels.');
-        }
-
-        if (empty($center)) {
-            throw new InvalidArgumentException('Center cannot be empty.');
+        if (count($center) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('Center must be'
+                . ' same dimensionality as dataset,'
+                . " {$dataset->numColumns()} expected but "
+                . count($center) . ' given.');
         }
 
         if ($radius < 0.0) {
@@ -106,10 +95,19 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
                 . " 0 or greater, $radius given.");
         }
 
-        $this->samples = $samples;
-        $this->labels = $labels;
+        $this->dataset = $dataset;
         $this->center = $center;
         $this->radius = $radius;
+    }
+
+    /**
+     * Return the dataset stored in the node.
+     *
+     * @return \Rubix\ML\Datasets\Labeled
+     */
+    public function dataset() : Labeled
+    {
+        return $this->dataset;
     }
 
     /**
@@ -130,25 +128,5 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
     public function radius() : float
     {
         return $this->radius;
-    }
-
-    /**
-     * Return the samples in the cluster.
-     *
-     * @return array[]
-     */
-    public function samples() : array
-    {
-        return $this->samples;
-    }
-
-    /**
-     * Return the labels in the cluster.
-     *
-     * @return (string|int|float)[]
-     */
-    public function labels() : array
-    {
-        return $this->labels;
     }
 }

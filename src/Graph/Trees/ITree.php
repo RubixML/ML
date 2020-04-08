@@ -197,12 +197,4 @@ class ITree implements BST
 
         return null;
     }
-
-    /**
-     * Destroy the tree.
-     */
-    public function destroy() : void
-    {
-        unset($this->root);
-    }
 }

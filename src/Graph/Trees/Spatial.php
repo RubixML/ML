@@ -32,4 +32,9 @@ interface Spatial extends Tree
      * @return array[]
      */
     public function range(array $sample, float $radius) : array;
+
+    /**
+     * Remove the root node and its descendants from the tree.
+     */
+    public function destroy() : void;
 }

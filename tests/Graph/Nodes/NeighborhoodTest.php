@@ -42,7 +42,9 @@ class NeighborhoodTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->node = new Neighborhood(self::SAMPLES, self::LABELS, self::MIN, self::MAX);
+        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
+
+        $this->node = new Neighborhood($dataset, self::MIN, self::MAX);
     }
 
     /**
@@ -64,25 +66,19 @@ class NeighborhoodTest extends TestCase
     {
         $node = Neighborhood::terminate(Labeled::quick(self::SAMPLES, self::LABELS));
 
-        $this->assertEquals(self::SAMPLES, $node->samples());
-        $this->assertEquals(self::LABELS, $node->labels());
+        $this->assertInstanceOf(NeighborHood::class, $node);
+        $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
     /**
      * @test
      */
-    public function samples() : void
+    public function dataset() : void
     {
-        $this->assertEquals(self::SAMPLES, $this->node->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function labels() : void
-    {
-        $this->assertEquals(self::LABELS, $this->node->labels());
+        $this->assertInstanceOf(Labeled::class, $this->node->dataset());
+        $this->assertEquals(self::SAMPLES, $this->node->dataset()->samples());
+        $this->assertEquals(self::LABELS, $this->node->dataset()->labels());
     }
 
     /**

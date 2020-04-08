@@ -24,30 +24,21 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     use HasBinaryChildren;
     
     /**
-     * The samples that make up the neighborhood.
+     * The dataset stored in the node.
      *
-     * @var array[]
+     * @var \Rubix\ML\Datasets\Labeled
      */
-    protected $samples;
+    protected $dataset;
 
     /**
-     * The labels that make up the neighborhood.
-     *
-     * @var (string|int|float)[]
-     */
-    protected $labels;
-
-    /**
-     * The multivariate minimum of the bounding box around the samples
-     * in the neighborhood.
+     * The multivariate minimum of the bounding box.
      *
      * @var (int|float)[]
      */
     protected $min;
 
     /**
-     * The multivariate maximum of the bounding box around the samples
-     * in the neighborhood.
+     * The multivariate maximum of the bounding box.
      *
      * @var (int|float)[]
      */
@@ -68,32 +59,43 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
             $max[] = max($values);
         }
 
-        return new self($dataset->samples(), $dataset->labels(), $min, $max);
+        return new self($dataset, $min, $max);
     }
 
     /**
-     * @param array[] $samples
-     * @param (string|int|float)[] $labels
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param (int|float)[] $min
      * @param (int|float)[] $max
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples, array $labels, array $min, array $max)
+    public function __construct(Labeled $dataset, array $min, array $max)
     {
-        if (count($samples) !== count($labels)) {
-            throw new InvalidArgumentException('The number of samples'
-                . ' must be equal to the number of labels.');
+        if (count($min) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('Minimum must be'
+                . ' same dimensionality as dataset,'
+                . " {$dataset->numColumns()} expected but "
+                . count($min) . ' given.');
         }
 
-        if (count($min) !== count($max)) {
-            throw new InvalidArgumentException('Sides of bounding box'
-                . ' must be the same dimensionality.');
+        if (count($max) !== count($min)) {
+            throw new InvalidArgumentException('Maximum must be'
+                . ' same dimensionality as minimum, ' . count($min)
+                . ' expected but ' . count($max) . ' given.');
         }
 
-        $this->samples = $samples;
-        $this->labels = $labels;
+        $this->dataset = $dataset;
         $this->min = $min;
         $this->max = $max;
+    }
+
+    /**
+     * Return the dataset stored in the node.
+     *
+     * @return \Rubix\ML\Datasets\Labeled
+     */
+    public function dataset() : Labeled
+    {
+        return $this->dataset;
     }
 
     /**
@@ -105,25 +107,5 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     {
         yield $this->min;
         yield $this->max;
-    }
-
-    /**
-     * Return the samples in the neighborhood.
-     *
-     * @return array[]
-     */
-    public function samples() : array
-    {
-        return $this->samples;
-    }
-
-    /**
-     * Return the labels cooresponding to the samples in the neighborhood.
-     *
-     * @return (string|int|float)[]
-     */
-    public function labels() : array
-    {
-        return $this->labels;
     }
 }

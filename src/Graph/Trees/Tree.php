@@ -27,9 +27,4 @@ interface Tree
      * @return bool
      */
     public function bare() : bool;
-
-    /**
-     * Remove the root node and its descendants from the tree.
-     */
-    public function destroy() : void;
 }

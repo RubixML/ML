@@ -226,8 +226,8 @@ class KDTree implements BST, Spatial
     public function nearest(array $sample, int $k = 1) : array
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('The number of nearest'
-                . " neighbors must be greater than 0, $k given.");
+            throw new InvalidArgumentException('K must be'
+                . " greater than 0, $k given.");
         }
 
         $visited = new SplObjectStorage();
@@ -264,12 +264,14 @@ class KDTree implements BST, Spatial
             }
 
             if ($current instanceof Neighborhood) {
-                foreach ($current->samples() as $neighbor) {
+                $dataset = $current->dataset();
+
+                foreach ($dataset->samples() as $neighbor) {
                     $distances[] = $this->kernel->compute($sample, $neighbor);
                 }
 
-                $samples = array_merge($samples, $current->samples());
-                $labels = array_merge($labels, $current->labels());
+                $samples = array_merge($samples, $dataset->samples());
+                $labels = array_merge($labels, $dataset->labels());
 
                 array_multisort($distances, $samples, $labels);
 
@@ -324,14 +326,14 @@ class KDTree implements BST, Spatial
             }
 
             if ($current instanceof Neighborhood) {
-                $lHat = $current->labels();
+                $dataset = $current->dataset();
 
-                foreach ($current->samples() as $i => $neighbor) {
+                foreach ($dataset->samples() as $i => $neighbor) {
                     $distance = $this->kernel->compute($sample, $neighbor);
 
                     if ($distance <= $radius) {
                         $samples[] = $neighbor;
-                        $labels[] = $lHat[$i];
+                        $labels[] = $dataset->label($i);
                         $distances[] = $distance;
                     }
                 }

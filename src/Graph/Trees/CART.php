@@ -511,12 +511,4 @@ abstract class CART implements DecisionTree
             }
         }
     }
-
-    /**
-     * Destroy the tree.
-     */
-    public function destroy() : void
-    {
-        unset($this->root);
-    }
 }
