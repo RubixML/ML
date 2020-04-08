@@ -37,7 +37,7 @@ class Amp implements Backend
     /**
      * The queue of coroutines to be processed in parallel.
      *
-     * @var \Amp\Promise[]
+     * @var \Amp\Promise<mixed>[]
      */
     protected $queue = [
         //
