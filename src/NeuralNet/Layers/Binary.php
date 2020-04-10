@@ -4,11 +4,10 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameters\MatrixParam;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
@@ -42,7 +41,7 @@ class Binary implements Output, Parametric
     ];
 
     /**
-     * The L2 regularization parameter.
+     * The L2 regularization amount.
      *
      * @var float
      */
@@ -79,14 +78,14 @@ class Binary implements Output, Parametric
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $biases;
 
@@ -167,12 +166,11 @@ class Binary implements Output, Parametric
     {
         $fanOut = 1;
 
-        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-        $this->weights = new MatrixParam($w);
-        $this->biases = new VectorParam($b);
+        $this->weights = new Parameter($weights);
+        $this->biases = new Parameter($biases);
 
         return $fanOut;
     }
@@ -192,8 +190,8 @@ class Binary implements Output, Parametric
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        $this->z = $this->weights->param()->matmul($input)
+            ->add($this->biases->param());
 
         $this->computed = $this->activationFn->compute($this->z);
 
@@ -213,8 +211,8 @@ class Binary implements Output, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        $z = $this->weights->param()->matmul($input)
+            ->add($this->biases->param());
 
         return $this->activationFn->compute($z);
     }
@@ -246,34 +244,28 @@ class Binary implements Output, Parametric
 
         $expected = Matrix::quick([$expected]);
 
-        $dPenalties = $this->weights->w()->sum()
-            ->multiply($this->alpha);
-
         if ($this->costFn instanceof CrossEntropy) {
-            $dA = $this->computed
-                ->subtract($expected)
-                ->add($dPenalties)
+            $dA = $this->computed->subtract($expected)
                 ->divide($this->computed->n());
         } else {
-            $dL = $this->costFn
-                ->differentiate($this->computed, $expected)
-                ->add($dPenalties)
+            $dL = $this->costFn->differentiate($this->computed, $expected)
                 ->divide($this->computed->n());
 
-            $dA = $this->activationFn
-                ->differentiate($this->z, $this->computed)
+            $dA = $this->activationFn->differentiate($this->z, $this->computed)
                 ->multiply($dL);
         }
 
-        $dW = $dA->matmul($this->input->transpose());
-        $dB = $dA->sum();
+        $weights = $this->weights->param();
 
-        $w = $this->weights->w();
+        $dW = $dA->matmul($this->input->transpose())
+            ->add($weights->multiply($this->alpha));
+
+        $dB = $dA->sum();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
+        $gradient = new Deferred([$this, 'gradient'], [$weights, $dA]);
 
         $loss = $this->costFn->compute($this->computed, $expected);
 
@@ -285,20 +277,20 @@ class Binary implements Output, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $w
+     * @param \Tensor\Matrix $weights
      * @param \Tensor\Matrix $dA
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $w, Matrix $dA) : Matrix
+    public function gradient(Matrix $weights, Matrix $dA) : Matrix
     {
-        return $w->transpose()->matmul($dA);
+        return $weights->transpose()->matmul($dA);
     }
 
     /**
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator
     {
@@ -313,7 +305,7 @@ class Binary implements Output, Parametric
     /**
      * Restore the parameters of the layer.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

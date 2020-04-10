@@ -4,11 +4,10 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameters\MatrixParam;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
@@ -29,7 +28,7 @@ use Generator;
 class Continuous implements Output, Parametric
 {
     /**
-     * The L2 regularization parameter.
+     * The L2 regularization amount.
      *
      * @var float
      */
@@ -59,14 +58,14 @@ class Continuous implements Output, Parametric
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $biases;
 
@@ -129,12 +128,11 @@ class Continuous implements Output, Parametric
     {
         $fanOut = 1;
 
-        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-        $this->weights = new MatrixParam($w);
-        $this->biases = new VectorParam($b);
+        $this->weights = new Parameter($weights);
+        $this->biases = new Parameter($biases);
 
         return $fanOut;
     }
@@ -154,8 +152,8 @@ class Continuous implements Output, Parametric
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        $this->z = $this->weights->param()->matmul($input)
+            ->add($this->biases->param());
 
         return $this->z;
     }
@@ -173,8 +171,8 @@ class Continuous implements Output, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w());
+        return $this->weights->param()->matmul($input)
+            ->add($this->biases->param());
     }
 
     /**
@@ -198,23 +196,20 @@ class Continuous implements Output, Parametric
 
         $expected = Matrix::quick([$labels]);
 
-        $dPenalties = $this->weights->w()->sum()
-            ->multiply($this->alpha);
-
-        $dL = $this->costFn
-            ->differentiate($this->z, $expected)
-            ->add($dPenalties)
+        $dL = $this->costFn->differentiate($this->z, $expected)
             ->divide($this->z->n());
 
-        $dW = $dL->matmul($this->input->transpose());
-        $dB = $dL->sum();
+        $weights = $this->weights->param();
 
-        $w = $this->weights->w();
+        $dW = $dL->matmul($this->input->transpose())
+            ->add($weights->multiply($this->alpha));
+
+        $dB = $dL->sum();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
+        $gradient = new Deferred([$this, 'gradient'], [$weights, $dL]);
 
         $loss = $this->costFn->compute($this->z, $expected);
 
@@ -226,20 +221,20 @@ class Continuous implements Output, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $w
+     * @param \Tensor\Matrix $weights
      * @param \Tensor\Matrix $dL
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $w, Matrix $dL) : Matrix
+    public function gradient(Matrix $weights, Matrix $dL) : Matrix
     {
-        return $w->transpose()->matmul($dL);
+        return $weights->transpose()->matmul($dL);
     }
 
     /**
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator
     {
@@ -254,7 +249,7 @@ class Continuous implements Output, Parametric
     /**
      * Restore the parameters of the layer.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

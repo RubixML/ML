@@ -7,7 +7,7 @@ use Rubix\ML\Deferred;
 use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -65,14 +65,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The learnable centering parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $beta;
 
     /**
      * The learnable scaling parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $gamma;
 
@@ -154,8 +154,8 @@ class BatchNorm implements Hidden, Parametric
         $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
         $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->beta = new VectorParam($beta);
-        $this->gamma = new VectorParam($gamma);
+        $this->beta = new Parameter($beta);
+        $this->gamma = new Parameter($gamma);
 
         $this->width = $fanOut;
 
@@ -195,8 +195,8 @@ class BatchNorm implements Hidden, Parametric
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return $this->gamma->w()->multiply($xHat)
-            ->add($this->beta->w());
+        return $this->gamma->param()->multiply($xHat)
+            ->add($this->beta->param());
     }
 
     /**
@@ -215,8 +215,8 @@ class BatchNorm implements Hidden, Parametric
         $xHat = $input->subtract($this->mean)
             ->divide($this->variance->sqrt());
 
-        return $this->gamma->w()->multiply($xHat)
-            ->add($this->beta->w());
+        return $this->gamma->param()->multiply($xHat)
+            ->add($this->beta->param());
     }
 
     /**
@@ -243,7 +243,7 @@ class BatchNorm implements Hidden, Parametric
         $dBeta = $dOut->sum();
         $dGamma = $dOut->multiply($this->xHat)->sum();
 
-        $gamma = $this->gamma->w();
+        $gamma = $this->gamma->param();
 
         $this->beta->update($optimizer->step($this->beta, $dBeta));
         $this->gamma->update($optimizer->step($this->gamma, $dGamma));
@@ -286,7 +286,7 @@ class BatchNorm implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator
     {
@@ -301,7 +301,7 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

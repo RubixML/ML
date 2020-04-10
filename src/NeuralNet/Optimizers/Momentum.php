@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
 use function get_class;
@@ -72,17 +72,17 @@ class Momentum implements Optimizer, Adaptive
     /**
      * Warm the cache.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      */
     public function warm(Parameter $param) : void
     {
-        $this->cache[$param->id()] = get_class($param->w())::zeros(...$param->w()->shape());
+        $this->cache[$param->id()] = get_class($param->param())::zeros(...$param->param()->shape());
     }
 
     /**
      * Take a step of gradient descent for a given parameter.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

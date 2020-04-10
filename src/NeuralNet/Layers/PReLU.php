@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use RuntimeException;
 use Generator;
@@ -44,7 +44,7 @@ class PReLU implements Hidden, Parametric
     /**
      * The parameterized leakage coefficients.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $alpha;
 
@@ -91,7 +91,7 @@ class PReLU implements Hidden, Parametric
 
         $alpha = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->alpha = new VectorParam($alpha);
+        $this->alpha = new Parameter($alpha);
 
         $this->width = $fanOut;
 
@@ -181,7 +181,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w()->asArray();
+        $alphas = $this->alpha->param()->asArray();
 
         $computed = [];
 
@@ -215,7 +215,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w()->asArray();
+        $alphas = $this->alpha->param()->asArray();
 
         $gradient = [];
 
@@ -238,7 +238,7 @@ class PReLU implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator
     {
@@ -252,7 +252,7 @@ class PReLU implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

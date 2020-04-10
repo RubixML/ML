@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameter;
 
 use function get_class;
 
@@ -27,7 +27,7 @@ class AdaMax extends Adam
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */
@@ -38,7 +38,7 @@ class AdaMax extends Adam
         $velocity = $velocity->multiply($this->beta1)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $tensor = get_class($param->w());
+        $tensor = get_class($param->param());
 
         $norm = $tensor::maximum($norm->multiply($this->beta2), $gradient->abs());
 

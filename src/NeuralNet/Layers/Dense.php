@@ -4,11 +4,10 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameters\MatrixParam;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -59,14 +58,14 @@ class Dense implements Hidden, Parametric
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $biases;
 
@@ -124,12 +123,12 @@ class Dense implements Hidden, Parametric
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $this->weights = new MatrixParam($w);
+        $this->weights = new Parameter($w);
 
         if ($this->bias) {
             $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-            $this->biases = new VectorParam($b);
+            $this->biases = new Parameter($b);
         }
 
         return $fanOut;
@@ -148,10 +147,10 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $z = $this->weights->w()->matmul($input);
+        $z = $this->weights->param()->matmul($input);
 
         if ($this->biases) {
-            $z = $z->add($this->biases->w());
+            $z = $z->add($this->biases->param());
         }
 
         $this->input = $input;
@@ -172,10 +171,10 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $z = $this->weights->w()->matmul($input);
+        $z = $this->weights->param()->matmul($input);
 
         if ($this->biases) {
-            $z = $z->add($this->biases->w());
+            $z = $z->add($this->biases->param());
         }
 
         return $z;
@@ -204,7 +203,7 @@ class Dense implements Hidden, Parametric
 
         $dW = $dOut->matmul($this->input->transpose());
 
-        $w = $this->weights->w();
+        $w = $this->weights->param();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
 
@@ -235,7 +234,7 @@ class Dense implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator
     {
@@ -253,7 +252,7 @@ class Dense implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

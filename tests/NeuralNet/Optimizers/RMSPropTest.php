@@ -4,11 +4,10 @@ namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -45,7 +44,7 @@ class RMSPropTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param array[] $expected
      */
@@ -64,7 +63,7 @@ class RMSPropTest extends TestCase
     public function stepProvider() : Generator
     {
         yield [
-            new MatrixParam(Matrix::quick([
+            new Parameter(Matrix::quick([
                 [0.1, 0.6, -0.4],
                 [0.5, 0.6, -0.4],
                 [0.1, 0.1, -0.7],
