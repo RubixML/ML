@@ -35,6 +35,13 @@ class Dense implements Hidden, Parametric
     protected $neurons;
 
     /**
+     * The amount of L2 regularization applied to the weights.
+     *
+     * @var float
+     */
+    protected $alpha;
+
+    /**
      * Should the layer include a bias parameter?
      *
      * @var bool
@@ -70,7 +77,7 @@ class Dense implements Hidden, Parametric
     protected $biases;
 
     /**
-     * The memoized inputs to the layer.
+     * The memorized inputs to the layer.
      *
      * @var \Tensor\Matrix|null
      */
@@ -78,6 +85,7 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
+     * @param float $alpha
      * @param bool $bias
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
@@ -85,6 +93,7 @@ class Dense implements Hidden, Parametric
      */
     public function __construct(
         int $neurons,
+        float $alpha = 0.0,
         bool $bias = true,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
@@ -94,7 +103,13 @@ class Dense implements Hidden, Parametric
                 . " must be greater than 0, $neurons given.");
         }
 
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('Alpha must be'
+                . " greater than 0, $alpha given.");
+        }
+
         $this->neurons = $neurons;
+        $this->alpha = $alpha;
         $this->bias = $bias;
         $this->weightInitializer = $weightInitializer ?? new He();
         $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
@@ -121,14 +136,14 @@ class Dense implements Hidden, Parametric
     {
         $fanOut = $this->neurons;
 
-        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
 
-        $this->weights = new Parameter($w);
+        $this->weights = new Parameter($weights);
 
         if ($this->bias) {
-            $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
+            $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-            $this->biases = new Parameter($b);
+            $this->biases = new Parameter($biases);
         }
 
         return $fanOut;
@@ -203,7 +218,11 @@ class Dense implements Hidden, Parametric
 
         $dW = $dOut->matmul($this->input->transpose());
 
-        $w = $this->weights->param();
+        $weights = $this->weights->param();
+
+        if ($this->alpha) {
+            $dW = $dW->add($weights->multiply($this->alpha));
+        }
 
         $this->weights->update($optimizer->step($this->weights, $dW));
 
@@ -215,19 +234,19 @@ class Dense implements Hidden, Parametric
 
         unset($this->input);
 
-        return new Deferred([$this, 'gradient'], [$w, $dOut]);
+        return new Deferred([$this, 'gradient'], [$weights, $dOut]);
     }
 
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $w
+     * @param \Tensor\Matrix $weights
      * @param \Tensor\Matrix $dOut
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $w, Matrix $dOut) : Matrix
+    public function gradient(Matrix $weights, Matrix $dOut) : Matrix
     {
-        return $w->transpose()->matmul($dOut);
+        return $weights->transpose()->matmul($dOut);
     }
 
     /**

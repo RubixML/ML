@@ -54,9 +54,9 @@ class DenseTest extends TestCase
         $this->fanIn = 3;
 
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->prevGrad = new Deferred(function () {
@@ -68,7 +68,7 @@ class DenseTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Dense(2, true, new He(), new Constant(0.0));
+        $this->layer = new Dense(2, 0.0, true, new He(), new Constant(0.0));
 
         srand(self::RANDOM_SEED);
     }

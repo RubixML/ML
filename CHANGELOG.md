@@ -1,3 +1,7 @@
+- Unreleased
+    - Added L2 regularization to Dense hidden layers
+    - Neural Network L2 regularization now optional
+
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface
     - Tuned CART continuous feature quantile-based split finding

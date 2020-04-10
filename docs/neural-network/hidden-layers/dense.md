@@ -7,9 +7,10 @@ Dense (or *fully connected*) hidden layers are layers of neurons that connect to
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | neurons | | int | The number of nodes in the layer. |
-| 2 | bias | true | bool | Should the layer include a bias parameter? |
-| 2 | weight initializer | He | Initializer | The initializer of the weight parameter. |
-| 3 | bias initializer | Constant | Initializer | The initializer of the bias parameter. |
+| 2 | alpha | 0.0 | float | The amount of L2 regularization applied to the weights. |
+| 3 | bias | true | bool | Should the layer include a bias parameter? |
+| 4 | weight initializer | He | Initializer | The initializer of the weight parameter. |
+| 5 | bias initializer | Constant | Initializer | The initializer of the bias parameter. |
 
 ## Example
 ```php
@@ -17,5 +18,5 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Dense(100, true, new He(), new Constant(0.0));
+$layer = new Dense(100, 1e-4, true, new He(), new Constant(0.0));
 ```

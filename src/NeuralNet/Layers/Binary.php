@@ -41,9 +41,9 @@ class Binary implements Output, Parametric
     ];
 
     /**
-     * The L2 regularization amount.
+     * The amount of L2 regularization applied to the weights.
      *
-     * @var float
+     * @var float|null
      */
     protected $alpha;
 
@@ -97,14 +97,14 @@ class Binary implements Output, Parametric
     protected $input;
 
     /**
-     * The memoized z matrix.
+     * The memorized z matrix.
      *
      * @var \Tensor\Matrix|null
      */
     protected $z;
 
     /**
-     * The memoized activation matrix.
+     * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
@@ -120,7 +120,7 @@ class Binary implements Output, Parametric
      */
     public function __construct(
         array $classes,
-        float $alpha = 1e-4,
+        float $alpha = 0.0,
         ?ClassificationLoss $costFn = null,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
@@ -255,12 +255,14 @@ class Binary implements Output, Parametric
                 ->multiply($dL);
         }
 
+        $dW = $dA->matmul($this->input->transpose());
+        $dB = $dA->sum();
+
         $weights = $this->weights->param();
 
-        $dW = $dA->matmul($this->input->transpose())
-            ->add($weights->multiply($this->alpha));
-
-        $dB = $dA->sum();
+        if ($this->alpha) {
+            $dW = $dW->add($weights->multiply($this->alpha));
+        }
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));

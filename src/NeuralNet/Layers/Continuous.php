@@ -28,7 +28,7 @@ use Generator;
 class Continuous implements Output, Parametric
 {
     /**
-     * The L2 regularization amount.
+     * The amount of L2 regularization applied to the weights.
      *
      * @var float
      */
@@ -70,14 +70,14 @@ class Continuous implements Output, Parametric
     protected $biases;
 
     /**
-     * The memoized input matrix.
+     * The memorized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
     protected $input;
 
     /**
-     * The memoized output of the layer.
+     * The memorized output of the layer.
      *
      * @var \Tensor\Matrix|null
      */
@@ -91,7 +91,7 @@ class Continuous implements Output, Parametric
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        float $alpha = 1e-4,
+        float $alpha = 0.0,
         ?RegressionLoss $costFn = null,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
@@ -199,12 +199,14 @@ class Continuous implements Output, Parametric
         $dL = $this->costFn->differentiate($this->z, $expected)
             ->divide($this->z->n());
 
+        $dW = $dL->matmul($this->input->transpose());
+        $dB = $dL->sum();
+
         $weights = $this->weights->param();
 
-        $dW = $dL->matmul($this->input->transpose())
-            ->add($weights->multiply($this->alpha));
-
-        $dB = $dL->sum();
+        if ($this->alpha) {
+            $dW = $dW->add($weights->multiply($this->alpha));
+        }
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));

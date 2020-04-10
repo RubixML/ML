@@ -61,7 +61,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected $optimizer;
 
     /**
-     * The strength of the L2 regularization penalty.
+     * The amount of L2 regularization applied to the weights of the output layer.
      *
      * @var float
      */

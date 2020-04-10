@@ -12,7 +12,7 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 |---|---|---|---|---|
 | 1 | batch size | 200 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
-| 3 | alpha | 1e-4 | float | The strength of the L2 regularization penalty. |
+| 3 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
