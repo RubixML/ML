@@ -37,7 +37,10 @@ class SnapshotTest extends TestCase
         $network = new FeedForward(new Placeholder1D(1), [
             new Dense(10),
             new Activation(new ELU()),
-        ], new Binary(['yes', 'no'], 1e-4, new CrossEntropy()), new Stochastic());
+            new Dense(5),
+            new Activation(new ELU()),
+            new Dense(1),
+        ], new Binary(['yes', 'no'], new CrossEntropy()), new Stochastic());
 
         $snapshot = Snapshot::take($network);
 

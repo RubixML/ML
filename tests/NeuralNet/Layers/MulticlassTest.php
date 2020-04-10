@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
@@ -21,11 +20,6 @@ class MulticlassTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var int
-     */
-    protected $fanIn;
-
-    /**
      * @var \Tensor\Matrix
      */
     protected $input;
@@ -34,11 +28,6 @@ class MulticlassTest extends TestCase
      * @var string[]
      */
     protected $labels;
-
-    /**
-     * @var \Rubix\ML\Deferred
-     */
-    protected $prevGrad;
 
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
@@ -55,19 +44,17 @@ class MulticlassTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->fanIn = 3;
-
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->labels = ['hot', 'cold', 'ice cold'];
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], 1e-4, new CrossEntropy());
+        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new CrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
@@ -78,9 +65,8 @@ class MulticlassTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Multiclass::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
+        $this->assertInstanceOf(Layer::class, $this->layer);
     }
     
     /**
@@ -88,16 +74,16 @@ class MulticlassTest extends TestCase
      */
     public function initializeForwardBackInfer() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize(3);
 
-        $this->assertEquals($this->fanIn, $this->layer->width());
+        $this->assertEquals(3, $this->layer->width());
         
         $forward = $this->layer->forward($this->input);
 
         $expected = [
-            [0.2595391959758536, 0.02923162203401248, 0.12450877926117593],
-            [0.46982815260469185, 0.023090868121796462, 0.10799036932220654],
-            [0.27063265141945453, 0.9476775098441911, 0.7675008514166175],
+            [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
+            [0.22902938185541574, 0.07584391881396309, 0.930019228325398],
+            [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
         ];
 
         $this->assertInstanceOf(Matrix::class, $forward);
@@ -111,9 +97,9 @@ class MulticlassTest extends TestCase
         $gradient = $computation->compute();
 
         $expected = [
-            [0.0918320711672522, -0.1949031158033154, 0.02187986261379058],
-            [0.04900732237179448, 0.15427079036690672, -0.03871887274402862],
-            [-0.007885243780857604, -0.27716042855055123, 0.055465226407507576],
+            [-0.14555953994735552, 0.3079893609690633, 0.013965541482243765],
+            [0.07634312728513858, -0.3080520270620123, 0.31000640944179936],
+            [0.06921641266221694, 6.266609294900586E-5, -0.3239719509240431],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
@@ -122,9 +108,9 @@ class MulticlassTest extends TestCase
         $infer = $this->layer->infer($this->input);
 
         $expected = [
-            [0.2596071187697675, 0.029611917045991417, 0.12452927259570575],
-            [0.4701228858592578, 0.023700158558071664, 0.10809787871952142],
-            [0.27026999537097474, 0.9466879243959369, 0.7673728486847728],
+            [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
+            [0.22902938185541574, 0.07584391881396309, 0.930019228325398],
+            [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
         ];
 
         $this->assertInstanceOf(Matrix::class, $infer);

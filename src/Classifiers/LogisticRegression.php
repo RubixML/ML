@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
@@ -21,6 +22,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
@@ -266,8 +268,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
-            [],
-            new Binary($classes, $this->alpha, $this->costFn),
+            [new Dense(1, $this->alpha, true, new Xavier1())],
+            new Binary($classes, $this->costFn),
             $this->optimizer
         );
 

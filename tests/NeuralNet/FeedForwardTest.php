@@ -52,21 +52,22 @@ class FeedForwardTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([
-            [1., 2.5,],
-            [0.1, 0.],
-            [0.002, -6.],
+            [1.0, 2.5,],
+            [0.1, 0.0],
+            [0.002, -6.0],
         ], ['yes', 'no', 'maybe']);
 
         $this->input = new Placeholder1D(2);
 
         $this->hidden = [
-            new Dense(5),
+            new Dense(10),
             new Activation(new ReLU()),
             new Dense(5),
             new Activation(new ReLU()),
+            new Dense(3),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new CrossEntropy());
+        $this->output = new Multiclass(['yes', 'no', 'maybe'], new CrossEntropy());
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
@@ -85,7 +86,7 @@ class FeedForwardTest extends TestCase
      */
     public function layers() : void
     {
-        $this->assertCount(6, $this->network->layers());
+        $this->assertCount(7, $this->network->layers());
     }
     
     /**
@@ -101,7 +102,7 @@ class FeedForwardTest extends TestCase
      */
     public function hidden() : void
     {
-        $this->assertCount(4, $this->network->hidden());
+        $this->assertCount(5, $this->network->hidden());
     }
     
     /**

@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
@@ -21,24 +20,14 @@ class ContinuousTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var int
-     */
-    protected $fanIn;
-
-    /**
      * @var \Tensor\Matrix
      */
     protected $input;
 
     /**
-     * @var int[]
+     * @var (int|float)[]
      */
     protected $labels;
-
-    /**
-     * @var \Rubix\ML\Deferred
-     */
-    protected $prevGrad;
 
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
@@ -55,19 +44,15 @@ class ContinuousTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->fanIn = 3;
-
         $this->input = Matrix::quick([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.0, 3.0],
-            [0.002, -6.0, -0.5],
+            [2.5, 0.0, -6.0],
         ]);
 
-        $this->labels = [90, 260, 180];
+        $this->labels = [0.0, -2.5, 90];
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Continuous(1e-4, new LeastSquares());
+        $this->layer = new Continuous(new LeastSquares());
 
         srand(self::RANDOM_SEED);
     }
@@ -78,9 +63,8 @@ class ContinuousTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Continuous::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
+        $this->assertInstanceOf(Layer::class, $this->layer);
     }
     
     /**
@@ -88,12 +72,12 @@ class ContinuousTest extends TestCase
      */
     public function initializeForwardBackInfer() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize(1);
 
         $this->assertEquals(1, $this->layer->width());
 
         $expected = [
-            [0.1295445178808929, -2.587649055132072, 0.36754636758929626],
+            [2.5, 0.0, -6.0],
         ];
 
         $forward = $this->layer->forward($this->input);
@@ -109,16 +93,14 @@ class ContinuousTest extends TestCase
         $gradient = $computation->compute();
 
         $expected = [
-            [-3.2365958251552804, -9.456835220316393, -6.4692856664639535],
-            [-6.156093763559253, -17.9871591844509, -12.304758239033854],
-            [-14.26820377229217, -41.689497006624315, -28.519188411746832],
+            [0.8333333333333334, 0.8333333333333334, -32.0],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [0.566852840529922, 1.5270197607920448, 1.346042108950773],
+            [2.5, 0.0, -6.0],
         ];
 
         $infer = $this->layer->infer($this->input);

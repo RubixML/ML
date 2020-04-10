@@ -13,12 +13,14 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
@@ -256,8 +258,8 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
-            [],
-            new Continuous($this->alpha, $this->costFn),
+            [new Dense(1, $this->alpha, true, new Xavier2())],
+            new Continuous($this->costFn),
             $this->optimizer
         );
 

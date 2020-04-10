@@ -4,16 +4,11 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier2;
-use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use InvalidArgumentException;
 use RuntimeException;
-use Generator;
 
 /**
  * Continuous
@@ -25,49 +20,14 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Continuous implements Output, Parametric
+class Continuous implements Output
 {
-    /**
-     * The amount of L2 regularization applied to the weights.
-     *
-     * @var float
-     */
-    protected $alpha;
-
     /**
      * The function that computes the loss of bad activations.
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
     protected $costFn;
-
-    /**
-     * The weight initializer.
-     *
-     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
-     */
-    protected $weightInitializer;
-
-    /**
-     * The weight initializer.
-     *
-     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
-     */
-    protected $biasInitializer;
-
-    /**
-     * The weights.
-     *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
-     */
-    protected $weights;
-
-    /**
-     * The biases.
-     *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
-     */
-    protected $biases;
 
     /**
      * The memorized input matrix.
@@ -77,34 +37,11 @@ class Continuous implements Output, Parametric
     protected $input;
 
     /**
-     * The memorized output of the layer.
-     *
-     * @var \Tensor\Matrix|null
-     */
-    protected $z;
-
-    /**
-     * @param float $alpha
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
-     * @throws \InvalidArgumentException
      */
-    public function __construct(
-        float $alpha = 0.0,
-        ?RegressionLoss $costFn = null,
-        ?Initializer $weightInitializer = null,
-        ?Initializer $biasInitializer = null
-    ) {
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
-        }
-
-        $this->alpha = $alpha;
+    public function __construct(?RegressionLoss $costFn = null)
+    {
         $this->costFn = $costFn ?? new LeastSquares();
-        $this->weightInitializer = $weightInitializer ?? new Xavier2();
-        $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
     }
 
     /**
@@ -122,57 +59,41 @@ class Continuous implements Output, Parametric
      * the fan out for this layer.
      *
      * @param int $fanIn
+     * @throws \InvalidArgumentException
      * @return int
      */
     public function initialize(int $fanIn) : int
     {
-        $fanOut = 1;
+        if ($fanIn !== 1) {
+            throw new InvalidArgumentException('Fan in must be'
+                . " equal to 1, $fanIn given.");
+        }
 
-        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-        $this->weights = new Parameter($weights);
-        $this->biases = new Parameter($biases);
-
-        return $fanOut;
+        return 1;
     }
 
     /**
      * Compute a forward pass through the layer.
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
         $this->input = $input;
 
-        $this->z = $this->weights->param()->matmul($input)
-            ->add($this->biases->param());
-
-        return $this->z;
+        return $input;
     }
 
     /**
      * Compute an inferential pass through the layer.
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
-        }
-
-        return $this->weights->param()->matmul($input)
-            ->add($this->biases->param());
+        return $input;
     }
 
     /**
@@ -185,37 +106,20 @@ class Continuous implements Output, Parametric
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer is not initialized');
-        }
-
-        if (!$this->input or !$this->z) {
+        if (!$this->input) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
         $expected = Matrix::quick([$labels]);
 
-        $dL = $this->costFn->differentiate($this->z, $expected)
-            ->divide($this->z->n());
+        $input = $this->input;
 
-        $dW = $dL->matmul($this->input->transpose());
-        $dB = $dL->sum();
+        $gradient = new Deferred([$this, 'gradient'], [$input, $expected]);
 
-        $weights = $this->weights->param();
+        $loss = $this->costFn->compute($input, $expected);
 
-        if ($this->alpha) {
-            $dW = $dW->add($weights->multiply($this->alpha));
-        }
-
-        $this->weights->update($optimizer->step($this->weights, $dW));
-        $this->biases->update($optimizer->step($this->biases, $dB));
-
-        $gradient = new Deferred([$this, 'gradient'], [$weights, $dL]);
-
-        $loss = $this->costFn->compute($this->z, $expected);
-
-        unset($this->input, $this->z);
+        unset($this->input);
 
         return [$gradient, $loss];
     }
@@ -223,39 +127,13 @@ class Continuous implements Output, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $weights
-     * @param \Tensor\Matrix $dL
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $expected
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $weights, Matrix $dL) : Matrix
+    public function gradient(Matrix $input, Matrix $expected) : Matrix
     {
-        return $weights->transpose()->matmul($dL);
-    }
-
-    /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
-        yield 'weights' => $this->weights;
-        yield 'biases' => $this->biases;
-    }
-
-    /**
-     * Restore the parameters of the layer.
-     *
-     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
-     */
-    public function restore(array $parameters) : void
-    {
-        $this->weights = $parameters['weights'];
-        $this->biases = $parameters['biases'];
+        return $this->costFn->differentiate($input, $expected)
+            ->divide($input->n());
     }
 }

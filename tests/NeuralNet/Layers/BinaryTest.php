@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
@@ -21,11 +20,6 @@ class BinaryTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var int
-     */
-    protected $fanIn;
-
-    /**
      * @var \Tensor\Matrix
      */
     protected $input;
@@ -34,11 +28,6 @@ class BinaryTest extends TestCase
      * @var string[]
      */
     protected $labels;
-
-    /**
-     * @var \Rubix\ML\Deferred
-     */
-    protected $prevGrad;
 
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
@@ -55,19 +44,15 @@ class BinaryTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->fanIn = 3;
-
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
         ]);
 
         $this->labels = ['hot', 'cold', 'hot'];
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Binary(['hot', 'cold'], 1e-4, new CrossEntropy());
+        $this->layer = new Binary(['hot', 'cold'], new CrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
@@ -78,9 +63,8 @@ class BinaryTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Binary::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
+        $this->assertInstanceOf(Layer::class, $this->layer);
     }
     
     /**
@@ -88,12 +72,12 @@ class BinaryTest extends TestCase
      */
     public function initializeForwardBackInfer() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize(1);
 
         $this->assertEquals(1, $this->layer->width());
 
         $expected = [
-            [0.5357798817266803, 0.053977226104562924, 0.6003099946844843],
+            [0.7310585786300049, 0.9241418199787566, 0.47502081252106],
         ];
 
         $forward = $this->layer->forward($this->input);
@@ -109,16 +93,14 @@ class BinaryTest extends TestCase
         $gradient = $computation->compute();
 
         $expected = [
-            [0.021354074010898085, -0.03770473849196098, 0.0239259899320254],
-            [0.040616032691930426, -0.07171544364080662, 0.045507887102479515],
-            [0.09413726514384431, -0.16621750785286177, 0.10547529510811594],
+            [0.2436861928766683, -0.02528606000708115, 0.15834027084035332],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
         $expected = [
-            [0.5359044875329853, 0.05460698301591459, 0.6000497043635915],
+            [0.7310585786300049, 0.9241418199787566, 0.47502081252106],
         ];
 
         $infer = $this->layer->infer($this->input);

@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -22,6 +23,7 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -333,10 +335,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         DatasetIsNotEmpty::check($dataset);
 
+        $hiddenLayers = $this->hiddenLayers;
+
+        $hiddenLayers[] = new Dense(1, $this->alpha, true, new Xavier2());
+
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numColumns()),
-            $this->hiddenLayers,
-            new Continuous($this->alpha, $this->costFn),
+            $hiddenLayers,
+            new Continuous($this->costFn),
             $this->optimizer
         );
 
