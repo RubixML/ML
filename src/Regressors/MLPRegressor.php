@@ -400,6 +400,10 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             $loss /= count($batches);
 
+            if (is_nan($loss)) {
+                throw new RuntimeException('Numerical under/overflow detected.');
+            }
+
             $predictions = $this->predict($testing);
 
             $score = $this->metric->score($predictions, $testing->labels());
@@ -420,10 +424,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $delta = 0;
             } else {
                 ++$delta;
-            }
-
-            if (is_nan($loss) or is_nan($score)) {
-                break 1;
             }
 
             if ($loss <= 0.0 or $score >= $max) {

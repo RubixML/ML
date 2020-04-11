@@ -1,6 +1,7 @@
 - Unreleased
     - Added L2 regularization to Dense hidden layers
     - Neural Network L2 regularization now optional
+    - Added MLP numerical instability checks
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

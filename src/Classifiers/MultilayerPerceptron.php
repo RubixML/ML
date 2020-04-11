@@ -415,6 +415,10 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $loss /= count($batches);
 
+            if (is_nan($loss)) {
+                throw new RuntimeException('Numerical under/overflow detected.');
+            }
+
             $predictions = $this->predict($testing);
 
             $score = $this->metric->score($predictions, $testing->labels());
@@ -435,10 +439,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $delta = 0;
             } else {
                 ++$delta;
-            }
-
-            if (is_nan($loss) or is_nan($score)) {
-                break 1;
             }
 
             if ($loss <= 0.0 or $score >= $max) {

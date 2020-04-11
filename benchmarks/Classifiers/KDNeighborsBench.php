@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Classifiers;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Graph\Trees\BallTree;
 
 /**
  * @Groups({"Classifiers"})
@@ -44,7 +43,7 @@ class KDNeighborsBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new KDNeighbors(5, true, new BallTree());
+        $this->estimator = new KDNeighbors(5, true);
     }
 
     /**

@@ -16,8 +16,8 @@ use function count;
 /**
  * Multiclass
  *
- * The Multiclass output layer gives a joint probability estimate of a multiclass
- * classification problem using the Softmax activation function.
+ * The Multiclass output layer gives a joint probability estimate of a multiclass classification
+ * problem using the Softmax activation function.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -35,16 +35,16 @@ class Multiclass implements Output
     ];
 
     /**
-     * The function that computes the loss of bad activations.
+     * The function that computes the loss of erroneous activations.
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
      */
     protected $costFn;
 
     /**
-     * The function that outputs the activation or implulse of each neuron.
+     * The softmax activation function.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Softmax
      */
     protected $activationFn;
 
@@ -151,8 +151,8 @@ class Multiclass implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input or !$this->computed) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
         $expected = [];

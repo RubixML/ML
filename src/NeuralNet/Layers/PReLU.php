@@ -137,8 +137,8 @@ class PReLU implements Hidden, Parametric
         }
 
         if (!$this->input) {
-            throw new RuntimeException('Must perform a forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
         $dOut = $prevGradient();

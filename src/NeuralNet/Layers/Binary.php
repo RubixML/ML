@@ -16,9 +16,8 @@ use function count;
 /**
  * Binary
  *
- * This Binary layer consists of a single sigmoid neuron capable of
- * distinguishing between two discrete classes. The Binary layer is useful for
- * neural networks that output an either/or prediction such as yes or no.
+ * This Binary layer consists of a single sigmoid neuron capable of distinguishing between
+ * two discrete classes.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -36,16 +35,16 @@ class Binary implements Output
     ];
 
     /**
-     * The function that computes the loss of bad activations.
+     * The function that computes the loss of erroneous activations.
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
     protected $costFn;
 
     /**
-     * The function that outputs the activation or implulse of each neuron.
+     * The sigmoid activation function.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid
      */
     protected $activationFn;
 
@@ -147,8 +146,8 @@ class Binary implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input or !$this->computed) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
         $expected = [];

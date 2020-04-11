@@ -13,8 +13,7 @@ use RuntimeException;
 /**
  * Continuous
  *
- * The Continuous output layer consists of a single linear neuron that outputs a
- * scalar value useful for regression problems.
+ * The Continuous output layer consists of a single linear neuron that outputs a scalar value.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -23,7 +22,7 @@ use RuntimeException;
 class Continuous implements Output
 {
     /**
-     * The function that computes the loss of bad activations.
+     * The function that computes the loss of erroneous activations.
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
@@ -107,8 +106,8 @@ class Continuous implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
         $expected = Matrix::quick([$labels]);
