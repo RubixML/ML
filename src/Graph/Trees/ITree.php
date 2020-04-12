@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ITree implements BST
+class ITree implements BinaryTree
 {
     /**
      * The maximum size of a leaf node in the tree.

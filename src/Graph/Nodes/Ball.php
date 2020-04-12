@@ -12,10 +12,9 @@ use function Rubix\ML\argmax;
 use function count;
 
 /**
- * Hypersphere
+ * Ball
  *
- * Ball Tree split node that represents the centroid of a set of samples
- * and its radius.
+ * A node that contains points that fall within a uniform hypersphere a.k.a. *ball*.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -97,11 +96,6 @@ class Ball implements BinaryNode, Hypersphere
      */
     public function __construct(array $center, float $radius, array $groups)
     {
-        if (empty($center)) {
-            throw new InvalidArgumentException('Center vector must'
-                . ' not be empty.');
-        }
-
         if ($radius < 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");

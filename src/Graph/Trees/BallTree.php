@@ -12,7 +12,6 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-use function Rubix\ML\array_last;
 use function array_slice;
 
 /**
@@ -33,7 +32,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BallTree implements BST, Spatial
+class BallTree implements BinaryTree, Spatial
 {
     /**
      * The maximum number of samples that each leaf node can contain.
@@ -118,10 +117,10 @@ class BallTree implements BST, Spatial
      * Insert a root node and recursively split the dataset until a terminating
      * condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \InvalidArgumentException
      */
-    public function grow(Dataset $dataset) : void
+    public function grow(Labeled $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
@@ -155,20 +154,127 @@ class BallTree implements BST, Spatial
     }
 
     /**
-     * Search the tree for a leaf node or return null if not found.
+     * Run a k nearest neighbors search and return the samples, labels, and
+     * distances in a 3-tuple.
      *
      * @param (string|int|float)[] $sample
-     * @return \Rubix\ML\Graph\Nodes\Cluster|null
+     * @param int $k
+     * @throws \InvalidArgumentException
+     * @return array[]
      */
-    public function search(array $sample) : ?Cluster
+    public function nearest(array $sample, int $k = 1) : array
     {
-        $node = array_last($this->path($sample));
-
-        if ($node instanceof Cluster) {
-            return $node;
+        if ($k < 1) {
+            throw new InvalidArgumentException('K must be'
+                . " greater than 0, $k given.");
         }
 
-        return null;
+        $visited = new SplObjectStorage();
+
+        $samples = $labels = $distances = [];
+
+        $stack = $this->path($sample);
+
+        while ($current = array_pop($stack)) {
+            if ($current instanceof Ball) {
+                $radius = $distances[$k - 1] ?? INF;
+
+                foreach ($current->children() as $child) {
+                    if (!$visited->contains($child)) {
+                        if ($child instanceof Hypersphere) {
+                            $distance = $this->kernel->compute($sample, $child->center());
+    
+                            if ($distance - $child->radius() < $radius) {
+                                $stack[] = $child;
+
+                                continue 1;
+                            }
+                        }
+
+                        $visited->attach($child);
+                    }
+                }
+
+                $visited->attach($current);
+
+                continue 1;
+            }
+
+            if ($current instanceof Cluster) {
+                $dataset = $current->dataset();
+
+                foreach ($dataset->samples() as $neighbor) {
+                    $distances[] = $this->kernel->compute($sample, $neighbor);
+                }
+
+                $samples = array_merge($samples, $dataset->samples());
+                $labels = array_merge($labels, $dataset->labels());
+
+                array_multisort($distances, $samples, $labels);
+
+                if (count($samples) > $k) {
+                    $samples = array_slice($samples, 0, $k);
+                    $labels = array_slice($labels, 0, $k);
+                    $distances = array_slice($distances, 0, $k);
+                }
+
+                $visited->attach($current);
+            }
+        }
+
+        return [$samples, $labels, $distances];
+    }
+
+    /**
+     * Return all samples, labels, and distances within a given radius of a
+     * sample.
+     *
+     * @param (string|int|float)[] $sample
+     * @param float $radius
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return array[]
+     */
+    public function range(array $sample, float $radius) : array
+    {
+        if ($radius <= 0.0) {
+            throw new InvalidArgumentException('Radius must be'
+                . " greater than 0, $radius given.");
+        }
+
+        $samples = $labels = $distances = [];
+
+        $stack = [$this->root];
+
+        while ($current = array_pop($stack)) {
+            if ($current instanceof Ball) {
+                foreach ($current->children() as $child) {
+                    $distance = $this->kernel->compute($sample, $child->center());
+
+                    if ($distance - $child->radius() < $radius) {
+                        $stack[] = $child;
+                    }
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Cluster) {
+                $dataset = $current->dataset();
+
+                foreach ($dataset->samples() as $i => $neighbor) {
+                    $distance = $this->kernel->compute($sample, $neighbor);
+
+                    if ($distance <= $radius) {
+                        $samples[] = $neighbor;
+                        $labels[] = $dataset->label($i);
+                        $distances[] = $distance;
+                    }
+                }
+            }
+        }
+
+        return [$samples, $labels, $distances];
     }
 
     /**
@@ -178,7 +284,7 @@ class BallTree implements BST, Spatial
      * @param (string|int|float)[] $sample
      * @return mixed[]
      */
-    public function path(array $sample) : array
+    protected function path(array $sample) : array
     {
         $current = $this->root;
 
@@ -211,128 +317,6 @@ class BallTree implements BST, Spatial
         }
 
         return $path;
-    }
-
-    /**
-     * Run a k nearest neighbors search and return the samples, labels, and
-     * distances in a 3-tuple.
-     *
-     * @param (string|int|float)[] $sample
-     * @param int $k
-     * @throws \InvalidArgumentException
-     * @return array[]
-     */
-    public function nearest(array $sample, int $k = 1) : array
-    {
-        if ($k < 1) {
-            throw new InvalidArgumentException('K must be'
-                . " greater than 0, $k given.");
-        }
-
-        $visited = new SplObjectStorage();
-
-        $samples = $labels = $distances = [];
-
-        $stack = $this->path($sample);
-
-        while ($current = array_pop($stack)) {
-            if ($current instanceof Ball) {
-                $radius = $distances[$k - 1] ?? INF;
-
-                foreach ($current->children() as $child) {
-                    if (!$visited->contains($child)) {
-                        if ($child instanceof Hypersphere) {
-                            $distance = $this->kernel->compute($sample, $child->center());
-    
-                            if ($distance < $child->radius() + $radius) {
-                                $stack[] = $child;
-
-                                continue 1;
-                            }
-                        }
-
-                        $visited->attach($child);
-                    }
-                }
-
-                $visited->attach($current);
-
-                continue 1;
-            }
-
-            if ($current instanceof Cluster) {
-                $dataset = $current->dataset();
-
-                foreach ($dataset->samples() as $neighbor) {
-                    $distances[] = $this->kernel->compute($sample, $neighbor);
-                }
-
-                $samples = array_merge($samples, $dataset->samples());
-                $labels = array_merge($labels, $dataset->labels());
-
-                array_multisort($distances, $samples, $labels);
-
-                $visited->attach($current);
-            }
-        }
-
-        return [
-            array_slice($samples, 0, $k),
-            array_slice($labels, 0, $k),
-            array_slice($distances, 0, $k),
-        ];
-    }
-
-    /**
-     * Return all samples, labels, and distances within a given radius of a
-     * sample.
-     *
-     * @param (string|int|float)[] $sample
-     * @param float $radius
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return array[]
-     */
-    public function range(array $sample, float $radius) : array
-    {
-        if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Radius must be'
-                . " greater than 0, $radius given.");
-        }
-
-        $samples = $labels = $distances = [];
-
-        $stack = [$this->root];
-
-        while ($current = array_pop($stack)) {
-            if ($current instanceof Ball) {
-                foreach ($current->children() as $child) {
-                    $distance = $this->kernel->compute($sample, $child->center());
-
-                    if ($distance <= $child->radius() + $radius) {
-                        $stack[] = $child;
-                    }
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Cluster) {
-                $dataset = $current->dataset();
-
-                foreach ($dataset->samples() as $i => $neighbor) {
-                    $distance = $this->kernel->compute($sample, $neighbor);
-
-                    if ($distance <= $radius) {
-                        $samples[] = $neighbor;
-                        $labels[] = $dataset->label($i);
-                        $distances[] = $distance;
-                    }
-                }
-            }
-        }
-
-        return [$samples, $labels, $distances];
     }
 
     /**

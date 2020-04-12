@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
 
 interface Spatial extends Tree
@@ -12,6 +13,14 @@ interface Spatial extends Tree
      * @return \Rubix\ML\Kernels\Distance\Distance
      */
     public function kernel() : Distance;
+
+    /**
+     * Insert a root node and recursively split the dataset until a
+     * terminating condition is met.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     */
+    public function grow(Labeled $dataset) : void;
 
     /**
      * Run a k nearest neighbors search and return the samples, labels, and

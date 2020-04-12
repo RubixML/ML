@@ -13,7 +13,6 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-use function Rubix\ML\array_last;
 use function array_slice;
 use function in_array;
 
@@ -32,7 +31,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDTree implements BST, Spatial
+class KDTree implements BinaryTree, Spatial
 {
     /**
      * The maximum number of samples that each neighborhood node can contain.
@@ -122,10 +121,10 @@ class KDTree implements BST, Spatial
      * Insert a root node and recursively split the dataset until a terminating
      * condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \InvalidArgumentException
      */
-    public function grow(Dataset $dataset) : void
+    public function grow(Labeled $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
@@ -161,57 +160,6 @@ class KDTree implements BST, Spatial
                 $current->attachRight(Neighborhood::terminate($right));
             }
         }
-    }
-
-    /**
-     * Search the tree for a leaf node or return null if not found.
-     *
-     * @param (int|float)[] $sample
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
-     */
-    public function search(array $sample) : ?Neighborhood
-    {
-        $node = array_last($this->path($sample));
-
-        if ($node instanceof Neighborhood) {
-            return $node;
-        }
-
-        return null;
-    }
-
-    /**
-     * Return the path of a sample taken from the root node to a leaf node
-     * in an array.
-     *
-     * @param (int|float)[] $sample
-     * @return mixed[]
-     */
-    public function path(array $sample) : array
-    {
-        $current = $this->root;
-
-        $path = [];
-
-        while ($current) {
-            $path[] = $current;
-
-            if ($current instanceof Box) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Neighborhood) {
-                break 1;
-            }
-        }
-
-        return $path;
     }
 
     /**
@@ -275,15 +223,17 @@ class KDTree implements BST, Spatial
 
                 array_multisort($distances, $samples, $labels);
 
+                if (count($samples) > $k) {
+                    $samples = array_slice($samples, 0, $k);
+                    $labels = array_slice($labels, 0, $k);
+                    $distances = array_slice($distances, 0, $k);
+                }
+
                 $visited->attach($current);
             }
         }
 
-        return [
-            array_slice($samples, 0, $k),
-            array_slice($labels, 0, $k),
-            array_slice($distances, 0, $k),
-        ];
+        return [$samples, $labels, $distances];
     }
 
     /**
@@ -341,6 +291,40 @@ class KDTree implements BST, Spatial
         }
 
         return [$samples, $labels, $distances];
+    }
+
+    /**
+     * Return the path of a sample taken from the root node to a leaf node
+     * in an array.
+     *
+     * @param (int|float)[] $sample
+     * @return mixed[]
+     */
+    protected function path(array $sample) : array
+    {
+        $current = $this->root;
+
+        $path = [];
+
+        while ($current) {
+            $path[] = $current;
+
+            if ($current instanceof Box) {
+                if ($sample[$current->column()] < $current->value()) {
+                    $current = $current->left();
+                } else {
+                    $current = $current->right();
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Neighborhood) {
+                break 1;
+            }
+        }
+
+        return $path;
     }
 
     /**
