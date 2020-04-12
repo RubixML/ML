@@ -13,4 +13,3 @@ parameters:
         - src/Graph/Trees/BallTree.php
         - src/Graph/Trees/ITree.php
         - src/Graph/Trees/KDTree.php
-        - src/Graph/Trees/VantageTree.php

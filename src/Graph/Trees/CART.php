@@ -208,15 +208,11 @@ abstract class CART implements DecisionTree
      * Insert a root node and recursively split the dataset a terminating
      * condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \InvalidArgumentException
      */
-    public function grow(Dataset $dataset) : void
+    public function grow(Labeled $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
         $this->featureCount = $n = $dataset->numColumns();
 
         $this->columns = range(0, $n - 1);

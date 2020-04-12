@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
+use function count;
 use function array_slice;
 
 /**
