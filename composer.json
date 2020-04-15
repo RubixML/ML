@@ -19,6 +19,7 @@
         },
         {
             "name": "Core Team",
+            "email": "support@rubixml.com",
             "homepage": "https://github.com/orgs/RubixML/teams/core"
         },
         {
@@ -80,7 +81,7 @@
         "process-timeout": 3000
     },
     "support": {
-        "email": "contact@rubixml.com",
+        "email": "support@rubixml.com",
         "issues": "https://github.com/RubixML/RubixML/issues",
         "source": "https://github.com/RubixML/RubixML",
         "docs": "https://docs.rubixml.com/en/latest"

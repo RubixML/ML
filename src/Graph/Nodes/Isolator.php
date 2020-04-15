@@ -67,7 +67,7 @@ class Isolator implements BinaryNode
             $value = $values[array_rand($values)];
         }
 
-        $groups = $dataset->partition($column, $value);
+        $groups = $dataset->partitionByColumn($column, $value);
 
         return new self($column, $value, $groups);
     }

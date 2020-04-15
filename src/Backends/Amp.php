@@ -81,7 +81,6 @@ class Amp implements Backend
      *
      * @param \Rubix\ML\Deferred $deferred
      * @param callable|null $after
-     * @throws \InvalidArgumentException
      */
     public function enqueue(Deferred $deferred, ?callable $after = null) : void
     {

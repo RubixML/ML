@@ -17,7 +17,7 @@ use RuntimeException;
 class ZScaleStandardizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
     

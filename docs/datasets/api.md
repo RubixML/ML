@@ -207,11 +207,9 @@ public tail(int $n = 10) : self
 **Examples**
 
 ```php
-// Return the first 5 rows in a new dataset
-$subset = $dataset->head(5);
+$subset = $dataset->head(10);
 
-// Return the last 10 rows in a new dataset
-$subset = $dataset->tail(10);
+$subset = $dataset->tail(30);
 ```
 
 ## Taking and Leaving
@@ -237,27 +235,31 @@ public splice(int $offset, int $n) : self
 ```
 
 ## Splitting
-Split the dataset into left and right subsets given by a *ratio*:
+Split the dataset into left and right subsets:
 ```php
 public split(float $ratio = 0.5) : array
 ```
 
-Partition the dataset into left and right subsets based on the value of a feature in a specified column:
+Partition the dataset into left and right subsets using the values of a single feature column for comparison:
 ```php
-public partition(int $offset, mixed $value) : array
+public partitionByColumn(int $offset, mixed $value) : array
+```
+
+Partition the dataset into left and right subsets based on the samples' distances from two centroids:
+```php
+public spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null) : array
 ```
 
 **Examples**
 
 ```php
-// Split the dataset 50/50 into left and right subsets
-[$left, $right] = $dataset->split(0.5);
+use Rubix\ML\Kernels\Distance\Euclidean;
 
-// Split the dataset into training and testing sets 80/20.
 [$training, $testing] = $dataset->split(0.8);
 
-// Partition the dataset by the feature column at offset 4 by value '50'
-[$left, $right] = $dataset->partition(4, 50);
+[$left, $right] = $dataset->partitionByColumn(4, 50);
+
+[$left, $right] = $dataset->spatialPartition($leftCentroid, $rightCentroid, new Euclidean());
 ```
 
 ## Folding
@@ -318,18 +320,13 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 **Example**
 
 ```php
-// Randomize and split the dataset into two subsets
-[$left, $right] = $dataset->randomize()->split(0.6);
+$dataset = $dataset->randomize();
 
 $subset = $dataset->randomSubset(50);
 
 $subset = $dataset->randomSubsetWithReplacement(500);
 
-// Sample a random subset according to a user-defined weight distribution
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
-
-// Sample a random subset using the values of a column as sample weights
-$subset = $dataset->randomWeightedSubsetWithReplacement(200, $dataset->column(5));
 ```
 
 ## Filtering
@@ -495,10 +492,6 @@ public toCSV(string $delimiter = ',', string $enclosure = '"') : string
 **Example**
 
 ```php
-file_put_contents('dataset.csv', $dataset->toCSV());
-
-// ...
-
 file_put_contents('dataset.ndjson', $dataset->toNDJSON());
 ```
 

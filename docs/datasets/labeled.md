@@ -59,6 +59,22 @@ array(2) {
 }
 ```
 
+### Stratification
+Group samples by their class label and return them in their own dataset:
+```php
+public stratify() : array
+```
+
+Split the dataset into left and right subsets such that the proportions of class labels remain intact:
+```php
+public stratifiedSplit($ratio = 0.5) : array
+```
+
+Return *k* equal size subsets of the dataset such that class proportions remain intact:
+```php
+public stratifiedFold($k = 10) : array
+```
+
 ### Transform Labels
 Transform the labels in the dataset using a callback function and return self for method chaining:
 ```php
@@ -117,30 +133,12 @@ Sort the dataset by label and return self for method chaining:
 public sortByLabel(bool $descending = false) : self
 ```
 
-### Stratification
-Group samples by their label and return them in their own datasets:
-```php
-public stratify() : array
-```
-
-Split the dataset into left and right stratified subsets with a given *ratio* of samples in each:
-```php
-public stratifiedSplit($ratio = 0.5) : array
-```
-
-Return *k* equal size subsets of the dataset:
-```php
-public stratifiedFold($k = 10) : array
-```
-
 **Examples**
 
 ```php
 $strata = $dataset->stratify();
 
 $folds = $dataset->stratifiedFold(5);
-
-[$left, $right] = $dataset->stratifiedSplit(0.5);
 
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```

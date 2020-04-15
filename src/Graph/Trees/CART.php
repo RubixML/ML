@@ -440,7 +440,7 @@ abstract class CART implements DecisionTree
             }
 
             foreach ($values as $value) {
-                $groups = $dataset->partition($column, $value);
+                $groups = $dataset->partitionByColumn($column, $value);
 
                 $impurity = $this->splitImpurity($groups);
 

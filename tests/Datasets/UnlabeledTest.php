@@ -391,7 +391,7 @@ class UnlabeledTest extends TestCase
      */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->partition(2, 'loner');
+        [$left, $right] = $this->dataset->partitionByColumn(2, 'loner');
 
         $this->assertInstanceOf(Unlabeled::class, $left);
         $this->assertInstanceOf(Unlabeled::class, $right);

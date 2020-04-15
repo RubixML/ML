@@ -60,7 +60,7 @@ $dataset->apply(new OneHotEncoder());
 ```
 
 ## Elastic
-Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer with new data even after being previously fitted. *Updating* is the transformer equivalent to partial training for online learners.
+Some transformers are able to adapt to new training data. The `update()` method provided by the Elastic interface can be used to modify the fitting of the transformer with new data even after being previously fitted. *Updating* is the transformer equivalent to partially training an Online learner.
 
 ### Update a Fitting
 ```php
@@ -76,7 +76,7 @@ $transformer = new ZScaleStandardizer();
 
 $folds = $dataset->fold(3);
 
-$transformer->update($folds[0]);
+$transformer->fit($folds[0]);
 
 $transformer->update($folds[1]);
 

@@ -24,7 +24,7 @@ class KNNImputerTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
     

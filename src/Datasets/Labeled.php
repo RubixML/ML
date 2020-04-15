@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
@@ -775,20 +776,15 @@ class Labeled extends Dataset
     }
 
     /**
-     * Partition the dataset into left and right subsets by a specified feature
-     * column. The dataset is split such that, for categorical values, the left
-     * subset contains all samples that match the value and the right side
-     * contains samples that do not match. For continuous values, the left side
-     * contains all the  samples that are less than the target value, and the
-     * right side contains the samples that are greater than or equal to the
-     * value.
+     * Partition the dataset into left and right subsets using the values of a single
+     * feature column for comparison.
      *
      * @param int $column
      * @param string|int|float $value
      * @throws \InvalidArgumentException
      * @return self[]
      */
-    public function partition(int $column, $value) : array
+    public function partitionByColumn(int $column, $value) : array
     {
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
@@ -821,21 +817,30 @@ class Labeled extends Dataset
     }
 
     /**
-     * Partition the dataset into left and right subsets based on their distance
-     * from two sample points.
+     * Partition the dataset into left and right subsets based on the samples' distances
+     * from two centroids.
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      * @return self[]
      */
-    public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel)
+    public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null)
     {
-        if (count($leftCentroid) !== count($rightCentroid)) {
-            throw new InvalidArgumentException('Dimensionality mismatch between'
-                . ' left and right centroids.');
+        if (count($leftCentroid) !== $this->numColumns()) {
+            throw new InvalidArgumentException('Dimensionality of centroid'
+                . " must equal dimensionality of dataset, {$this->numColumns()}"
+                . ' expected but ' . count($leftCentroid) . ' given.');
         }
+
+        if (count($leftCentroid) !== count($rightCentroid)) {
+            throw new InvalidArgumentException('Dimensionality of centroids'
+                . ' must be equal, ' . count($leftCentroid) . ' expected but '
+                . count($rightCentroid) . ' given.');
+        }
+
+        $kernel = $kernel ?? new Euclidean();
 
         SamplesAreCompatibleWithDistance::check($this, $kernel);
 

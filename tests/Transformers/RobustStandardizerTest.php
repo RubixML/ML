@@ -16,7 +16,7 @@ use RuntimeException;
 class RobustStandardizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
     
@@ -30,7 +30,7 @@ class RobustStandardizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
+        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
 
         $this->transformer = new RobustStandardizer(true);
     }

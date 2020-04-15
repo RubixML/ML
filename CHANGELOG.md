@@ -4,6 +4,7 @@
     - Added MLP numerical instability checks
     - Removed unused BST interface
     - Optimized Ball Tree nearest neighbors search
+    - Renamed Dataset partition method to partitionByColumn
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

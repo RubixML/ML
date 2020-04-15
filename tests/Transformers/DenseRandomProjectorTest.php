@@ -16,7 +16,7 @@ use RuntimeException;
 class DenseRandomProjectorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Generator
+     * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
     

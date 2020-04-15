@@ -52,7 +52,7 @@ abstract class ExtraTree extends CART
                 $value = $values[array_rand($values)];
             }
 
-            $groups = $dataset->partition($column, $value);
+            $groups = $dataset->partitionByColumn($column, $value);
 
             $impurity = $this->splitImpurity($groups);
 
