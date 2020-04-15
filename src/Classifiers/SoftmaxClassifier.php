@@ -134,7 +134,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $batchSize = 200,
+        int $batchSize = 128,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,

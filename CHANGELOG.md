@@ -5,6 +5,8 @@
     - Removed unused BST interface
     - Optimized Ball Tree nearest neighbors search
     - Renamed Dataset partition method to partitionByColumn
+    - Decreased default neural net learner batch size to 128
+    - Increased default K Means batch size to 128 
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

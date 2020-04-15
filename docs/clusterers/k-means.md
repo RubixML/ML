@@ -11,7 +11,7 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
-| 2 | batch size | 100 | int | The size of each mini batch in samples. |
+| 2 | batch size | 128 | int | The size of each mini batch in samples. |
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
 | 4 | min change | 10.0 | float | The minimum change in the inertia for training to continue. |
 | 5 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
@@ -40,7 +40,7 @@ use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 
-$estimator = new KMeans(3, 100, 300, 10.0, 10, new Euclidean(), new PlusPlus());
+$estimator = new KMeans(3, 128, 300, 10.0, 10, new Euclidean(), new PlusPlus());
 ```
 
 ### References

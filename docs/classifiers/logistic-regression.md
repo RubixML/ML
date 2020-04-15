@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/LogisticRegresion.php">[source]</a></span>
 
 # Logistic Regression
-A linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly two class outcomes. The model parameters (weights and bias) are solved using mini batch Gradient Descent with pluggable optimizers and cost functions that run on the neural network subsystem.
+A linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly two class outcomes. The model parameters (weights and bias) are solved using Mini Batch Gradient Descent with pluggable optimizers and cost functions that run on the neural network subsystem.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -10,7 +10,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | batch size | 200 | int | The number of training samples to process at a time. |
+| 1 | batch size | 128 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
@@ -35,5 +35,5 @@ use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, 5, new CrossEntropy());
+$estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 5, new CrossEntropy());
 ```

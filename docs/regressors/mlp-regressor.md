@@ -11,7 +11,7 @@ A multilayer feed forward neural network with a continuous output layer suitable
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
-| 2 | batch size | 200 | int | The number of training samples to process at a time. |
+| 2 | batch size | 128 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
@@ -55,7 +55,7 @@ $estimator = new MLPRegressor([
 	new Activation(new ReLU()),
 	new Dense(50),
 	new Activation(new ReLU()),
-], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, 3, 0.1, new LeastSquares(), new RSquared());
+], 128, new RMSProp(0.001), 1e-3, 100, 1e-5, 3, 0.1, new LeastSquares(), new RSquared());
 ```
 
 ### References

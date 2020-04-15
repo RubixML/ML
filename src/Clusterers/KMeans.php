@@ -142,7 +142,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      */
     public function __construct(
         int $k,
-        int $batchSize = 100,
+        int $batchSize = 128,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,

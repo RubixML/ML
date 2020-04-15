@@ -39,7 +39,7 @@ use function count;
  *
  * A linear classifier that uses the logistic (*sigmoid*) function to estimate the
  * probabilities of exactly two class outcomes. The model parameters (weights and bias)
- * are solved using mini batch Gradient Descent with pluggable optimizers and cost
+ * are solved using Mini Batch Gradient Descent with pluggable optimizers and cost
  * functions that run on the neural network subsystem.
  *
  * @category    Machine Learning
@@ -136,7 +136,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $batchSize = 200,
+        int $batchSize = 128,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,

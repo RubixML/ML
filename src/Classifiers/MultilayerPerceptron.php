@@ -184,7 +184,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      */
     public function __construct(
         array $hiddenLayers = [],
-        int $batchSize = 200,
+        int $batchSize = 128,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
         int $epochs = 1000,

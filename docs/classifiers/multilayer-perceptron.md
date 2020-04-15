@@ -11,7 +11,7 @@ A multiclass feed forward neural network classifier with user-defined hidden lay
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
-| 2 | batch size | 200 | int | The number of training samples to process at a time. |
+| 2 | batch size | 128 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
@@ -58,7 +58,7 @@ $estimator = new MultilayerPerceptron([
     new Dropout(0.3),
     new Dense(50),
     new PReLU(),
-], 100, new Adam(0.001), 1e-4, 1000, 1e-3, 3, 0.1, new CrossEntropy(), new MCC());
+], 128, new Adam(0.001), 1e-4, 1000, 1e-3, 3, 0.1, new CrossEntropy(), new MCC());
 ```
 
 ### References
