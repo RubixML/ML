@@ -137,7 +137,9 @@ class BallTree implements BinaryTree, Spatial
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Ball::split($left, $this->kernel);
+                $node = Ball::split($left, $this->kernel);
+
+                $stack[] = $node;
     
                 $current->attachLeft($node);
             } else {
@@ -145,7 +147,9 @@ class BallTree implements BinaryTree, Spatial
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Ball::split($right, $this->kernel);
+                $node = Ball::split($right, $this->kernel);
+
+                $stack[] = $node;
     
                 $current->attachRight($node);
             } else {
@@ -176,7 +180,9 @@ class BallTree implements BinaryTree, Spatial
 
         $stack = $this->path($sample);
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -247,7 +253,9 @@ class BallTree implements BinaryTree, Spatial
 
         $stack = [$this->root];
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
                     $distance = $this->kernel->compute($sample, $child->center());
@@ -283,7 +291,7 @@ class BallTree implements BinaryTree, Spatial
      * in an array.
      *
      * @param (string|int|float)[] $sample
-     * @return mixed[]
+     * @return \Rubix\ML\Graph\Nodes\Hypersphere[]
      */
     protected function path(array $sample) : array
     {

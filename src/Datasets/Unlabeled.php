@@ -380,7 +380,7 @@ class Unlabeled extends Dataset
 
         if ($this->columnType($column)->isContinuous()) {
             foreach ($this->samples as $sample) {
-                if ($sample[$column] < $value) {
+                if ($sample[$column] <= $value) {
                     $left[] = $sample;
                 } else {
                     $right[] = $sample;

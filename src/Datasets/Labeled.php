@@ -790,7 +790,7 @@ class Labeled extends Dataset
 
         if ($this->columnType($column)->isContinuous()) {
             foreach ($this->samples as $i => $sample) {
-                if ($sample[$column] < $value) {
+                if ($sample[$column] <= $value) {
                     $leftSamples[] = $sample;
                     $leftLabels[] = $this->labels[$i];
                 } else {

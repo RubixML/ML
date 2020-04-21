@@ -89,9 +89,14 @@ Return the number of columns in the dataset:
 public numColumns() : int
 ```
 
+Return the shape of the dataset:
+```php
+public shape() : array
+```
+
 Return the data types for each feature column:
 ```php
-public types() : array
+public columnTypes() : array
 ```
 
 Return the data type for a given column offset:
@@ -102,10 +107,21 @@ public columnType(int $offset) : DataType
 **Example**
 
 ```php
-echo $dataset->columnType(5);
+$m = $dataset->numRows();
+
+$n = $dataset->numColumns();
+
+[$m, $n] = $dataset->shape();
+
+var_dump($m, $n);
+
+echo $dataset->columnType(15);
 ```
 
 ```sh
+int(1000)
+int(30)
+
 categorical
 ```
 

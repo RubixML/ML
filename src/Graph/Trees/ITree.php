@@ -139,20 +139,20 @@ class ITree implements BinaryTree
     
             if ($left->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($left);
+
+                $stack[] = [$node, $depth];
     
                 $current->attachLeft($node);
-    
-                $stack[] = [$node, $depth];
             } else {
                 $current->attachLeft(Cell::terminate($left, $depth));
             }
     
             if ($right->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($right);
+
+                $stack[] = [$node, $depth];
     
                 $current->attachRight($node);
-    
-                $stack[] = [$node, $depth];
             } else {
                 $current->attachRight(Cell::terminate($right, $depth));
             }

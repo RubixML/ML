@@ -25,13 +25,10 @@ use const Rubix\ML\EPSILON;
 /**
  * Isolation Forest
  *
- * An ensemble learner comprised of Isolation Trees that are each trained on a
- * unique subset of the training set. Isolation Trees are a type of randomized
- * decision tree that assign anomaly scores based on the depth a sample reaches
- * when traversing the tree from root to leaf node. Anomalies are isolated into
- * their own nodes earliest during tree traversal and therefore receive the
- * highest *isolation* scores. The Isolation Forest works by averaging the anomaly
- * scores for an unknown sample across a user-specified number of trees.
+ * An ensemble of Isolation Trees all of which specialize on a unique subset of the training
+ * set. Isolation Trees are a type of randomized decision tree that assign anomaly scores
+ * based on the depth a sample reaches when traversing the tree. Anomalies are isolated into
+ * the shallowest leaf nodes and as such receive the highest *isolation* scores.
  *
  * References:
  * [1] F. T. Liu et al. (2008). Isolation Forest.

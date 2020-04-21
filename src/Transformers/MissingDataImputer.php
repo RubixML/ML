@@ -109,7 +109,7 @@ class MissingDataImputer implements Transformer, Stateful
         
         $this->strategies = $this->types = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             $donors = [];
 
             switch ($type->code()) {

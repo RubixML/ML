@@ -24,10 +24,32 @@ use RuntimeException;
  */
 class RadiusNeighborsTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
-    protected const TEST_SIZE = 10;
+    /**
+     * The number of samples in the training set.
+     *
+     * @var int
+     */
+    protected const TRAIN_SIZE = 350;
+
+    /**
+     * The number of samples in the validation set.
+     *
+     * @var int
+     */
+    protected const TEST_SIZE = 20;
+    
+    /**
+     * The minimum validation score required to pass the test.
+     *
+     * @var float
+     */
     protected const MIN_SCORE = 0.9;
 
+    /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
     protected const RANDOM_SEED = 0;
 
     /**
@@ -56,7 +78,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new RadiusNeighbors(35.5, true, 'outlier', new BallTree());
+        $this->estimator = new RadiusNeighbors(30.0, true, 'outlier', new BallTree());
 
         $this->metric = new Accuracy();
 
@@ -116,7 +138,7 @@ class RadiusNeighborsTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 35.5,
+            'radius' => 30.0,
             'weighted' => true,
             'anomaly_class' => 'outlier',
             'tree' => new BallTree(),

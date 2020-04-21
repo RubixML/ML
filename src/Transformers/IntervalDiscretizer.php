@@ -11,15 +11,13 @@ use RuntimeException;
 
 use function chr;
 use function ord;
+use function is_null;
 
 /**
  * Interval Discretizer
  *
- * This transformer creates an equi-width histogram for each continuous feature column
- * and encodes a discrete category with an automatic bin label for each continuous
- * feature column. The Interval Discretizer is useful when converting continuous
- * features to categorical features so they can be learned by an estimator that
- * supports categorical features natively.
+ * Assigns each continuous feature to a discrete category using equi-width histograms. Useful
+ * for converting continuous data to categorical.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -61,12 +59,12 @@ class IntervalDiscretizer implements Transformer, Stateful
      */
     public function __construct(int $bins = 5)
     {
-        if ($bins < 2) {
-            throw new InvalidArgumentException('Bins must be'
-                . " greater than 1, $bins given.");
+        if ($bins < 3) {
+            throw new InvalidArgumentException('Bins must be greater'
+                . " greater than 3, $bins given.");
         }
 
-        $last = chr(ord(self::START_CATEGORY) + ($bins - 1));
+        $last = chr(ord(self::START_CATEGORY) + $bins);
 
         $categories = array_map('strval', range(self::START_CATEGORY, $last));
 
@@ -127,16 +125,13 @@ class IntervalDiscretizer implements Transformer, Stateful
         
         $this->intervals = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $values = $dataset->column($column);
-                
-                $min = min($values);
-                $max = max($values);
 
-                $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
+                $edges = Vector::linspace(min($values), max($values), $this->bins - 1)->asArray();
 
-                array_shift($edges);
+                $edges[] = INF;
 
                 $this->intervals[$column] = $edges;
             }
@@ -151,25 +146,21 @@ class IntervalDiscretizer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if ($this->intervals === null) {
+        if (is_null($this->intervals)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
-        
-        $last = end($this->categories);
 
         foreach ($samples as &$sample) {
             foreach ($this->intervals as $column => $interval) {
                 $value = &$sample[$column];
 
                 foreach ($interval as $k => $edge) {
-                    if ($value < $edge) {
+                    if ($value <= $edge) {
                         $value = $this->categories[$k];
 
                         continue 2;
                     }
                 }
-
-                $value = $last;
             }
         }
     }

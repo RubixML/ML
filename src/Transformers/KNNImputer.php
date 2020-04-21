@@ -164,7 +164,7 @@ class KNNImputer implements Transformer, Stateful
 
         $this->tree->grow($dataset);
 
-        $this->types = $dataset->types();
+        $this->types = $dataset->columnTypes();
     }
 
     /**

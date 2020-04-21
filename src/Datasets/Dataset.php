@@ -166,7 +166,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      *
      * @return \Rubix\ML\DataType[]
      */
-    public function types() : array
+    public function columnTypes() : array
     {
         return array_map([DataType::class, 'determine'], $this->samples[0] ?? []);
     }
@@ -178,7 +178,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function uniqueTypes() : array
     {
-        return array_unique($this->types());
+        return array_unique($this->columnTypes());
     }
 
     /**
@@ -353,7 +353,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         $stats = [];
 
-        foreach ($this->types() as $column => $type) {
+        foreach ($this->columnTypes() as $column => $type) {
             $desc = [];
 
             $desc['type'] = (string) $type;

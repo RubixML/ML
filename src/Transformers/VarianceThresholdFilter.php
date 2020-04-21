@@ -101,7 +101,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
 
         $variances = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $variances[$column] = Stats::variance($dataset->column($column));
             }

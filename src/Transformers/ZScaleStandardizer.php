@@ -133,7 +133,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
 
         $this->means = $this->variances = $this->stddevs = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $values = $dataset->column($column);
 
@@ -170,18 +170,17 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
 
             [$mean, $variance] = Stats::meanVar($values);
 
-            $this->means[$column] = (($n * $mean)
-                + ($this->n * $oldMean))
+            $muHat = (($this->n * $oldMean) + ($n * $mean))
                 / ($this->n + $n);
 
-            $varNew = ($this->n
-                * $oldVariance + ($n * $variance)
+            $vHat = ($this->n * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($this->n + $n);
 
-            $this->variances[$column] = $varNew;
-            $this->stddevs[$column] = sqrt($varNew ?: EPSILON);
+            $this->means[$column] = $muHat;
+            $this->variances[$column] = $vHat;
+            $this->stddevs[$column] = sqrt($vHat ?: EPSILON);
         }
 
         $this->n += $n;

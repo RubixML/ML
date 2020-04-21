@@ -146,7 +146,9 @@ class KDTree implements BinaryTree, Spatial
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Box::split($left);
+                $node = Box::split($left);
+
+                $stack[] = $node;
     
                 $current->attachLeft($node);
             } else {
@@ -154,7 +156,9 @@ class KDTree implements BinaryTree, Spatial
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Box::split($right);
+                $node = Box::split($right);
+
+                $stack[] = $node;
     
                 $current->attachRight($node);
             } else {
@@ -185,7 +189,9 @@ class KDTree implements BinaryTree, Spatial
 
         $stack = $this->path($sample);
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             if ($current instanceof Box) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -257,7 +263,9 @@ class KDTree implements BinaryTree, Spatial
 
         $stack = [$this->root];
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+            
             if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
                     if ($child instanceof Hypercube) {

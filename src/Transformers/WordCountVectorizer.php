@@ -130,7 +130,7 @@ class WordCountVectorizer implements Transformer, Stateful
 
         $this->vocabularies = $this->templates = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isCategorical()) {
                 $values = $dataset->column($column);
 

@@ -19,8 +19,18 @@ use InvalidArgumentException;
  */
 class TSNETest extends TestCase
 {
-    protected const DATASET_SIZE = 30;
+    /**
+     * The number of samples in the validation set.
+     *
+     * @var int
+     */
+    protected const TEST_SIZE = 30;
 
+    /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
     protected const RANDOM_SEED = 0;
 
     /**
@@ -106,11 +116,11 @@ class TSNETest extends TestCase
      */
     public function embed() : void
     {
-        $dataset = $this->generator->generate(self::DATASET_SIZE);
+        $dataset = $this->generator->generate(self::TEST_SIZE);
 
         $samples = $this->embedder->embed($dataset);
 
-        $this->assertCount(self::DATASET_SIZE, $samples);
+        $this->assertCount(self::TEST_SIZE, $samples);
         $this->assertCount(1, $samples[0]);
     }
 

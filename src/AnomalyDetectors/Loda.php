@@ -20,9 +20,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Rubix\ML\array_transpose;
-use function array_slice;
-
 use const Rubix\ML\LOG_EPSILON;
 
 /**
@@ -44,6 +41,13 @@ use const Rubix\ML\LOG_EPSILON;
 class Loda implements Estimator, Learner, Online, Ranking, Persistable
 {
     use PredictsSingle, RankSingle;
+
+    /**
+     * The minimum number of histogram bins.
+     *
+     * @var int
+     */
+    protected const MIN_BINS = 3;
     
     /**
      * The minimum dimensionality required to produce sparse projections.
@@ -135,9 +139,9 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
                 . " must be greater than 0, $estimators given.");
         }
 
-        if (isset($bins) and $bins < 1) {
-            throw new InvalidArgumentException('Number of bins cannot'
-                . " be less than 1, $bins given.");
+        if (isset($bins) and $bins < self::MIN_BINS) {
+            throw new InvalidArgumentException('Bins must be greater'
+                . ' than ' . self::MIN_BINS . ", $bins given.");
         }
 
         if ($contamination < 0.0 or $contamination > 0.5) {
@@ -210,7 +214,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
         [$m, $n] = $dataset->shape();
 
         if ($this->fitBins) {
-            $this->bins = self::estimateBins($m);
+            $this->bins = max(self::estimateBins($m), self::MIN_BINS);
         }
 
         $this->r = Matrix::gaussian($n, $this->estimators);
@@ -224,30 +228,21 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->asArray();
+            ->transpose();
 
-        foreach (array_transpose($projections) as $values) {
-            $start = min($values);
-            $end = max($values);
+        foreach ($projections->asArray() as $values) {
+            $edges = Vector::linspace(min($values), max($values), $this->bins - 1)->asArray();
 
-            $edges = Vector::linspace($start, $end, $this->bins + 1)->asArray();
-
-            $edges[] = INF;
-
-            $counts = array_fill(0, $this->bins + 2, 0);
-
-            $interior = array_slice($edges, 1, $this->bins, true);
+            $counts = array_fill(0, count($edges), 0);
 
             foreach ($values as $value) {
-                foreach ($interior as $k => $edge) {
+                foreach ($edges as $k => $edge) {
                     if ($value <= $edge) {
                         ++$counts[$k];
 
                         continue 2;
                     }
                 }
-
-                ++$counts[$this->bins];
             }
 
             $this->histograms[] = [$edges, $counts];
@@ -278,23 +273,19 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->asArray();
+            ->transpose();
 
-        foreach (array_transpose($projections) as $i => $values) {
+        foreach ($projections->asArray() as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 
-            $interior = array_slice($edges, 1, $this->bins, true);
-
             foreach ($values as $value) {
-                foreach ($interior as $k => $edge) {
+                foreach ($edges as $k => $edge) {
                     if ($value <= $edge) {
                         ++$counts[$k];
 
                         continue 2;
                     }
                 }
-
-                ++$counts[$this->bins];
             }
 
             $this->histograms[$i] = [$edges, $counts];
@@ -339,7 +330,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->asArray();
+            ->transpose();
 
         return $this->densities($projections);
     }
@@ -348,22 +339,22 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * Estimate the probability density function of each 1-dimensional projection
      * using the histograms generated during training.
      *
-     * @param array[] $projections
+     * @param \Tensor\Matrix $projections
      * @return float[]
      */
-    protected function densities(array $projections) : array
+    protected function densities(Matrix $projections) : array
     {
-        $densities = array_fill(0, count($projections), 0.0);
+        $densities = array_fill(0, $projections->n(), 0.0);
     
-        foreach ($projections as $i => $values) {
-            foreach ($values as $j => $value) {
-                [$edges, $counts] = $this->histograms[$j];
+        foreach ($projections->asArray() as $i => $values) {
+            [$edges, $counts] = $this->histograms[$i];
 
+            foreach ($values as $j => $value) {
                 foreach ($edges as $k => $edge) {
                     if ($value <= $edge) {
                         $count = $counts[$k];
 
-                        $densities[$i] += $count > 0
+                        $densities[$j] += $count > 0
                             ? -log($count / $this->n)
                             : -LOG_EPSILON;
 

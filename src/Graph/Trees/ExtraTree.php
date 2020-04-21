@@ -41,7 +41,7 @@ abstract class ExtraTree extends CART
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($dataset->columnType($column)->isContinuous()) {
+            if ($this->types[$column]->isContinuous()) {
                 $min = (int) floor(min($values) * PHI);
                 $max = (int) ceil(max($values) * PHI);
     

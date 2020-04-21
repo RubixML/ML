@@ -37,22 +37,6 @@ abstract class CART implements DecisionTree
     protected const IMPURITY_TOLERANCE = 1e-4;
 
     /**
-     * The minimum number of quantiles to generate when evaluating a split of a continuous
-     * feature column.
-     *
-     * @var int
-     */
-    protected const MIN_QUANTILES = 2;
-
-    /**
-     * The maximum number of quantiles to generate when evaluating a split on a continuous
-     * feature column.
-     *
-     * @var int
-     */
-    protected const MAX_QUANTILES = 100;
-
-    /**
      * The glyph that denotes a branch of the tree.
      *
      * @var string
@@ -109,7 +93,14 @@ abstract class CART implements DecisionTree
     protected $featureCount;
 
     /**
-     * The memoized column indices of the dataset.
+     * The memorized column types of the dataset.
+     *
+     * @var \Rubix\ML\DataType[]
+     */
+    protected $types = [];
+
+    /**
+     * The memorized column offsets of the dataset.
      *
      * @var int[]
      */
@@ -213,12 +204,14 @@ abstract class CART implements DecisionTree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->featureCount = $n = $dataset->numColumns();
+        $this->featureCount = $dataset->numColumns();
 
-        $this->columns = range(0, $n - 1);
+        $this->types = $dataset->columnTypes();
+
+        $this->columns = array_keys($this->types);
 
         if ($this->fitMaxFeatures) {
-            $this->maxFeatures = (int) round(sqrt($n));
+            $this->maxFeatures = (int) round(sqrt($this->featureCount));
         }
 
         $this->root = $this->split($dataset);
@@ -279,6 +272,7 @@ abstract class CART implements DecisionTree
             }
         }
 
+        $this->types = [];
         $this->columns = [];
     }
 
@@ -352,62 +346,6 @@ abstract class CART implements DecisionTree
     }
 
     /**
-     * Print a human readable text representation of the decision tree.
-     *
-     * @throws RuntimeException
-     * @return string
-     */
-    public function rules() : string
-    {
-        if (!$this->root) {
-            throw new RuntimeException('Tree has not been constructed.');
-        }
-
-        $carry = '';
-
-        $this->_rules($carry, $this->root);
-
-        return $carry;
-    }
-
-    /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
-     *
-     * @param string $carry
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
-     * @param int $depth
-     */
-    protected function _rules(string &$carry, BinaryNode $node, int $depth = 0) : void
-    {
-        ++$depth;
-
-        $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
-
-        if ($node instanceof Comparison) {
-            if ($node->left() !== null) {
-                $operator = is_string($node->value()) ? '==' : '<';
-
-                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
-
-                $this->_rules($carry, $node->left(), $depth);
-            }
-            
-            if ($node->right() !== null) {
-                $operator = is_string($node->value()) ? '!=' : '>=';
-
-                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
-
-                $this->_rules($carry, $node->right(), $depth);
-            }
-        }
-
-        if ($node instanceof Outcome) {
-            $carry .= $prefix . "Outcome={$node->outcome()} Impurity={$node->impurity()}" . PHP_EOL;
-        }
-    }
-
-    /**
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -415,15 +353,13 @@ abstract class CART implements DecisionTree
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        $n = (int) ceil(sqrt($dataset->numRows()));
-
-        $k = max(self::MIN_QUANTILES, min(self::MAX_QUANTILES, $n));
-
-        $q = range(0.0, 1.0, 1.0 / ($k - 1.0));
-
         shuffle($this->columns);
 
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
+
+        $k = (int) round(sqrt($dataset->numRows()));
+
+        $q = range(0.0, 1.0, 1.0 / ($k - 1));
 
         $bestImpurity = INF;
         $bestColumn = 0;
@@ -433,7 +369,7 @@ abstract class CART implements DecisionTree
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($dataset->columnType($column)->isContinuous()) {
+            if ($this->types[$column]->isContinuous()) {
                 $values = Stats::quantiles($values, $q);
             } else {
                 $values = array_unique($values);
@@ -488,6 +424,62 @@ abstract class CART implements DecisionTree
         }
 
         return $impurity;
+    }
+
+    /**
+     * Print a human readable text representation of the decision tree.
+     *
+     * @throws RuntimeException
+     * @return string
+     */
+    public function rules() : string
+    {
+        if (!$this->root) {
+            throw new RuntimeException('Tree has not been constructed.');
+        }
+
+        $carry = '';
+
+        $this->_rules($carry, $this->root);
+
+        return $carry;
+    }
+
+    /**
+     * Recursive function to print out the decision rule at each node
+     * using preorder traversal.
+     *
+     * @param string $carry
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param int $depth
+     */
+    protected function _rules(string &$carry, BinaryNode $node, int $depth = 0) : void
+    {
+        ++$depth;
+
+        $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
+
+        if ($node instanceof Comparison) {
+            if ($node->left() !== null) {
+                $operator = is_string($node->value()) ? '==' : '<';
+
+                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+
+                $this->_rules($carry, $node->left(), $depth);
+            }
+            
+            if ($node->right() !== null) {
+                $operator = is_string($node->value()) ? '!=' : '>=';
+
+                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+
+                $this->_rules($carry, $node->right(), $depth);
+            }
+        }
+
+        if ($node instanceof Outcome) {
+            $carry .= $prefix . "Outcome={$node->outcome()} Impurity={$node->impurity()}" . PHP_EOL;
+        }
     }
 
     /**

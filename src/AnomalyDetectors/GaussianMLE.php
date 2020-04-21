@@ -26,8 +26,7 @@ use const Rubix\ML\EPSILON;
  *
  * The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing
  * a probability density function (PDF) over the features assuming they are independently
- * and normally (Gaussian) distributed. Assigning low probability density to a sample
- * translates to a high anomaly score.
+ * and normally (Gaussian) distributed.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
@@ -206,20 +205,18 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
         foreach ($dataset->columns() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
 
-            $oldWeight = $this->n;
             $oldMean = $this->means[$column];
             $oldVariance = $this->variances[$column];
 
-            $this->means[$column] = (($n * $mean)
-                + ($oldWeight * $oldMean))
-                / ($oldWeight + $n);
+            $muHat = (($this->n * $oldMean) + ($n * $mean))
+                / ($this->n + $n);
 
-            $vHat = ($oldWeight
-                * $oldVariance + ($n * $variance)
-                + ($oldWeight / ($n * ($oldWeight + $n)))
+            $vHat = ($this->n * $oldVariance + ($n * $variance)
+                + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
-                / ($oldWeight + $n);
+                / ($this->n + $n);
 
+            $this->means[$column] = $muHat;
             $this->variances[$column] = $vHat ?: EPSILON;
         }
 

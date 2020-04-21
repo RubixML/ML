@@ -170,7 +170,7 @@ class LabeledTest extends TestCase
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->dataset->types());
+        $this->assertEquals($expected, $this->dataset->columnTypes());
     }
 
     /**

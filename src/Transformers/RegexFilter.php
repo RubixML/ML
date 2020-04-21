@@ -81,7 +81,7 @@ class RegexFilter implements Transformer
     {
         if (empty($patterns)) {
             throw new InvalidArgumentException('Must specify at least'
-                . ' 1 pattern.');
+                . ' 1 regex pattern.');
         }
 
         foreach ($patterns as $pattern) {

@@ -30,8 +30,7 @@ use const Rubix\ML\EPSILON;
  * which enables it to detect anomalies within individual clusters of data.
  *
  * References:
- * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
- * Outliers.
+ * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -164,7 +163,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Return the base k-d tree instance.
+     * Return the base spatial tree instance.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */

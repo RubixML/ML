@@ -23,10 +23,32 @@ use RuntimeException;
  */
 class RegressionTreeTest extends TestCase
 {
+    /**
+     * The number of samples in the training set.
+     *
+     * @var int
+     */
     protected const TRAIN_SIZE = 300;
-    protected const TEST_SIZE = 10;
+
+    /**
+     * The number of samples in the validation set.
+     *
+     * @var int
+     */
+    protected const TEST_SIZE = 20;
+    
+    /**
+     * The minimum validation score required to pass the test.
+     *
+     * @var float
+     */
     protected const MIN_SCORE = 0.9;
 
+    /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
     protected const RANDOM_SEED = 0;
 
     /**
