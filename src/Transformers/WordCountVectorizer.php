@@ -214,4 +214,40 @@ class WordCountVectorizer implements Transformer, Stateful
             $sample = array_merge($sample, ...$temp);
         }
     }
+
+    /**
+     * Return the instance properties to be serialized.
+     * 
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        return [
+            'max_vocabulary' => $this->maxVocabulary,
+            'min_document_frequency' => $this->minDocumentFrequency,
+            'tokenizer' => $this->tokenizer,
+            'vocabularies' => $this->vocabularies,
+        ];
+    }
+
+    /**
+     * Restore the properties of a serialized instance.
+     * 
+     * @param mixed[] $data
+     */
+    public function __unserialize(array $data)
+    {
+        $this->maxVocabulary = $data['max_vocabulary'];
+        $this->minDocumentFrequency = $data['min_document_frequency'];
+        $this->tokenizer = $data['tokenizer'];
+        $this->vocabularies = $data['vocabularies'];
+
+        $templates = [];
+
+        foreach ($this->vocabularies as $column => $vocabulary) {
+            $templates[] = array_fill(0, count($vocabulary), 0);
+        }
+        
+        $this->templates =  $templates;
+    }
 }

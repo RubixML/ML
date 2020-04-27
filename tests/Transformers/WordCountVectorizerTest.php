@@ -58,6 +58,8 @@ class WordCountVectorizerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        \file_put_contents('seeek.txt', serialize($this->transformer));
+
         $this->dataset->apply($this->transformer);
     
         $outcome = [

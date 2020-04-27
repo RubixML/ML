@@ -8,6 +8,7 @@
     - Decreased default neural net learner batch size to 128
     - Increased default K Means batch size to 128
     - Renamed Dataset types method to columnTypes
+    - Efficient serialization of Word Count Vectorizer
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface
