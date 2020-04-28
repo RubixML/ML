@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-interface Persistable extends Learner
+interface Persistable
 {
     //
 }

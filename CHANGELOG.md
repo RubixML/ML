@@ -9,6 +9,7 @@
     - Increased default K Means batch size to 128
     - Renamed Dataset types method to columnTypes
     - Efficient serialization of Word Count Vectorizer
+    - Decoupled Persistable interface from Learner
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

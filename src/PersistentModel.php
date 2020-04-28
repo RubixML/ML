@@ -9,6 +9,7 @@ use Rubix\ML\Other\Traits\RankSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -28,7 +29,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     /**
      * The persistable base learner.
      *
-     * @var \Rubix\ML\Persistable
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -56,6 +57,11 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     {
         $base = $persister->load();
 
+        if (!$base instanceof Learner) {
+            throw new InvalidArgumentException('Persistable must'
+                . ' implement the Learner interface.');
+        }
+
         $estimator = new self($base, $persister);
 
         if ($base instanceof Verbose) {
@@ -72,12 +78,17 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     }
 
     /**
-     * @param \Rubix\ML\Persistable $base
+     * @param \Rubix\ML\Learner $base
      * @param \Rubix\ML\Persisters\Persister $persister
      * @throws \InvalidArgumentException
      */
-    public function __construct(Persistable $base, Persister $persister)
+    public function __construct(Learner $base, Persister $persister)
     {
+        if (!$base instanceof Persistable) {
+            throw new InvalidArgumentException('Base Learner must'
+                . ' implement the Persistable interface.');
+        }
+
         $this->base = $base;
         $this->persister = $persister;
     }
@@ -174,10 +185,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function save() : void
     {
-        $this->persister->save($this->base);
+        if ($this->base instanceof Persistable) {
+            $this->persister->save($this->base);
 
-        if ($this->logger) {
-            $this->logger->info('Model saved to ' . Params::shortName(get_class($this->persister)));
+            if ($this->logger) {
+                $this->logger->info('Model saved to ' . Params::shortName(get_class($this->persister)));
+            }
         }
     }
 
