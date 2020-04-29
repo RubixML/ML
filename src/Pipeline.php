@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Traits\RankSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -36,7 +36,7 @@ use function get_class;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, Verbose
 {
-    use PredictsSingle, ProbaSingle, RankSingle;
+    use PredictsSingle, ProbaSingle, RanksSingle;
 
     /**
      * A list of transformers to be applied in order.

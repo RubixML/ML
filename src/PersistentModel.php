@@ -5,7 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RankSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
@@ -24,7 +24,7 @@ use RuntimeException;
  */
 class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Verbose
 {
-    use PredictsSingle, ProbaSingle, RankSingle;
+    use PredictsSingle, ProbaSingle, RanksSingle;
     
     /**
      * The persistable base learner.

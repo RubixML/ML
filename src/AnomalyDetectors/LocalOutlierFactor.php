@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Traits\RankSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -38,7 +38,7 @@ use const Rubix\ML\EPSILON;
  */
 class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 {
-    use PredictsSingle, RankSingle;
+    use PredictsSingle, RanksSingle;
     
     /**
      * The default minimum anomaly score for a sample to be flagged.

@@ -10,7 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Traits\RankSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -40,7 +40,7 @@ use const Rubix\ML\EPSILON;
  */
 class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
-    use PredictsSingle, RankSingle;
+    use PredictsSingle, RanksSingle;
     
     /**
      * The expected value of the MAD as n goes to ∞.

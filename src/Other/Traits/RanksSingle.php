@@ -5,13 +5,13 @@ namespace Rubix\ML\Other\Traits;
 use Rubix\ML\Datasets\Unlabeled;
 
 /**
- * Rank Single
+ * Ranks Single
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-trait RankSingle
+trait RanksSingle
 {
     /**
      * Return the score given to a single sample.
