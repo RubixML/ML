@@ -11,6 +11,7 @@
     - Efficient serialization of Word Count Vectorizer
     - Decoupled Persistable interface from Learner
     - Moved Gower Distance kernel to Extras package
+    - Moved SiLU activation function to Extras package
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface
