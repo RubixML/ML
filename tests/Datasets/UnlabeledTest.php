@@ -6,7 +6,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\Distance\Gower;
 use PHPUnit\Framework\TestCase;
 use ArrayAccess;
 use Countable;
@@ -398,22 +397,6 @@ class UnlabeledTest extends TestCase
 
         $this->assertCount(2, $left);
         $this->assertCount(4, $right);
-    }
-
-    /**
-     * @test
-     */
-    public function spatialPartition() : void
-    {
-        $kernel = new Gower(9.0);
-
-        [$left, $right] = $this->dataset->spatialPartition($this->dataset->sample(0), $this->dataset->sample(3), $kernel);
-
-        $this->assertInstanceOf(Unlabeled::class, $left);
-        $this->assertInstanceOf(Unlabeled::class, $right);
-
-        $this->assertCount(4, $left);
-        $this->assertCount(2, $right);
     }
 
     /**

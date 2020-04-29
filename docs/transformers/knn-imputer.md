@@ -24,9 +24,9 @@ This transformer does not have any additional methods.
 ```php
 use Rubix\ML\Transformers\KNNImputer;
 use Rubix\ML\Graph\Trees\BallTee;
-use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$transformer = new KNNImputer(10, false, '?', new BallTree(30, new Gower()));
+$transformer = new KNNImputer(10, false, '?', new BallTree(30, new SafeEuclidean()));
 ```
 
 ### References
