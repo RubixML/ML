@@ -189,7 +189,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     }
 
     /**
-     * Return the data types that this estimator is compatible with.
+     * Return the data types that the model is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
