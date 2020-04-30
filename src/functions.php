@@ -62,30 +62,6 @@ namespace Rubix\ML
     }
 
     /**
-     * Return the first element in an array.
-     *
-     * @template T
-     * @param T[] $elements
-     * @return T|null
-     */
-    function array_first(array $elements)
-    {
-        return reset($elements) ?: null;
-    }
-
-    /**
-     * Return the last element in an array.
-     *
-     * @template T
-     * @param T[] $elements
-     * @return T|null
-     */
-    function array_last(array $elements)
-    {
-        return end($elements) ?: null;
-    }
-
-    /**
      * Compute n choose k.
      *
      * @param int $n
