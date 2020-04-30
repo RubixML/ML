@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Backends;
 
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Deferred;
+use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -40,10 +40,8 @@ class SerialTest extends TestCase
      */
     public function enqueueProcess() : void
     {
-        $functions = array_fill(0, 10, [self::class, 'foo']);
-
-        foreach ($functions as $i => $function) {
-            $this->backend->enqueue(new Deferred($function, [$i]));
+        for ($i = 0; $i < 10; ++$i) {
+            $this->backend->enqueue(new Task([self::class, 'foo'], [$i]));
         }
 
         $results = $this->backend->process();
@@ -57,6 +55,6 @@ class SerialTest extends TestCase
      */
     public static function foo(int $i) : array
     {
-        return [$i, microtime(true)];
+        return [$i * 2, microtime(true)];
     }
 }

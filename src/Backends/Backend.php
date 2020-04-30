@@ -2,17 +2,17 @@
 
 namespace Rubix\ML\Backends;
 
-use Rubix\ML\Deferred;
+use Rubix\ML\Backends\Tasks\Task;
 
 interface Backend
 {
     /**
-     * Queue up a deferred computation for backend processing.
+     * Queue up a task for backend processing.
      *
-     * @param \Rubix\ML\Deferred $computation
+     * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable|null $after
      */
-    public function enqueue(Deferred $computation, ?callable $after = null) : void;
+    public function enqueue(Task $task, ?callable $after = null) : void;
 
     /**
      * Process the queue and return the results.

@@ -146,7 +146,6 @@ class Agglomerate implements Generator
             }
 
             $samples[] = $generator->generate($p)->samples();
-
             $labels[] = array_fill(0, $p, $label);
         }
 

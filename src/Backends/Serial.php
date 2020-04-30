@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Backends;
 
-use Rubix\ML\Deferred;
+use Rubix\ML\Backends\Tasks\Task;
 
 /**
  * Serial
@@ -33,12 +33,12 @@ class Serial implements Backend
     /**
      * Queue up a deferred computation for backend processing.
      *
-     * @param \Rubix\ML\Deferred $deferred
+     * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable|null $after
      */
-    public function enqueue(Deferred $deferred, ?callable $after = null) : void
+    public function enqueue(Task $task, ?callable $after = null) : void
     {
-        $this->queue[] = [$deferred, $after];
+        $this->queue[] = [$task, $after];
     }
 
     /**
@@ -50,8 +50,8 @@ class Serial implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$deferred, $after]) {
-            $result = $deferred();
+        foreach ($this->queue as [$task, $after]) {
+            $result = $task->compute();
 
             if ($after) {
                 $after($result);

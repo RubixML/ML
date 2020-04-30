@@ -4,7 +4,6 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
-use Rubix\ML\Deferred;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -12,8 +11,11 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -226,10 +228,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 $subset = $dataset->randomSubsetWithReplacement($k);
             }
 
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_train'],
-                [$estimator, $subset]
-            ));
+            $this->backend->enqueue(new TrainLearner($estimator, $subset));
         }
 
         $this->trees = $this->backend->process();
@@ -255,10 +254,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $this->backend->flush();
 
         foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_predict'],
-                [$estimator, $dataset]
-            ));
+            $this->backend->enqueue(new Predict($estimator, $dataset));
         }
 
         $aggregate = array_transpose($this->backend->process());
@@ -290,10 +286,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $this->backend->flush();
 
         foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_proba'],
-                [$estimator, $dataset]
-            ));
+            $this->backend->enqueue(new Proba($estimator, $dataset));
         }
 
         $aggregate = $this->backend->process();
@@ -341,43 +334,5 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         }
 
         return $importances;
-    }
-
-    /**
-     * Train an estimator using a supplied dataset and return it.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Learner
-     */
-    public static function _train(Learner $estimator, Dataset $dataset) : Learner
-    {
-        $estimator->train($dataset);
-
-        return $estimator;
-    }
-
-    /**
-     * Return the predictions from a decision tree.
-     *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return string[]
-     */
-    public static function _predict(Estimator $estimator, Dataset $dataset) : array
-    {
-        return $estimator->predict($dataset);
-    }
-
-    /**
-     * Return the probabilities of each class outcome from a decision tree.
-     *
-     * @param \Rubix\ML\Probabilistic $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array[]
-     */
-    public static function _proba(Probabilistic $estimator, Dataset $dataset) : array
-    {
-        return $estimator->proba($dataset);
     }
 }

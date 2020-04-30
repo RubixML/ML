@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Deferred;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Backends\Serial;
@@ -12,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
@@ -93,10 +93,9 @@ class MonteCarlo implements Validator, Parallel
                 ? $dataset->stratifiedSplit($this->ratio)
                 : $dataset->split($this->ratio);
     
-            $this->backend->enqueue(new Deferred(
-                [self::class, 'score'],
-                [$estimator, $training, $testing, $metric]
-            ));
+            $this->backend->enqueue(
+                new TrainAndValidate($estimator, $training, $testing, $metric)
+            );
         }
     
         $scores = $this->backend->process();

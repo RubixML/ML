@@ -13,6 +13,7 @@
     - Moved Gower Distance kernel to Extras package
     - Moved SiLU activation function to Extras package
     - Removed array_first and array_last from global functions
+    - Abstracted deferred Backend computations into Tasks
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

@@ -6,7 +6,9 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -177,10 +179,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
             $subset = $dataset->randomSubsetWithReplacement($p);
 
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_train'],
-                [$estimator, $subset]
-            ));
+            $this->backend->enqueue(new TrainLearner($estimator, $subset));
         }
 
         $this->ensemble = $this->backend->process();
@@ -202,10 +201,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->backend->flush();
 
         foreach ($this->ensemble as $estimator) {
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_predict'],
-                [$estimator, $dataset]
-            ));
+            $this->backend->enqueue(new Predict($estimator, $dataset));
         }
 
         $aggregate = array_transpose($this->backend->process());
@@ -232,31 +228,5 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     public function decideDiscrete(array $votes) : string
     {
         return argmax(array_count_values($votes));
-    }
-
-    /**
-     * Train a single learner and return it.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Learner
-     */
-    public static function _train(Learner $estimator, Dataset $dataset) : Learner
-    {
-        $estimator->train($dataset);
-
-        return $estimator;
-    }
-
-    /**
-     * Return the predictions from an estimator.
-     *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
-     */
-    public static function _predict(Estimator $estimator, Dataset $dataset) : array
-    {
-        return $estimator->predict($dataset);
     }
 }

@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -277,7 +278,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
             $estimator = new $this->base(...$params);
 
             $this->backend->enqueue(
-                new Deferred(
+                new Task(
                     [self::class, 'score'],
                     [
                         $estimator,

@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Deferred;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Backends\Serial;
@@ -12,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
@@ -86,32 +86,13 @@ class KFold implements Validator, Parallel
 
             $testing = $folds[$i];
             
-            $this->backend->enqueue(new Deferred(
-                [self::class, 'score'],
-                [$estimator, $training, $testing, $metric]
-            ));
+            $this->backend->enqueue(
+                new TrainAndValidate($estimator, $training, $testing, $metric)
+            );
         }
 
         $scores = $this->backend->process();
 
         return Stats::mean($scores);
-    }
-
-    /**
-     * Score an estimator on one of k folds of the dataset.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $training
-     * @param \Rubix\ML\Datasets\Labeled $testing
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return float
-     */
-    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
-    {
-        $estimator->train($training);
-
-        $predictions = $estimator->predict($testing);
-
-        return $metric->score($predictions, $testing->labels());
     }
 }

@@ -7,8 +7,10 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -245,10 +247,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         foreach ($this->experts as $estimator) {
             $this->backend->enqueue(
-                new Deferred(
-                    [self::class, '_train'],
-                    [$estimator, $dataset]
-                ),
+                new TrainLearner($estimator, $dataset),
                 [$this, 'afterTrain']
             );
         }
@@ -263,11 +262,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
                 break 1;
 
-            case EstimatorType::regressor():
+            case EstimatorType::anomalyDetector():
                 $this->classes = [0 => 0.0, 1 => 0.0];
 
                 break 1;
-
         }
 
         if ($this->logger) {
@@ -290,10 +288,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            $this->backend->enqueue(new Deferred(
-                [self::class, '_predict'],
-                [$estimator, $dataset]
-            ));
+            $this->backend->enqueue(new Predict($estimator, $dataset));
         }
 
         $aggregate = array_transpose($this->backend->process());
@@ -340,20 +335,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
-     * Train a learner with a dataset and return it.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Learner
-     */
-    public static function _train(Learner $estimator, Dataset $dataset) : Learner
-    {
-        $estimator->train($dataset);
-
-        return $estimator;
-    }
-
-    /**
      * The callback that executes after the training task.
      *
      * @param \Rubix\ML\Learner $estimator
@@ -370,17 +351,5 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             $this->logger->info(Params::shortName(get_class($estimator))
                 . ' finished training');
         }
-    }
-    
-    /**
-     * Return the predictions from an estimator.
-     *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
-     */
-    public static function _predict(Estimator $estimator, Dataset $dataset) : array
-    {
-        return $estimator->predict($dataset);
     }
 }
