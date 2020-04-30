@@ -58,13 +58,6 @@ class WordCountVectorizer implements Transformer, Stateful
     protected $vocabularies;
 
     /**
-     * The zero vectors for each feature column.
-     *
-     * @var array[]|null
-     */
-    protected $templates;
-
-    /**
      * @param int $maxVocabulary
      * @param int $minDocumentFrequency
      * @param \Rubix\ML\Other\Tokenizers\Tokenizer|null $tokenizer
@@ -128,7 +121,7 @@ class WordCountVectorizer implements Transformer, Stateful
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $this->vocabularies = $this->templates = [];
+        $this->vocabularies = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isCategorical()) {
@@ -172,7 +165,6 @@ class WordCountVectorizer implements Transformer, Stateful
                 ) ?: [];
 
                 $this->vocabularies[$column] = $vocabulary;
-                $this->templates[$column] = array_fill(0, count($vocabulary), 0);
             }
         }
     }
@@ -185,18 +177,17 @@ class WordCountVectorizer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->vocabularies) or is_null($this->templates)) {
+        if (is_null($this->vocabularies)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            $temp = [];
+            $vectors = [];
 
             foreach ($this->vocabularies as $column => $vocabulary) {
-                $template = $this->templates[$column];
-                $blob = $sample[$column];
+                $template = array_fill(0, count($vocabulary), 0);
 
-                $tokens = $this->tokenizer->tokenize($blob);
+                $tokens = $this->tokenizer->tokenize($sample[$column]);
 
                 $counts = array_count_values($tokens);
 
@@ -206,48 +197,12 @@ class WordCountVectorizer implements Transformer, Stateful
                     }
                 }
 
-                $temp[] = $template;
+                $vectors[] = $template;
 
                 unset($sample[$column]);
             }
 
-            $sample = array_merge($sample, ...$temp);
+            $sample = array_merge($sample, ...$vectors);
         }
-    }
-
-    /**
-     * Return the instance properties to be serialized.
-     *
-     * @return mixed[]
-     */
-    public function __serialize() : array
-    {
-        return [
-            'max_vocabulary' => $this->maxVocabulary,
-            'min_document_frequency' => $this->minDocumentFrequency,
-            'tokenizer' => $this->tokenizer,
-            'vocabularies' => $this->vocabularies,
-        ];
-    }
-
-    /**
-     * Restore the properties of a serialized instance.
-     *
-     * @param mixed[] $data
-     */
-    public function __unserialize(array $data) : void
-    {
-        $this->maxVocabulary = $data['max_vocabulary'];
-        $this->minDocumentFrequency = $data['min_document_frequency'];
-        $this->tokenizer = $data['tokenizer'];
-        $this->vocabularies = $data['vocabularies'];
-
-        $templates = [];
-
-        foreach ($this->vocabularies as $column => $vocabulary) {
-            $templates[] = array_fill(0, count($vocabulary), 0);
-        }
-        
-        $this->templates = $templates;
     }
 }

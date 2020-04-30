@@ -35,13 +35,6 @@ class OneHotEncoder implements Transformer, Stateful
     protected $categories;
 
     /**
-     * The null encoding for each feature column.
-     *
-     * @var array[]|null
-     */
-    protected $templates;
-
-    /**
      * Return the data types that this transformer is compatible with.
      *
      * @return \Rubix\ML\DataType[]
@@ -80,7 +73,7 @@ class OneHotEncoder implements Transformer, Stateful
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $this->categories = $this->templates = [];
+        $this->categories = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isCategorical()) {
@@ -89,8 +82,6 @@ class OneHotEncoder implements Transformer, Stateful
                 $categories = array_values(array_unique($values));
 
                 $this->categories[$column] = array_flip($categories);
-
-                $this->templates[$column] = array_fill(0, count($categories), 0);
             }
         }
     }
@@ -103,27 +94,27 @@ class OneHotEncoder implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->categories) or is_null($this->templates)) {
+        if (is_null($this->categories)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            $temp = [];
+            $vectors = [];
 
             foreach ($this->categories as $column => $categories) {
-                $template = $this->templates[$column];
+                $template = array_fill(0, count($categories), 0);
                 $category = $sample[$column];
 
                 if (isset($categories[$category])) {
                     $template[$categories[$category]] = 1;
                 }
 
-                $temp[] = $template;
+                $vectors[] = $template;
 
                 unset($sample[$column]);
             }
 
-            $sample = array_merge($sample, ...$temp);
+            $sample = array_merge($sample, ...$vectors);
         }
     }
 }
