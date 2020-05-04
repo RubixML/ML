@@ -7,6 +7,7 @@ use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
@@ -43,7 +44,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persistable
+class RandomForest implements Estimator, Learner, Probabilistic, Parallel, RanksFeatures, Persistable
 {
     use Multiprocessing, PredictsSingle, ProbaSingle;
 
@@ -309,11 +310,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     }
 
     /**
-     * Return the normalized feature importances i.e. the proportion that each
-     * feature contributes to the overall model, indexed by feature column.
+     * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws \RuntimeException
-     * @return (int|float)[]
+     * @throws RuntimeException
+     * @return float[]
      */
     public function featureImportances() : array
     {

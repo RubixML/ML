@@ -7,6 +7,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -51,7 +52,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Estimator, Learner, Verbose, Persistable
+class GradientBoost implements Estimator, Learner, Verbose, RanksFeatures, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -471,11 +472,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Return the normalized feature importances i.e. the proportion that each
-     * feature contributes to the overall model, indexed by feature column.
+     * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws \RuntimeException
-     * @return (int|float)[]
+     * @throws RuntimeException
+     * @return float[]
      */
     public function featureImportances() : array
     {

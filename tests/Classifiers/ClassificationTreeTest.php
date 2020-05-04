@@ -7,10 +7,9 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -97,12 +96,11 @@ class ClassificationTreeTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
-        $this->assertInstanceOf(CART::class, $this->estimator);
-        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     /**

@@ -51,3 +51,23 @@ $estimator->train($dataset);
 [2020-02-08 06:04:08] example.INFO: Ensemble restored to epoch 183
 [2020-02-08 06:04:08] example.INFO: Training complete
 ```
+
+## Feature Importances
+Learners that implement the [Ranks Features](ranks-features.md) interface can determine the importance of each feature in the training set. Feature importances are defined as the degree to which an individual feature influences the outcome of the prediction. Feature importances are useful for feature selection and for explaining predictions derived from a model. To output the normalized importance scores, call the `featureImportances()` method of a trained learner that implements the Ranks Features interface.
+
+```php
+// Train learner
+
+$importances = $estimator->featureImportances();
+
+var_dump($importances);
+```
+
+```sh
+array(4) {
+  [0]=> float(0.047576266783176)
+  [1]=> float(0.3794817175945)
+  [2]=> float(0.53170249909942)
+  [3]=> float(0.041239516522901)
+}
+```

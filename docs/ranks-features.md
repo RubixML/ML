@@ -1,0 +1,27 @@
+# Ranks Features
+The Ranks Features interface is for learners that can determine the importances of the features used to train them. Low importance is given to feature columns that do not contribute significantly to the prediction whereas high importance indicates that the feature is more influential.
+
+### Feature Importances
+Return the normalized importance scores of each feature column of the training set:
+```php
+public featureImportances() : array
+```
+
+**Example**
+
+```php
+// Train learner
+
+$importances = $estimator->featureImportances();
+
+var_dump($importances);
+```
+
+```sh
+array(4) {
+  [0]=> float(0.047576266783176)
+  [1]=> float(0.3794817175945)
+  [2]=> float(0.53170249909942)
+  [3]=> float(0.041239516522901)
+}
+```

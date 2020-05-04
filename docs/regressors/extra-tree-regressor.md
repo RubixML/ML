@@ -3,7 +3,7 @@
 # Extra Tree Regressor
 An *Extremely Randomized* Regression Tree. These trees differ from standard [Regression Trees](regression-tree.md) in that they choose candidate splits at random, rather than searching the entire column for the best split. Extra Trees are faster to build and their predictions have higher variance than a regular decision tree.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 
@@ -16,12 +16,7 @@ An *Extremely Randomized* Regression Tree. These trees differ from standard [Reg
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
 ## Additional Methods
-Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
-```php
-public featureImportances() : array
-```
-
-Return a human readable text representation of the decision tree rules:
+Return a human readable text representation of the decision tree ruleset:
 ```php
 public rules() : string
 ```

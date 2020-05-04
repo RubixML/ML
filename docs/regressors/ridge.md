@@ -3,7 +3,7 @@
 # Ridge
 L2 regularized Least Squares linear model solved using a closed-form solution. The addition of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting than ordinary linear regression.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

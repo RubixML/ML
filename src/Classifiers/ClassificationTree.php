@@ -7,6 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -40,7 +41,7 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, Persistable
+class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
     use PredictsSingle, ProbaSingle;
     

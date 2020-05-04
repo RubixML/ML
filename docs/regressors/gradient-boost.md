@@ -5,7 +5,7 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 
 > **Note:** The default base regressor is a Dummy Regressor using the Mean strategy and the default booster is a Regression Tree with a max depth of 3.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on base learners
 
@@ -23,11 +23,6 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 9 | base | DummyRegressor | Learner | The *weak* base learner to be boosted. |
 
 ## Additional Methods
-Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
-```php
-public featureImportances() : array
-```
-
 Return the validation score at each epoch:
 ```php
 public scores() : array

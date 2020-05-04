@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -93,9 +95,11 @@ class GradientBoostTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(GradientBoost::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     /**

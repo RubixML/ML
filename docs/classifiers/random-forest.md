@@ -5,7 +5,7 @@ An ensemble classifier that trains Decision Trees ([Classification Trees](classi
 
 > **Note:** The default base tree learner is a fully grown [Classification Tree](classifiers/classification-tree.md).
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 
@@ -18,10 +18,7 @@ An ensemble classifier that trains Decision Trees ([Classification Trees](classi
 | 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
 ## Additional Methods
-Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
-```php
-public featureImportances() : array
-```
+This estimator does not have any additional methods.
 
 ## Example
 ```php

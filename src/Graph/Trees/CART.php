@@ -27,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-abstract class CART implements DecisionTree
+abstract class CART
 {
     /**
      * The amount of impurity to tolerate when determining a perfect split.
@@ -316,11 +316,10 @@ abstract class CART implements DecisionTree
     }
 
     /**
-     * Return an array indexed by feature column that contains the normalized
-     * importance score of that feature.
+     * Return the normalized importance scores of each feature column of the training set.
      *
      * @throws \RuntimeException
-     * @return (int|float)[]
+     * @return float[]
      */
     public function featureImportances() : array
     {

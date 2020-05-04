@@ -8,6 +8,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -17,6 +18,10 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function is_null;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Ridge
@@ -29,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ridge implements Estimator, Learner, Persistable
+class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use PredictsSingle;
     
@@ -189,5 +194,24 @@ class Ridge implements Estimator, Learner, Persistable
             ->dot($this->coefficients)
             ->add($this->bias)
             ->asArray();
+    }
+
+    /**
+     * Return the normalized importance scores of each feature column of the training set.
+     *
+     * @throws RuntimeException
+     * @return float[]
+     */
+    public function featureImportances() : array
+    {
+        if (is_null($this->coefficients)) {
+            throw new RuntimeException('Learner has not been trained.');
+        }
+
+        $importances = $this->coefficients->abs();
+
+        $total = $importances->sum() ?: EPSILON;
+
+        return $importances->divide($total)->asArray();
     }
 }

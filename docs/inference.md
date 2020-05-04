@@ -67,7 +67,7 @@ array(2) {
 ```
 
 ## Ranking Samples
-Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample. Higher anomaly scores equate to greater abnormality. Often, samples are sorted by their anomaly score and the top *k* samples are flagged for further analysis by another system or human expert.
+Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples. Samples can be sorted by their anomaly score and the top samples can be flagged for further analysis.
 
 ```php
 $scores = $estimator->rank($dataset);

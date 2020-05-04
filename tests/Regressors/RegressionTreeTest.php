@@ -6,10 +6,9 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -91,11 +90,10 @@ class RegressionTreeTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
-        $this->assertInstanceOf(CART::class, $this->estimator);
-        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     /**

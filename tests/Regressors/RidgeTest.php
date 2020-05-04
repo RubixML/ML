@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
@@ -89,9 +90,10 @@ class RidgeTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Ridge::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     /**
@@ -127,7 +129,7 @@ class RidgeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredict() : void
+    public function trainPredictFeatureImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -141,6 +143,10 @@ class RidgeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(4, $importances);
     }
     
     /**

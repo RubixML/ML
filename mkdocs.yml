@@ -29,6 +29,7 @@ nav:
   - Persistable: persistable.md
   - Probabilistic: probabilistic.md
   - Ranking: ranking.md
+  - Ranks Features: ranks-features.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Extractors:

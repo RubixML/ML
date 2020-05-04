@@ -1,4 +1,6 @@
 - Unreleased
+    - Added RanksFeatures interface
+    - Ridge now implements the RanksFeatures interface
     - Added L2 regularization to Dense hidden layers
     - Neural Network L2 regularization now optional
     - Added MLP numerical instability checks

@@ -3,7 +3,7 @@
 # Regression Tree
 A decision tree based on the CART (*Classification and Regression Tree*) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 
@@ -16,12 +16,7 @@ A decision tree based on the CART (*Classification and Regression Tree*) learnin
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
 ## Additional Methods
-Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
-```php
-public featureImportances() : array
-```
-
-Return a human readable text representation of the decision tree rules:
+Return a human readable text representation of the decision tree ruleset:
 ```php
 public rules() : string
 ```

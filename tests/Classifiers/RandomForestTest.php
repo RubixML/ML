@@ -7,6 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
@@ -99,9 +100,10 @@ class RandomForestTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
