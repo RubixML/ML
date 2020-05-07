@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 interface Stateful extends Transformer
 {
     /**
-     * Fit the transformer to the dataset.
+     * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */

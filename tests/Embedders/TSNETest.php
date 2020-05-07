@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Embedders;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Embedders\TSNE;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -114,23 +113,13 @@ class TSNETest extends TestCase
     /**
      * @test
      */
-    public function embed() : void
+    public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
 
-        $samples = $this->embedder->embed($dataset);
+        $dataset->apply($this->embedder);
 
-        $this->assertCount(self::TEST_SIZE, $samples);
-        $this->assertCount(1, $samples[0]);
-    }
-
-    /**
-     * @test
-     */
-    public function embedIncompatible() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->embedder->embed(Unlabeled::quick([['bad']]));
+        $this->assertCount(self::TEST_SIZE, $dataset);
+        $this->assertCount(1, $dataset->sample(0));
     }
 }

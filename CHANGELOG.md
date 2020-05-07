@@ -1,10 +1,10 @@
 - Unreleased
+    - Embedders adopt the Transformer API
     - Added RanksFeatures interface
     - Ridge now implements the RanksFeatures interface
     - Added L2 regularization to Dense hidden layers
     - Neural Network L2 regularization now optional
     - Added MLP numerical instability checks
-    - Removed unused BST interface
     - Optimized Ball Tree nearest neighbors search
     - Renamed Dataset partition method to partitionByColumn
     - Decreased default neural net learner batch size to 128
@@ -16,6 +16,7 @@
     - Moved SiLU activation function to Extras package
     - Removed array_first and array_last from global functions
     - Abstracted deferred Backend computations into Tasks
+    - Removed unused BST interface
 
 - 0.1.0-rc2
     - Persistent Model now implements Verbose interface

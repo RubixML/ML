@@ -5,7 +5,7 @@
 
 > **Note:** T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
 
-**Interfaces:** [Verbose](../verbose.md)
+**Interfaces:** [Transformer](../transformers/api.md#transformer), [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 

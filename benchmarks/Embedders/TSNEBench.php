@@ -42,8 +42,8 @@ class TSNEBench
      * @Iterations(3)
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function embed() : void
+    public function apply() : void
     {
-        $this->embedder->embed($this->testing);
+        $this->testing->apply($this->embedder);
     }
 }

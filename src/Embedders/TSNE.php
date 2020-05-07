@@ -5,12 +5,13 @@ namespace Rubix\ML\Embedders;
 use Tensor\Matrix;
 use Rubix\ML\Verbose;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEmbedder;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 
 use const Rubix\ML\EPSILON;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder, Verbose
+class TSNE implements Embedder, Transformer, Verbose
 {
     use LoggerAware;
 
@@ -277,7 +278,7 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
-     * Return the data types that this embedder is compatible with.
+     * Return the data types that this transformer is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -317,37 +318,34 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
-     * Embed a high dimensional dataset into a lower dimensional one.
+     * Transform the dataset in place.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @return array[]
+     * @param array[] $samples
      */
-    public function embed(Dataset $dataset) : array
+    public function transform(array &$samples) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEmbedder::check($dataset, $this);
+        SamplesAreCompatibleWithDistance::check(new Unlabeled($samples), $this->kernel);
 
         if ($this->logger) {
             $this->logger->info('Embedder init ' . Params::stringify($this->params()));
 
+            $this->logger->info('Embedding started');
+
             $this->logger->info('Computing high-dimensional affinities');
         }
 
-        $distances = $this->pairwiseDistances($dataset->samples());
+        $m = count($samples);
+
+        $distances = $this->pairwiseDistances($samples);
 
         $p = Matrix::quick($this->affinities($distances))
             ->multiply($this->exaggeration);
 
-        if ($this->logger) {
-            $this->logger->info('Embedding started');
-        }
-
-        $y = Matrix::gaussian($dataset->numRows(), $this->dimensions)
+        $y = Matrix::gaussian($m, $this->dimensions)
             ->multiply(self::Y_INIT_SCALE);
 
-        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
-        $gains = Matrix::ones($dataset->numRows(), $this->dimensions)->asArray();
+        $velocity = Matrix::zeros($m, $this->dimensions);
+        $gains = Matrix::ones($m, $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
@@ -424,7 +422,7 @@ class TSNE implements Embedder, Verbose
             $this->logger->info('Embedding complete');
         }
 
-        return $y->asArray();
+        $samples = $y->asArray();
     }
 
     /**
@@ -441,11 +439,7 @@ class TSNE implements Embedder, Verbose
             $row = [];
 
             foreach ($samples as $j => $sampleB) {
-                if ($i !== $j) {
-                    $row[] = $this->kernel->compute($sampleA, $sampleB);
-                } else {
-                    $row[] = 0.0;
-                }
+                $row[] = $i !== $j ? $this->kernel->compute($sampleA, $sampleB) : 0.0;
             }
 
             $distances[] = $row;

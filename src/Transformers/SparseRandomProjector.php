@@ -39,7 +39,7 @@ class SparseRandomProjector extends GaussianRandomProjector
     protected const DISTRIBUTION = [-self::ROOT_3, 0.0, 0.0, 0.0, 0.0, self::ROOT_3];
 
     /**
-     * Fit the transformer to the dataset.
+     * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

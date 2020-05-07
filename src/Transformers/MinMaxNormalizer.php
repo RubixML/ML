@@ -121,7 +121,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
     }
 
     /**
-     * Fit the transformer to the dataset.
+     * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */

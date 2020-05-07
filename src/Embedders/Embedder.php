@@ -2,16 +2,14 @@
 
 namespace Rubix\ML\Embedders;
 
-use Rubix\ML\Model;
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Transformers\Transformer;
 
-interface Embedder extends Model
+interface Embedder extends Transformer
 {
     /**
-     * Embed a high dimensional dataset into a lower dimensional one.
+     * Return the settings of the hyper-parameters in an associative array.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array[]
+     * @return mixed[]
      */
-    public function embed(Dataset $dataset) : array;
+    public function params() : array;
 }
