@@ -13,7 +13,7 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
-use Generator;
+use Traversable;
 
 /**
  * Feed Forward
@@ -139,9 +139,9 @@ class FeedForward implements Network
     /**
      * Return all the layers in the network.
      *
-     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Layer>
+     * @return \Traversable<\Rubix\ML\NeuralNet\Layers\Layer>
      */
-    public function layers() : Generator
+    public function layers() : Traversable
     {
         yield $this->input;
         
