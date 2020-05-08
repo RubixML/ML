@@ -2,14 +2,14 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Generator;
+use Traversable;
 
 interface Network
 {
     /**
      * Return the layers of the network.
      *
-     * @return \Generator<\Rubix\ML\NeuralNet\Layers\Layer>
+     * @return \Traversable<\Rubix\ML\NeuralNet\Layers\Layer>
      */
-    public function layers() : Generator;
+    public function layers() : Traversable;
 }

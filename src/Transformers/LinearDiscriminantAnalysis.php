@@ -139,7 +139,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Estimator requires a'
+            throw new InvalidArgumentException('Transformer requires a'
                 . ' Labeled training set.');
         }
 

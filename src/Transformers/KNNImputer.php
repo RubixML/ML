@@ -183,7 +183,7 @@ class KNNImputer implements Transformer, Stateful
             $neighbors = $distances = [];
 
             foreach ($sample as $column => &$value) {
-                if ((is_float($value) and is_nan($value)) or $value === $this->categoricalPlaceholder) {
+                if (is_float($value) && is_nan($value) or $value === $this->categoricalPlaceholder) {
                     if (empty($neighbors)) {
                         [$neighbors, $labels, $distances] = $this->tree->nearest($sample, $this->k);
                     }

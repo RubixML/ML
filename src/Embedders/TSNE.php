@@ -39,7 +39,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder, Transformer, Verbose
+class TSNE implements Embedder, Verbose
 {
     use LoggerAware;
 

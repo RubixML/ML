@@ -166,7 +166,7 @@ class GradientBoostTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictFeatureImportances() : void
+    public function trainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
 

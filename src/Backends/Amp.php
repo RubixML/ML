@@ -77,7 +77,7 @@ class Amp implements Backend
     }
 
     /**
-     * Queue up a deferred computation for backend processing.
+     * Queue up a deferred task for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable|null $after

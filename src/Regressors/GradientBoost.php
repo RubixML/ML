@@ -52,7 +52,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Estimator, Learner, Verbose, RanksFeatures, Persistable
+class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 

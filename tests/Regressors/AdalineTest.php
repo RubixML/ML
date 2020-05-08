@@ -8,6 +8,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
@@ -96,6 +97,7 @@ class AdalineTest extends TestCase
         $this->assertInstanceOf(Adaline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -168,6 +170,10 @@ class AdalineTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(4, $importances);
     }
     
     /**

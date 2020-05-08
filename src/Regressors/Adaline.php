@@ -8,6 +8,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -32,6 +33,8 @@ use RuntimeException;
 use function is_nan;
 use function count;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Adaline
  *
@@ -46,7 +49,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Estimator, Learner, Online, Verbose, Persistable
+class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -363,5 +366,30 @@ class Adaline implements Estimator, Learner, Online, Verbose, Persistable
         }
 
         return $this->network->infer($dataset)->column(0);
+    }
+
+    /**
+     * Return the normalized importance scores of each feature column of the training set.
+     *
+     * @throws RuntimeException
+     * @return float[]
+     */
+    public function featureImportances() : array
+    {
+        if (!$this->network) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $layer = current($this->network->hidden());
+
+        if (!$layer instanceof Dense) {
+            throw new RuntimeException('Could not find weight layer.');
+        }
+
+        $importances = $layer->weights()->rowAsVector(0)->abs();
+
+        $total = $importances->sum() ?: EPSILON;
+
+        return $importances->divide($total)->asArray();
     }
 }

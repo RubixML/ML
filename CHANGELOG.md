@@ -1,6 +1,7 @@
-- Unreleased
+- 0.1.0-rc3
     - Embedders adopt the Transformer API
     - Added RanksFeatures interface
+    - Logistic Regression and Adaline implement RanksFeatures
     - Ridge now implements the RanksFeatures interface
     - Added L2 regularization to Dense hidden layers
     - Neural Network L2 regularization now optional

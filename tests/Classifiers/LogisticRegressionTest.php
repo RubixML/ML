@@ -9,6 +9,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -104,6 +105,7 @@ class LogisticRegressionTest extends TestCase
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
@@ -183,6 +185,10 @@ class LogisticRegressionTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(3, $importances);
     }
 
     /**

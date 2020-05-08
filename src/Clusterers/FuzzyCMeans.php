@@ -316,7 +316,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     }
 
     /**
-     * Estimate probabilities for each possible outcome.
+     * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException

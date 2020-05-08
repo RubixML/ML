@@ -9,6 +9,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -34,6 +35,8 @@ use RuntimeException;
 use function is_nan;
 use function count;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Logistic Regression
  *
@@ -46,7 +49,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 
@@ -373,7 +376,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
     }
 
     /**
-     * Estimate probabilities for each possible outcome.
+     * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
@@ -399,5 +402,30 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, V
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the normalized importance scores of each feature column of the training set.
+     *
+     * @throws RuntimeException
+     * @return float[]
+     */
+    public function featureImportances() : array
+    {
+        if (!$this->network) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $layer = current($this->network->hidden());
+
+        if (!$layer instanceof Dense) {
+            throw new RuntimeException('Could not find weight layer.');
+        }
+
+        $importances = $layer->weights()->rowAsVector(0)->abs();
+
+        $total = $importances->sum() ?: EPSILON;
+
+        return $importances->divide($total)->asArray();
     }
 }

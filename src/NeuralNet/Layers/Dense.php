@@ -126,6 +126,21 @@ class Dense implements Hidden, Parametric
     }
 
     /**
+     * Return the weight matrix.
+     *
+     * @throws \RuntimeException
+     * @return \Tensor\Matrix
+     */
+    public function weights() : Matrix
+    {
+        if (!$this->weights) {
+            throw new RuntimeException('Layer is not initialized');
+        }
+
+        return $this->weights->param();
+    }
+
+    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
