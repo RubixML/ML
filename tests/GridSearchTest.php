@@ -123,7 +123,7 @@ class GridSearchTest extends TestCase
     /**
      * @test
      */
-    public function trainPredict() : void
+    public function trainPredictBest() : void
     {
         $this->estimator->setLogger(new BlackHole());
         $this->estimator->setBackend(new Serial());
@@ -140,5 +140,9 @@ class GridSearchTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $best = $this->estimator->best() ?? [];
+
+        $this->assertCount(3, $best);
     }
 }

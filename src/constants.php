@@ -10,7 +10,7 @@ namespace Rubix\ML
     const EPSILON = 1e-8;
     
     /**
-     * The logarithm of the epsilon constant.
+     * The natural logarithm of the epsilon constant.
      *
      * @var float
      */

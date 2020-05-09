@@ -21,8 +21,6 @@ use RuntimeException;
 
 use function is_null;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Ridge
  *
@@ -210,8 +208,6 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         $importances = $this->coefficients->abs();
 
-        $total = $importances->sum() ?: EPSILON;
-
-        return $importances->divide($total)->asArray();
+        return $importances->divide($importances->sum())->asArray();
     }
 }

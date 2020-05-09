@@ -274,6 +274,25 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
+     * The callback that executes after the training task.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @throws \RuntimeException
+     */
+    public function afterTrain(Learner $estimator) : void
+    {
+        if (!$estimator->trained()) {
+            throw new RuntimeException('There was a problem training '
+                . Params::shortName(get_class($estimator)) . '.');
+        }
+
+        if ($this->logger) {
+            $this->logger->info(Params::shortName(get_class($estimator))
+                . ' finished training');
+        }
+    }
+
+    /**
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -298,11 +317,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             case EstimatorType::anomalyDetector():
                 return array_map([$this, 'decideDiscrete'], $aggregate);
 
-            case EstimatorType::regressor():
-                return array_map([$this, 'decideContinuous'], $aggregate);
-
             default:
-                throw new RuntimeException('Invalid base Estimator type.');
+                return array_map([$this, 'decideContinuous'], $aggregate);
         }
     }
 
@@ -332,24 +348,5 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     public function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
-    }
-
-    /**
-     * The callback that executes after the training task.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @throws \RuntimeException
-     */
-    public function afterTrain(Learner $estimator) : void
-    {
-        if (!$estimator->trained()) {
-            throw new RuntimeException('There was a problem training '
-                . Params::shortName(get_class($estimator)) . '.');
-        }
-
-        if ($this->logger) {
-            $this->logger->info(Params::shortName(get_class($estimator))
-                . ' finished training');
-        }
     }
 }

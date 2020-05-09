@@ -33,8 +33,6 @@ use RuntimeException;
 use function is_nan;
 use function count;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Adaline
  *
@@ -383,13 +381,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         $layer = current($this->network->hidden());
 
         if (!$layer instanceof Dense) {
-            throw new RuntimeException('Could not find weight layer.');
+            throw new RuntimeException('Weight layer is missing.');
         }
 
         $importances = $layer->weights()->rowAsVector(0)->abs();
 
-        $total = $importances->sum() ?: EPSILON;
-
-        return $importances->divide($total)->asArray();
+        return $importances->divide($importances->sum())->asArray();
     }
 }

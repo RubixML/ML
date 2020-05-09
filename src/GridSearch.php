@@ -359,7 +359,12 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      */
     public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
-        return [$validator->test($estimator, $dataset, $metric), $estimator->params()];
+        $score = $validator->test($estimator, $dataset, $metric);
+
+        return [
+            'score' => $score,
+            'params' => $estimator->params(),
+        ];
     }
 
     /**
@@ -367,21 +372,13 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      *
      * @param mixed[] $result
      */
-    public function afterScore($result) : void
+    public function afterScore(array $result) : void
     {
-        [$score, $params] = $result;
-
         if ($this->logger) {
-            $this->logger->info(Params::stringify([
-                'score' => $score,
-                'params' => $params,
-            ]));
+            $this->logger->info(Params::stringify($result));
         }
 
-        $this->results[] = [
-            'score' => $score,
-            'params' => $params,
-        ];
+        $this->results[] = $result;
     }
 
     /**

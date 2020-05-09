@@ -211,11 +211,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             case EstimatorType::anomalyDetector():
                 return array_map([self::class, 'decideDiscrete'], $aggregate);
 
-            case EstimatorType::regressor():
-                return array_map([Stats::class, 'mean'], $aggregate);
-
             default:
-                throw new RuntimeException('Invalid base Estimator type.');
+                return array_map([Stats::class, 'mean'], $aggregate);
         }
     }
 

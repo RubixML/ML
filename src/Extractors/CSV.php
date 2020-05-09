@@ -116,7 +116,7 @@ class CSV implements Extractor
             $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
 
             if (!$header) {
-                throw new RuntimeException('Header not found the first line.');
+                throw new RuntimeException('Header not found on the first line.');
             }
 
             ++$line;
