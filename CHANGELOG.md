@@ -7,6 +7,7 @@
     - Neural Network L2 regularization now optional
     - Added MLP numerical instability checks
     - Optimized Ball Tree nearest neighbors search
+    - Pipeline is now more verbose
     - Renamed Dataset partition method to partitionByColumn
     - Decreased default neural net learner batch size to 128
     - Increased default K Means batch size to 128

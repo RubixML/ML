@@ -52,7 +52,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      *
      * @var \Rubix\ML\Estimator
      */
-    protected $estimator;
+    protected $base;
 
     /**
      * Should we update the elastic transformers during partial train?
@@ -77,11 +77,11 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
 
     /**
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
-     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\Estimator $base
      * @param bool $elastic
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $transformers, Estimator $estimator, bool $elastic = true)
+    public function __construct(array $transformers, Estimator $base, bool $elastic = true)
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
@@ -91,7 +91,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
         }
 
         $this->transformers = $transformers;
-        $this->estimator = $estimator;
+        $this->base = $base;
         $this->elastic = $elastic;
     }
 
@@ -102,7 +102,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function type() : EstimatorType
     {
-        return $this->estimator->type();
+        return $this->base->type();
     }
 
     /**
@@ -112,7 +112,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function compatibility() : array
     {
-        return $this->estimator->compatibility();
+        return $this->base->compatibility();
     }
 
     /**
@@ -124,7 +124,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         return [
             'transformers' => $this->transformers,
-            'estimator' => $this->estimator,
+            'estimator' => $this->base,
             'elastic' => $this->elastic,
         ];
     }
@@ -136,8 +136,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function setLogger(LoggerInterface $logger) : void
     {
-        if ($this->estimator instanceof Verbose) {
-            $this->estimator->setLogger($logger);
+        if ($this->base instanceof Verbose) {
+            $this->base->setLogger($logger);
         }
 
         $this->logger = $logger;
@@ -160,8 +160,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function trained() : bool
     {
-        return $this->estimator instanceof Learner
-            ? $this->estimator->trained()
+        return $this->base instanceof Learner
+            ? $this->base->trained()
             : true;
     }
 
@@ -172,7 +172,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      */
     public function base() : Estimator
     {
-        return $this->estimator;
+        return $this->base;
     }
 
     /**
@@ -182,38 +182,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
-    {
-        $this->fit($dataset);
-
-        if ($this->estimator instanceof Learner) {
-            $this->estimator->train($dataset);
-        }
-    }
-
-    /**
-     * Perform a partial train.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     */
-    public function partial(Dataset $dataset) : void
-    {
-        if ($this->elastic) {
-            $this->update($dataset);
-        } else {
-            $this->preprocess($dataset);
-        }
-
-        if ($this->estimator instanceof Online) {
-            $this->estimator->partial($dataset);
-        }
-    }
-
-    /**
-     * Fit the transformer pipeline to a dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     */
-    public function fit(Dataset $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
@@ -225,26 +193,46 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
             }
 
             $dataset->apply($transformer);
+
+            if ($this->logger) {
+                $this->logger->info('Applied ' . Params::shortName(get_class($transformer)));
+            }
+        }
+
+        if ($this->base instanceof Learner) {
+            $this->base->train($dataset);
         }
     }
 
     /**
-     * Update the fittings of the transformers.
+     * Perform a partial train.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
-    public function update(Dataset $dataset) : void
+    public function partial(Dataset $dataset) : void
     {
-        foreach ($this->transformers as $transformer) {
-            if ($transformer instanceof Elastic) {
-                $transformer->update($dataset);
-
+        if ($this->elastic) {
+            foreach ($this->transformers as $transformer) {
+                if ($transformer instanceof Elastic) {
+                    $transformer->update($dataset);
+    
+                    if ($this->logger) {
+                        $this->logger->info('Updated ' . Params::shortName(get_class($transformer)));
+                    }
+                }
+    
+                $dataset->apply($transformer);
+    
                 if ($this->logger) {
-                    $this->logger->info('Updated ' . Params::shortName(get_class($transformer)));
+                    $this->logger->info('Applied ' . Params::shortName(get_class($transformer)));
                 }
             }
+        } else {
+            $this->preprocess($dataset);
+        }
 
-            $dataset->apply($transformer);
+        if ($this->base instanceof Online) {
+            $this->base->partial($dataset);
         }
     }
 
@@ -258,7 +246,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         $this->preprocess($dataset);
 
-        return $this->estimator->predict($dataset);
+        return $this->base->predict($dataset);
     }
 
     /**
@@ -272,12 +260,12 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         $this->preprocess($dataset);
 
-        if (!$this->estimator instanceof Probabilistic) {
+        if (!$this->base instanceof Probabilistic) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Probabilistic interface.');
         }
 
-        return $this->estimator->proba($dataset);
+        return $this->base->proba($dataset);
     }
 
     /**
@@ -291,12 +279,12 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     {
         $this->preprocess($dataset);
         
-        if (!$this->estimator instanceof Ranking) {
+        if (!$this->base instanceof Ranking) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
             
-        return $this->estimator->rank($dataset);
+        return $this->base->rank($dataset);
     }
 
     /**
@@ -326,6 +314,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
             }
         }
 
-        return $this->estimator->$name(...$arguments);
+        return $this->base->$name(...$arguments);
     }
 }
