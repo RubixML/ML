@@ -187,7 +187,6 @@ nav:
     - Stochastic: neural-network/optimizers/stochastic.md
 - Graph:
   - Trees:
-    - API Reference: graph/trees/api.md
     - Ball Tree: graph/trees/ball-tree.md
     - K-d Tree: graph/trees/k-d-tree.md
 - Kernels:

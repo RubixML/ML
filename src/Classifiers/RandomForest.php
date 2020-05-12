@@ -32,9 +32,9 @@ use function in_array;
 /**
  * Random Forest
  *
- * An ensemble classifier that trains Decision Trees (Classification or Extra Trees) on random
- * subsets (*bootstrap* set) of the training data. Predictions are based on the probability
- * scores returned from each tree in the forest, averaged and weighted equally.
+ * An ensemble classifier that trains an ensemble of Decision Trees (Classification or Extra Trees)
+ * on random subsets (*bootstrap* set) of the training data. Predictions are based on the
+ * probability scores returned from each tree in the forest, averaged and weighted equally.
  *
  * References:
  * [1] L. Breiman. (2001). Random Forests.
@@ -49,9 +49,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     use Multiprocessing, PredictsSingle, ProbaSingle;
 
     /**
-     * The class names of the learners that the ensemble is compatible with.
+     * The class names of the learners that are compatible with the ensemble.
      *
-     * @var string[]
+     * @var class-string[]
      */
     public const COMPATIBLE_LEARNERS = [
         ClassificationTree::class,
@@ -66,14 +66,14 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     protected $base;
 
     /**
-     * The number of trees to train in the ensemble.
+     * The number of learners to train in the ensemble.
      *
      * @var int
      */
     protected $estimators;
 
     /**
-     * The ratio of training samples to train each decision tree on.
+     * The ratio of samples from the training set to randomly subsample to train each base learner.
      *
      * @var float
      */
@@ -89,7 +89,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     /**
      * The decision trees that make up the forest.
      *
-     * @var mixed[]|null
+     * @var (\Rubix\ML\Classifiers\ClassificationTree|\Rubix\ML\Classifiers\ExtraTreeClassifier)[]|null
      */
     protected $trees;
 

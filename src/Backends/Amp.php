@@ -80,7 +80,7 @@ class Amp implements Backend
      * Queue up a deferred task for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable|null $after
+     * @param callable(mixed):void|null $after
      */
     public function enqueue(Task $task, ?callable $after = null) : void
     {
@@ -95,7 +95,7 @@ class Amp implements Backend
      * The coroutine for a particular task and callback.
      *
      * @param \Amp\Parallel\Worker\Task $task
-     * @param callable|null $after
+     * @param callable(mixed):void|null $after
      * @return \Generator<\Amp\Promise>
      */
     public function coroutine(AmpTask $task, ?callable $after = null) : Generator

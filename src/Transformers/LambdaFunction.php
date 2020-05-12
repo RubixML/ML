@@ -22,12 +22,12 @@ class LambdaFunction implements Transformer
     /**
      * A user-specified lambda function.
      *
-     * @var callable
+     * @var callable(array[]):array[]
      */
     protected $lambda;
 
     /**
-     * @param callable $lambda
+     * @param callable(array[]):array[] $lambda
      */
     public function __construct(callable $lambda)
     {

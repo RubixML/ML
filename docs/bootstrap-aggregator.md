@@ -10,9 +10,9 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | | Learner | The base learner to be used in the ensemble. |
-| 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
-| 3 | ratio | 0.5 | float | The ratio of samples (between 0 and 1.5) from the training set to train each base estimator with. |
+| 1 | base | | Learner | The base learner. |
+| 2 | estimators | 10 | int | The number of base learners to train in the ensemble. |
+| 3 | ratio | 0.5 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 
 ## Additional Methods
 This meta estimator does not have any additional methods.

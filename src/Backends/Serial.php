@@ -34,7 +34,7 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable|null $after
+     * @param callable(mixed):void|null $after
      */
     public function enqueue(Task $task, ?callable $after = null) : void
     {

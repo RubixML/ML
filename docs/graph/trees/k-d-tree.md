@@ -3,7 +3,7 @@
 # K-d Tree
 A multi-dimensional binary spatial tree for fast nearest neighbor queries. The K-d tree construction algorithm separates data points into bounded hypercubes or *boxes* that are used to determine when to prune off sections of nodes during nearest neighbor and range searches. Pruning allows K-d Tree to perform searches in sub-linear time.
 
-**Interfaces:** [Tree](api.md#tree), [Binary Tree](api.md#binary-tree), [BST](api.md#bst), [Spatial](api.md#spatial)
+**Interfaces:** Binary Tree, Spatial
 
 **Data Type Compatibility:** Continuous
 

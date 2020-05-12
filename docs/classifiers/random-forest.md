@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RandomForest.php">[source]</a></span>
 
 # Random Forest
-An ensemble classifier that trains Decision Trees ([Classification Trees](classification-tree.md) or [Extra Trees](extra-tree-classifier.md)) on random subsets (*bootstrap* set) of the training data. Predictions are based on the probability scores returned from each tree in the forest, averaged and weighted equally.
+An ensemble classifier that trains an ensemble of Decision Trees ([Classification Trees](classification-tree.md) or [Extra Trees](extra-tree-classifier.md)) on random subsets (*bootstrap* set) of the training data. Predictions are based on the probability scores returned from each tree in the forest, averaged and weighted equally.
 
 > **Note:** The default base tree learner is a fully grown [Classification Tree](classifiers/classification-tree.md).
 
@@ -12,9 +12,9 @@ An ensemble classifier that trains Decision Trees ([Classification Trees](classi
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | base | ClassificationTree | Learner | The base tree learner. |
+| 1 | base | ClassificationTree | Learner | The base learner. |
 | 2 | estimators | 100 | int | The number of learners to train in the ensemble. |
-| 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each base learner on. |
+| 3 | ratio | 0.2 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 | 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
 ## Additional Methods

@@ -10,7 +10,7 @@ interface Backend
      * Queue up a task for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable|null $after
+     * @param callable(mixed):void|null $after
      */
     public function enqueue(Task $task, ?callable $after = null) : void;
 

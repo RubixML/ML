@@ -50,7 +50,7 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
 ## Funding
-Rubix ML is funded entirely by donations from supporters. You can become a patron by making a contribution to one of our funding sources below.
+Rubix ML is funded entirely by donations from the community. You can become a patron by making a contribution to one of our funding sources below.
 
 - [Patreon](https://www.patreon.com/rubixml)
 
