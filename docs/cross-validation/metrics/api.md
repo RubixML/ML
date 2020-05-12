@@ -12,11 +12,13 @@ public score(array $predictions, array $labels) : float
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 
-// Train an estimator and make predictions
+// ...
+
+$predictions = $estimator->predict($dataset);
 
 $metric = new MeanAbsoluteError();
 
-$score = $metric->score($predictions, $labels);
+$score = $metric->score($predictions, $dataset->labels());
 
 var_dump($score);
 ```
@@ -46,21 +48,4 @@ var_dump($max);
 float(-INF)
 
 int(0)
-```
-
-### Compatibility
-Return a list of integer-encoded estimator types that the metric is compatible with:
-```php
-public compatibility() : array
-```
-
-**Example**
-```php
-var_dump($metric->compatibility());
-```
-
-```sh
-array(1) {
-  [0]=> int(2)
-}
 ```

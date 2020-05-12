@@ -7,6 +7,9 @@ A ground-truth clustering metric that measures the ratio of samples in a class t
 
 **Output Range:** 0 to 1
 
+## Parameters
+This metric does not have any parameters.
+
 ## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\Completeness;

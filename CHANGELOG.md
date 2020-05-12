@@ -1,3 +1,6 @@
+- Unreleased
+    - V Measure now has adjustable beta parameter
+
 - 0.1.0-rc3
     - Embedders now adopt the Transformer API
     - Added RanksFeatures interface

@@ -24,7 +24,7 @@ class VMeasureTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->metric = new VMeasure();
+        $this->metric = new VMeasure(1.0);
     }
 
     /**

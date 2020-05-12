@@ -7,11 +7,16 @@ V Measure is an entropy-based clustering metric that balances [homogeneity](homo
 
 **Output Range:** 0 to 1
 
+## Parameters
+| # | Param | Default | Type | Description |
+|---|---|---|---|---|
+| 1 | beta | 1.0 | float | The ratio of weight given to homogeneity over completeness. |
+
 ## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 
-$metric = new VMeasure();
+$metric = new VMeasure(1.0);
 ```
 
 ### References

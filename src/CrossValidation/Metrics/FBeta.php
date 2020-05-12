@@ -26,11 +26,11 @@ use const Rubix\ML\EPSILON;
 class FBeta implements Metric
 {
     /**
-     * The squared weight of precision in the harmonic mean.
+     * The ratio of weight given precision over recall.
      *
      * @var float
      */
-    protected $beta2;
+    protected $beta;
 
     /**
      * Compute the class precision.
@@ -67,7 +67,7 @@ class FBeta implements Metric
                 . " greater than 0, $beta given.");
         }
 
-        $this->beta2 = $beta ** 2;
+        $this->beta = $beta;
     }
 
     /**
@@ -137,7 +137,7 @@ class FBeta implements Metric
             array_map([self::class, 'recall'], $truePos, $falseNeg)
         );
 
-        return (1.0 + $this->beta2) * $precision * $recall
-            / (($this->beta2 * $precision + $recall) ?: EPSILON);
+        return (1.0 + $this->beta ** 2) * $precision * $recall
+            / (($this->beta ** 2 * $precision + $recall) ?: EPSILON);
     }
 }

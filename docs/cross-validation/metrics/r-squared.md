@@ -7,6 +7,9 @@ The *coefficient of determination* or R Squared (R²) is the proportion of the v
 
 **Output Range:** -∞ to 1
 
+## Parameters
+This metric does not have any parameters.
+
 ## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\RSquared;

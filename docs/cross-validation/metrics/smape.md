@@ -9,6 +9,9 @@
 
 **Output Range:** -100 to 0
 
+## Parameters
+This metric does not have any parameters.
+
 ## Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
