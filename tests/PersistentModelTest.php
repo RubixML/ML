@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Verbose;
 use Rubix\ML\Ranking;
 use Rubix\ML\Learner;
 use Rubix\ML\Wrapper;
@@ -43,7 +42,6 @@ class PersistentModelTest extends TestCase
         $this->assertInstanceOf(Wrapper::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

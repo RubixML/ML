@@ -1,5 +1,6 @@
 - Unreleased
     - V Measure now has adjustable beta parameter
+    - Persistent Model is no longer Verbose
 
 - 0.1.0-rc3
     - Embedders now adopt the Transformer API

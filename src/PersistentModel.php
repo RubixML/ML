@@ -8,7 +8,6 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -22,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Verbose
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking
 {
     use PredictsSingle, ProbaSingle, RanksSingle;
     
@@ -41,13 +40,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     protected $persister;
 
     /**
-     * The PSR-3 logger instance.
-     *
-     * @var \Psr\Log\LoggerInterface|null
-     */
-    protected $logger;
-
-    /**
      * Factory method to restore the model from persistence.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
@@ -62,19 +54,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
                 . ' implement the Learner interface.');
         }
 
-        $estimator = new self($base, $persister);
-
-        if ($base instanceof Verbose) {
-            $logger = $base->logger();
-
-            if (isset($logger)) {
-                $logger->info('Model loaded from ' . Params::shortName(get_class($persister)));
-
-                $estimator->setLogger($logger);
-            }
-        }
-
-        return $estimator;
+        return new self($base, $persister);
     }
 
     /**
@@ -147,30 +127,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     }
 
     /**
-     * Sets a logger instance on the object.
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger) : void
-    {
-        if ($this->base instanceof Verbose) {
-            $this->base->setLogger($logger);
-        }
-
-        $this->logger = $logger;
-    }
-
-    /**
-     * Return the logger or null if not set.
-     *
-     * @return \Psr\Log\LoggerInterface|null
-     */
-    public function logger() : ?LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
      * Set the storage driver used to save the model.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
@@ -187,10 +143,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     {
         if ($this->base instanceof Persistable) {
             $this->persister->save($this->base);
-
-            if ($this->logger) {
-                $this->logger->info('Model saved to ' . Params::shortName(get_class($this->persister)));
-            }
         }
     }
 
