@@ -3,6 +3,10 @@
 namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
+use RuntimeException;
+
+use function get_class;
+use function is_object;
 
 /**
  * Native
@@ -30,10 +34,18 @@ class Native implements Serializer
      * Unserialize a persistable object and return it.
      *
      * @param string $data
+     * @throws RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(string $data) : Persistable
     {
-        return unserialize($data);
+        $unserialized = unserialize($data);
+        if (!is_object($unserialized)) {
+            throw new RuntimeException('Unserialized data is not an object');
+        }
+        if (!($unserialized instanceof Persistable)) {
+            throw new RuntimeException('Unserialized object is not a ' . Persistable::class . '. Got ' . get_class($unserialized));
+        }
+        return $unserialized;
     }
 }

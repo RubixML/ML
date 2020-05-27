@@ -18,6 +18,7 @@ interface Serializer
      * Unserialize a persistable object and return it.
      *
      * @param string $data
+     * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(string $data) : Persistable;
