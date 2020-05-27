@@ -32,9 +32,10 @@ class StopWordFilterTest extends TestCase
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
             ['with a dandy umbrella'],
+            ['salle à manger'],
         ]);
 
-        $this->transformer = new StopWordFilter(['a', 'quick', 'pig']);
+        $this->transformer = new StopWordFilter(['a', 'quick', 'pig', 'à']);
     }
     
     /**
@@ -56,6 +57,7 @@ class StopWordFilterTest extends TestCase
         $expected = [
             ['the  brown fox jumped over the lazy man sitting at  bus stop drinking  can of coke'],
             ['with  dandy umbrella'],
+            ['salle  manger'],
         ];
     
         $this->assertEquals($expected, $this->dataset->samples());

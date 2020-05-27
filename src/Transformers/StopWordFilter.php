@@ -32,7 +32,7 @@ class StopWordFilter extends RegexFilter
                     . ' string, ' . gettype($word) . ' found.');
             }
 
-            $patterns[] = '/\b' . preg_quote($word, '/') . '\b/';
+            $patterns[] = '/\b' . preg_quote($word, '/') . '\b/u';
         }
 
         parent::__construct($patterns);
