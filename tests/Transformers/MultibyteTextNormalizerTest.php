@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @covers \Rubix\ML\Transformers\TextNormalizer
+ * @covers \Rubix\ML\Transformers\MultibyteTextNormalizer
  */
 class MultibyteTextNormalizerTest extends TestCase
 {
@@ -19,7 +19,7 @@ class MultibyteTextNormalizerTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TextNormalizer
+     * @var \Rubix\ML\Transformers\MultibyteTextNormalizer
      */
     protected $transformer;
 

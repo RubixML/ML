@@ -19,7 +19,7 @@ class MultibyteTextNormalizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TextNormalizer
+     * @var \Rubix\ML\Transformers\MultibyteTextNormalizer
      */
     protected $transformer;
 

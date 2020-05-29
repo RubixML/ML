@@ -7,6 +7,8 @@ This transformer converts all text to lowercase and removes extra whitespace.
 
 **Data Type Compatibility:** Categorical
 
+> **Note:** ⚠️ This transformer can't handle multibyte text properly. For multibyte text, use [MultibyteTextNormalizer](multibyte-text-normalizer.md).
+
 ## Parameters
 This transformer does not have any parameters.
 
@@ -17,5 +19,5 @@ This transformer does not have any additional methods.
 ```php
 use Rubix\ML\Transformers\TextNormalizer;
 
-$transformer = new TextNormalizer(true);
+$transformer = new TextNormalizer();
 ```

@@ -24,6 +24,7 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
+- [Multibyte string extension](https://www.php.net/manual/en/book.mbstring.php) for multibyte text transformation
 
 ## What is Rubix ML?
 Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, validation, and production with over 40 supervised and unsupervised learning algorithms.

@@ -11,7 +11,7 @@ use Rubix\ML\DataType;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Andrew DalPino
+ * @author      Maxime Colin
  */
 class MultibyteTextNormalizer implements Transformer
 {

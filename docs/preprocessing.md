@@ -121,6 +121,7 @@ For natural language processing (NLP) tasks, cleaning the text will help elimina
 - [HTML Stripper](transformers/html-stripper.md)
 - [Regex Filter](transformers/regex-filter.md)
 - [Text Normalizer](transformers/text-normalizer.md)
+- [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md)
 - [Stop Word Filter](transformers/stop-word-filter.md)
 
 ## Image Processing
