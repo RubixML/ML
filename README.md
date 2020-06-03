@@ -25,6 +25,7 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
+- [Multibyte string extension](https://www.php.net/manual/en/book.mbstring.php) for multibyte text transformation
 
 ## Documentation
 Read the latest docs [here](https://docs.rubixml.com).
