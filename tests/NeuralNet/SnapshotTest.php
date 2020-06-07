@@ -28,7 +28,7 @@ class SnapshotTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
-    
+
     /**
      * @test
      */

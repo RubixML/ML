@@ -77,7 +77,7 @@ class Filesystem implements Persister
     {
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
-            
+
             $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
 
             $num = 0;
@@ -115,7 +115,7 @@ class Filesystem implements Persister
         if (!is_readable($this->path)) {
             throw new RuntimeException("File $this->path is not readable.");
         }
-            
+
         $data = file_get_contents($this->path) ?: '';
 
         if (empty($data)) {
@@ -123,8 +123,6 @@ class Filesystem implements Persister
                 . ' contain any data.');
         }
 
-        $persistable = $this->serializer->unserialize($data);
-
-        return $persistable;
+        return $this->serializer->unserialize($data);
     }
 }

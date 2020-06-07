@@ -36,7 +36,7 @@ class L1NormalizerTest extends TestCase
 
         $this->transformer = new L1Normalizer();
     }
-    
+
     /**
      * @test
      */
@@ -45,7 +45,7 @@ class L1NormalizerTest extends TestCase
         $this->assertInstanceOf(L1Normalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */

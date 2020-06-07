@@ -73,7 +73,7 @@ class CSV implements Extractor
         if (!is_file($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
         }
-        
+
         if (!is_readable($path)) {
             throw new InvalidArgumentException("Path $path is not readable.");
         }
@@ -89,7 +89,7 @@ class CSV implements Extractor
         }
 
         $handle = fopen($path, 'r');
-        
+
         if (!$handle) {
             throw new RuntimeException("Could not open $path.");
         }
@@ -98,6 +98,14 @@ class CSV implements Extractor
         $this->header = $header;
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
+    }
+
+    /**
+     * Clean up the file pointer.
+     */
+    public function __destruct()
+    {
+        fclose($this->handle);
     }
 
     /**
@@ -141,13 +149,5 @@ class CSV implements Extractor
 
             yield $record;
         }
-    }
-
-    /**
-     * Clean up the file pointer.
-     */
-    public function __destruct()
-    {
-        fclose($this->handle);
     }
 }

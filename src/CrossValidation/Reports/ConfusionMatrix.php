@@ -49,7 +49,7 @@ class ConfusionMatrix implements Report
             throw new InvalidArgumentException('Number of predictions'
                 . ' and labels must be equal.');
         }
-        
+
         $classes = array_unique(array_merge($predictions, $labels));
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));

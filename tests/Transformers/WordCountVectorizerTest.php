@@ -38,7 +38,7 @@ class WordCountVectorizerTest extends TestCase
 
         $this->transformer = new WordCountVectorizer(50, 1, new Word());
     }
-    
+
     /**
      * @test
      */
@@ -48,7 +48,7 @@ class WordCountVectorizerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -59,15 +59,15 @@ class WordCountVectorizerTest extends TestCase
         $this->assertTrue($this->transformer->fitted());
 
         $this->dataset->apply($this->transformer);
-    
+
         $outcome = [
             [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
         ];
-    
+
         $this->assertEquals($outcome, $this->dataset->samples());
     }
-    
+
     /**
      * @test
      */

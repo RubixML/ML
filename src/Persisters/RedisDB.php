@@ -129,8 +129,6 @@ class RedisDB implements Persister
     {
         $data = $this->connector->get($this->key) ?: '';
 
-        $persistable = $this->serializer->unserialize($data);
-
-        return $persistable;
+        return $this->serializer->unserialize($data);
     }
 }

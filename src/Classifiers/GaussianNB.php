@@ -45,7 +45,7 @@ use const Rubix\ML\LOG_EPSILON;
 class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
-    
+
     /**
      * The class prior log probabilities.
      *
@@ -278,7 +278,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
             $this->means[$class] = $means;
             $this->variances[$class] = $variances;
-            
+
             $this->weights[$class] = $oldWeight + $n;
         }
 

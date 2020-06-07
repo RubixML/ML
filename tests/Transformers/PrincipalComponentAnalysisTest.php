@@ -19,7 +19,7 @@ class PrincipalComponentAnalysisTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\PrincipalComponentAnalysis
      */
@@ -34,7 +34,7 @@ class PrincipalComponentAnalysisTest extends TestCase
 
         $this->transformer = new PrincipalComponentAnalysis(2);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class PrincipalComponentAnalysisTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -62,7 +62,7 @@ class PrincipalComponentAnalysisTest extends TestCase
 
         $this->assertCount(2, $sample);
     }
-    
+
     /**
      * @test
      */

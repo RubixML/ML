@@ -17,7 +17,7 @@ class PriorTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\Prior
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class PriorTest extends TestCase
     {
         $this->strategy = new Prior();
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class PriorTest extends TestCase
         $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

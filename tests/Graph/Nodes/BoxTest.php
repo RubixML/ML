@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 class BoxTest extends TestCase
 {
     protected const COLUMN = 1;
+
     protected const VALUE = 3.;
 
     protected const SAMPLES = [
@@ -26,6 +27,7 @@ class BoxTest extends TestCase
     protected const LABELS = [22, 13];
 
     protected const MIN = [5., 2., -5];
+
     protected const MAX = [6., 4., -3];
 
     protected const BOX = [

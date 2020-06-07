@@ -29,7 +29,7 @@ class AdaGradTest extends TestCase
     {
         $this->optimizer = new AdaGrad(0.001);
     }
-    
+
     /**
      * @test
      */

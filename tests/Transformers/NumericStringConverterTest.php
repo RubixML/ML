@@ -36,7 +36,7 @@ class NumericStringConverterTest extends TestCase
 
         $this->transformer = new NumericStringConverter();
     }
-    
+
     /**
      * @test
      */
@@ -45,7 +45,7 @@ class NumericStringConverterTest extends TestCase
         $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */

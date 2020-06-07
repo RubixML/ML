@@ -27,7 +27,7 @@ class KNNImputerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\KNNImputer
      */
@@ -53,7 +53,7 @@ class KNNImputerTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -63,7 +63,7 @@ class KNNImputerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -78,7 +78,7 @@ class KNNImputerTest extends TestCase
         $this->assertEquals(23.692172188539388, $this->dataset[1][0]);
         $this->assertEquals(-1.4826674509492581, $this->dataset[3][1]);
     }
-    
+
     /**
      * @test
      */

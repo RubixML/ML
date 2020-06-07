@@ -63,13 +63,11 @@ class NGram implements Tokenizer
     public function __construct(int $min = 2, int $max = 2, Word $wordTokenizer = null)
     {
         if ($min < 1) {
-            throw new InvalidArgumentException('Minimum cannot be less'
-                . ' than 1.');
+            throw new InvalidArgumentException('Minimum cannot be less than 1.');
         }
 
         if ($max < $min) {
-            throw new InvalidArgumentException('Maximum cannot be less'
-                . ' than minimum.');
+            throw new InvalidArgumentException('Maximum cannot be less than minimum.');
         }
 
         $this->min = $min;

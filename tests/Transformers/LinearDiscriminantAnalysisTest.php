@@ -20,7 +20,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Agglomerate
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\LinearDiscriminantAnalysis
      */
@@ -39,7 +39,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
 
         $this->transformer = new LinearDiscriminantAnalysis(1);
     }
-    
+
     /**
      * @test
      */
@@ -49,7 +49,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -67,7 +67,7 @@ class LinearDiscriminantAnalysisTest extends TestCase
 
         $this->assertCount(1, $sample);
     }
-    
+
     /**
      * @test
      */

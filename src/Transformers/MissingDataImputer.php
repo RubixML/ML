@@ -106,7 +106,7 @@ class MissingDataImputer implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
+
         $this->strategies = $this->types = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
@@ -120,7 +120,7 @@ class MissingDataImputer implements Transformer, Stateful
                         if (is_float($value) and is_nan($value)) {
                             continue 1;
                         }
-        
+
                         $donors[] = $value;
                     }
 

@@ -32,7 +32,7 @@ class PersistentModelTest extends TestCase
     {
         $this->estimator = new PersistentModel(new DummyClassifier(), new Filesystem('test.model'));
     }
-    
+
     /**
      * @test
      */

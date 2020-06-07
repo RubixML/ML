@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 class ComparisonTest extends TestCase
 {
     protected const COLUMN = 1;
+
     protected const VALUE = 3.0;
 
     protected const SAMPLES = [

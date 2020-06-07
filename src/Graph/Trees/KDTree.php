@@ -149,17 +149,17 @@ class KDTree implements BinaryTree, Spatial
                 $node = Box::split($left);
 
                 $stack[] = $node;
-    
+
                 $current->attachLeft($node);
             } else {
                 $current->attachLeft(Neighborhood::terminate($left));
             }
-    
+
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Box::split($right);
 
                 $stack[] = $node;
-    
+
                 $current->attachRight($node);
             } else {
                 $current->attachRight(Neighborhood::terminate($right));
@@ -265,7 +265,7 @@ class KDTree implements BinaryTree, Spatial
 
         while ($stack) {
             $current = array_pop($stack);
-            
+
             if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
                     if ($child instanceof Hypercube) {
@@ -303,6 +303,14 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
+     * Destroy the tree.
+     */
+    public function destroy() : void
+    {
+        unset($this->root);
+    }
+
+    /**
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
@@ -334,13 +342,5 @@ class KDTree implements BinaryTree, Spatial
         }
 
         return $path;
-    }
-
-    /**
-     * Destroy the tree.
-     */
-    public function destroy() : void
-    {
-        unset($this->root);
     }
 }

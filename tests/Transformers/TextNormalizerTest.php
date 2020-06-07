@@ -36,7 +36,7 @@ class TextNormalizerTest extends TestCase
 
         $this->transformer = new TextNormalizer();
     }
-    
+
     /**
      * @test
      */
@@ -45,20 +45,20 @@ class TextNormalizerTest extends TestCase
         $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
     public function transform() : void
     {
         $this->dataset->apply($this->transformer);
-    
+
         $outcome = [
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
             ['with a dandy umbrella'],
         ];
-    
+
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 }

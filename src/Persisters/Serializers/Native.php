@@ -40,12 +40,15 @@ class Native implements Serializer
     public function unserialize(string $data) : Persistable
     {
         $unserialized = unserialize($data);
+
         if (!is_object($unserialized)) {
-            throw new RuntimeException('Unserialized data is not an object');
+            throw new RuntimeException('Unserialized data is not an object.');
         }
+
         if (!($unserialized instanceof Persistable)) {
             throw new RuntimeException('Unserialized object is not a ' . Persistable::class . '. Got ' . get_class($unserialized));
         }
+
         return $unserialized;
     }
 }

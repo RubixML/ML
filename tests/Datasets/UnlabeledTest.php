@@ -643,7 +643,7 @@ class UnlabeledTest extends TestCase
     public function toJson() : void
     {
         $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
-            
+
         $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
@@ -658,7 +658,7 @@ class UnlabeledTest extends TestCase
         . '["mean","rough","friendly",-1]' . PHP_EOL
         . '["nice","rough","friendly",2.9]' . PHP_EOL
         . '["nice","furry","loner",-5]' . PHP_EOL;
-            
+
         $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
@@ -673,7 +673,7 @@ class UnlabeledTest extends TestCase
             . 'mean,rough,friendly,-1' . PHP_EOL
             . 'nice,rough,friendly,2.9' . PHP_EOL
             . 'nice,furry,loner,-5' . PHP_EOL;
-            
+
         $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
@@ -733,7 +733,7 @@ class UnlabeledTest extends TestCase
             ['nice', 'rough', 'friendly', 2.9],
             ['nice', 'furry', 'loner', -5.0],
         ];
-        
+
         $this->assertEquals($expected, iterator_to_array($this->dataset));
     }
 }

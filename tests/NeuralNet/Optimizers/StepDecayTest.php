@@ -20,7 +20,7 @@ class StepDecayTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\StepDecay
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -28,7 +28,7 @@ class StepDecayTest extends TestCase
     {
         $this->optimizer = new StepDecay(0.001);
     }
-    
+
     /**
      * @test
      */

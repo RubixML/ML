@@ -45,14 +45,14 @@ class FeedForwardTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Output
      */
     protected $output;
-    
+
     /**
      * @before
      */
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([
-            [1.0, 2.5,],
+            [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
         ], ['yes', 'no', 'maybe']);
@@ -71,7 +71,7 @@ class FeedForwardTest extends TestCase
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
-    
+
     /**
      * @test
      */
@@ -80,7 +80,7 @@ class FeedForwardTest extends TestCase
         $this->assertInstanceOf(FeedForward::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
-    
+
     /**
      * @test
      */
@@ -88,7 +88,7 @@ class FeedForwardTest extends TestCase
     {
         $this->assertCount(7, $this->network->layers());
     }
-    
+
     /**
      * @test
      */
@@ -96,7 +96,7 @@ class FeedForwardTest extends TestCase
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
-    
+
     /**
      * @test
      */
@@ -104,7 +104,7 @@ class FeedForwardTest extends TestCase
     {
         $this->assertCount(5, $this->network->hidden());
     }
-    
+
     /**
      * @test
      */
@@ -112,7 +112,7 @@ class FeedForwardTest extends TestCase
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }
-    
+
     /**
      * @test
      */

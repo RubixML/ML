@@ -16,7 +16,7 @@ class NGramTest extends TestCase
      * @var \Rubix\ML\Other\Tokenizers\NGram
      */
     protected $tokenizer;
-    
+
     /**
      * @before
      */
@@ -24,7 +24,7 @@ class NGramTest extends TestCase
     {
         $this->tokenizer = new NGram(1, 2);
     }
-    
+
     /**
      * @test
      */
@@ -33,7 +33,7 @@ class NGramTest extends TestCase
         $this->assertInstanceOf(NGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
-    
+
     /**
      * @test
      */

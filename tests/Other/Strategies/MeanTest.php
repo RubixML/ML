@@ -17,7 +17,7 @@ class MeanTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\Mean
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class MeanTest extends TestCase
     {
         $this->strategy = new Mean();
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class MeanTest extends TestCase
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

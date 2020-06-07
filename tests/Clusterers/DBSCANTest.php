@@ -26,7 +26,7 @@ class DBSCANTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 250;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *

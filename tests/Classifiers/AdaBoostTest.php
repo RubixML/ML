@@ -39,7 +39,7 @@ class AdaBoostTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -85,11 +85,6 @@ class AdaBoostTest extends TestCase
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 
     /**
@@ -159,7 +154,7 @@ class AdaBoostTest extends TestCase
     public function trainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
-        
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -192,5 +187,10 @@ class AdaBoostTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

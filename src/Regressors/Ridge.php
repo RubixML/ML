@@ -35,7 +35,7 @@ use function is_null;
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * The strength of the L2 regularization penalty.
      *

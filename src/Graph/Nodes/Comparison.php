@@ -20,7 +20,7 @@ use function count;
 class Comparison implements Decision
 {
     use HasBinaryChildren;
-    
+
     /**
      * The feature column (index) of the split value.
      *

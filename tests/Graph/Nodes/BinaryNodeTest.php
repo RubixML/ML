@@ -23,18 +23,9 @@ class BinaryNodeTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->node = new class implements BinaryNode {
+        $this->node = new class() implements BinaryNode {
             use HasBinaryChildren;
         };
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertEquals(1, $this->node->height());
-        $this->assertEquals(0, $this->node->balance());
-        $this->assertNull($this->node->left());
-        $this->assertNull($this->node->right());
-        $this->assertTrue($this->node->leaf());
     }
 
     /**
@@ -51,7 +42,7 @@ class BinaryNodeTest extends TestCase
      */
     public function attachDetachLeft() : void
     {
-        $this->node->attachLeft(new class implements BinaryNode {
+        $this->node->attachLeft(new class() implements BinaryNode {
             use HasBinaryChildren;
         });
 
@@ -75,7 +66,7 @@ class BinaryNodeTest extends TestCase
      */
     public function attachDetachRight() : void
     {
-        $this->node->attachRight(new class implements BinaryNode {
+        $this->node->attachRight(new class() implements BinaryNode {
             use HasBinaryChildren;
         });
 
@@ -92,5 +83,14 @@ class BinaryNodeTest extends TestCase
         $this->node->detachRight();
 
         $this->assertNull($this->node->right());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertEquals(1, $this->node->height());
+        $this->assertEquals(0, $this->node->balance());
+        $this->assertNull($this->node->left());
+        $this->assertNull($this->node->right());
+        $this->assertTrue($this->node->leaf());
     }
 }

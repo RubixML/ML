@@ -19,7 +19,7 @@ class GaussianRandomProjectorTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\GaussianRandomProjector
      */
@@ -34,7 +34,7 @@ class GaussianRandomProjectorTest extends TestCase
 
         $this->transformer = new GaussianRandomProjector(5);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class GaussianRandomProjectorTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -52,7 +52,7 @@ class GaussianRandomProjectorTest extends TestCase
     {
         $this->assertEquals(663, GaussianRandomProjector::minDimensions(1000000, 0.5));
     }
-    
+
     /**
      * @test
      */
@@ -70,7 +70,7 @@ class GaussianRandomProjectorTest extends TestCase
 
         $this->assertCount(5, $sample);
     }
-    
+
     /**
      * @test
      */

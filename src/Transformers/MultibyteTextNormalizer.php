@@ -8,6 +8,10 @@ use Rubix\ML\DataType;
  * Multibyte Text Normalizer
  *
  * This transformer converts all multibyte text to lowercase and removes extra whitespace.
+ * Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters
+ * of non roman alphabets such as Chinese and Cyrillic.
+ *
+ * > **Note:** ⚠️ We recommend you install the Multibyte string extension for best performance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

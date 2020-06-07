@@ -59,7 +59,7 @@ $dataset = Labeled::fromIterator(new JSON('example.json'));
 ```
 
 ## NDJSON
-Another popular plain-text format is a hybrid of CSV and JSON called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON). It contains rows of JSON arrays or objects delineated by a newline character (`\n` or `\r\n`). It has the advantage of retaining type information like JSON and can also be read into memory efficiently like CSV.
+Another plain-text format called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON) can be considered a hybrid of both CSV and JSON. It contains rows of JSON arrays or objects delineated by a newline character (`\n` or `\r\n`). It has the advantage of retaining type information like JSON and can also be read into memory efficiently like CSV.
 
 **Example**
 

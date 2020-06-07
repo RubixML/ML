@@ -148,22 +148,6 @@ abstract class CART
     }
 
     /**
-     * Terminate a branch with a leaf node.
-     *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Outcome
-     */
-    abstract protected function terminate(Labeled $dataset) : Outcome;
-
-    /**
-     * Compute the impurity of a labeled dataset.
-     *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return float
-     */
-    abstract protected function impurity(Labeled $dataset) : float;
-
-    /**
      * Return the height of the tree i.e. the number of levels.
      *
      * @return int
@@ -229,17 +213,17 @@ abstract class CART
 
             if ($left->empty() or $right->empty()) {
                 $node = $this->terminate($left->merge($right));
-    
+
                 $current->attachLeft($node);
                 $current->attachRight($node);
 
                 continue 1;
             }
-    
+
             if ($depth >= $this->maxDepth) {
                 $current->attachLeft($this->terminate($left));
                 $current->attachRight($this->terminate($right));
-                
+
                 continue 1;
             }
 
@@ -256,10 +240,10 @@ abstract class CART
             } else {
                 $current->attachLeft($this->terminate($left));
             }
-    
+
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = $this->split($right);
-    
+
                 if ($node->purityIncrease() >= $this->minPurityIncrease) {
                     $current->attachRight($node);
 
@@ -345,6 +329,41 @@ abstract class CART
     }
 
     /**
+     * Print a human readable text representation of the decision tree.
+     *
+     * @throws RuntimeException
+     * @return string
+     */
+    public function rules() : string
+    {
+        if (!$this->root) {
+            throw new RuntimeException('Tree has not been constructed.');
+        }
+
+        $carry = '';
+
+        $this->_rules($carry, $this->root);
+
+        return $carry;
+    }
+
+    /**
+     * Terminate a branch with a leaf node.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return \Rubix\ML\Graph\Nodes\Outcome
+     */
+    abstract protected function terminate(Labeled $dataset) : Outcome;
+
+    /**
+     * Compute the impurity of a labeled dataset.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return float
+     */
+    abstract protected function impurity(Labeled $dataset) : float;
+
+    /**
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -426,25 +445,6 @@ abstract class CART
     }
 
     /**
-     * Print a human readable text representation of the decision tree.
-     *
-     * @throws RuntimeException
-     * @return string
-     */
-    public function rules() : string
-    {
-        if (!$this->root) {
-            throw new RuntimeException('Tree has not been constructed.');
-        }
-
-        $carry = '';
-
-        $this->_rules($carry, $this->root);
-
-        return $carry;
-    }
-
-    /**
      * Recursive function to print out the decision rule at each node
      * using preorder traversal.
      *
@@ -466,7 +466,7 @@ abstract class CART
 
                 $this->_rules($carry, $node->left(), $depth);
             }
-            
+
             if ($node->right() !== null) {
                 $operator = is_string($node->value()) ? '!=' : '>=';
 

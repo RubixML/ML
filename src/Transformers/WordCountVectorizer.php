@@ -155,10 +155,10 @@ class WordCountVectorizer implements Transformer, Stateful
 
                 if (count($tfs) > $this->maxVocabulary) {
                     arsort($tfs);
-        
+
                     $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
                 }
-        
+
                 $vocabulary = array_combine(
                     array_keys($tfs),
                     range(0, count($tfs) - 1)

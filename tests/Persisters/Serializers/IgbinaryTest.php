@@ -24,7 +24,7 @@ class IgbinaryTest extends TestCase
      * @var \Rubix\ML\Persisters\Serializers\Igbinary
      */
     protected $serializer;
-    
+
     /**
      * @before
      */
@@ -34,7 +34,7 @@ class IgbinaryTest extends TestCase
 
         $this->serializer = new Igbinary();
     }
-    
+
     /**
      * @test
      */
@@ -43,14 +43,14 @@ class IgbinaryTest extends TestCase
         $this->assertInstanceOf(Igbinary::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
-    
+
     /**
      * @test
      */
     public function serializeUnserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
-        
+
         $this->assertIsString($data);
 
         $persistable = $this->serializer->unserialize($data);

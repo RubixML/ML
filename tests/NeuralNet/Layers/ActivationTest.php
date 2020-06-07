@@ -67,7 +67,7 @@ class ActivationTest extends TestCase
 
         $this->layer = new Activation(new ReLU());
     }
-    
+
     /**
      * @test
      */
@@ -77,7 +77,7 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

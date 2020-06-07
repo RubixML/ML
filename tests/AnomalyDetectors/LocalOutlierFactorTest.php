@@ -38,7 +38,7 @@ class LocalOutlierFactorTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -83,11 +83,6 @@ class LocalOutlierFactorTest extends TestCase
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 
     /**
@@ -174,5 +169,10 @@ class LocalOutlierFactorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

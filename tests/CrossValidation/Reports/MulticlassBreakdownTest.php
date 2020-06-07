@@ -60,7 +60,7 @@ class MulticlassBreakdownTest extends TestCase
     public function generate(array $predictions, array $labels, array $expected) : void
     {
         $result = $this->report->generate($predictions, $labels);
-        
+
         $this->assertEquals($expected, $result);
     }
 

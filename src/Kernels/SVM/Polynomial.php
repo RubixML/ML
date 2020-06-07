@@ -57,7 +57,7 @@ class Polynomial implements Kernel
             throw new InvalidArgumentException('Degree must be greater than 0,'
                 . " $degree given.");
         }
-        
+
         $this->degree = $degree;
         $this->gamma = $gamma;
         $this->coef0 = $coef0;

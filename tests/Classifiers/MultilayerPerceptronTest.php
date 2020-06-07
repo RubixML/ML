@@ -46,7 +46,7 @@ class MultilayerPerceptronTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -97,11 +97,6 @@ class MultilayerPerceptronTest extends TestCase
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 
     /**
@@ -180,7 +175,7 @@ class MultilayerPerceptronTest extends TestCase
     public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
-        
+
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
         $dataset->apply(new ZScaleStandardizer());
@@ -230,5 +225,10 @@ class MultilayerPerceptronTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

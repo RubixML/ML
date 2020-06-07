@@ -465,7 +465,7 @@ class Unlabeled extends Dataset
         $offsets = array_rand($this->samples, $n);
 
         $offsets = is_array($offsets) ? $offsets : [$offsets];
-        
+
         $samples = [];
 
         foreach ($offsets as $offset) {
@@ -549,7 +549,7 @@ class Unlabeled extends Dataset
 
                     if ($delta <= 0.0) {
                         $samples[] = $this->samples[$offset];
-                        
+
                         break 1;
                     }
                 }

@@ -163,7 +163,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
-        
+
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
@@ -363,7 +363,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
-                
+
                 $nu = 0;
             } else {
                 ++$nu;

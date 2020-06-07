@@ -57,7 +57,7 @@ class Amp implements Backend
     public function __construct(?int $workers = null)
     {
         $workers = $workers ?? CPU::cores();
-        
+
         if ($workers < 1) {
             throw new InvalidArgumentException('Number of workers'
                 . " must be greater than 0, $workers given.");
@@ -139,7 +139,7 @@ class Amp implements Backend
     public function flush() : void
     {
         $this->queue = [];
-        
+
         unset($this->results);
     }
 }

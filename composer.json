@@ -42,10 +42,10 @@
         "phpunit/phpunit": "8.5.*"
     },
     "suggest": {
-        "ext-mbstring": "For fast multibyte string manipulation.",
         "ext-tensor": "For fast Matrix/Vector computing",
         "ext-svm": "For Support Vector Machine engine (libsvm)",
-        "ext-gd": "For image vectorization",
+        "ext-mbstring": "For fast multibyte string manipulation",
+        "ext-gd": "For image manipulation",
         "ext-redis": "To persist models to a Redis DB",
         "ext-igbinary": "For binary serialization of persistables"
     },

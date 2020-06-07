@@ -30,7 +30,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      * @var float
      */
     protected const ROOT_3 = 1.73205080757;
-    
+
     /**
      * The numbers to draw from when generating the random matrix.
      *

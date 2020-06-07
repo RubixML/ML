@@ -19,18 +19,6 @@ use InvalidArgumentException;
 class Minkowski implements Distance
 {
     /**
-     * Return the data types that this kernel is compatible with.
-     *
-     * @return \Rubix\ML\DataType[]
-     */
-    public function compatibility() : array
-    {
-        return [
-            DataType::continuous(),
-        ];
-    }
-
-    /**
      * This parameter controls the *roundedness* of the metric. There are
      * special cases when lambda = 1 then it is equivalent to manhattan
      * distance, when lambda = 2 it is equivalent to euclidean distance.
@@ -59,6 +47,18 @@ class Minkowski implements Distance
 
         $this->lambda = $lambda;
         $this->inverse = 1.0 / $lambda;
+    }
+
+    /**
+     * Return the data types that this kernel is compatible with.
+     *
+     * @return \Rubix\ML\DataType[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::continuous(),
+        ];
     }
 
     /**

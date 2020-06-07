@@ -36,7 +36,7 @@ class HTMLStripperTest extends TestCase
 
         $this->transformer = new HTMLStripper();
     }
-    
+
     /**
      * @test
      */
@@ -45,20 +45,20 @@ class HTMLStripperTest extends TestCase
         $this->assertInstanceOf(HTMLStripper::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
     public function transform() : void
     {
         $this->dataset->apply($this->transformer);
-    
+
         $outcome = [
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
             ['with a Dandy ubrella'],
         ];
-    
+
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 }

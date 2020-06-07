@@ -43,7 +43,7 @@ use const Rubix\ML\LOG_EPSILON;
 class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
-    
+
     /**
      * The amount of additive (Laplace) smoothing to apply to the probabilities.
      *
@@ -113,7 +113,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 $prior = log($prior / $total);
             }
         }
-        
+
         $this->alpha = $alpha;
         $this->logPriors = $priors;
         $this->fitPriors = is_null($priors);
@@ -258,7 +258,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         if ($this->fitPriors) {
             $this->logPriors = [];
-            
+
             $total = (array_sum($this->weights)
                 + (count($this->weights) * $this->alpha))
                 ?: EPSILON;

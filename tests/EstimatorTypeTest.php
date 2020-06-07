@@ -31,7 +31,7 @@ class EstimatorTypeTest extends TestCase
     {
         $this->assertSame(EstimatorType::CLUSTERER, $this->type->code());
     }
-    
+
     /**
      * @test
      */
@@ -39,7 +39,7 @@ class EstimatorTypeTest extends TestCase
     {
         $this->assertFalse($this->type->isClassifier());
     }
-    
+
     /**
      * @test
      */
@@ -55,7 +55,7 @@ class EstimatorTypeTest extends TestCase
     {
         $this->assertTrue($this->type->isClusterer());
     }
-        
+
     /**
      * @test
      */

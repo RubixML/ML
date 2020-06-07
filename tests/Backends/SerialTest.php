@@ -19,6 +19,15 @@ class SerialTest extends TestCase
     protected $backend;
 
     /**
+     * @param int $i
+     * @return array<int|float>
+     */
+    public static function foo(int $i) : array
+    {
+        return [$i * 2, microtime(true)];
+    }
+
+    /**
      * @before
      */
     protected function setUp() : void
@@ -47,14 +56,5 @@ class SerialTest extends TestCase
         $results = $this->backend->process();
 
         $this->assertCount(10, $results);
-    }
-
-    /**
-     * @param int $i
-     * @return array<int|float>
-     */
-    public static function foo(int $i) : array
-    {
-        return [$i * 2, microtime(true)];
     }
 }

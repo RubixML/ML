@@ -41,7 +41,7 @@ trait HasBinaryChildren
         if ($this->left) {
             yield $this->left;
         }
-        
+
         if ($this->right) {
             yield $this->right;
         }

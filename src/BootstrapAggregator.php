@@ -95,7 +95,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             throw new InvalidArgumentException('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
-        
+
         if ($ratio <= 0.0 or $ratio > 1.5) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1.5, $ratio given.");
@@ -205,7 +205,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         }
 
         $aggregate = array_transpose($this->backend->process());
-        
+
         switch ($this->type()) {
             case EstimatorType::classifier():
             case EstimatorType::anomalyDetector():

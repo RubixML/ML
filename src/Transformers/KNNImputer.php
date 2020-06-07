@@ -135,7 +135,7 @@ class KNNImputer implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
+
         $donors = [];
 
         foreach ($dataset->samples() as $sample) {

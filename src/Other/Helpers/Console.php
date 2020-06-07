@@ -5,6 +5,13 @@ namespace Rubix\ML\Other\Helpers;
 class Console
 {
     /**
+     * The width of each cell in characters.
+     *
+     * @var int
+     */
+    public const TABLE_CELL_WIDTH = 11;
+
+    /**
      * The command to return the number of rows that the current terminal supports.
      *
      * @var string
@@ -32,13 +39,6 @@ class Console
      */
     protected const DEFAULT_SIZE_COLUMNS = 80;
 
-    /**
-     * The width of each cell in characters.
-     *
-     * @var int
-     */
-    public const TABLE_CELL_WIDTH = 11;
-    
     /**
      * The prefix to every table cell.
      *
@@ -103,7 +103,7 @@ class Console
     protected static function formatCell(string $carry, string $value) : string
     {
         $value = str_pad(substr($value, 0, self::TABLE_CELL_WIDTH), self::TABLE_CELL_WIDTH);
-    
+
         return $carry . self::TABLE_CELL_PREFIX . $value . self::TABLE_CELL_SUFFIX;
     }
 }

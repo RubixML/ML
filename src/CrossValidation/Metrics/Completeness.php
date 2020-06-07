@@ -37,7 +37,7 @@ class Completeness implements Metric
     {
         return [0.0, 1.0];
     }
-    
+
     /**
      * The estimator types that this metric is compatible with.
      *

@@ -38,7 +38,7 @@ class ContinuousTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Continuous
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -56,7 +56,7 @@ class ContinuousTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -66,7 +66,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

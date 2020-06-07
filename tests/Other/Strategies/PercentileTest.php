@@ -17,7 +17,7 @@ class PercentileTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\Percentile
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class PercentileTest extends TestCase
     {
         $this->strategy = new Percentile(50.0);
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class PercentileTest extends TestCase
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

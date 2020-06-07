@@ -40,7 +40,7 @@ use RuntimeException;
 class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * @param int $maxDepth
      * @param int $maxLeafSize

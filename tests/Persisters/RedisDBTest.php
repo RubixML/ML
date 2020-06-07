@@ -33,7 +33,7 @@ class RedisDBTest extends TestCase
 
         $this->persister = $this->createMock(RedisDB::class);
     }
-    
+
     /**
      * @test
      */

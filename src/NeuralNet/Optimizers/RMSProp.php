@@ -87,7 +87,7 @@ class RMSProp implements Optimizer, Adaptive
     {
         $this->cache[$param->id()] = get_class($param->param())::zeros(...$param->param()->shape());
     }
-    
+
     /**
      * Take a step of gradient descent for a given parameter.
      *

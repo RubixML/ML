@@ -35,7 +35,7 @@ class RidgeTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -79,11 +79,6 @@ class RidgeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -125,7 +120,7 @@ class RidgeTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
-    
+
     /**
      * @test
      */
@@ -148,7 +143,7 @@ class RidgeTest extends TestCase
 
         $this->assertCount(4, $importances);
     }
-    
+
     /**
      * @test
      */
@@ -158,7 +153,7 @@ class RidgeTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -168,7 +163,7 @@ class RidgeTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -177,5 +172,10 @@ class RidgeTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

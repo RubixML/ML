@@ -369,7 +369,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             throw new InvalidArgumentException('Learner requires a'
                 . ' Labeled training set.');
         }
-        
+
         DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);

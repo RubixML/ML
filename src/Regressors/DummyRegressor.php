@@ -33,7 +33,7 @@ use function count;
 class DummyRegressor implements Estimator, Learner, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * The guessing strategy that the dummy employs.
      *

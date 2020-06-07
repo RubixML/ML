@@ -40,18 +40,26 @@ class NDJSON implements Extractor
         if (!is_file($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
         }
-        
+
         if (!is_readable($path)) {
             throw new InvalidArgumentException("Path $path is not readable.");
         }
 
         $handle = fopen($path, 'r');
-        
+
         if (!$handle) {
             throw new RuntimeException("Could not open $path.");
         }
 
         $this->handle = $handle;
+    }
+
+    /**
+     * Clean up the file pointer.
+     */
+    public function __destruct()
+    {
+        fclose($this->handle);
     }
 
     /**
@@ -74,7 +82,7 @@ class NDJSON implements Extractor
             if (empty($data)) {
                 continue 1;
             }
-            
+
             $record = json_decode($data, true);
 
             if (is_null($record)) {
@@ -83,13 +91,5 @@ class NDJSON implements Extractor
 
             yield $record;
         }
-    }
-
-    /**
-     * Clean up the file pointer.
-     */
-    public function __destruct()
-    {
-        fclose($this->handle);
     }
 }

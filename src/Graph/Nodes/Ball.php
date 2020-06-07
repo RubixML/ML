@@ -64,7 +64,7 @@ class Ball implements BinaryNode, Hypersphere
                 $center[] = argmax(array_count_values($values));
             }
         }
-            
+
         $distances = [];
 
         foreach ($dataset->samples() as $sample) {
@@ -82,7 +82,7 @@ class Ball implements BinaryNode, Hypersphere
         }
 
         $rightCentroid = $dataset->sample(argmax($distances));
-        
+
         $groups = $dataset->spatialPartition($leftCentroid, $rightCentroid, $kernel);
 
         return new self($center, $radius, $groups);

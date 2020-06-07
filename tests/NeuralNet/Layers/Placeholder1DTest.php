@@ -23,21 +23,21 @@ class Placeholder1DTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Placeholder1D
      */
     protected $layer;
-    
+
     /**
      * @before
      */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
-            [1.0, 2.5,],
+            [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
         ]);
 
         $this->layer = new Placeholder1D(3);
     }
-    
+
     /**
      * @test
      */
@@ -47,7 +47,7 @@ class Placeholder1DTest extends TestCase
         $this->assertInstanceOf(Input::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
-    
+
     /**
      * @test
      */
@@ -56,7 +56,7 @@ class Placeholder1DTest extends TestCase
         $this->assertEquals(3, $this->layer->width());
 
         $expected = [
-            [1.0, 2.5,],
+            [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
         ];

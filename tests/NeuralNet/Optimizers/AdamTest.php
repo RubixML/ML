@@ -21,7 +21,7 @@ class AdamTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\Adam
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -29,7 +29,7 @@ class AdamTest extends TestCase
     {
         $this->optimizer = new Adam(0.001, 0.1, 0.001);
     }
-    
+
     /**
      * @test
      */

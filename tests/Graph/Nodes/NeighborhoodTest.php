@@ -26,6 +26,7 @@ class NeighborhoodTest extends TestCase
     ];
 
     protected const MIN = [5.0, 2.0, -5];
+
     protected const MAX = [6.0, 4.0, -3];
 
     protected const BOX = [

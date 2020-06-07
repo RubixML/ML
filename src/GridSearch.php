@@ -96,6 +96,25 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     protected $estimator;
 
     /**
+     * Cross validate a learner with a given dataset and return the score.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\CrossValidation\Validator $validator
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @return mixed[]
+     */
+    public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
+    {
+        $score = $validator->test($estimator, $dataset, $metric);
+
+        return [
+            'score' => $score,
+            'params' => $estimator->params(),
+        ];
+    }
+
+    /**
      * @param class-string $base
      * @param array[] $params
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
@@ -135,22 +154,22 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
                     $metric = new FBeta(1.0);
 
                     break 1;
-    
+
                 case EstimatorType::regressor():
                     $metric = new RMSE();
 
                     break 1;
-                
+
                 case EstimatorType::clusterer():
                     $metric = new VMeasure();
 
                     break 1;
-    
+
                 case EstimatorType::anomalyDetector():
                     $metric = new FBeta(1.0);
-                    
+
                     break 1;
-    
+
                 default:
                     $metric = new Accuracy();
             }
@@ -346,25 +365,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     public function predict(Dataset $dataset) : array
     {
         return $this->estimator->predict($dataset);
-    }
-
-    /**
-     * Cross validate a learner with a given dataset and return the score.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Validator $validator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return mixed[]
-     */
-    public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
-    {
-        $score = $validator->test($estimator, $dataset, $metric);
-
-        return [
-            'score' => $score,
-            'params' => $estimator->params(),
-        ];
     }
 
     /**

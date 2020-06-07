@@ -109,7 +109,7 @@ class HalfMoon implements Generator
 
         $noise = Matrix::gaussian($n, 2)
             ->multiply($this->noise);
-            
+
         $samples = Matrix::stack([$x, $y])
             ->multiply($this->scale)
             ->add($this->center)

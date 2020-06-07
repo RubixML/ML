@@ -44,11 +44,11 @@ abstract class ExtraTree extends CART
             if ($this->types[$column]->isContinuous()) {
                 $min = (int) floor(min($values) * PHI);
                 $max = (int) ceil(max($values) * PHI);
-    
+
                 $value = rand($min, $max) / PHI;
             } else {
                 $values = array_unique($values);
-                
+
                 $value = $values[array_rand($values)];
             }
 

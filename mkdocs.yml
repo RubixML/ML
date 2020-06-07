@@ -19,7 +19,6 @@ nav:
 - Cross Validation: cross-validation.md
 - Model Selection: model-selection.md
 - Model Persistence: model-persistence.md
-- System Architecture: system-architecture.md
 - FAQ: faq.md
 - General API Reference:
   - Estimator: estimator.md

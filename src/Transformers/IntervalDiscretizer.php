@@ -122,7 +122,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
+
         $this->intervals = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {

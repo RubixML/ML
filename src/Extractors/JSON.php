@@ -40,7 +40,7 @@ class JSON implements Extractor
         if (!is_file($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
         }
-        
+
         if (!is_readable($path)) {
             throw new InvalidArgumentException("Path $path is not readable.");
         }

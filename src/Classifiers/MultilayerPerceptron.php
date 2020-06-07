@@ -376,7 +376,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         if (!$this->network) {
             $this->train($dataset);
-            
+
             return;
         }
 
@@ -394,7 +394,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $this->logger->info('Training started');
         }
-        
+
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
 
         [$min, $max] = $this->metric->range();
@@ -459,7 +459,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if (end($this->scores) < $bestScore) {
             if ($snapshot) {
                 $snapshot->restore();
-                
+
                 if ($this->logger) {
                     $this->logger->info('Parameters restored from'
                         . " snapshot at epoch $bestEpoch.");

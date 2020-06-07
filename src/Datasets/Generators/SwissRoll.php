@@ -120,7 +120,7 @@ class SwissRoll implements Generator
 
         $noise = Matrix::gaussian($n, 3)
             ->multiply($this->noise);
-            
+
         $samples = Matrix::stack([$x, $y, $z])
             ->multiply($this->scale)
             ->add($this->center)

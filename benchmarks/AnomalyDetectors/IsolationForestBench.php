@@ -44,7 +44,7 @@ class IsolationForestBench
 
         $this->estimator = new IsolationForest();
     }
-    
+
     /**
      * @Subject
      * @Iterations(3)

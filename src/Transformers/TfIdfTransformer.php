@@ -94,7 +94,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
+
         $this->dfs = array_fill(0, $dataset->numColumns(), 1);
         $this->n = 1;
 
@@ -115,7 +115,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic
 
         if (is_null($this->dfs) or is_null($this->n)) {
             $this->fit($dataset);
-            
+
             return;
         }
 

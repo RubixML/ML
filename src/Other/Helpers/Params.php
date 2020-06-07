@@ -139,7 +139,7 @@ class Params
                 case 'object':
                     if ($param instanceof Estimator) {
                         $temp = '(' . self::stringify($param->params(), $separator) . ')';
-    
+
                         $param = self::shortName(get_class($param)) . $temp;
                     } else {
                         $param = self::shortName(get_class($param));

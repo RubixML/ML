@@ -69,7 +69,7 @@ class ErrorAnalysisTest extends TestCase
     public function generateProvider() : Generator
     {
         yield [
-            [10, 12, 15, 42, 56, 12, 17, 9, 1, 7,],
+            [10, 12, 15, 42, 56, 12, 17, 9, 1, 7],
             [11, 12, 14, 40, 55, 12, 16, 10, 2, 7],
             [
                 'mean_absolute_error' => 0.8,

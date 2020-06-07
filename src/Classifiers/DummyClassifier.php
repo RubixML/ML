@@ -33,7 +33,7 @@ use function count;
 class DummyClassifier implements Estimator, Learner, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * The guessing strategy that the dummy employs.
      *
@@ -132,7 +132,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
         if (!$this->trained) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-        
+
         $n = $dataset->numRows();
 
         $predictions = [];

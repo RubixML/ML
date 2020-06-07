@@ -72,7 +72,7 @@ class KMC2 implements Seeder
 
         while (count($centroids) < $k) {
             $target = end($centroids) ?: [];
-            
+
             $candidates = $dataset->randomSubsetWithReplacement($this->m)->samples();
 
             $x = array_pop($candidates) ?? [];

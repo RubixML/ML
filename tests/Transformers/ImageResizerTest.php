@@ -36,7 +36,7 @@ class ImageResizerTest extends TestCase
 
         $this->transformer = new ImageResizer(32, 32);
     }
-    
+
     /**
      * @test
      */
@@ -45,7 +45,7 @@ class ImageResizerTest extends TestCase
         $this->assertInstanceOf(ImageResizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -54,7 +54,7 @@ class ImageResizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $sample = $this->dataset->sample(1);
-    
+
         $image = $sample[0];
 
         $this->assertEquals(32, imagesx($image));

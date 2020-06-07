@@ -49,7 +49,7 @@ class Snapshot
                 $parameters[] = $params;
             }
         }
-        
+
         return new self($layers, $parameters);
     }
 

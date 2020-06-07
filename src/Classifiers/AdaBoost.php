@@ -48,7 +48,7 @@ use const Rubix\ML\EPSILON;
 class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
-    
+
     /**
      * The base classifier to be boosted.
      *
@@ -294,7 +294,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
         $labels = $dataset->labels();
-        
+
         $n = $dataset->numRows();
         $p = (int) ceil($this->ratio * $n);
         $k = count($this->classes);
@@ -315,7 +315,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $estimator->train($subset);
 
             $predictions = $estimator->predict($dataset);
-            
+
             $loss = 0.0;
 
             foreach ($predictions as $i => $prediction) {

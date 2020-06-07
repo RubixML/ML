@@ -26,7 +26,7 @@ class LeastSquaresTest extends TestCase
     {
         $this->costFn = new LeastSquares();
     }
-    
+
     /**
      * @test
      */

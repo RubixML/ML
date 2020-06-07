@@ -160,7 +160,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
         $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVar = array_sum($eigenvalues);
-        
+
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);

@@ -39,7 +39,7 @@ class TfIdfTransformerTest extends TestCase
 
         $this->transformer = new TfIdfTransformer();
     }
-    
+
     /**
      * @test
      */
@@ -50,7 +50,7 @@ class TfIdfTransformerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -70,7 +70,7 @@ class TfIdfTransformerTest extends TestCase
 
         $this->assertEquals($outcome, $this->dataset->samples());
     }
-    
+
     /**
      * @test
      */

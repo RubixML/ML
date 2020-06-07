@@ -16,7 +16,7 @@ class ParameterTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Parameter
      */
     protected $param;
-    
+
     /**
      * @before
      */
@@ -35,7 +35,7 @@ class ParameterTest extends TestCase
     {
         $this->assertInstanceOf(Parameter::class, $this->param);
     }
-    
+
     /**
      * @test
      */
@@ -43,7 +43,7 @@ class ParameterTest extends TestCase
     {
         $this->assertIsInt($this->param->id());
     }
-    
+
     /**
      * @test
      */

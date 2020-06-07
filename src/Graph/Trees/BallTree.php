@@ -140,17 +140,17 @@ class BallTree implements BinaryTree, Spatial
                 $node = Ball::split($left, $this->kernel);
 
                 $stack[] = $node;
-    
+
                 $current->attachLeft($node);
             } else {
                 $current->attachLeft(Cluster::terminate($left, $this->kernel));
             }
-    
+
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($right, $this->kernel);
 
                 $stack[] = $node;
-    
+
                 $current->attachRight($node);
             } else {
                 $current->attachRight(Cluster::terminate($right, $this->kernel));
@@ -190,7 +190,7 @@ class BallTree implements BinaryTree, Spatial
                     if (!$visited->contains($child)) {
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
-    
+
                             if ($distance - $child->radius() < $radius) {
                                 $stack[] = $child;
 
@@ -287,6 +287,14 @@ class BallTree implements BinaryTree, Spatial
     }
 
     /**
+     * Destroy the tree.
+     */
+    public function destroy() : void
+    {
+        unset($this->root);
+    }
+
+    /**
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
@@ -326,13 +334,5 @@ class BallTree implements BinaryTree, Spatial
         }
 
         return $path;
-    }
-
-    /**
-     * Destroy the tree.
-     */
-    public function destroy() : void
-    {
-        unset($this->root);
     }
 }

@@ -44,7 +44,7 @@ class LambdaFunctionTest extends TestCase
             return $sigmas;
         });
     }
-    
+
     /**
      * @test
      */
@@ -53,7 +53,7 @@ class LambdaFunctionTest extends TestCase
         $this->assertInstanceOf(LambdaFunction::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */

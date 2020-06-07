@@ -24,7 +24,7 @@ use RuntimeException;
 class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking
 {
     use PredictsSingle, ProbaSingle, RanksSingle;
-    
+
     /**
      * The persistable base learner.
      *
@@ -197,7 +197,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
-            
+
         return $this->base->rank($dataset);
     }
 

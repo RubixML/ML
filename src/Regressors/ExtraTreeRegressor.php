@@ -39,7 +39,7 @@ use RuntimeException;
 class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * @param int $maxDepth
      * @param int $maxLeafSize

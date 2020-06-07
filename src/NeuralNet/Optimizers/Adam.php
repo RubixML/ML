@@ -150,7 +150,7 @@ class Adam implements Optimizer, Adaptive
 
         if ($this->t < self::WARM_UP_STEPS) {
             ++$this->t;
-            
+
             $velocity = $velocity->divide(1.0 - $this->beta1 ** $this->t);
 
             $norm = $norm->divide(1.0 - $this->beta2 ** $this->t);

@@ -21,7 +21,7 @@ class WhitespaceTest extends TestCase
     {
         $this->tokenizer = new Whitespace();
     }
-    
+
     /**
      * @test
      */
@@ -30,7 +30,7 @@ class WhitespaceTest extends TestCase
         $this->assertInstanceOf(Whitespace::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
-    
+
     /**
      * @test
      */

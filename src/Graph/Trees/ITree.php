@@ -28,7 +28,7 @@ class ITree implements BinaryTree
      * @var int
      */
     protected const MAX_LEAF_SIZE = 1;
-    
+
     /**
      * The root node of the tree.
      *
@@ -133,25 +133,25 @@ class ITree implements BinaryTree
             if ($depth >= $this->maxDepth) {
                 $current->attachLeft(Cell::terminate($left, $depth));
                 $current->attachRight(Cell::terminate($right, $depth));
-    
+
                 continue 1;
             }
-    
+
             if ($left->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($left);
 
                 $stack[] = [$node, $depth];
-    
+
                 $current->attachLeft($node);
             } else {
                 $current->attachLeft(Cell::terminate($left, $depth));
             }
-    
+
             if ($right->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($right);
 
                 $stack[] = [$node, $depth];
-    
+
                 $current->attachRight($node);
             } else {
                 $current->attachRight(Cell::terminate($right, $depth));

@@ -250,7 +250,7 @@ class Labeled extends Dataset
         $type = $this->labelType();
 
         $desc = [];
-        
+
         $desc['type'] = (string) $type;
 
         switch ($type) {
@@ -738,27 +738,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Stratifying subroutine groups samples by their categorical label.
-     *
-     * @throws \RuntimeException
-     * @return array[]
-     */
-    protected function _stratify() : array
-    {
-        $strata = [];
-
-        try {
-            foreach ($this->labels as $i => $label) {
-                $strata[$label][] = $this->samples[$i];
-            }
-        } catch (ErrorException $e) {
-            throw new RuntimeException('Label must be a string or integer type.');
-        }
-
-        return $strata;
-    }
-
-    /**
      * Generate a collection of batches of size n from the dataset. If there are
      * not enough samples to fill an entire batch, then the dataset will contain
      * as many samples and labels as possible.
@@ -972,11 +951,11 @@ class Labeled extends Dataset
 
                 foreach ($level as $offset => $weight) {
                     $delta -= $weight;
-    
+
                     if ($delta <= 0.0) {
                         $samples[] = $this->samples[$offset];
                         $labels[] = $this->labels[$offset];
-    
+
                         break 2;
                     }
                 }
@@ -994,10 +973,10 @@ class Labeled extends Dataset
     public function deduplicate() : self
     {
         $table = array_unique($this->toArray(), SORT_REGULAR);
-        
+
         $this->samples = array_values(array_intersect_key($this->samples, $table));
         $this->labels = array_values(array_intersect_key($this->labels, $table));
-        
+
         return $this;
     }
 
@@ -1039,6 +1018,27 @@ class Labeled extends Dataset
 
             yield $sample;
         }
+    }
+
+    /**
+     * Stratifying subroutine groups samples by their categorical label.
+     *
+     * @throws \RuntimeException
+     * @return array[]
+     */
+    protected function _stratify() : array
+    {
+        $strata = [];
+
+        try {
+            foreach ($this->labels as $i => $label) {
+                $strata[$label][] = $this->samples[$i];
+            }
+        } catch (ErrorException $e) {
+            throw new RuntimeException('Label must be a string or integer type.');
+        }
+
+        return $strata;
     }
 
     /**

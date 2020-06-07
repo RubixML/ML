@@ -389,7 +389,7 @@ class TSNE implements Embedder, Verbose
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
-                
+
                 $delta = 0;
             } else {
                 ++$delta;
@@ -547,7 +547,7 @@ class TSNE implements Embedder, Verbose
 
         foreach ($pqd->asVectors() as $i => $row) {
             $yHat = $y->rowAsVector($i)->subtract($y);
-            
+
             $gradient[] = $row->matmul($yHat)->row(0);
         }
 

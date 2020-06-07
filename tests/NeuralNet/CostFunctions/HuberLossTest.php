@@ -18,7 +18,7 @@ class HuberLossTest extends TestCase
      * @var \Rubix\ML\NeuralNet\CostFunctions\HuberLoss
      */
     protected $costFn;
-    
+
     /**
      * @before
      */
@@ -26,7 +26,7 @@ class HuberLossTest extends TestCase
     {
         $this->costFn = new HuberLoss(1.0);
     }
-    
+
     /**
      * @test
      */

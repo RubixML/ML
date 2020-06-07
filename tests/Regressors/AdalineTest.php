@@ -40,7 +40,7 @@ class AdalineTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -84,11 +84,6 @@ class AdalineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -132,7 +127,7 @@ class AdalineTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
-    
+
     /**
      * @test
      */
@@ -157,7 +152,7 @@ class AdalineTest extends TestCase
     public function trainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
-        
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -175,7 +170,7 @@ class AdalineTest extends TestCase
 
         $this->assertCount(4, $importances);
     }
-    
+
     /**
      * @test
      */
@@ -187,7 +182,7 @@ class AdalineTest extends TestCase
 
         $this->estimator->train($dataset);
     }
-    
+
     /**
      * @test
      */
@@ -197,7 +192,7 @@ class AdalineTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -206,5 +201,10 @@ class AdalineTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

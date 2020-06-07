@@ -43,7 +43,7 @@ use svm;
 class SVR implements Estimator, Learner
 {
     use PredictsSingle;
-    
+
     /**
      * The support vector machine instance.
      *

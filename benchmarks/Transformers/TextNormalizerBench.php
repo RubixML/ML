@@ -11,7 +11,7 @@ use Rubix\ML\Transformers\TextNormalizer;
  */
 class TextNormalizerBench
 {
-    protected const DATASET_SIZE = 100000;
+    protected const DATASET_SIZE = 10000;
 
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -29,7 +29,7 @@ class TextNormalizerBench
         $words = array_merge(['    ', '  ', '      '], explode(' ', $text));
         $samples = [];
 
-        for ($i = 0; $i < self::DATASET_SIZE; $i++) {
+        for ($i = 0; $i < self::DATASET_SIZE; ++$i) {
             shuffle($words);
             $samples[] = [implode(' ', $words)];
         }

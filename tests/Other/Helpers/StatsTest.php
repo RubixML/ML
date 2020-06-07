@@ -13,7 +13,7 @@ use Generator;
 class StatsTest extends TestCase
 {
     protected const TEST_VALUES = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
-    
+
     /**
      * @test
      * @dataProvider meanProvider
@@ -35,7 +35,7 @@ class StatsTest extends TestCase
 
         yield [[5.0], 5.0];
     }
-    
+
     /**
      * @test
      * @dataProvider weightedMeanProvider
@@ -58,7 +58,7 @@ class StatsTest extends TestCase
 
         yield [self::TEST_VALUES, array_fill(0, count(self::TEST_VALUES), 1), 8.75];
     }
-    
+
     /**
      * @test
      */
@@ -74,7 +74,7 @@ class StatsTest extends TestCase
     {
         $this->assertSame(9.75, Stats::median(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
@@ -82,7 +82,7 @@ class StatsTest extends TestCase
     {
         $this->assertSame(13.5, Stats::range(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      * @dataProvider quantileProvider
@@ -107,7 +107,7 @@ class StatsTest extends TestCase
 
         yield [[5.0], 0.5, 5.0];
     }
-    
+
     /**
      * @test
      */
@@ -115,7 +115,7 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(13, Stats::mode(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
@@ -123,7 +123,7 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(3.5, Stats::mad(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
@@ -131,7 +131,7 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(8., Stats::iqr(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
@@ -139,7 +139,7 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(-0.31891556974589724, Stats::skewness(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      * @dataProvider centralMomentProvider
@@ -166,7 +166,7 @@ class StatsTest extends TestCase
 
         yield [self::TEST_VALUES, 4, 747.26015625];
     }
-    
+
     /**
      * @test
      */
@@ -174,7 +174,7 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(-1.3235426808299866, Stats::kurtosis(self::TEST_VALUES));
     }
-    
+
     /**
      * @test
      */
@@ -185,7 +185,7 @@ class StatsTest extends TestCase
         $this->assertEquals(8.75, $mean);
         $this->assertEquals(21.1125, $variance);
     }
-    
+
     /**
      * @test
      */

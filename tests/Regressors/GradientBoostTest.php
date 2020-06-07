@@ -40,7 +40,7 @@ class GradientBoostTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -78,17 +78,12 @@ class GradientBoostTest extends TestCase
         $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
 
         $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RMSE());
-    
+
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -162,7 +157,7 @@ class GradientBoostTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -188,7 +183,7 @@ class GradientBoostTest extends TestCase
         $this->assertCount(3, $importances);
         $this->assertEquals(1.0, array_sum($importances));
     }
-    
+
     /**
      * @test
      */
@@ -198,7 +193,7 @@ class GradientBoostTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick());
     }
-    
+
     /**
      * @test
      */
@@ -208,7 +203,7 @@ class GradientBoostTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -217,5 +212,10 @@ class GradientBoostTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

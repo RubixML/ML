@@ -21,10 +21,10 @@ $ composer require rubix/ml
 
 - [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
+- [Multibyte string extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
-- [Multibyte string extension](https://www.php.net/manual/en/book.mbstring.php) for multibyte text transformation
 
 ## What is Rubix ML?
 Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, validation, and production with over 40 supervised and unsupervised learning algorithms.
@@ -47,8 +47,9 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
 ## Funding
-Rubix ML is funded entirely by donations from the community. You can become a patron by making a contribution to one of our funding sources below.
+Rubix ML is funded entirely by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
 
+- [Github Sponsors](https://github.com/sponsors/RubixML)
 - [Patreon](https://www.patreon.com/rubixml)
 
 ## Contributing

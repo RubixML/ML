@@ -66,7 +66,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     public function fit(Dataset $dataset) : void
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
-        
+
         $this->maxabs = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
@@ -87,7 +87,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
     {
         if ($this->maxabs === null) {
             $this->fit($dataset);
-            
+
             return;
         }
 

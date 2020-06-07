@@ -44,11 +44,6 @@ class ITreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertEquals(0, $this->tree->height());
-    }
-
     /**
      * @test
      */
@@ -86,5 +81,10 @@ class ITreeTest extends TestCase
 
         $this->assertInstanceOf(Cell::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertEquals(0, $this->tree->height());
     }
 }

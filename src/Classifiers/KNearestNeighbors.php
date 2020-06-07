@@ -42,7 +42,7 @@ use const Rubix\ML\EPSILON;
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

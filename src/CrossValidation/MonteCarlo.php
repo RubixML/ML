@@ -48,6 +48,24 @@ class MonteCarlo implements Validator, Parallel
     protected $ratio;
 
     /**
+     * Score an estimator on one of n simulations.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $training
+     * @param \Rubix\ML\Datasets\Labeled $testing
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @return float
+     */
+    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
+    {
+        $estimator->train($training);
+
+        $predictions = $estimator->predict($testing);
+
+        return $metric->score($predictions, $testing->labels());
+    }
+
+    /**
      * @param int $simulations
      * @param float $ratio
      * @throws \InvalidArgumentException
@@ -92,32 +110,14 @@ class MonteCarlo implements Validator, Parallel
             [$testing, $training] = $stratify
                 ? $dataset->stratifiedSplit($this->ratio)
                 : $dataset->split($this->ratio);
-    
+
             $this->backend->enqueue(
                 new TrainAndValidate($estimator, $training, $testing, $metric)
             );
         }
-    
+
         $scores = $this->backend->process();
 
         return Stats::mean($scores);
-    }
-
-    /**
-     * Score an estimator on one of n simulations.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $training
-     * @param \Rubix\ML\Datasets\Labeled $testing
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return float
-     */
-    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
-    {
-        $estimator->train($training);
-
-        $predictions = $estimator->predict($testing);
-
-        return $metric->score($predictions, $testing->labels());
     }
 }

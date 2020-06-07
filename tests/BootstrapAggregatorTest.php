@@ -23,7 +23,9 @@ use RuntimeException;
 class BootstrapAggregatorTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
+
     protected const TEST_SIZE = 10;
+
     protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
@@ -57,11 +59,6 @@ class BootstrapAggregatorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -107,7 +104,7 @@ class BootstrapAggregatorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -128,7 +125,7 @@ class BootstrapAggregatorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -137,5 +134,10 @@ class BootstrapAggregatorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

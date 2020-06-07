@@ -39,7 +39,7 @@ use svm;
 class SVC implements Estimator, Learner
 {
     use PredictsSingle;
-    
+
     /**
      * The support vector machine instance.
      *
@@ -97,7 +97,7 @@ class SVC implements Estimator, Learner
         }
 
         $kernel = $kernel ?? new RBF();
-        
+
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be'
                 . " greater than 0, $tolerance given.");

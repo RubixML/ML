@@ -36,7 +36,7 @@ class SVRTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -80,11 +80,6 @@ class SVRTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -114,7 +109,7 @@ class SVRTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
-    
+
     /**
      * @test
      */
@@ -136,7 +131,7 @@ class SVRTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -146,7 +141,7 @@ class SVRTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick());
     }
-    
+
     /**
      * @test
      */
@@ -156,7 +151,7 @@ class SVRTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -165,5 +160,10 @@ class SVRTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

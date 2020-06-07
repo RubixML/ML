@@ -25,7 +25,7 @@ class DeferredTest extends TestCase
             return $a + $b;
         }, [1, 2]);
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class DeferredTest extends TestCase
         $this->assertInstanceOf(Deferred::class, $this->deferred);
         $this->assertIsCallable($this->deferred);
     }
-    
+
     /**
      * @test
      */

@@ -93,7 +93,7 @@ class Blob implements Generator
     public function generate(int $n) : Unlabeled
     {
         $d = $this->dimensions();
-        
+
         $samples = Matrix::gaussian($n, $d)
             ->multiply($this->stddev)
             ->add($this->center)

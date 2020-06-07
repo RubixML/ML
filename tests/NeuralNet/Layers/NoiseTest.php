@@ -42,7 +42,7 @@ class NoiseTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Noise
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -70,7 +70,7 @@ class NoiseTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -80,7 +80,7 @@ class NoiseTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

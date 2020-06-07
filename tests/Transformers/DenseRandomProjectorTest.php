@@ -19,7 +19,7 @@ class DenseRandomProjectorTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\DenseRandomProjector
      */
@@ -34,7 +34,7 @@ class DenseRandomProjectorTest extends TestCase
 
         $this->transformer = new DenseRandomProjector(3);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class DenseRandomProjectorTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -62,7 +62,7 @@ class DenseRandomProjectorTest extends TestCase
 
         $this->assertCount(3, $sample);
     }
-    
+
     /**
      * @test
      */

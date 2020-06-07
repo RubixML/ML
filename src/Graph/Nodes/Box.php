@@ -23,7 +23,7 @@ use function count;
 class Box implements BinaryNode, Hypercube
 {
     use HasBinaryChildren;
-    
+
     /**
      * The feature column (index) of the split value.
      *
@@ -82,7 +82,7 @@ class Box implements BinaryNode, Hypercube
         $value = 0.5 * ($mins[$column] + $maxs[$column]);
 
         $groups = $dataset->partitionByColumn($column, $value);
-            
+
         return new self($column, $value, $groups, $mins, $maxs);
     }
 

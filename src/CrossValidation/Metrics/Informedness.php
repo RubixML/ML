@@ -40,7 +40,7 @@ class Informedness implements Metric
     {
         return $tp / (($tp + $fn) ?: EPSILON) + $tn / (($tn + $fp) ?: EPSILON) - 1.0;
     }
-    
+
     /**
      * Return a tuple of the min and max output value for this metric.
      *

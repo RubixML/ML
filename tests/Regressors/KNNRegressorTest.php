@@ -36,7 +36,7 @@ class KNNRegressorTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -80,11 +80,6 @@ class KNNRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -140,7 +135,7 @@ class KNNRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-        
+
     /**
      * @test
      */
@@ -150,7 +145,7 @@ class KNNRegressorTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $folds = $training->fold(3);
-        
+
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
@@ -163,7 +158,7 @@ class KNNRegressorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -173,7 +168,7 @@ class KNNRegressorTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick());
     }
-    
+
     /**
      * @test
      */
@@ -183,7 +178,7 @@ class KNNRegressorTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -192,5 +187,10 @@ class KNNRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

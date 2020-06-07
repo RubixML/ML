@@ -45,7 +45,7 @@ class Best implements Outcome, Leaf
      * @var int
      */
     protected $n;
-    
+
     /**
      * @param string $outcome
      * @param (int|float)[] $probabilities

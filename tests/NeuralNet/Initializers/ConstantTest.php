@@ -34,7 +34,7 @@ class ConstantTest extends TestCase
         $this->assertInstanceOf(Constant::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 class IsolatorTest extends TestCase
 {
     protected const COLUMN = 1;
+
     protected const VALUE = 3.0;
 
     protected const SAMPLES = [
@@ -36,7 +37,7 @@ class IsolatorTest extends TestCase
             Unlabeled::quick([self::SAMPLES[0]]),
             Unlabeled::quick([self::SAMPLES[1]]),
         ];
-        
+
         $this->node = new Isolator(self::COLUMN, self::VALUE, $groups);
     }
 

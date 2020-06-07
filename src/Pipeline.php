@@ -215,14 +215,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
             foreach ($this->transformers as $transformer) {
                 if ($transformer instanceof Elastic) {
                     $transformer->update($dataset);
-    
+
                     if ($this->logger) {
                         $this->logger->info('Updated ' . Params::shortName(get_class($transformer)));
                     }
                 }
-    
+
                 $dataset->apply($transformer);
-    
+
                 if ($this->logger) {
                     $this->logger->info('Applied ' . Params::shortName(get_class($transformer)));
                 }
@@ -278,12 +278,12 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
     public function rank(Dataset $dataset) : array
     {
         $this->preprocess($dataset);
-        
+
         if (!$this->base instanceof Ranking) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
-            
+
         return $this->base->rank($dataset);
     }
 

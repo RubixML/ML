@@ -20,7 +20,7 @@ class MinMaxNormalizerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\MinMaxNormalizer
      */
@@ -35,7 +35,7 @@ class MinMaxNormalizerTest extends TestCase
 
         $this->transformer = new MinMaxNormalizer(0.0, 1.0);
     }
-    
+
     /**
      * @test
      */
@@ -46,7 +46,7 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -63,12 +63,12 @@ class MinMaxNormalizerTest extends TestCase
             ->sample(0);
 
         $this->assertCount(3, $sample);
-        
+
         $this->assertEqualsWithDelta(0.5, $sample[0], 1);
         $this->assertEqualsWithDelta(0.5, $sample[1], 1);
         $this->assertEqualsWithDelta(0.5, $sample[2], 1);
     }
-    
+
     /**
      * @test
      */

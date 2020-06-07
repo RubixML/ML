@@ -93,7 +93,7 @@ class Hyperplane implements Generator
 
         $noise = Matrix::gaussian($n, $d)
             ->multiply($this->noise);
-        
+
         $samples = $y->add($this->intercept)
             ->asColumnMatrix()
             ->repeat(0, $d - 1)

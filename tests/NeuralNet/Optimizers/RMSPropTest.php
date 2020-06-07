@@ -21,7 +21,7 @@ class RMSPropTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\RMSProp
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -29,7 +29,7 @@ class RMSPropTest extends TestCase
     {
         $this->optimizer = new RMSProp(0.001, 0.1);
     }
-    
+
     /**
      * @test
      */

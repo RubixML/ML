@@ -41,7 +41,7 @@ class RegexFilterTest extends TestCase
             RegexFilter::HASHTAG,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -50,20 +50,20 @@ class RegexFilterTest extends TestCase
         $this->assertInstanceOf(RegexFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
     public function transform() : void
     {
         $this->dataset->apply($this->transformer);
-    
+
         $expected = [
             ['I was not proud of what I had learned, but I never doubted that it was worth knowing'],
             ['Too weird to live,  too rare to die '],
             ['A man who procrastinates in  choosing will inevitably have his choice made for him by '],
         ];
-    
+
         $this->assertEquals($expected, $this->dataset->samples());
     }
 }

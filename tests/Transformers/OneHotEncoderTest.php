@@ -39,7 +39,7 @@ class OneHotEncoderTest extends TestCase
 
         $this->transformer = new OneHotEncoder();
     }
-    
+
     /**
      * @test
      */
@@ -49,7 +49,7 @@ class OneHotEncoderTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -68,7 +68,7 @@ class OneHotEncoderTest extends TestCase
             [0, 1, 0, 1, 1, 0],
         ], $this->dataset->samples());
     }
-    
+
     /**
      * @test
      */

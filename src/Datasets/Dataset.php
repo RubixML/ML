@@ -384,7 +384,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
                 case DataType::CATEGORICAL:
                     $values = $this->column($column);
-                    
+
                     $counts = array_count_values($values);
 
                     $total = count($values) ?: EPSILON;
@@ -463,7 +463,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             throw new InvalidArgumentException('Enclosure must be'
                 . ' a single character.');
         }
-        
+
         $csv = '';
 
         foreach ($this->getIterator() as $row) {

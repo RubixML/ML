@@ -17,7 +17,7 @@ class KMostFrequentTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\KMostFrequent
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class KMostFrequentTest extends TestCase
     {
         $this->strategy = new KMostFrequent(2);
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class KMostFrequentTest extends TestCase
         $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

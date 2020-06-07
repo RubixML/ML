@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class BestTest extends TestCase
 {
     protected const OUTCOME = 'cat';
-    
+
     protected const PROBABILITIES = [
         'cat' => 0.7,
         'pencil' => 0.3,

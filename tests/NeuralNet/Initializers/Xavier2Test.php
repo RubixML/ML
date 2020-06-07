@@ -25,7 +25,7 @@ class Xavier2Test extends TestCase
     {
         $this->initializer = new Xavier2();
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class Xavier2Test extends TestCase
         $this->assertInstanceOf(Xavier2::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

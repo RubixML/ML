@@ -370,7 +370,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $gradient = $target->subtract($out);
-    
+
             $training = Labeled::quick($training->samples(), $gradient->asArray());
 
             $booster = clone $this->booster;

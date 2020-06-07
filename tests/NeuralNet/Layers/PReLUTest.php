@@ -44,7 +44,7 @@ class PReLUTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\PReLU
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -72,7 +72,7 @@ class PReLUTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -83,7 +83,7 @@ class PReLUTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

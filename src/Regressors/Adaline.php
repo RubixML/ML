@@ -297,7 +297,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             $this->logger->info('Training started');
         }
-        
+
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
@@ -313,14 +313,14 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $loss /= count($batches);
 
             $this->steps[] = $loss;
-            
+
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
-                
+
                 $delta = 0;
             } else {
                 ++$delta;

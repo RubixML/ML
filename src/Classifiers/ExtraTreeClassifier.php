@@ -42,7 +42,7 @@ use RuntimeException;
 class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
     use PredictsSingle, ProbaSingle;
-    
+
     /**
      * The zero vector for the possible class outcomes.
      *

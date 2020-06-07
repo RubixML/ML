@@ -37,7 +37,7 @@ class SVCTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -80,13 +80,8 @@ class SVCTest extends TestCase
         $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);
 
         $this->metric = new Accuracy();
-        
-        srand(self::RANDOM_SEED);
-    }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
+        srand(self::RANDOM_SEED);
     }
 
     /**
@@ -106,7 +101,7 @@ class SVCTest extends TestCase
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
-    
+
     /**
      * @test
      */
@@ -185,5 +180,10 @@ class SVCTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

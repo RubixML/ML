@@ -78,7 +78,7 @@ class OneHotEncoder implements Transformer, Stateful
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isCategorical()) {
                 $values = $dataset->column($column);
-                
+
                 $categories = array_values(array_unique($values));
 
                 $this->categories[$column] = array_flip($categories);

@@ -54,7 +54,7 @@ class AdaGrad implements Optimizer, Adaptive
 
         $this->rate = $rate;
     }
-    
+
     /**
      * Warm the parameter cache.
      *

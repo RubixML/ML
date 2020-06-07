@@ -16,7 +16,7 @@ class WordTest extends TestCase
      * @var \Rubix\ML\Other\Tokenizers\Word
      */
     protected $tokenizer;
-    
+
     /**
      * @before
      */
@@ -24,7 +24,7 @@ class WordTest extends TestCase
     {
         $this->tokenizer = new Word();
     }
-    
+
     /**
      * @test
      */
@@ -33,7 +33,7 @@ class WordTest extends TestCase
         $this->assertInstanceOf(Word::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
-    
+
     /**
      * @test
      */

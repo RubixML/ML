@@ -36,7 +36,7 @@ class PolynomialExpanderTest extends TestCase
 
         $this->transformer = new PolynomialExpander(2);
     }
-    
+
     /**
      * @test
      */
@@ -45,7 +45,7 @@ class PolynomialExpanderTest extends TestCase
         $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */

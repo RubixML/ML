@@ -16,7 +16,7 @@ class SkipGramTest extends TestCase
      * @var \Rubix\ML\Other\Tokenizers\SkipGram
      */
     protected $tokenizer;
-    
+
     /**
      * @before
      */
@@ -24,7 +24,7 @@ class SkipGramTest extends TestCase
     {
         $this->tokenizer = new SkipGram(2, 2);
     }
-    
+
     /**
      * @test
      */
@@ -33,7 +33,7 @@ class SkipGramTest extends TestCase
         $this->assertInstanceOf(SkipGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
-    
+
     /**
      * @test
      */

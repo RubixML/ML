@@ -19,7 +19,7 @@ class RobustStandardizerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\RobustStandardizer
      */
@@ -34,7 +34,7 @@ class RobustStandardizerTest extends TestCase
 
         $this->transformer = new RobustStandardizer(true);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class RobustStandardizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -59,12 +59,12 @@ class RobustStandardizerTest extends TestCase
             ->sample(0);
 
         $this->assertCount(3, $sample);
-        
+
         $this->assertEqualsWithDelta(0, $sample[0], 6);
         $this->assertEqualsWithDelta(0, $sample[1], 6);
         $this->assertEqualsWithDelta(0, $sample[2], 6);
     }
-    
+
     /**
      * @test
      */

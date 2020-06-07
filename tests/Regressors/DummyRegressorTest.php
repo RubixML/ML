@@ -34,7 +34,7 @@ class DummyRegressorTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 10;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -78,11 +78,6 @@ class DummyRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -121,7 +116,7 @@ class DummyRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -140,7 +135,7 @@ class DummyRegressorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -149,5 +144,10 @@ class DummyRegressorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

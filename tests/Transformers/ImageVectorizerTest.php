@@ -37,7 +37,7 @@ class ImageVectorizerTest extends TestCase
 
         $this->transformer = new ImageVectorizer(false);
     }
-    
+
     /**
      * @test
      */
@@ -47,7 +47,7 @@ class ImageVectorizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -56,12 +56,12 @@ class ImageVectorizerTest extends TestCase
         $this->dataset->apply(new ImageResizer(3, 3));
 
         $this->dataset->apply($this->transformer);
-    
+
         $outcome = [
             ['something else', 60, 35, 22, 102, 66, 53, 73, 44, 29, 79, 49, 36, 89, 57, 45, 56,
                 32, 21, 85, 53, 44, 75, 49, 43, 34, 18, 12],
         ];
-    
+
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 }

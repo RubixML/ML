@@ -22,7 +22,7 @@ use function count;
 class Neighborhood implements BinaryNode, Hypercube, Leaf
 {
     use HasBinaryChildren;
-    
+
     /**
      * The dataset stored in the node.
      *

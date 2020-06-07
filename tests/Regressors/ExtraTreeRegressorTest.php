@@ -35,7 +35,7 @@ class ExtraTreeRegressorTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -79,11 +79,6 @@ class ExtraTreeRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -141,7 +136,7 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -169,7 +164,7 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->assertIsString($rules);
     }
-    
+
     /**
      * @test
      */
@@ -179,7 +174,7 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick());
     }
-    
+
     /**
      * @test
      */
@@ -188,5 +183,10 @@ class ExtraTreeRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

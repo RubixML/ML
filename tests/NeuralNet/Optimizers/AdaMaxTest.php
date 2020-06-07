@@ -29,7 +29,7 @@ class AdaMaxTest extends TestCase
     {
         $this->optimizer = new AdaMax(0.001, 0.1, 0.001);
     }
-    
+
     /**
      * @test
      */

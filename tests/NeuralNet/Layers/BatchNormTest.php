@@ -42,7 +42,7 @@ class BatchNormTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\BatchNorm
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -68,7 +68,7 @@ class BatchNormTest extends TestCase
 
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
-    
+
     /**
      * @test
      */
@@ -79,7 +79,7 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

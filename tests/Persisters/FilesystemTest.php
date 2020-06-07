@@ -29,7 +29,7 @@ class FilesystemTest extends TestCase
      * @var string
      */
     protected $path;
-    
+
     /**
      * @before
      */
@@ -40,35 +40,6 @@ class FilesystemTest extends TestCase
         $this->persistable = new DummyClassifier();
 
         $this->persister = new Filesystem($this->path, true, new Native());
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFileNotExists($this->path);
-    }
-    
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Filesystem::class, $this->persister);
-        $this->assertInstanceOf(Persister::class, $this->persister);
-    }
-    
-    /**
-     * @test
-     */
-    public function saveLoad() : void
-    {
-        $this->persister->save($this->persistable);
-
-        $this->assertFileExists($this->path);
-        
-        $model = $this->persister->load();
-
-        $this->assertInstanceOf(DummyClassifier::class, $model);
-        $this->assertInstanceOf(Persistable::class, $model);
     }
 
     /**
@@ -83,5 +54,34 @@ class FilesystemTest extends TestCase
         foreach (glob("$this->path.*.old") ?: [] as $filename) {
             unlink($filename);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Filesystem::class, $this->persister);
+        $this->assertInstanceOf(Persister::class, $this->persister);
+    }
+
+    /**
+     * @test
+     */
+    public function saveLoad() : void
+    {
+        $this->persister->save($this->persistable);
+
+        $this->assertFileExists($this->path);
+
+        $model = $this->persister->load();
+
+        $this->assertInstanceOf(DummyClassifier::class, $model);
+        $this->assertInstanceOf(Persistable::class, $model);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFileNotExists($this->path);
     }
 }

@@ -25,7 +25,7 @@ class NormalTest extends TestCase
     {
         $this->initializer = new Normal(0.05);
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class NormalTest extends TestCase
         $this->assertInstanceOf(Normal::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

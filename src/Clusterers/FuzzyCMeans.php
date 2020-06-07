@@ -47,7 +47,7 @@ use const Rubix\ML\EPSILON;
 class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
-    
+
     /**
      * The target number of clusters.
      *
@@ -146,7 +146,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
-        
+
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
@@ -261,7 +261,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 $means = [];
-                
+
                 foreach ($columns as $column => $values) {
                     $sigma = $total = 0.0;
 

@@ -144,7 +144,7 @@ class FeedForward implements Network
     public function layers() : Traversable
     {
         yield $this->input;
-        
+
         foreach ($this->hidden as $hidden) {
             yield $hidden;
         }
@@ -168,9 +168,7 @@ class FeedForward implements Network
             $input = $hidden->infer($input);
         }
 
-        $activations = $this->output->infer($input)->transpose();
-
-        return $activations;
+        return $this->output->infer($input)->transpose();
     }
 
     /**
@@ -185,10 +183,8 @@ class FeedForward implements Network
         $input = Matrix::quick($dataset->samples())->transpose();
 
         $this->feed($input);
-        
-        $loss = $this->backpropagate($dataset->labels());
 
-        return $loss;
+        return $this->backpropagate($dataset->labels());
     }
 
     /**

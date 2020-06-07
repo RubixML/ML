@@ -42,7 +42,7 @@ class MissingDataImputerTest extends TestCase
 
         $this->transformer = new MissingDataImputer(new Mean(), new KMostFrequent(), '?');
     }
-    
+
     /**
      * @test
      */
@@ -52,7 +52,7 @@ class MissingDataImputerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -67,7 +67,7 @@ class MissingDataImputerTest extends TestCase
         $this->assertThat($this->dataset[1][0], $this->logicalAnd($this->greaterThan(20), $this->lessThan(55)));
         $this->assertContains($this->dataset[3][1], ['friendly', 'mean']);
     }
-    
+
     /**
      * @test
      */

@@ -29,7 +29,9 @@ use PHPUnit\Framework\TestCase;
 class GridSearchTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
+
     protected const TEST_SIZE = 10;
+
     protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
@@ -69,11 +71,6 @@ class GridSearchTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -119,7 +116,7 @@ class GridSearchTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -144,5 +141,10 @@ class GridSearchTest extends TestCase
         $best = $this->estimator->best() ?? [];
 
         $this->assertCount(3, $best);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

@@ -23,7 +23,7 @@ class ScreenTest extends TestCase
     {
         $this->logger = new Screen('default');
     }
-    
+
     /**
      * @test
      */
@@ -33,7 +33,7 @@ class ScreenTest extends TestCase
         $this->assertInstanceOf(Logger::class, $this->logger);
         $this->assertInstanceOf(LoggerInterface::class, $this->logger);
     }
-    
+
     /**
      * @test
      */

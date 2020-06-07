@@ -51,7 +51,7 @@ class NumericStringConverter implements Transformer
 
                         continue 1;
                     }
-                    
+
                     if ($value === self::NAN_PLACEHOLDER) {
                         $value = NAN;
                     }

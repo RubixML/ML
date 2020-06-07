@@ -23,7 +23,7 @@ use function Rubix\ML\argmax;
 class Cluster implements BinaryNode, Hypersphere, Leaf
 {
     use HasBinaryChildren;
-    
+
     /**
      * The dataset stored in the node.
      *

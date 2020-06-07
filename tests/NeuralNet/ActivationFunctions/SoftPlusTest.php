@@ -18,7 +18,7 @@ class SoftPlusTest extends TestCase
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus
      */
     protected $activationFn;
-    
+
     /**
      * @before
      */

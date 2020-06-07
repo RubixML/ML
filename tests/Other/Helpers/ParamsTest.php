@@ -27,7 +27,7 @@ class ParamsTest extends TestCase
             );
         }
     }
-    
+
     /**
      * @test
      */
@@ -42,7 +42,7 @@ class ParamsTest extends TestCase
             );
         }
     }
-    
+
     /**
      * @test
      */
@@ -50,7 +50,7 @@ class ParamsTest extends TestCase
     {
         $this->assertEquals(range(0, 100, 25), Params::grid(0, 100, 5));
     }
-    
+
     /**
      * @test
      * @dataProvider stringifyProvider
@@ -95,7 +95,7 @@ class ParamsTest extends TestCase
             '0=1 1=[0=2 1=3 2=4] 2=5',
         ];
     }
-    
+
     /**
      * @test
      */

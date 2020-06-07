@@ -35,14 +35,14 @@ use RuntimeException;
 class KDNeighborsRegressor implements Estimator, Learner, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *
      * @var int
      */
     protected $k;
-    
+
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *

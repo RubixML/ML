@@ -41,7 +41,7 @@ use const Rubix\ML\EPSILON;
 class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle, RanksSingle;
-    
+
     /**
      * The expected value of the MAD as n goes to ∞.
      *

@@ -35,7 +35,7 @@ use RuntimeException;
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
     use PredictsSingle;
-    
+
     /**
      * The value to assign to outliers when making a prediction.
      *
@@ -179,7 +179,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 
                 continue 1;
             }
-            
+
             if ($this->weighted) {
                 $weights = [];
 

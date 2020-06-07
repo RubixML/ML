@@ -25,7 +25,7 @@ class UniformTest extends TestCase
     {
         $this->initializer = new Uniform(0.05);
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class UniformTest extends TestCase
         $this->assertInstanceOf(Uniform::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

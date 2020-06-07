@@ -37,7 +37,7 @@ class OneClassSVMTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -82,11 +82,6 @@ class OneClassSVMTest extends TestCase
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 
     /**
@@ -172,5 +167,10 @@ class OneClassSVMTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick([[1.5]]));
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

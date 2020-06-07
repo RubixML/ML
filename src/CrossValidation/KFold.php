@@ -77,7 +77,7 @@ class KFold implements Validator, Parallel
 
         for ($i = 0; $i < $this->k; ++$i) {
             $training = Labeled::quick();
-    
+
             foreach ($folds as $j => $fold) {
                 if ($i !== $j) {
                     $training = $training->merge($fold);
@@ -85,7 +85,7 @@ class KFold implements Validator, Parallel
             }
 
             $testing = $folds[$i];
-            
+
             $this->backend->enqueue(
                 new TrainAndValidate($estimator, $training, $testing, $metric)
             );

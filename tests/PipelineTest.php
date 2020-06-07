@@ -30,7 +30,9 @@ use RuntimeException;
 class PipelineTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
+
     protected const TEST_SIZE = 10;
+
     protected const MIN_SCORE = 0.8;
 
     protected const RANDOM_SEED = 0;
@@ -71,11 +73,6 @@ class PipelineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -127,7 +124,7 @@ class PipelineTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -152,7 +149,7 @@ class PipelineTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -161,5 +158,10 @@ class PipelineTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

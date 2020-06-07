@@ -44,11 +44,6 @@ class KDTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertEquals(0, $this->tree->height());
-    }
-
     /**
      * @test
      */
@@ -86,5 +81,10 @@ class KDTreeTest extends TestCase
         $this->assertCount(25, $distances);
 
         $this->assertCount(1, array_unique($labels));
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertEquals(0, $this->tree->height());
     }
 }

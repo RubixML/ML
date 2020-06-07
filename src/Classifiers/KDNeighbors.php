@@ -40,7 +40,7 @@ use const Rubix\ML\EPSILON;
 class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

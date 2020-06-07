@@ -20,7 +20,7 @@ class ZScaleStandardizerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\ZScaleStandardizer
      */
@@ -35,7 +35,7 @@ class ZScaleStandardizerTest extends TestCase
 
         $this->transformer = new ZScaleStandardizer(true);
     }
-    
+
     /**
      * @test
      */
@@ -46,7 +46,7 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -63,12 +63,12 @@ class ZScaleStandardizerTest extends TestCase
             ->sample(0);
 
         $this->assertCount(3, $sample);
-        
+
         $this->assertEqualsWithDelta(0, $sample[0], 6);
         $this->assertEqualsWithDelta(0, $sample[1], 6);
         $this->assertEqualsWithDelta(0, $sample[2], 6);
     }
-    
+
     /**
      * @test
      */

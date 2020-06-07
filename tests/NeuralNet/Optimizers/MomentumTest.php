@@ -21,7 +21,7 @@ class MomentumTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\Momentum
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -29,7 +29,7 @@ class MomentumTest extends TestCase
     {
         $this->optimizer = new Momentum(0.001, 0.1);
     }
-    
+
     /**
      * @test
      */

@@ -20,7 +20,7 @@ class CyclicalTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\Cyclical
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -28,7 +28,7 @@ class CyclicalTest extends TestCase
     {
         $this->optimizer = new Cyclical(0.001, 0.006, 2000);
     }
-    
+
     /**
      * @test
      */

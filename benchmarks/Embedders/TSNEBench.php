@@ -39,7 +39,7 @@ class TSNEBench
 
     /**
      * @Subject
-     * @Iterations(3)
+     * @Iterations(1)
      * @OutputTimeUnit("seconds", precision=3)
      */
     public function apply() : void

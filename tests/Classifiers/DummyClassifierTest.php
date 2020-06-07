@@ -33,7 +33,7 @@ class DummyClassifierTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 10;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -79,11 +79,6 @@ class DummyClassifierTest extends TestCase
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 
     /**
@@ -142,5 +137,10 @@ class DummyClassifierTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

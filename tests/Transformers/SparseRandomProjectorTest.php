@@ -19,7 +19,7 @@ class SparseRandomProjectorTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\SparseRandomProjector
      */
@@ -34,7 +34,7 @@ class SparseRandomProjectorTest extends TestCase
 
         $this->transformer = new SparseRandomProjector(4);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class SparseRandomProjectorTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -62,7 +62,7 @@ class SparseRandomProjectorTest extends TestCase
 
         $this->assertCount(4, $sample);
     }
-    
+
     /**
      * @test
      */

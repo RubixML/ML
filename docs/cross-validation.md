@@ -2,7 +2,9 @@
 Cross Validation (CV) or *out-of-sample* testing is a technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
 
 ## Metrics
-Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below. All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
+Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below.
+
+> **Note:** All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
 
 | Metric | Range | Use Cases | 
 |---|---|---|
@@ -77,7 +79,7 @@ Cross validation [Reports](cross-validation/reports/api.md) give you a deeper se
 | [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | Classification, Anomaly Detection |
 | [Residual Analysis](cross-validation/reports/residual-analysis.md) | Regression |
 
-For example, the [Residual Analysis](cross-validation/reports/residual-analysis.md) report outputs a number of regression metrics in an associative array.
+For example, the [Error Analysis](cross-validation/reports/error-analysis.md) report outputs a variety of regression metrics in an associative array.
 
 ```php
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;

@@ -14,7 +14,7 @@ class CPU
      * @var string
      */
     protected const WIN_CORES = 'wmic cpu get NumberOfCores';
-    
+
     /**
      * The command to return the number of processor cores on Linux.
      *
@@ -50,10 +50,7 @@ class CPU
 
                 preg_match_all(self::CORE_REGEX, $cpuinfo, $matches);
 
-                $cores = count($matches[0]);
-
-                return $cores;
-
+                return count($matches[0]);
             default:
                 throw new RuntimeException('Could not detect number'
                     . ' of processor cores.');

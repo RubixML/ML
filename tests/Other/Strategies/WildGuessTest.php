@@ -17,7 +17,7 @@ class WildGuessTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\WildGuess
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class WildGuessTest extends TestCase
     {
         $this->strategy = new WildGuess();
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class WildGuessTest extends TestCase
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

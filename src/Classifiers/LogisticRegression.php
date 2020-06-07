@@ -332,7 +332,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
-                
+
                 $delta = 0;
             } else {
                 ++$delta;

@@ -37,7 +37,7 @@ class StopWordFilterTest extends TestCase
 
         $this->transformer = new StopWordFilter(['a', 'quick', 'pig', 'à']);
     }
-    
+
     /**
      * @test
      */
@@ -46,20 +46,20 @@ class StopWordFilterTest extends TestCase
         $this->assertInstanceOf(StopWordFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
     public function transform() : void
     {
         $this->dataset->apply($this->transformer);
-    
+
         $expected = [
             ['the  brown fox jumped over the lazy man sitting at  bus stop drinking  can of coke'],
             ['with  dandy umbrella'],
             ['salle  manger'],
         ];
-    
+
         $this->assertEquals($expected, $this->dataset->samples());
     }
 }

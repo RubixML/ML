@@ -25,7 +25,7 @@ class LeCunTest extends TestCase
     {
         $this->initializer = new LeCun();
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class LeCunTest extends TestCase
         $this->assertInstanceOf(LeCun::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

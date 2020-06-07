@@ -35,7 +35,7 @@ class KDNeighborsRegressorTest extends TestCase
      * @var int
      */
     protected const TEST_SIZE = 20;
-    
+
     /**
      * The minimum validation score required to pass the test.
      *
@@ -73,17 +73,12 @@ class KDNeighborsRegressorTest extends TestCase
         $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
         $this->estimator = new KDNeighborsRegressor(5, true, new KDTree());
-        
+
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-    
     /**
      * @test
      */
@@ -112,7 +107,7 @@ class KDNeighborsRegressorTest extends TestCase
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
-    
+
     /**
      * @test
      */
@@ -138,7 +133,7 @@ class KDNeighborsRegressorTest extends TestCase
 
         $this->assertEquals($expected, $this->estimator->params());
     }
-    
+
     /**
      * @test
      */
@@ -146,7 +141,7 @@ class KDNeighborsRegressorTest extends TestCase
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
-        
+
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
@@ -157,7 +152,7 @@ class KDNeighborsRegressorTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
-    
+
     /**
      * @test
      */
@@ -167,7 +162,7 @@ class KDNeighborsRegressorTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick());
     }
-    
+
     /**
      * @test
      */
@@ -177,7 +172,7 @@ class KDNeighborsRegressorTest extends TestCase
 
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
-    
+
     /**
      * @test
      */
@@ -186,5 +181,10 @@ class KDNeighborsRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 }

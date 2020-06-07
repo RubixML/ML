@@ -25,7 +25,7 @@ class HeTest extends TestCase
     {
         $this->initializer = new He();
     }
-    
+
     /**
      * @test
      */
@@ -34,7 +34,7 @@ class HeTest extends TestCase
         $this->assertInstanceOf(He::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
-    
+
     /**
      * @test
      */

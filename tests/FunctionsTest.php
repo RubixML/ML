@@ -25,7 +25,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('maybe', $value);
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('yes', $value);
     }
-    
+
     /**
      * @test
      */

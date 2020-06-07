@@ -19,7 +19,7 @@ class IntervalDiscretizerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\Stateful
      */
@@ -34,7 +34,7 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->transformer = new IntervalDiscretizer(5);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class IntervalDiscretizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -67,7 +67,7 @@ class IntervalDiscretizerTest extends TestCase
         $this->assertContains($sample[2], $outcomes);
         $this->assertContains($sample[3], $outcomes);
     }
-    
+
     /**
      * @test
      */

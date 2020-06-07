@@ -17,7 +17,7 @@ class ConstantTest extends TestCase
      * @var \Rubix\ML\Other\Strategies\Constant
      */
     protected $strategy;
-    
+
     /**
      * @before
      */
@@ -25,7 +25,7 @@ class ConstantTest extends TestCase
     {
         $this->strategy = new Constant(17.0);
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +35,7 @@ class ConstantTest extends TestCase
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
-    
+
     /**
      * @test
      */

@@ -19,7 +19,7 @@ use InvalidArgumentException;
 class Cell implements BinaryNode, Leaf
 {
     use HasBinaryChildren;
-    
+
     /**
      * The approximated depth of this node.
      *

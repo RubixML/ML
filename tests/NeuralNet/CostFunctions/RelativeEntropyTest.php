@@ -26,7 +26,7 @@ class RelativeEntropyTest extends TestCase
     {
         $this->costFn = new RelativeEntropy();
     }
-    
+
     /**
      * @test
      */

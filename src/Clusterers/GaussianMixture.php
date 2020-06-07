@@ -141,7 +141,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
-        
+
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
@@ -275,17 +275,17 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
             foreach ($samples as $sample) {
                 $jll = $this->jointLogLikelihood($sample);
-    
+
                 $total = logsumexp($jll);
 
                 $loss -= $total;
-    
+
                 $dist = [];
-    
+
                 foreach ($jll as $cluster => $likelihood) {
                     $dist[$cluster] = exp($likelihood - $total);
                 }
-    
+
                 $memberships[] = $dist;
             }
 
@@ -451,10 +451,10 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         foreach ($dataset->samples() as $sample) {
             $bestDistance = INF;
             $bestCluster = -1;
-    
+
             foreach ($centroids as $cluster => $centroid) {
                 $distance = $kernel->compute($sample, $centroid);
-    
+
                 if ($distance < $bestDistance) {
                     $bestDistance = $distance;
                     $bestCluster = $cluster;

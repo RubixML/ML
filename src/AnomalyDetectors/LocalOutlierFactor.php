@@ -39,7 +39,7 @@ use const Rubix\ML\EPSILON;
 class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle, RanksSingle;
-    
+
     /**
      * The default minimum anomaly score for a sample to be flagged.
      *
@@ -78,7 +78,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     protected $kdistances = [
         //
     ];
- 
+
     /**
      * The precomputed local reachability densities of the training set.
      *
@@ -197,12 +197,12 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 
             $iHat[] = $indices;
             $dHat[] = $distances;
-            
+
             $this->kdistances[] = end($distances);
         }
 
         $this->lrds = array_map([self::class, 'localReachabilityDensity'], $iHat, $dHat);
-        
+
         if (isset($this->contamination)) {
             $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
@@ -253,7 +253,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
         $lrd = $this->localReachabilityDensity($indices, $distances);
 
         $ratios = [];
-        
+
         foreach ($indices as $index) {
             $ratios[] = $this->lrds[$index] / $lrd;
         }

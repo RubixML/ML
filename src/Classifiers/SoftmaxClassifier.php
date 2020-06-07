@@ -47,7 +47,7 @@ use function count;
 class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
-    
+
     /**
      * The number of training samples to process at a time.
      *
@@ -288,7 +288,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     {
         if ($this->network == null) {
             $this->train($dataset);
-            
+
             return;
         }
 
@@ -329,7 +329,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
-                
+
                 $delta = 0;
             } else {
                 ++$delta;

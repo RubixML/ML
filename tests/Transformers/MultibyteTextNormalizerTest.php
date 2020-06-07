@@ -38,7 +38,7 @@ class MultibyteTextNormalizerTest extends TestCase
 
         $this->transformer = new MultibyteTextNormalizer();
     }
-    
+
     /**
      * @test
      */
@@ -47,14 +47,14 @@ class MultibyteTextNormalizerTest extends TestCase
         $this->assertInstanceOf(MultibyteTextNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
     public function transform() : void
     {
         $this->dataset->apply($this->transformer);
-    
+
         $outcome = [
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
@@ -62,7 +62,7 @@ class MultibyteTextNormalizerTest extends TestCase
             ['depuis qu’il avait emménagé à côté de chez elle, il y a de ça cinq ans.'],
             ['working with emoji 🤓'],
         ];
-    
+
         $this->assertEquals($outcome, $this->dataset->samples());
     }
 }

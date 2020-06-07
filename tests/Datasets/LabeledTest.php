@@ -840,7 +840,7 @@ class LabeledTest extends TestCase
                     'median' => -1.25,
                     '75%' => -1.125,
                     'max' => -1.0,
-                    
+
                 ],
             ],
         ];
@@ -912,7 +912,7 @@ class LabeledTest extends TestCase
     public function toJson() : void
     {
         $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
-            
+
         $this->assertEquals($expected, $this->dataset->toJSON());
     }
 
@@ -927,7 +927,7 @@ class LabeledTest extends TestCase
         . '["mean","rough","friendly",-1,"monster"]' . PHP_EOL
         . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
         . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
-            
+
         $this->assertEquals($expected, $this->dataset->toNDJSON());
     }
 
@@ -942,7 +942,7 @@ class LabeledTest extends TestCase
             . 'mean,rough,friendly,-1,monster' . PHP_EOL
             . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
             . 'nice,furry,loner,-5,not monster' . PHP_EOL;
-            
+
         $this->assertEquals($expected, $this->dataset->toCSV());
     }
 
@@ -1002,7 +1002,7 @@ class LabeledTest extends TestCase
             ['nice', 'rough', 'friendly', 2.9, 'not monster'],
             ['nice', 'furry', 'loner', -5.0, 'not monster'],
         ];
-        
+
         $this->assertEquals($expected, iterator_to_array($this->dataset));
     }
 }

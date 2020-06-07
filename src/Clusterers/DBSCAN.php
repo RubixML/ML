@@ -40,7 +40,7 @@ class DBSCAN implements Estimator
      * @var int
      */
     public const START_CLUSTER = 0;
-    
+
     /**
      * The cluster number assigned to noise samples.
      *
@@ -143,7 +143,7 @@ class DBSCAN implements Estimator
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $this->tree->grow($dataset);
-        
+
         $cluster = self::START_CLUSTER;
 
         $predictions = [];

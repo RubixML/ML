@@ -45,7 +45,7 @@ class DenseTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Dense
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -72,7 +72,7 @@ class DenseTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -83,7 +83,7 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

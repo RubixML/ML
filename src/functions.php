@@ -55,7 +55,7 @@ namespace Rubix\ML
                 }
 
                 return $columns;
-            
+
             default:
                 return array_map(null, ...$table);
         }

@@ -22,7 +22,7 @@ class SamplesAreCompatibleWithTransformer
     public static function check(Dataset $dataset, Transformer $transformer) : void
     {
         $compatibility = $transformer->compatibility();
-        
+
         $types = $dataset->uniqueTypes();
 
         $same = array_intersect($types, $compatibility);

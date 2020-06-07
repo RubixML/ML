@@ -34,7 +34,7 @@ class VarianceThresholdFilterTest extends TestCase
 
         $this->transformer = new VarianceThresholdFilter(2);
     }
-    
+
     /**
      * @test
      */
@@ -44,7 +44,7 @@ class VarianceThresholdFilterTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -59,11 +59,11 @@ class VarianceThresholdFilterTest extends TestCase
             ->sample(0);
 
         $this->assertCount(2, $sample);
-        
+
         $this->assertEqualsWithDelta(0, $sample[0], 3);
         $this->assertEqualsWithDelta(0, $sample[1], 15);
     }
-    
+
     /**
      * @test
      */

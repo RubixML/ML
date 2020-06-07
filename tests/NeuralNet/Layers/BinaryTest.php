@@ -38,7 +38,7 @@ class BinaryTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Binary
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -56,7 +56,7 @@ class BinaryTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -66,7 +66,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
-    
+
     /**
      * @test
      */

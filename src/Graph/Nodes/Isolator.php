@@ -23,7 +23,7 @@ use const Rubix\ML\PHI;
 class Isolator implements BinaryNode
 {
     use HasBinaryChildren;
-    
+
     /**
      * The feature column (index) of the split value.
      *

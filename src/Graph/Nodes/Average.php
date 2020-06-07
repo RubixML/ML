@@ -17,7 +17,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 class Average implements Outcome, Leaf
 {
     use HasBinaryChildren;
-    
+
     /**
      * The average of the labels contained within.
      *
@@ -38,7 +38,7 @@ class Average implements Outcome, Leaf
      * @var int
      */
     protected $n;
-    
+
     /**
      * @param int|float $outcome
      * @param float $impurity

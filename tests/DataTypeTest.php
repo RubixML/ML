@@ -77,7 +77,7 @@ class DataTypeTest extends TestCase
     {
         $this->assertSame(DataType::CONTINUOUS, $this->type->code());
     }
-    
+
     /**
      * @test
      */
@@ -85,7 +85,7 @@ class DataTypeTest extends TestCase
     {
         $this->assertFalse($this->type->isCategorical());
     }
-    
+
     /**
      * @test
      */
@@ -101,7 +101,7 @@ class DataTypeTest extends TestCase
     {
         $this->assertFalse($this->type->isImage());
     }
-        
+
     /**
      * @test
      */

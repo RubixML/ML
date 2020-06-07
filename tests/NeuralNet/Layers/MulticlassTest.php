@@ -38,7 +38,7 @@ class MulticlassTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Layers\Multiclass
      */
     protected $layer;
-    
+
     /**
      * @before
      */
@@ -58,7 +58,7 @@ class MulticlassTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -68,7 +68,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
-    
+
     /**
      * @test
      */
@@ -77,7 +77,7 @@ class MulticlassTest extends TestCase
         $this->layer->initialize(3);
 
         $this->assertEquals(3, $this->layer->width());
-        
+
         $forward = $this->layer->forward($this->input);
 
         $expected = [

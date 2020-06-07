@@ -27,7 +27,7 @@ class RandomHotDeckImputerTest extends TestCase
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
-    
+
     /**
      * @var \Rubix\ML\Transformers\RandomHotDeckImputer
      */
@@ -53,7 +53,7 @@ class RandomHotDeckImputerTest extends TestCase
 
         srand(self::RANDOM_SEED);
     }
-    
+
     /**
      * @test
      */
@@ -63,7 +63,7 @@ class RandomHotDeckImputerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
-    
+
     /**
      * @test
      */
@@ -78,7 +78,7 @@ class RandomHotDeckImputerTest extends TestCase
         $this->assertEquals(30, $this->dataset[1][0]);
         $this->assertEquals(0.001, $this->dataset[3][1]);
     }
-    
+
     /**
      * @test
      */

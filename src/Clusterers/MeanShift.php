@@ -314,7 +314,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         $this->steps = [];
 
         $previous = $centroids;
- 
+
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             foreach ($centroids as $i => &$centroidA) {
                 [$samples, $indices, $distances] = $this->tree->range($centroidA, $this->radius);

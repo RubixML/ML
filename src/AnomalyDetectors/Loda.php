@@ -48,7 +48,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
      * @var int
      */
     protected const MIN_BINS = 3;
-    
+
     /**
      * The minimum dimensionality required to produce sparse projections.
      *
@@ -345,7 +345,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     protected function densities(Matrix $projections) : array
     {
         $densities = array_fill(0, $projections->n(), 0.0);
-    
+
         foreach ($projections->asArray() as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 

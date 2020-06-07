@@ -20,7 +20,7 @@ class StochasticTest extends TestCase
      * @var \Rubix\ML\NeuralNet\Optimizers\Stochastic
      */
     protected $optimizer;
-    
+
     /**
      * @before
      */
@@ -28,7 +28,7 @@ class StochasticTest extends TestCase
     {
         $this->optimizer = new Stochastic(0.001);
     }
-    
+
     /**
      * @test
      */

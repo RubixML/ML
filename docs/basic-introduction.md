@@ -120,7 +120,7 @@ use Rubix\ML\CrossValidation\HoldOut;
 $validator = new HoldOut(0.2);
 ```
 
-The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use to score the estimator with is the [Accuracy](cross-validation/metrics/accuracy.md) metric which is defined as the number of true positives over the total number of predictions. For example, a score of 1 indicates that the estimator was perfect in predicting the correct class label.
+The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/en/latest/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use is the [Accuracy](cross-validation/metrics/accuracy.md) metric which is defined as the number of true positives over the total number of predictions. For example, if the estimator returned 10 out of 10 correct predictions then its accuracy would be 1.
 
 To return a score from the Hold Out validator using the Accuracy metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
 
@@ -136,10 +136,10 @@ var_dump($score);
 ```
 
 ```sh
-float(0.85)
+float(0.90)
 ```
 
-The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 85% accurate. Nice work!
+The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 90% accurate. Nice work!
 
 > **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 

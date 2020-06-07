@@ -26,7 +26,7 @@ class HomogeneityTest extends TestCase
     {
         $this->metric = new Homogeneity();
     }
-    
+
     /**
      * @test
      */

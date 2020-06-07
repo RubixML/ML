@@ -18,7 +18,7 @@ class MedianAbsoluteErrorTest extends TestCase
      * @var \Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError
      */
     protected $metric;
-    
+
     /**
      * @before
      */
