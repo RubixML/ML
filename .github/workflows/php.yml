@@ -2,20 +2,37 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
+          tools: pecl
+          extensions: svm, mbstring, redis, igbinary, gd
+          ini-values: memory_limit=-1    
 
-    - name: Build
-      run: composer run-script build
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Static Analysis
+        run: composer run-script analyze
+
+      - name: Unit Tests
+        run: composer run-script test
+
+      - name: Coding Style
+        run: composer run-script check
