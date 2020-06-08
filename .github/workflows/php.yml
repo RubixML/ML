@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Build
 
 on:
   push:
@@ -9,15 +9,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest, macos-latest]
+        php-versions: ['7.2', '7.3', '7.4']
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.2'
+          php-version: ${{ matrix.php-versions }}
           tools: pecl
           extensions: svm, mbstring, redis, igbinary, gd
           ini-values: memory_limit=-1    
@@ -25,14 +31,14 @@ jobs:
       - name: Validate composer.json
         run: composer validate
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install Dependencies
+        run: composer install
 
       - name: Static Analysis
-        run: composer run-script analyze
+        run: composer analyze
 
-      - name: Unit Tests
-        run: composer run-script test
+      - name: Run Unit Tests
+        run: composer test
 
-      - name: Coding Style
-        run: composer run-script check
+      - name: Check Coding Style
+        run: composer check
