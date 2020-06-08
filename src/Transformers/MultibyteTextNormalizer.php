@@ -11,7 +11,7 @@ use Rubix\ML\DataType;
  * Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters
  * of non roman alphabets such as Chinese and Cyrillic.
  *
- * > **Note:** ⚠️ We recommend you install the Multibyte string extension for best performance.
+ * > **Note:** ⚠️ We recommend you install the mbstring extension for best performance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

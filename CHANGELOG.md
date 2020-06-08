@@ -1,5 +1,5 @@
 - 0.1.0-rc4
-    - Added Multibyte Text Normalizer
+    - Added Multibyte Text Normalizer transformer
     - V Measure now has adjustable beta parameter
     - Persistent Model is no longer Verbose
     - Stop Word Filter now handles unicode characters

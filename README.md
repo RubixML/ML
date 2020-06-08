@@ -22,7 +22,7 @@ $ composer require rubix/ml
 
 - [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [Multibyte string extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
+- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
