@@ -5,20 +5,30 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 
 /**
- * Multibyte Text Normalizer
+ * Whitespace Trimmer
  *
- * This transformer converts the characters in all multibyte strings to lowercase. Multibyte
- * strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of
- * non roman alphabets such as Chinese and Cyrillic.
- *
- * > **Note:** ⚠️ We recommend you install the mbstring extension for best performance.
+ * Trims extra whitespace from all strings in the dataset.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Maxime Colin
+ * @author      Andrew DalPino
  */
-class MultibyteTextNormalizer implements Transformer
+class WhitespaceTrimmer implements Transformer
 {
+    /**
+     * A pattern to match whitespace.
+     *
+     * @var string
+     */
+    protected const SPACES_REGEX = '/\s+/';
+
+    /**
+     * A whitespace character.
+     *
+     * @var string
+     */
+    protected const SPACE = ' ';
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -39,7 +49,7 @@ class MultibyteTextNormalizer implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (is_string($value)) {
-                    $value = mb_strtolower($value);
+                    $value = preg_replace(self::SPACES_REGEX, self::SPACE, trim($value));
                 }
             }
         }

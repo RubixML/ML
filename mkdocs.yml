@@ -144,6 +144,7 @@ nav:
     - Text Normalizer: transformers/text-normalizer.md
     - Multibyte Text Normalizer: transformers/multibyte-text-normalizer.md
     - Stop Word Filter: transformers/stop-word-filter.md
+    - Whitespace Trimmer: transformers/whitespace-trimmer.md
 - Neural Network:
   - Activation Functions:
     - ELU: neural-network/activation-functions/elu.md

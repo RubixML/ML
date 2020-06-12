@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MultibyteTextNormalizer.php">[source]</a></span>
 
 # Multibyte Text Normalizer
-This transformer converts all [multibyte text](https://www.php.net/manual/en/intro.mbstring.php) to lowercase and removes extra whitespace. Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of non roman alphabets such as Chinese and Cyrillic.
+This transformer converts the characters in all [multibyte strings](https://www.php.net/manual/en/intro.mbstring.php) to lowercase. Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of non roman alphabets such as Chinese and Cyrillic.
 
 > **Note:** ⚠️ We recommend you install the [mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for best performance.
  

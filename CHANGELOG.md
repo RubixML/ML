@@ -1,3 +1,7 @@
+- Unreleased
+    - Whitespace Trimmer is now a separate transformer
+    - Text Normalizers no longer remove extra whitespace
+
 - 0.1.0-rc4
     - Added Multibyte Text Normalizer transformer
     - V Measure now has adjustable beta parameter

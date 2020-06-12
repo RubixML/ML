@@ -1,13 +1,13 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/TextNormalizer.php">[source]</a></span>
 
 # Text Normalizer
-This transformer converts all text to lowercase and removes extra whitespace.
+This transformer converts the characters in all strings to lowercase.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
 **Data Type Compatibility:** Categorical
 
-> **Note:** ⚠️ This transformer can't handle multibyte text properly. For multibyte text, use [MultibyteTextNormalizer](multibyte-text-normalizer.md).
+> **Note:** ⚠️ This transformer cannot handle multibyte strings such as emjois properly. For multibyte support, use the [MultibyteTextNormalizer](multibyte-text-normalizer.md).
 
 ## Parameters
 This transformer does not have any parameters.

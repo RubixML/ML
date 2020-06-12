@@ -4,14 +4,14 @@ namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\TextNormalizer;
+use Rubix\ML\Transformers\WhitespaceTrimmer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @covers \Rubix\ML\Transformers\TextNormalizer
+ * @covers \Rubix\ML\Transformers\WhitespaceTrimmer
  */
-class TextNormalizerTest extends TestCase
+class WhitespaceTrimmerTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -19,7 +19,7 @@ class TextNormalizerTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TextNormalizer
+     * @var \Rubix\ML\Transformers\WhitespaceTrimmer
      */
     protected $transformer;
 
@@ -29,12 +29,12 @@ class TextNormalizerTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            ['The quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of Coke'],
-            ['with a Dandy   umbrella'],
+            ['The quick brown fox jumped  over  the lazy man sitting at a bus'
+                . ' stop drinking a can of     Coke'],
+            [' with a Dandy   umbrella '],
         ]);
 
-        $this->transformer = new TextNormalizer();
+        $this->transformer = new WhitespaceTrimmer();
     }
 
     /**
@@ -42,7 +42,7 @@ class TextNormalizerTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
+        $this->assertInstanceOf(WhitespaceTrimmer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -54,9 +54,9 @@ class TextNormalizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $outcome = [
-            ['the quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of coke'],
-            ['with a dandy   umbrella'],
+            ['The quick brown fox jumped over the lazy man sitting at a bus'
+                . ' stop drinking a can of Coke'],
+            ['with a Dandy umbrella'],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());

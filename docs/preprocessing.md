@@ -123,6 +123,7 @@ For natural language processing (NLP) tasks, cleaning the text will help elimina
 - [Text Normalizer](transformers/text-normalizer.md)
 - [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md)
 - [Stop Word Filter](transformers/stop-word-filter.md)
+- [Whitespace Trimmer](transformers/whitespace-trimmer.md)
 
 ## Image Processing
 For computer vision tasks, images may need to be processed to ensure they are the correct size and shape. Other forms of image processing may include color correction and blurring/sharpening.
