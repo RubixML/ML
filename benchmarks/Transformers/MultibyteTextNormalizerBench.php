@@ -27,12 +27,12 @@ class MultibyteTextNormalizerBench
 
     public function setUp() : void
     {
-        $k = (int) strlen(self::SAMPLE_TEXT) / 8;
+        $k = (int) mb_strlen(self::SAMPLE_TEXT) / 8;
 
         $samples = [];
 
         for ($i = 0; $i < self::DATASET_SIZE; ++$i) {
-            $samples[] = str_split(str_shuffle(self::SAMPLE_TEXT), $k) ?: [];
+            $samples[] = mb_str_split(self::SAMPLE_TEXT, $k) ?: [];
         }
 
         $this->dataset = new Unlabeled($samples);
