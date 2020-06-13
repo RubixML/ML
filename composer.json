@@ -4,6 +4,7 @@
     "description": "A high-level machine learning and deep learning library for the PHP language.",
     "homepage": "https://rubixml.com",
     "license": "MIT",
+    "readme": "README.md",
     "keywords": [
         "php", "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",
         "regression", "clustering", "anomaly-detection", "neural-network", "manifold-learning",
@@ -19,7 +20,6 @@
         },
         {
             "name": "Core Team",
-            "email": "support@rubixml.com",
             "homepage": "https://github.com/orgs/RubixML/teams/core"
         },
         {
@@ -43,6 +43,7 @@
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
+        "rubix/extras": "For experimental features",
         "ext-svm": "For Support Vector Machine engine (libsvm)",
         "ext-mbstring": "For fast multibyte string manipulation",
         "ext-gd": "For image manipulation",
@@ -82,10 +83,21 @@
         "sort-packages": true,
         "process-timeout": 3000
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/RubixML"
+        },
+        {
+            "type": "patreon",
+            "url": "https://www.patreon.com/rubixml"
+        }
+    ],
     "support": {
-        "email": "support@rubixml.com",
+        "docs": "https://docs.rubixml.com/en/latest",
         "issues": "https://github.com/RubixML/RubixML/issues",
         "source": "https://github.com/RubixML/RubixML",
-        "docs": "https://docs.rubixml.com/en/latest"
+        "chat": "https://t.me/RubixML",
+        "email": "support@rubixml.com"
     }
 }
