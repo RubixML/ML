@@ -9,7 +9,7 @@
         "php", "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",
         "regression", "clustering", "anomaly-detection", "neural-network", "manifold-learning",
         "dimensionality-reduction", "artificial-intelligence", "ai", "cross-validation", "feature-extraction",
-        "deep-learning", "rubix", "ml", "analytics", "naive-bayes", "k-means", "k-nearest-neighbors"
+        "deep-learning", "rubix", "ml", "analytics", "naive-bayes", "k-means", "k-nearest-neighbors", "recommendation" 
     ],
     "authors": [
         {
