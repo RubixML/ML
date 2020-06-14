@@ -1,18 +1,20 @@
 # Inference
-Inference is the process of making predictions using an estimator. You can think of an estimator as *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training.
+Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of unknown samples.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators can take on any one of these types depending on the base estimator that it wraps.
 
-| Estimator Type | Output Prediction | Examples |
+| Estimator Type | Prediction | PHP Type |
 |---|---|---|
-| Classifier | A categorical class label | cat, dog, ship |
-| Regressor | A continuous value | 490,000 or 1.67592 |
-| Clusterer | A discrete cluster number | 0, 1, 2, ..., n |
-| Anomaly Detector | 1 for an anomaly, 0 otherwise | 0 or 1 |
+| Classifier | Class label | String |
+| Regressor | Number | Integer or Floating Point Number |
+| Clusterer | Discrete cluster number | Integer |
+| Anomaly Detector | 1 for an anomaly, 0 otherwise | Integer |
 
 ## Making Predictions
-All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array. To return the predictions, pass the estimator a dataset containing unknown (unlabeled) samples with the same features that were used to train the model.
+All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array.
+
+**Note:** The dataset used for inference must contain the same features (and in the same order) as the dataset used to train the learner.
 
 ```php
 $predictions = $estimator->predict($dataset);
@@ -32,7 +34,7 @@ array(3) {
 ```
 
 ## Single Predictions
-Sometimes, you'll just want to make a prediction on a single sample instead of an entire dataset. To return a single prediction from the model, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface ensuring that the features are given in the same order as when the learner was trained.
+Sometimes, you'll just want to make a prediction on a single sample instead of an entire dataset. To return a single prediction from the model, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface.
 
 ```php
 $prediction = $estimator->predictSample([0.25, 3, 'furry']);
@@ -45,7 +47,7 @@ string(3) "cat"
 ```
 
 ## Estimation of Probabilities
-Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have a `proba()` method that outputs the joint probability estimates for each class or cluster number as shown in the example below.
+Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have the `proba()` method that computes the joint probability estimates for each class or cluster number as shown in the example below.
 
 ```php
 $probabilities = $estimator->proba($dataset);  
@@ -67,7 +69,7 @@ array(2) {
 ```
 
 ## Ranking Samples
-Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples. Samples can be sorted by their anomaly score and the top samples can be flagged for further analysis.
+Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Unnormalized anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples. In a common scenario, samples are sorted by their anomaly score and the top samples are then be flagged for further analysis.
 
 ```php
 $scores = $estimator->rank($dataset);

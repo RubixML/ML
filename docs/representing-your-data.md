@@ -10,11 +10,11 @@ $samples = [
 ```
 
 ## High-level Data Types
-The library comes with a higher-order type system which distinguishes types that are continuous (numerical), categorical (discrete), or some other data type. Continuous features represent some *quantitative* property of the sample such as *age* or *velocity*, whereas categorical features form a *qualitative* property such as *rough* or *furry*.
+The library comes with a built-in higher-order type system which distinguishes types that are continuous (numerical), categorical (discrete), or some other data type. Continuous features represent some *quantitative* property of the sample such as *age* or *velocity*, whereas categorical features form a *qualitative* property such as *rough* or *furry*.
 
 | Rubix ML Data Type | PHP Internal Type |
 |---|---|
-| Continuous | Integer or Float |
+| Continuous | Integer or Floating Point Number |
 | Categorical | String |
 | Image | GD Resource |
 
@@ -31,13 +31,13 @@ A boolean (or *binary*) variable is a special case of a categorical variable in 
 Even though PHP treats numeric strings like `'1'` and `'2'` as if they were numeric, they are still considered categorical variables in Rubix ML. This conveniently allows you to represent ordinal variables as *ordered categories*. For example, instead of the integers `1`, `2`, `3`, `...`, which imply a precise interval, you could use the strings `'1'`, `'2'`, `'3'`, `...` to signal ordinal values in which the distances between values could be arbitrary.
 
 ## Date/Time
-There are a number of ways datetime features can be represented in a dataset. One way is to discretize the value into days, months, and/or years using categories like `1`, `2`, `3`, `...`, `june`, `july`, `august`, and `2019`, `2020` etc. Datetime features can also be represented as continuous by converting them to integer-valued timestamps.
+There are a number of ways datetime features can be represented in a dataset. One way is to discretize the value into days, months, and/or years using categories like `1`, `2`, `3`, `...`, `june`, `july`, `august`, and `2019`, `2020` etc. Datetimes can also be represented as continuous features by converting them to numerical timestamps.
 
 ## Text
-Text data are a product of language communication and can be viewed as an encoding of many individual features. Initially, text blobs are imported as categorical, however, they have little meaning as a category because the features are still encoded. Thus, import text blobs as simple strings and use a [preprocessing](preprocessing.md) step to extract features such as word counts, weighted term frequencies, or word embeddings.
+Text data are a product of language communication and can be viewed as an encoding of many individual features. Initially, text blobs are imported as categorical features, however, they have little meaning as a category because the features are still encoded. Thus, import text blobs and use a [preprocessing](preprocessing.md) step to extract features such as word counts, weighted term frequencies, or word embeddings.
 
 ## Images
-Images are represented as the [GD](https://www.php.net/manual/en/book.image.php) resource type. A resource is a special variable that holds a reference to some external data such as an image file. For this reason, resources must eventually be converted into a scalar type before use with a learner. In the case of images, they will most often be converted to raw color channel data by reading the RGB intensities of each pixel.
+Images are represented as the [GD](https://www.php.net/manual/en/book.image.php) resource type. A resource is a special variable that holds a reference to some external data such as an image file. For this reason, resources must eventually be converted before use with a learner. In the case of images, they will most often be converted to raw color channel data by reading the RGB intensities of each pixel.
 
 ## What about NULL?
 Null values are used to indicate the absence of a value, however since it does not give any information as to the *type* of the variable that is missing, it cannot be used in a dataset. Instead, represent missing values as either `NaN` for continuous features or use a separate category (such as `?`) to denote missing categorical values.

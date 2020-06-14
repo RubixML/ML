@@ -1,5 +1,5 @@
 # Training
-Most estimators have the ability to be trained using a dataset. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners require a dataset with labels. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build a model. Every learner has a unique way of learning but no matter *how* it works under the hood the training API is the same.
+Most estimators have the ability to be trained using a dataset. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners require a dataset with labels. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model. Every learner has a unique way of learning but no matter *how* it works under the hood the training API is the same.
 
 To begin training a learner, pass a dataset object to the `train()` method on the learner instance like in the example below.
 
@@ -8,7 +8,7 @@ $estimator->train($dataset);
 ```
 
 ## Batch vs Online Learning
-Batch learning is when a learner is trained in full using only one dataset in a single session. Calling the `train()` method on a learner instance is an example of batch learning. In contrast, *online* learning occurs when a learner is trained over multiple sessions with multiple datasets as small as a single sample each. Learners that are capable of being partially trained like this implement the [Online](online.md) interface which includes the `partial()` method for training in an online scheme. Subsequent calls to the `partial()` method will continue training where the learner left off since the last training session. Online learning is especially useful for when you have a dataset that is too large to fit into memory all at once.
+Batch learning is when a learner is trained in full using only one dataset in a single session. Calling the `train()` method on a learner instance is an example of batch learning. In contrast, *online* learning occurs when a learner is trained over multiple sessions with multiple datasets as small as a single sample each. Learners that are capable of being partially trained like this implement the [Online](online.md) interface which includes the `partial()` method for training in an online scheme. Subsequent calls to the `partial()` method will continue training where the learner left off. Online learning is especially useful for when you have a dataset that is too large to fit into memory all at once.
 
 ```php
 $folds = $dataset->fold(3);
@@ -23,7 +23,7 @@ $estimator->partial($folds[2]);
 > **Note:** After the initial training, the learner will expect subsequent datasets to contain the same count and order of features.
 
 ## Monitoring Progress
-Since training is often an iterative process, it is useful to obtain real-time feedback as to how the learner is progressing. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback can indicate model overfitting or improperly tuned hyper-parameters. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with a [Screen Logger](other/loggers/screen.md) that does the job for most cases.
+Since training is often an iterative process, it is useful to obtain feedback as to how the learner is progressing in real-time. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback can indicate model overfitting or improperly tuned hyper-parameters. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with a [Screen Logger](other/loggers/screen.md) that does the job for most cases.
 
 ```php
 use Rubix\ML\Other\Loggers\Screen;
@@ -53,10 +53,14 @@ $estimator->train($dataset);
 ```
 
 ## Feature Importances
-Learners that implement the [Ranks Features](ranks-features.md) interface can determine the importance of each feature in the training set. Feature importances are defined as the degree to which an individual feature influences the model. Feature importances are useful for feature selection and for helping to explain predictions derived from a model. To output the normalized importance scores, call the `featureImportances()` method of a trained learner that implements the Ranks Features interface.
+Learners that implement the [Ranks Features](ranks-features.md) interface can evaluate the importance of each feature in the training set. Feature importances are defined as the degree to which an individual feature influences the model. Feature importances are useful for feature selection and for helping to explain predictions derived from a model. To output the normalized importance scores, call the `featureImportances()` method of a trained learner that implements the Ranks Features interface.
 
 ```php
-// ...
+use Rubix\ML\Classifiers\ClassificationTree;
+
+// Import dataset
+
+$estimator = new ClassificationTree(10);
 
 $estimator->train($dataset);
 
@@ -73,3 +77,5 @@ array(4) {
   [3]=> float(0.041239516522901)
 }
 ```
+
+In this example, feature columns 1 and 2 are the most important whereas 0 and 3 only contribute a small amount to the model.

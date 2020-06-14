@@ -1,27 +1,36 @@
 # Cross Validation
-Cross Validation (CV) or *out-of-sample* testing is a technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
+Cross Validation (CV) is a technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
 
 ## Metrics
-Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an estimator with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below.
+Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an [Estimator](estimator.md) with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below.
 
 > **Note:** All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
 
-| Metric | Range | Use Cases | 
-|---|---|---|
-| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | Classification |
-| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | Clustering |
-| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | Classification, Anomaly Detection |
-| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | Clustering |
-| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | Classification, Anomaly Detection |
-| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | Classification, Anomaly Detection |
-| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | Regression |
-| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | Regression |
-| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | Regression |
-| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | Regression |
-| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | Clustering |
-| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | Regression | 
-| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | Regression |
-| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | Clustering |
+### Classification and Anomaly Detection
+| Metric | Range | 
+|---|---|
+| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] |
+| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] |
+| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] |
+| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] |
+
+### Regression
+| Metric | Range | 
+|---|---|
+| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] |
+| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] |
+| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] |
+| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] |
+| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] |
+
+### Clustering
+| Metric | Range | 
+|---|---|
+| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] |
+| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] |
+| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] |
 
 To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.
 
@@ -40,7 +49,7 @@ float(0.85)
 ```
 
 ## Validators
-Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm employed under the hood.
+Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm employed under the hood. Most validators implement the [Parallel](parallel.md) interface which allows multiple tests to be run at the same time on multiple CPU cores.
 
 | Validator | Test Coverage | Parallel |
 |---|---|---|
@@ -49,7 +58,7 @@ Metrics can be used stand-alone or they can be used within a [Validator](cross-v
 | [Leave P Out](cross-validation/leave-p-out.md) | Full | ● |
 | [Monte Carlo](cross-validation/monte-carlo.md) | Partial | ● |
 
-For example, the K Fold validator automatically selects one of k *folds* of the dataset to use as a validation set and then uses the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. To begin cross validation, pass an untrained learner, a labeled dataset, and the chosen validation metric to the Validator's `test()` method.
+For example, the K Fold validator automatically selects one of k *folds* of the dataset to use as a validation set and then uses the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. The final score is then an average of the k validation scores returned by each test. To begin, pass an untrained [Learner](learner.md), a [Labeled](datasets/labeled.md) dataset, and the chosen validation metric to the validator's `test()` method.
 
 ```php
 use Rubix\ML\CrossValidation\KFold;
@@ -70,16 +79,19 @@ float(0.9175)
 ```
 
 ## Reports
-Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with finer-grained information than a Metric. The `generate()` method takes a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with information. 
+Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method takes a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with useful statistics.
 
-| Report | Use Cases | 
-|---|---|
-| [Confusion Matrix](cross-validation/reports/confusion-matrix.md) | Classification, Anomaly Detection |
-| [Contingency Table](cross-validation/reports/contingency-table.md) | Clustering |
-| [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | Classification, Anomaly Detection |
-| [Residual Analysis](cross-validation/reports/residual-analysis.md) | Regression |
+### Classification and Anomaly Detection
+- [Confusion Matrix](cross-validation/reports/confusion-matrix.md)
+- [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md)
 
-For example, the [Error Analysis](cross-validation/reports/error-analysis.md) report outputs a variety of regression metrics in an associative array.
+### Regression
+- [Error Analysis](cross-validation/reports/error-analysis.md)
+
+### Clustering
+- [Contingency Table](cross-validation/reports/contingency-table.md)
+
+For example, the [Error Analysis](cross-validation/reports/error-analysis.md) report computes a variety of regression metrics.
 
 ```php
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;

@@ -30,7 +30,7 @@ Classifiers can be assessed by their ability to form decision boundaries around 
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
-In regression, flexibility is expressed in the ability of a regressor to model the process that generated the outcomes of the training data. Simple models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and outcome and tend to underfit data that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex processes but are more prone to overfitting if not tuned properly.
+In regression, flexibility is expressed by the ability of a regressor to model the function that generated the outcomes of the training samples. Simple models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and outcome and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
 
 | Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@ In regression, flexibility is expressed in the ability of a regressor to model t
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers express flexibility by their ability to represent an outer hull surrounding the samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters. This is great for clusters that are linearly separable, however, breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular and *bumpy*.
+Clusterers express flexibility by their capacity to represent an outer hull surrounding samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters and potentially with overlap. This is great for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be highly irregular.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -57,7 +57,7 @@ Clusterers express flexibility by their ability to represent an outer hull surro
 | [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
-Anomaly Detectors fall into one of two groups - there are those that consider the entire training data when determining an anomaly, and there are those that only consider a *local region* of the training set. Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are more suited for real-time applications but may produce a higher number of false positives and/or negatives.
+Anomaly Detectors fall into one of two groups - there are those that consider the entire training data when determining an anomaly, and there are those that focus on a *local region* of the training set. Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are more suited for real-time applications but may produce a higher number of false positives and/or negatives.
 
 | Anomaly Detector | Scope | Ranking | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -71,21 +71,25 @@ Anomaly Detectors fall into one of two groups - there are those that consider th
 ## Meta-estimators
 Meta-estimators wrap and enhance other estimators with extra functionality. They are polymorphic in the sense that they take on the type of the base estimator they wrap. A characteristic feature of meta-estimators that implement the [Wrapper](wrapper.md) interface is that they allow methods to be called on the base estimator by calling them from the meta-estimator.
 
-| Meta-estimator | Usage | Parallel | Verbose | Compatibility |
+| Meta-estimator | Wrapper | Parallel | Verbose | Compatibility |
 |---|---|---|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | Ensemble | ● | | Classifiers, Regressors, Anomaly Detectors |
-| [Committee Machine](committee-machine.md) | Ensemble | ● | ● | Classifiers, Regressors, Anomaly Detectors |
-| [Grid Search](grid-search.md) | Model Selection | ● | ● | Any |
-| [Persistent Model](persistent-model.md) | Model Persistence | | | Any persistable estimator |
-| [Pipeline](pipeline.md) | Preprocessing | | ● | Any |
+| [Bootstrap Aggregator](bootstrap-aggregator.md) | | ● | | Classifiers, Regressors, Anomaly Detectors |
+| [Committee Machine](committee-machine.md) | | ● | ● | Classifiers, Regressors, Anomaly Detectors |
+| [Grid Search](grid-search.md) | ● | ● | ● | Any |
+| [Persistent Model](persistent-model.md) | ● | | | Any persistable estimator |
+| [Pipeline](pipeline.md) | ● | | ● | Any |
 
-In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to create a *forest* of 1000 trees.
+In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to train a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
+// Import dataset
+
 $estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
+
+$estimator->train($dataset);
 ```
 
 ## No Free Lunch Theorem

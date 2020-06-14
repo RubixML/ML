@@ -219,11 +219,6 @@ nav:
       - F Beta: cross-validation/metrics/f-beta.md
       - Informedness: cross-validation/metrics/informedness.md
       - MCC: cross-validation/metrics/mcc.md
-    - Clustering:
-      - Completeness: cross-validation/metrics/completeness.md
-      - Homogeneity: cross-validation/metrics/homogeneity.md
-      - Rand Index: cross-validation/metrics/rand-index.md
-      - V Measure: cross-validation/metrics/v-measure.md
     - Regression:
       - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
       - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
@@ -231,6 +226,11 @@ nav:
       - RMSE: cross-validation/metrics/rmse.md
       - R Squared: cross-validation/metrics/r-squared.md
       - SMAPE: cross-validation/metrics/smape.md
+    - Clustering:
+      - Completeness: cross-validation/metrics/completeness.md
+      - Homogeneity: cross-validation/metrics/homogeneity.md
+      - Rand Index: cross-validation/metrics/rand-index.md
+      - V Measure: cross-validation/metrics/v-measure.md
   - Reports:
     - API Reference: cross-validation/reports/api.md
     - Aggregate Report: cross-validation/reports/aggregate-report.md

@@ -1,7 +1,8 @@
 # Model Selection
-Model selection is the data-driven approach to choosing the hyper-parameters of a model. It aims to find the best combination that maximizes a particular cross validation [Metric](cross-validation/metrics/api.md). The [Grid Search](grid-search.md) meta-estimator automates model selection by training and testing a unique model for each combination of user-defined hyper-parameters.
+Model selection is the data-driven approach to choosing the hyper-parameters of a model. It aims to find the best combination of parameters that maximizes a particular cross validation [Metric](cross-validation/metrics/api.md). The [Grid Search](grid-search.md) meta-estimator automates model selection by training and testing a unique model for each combination of user-defined hyper-parameters. Since Grid Search implements the [Parallel](parallel.md) interface, each model can be trained on its own CPU core.
 
-As an example, we could attempt to find the best setting for the hyper-parameter *k* in [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) from a list of possible values `1`, `3`, `5`, and `10`. In addition, we could try each value of *k* with distance weighting turned on or off. We might also want to know if the data is sensitive to the underlying distance kernel so we'll try the standard [Euclidean](https://docs.rubixml.com/en/latest/kernels/distance/euclidean.html) as well as the [Manhattan](https://docs.rubixml.com/en/latest/kernels/distance/manhattan.html) distances. The order in which the sets of possible parameters are given to Grid Search is the same order they appear in the constructor of the learner.
+## Searching
+As an example, we could attempt to find the best setting for the hyper-parameter *k* in [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) from a list of possible values `1`, `3`, `5`, and `10`. In addition, we could try each value of *k* with distance weighting turned on or off. We might also want to know if the data is sensitive to the underlying distance kernel so we'll try the standard [Euclidean](https://docs.rubixml.com/en/latest/kernels/distance/euclidean.html) as well as the [Manhattan](https://docs.rubixml.com/en/latest/kernels/distance/manhattan.html) distances. The order in which the sets of possible parameters are given to Grid Search is the same order they are given in the constructor of the learner.
 
 ```php
 use Rubix\ML\GridSearch;
@@ -18,7 +19,8 @@ $estimator = new GridSearch(KNearestNeighbors::class, $params);
 $estimator->train($dataset);
 ```
 
-Once training is complete, Grid Search automatically trains the base learner with the best hyper-parameters on the full dataset. Once training is complete, Grid Search can either be used to perform inference like a normal estimator or you can dump the results for future reference using the `results()` method. In the example below, we'll return just the parameters that received the highest validation score using the `best()` method.
+## Search Results
+Once training is complete, Grid Search automatically trains the base learner with the best hyper-parameters on the full dataset and can perform inference like a normal estimator. In addition, you can dump the results of the search for future reference using the `results()` method. In the example below, we'll return just the parameters that received the highest validation score using the `best()` method.
 
 ```php
 var_dump($estimator->best());
@@ -30,6 +32,12 @@ array(3) {
   [1]=> bool(true)
   [2]=> object(Rubix\ML\Kernels\Distance\Manhattan) {}
 }
+```
+
+To return the base estimator call the `base()` method.
+
+```php
+$base = $estimator->base();
 ```
 
 ## Grid Search
