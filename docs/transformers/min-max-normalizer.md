@@ -13,6 +13,13 @@ The *Min Max* Normalizer scales the input features to a value between a user-spe
 | 1 | min | 0.0 | float | The minimum value of the transformed features. |
 | 2 | max | 1.0 | float | The maximum value of the transformed features. |
 
+## Example
+```php
+use Rubix\ML\Transformers\MinMaxNormalizer;
+
+$transformer = new MinMaxNormalizer(-5.0, 5.0);
+```
+
 ## Additional Methods
 Return the minimum values for each fitted feature column:
 ```php
@@ -22,11 +29,4 @@ public minimums() : ?array
 Return the maximum values for each fitted feature column:
 ```php
 public maximums() : ?array
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\MinMaxNormalizer;
-
-$transformer = new MinMaxNormalizer(-5.0, 5.0);
 ```

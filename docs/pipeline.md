@@ -16,22 +16,6 @@ Pipeline is a meta-estimator capable of transforming an input dataset by applyin
 | 2 | estimator |  | Estimator | An instance of a base estimator to receive the transformed data. |
 | 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
 
-## Additional Methods
-Fit the transformer pipeline to a dataset:
-```php
-public fit(Dataset $dataset) : void
-```
-
-Update the fittings of elastic transformers:
-```php
-public update(Dataset $dataset) : void
-```
-
-Apply the transformer stack to a dataset:
-```php
-public preprocess(Dataset $dataset) : void
-```
-
 ## Example
 ```php
 use Rubix\ML\Pipeline;
@@ -45,4 +29,38 @@ $estimator = new Pipeline([
 	new OneHotEncoder(), 
 	new PrincipalComponentAnalysis(20),
 ], new SoftmaxClassifier());
+```
+
+## Additional Methods
+Fit the transformer pipeline to a dataset:
+```php
+public fit(Dataset $dataset) : void
+```
+
+**Example**
+
+```php
+$estimator->fit($dataset);
+```
+
+Update the fittings of elastic transformers:
+```php
+public update(Dataset $dataset) : void
+```
+
+**Example**
+
+```php
+$estimator->update($dataset);
+```
+
+Apply the transformer stack to a dataset:
+```php
+public preprocess(Dataset $dataset) : void
+```
+
+**Example**
+
+```php
+$estimator->preprocess($dataset);
 ```

@@ -12,19 +12,25 @@ A random projector is a dimensionality reducer based on the Johnson-Lindenstraus
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
+## Example
+```php
+use Rubix\ML\Transformers\GaussianRandomProjector;
+
+$transformer = new GaussianRandomProjector(100);
+```
+
 ## Additional Methods
 Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
-## Example
+**Example**
+
 ```php
 use Rubix\ML\Transformers\GaussianRandomProjector;
 
 $dimensions = GaussianRandomProjector::estimate(2000);
 
-$transformer = new GaussianRandomProjector($dimensions); // Using estimate
-
-$transformer = new GaussianRandomProjector(100); // Specifying dimensionality
+$transformer = new GaussianRandomProjector($dimensions);
 ```

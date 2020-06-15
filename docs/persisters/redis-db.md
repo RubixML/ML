@@ -16,16 +16,16 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 6 | serializer | Native | Serializer | The serializer used to convert to and from storage format. |
 | 7 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
 
-## Additional Methods
-Return an associative array of info from the Redis server:
-```php
-public info() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Persisters\RedisDB;
 use Rubix\ML\Persisters\Serializers\Native;
 
 $persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', new Native(), 2.5);
+```
+
+## Additional Methods
+Return an associative array of info from the Redis server:
+```php
+public info() : array
 ```

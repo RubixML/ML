@@ -14,12 +14,6 @@ Local Outlier Factor (LOF) measures the local deviation of density of an unknown
 | 2 | contamination | null | float | The proportion of outliers that are assumed to be present in the training set. |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
-## Additional Methods
-Return the base spatial tree instance:
-```php
-public tree() : Spatial
-```
-
 ## Example
 ```php
 use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
@@ -27,6 +21,12 @@ use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new LocalOutlierFactor(20, 0.1, new BallTree(30, new Euclidean));
+```
+
+## Additional Methods
+Return the base spatial tree instance:
+```php
+public tree() : Spatial
 ```
 
 ### References

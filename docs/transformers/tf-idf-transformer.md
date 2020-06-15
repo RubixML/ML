@@ -12,18 +12,17 @@
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-Return the document frequencies calculated during fitting:
-```php
-public dfs() : ?array
-```
-
 ## Example
-
 ```php
 use Rubix\ML\Transformers\TfIdfTransformer;
 
 $transformer = new TfIdfTransformer();
+```
+
+## Additional Methods
+Return the document frequencies calculated during fitting:
+```php
+public dfs() : ?array
 ```
 
 ### References

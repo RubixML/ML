@@ -15,6 +15,13 @@ A decision tree based on the CART (*Classification and Regression Tree*) learnin
 | 3 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
+## Example
+```php
+use Rubix\ML\Regressors\RegressionTree;
+
+$estimator = new RegressionTree(20, 2, null, 1e-3);
+```
+
 ## Additional Methods
 Return a human readable text representation of the decision tree ruleset:
 ```php
@@ -29,13 +36,6 @@ public height() : int
 Return the balance factor of the tree:
 ```php
 public balance() : int
-```
-
-## Example
-```php
-use Rubix\ML\Regressors\RegressionTree;
-
-$estimator = new RegressionTree(20, 2, null, 1e-3);
 ```
 
 ### References:

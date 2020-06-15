@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">[source]</a></span>
 
 # Labeled
-A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a Labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
+A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
 ## Parameters
 | # | Param | Default | Type | Description |
@@ -10,10 +10,26 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
 
+## Example
+
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$samples = [
+    [0.1, 20, 'furry'],
+    [2.0, -5, 'rough'],
+    [0.01, 5, 'furry'],
+];
+
+$labels = ['not monster', 'monster', 'not monster'];
+
+$dataset = new Labeled($samples, $labels);
+```
+
 ## Additional Methods
 
 ### Selectors
-Return an array of labels:
+Return the labels of the dataset in an array:
 ```php
 public labels() : array
 ```
@@ -28,31 +44,28 @@ Return the data type of the label:
 public labelType() : DataType
 ```
 
+**Example**
+
+```php
+echo $dataset->labelType();
+```
+
+```sh
+continuous
+```
+
 Return all of the possible outcomes i.e. the unique labels in an array:
 ```php
 public possibleOutcomes() : array
 ```
 
-**Examples**
+**Example**
 
 ```php
-var_dump($dataset->labels());
-
-var_dump($dataset->label(3));
-
 var_dump($dataset->possibleOutcomes());
 ```
 
 ```sh
-array(4) {
-    [0]=> string(5) "female"
-    [1]=> string(4) "male"
-    [2]=> string(5) "female"
-    [3]=> string(4) "male"
-}
-
-string(4) "male"
-
 array(2) {
 	[0]=> string(5) "female"
 	[1]=> string(4) "male"
@@ -65,14 +78,32 @@ Group samples by their class label and return them in their own dataset:
 public stratify() : array
 ```
 
+**Example**
+
+```php
+$strata = $dataset->stratify();
+```
+
 Split the dataset into left and right subsets such that the proportions of class labels remain intact:
 ```php
 public stratifiedSplit($ratio = 0.5) : array
 ```
 
+**Example**
+
+```php
+[$training, $testing] = $dataset->stratifiedSplit(0.8);
+```
+
 Return *k* equal size subsets of the dataset such that class proportions remain intact:
 ```php
 public stratifiedFold($k = 10) : array
+```
+
+**Example**
+
+```php
+$folds = $dataset->stratifiedFold(3);
 ```
 
 ### Transform Labels
@@ -81,9 +112,9 @@ Transform the labels in the dataset using a callback function and return self fo
 public transformLabels(callable $fn) : self
 ```
 
-> **Note:** The callback function is given a label as its only argument and should return the transformed label as a continuous or categorical value.
+> **Note:** The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
 
-**Examples**
+**Example**
 
 ```php
 $dataset->transformLabels('intval');
@@ -123,7 +154,7 @@ public filterByLabel(callable $fn) : self
 
 ```php
 $filtered = $dataset->filterByLabel(function ($label)) {
-	return $label > 10000 ? false : true;
+	return $label <= 10000;;
 });
 ```
 
@@ -131,16 +162,6 @@ $filtered = $dataset->filterByLabel(function ($label)) {
 Sort the dataset by label and return self for method chaining:
 ```php
 public sortByLabel(bool $descending = false) : self
-```
-
-**Examples**
-
-```php
-$strata = $dataset->stratify();
-
-$folds = $dataset->stratifiedFold(5);
-
-[$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
 ### Describe by Label
@@ -244,20 +265,4 @@ Array
         )
 
 )
-```
-
-## Example
-```php
-use Rubix\ML\Datasets\Labeled;
-
-$samples = [
-    [0.1, 20, 'furry'],
-    [2.0, -5, 'rough'],
-    [0.01, 5, 'furry'],
-];
-
-$labels = ['not monster', 'monster', 'not monster'];
-
-
-$dataset = new Labeled($samples, $labels);
 ```

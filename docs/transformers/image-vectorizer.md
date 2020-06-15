@@ -14,12 +14,12 @@ Image Vectorizer takes images of the same size and converts them into flat featu
 |---|---|---|---|---|
 | 1 | grayscale | false | bool | Should we encode the image in grayscale instead of color? |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\ImageVectorizer;
 
 $transformer = new ImageVectorizer(false);
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

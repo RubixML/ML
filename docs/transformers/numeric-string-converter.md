@@ -12,12 +12,12 @@ Convert all numeric strings to their equivalent integer and floating point types
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\NumericStringConverter;
 
 $transformer = new NumericStringConverter();
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

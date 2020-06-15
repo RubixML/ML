@@ -13,18 +13,18 @@ A binary spatial tree that partitions a dataset into successively smaller and ti
 | 1 | max leaf size | 30 | int | The maximum number of samples that each leaf node can contain. |
 | 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
-## Additional Methods
-Return the path of a sample taken from the root node to a leaf node in an array.
-```php
-public path(array $sample) : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
 $tree = new BallTree(40, new Euclidean());
+```
+
+## Additional Methods
+Return the path of a sample taken from the root node to a leaf node in an array.
+```php
+public path(array $sample) : array
 ```
 
 ### References

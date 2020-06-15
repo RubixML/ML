@@ -12,9 +12,6 @@ A classifier that uses a user-defined guessing [Strategy](../other/strategies/ap
 |---|---|---|---|---|
 | 1 | strategy | Prior | Categorical | The guessing strategy to employ when making predictions. |
 
-## Additional Methods
-This estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
@@ -22,3 +19,6 @@ use Rubix\ML\Other\Strategies\Prior;
 
 $estimator = new DummyClassifier(new Prior());
 ```
+
+## Additional Methods
+This estimator does not have any additional methods.

@@ -9,9 +9,6 @@ Unlabeled datasets are used to train unsupervised learners and for feeding unkno
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | validate | true | bool | Should we validate the input? |
 
-## Additional Methods
-This dataset does not have any additional methods.
-
 ## Example
 
 ```php
@@ -25,3 +22,6 @@ $samples = [
 
 $dataset = new Unlabeled($samples);
 ```
+
+## Additional Methods
+This dataset does not have any additional methods.

@@ -2,7 +2,7 @@
 Transformers take Dataset objects and modify the features contained within. They are often used as part of a transformer [Pipeline](../pipeline.md) or they can be used on their own.
 
 ### Transform a Dataset
-To transform a dataset, pass a transformer object to the `apply()` method on a [Dataset](../datasets/api.md) object.
+To transform a dataset, pass a transformer object to the `apply()` method on a [Dataset](../datasets/api.md) object like in the example below.
 
 ```php
 use Rubix\ML\Transformers\MinMaxNormalizer;

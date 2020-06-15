@@ -12,6 +12,13 @@ The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by comp
 |---|---|---|---|---|
 | 1 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
 
+## Example
+```php
+use Rubix\ML\AnomalyDetectors\GaussianMLE;
+
+$estimator = new GaussianMLE(0.03);
+```
+
 ## Additional Methods
 Return the column means computed from the training set:
 ```php
@@ -21,13 +28,6 @@ public means() : array
 Return the column variances computed from the training set:
 ```php
 public variances() : array
-```
-
-## Example
-```php
-use Rubix\ML\AnomalyDetectors\GaussianMLE;
-
-$estimator = new GaussianMLE(0.03);
 ```
 
 ### References

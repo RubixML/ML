@@ -21,18 +21,18 @@
 | 7 | window | 10 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 | 8 | kernel | Euclidean | Distance | The distance kernel to use when measuring distances between samples. |
 
-## Additional Methods
-Return the magnitudes of the gradient at each epoch from the last embedding:
-```php
-public steps() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
 $embedder = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());
+```
+
+## Additional Methods
+Return the magnitudes of the gradient at each epoch from the last embedding:
+```php
+public steps() : array
 ```
 
 ### References

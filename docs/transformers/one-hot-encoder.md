@@ -10,15 +10,15 @@ The One Hot Encoder takes a categorical feature column and produces an n-dimensi
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-Return the categories computed during fitting indexed by feature column:
-```php
-public categories() : ?array
-```
-
 ## Example
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
 $transformer = new OneHotEncoder();
+```
+
+## Additional Methods
+Return the categories computed during fitting indexed by feature column:
+```php
+public categories() : ?array
 ```

@@ -18,6 +18,15 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 | 6 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 | 7 | seeder | PlusPlus | Seeder | The seeder used to initialize the cluster centroids. |
 
+## Example
+```php
+use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
+
+$estimator = new KMeans(3, 128, 300, 10.0, 10, new Euclidean(), new PlusPlus());
+```
+
 ## Additional Methods
 Return the *k* computed centroids of the training set:
 ```php
@@ -32,15 +41,6 @@ public sizes() : array
 Return the value of the loss function at each epoch from the last round of training:
 ```php
 public steps() : array
-```
-
-## Example
-```php
-use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Clusterers\Seeders\PlusPlus;
-
-$estimator = new KMeans(3, 128, 300, 10.0, 10, new Euclidean(), new PlusPlus());
 ```
 
 ### References

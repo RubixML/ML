@@ -18,6 +18,15 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 | 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 | 7 | cost fn | CrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+
+$estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 5, new CrossEntropy());
+```
+
 ## Additional Methods
 Return the training loss at each epoch:
 ```php
@@ -27,13 +36,4 @@ public steps() : array
 Return the underlying neural network instance or `null` if untrained:
 ```php
 public network() : Network|null
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-
-$estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 5, new CrossEntropy());
 ```

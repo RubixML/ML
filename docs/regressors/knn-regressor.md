@@ -16,9 +16,6 @@ A version of the K Nearest Neighbors algorithm that uses the average (mean) outc
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
-## Additional Methods
-This estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Regressors\KNNRegressor;
@@ -26,3 +23,6 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
 $estimator = new KNNRegressor(2, false, new SafeEuclidean());
 ```
+
+## Additional Methods
+This estimator does not have any additional methods.

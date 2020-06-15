@@ -17,6 +17,15 @@ A distance-based soft clustering algorithm that allows samples to belong to mult
 | 5 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 | 6 | seeder | PlusPlus | Seeder | The seeder used to initialize the cluster centroids. |
 
+## Example
+```php
+use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\Random;
+
+$estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
+```
+
 ## Additional Methods
 Return the *c* computed centroids of the training set:
 ```php
@@ -26,15 +35,6 @@ public centroids() : array
 Returns the inertia at each epoch from the last round of training:
 ```php
 public steps() : array
-```
-
-## Example
-```php
-use Rubix\ML\Clusterers\FuzzyCMeans;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Clusterers\Seeders\Random;
-
-$estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
 ```
 
 ### References

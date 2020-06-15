@@ -12,12 +12,6 @@ The Dense Random Projector uses a random matrix sampled from a dense uniform dis
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-## Additional Methods
-Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
-```php
-public static estimate(int $n, float $maxDistortion = 0.1) : int
-```
-
 ## Example
 ```php
 use Rubix\ML\Transformers\DenseRandomProjector;
@@ -27,6 +21,12 @@ $dimensions = DenseRandomProjector::estimate(3500);
 $transformer = new DenseRandomProjector($dimensions); // Using estimate
 
 $transformer = new DenseRandomProjector(50); // Specifying dimensionality
+```
+
+## Additional Methods
+Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
+```php
+public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
 ### References

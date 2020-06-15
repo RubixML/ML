@@ -10,12 +10,12 @@ Transform each sample vector in the sample matrix such that each feature is divi
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\L1Normalizer;
 
 $transformer = new L1Normalizer();
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

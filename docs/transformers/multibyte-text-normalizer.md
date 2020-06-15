@@ -12,12 +12,13 @@ This transformer converts the characters in all [multibyte strings](https://www.
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\MultibyteTextNormalizer;
 
 $transformer = new MultibyteTextNormalizer();
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.
+

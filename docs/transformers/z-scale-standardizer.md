@@ -12,6 +12,13 @@ A method of centering and scaling a dataset such that it has 0 mean and unit var
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
+## Example
+```php
+use Rubix\ML\Transformers\ZScaleStandardizer;
+
+$transformer = new ZScaleStandardizer(true);
+```
+
 ## Additional Methods
 Return the means calculated by fitting the training set:
 ```php
@@ -26,13 +33,6 @@ public variances() : array
 Return the standard deviations calculated during fitting:
 ```php
 public stddevs() : array
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\ZScaleStandardizer;
-
-$transformer = new ZScaleStandardizer(true);
 ```
 
 ### References

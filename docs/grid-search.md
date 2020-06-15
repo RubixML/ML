@@ -15,17 +15,6 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | 3 | metric | null | Metric | The validation metric used to score each set of hyper-parameters. If null, automatically selects a default metric based on estimator type. |
 | 4 | validator | KFold | Validator | The validator used to test and score each trained model. |
 
-## Additional Methods
-Return an array containing the validation scores and hyper-parameters under test for each combination resulting from the last search:
-```php
-public results() : ?array
-```
-
-Return an array containing the best parameters from the last search:
-```php
-public best() : ?array
-```
-
 ## Example
 ```php
 use Rubix\ML\GridSearch;
@@ -40,8 +29,22 @@ $params = [
 ];
 
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
+```
 
-$estimator->train($dataset);
+## Additional Methods
+Return an array containing the validation scores and hyper-parameters under test for each combination resulting from the last search:
+```php
+public results() : ?array
+```
+
+Return an array containing the best parameters from the last search:
+```php
+public best() : ?array
+```
+
+**Example**
+
+```php
 
 var_dump($estimator->best());
 ```

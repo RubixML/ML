@@ -12,12 +12,12 @@ Removes user-specified words from any categorical feature columns including blob
 |---|---|---|---|---|
 | 1 | stop words | | array | A list of stop words to filter out of each text feature. |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\StopWordFilter;
 
 $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

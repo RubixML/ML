@@ -15,12 +15,6 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | 3 | anomaly class | '?' | string | The class label for any samples that have no neighbors within the specified radius. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
-## Additional Methods
-Return the base spatial tree instance:
-```php
-public tree() : Spatial
-```
-
 ## Example
 ```php
 use Rubix\ML\Classifiers\RadiusNeighbors;
@@ -28,4 +22,10 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
 $estimator = new RadiusNeighbors(50.0, false, '?', new KDTree(100, new Manhattan()));
+```
+
+## Additional Methods
+Return the base spatial tree instance:
+```php
+public tree() : Spatial
 ```

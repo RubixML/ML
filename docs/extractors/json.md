@@ -8,15 +8,15 @@ Javascript Object Notation is a standardized lightweight plain-text representati
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the JSON file. |
 
-## Additional Methods
-This extractor does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Extractors\JSON;
 
 $extractor = new JSON('example.json');
 ```
+
+## Additional Methods
+This extractor does not have any additional methods.
 
 ### References
 >- T. Bray. (2014). The JavaScript Object Notation (JSON) Data Interchange Format.

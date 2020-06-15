@@ -12,12 +12,13 @@ This transformer converts the characters in all strings to lowercase.
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\TextNormalizer;
 
 $transformer = new TextNormalizer();
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.
+

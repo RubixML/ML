@@ -16,12 +16,6 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
-## Additional Methods
-Return the base spatial tree instance:
-```php
-public tree() : Spatial
-```
-
 ## Example
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
@@ -29,4 +23,10 @@ use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
 $estimator = new RadiusNeighborsRegressor(0.5, true, new BallTree(30, new Diagonal()));
+```
+
+## Additional Methods
+Return the base spatial tree instance:
+```php
+public tree() : Spatial
 ```

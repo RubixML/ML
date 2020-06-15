@@ -14,16 +14,16 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
-## Additional Methods
-Return the base spatial tree instance:
-```php
-public tree() : Spatial
-```
-
 ## Example
 ```php
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 
 $estimator = new KDNeighborsRegressor(5, true, new BallTree(50));
+```
+
+## Additional Methods
+Return the base spatial tree instance:
+```php
+public tree() : Spatial
 ```

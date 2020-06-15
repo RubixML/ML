@@ -10,12 +10,13 @@ Trims extra whitespace from all strings in the dataset.
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\WhitespaceTrimmer;
 
 $transformer = new WhitespaceTrimmer();
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.
+

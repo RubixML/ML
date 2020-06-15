@@ -12,7 +12,7 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $dataset->apply(new OneHotEncoder());
 ```
 
-**Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on the [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) instance.
+> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on the [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) instance.
 
 Transformations can be chained by calling the `apply()` method fluently.
 

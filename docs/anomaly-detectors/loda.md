@@ -14,17 +14,17 @@
 | 2 | bins | null | int | The number of equi-width bins for each histogram. If null then will estimate bin count. |
 | 3 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
 
-## Additional Methods
-To estimate the number of histogram bins from the number of samples in a dataset:
-```php
-public static estimateBins(int $n) : int
-```
-
 ## Example
 ```php
 use Rubix\ML\AnomalyDetectors\Loda;
 
 $estimator = new Loda(250, 8, 0.01);
+```
+
+## Additional Methods
+To estimate the number of histogram bins from the number of samples in a dataset:
+```php
+public static estimateBins(int $n) : int
 ```
 
 ### References

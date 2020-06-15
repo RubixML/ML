@@ -12,6 +12,13 @@ Linear Discriminant Analysis (LDA) is a supervised dimensionality reduction tech
 |---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 
+## Example
+```php
+use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
+
+$transformer = new LinearDiscriminantAnalysis(20);
+```
+
 ## Additional Methods
 Return the amount of variance that has been preserved by the transformation:
 ```php
@@ -26,11 +33,4 @@ public noiseVar() : ?float
 Return the percentage of information lost due to the transformation:
 ```php
 public lossiness() : ?float
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
-
-$transformer = new LinearDiscriminantAnalysis(20);
 ```

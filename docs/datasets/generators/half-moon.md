@@ -16,12 +16,12 @@ Generate a dataset consisting of 2 dimensional samples that form a half moon sha
 | 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
 | 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
 
-## Additional Methods
-This generator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Datasets\Generators\HalfMoon;
 
 $generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
 ```
+
+## Additional Methods
+This generator does not have any additional methods.

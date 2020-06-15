@@ -16,9 +16,6 @@ A distance-based learning algorithm that locates the *k* nearest samples from th
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
-## Additional Methods
-This estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -26,3 +23,6 @@ use Rubix\ML\Kernels\Distance\Manhattan;
 
 $estimator = new KNearestNeighbors(3, true, new Manhattan());
 ```
+
+## Additional Methods
+This estimator does not have any additional methods.

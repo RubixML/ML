@@ -15,6 +15,13 @@ An *Extremely Randomized* Classification Tree that recursively chooses node spli
 | 3 | max features | Auto | int | The max number of features columns to consider when determining a best split. |
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
+
+$estimator = new ExtraTreeClassifier(50, 3, 4, 1e-7);
+```
+
 ## Additional Methods
 Return a human readable text representation of the decision tree ruleset:
 ```php
@@ -29,13 +36,6 @@ public height() : int
 Return the balance factor of the tree:
 ```php
 public balance() : int
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\ExtraTreeClassifier;
-
-$estimator = new ExtraTreeClassifier(50, 3, 4, 1e-7);
 ```
 
 ### References

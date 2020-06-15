@@ -17,6 +17,15 @@ A hierarchical clustering algorithm that uses peak finding to locate the candida
 | 5 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 | 6 | seeder | Random | Seeder | The seeder used to initialize the cluster centroids. |
 
+## Example
+```php
+use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Clusterers\Seeders\KMC2;
+
+$estimator = new MeanShift(2.5, 2000, 1e-6, 0.05, new BallTree(100), new KMC2());
+```
+
 ## Additional Methods
 Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
 ```php
@@ -33,15 +42,6 @@ public centroids() : array
 Returns the amount of centroid shift during each epoch of training:
 ```php
 public steps() : array
-```
-
-## Example
-```php
-use Rubix\ML\Clusterers\MeanShift;
-use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Clusterers\Seeders\KMC2;
-
-$estimator = new MeanShift(2.5, 2000, 1e-6, 0.05, new BallTree(100), new KMC2());
 ```
 
 ### References

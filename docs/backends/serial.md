@@ -8,12 +8,12 @@ The Serial backend executes tasks sequentially inside of a single process. The a
 ## Parameters
 This backend does not have any additional parameters.
 
-## Additional Methods
-This backend does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Backends\Serial;
 
 $backend = new Serial();
 ```
+
+## Additional Methods
+This backend does not have any additional methods.

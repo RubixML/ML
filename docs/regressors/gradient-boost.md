@@ -22,17 +22,6 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 8 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 | 9 | base | DummyRegressor | Learner | The *weak* base learner to be boosted. |
 
-## Additional Methods
-Return the validation score at each epoch:
-```php
-public scores() : array
-```
-
-Return the training loss at each epoch:
-```php
-public steps() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Regressors\GradientBoost;
@@ -42,6 +31,17 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\Constant;
 
 $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 10, 0.1, new SMAPE(), new DummyRegressor(new Constant(0.0)));
+```
+
+## Additional Methods
+Return the validation score at each epoch:
+```php
+public scores() : array
+```
+
+Return the training loss at each epoch:
+```php
+public steps() : array
 ```
 
 ### References

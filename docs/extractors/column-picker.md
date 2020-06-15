@@ -9,9 +9,6 @@ An extractor that wraps another iterator and selects and reorders the columns of
 | 1 | iterator | | Traversable | The base iterator. |
 | 2 | keys | | array | The string and/or integer keys of the columns to extract and reorder. |
 
-## Additional Methods
-This extractor does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Extractors\ColumnPicker;
@@ -21,3 +18,6 @@ $extractor = new ColumnPicker(new CSV('example.csv', true), [
     'attitude', 'texture', 'class', 'rating',
 ]);
 ```
+
+## Additional Methods
+This extractor does not have any additional methods.

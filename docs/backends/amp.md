@@ -8,17 +8,17 @@
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | workers | Auto | int | The maximum number of workers i.e. processes to execute in parallel. |
-
-## Additional Methods
-Return the maximum number of workers:
-```php
-public workers() : int
-```
+| 1 | workers | Auto | int | The maximum number of workers in the worker pool. If null then tries to autodetect CPU core count. |
 
 ## Example
 ```php
 use Rubix\ML\Backends\Amp;
 
 $backend = new Amp(16);
+```
+
+## Additional Methods
+Return the maximum number of workers in the worker pool:
+```php
+public workers() : int
 ```

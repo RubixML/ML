@@ -17,9 +17,6 @@ An ensemble classifier that trains an ensemble of Decision Trees ([Classificatio
 | 3 | ratio | 0.2 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 | 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
-## Additional Methods
-This estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Classifiers\RandomForest;
@@ -27,6 +24,9 @@ use Rubix\ML\Classifiers\ClassificationTree;
 
 $estimator = new RandomForest(new ClassificationTree(10), 300, 0.1, true);
 ```
+
+## Additional Methods
+This estimator does not have any additional methods.
 
 ### References
 >- L. Breiman. (2001). Random Forests.

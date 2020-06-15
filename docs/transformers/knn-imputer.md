@@ -17,9 +17,6 @@ An unsupervised imputer that replaces missing values in datasets with the distan
 | 3 | placeholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\KNNImputer;
@@ -28,6 +25,9 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
 $transformer = new KNNImputer(10, false, '?', new BallTree(30, new SafeEuclidean()));
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.
 
 ### References
 >- O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.

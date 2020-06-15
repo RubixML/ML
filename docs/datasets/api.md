@@ -1,7 +1,5 @@
 # Dataset Objects
-Data are passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like structures employing a high-level type system that have operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Datasets require a table of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column. They have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. A stray string or other data type will throw an exception upon validation.
-
-In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels to the constructor.
+Data are often passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like data structures that have operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Datasets require a matrix of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column. They have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. Some datasets can contain labels for training or cross validation. In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels to the constructor.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -21,9 +19,9 @@ By convention, missing continuous values are denoted by `NaN` and missing catego
 
 ```php
 $samples = [
+    [0.01, -500, 'furry'], // Complete sample
     [0.001, NAN, 'rough'], // Missing a continuous value
     [0.25, -1000, '?'], // Missing a categorical value
-    [0.01, -500, 'furry'], // Complete sample
 ];
 ```
 
@@ -33,6 +31,8 @@ Build a dataset with the rows from a 2-dimensional iterable data table:
 public static fromIterator(Traversable $iterator) : self
 ```
 
+**Note:** Labels should always be in the last column of the data table by convention.
+
 **Example**
 
 ```php
@@ -41,8 +41,6 @@ use Rubix\ML\Datasets\Extractors\CSV;
 
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
-
-**Note:** The data must be in the format of a table where each row is an n-d array of values. By convention, labels are always the last column of the data table.
 
 ## Selecting
 Return all the samples in the dataset in a 2-dimensional array:
@@ -84,14 +82,35 @@ Return the number of rows in the dataset:
 public numRows() : int
 ```
 
-Return the number of columns in the dataset:
+Return the number of columns in the samples matrix:
 ```php
 public numColumns() : int
 ```
 
-Return the shape of the dataset:
+**Example**
+
+```php
+$m = $dataset->numRows();
+
+$n = $dataset->numColumns();
+```
+
+Return a 2-tuple with the *shape* of the samples matrix:
 ```php
 public shape() : array
+```
+
+**Example**
+
+```php
+[$m, $n] = $dataset->shape();
+
+var_dump($m, $n);
+```
+
+```sh
+int(1000)
+int(30)
 ```
 
 Return the data types for each feature column:
@@ -107,26 +126,15 @@ public columnType(int $offset) : DataType
 **Example**
 
 ```php
-$m = $dataset->numRows();
-
-$n = $dataset->numColumns();
-
-[$m, $n] = $dataset->shape();
-
-var_dump($m, $n);
-
 echo $dataset->columnType(15);
 ```
 
 ```sh
-int(1000)
-int(30)
-
 categorical
 ```
 
 ## Applying Transformations
-You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the `apply()` method on the dataset object. The method returns self for chaining.
+You can apply a [Transformer](#transformers) directly to the samples in a Dataset object by passing it as an arguent to the `apply()` method on the dataset object.
 
 ```php
 public apply(Transformer $transformer) : self
@@ -135,10 +143,10 @@ public apply(Transformer $transformer) : self
 **Example**
 
 ```php
-use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$dataset->apply(new RandomHotDeckImputer())
+$dataset->apply(new MissingDataImputer())
     ->apply(new OneHotEncoder());
 ```
 
@@ -148,16 +156,16 @@ You can also transform a single feature column using a callback function with th
 public transformColumn(int $column, callable $callback) : self
 ```
 
-**Examples**
+**Example**
 
 ```php
-$dataset = $dataset->transformColumn(0, 'log1p');
+$dataset->transformColumn(0, 'log1p');
 
-$dataset = $dataset->transformColumn(6, function ($value) {
+$dataset->transformColumn(5, function ($value) {
     return $value === 0 ? NAN : $value;
 });
 
-$dataset = $dataset->transformColumn(5, function ($value) {
+$dataset->transformColumn(6, function ($value) {
     return min($value, 1000);
 });
 ```
@@ -189,38 +197,39 @@ To merge the rows of this dataset with another dataset:
 public merge(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have same number of columns to merge.
+> **Note:** Datasets must have the same number of columns.
+
+**Example**
+
+```php
+$dataset = $dataset1->merge($dataset2);
+```
 
 To merge the columns of this dataset with another dataset:
 ```php
 public augment(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have same number of rows to augment.
+> **Note:** Datasets must have the same number of rows
 
-**Examples**
+**Example**
 
 ```php
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
-
-$dataset = $dataset->merge(new Labeled($samples,  $labels));
-
-$dataset = $dataset->augment(new Unlabeled($samples));
+$dataset = $dataset1->augment($dataset2);
 ```
 
 ## Head and Tail
-Return the *first* **n** rows of data in a new dataset object:
+Return the first *n* rows of data in a new dataset object:
 ```php
 public head(int $n = 10) : self
 ```
 
-Return the *last* **n** rows of data in a new dataset object:
+Return the last *n* rows of data in a new dataset object:
 ```php
 public tail(int $n = 10) : self
 ```
 
-**Examples**
+**Example**
 
 ```php
 $subset = $dataset->head(10);
@@ -239,6 +248,32 @@ Leave *n* samples on the dataset and return the rest in a new dataset:
 public leave(int $n = 1) : self
 ```
 
+## Splitting
+Split the dataset into left and right subsets:
+```php
+public split(float $ratio = 0.5) : array
+```
+
+**Example**
+
+```php
+[$training, $testing] = $dataset->split(0.8);
+```
+
+## Folding
+Fold the dataset to form *k* equal size datasets:
+```php
+public fold(int $k = 10) : array
+```
+
+> **Note:** If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
+
+**Example**
+
+```php
+$folds = $dataset->fold(8);
+```
+
 ## Slicing and Splicing
 Return an *n* size portion of the dataset in a new dataset:
 ```php
@@ -248,52 +283,6 @@ public slice(int $offset, int $n) : self
 Remove a size *n* chunk of the dataset starting at *offset* and return it in a new dataset:
 ```php
 public splice(int $offset, int $n) : self
-```
-
-## Splitting
-Split the dataset into left and right subsets:
-```php
-public split(float $ratio = 0.5) : array
-```
-
-Partition the dataset into left and right subsets using the values of a single feature column for comparison:
-```php
-public partitionByColumn(int $offset, mixed $value) : array
-```
-
-Partition the dataset into left and right subsets based on the samples' distances from two centroids:
-```php
-public spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null) : array
-```
-
-**Examples**
-
-```php
-use Rubix\ML\Kernels\Distance\Euclidean;
-
-[$training, $testing] = $dataset->split(0.8);
-
-[$left, $right] = $dataset->partitionByColumn(4, 50);
-
-[$left, $right] = $dataset->spatialPartition($leftCentroid, $rightCentroid, new Euclidean());
-```
-
-## Folding
-Fold the dataset to form *k* equal size datasets:
-```php
-public fold(int $k = 10) : array
-```
-
-> **Note:** If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest.
-
-**Example**
-
-```php
-$folds = $dataset->fold(8);
-
-foreach ($folds as $fold) {
-    // ...
-}
 ```
 
 ## Batching
@@ -306,10 +295,6 @@ public batch(int $n = 50) : array
 
 ```php
 $batches = $dataset->batch(250);
-
-foreach ($batches as $batch) {
-    // ...
-}
 ```
 
 ## Randomization
@@ -318,14 +303,32 @@ Randomize the order of the dataset and return it for method chaining:
 public randomize() : self
 ```
 
+**Example**
+
+```php
+$dataset->randomize();
+```
+
 Generate a random subset of the dataset without replacement of size *n*:
 ```php
 public randomSubset(int $n) : self
 ```
 
+**Example**
+
+```php
+$subset = $dataset->randomSubset(50);
+```
+
 Generate a random subset with replacement:
 ```php
 public randomSubsetWithReplacement($n) : self
+```
+
+**Example**
+
+```php
+$subset = $dataset->randomSubsetWithReplacement(500);
 ```
 
 Generate a random *weighted* subset with replacement of size *n*:
@@ -336,12 +339,6 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 **Example**
 
 ```php
-$dataset = $dataset->randomize();
-
-$subset = $dataset->randomSubset(50);
-
-$subset = $dataset->randomSubsetWithReplacement(500);
-
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
 
@@ -368,49 +365,7 @@ public sortByColumn(int $offset, bool $descending = false) : self
 **Example**
 
 ```php
-var_dump($dataset->samples());
-
-$dataset->sortByColumn(2);
-
-var_dump($dataset->samples());
-```
-
-```sh
-array(3) {
-    [0]=> array(3) {
-	    [0]=> string(4) "mean"
-	    [1]=> string(4) "furry"
-	    [2]=> int(8)
-    }
-    [1]=> array(3) {
-	    [0]=> string(4) "nice"
-	    [1]=> string(4) "rough"
-	    [2]=> int(1)
-    }
-    [2]=> array(3) {
-	    [0]=> string(4) "nice"
-	    [1]=> string(4) "rough"
-	    [2]=> int(6)
-    }
-}
-
-array(3) {
-    [0]=> array(3) {
-	    [0]=> string(4) "nice"
-	    [1]=> string(4) "rough"
-	    [2]=> int(1)
-    }
-    [1]=> array(3) {
-	    [0]=> string(4) "nice"
-	    [1]=> string(4) "rough"
-	    [2]=> int(6)
-    }
-    [2]=> array(3) {
-	    [0]=> string(4) "mean"
-	    [1]=> string(4) "furry"
-	    [2]=> int(8)
-    }
-}
+$dataset->sortByColumn(5);
 ```
 
 ## Dropping Rows and Columns
@@ -490,6 +445,12 @@ Return the dataset object as a data table array:
 public toArray() : array
 ```
 
+**Example**
+
+```php
+$table = $dataset->toArray();
+```
+
 Return a JSON representation of the dataset:
 ```php
 public toJSON(bool $pretty = false) : string
@@ -500,6 +461,12 @@ Return a newline delimited JSON representation of the dataset:
 public toNDJSON() : string
 ```
 
+**Example**
+
+```php
+file_put_contents('dataset.ndjson', $dataset->toNDJSON());
+```
+
 Return the dataset as comma-separated values (CSV) string:
 ```php
 public toCSV(string $delimiter = ',', string $enclosure = '"') : string
@@ -508,7 +475,7 @@ public toCSV(string $delimiter = ',', string $enclosure = '"') : string
 **Example**
 
 ```php
-file_put_contents('dataset.ndjson', $dataset->toNDJSON());
+file_put_contents('dataset.csv', $dataset->toCSV());
 ```
 
 ## Previewing in the Console

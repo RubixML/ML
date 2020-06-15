@@ -10,15 +10,15 @@ Scale the sample matrix by the maximum absolute value of each feature column ind
 ## Parameters
 This transformer does not have any parameters.
 
-## Additional Methods
-Return the maximum absolute values for each feature column:
-```php
-public maxabs() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Transformers\MaxAbsoluteScaler;
 
 $transformer = new MaxAbsoluteScaler();
+```
+
+## Additional Methods
+Return the maximum absolute values for each feature column:
+```php
+public maxabs() : array
 ```

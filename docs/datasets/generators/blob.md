@@ -13,12 +13,12 @@ A normally distributed (Gaussian) n-dimensional blob of samples centered at a gi
 | 1 | center | [0, 0] | array | An array containing the coordinates of the center of the blob. |
 | 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the standard deviation on a per feature column basis. |
 
-## Additional Methods
-This generator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
 $generator = new Blob([-1.2, -5., 2.6, 0.8, 10.], 0.25);
 ```
+
+## Additional Methods
+This generator does not have any additional methods.

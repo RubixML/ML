@@ -19,6 +19,14 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
+
+$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 10);
+```
+
 ## Additional Methods
 Return the calculated weight values of the samples in the last training set:
 ```php
@@ -33,14 +41,6 @@ public influences() : array
 Return the training loss at each epoch:
 ```php
 public steps() : array
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\ExtraTreeClassifier;
-
-$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 10);
 ```
 
 ### References

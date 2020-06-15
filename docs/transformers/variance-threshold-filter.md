@@ -12,6 +12,13 @@ A type of feature selector that selects the top *k* features with the greatest v
 |---|---|---|---|---|
 | 1 | maxFeatures | | int | The maximum number of features to select from the dataset. |
 
+## Example
+```php
+use Rubix\ML\Transformers\VarianceThresholdFilter;
+
+$transformer = new VarianceThresholdFilter(50);
+```
+
 ## Additional Methods
 Return the offsets of the columns that were selected during fitting:
 ```php
@@ -21,11 +28,4 @@ public selected() : array
 Return the variances of the selected feature columns:
 ```php
 public variances() : ?array
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\VarianceThresholdFilter;
-
-$transformer = new VarianceThresholdFilter(50);
 ```

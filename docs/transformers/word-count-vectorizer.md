@@ -14,16 +14,16 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 | 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
 | 3 | tokenizer | Word | Tokenizer | The tokenizer used to extract tokens from blobs of text. |
 
-## Additional Methods
-Return an array of words in each of the vocabularies:
-```php
-public vocabularies() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Other\Tokenizers\SkipGram;
 
 $transformer = new WordCountVectorizer(10000, 3, new SkipGram());
+```
+
+## Additional Methods
+Return an array of words in each of the vocabularies:
+```php
+public vocabularies() : array
 ```

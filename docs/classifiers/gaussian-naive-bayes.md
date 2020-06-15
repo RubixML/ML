@@ -12,6 +12,16 @@ Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifie
 |---|---|---|---|---|
 | 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training set. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\GaussianNB;
+
+$estimator = new GaussianNB([
+	'benign' => 0.9,
+	'malignant' => 0.1,
+]);
+```
+
 ## Additional Methods
 Return the class prior probabilities:
 ```php
@@ -26,16 +36,6 @@ public means() : ?array
 Return the running variance of each feature column for each class:
 ```php
 public variances() : ?array
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\GaussianNB;
-
-$estimator = new GaussianNB([
-	'benign' => 0.9,
-	'malignant' => 0.1,
-]);
 ```
 
 ### References

@@ -12,6 +12,13 @@ Principal Component Analysis (PCA) is a dimensionality reduction technique that 
 |---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 
+## Example
+```php
+use Rubix\ML\Transformers\PrincipalComponentAnalysis;
+
+$transformer = new PrincipalComponentAnalysis(15);
+```
+
 ## Additional Methods
 Return the amount of variance that has been preserved by the transformation:
 ```php
@@ -26,13 +33,6 @@ public noiseVar() : ?float
 Return the percentage of information lost due to the transformation:
 ```php
 public lossiness() : ?float
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\PrincipalComponentAnalysis;
-
-$transformer = new PrincipalComponentAnalysis(15);
 ```
 
 ### References

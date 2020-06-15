@@ -18,6 +18,15 @@
 | 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 | 7 | cost fn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 
+## Example
+```php
+use Rubix\ML\Regressors\Adaline;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+
+$estimator = new Adaline(256, new Adam(0.001), 500, 1e-6, 5, new HuberLoss(2.5));
+```
+
 ## Additional Methods
 Return the training loss at each epoch:
 ```php
@@ -27,15 +36,6 @@ public steps() : array
 Return the underlying neural network instance or `null` if untrained:
 ```php
 public network() : Network|null
-```
-
-## Example
-```php
-use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
-
-$estimator = new Adaline(256, new Adam(0.001), 500, 1e-6, 5, new HuberLoss(2.5));
 ```
 
 ### References

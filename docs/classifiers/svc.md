@@ -18,6 +18,14 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\SVC;
+use Rubix\ML\Kernels\SVM\Linear;
+
+$estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.0);
+```
+
 ## Additional Methods
 Save the model data to the filesystem:
 ```php
@@ -27,14 +35,6 @@ public save(string $path) : void
 Load the model data from the filesystem:
 ```php
 public load(string $path) : void
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\SVC;
-use Rubix\ML\Kernels\SVM\Linear;
-
-$estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.0);
 ```
 
 ### References

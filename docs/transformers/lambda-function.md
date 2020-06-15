@@ -12,9 +12,6 @@ Run a stateless lambda function (*anonymous* function) over the samples. The lam
 |---|---|---|---|---|
 | 1 | lambda | | callable | The lambda function to run over the sample matrix. |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
@@ -28,3 +25,6 @@ $transformer = new LambdaFunction(function ($samples) {
 	}, $samples);
 });
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

@@ -13,22 +13,6 @@ The Persistent Model meta-estimator wraps a [Persistable](persistable.md) learne
 | 1 | base | | Persistable | The persistable base learner. |
 | 2 | persister | | Persister | The persister used to interface with the storage medium. |
 
-## Additional Methods
-Load the model from storage:
-```php
-public static load(Persister $persister) : self
-```
-
-Save the model to storage:
-```php
-public save() : void
-```
-
-Set the storage driver used to save the model:
-```php
-public setPersister(Persister $persister) : void
-```
-
 ## Examples
 ```php
 use Rubix\ML\PersistentModel;
@@ -36,15 +20,35 @@ use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Persisters\Filesystem;
 
 $estimator = new PersistentModel(new KMeans(10), new Filesystem('example.model'));
-
-// Do something ...
-
-$estimator->save();
 ```
+
+## Additional Methods
+Load the model from storage:
+```php
+public static load(Persister $persister) : self
+```
+
+**Example**
 
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
 $estimator = PersistentModel::load(new Filesystem('example.model'));
+```
+
+Save the model to storage:
+```php
+public save() : void
+```
+
+**Example**
+
+```php
+$estimator->save();
+```
+
+Set the storage driver used to save the model:
+```php
+public setPersister(Persister $persister) : void
 ```

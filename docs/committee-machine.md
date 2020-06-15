@@ -15,17 +15,6 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | null | array | The influence values for each expert in the committee. If null, each expert will be weighted equally. |
 
-## Additional Methods
-Return the learner instances of the committee:
-```php
-public experts() : array
-```
-
-Return the normalized influence scores of each expert in the committee:
-```php
-public influences() : array
-```
-
 ## Example
 ```php
 use Rubix\ML\CommitteeMachine;
@@ -43,6 +32,17 @@ $estimator = new CommitteeMachine([
 ], [
     0.2, 0.4, 0.3, 0.1,
 ]);
+```
+
+## Additional Methods
+Return the learner instances of the committee:
+```php
+public experts() : array
+```
+
+Return the normalized influence scores of each expert in the committee:
+```php
+public influences() : array
 ```
 
 ### References

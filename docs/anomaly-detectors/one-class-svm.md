@@ -18,6 +18,14 @@ An unsupervised Support Vector Machine (SVM) used for anomaly detection. The One
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
 
+## Example
+```php
+use Rubix\ML\AnomalyDetectors\OneClassSVM;
+use Rubix\ML\Kernels\SVM\Polynomial;
+
+$estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.0);
+```
+
 ## Additional Methods
 Save the model data to the filesystem:
 ```php
@@ -27,14 +35,6 @@ public save(string $path) : void
 Load the model data from the filesystem:
 ```php
 public load(string $path) : void
-```
-
-## Example
-```php
-use Rubix\ML\AnomalyDetectors\OneClassSVM;
-use Rubix\ML\Kernels\SVM\Polynomial;
-
-$estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.0);
 ```
 
 ### References

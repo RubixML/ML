@@ -15,12 +15,12 @@ Image Resizer fits (scales and crops) images in a dataset to a user-specified wi
 | 1 | width | 32 | int | The width of the transformed image. |
 | 2 | heights | 32 | int | The height of the transformed image. |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\ImageResizer;
 
 $transformer = new ImageResizer(28, 28, 'gd');
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.

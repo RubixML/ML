@@ -17,9 +17,6 @@ A method of imputation similar to [KNN Imputer](knn-imputer.md) but instead of c
 | 3 | placeholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
-## Additional Methods
-This transformer does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Transformers\RandomHotDeckImputer;
@@ -28,6 +25,9 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
 $transformer = new KNNImputer(20, true, '?', new BallTree(50, new SafeEuclidean()));
 ```
+
+## Additional Methods
+This transformer does not have any additional methods.
 
 ### References
 >- C. Hasler et al. (2015). Balanced k-Nearest Neighbor Imputation.

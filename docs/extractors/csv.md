@@ -13,15 +13,15 @@ A plain-text format that use newlines to delineate rows and a user-specified del
 | 3 | delimiter | ',' | string | The character that delineates the values of the columns of the data table. |
 | 4 | enclosure | '"' | string | The character used to enclose a cell that contains a delimiter in the body. |
 
-## Additional Methods
-This extractor does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('example.csv', true, ',', '"');
 ```
+
+## Additional Methods
+This extractor does not have any additional methods.
 
 ### References
 >- T. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.

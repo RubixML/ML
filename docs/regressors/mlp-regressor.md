@@ -21,22 +21,6 @@ A multilayer feed forward neural network with a continuous output layer suitable
 | 9 | cost fn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
-## Additional Methods
-Return the training loss at each epoch:
-```php
-public steps() : array
-```
-
-Return the validation scores at each epoch:
-```php
-public scores() : array
-```
-
-Returns the underlying neural network instance or `null` if untrained:
-```php
-public network() : Network|null
-```
-
 ## Example
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
@@ -56,6 +40,22 @@ $estimator = new MLPRegressor([
 	new Dense(50),
 	new Activation(new ReLU()),
 ], 128, new RMSProp(0.001), 1e-3, 100, 1e-5, 3, 0.1, new LeastSquares(), new RSquared());
+```
+
+## Additional Methods
+Return the training loss at each epoch:
+```php
+public steps() : array
+```
+
+Return the validation scores at each epoch:
+```php
+public scores() : array
+```
+
+Returns the underlying neural network instance or `null` if untrained:
+```php
+public network() : Network|null
 ```
 
 ### References

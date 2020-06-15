@@ -12,6 +12,13 @@ Assigns each continuous feature to a discrete category using equi-width histogra
 |---|---|---|---|---|
 | 1 | bins | 5 | int | The number of bins (discrete categories) per continuous feature column. |
 
+## Example
+```php
+use Rubix\ML\Transformers\IntervalDiscretizer;
+
+$transformer = new IntervalDiscretizer(10);
+```
+
 ## Additional Methods
 Return the possible categories of each feature column:
 ```php
@@ -21,11 +28,4 @@ public categories() : array
 Return the intervals of each continuous feature column calculated during fitting:
 ```php
 public intervals() : array
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\IntervalDiscretizer;
-
-$transformer = new IntervalDiscretizer(10);
 ```

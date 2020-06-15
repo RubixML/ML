@@ -12,6 +12,13 @@ This standardizer transforms continuous features by centering them around the me
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
+## Example
+```php
+use Rubix\ML\Transformers\RobustStandardizer;
+
+$transformer = new RobustStandardizer(true);
+```
+
 ## Additional Methods
 Return the medians calculated by fitting the training set:
 ```php
@@ -21,11 +28,4 @@ public medians() : array
 Return the median absolute deviations calculated during fitting:
 ```php
 public mads() : array
-```
-
-## Example
-```php
-use Rubix\ML\Transformers\RobustStandardizer;
-
-$transformer = new RobustStandardizer(true);
 ```

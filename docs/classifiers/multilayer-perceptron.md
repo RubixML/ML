@@ -21,22 +21,6 @@ A multiclass feed forward neural network classifier with user-defined hidden lay
 | 9 | cost fn | CrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 
-## Additional Methods
-Return the training loss at each epoch:
-```php
-public steps() : array
-```
-
-Return the validation scores at each epoch:
-```php
-public scores() : array
-```
-
-Returns the underlying neural network instance or `null` if untrained:
-```php
-public network() : Network|null
-```
-
 ## Example
 ```php
 use Rubix\ML\Classifiers\MultilayerPerceptron;
@@ -59,6 +43,22 @@ $estimator = new MultilayerPerceptron([
     new Dense(50),
     new PReLU(),
 ], 128, new Adam(0.001), 1e-4, 1000, 1e-3, 3, 0.1, new CrossEntropy(), new MCC());
+```
+
+## Additional Methods
+Return the training loss at each epoch:
+```php
+public steps() : array
+```
+
+Return the validation scores at each epoch:
+```php
+public scores() : array
+```
+
+Returns the underlying neural network instance or `null` if untrained:
+```php
+public network() : Network|null
 ```
 
 ### References

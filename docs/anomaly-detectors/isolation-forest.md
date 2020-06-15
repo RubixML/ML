@@ -14,15 +14,15 @@ An ensemble of Isolation Trees all of which specialize on a unique subset of the
 | 2 | ratio | null | float | The ratio of samples to train each estimator with. If null, the subsample size will be set to 256. |
 | 3 | contamination | null | float | The proportion of outliers that are assumed to be present in the training set. If null, the threshold anomaly score will be set to 0.5. |
 
-## Additional Methods
-This estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 
 $estimator = new IsolationForest(100, 0.2, 0.05);
 ```
+
+## Additional Methods
+This estimator does not have any additional methods.
 
 ### References
 >- F. T. Liu et al. (2008). Isolation Forest.

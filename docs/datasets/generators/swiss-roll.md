@@ -17,12 +17,12 @@ Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral.
 | 5 | depth | 21.0 | float | The depth of the swiss roll i.e the scale of the y axis. |
 | 6 | noise | 0.1 | float | The standard deviation of the gaussian noise. |
 
-## Additional Methods
-This generator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Datasets\Generators\SwissRoll;
 
 $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 ```
+
+## Additional Methods
+This generator does not have any additional methods.

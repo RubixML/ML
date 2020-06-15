@@ -14,9 +14,6 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 | 2 | estimators | 10 | int | The number of base learners to train in the ensemble. |
 | 3 | ratio | 0.5 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 
-## Additional Methods
-This meta estimator does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\BootstrapAggregator;
@@ -24,6 +21,9 @@ use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(10), 300, 0.2);
 ```
+
+## Additional Methods
+This meta estimator does not have any additional methods.
 
 ### References
 >- L. Breiman. (1996). Bagging Predictors.

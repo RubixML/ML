@@ -10,9 +10,6 @@ Filesystems are local or remote storage drives that are organized by files and f
 | 2 | history | false | bool | Should we keep a history of past saves? |
 | 3 | serializer | Native | Serializer | The serializer used to convert to and from storage format. |
 
-## Additional Methods
-This persister does not have any additional methods.
-
 ## Example
 ```php
 use Rubix\ML\Persisters\Filesystem;
@@ -20,3 +17,6 @@ use Rubix\ML\Persisters\Serializers\Igbinary;
 
 $persister = new Filesystem('/path/to/example.model', true, new Iginary());
 ```
+
+## Additional Methods
+This persister does not have any additional methods.

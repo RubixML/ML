@@ -15,6 +15,16 @@ Categorical Naive Bayes is a probability-based classifier that uses counting and
 | 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing applied to the probabilities. |
 | 2 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training set. |
 
+## Example
+```php
+use Rubix\ML\Classifiers\NaiveBayes;
+
+$estimator = new NaiveBayes(2.5, [
+	'spam' => 0.3,
+	'not spam' => 0.7,
+]);
+```
+
 ## Additional Methods
 Return the class prior probabilities:
 ```php
@@ -24,14 +34,4 @@ public priors() : ?array
 Return the counts for each category per class:
 ```php
 public counts() : array
-```
-
-## Example
-```php
-use Rubix\ML\Classifiers\NaiveBayes;
-
-$estimator = new NaiveBayes(2.5, [
-	'spam' => 0.3,
-	'not spam' => 0.7,
-]);
 ```
