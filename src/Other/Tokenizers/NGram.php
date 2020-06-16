@@ -60,7 +60,7 @@ class NGram implements Tokenizer
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $min = 2, int $max = 2, Word $wordTokenizer = null)
+    public function __construct(int $min = 2, int $max = 2, ?Word $wordTokenizer = null)
     {
         if ($min < 1) {
             throw new InvalidArgumentException('Minimum cannot be less than 1.');

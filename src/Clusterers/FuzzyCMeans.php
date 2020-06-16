@@ -172,7 +172,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -255,7 +255,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $memberships = array_map([self::class, 'membership'], $dataset->samples());
+            $memberships = array_map([$this, 'membership'], $dataset->samples());
 
             $loss = $this->inertia($dataset->samples(), $memberships);
 
@@ -328,7 +328,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'membership'], $dataset->samples());
+        return array_map([$this, 'membership'], $dataset->samples());
     }
 
     /**

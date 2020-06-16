@@ -247,7 +247,7 @@ class Dense implements Hidden, Parametric
             $this->biases->update($optimizer->step($this->biases, $dB));
         }
 
-        unset($this->input);
+        $this->input = null;
 
         return new Deferred([$this, 'gradient'], [$weights, $dOut]);
     }

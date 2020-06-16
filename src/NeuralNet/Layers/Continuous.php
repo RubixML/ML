@@ -118,7 +118,7 @@ class Continuous implements Output
 
         $loss = $this->costFn->compute($input, $expected);
 
-        unset($this->input);
+        $this->input = null;
 
         return [$gradient, $loss];
     }

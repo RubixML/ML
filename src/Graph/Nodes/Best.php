@@ -7,8 +7,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 /**
  * Best
  *
- * A decision node whose outcome is the most probable class given a set
- * of class labels.
+ * A decision node whose outcome is the most probable class given a set of class labels.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

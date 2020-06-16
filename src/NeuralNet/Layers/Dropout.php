@@ -143,7 +143,7 @@ class Dropout implements Hidden
 
         $mask = $this->mask;
 
-        unset($this->mask);
+        $this->mask = null;
 
         return new Deferred([$this, 'gradient'], [$prevGradient, $mask]);
     }

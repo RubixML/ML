@@ -165,7 +165,7 @@ class Binary implements Output
 
         $loss = $this->costFn->compute($computed, $expected);
 
-        unset($this->input, $this->computed);
+        $this->input = $this->computed = null;
 
         return [$gradient, $loss];
     }

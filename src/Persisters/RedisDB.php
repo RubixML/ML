@@ -36,7 +36,7 @@ class RedisDB implements Persister
      *
      * @var \Redis
      */
-    protected $connector;
+    protected $db;
 
     /**
      * The serializer used to convert to and from serial format.
@@ -49,7 +49,7 @@ class RedisDB implements Persister
      * @param string $key
      * @param string $host
      * @param int $port
-     * @param int $db
+     * @param int $database
      * @param string|null $password
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @param float $timeout
@@ -60,7 +60,7 @@ class RedisDB implements Persister
         string $key,
         string $host = '127.0.0.1',
         int $port = 6379,
-        int $db = 0,
+        int $database = 0,
         ?string $password = null,
         ?Serializer $serializer = null,
         float $timeout = 2.5
@@ -79,25 +79,25 @@ class RedisDB implements Persister
                 . " 0, $timeout given.");
         }
 
-        $connector = new Redis();
+        $db = new Redis();
 
-        if (!$connector->connect($host, $port, $timeout)) {
+        if (!$db->connect($host, $port, $timeout)) {
             throw new RuntimeException('Could not connect to Redis server'
                 . " at host $host on port $port.");
         }
 
         if (isset($password)) {
-            if (!$connector->auth($password)) {
+            if (!$db->auth($password)) {
                 throw new RuntimeException('Password is invalid.');
             }
         }
 
-        if (!$connector->select($db)) {
-            throw new RuntimeException("Failed to select database $db.");
+        if (!$db->select($database)) {
+            throw new RuntimeException("Failed to select database $database.");
         }
 
         $this->key = $key;
-        $this->connector = $connector;
+        $this->db = $db;
         $this->serializer = $serializer ?? new Native();
     }
 
@@ -111,7 +111,7 @@ class RedisDB implements Persister
     {
         $data = $this->serializer->serialize($persistable);
 
-        $success = $this->connector->set($this->key, $data);
+        $success = $this->db->set($this->key, $data);
 
         if (!$success) {
             throw new RuntimeException('Failed to save '
@@ -127,7 +127,7 @@ class RedisDB implements Persister
      */
     public function load() : Persistable
     {
-        $data = $this->connector->get($this->key) ?: '';
+        $data = $this->db->get($this->key) ?: '';
 
         return $this->serializer->unserialize($data);
     }

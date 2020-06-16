@@ -21,8 +21,6 @@ trait RanksSingle
      */
     public function rankSample(array $sample) : float
     {
-        $scores = $this->rank(Unlabeled::build([$sample]));
-
-        return current($scores) ?: NAN;
+        return current($this->rank(Unlabeled::build([$sample]))) ?: NAN;
     }
 }

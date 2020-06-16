@@ -38,7 +38,7 @@ use function count;
  *
  * *Adaptive Linear Neuron* is a single layer neural network with a continuous linear
  * output neuron. Training is equivalent to solving L2 regularized linear regression
- * (Ridge) iteratively using Mini Batch Gradient Descent.
+ * (Ridge) iteratively using mini batch Gradient Descent.
  *
  * References:
  * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".
@@ -183,7 +183,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */

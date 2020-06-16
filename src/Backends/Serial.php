@@ -51,7 +51,7 @@ class Serial implements Backend
         $results = [];
 
         foreach ($this->queue as [$task, $after]) {
-            $result = $task->compute();
+            $result = $task();
 
             if ($after) {
                 $after($result);

@@ -105,7 +105,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -177,7 +177,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
             $this->variances[$column] = $variance ?: EPSILON;
         }
 
-        $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
 
         $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
 
@@ -222,7 +222,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
 
         $this->n += $n;
 
-        $lls = array_map([self::class, 'logLikelihood'], $dataset->samples());
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
 
         $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
 
@@ -239,7 +239,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([self::class, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->rank($dataset));
     }
 
     /**
@@ -255,7 +255,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'logLikelihood'], $dataset->samples());
+        return array_map([$this, 'logLikelihood'], $dataset->samples());
     }
 
     /**

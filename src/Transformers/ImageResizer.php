@@ -99,12 +99,12 @@ class ImageResizer implements Transformer
                     if ($width / $height < $this->ratio) {
                         $srcW = $width;
                         $srcH = (int) ceil(($srcW * $this->height) / $this->width);
-                        $srcY = (int) ceil(($height - $srcH) / 2);
+                        $srcY = (int) ceil(0.5 * ($height - $srcH));
                         $srcX = 0;
                     } else {
                         $srcH = $height;
                         $srcW = (int) ceil(($srcH * $this->width) / $this->height);
-                        $srcX = (int) ceil(($width - $srcW) / 2);
+                        $srcX = (int) ceil(0.5 * ($width - $srcW));
                         $srcY = 0;
                     }
 

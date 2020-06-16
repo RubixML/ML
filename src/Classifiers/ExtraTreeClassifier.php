@@ -77,7 +77,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */

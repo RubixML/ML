@@ -251,7 +251,7 @@ class BatchNorm implements Hidden, Parametric
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
-        unset($this->stdInv, $this->xHat);
+        $this->stdInv = $this->xHat = null;
 
         return new Deferred(
             [$this, 'gradient'],

@@ -176,7 +176,7 @@ class Multiclass implements Output
 
         $loss = $this->costFn->compute($computed, $expected);
 
-        unset($this->input, $this->z, $this->computed);
+        $this->input = $this->computed = null;
 
         return [$gradient, $loss];
     }

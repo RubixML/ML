@@ -5,7 +5,6 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
 
 /**
  * Cell
@@ -36,9 +35,7 @@ class Cell implements BinaryNode, Leaf
      */
     public static function terminate(Dataset $dataset, int $depth) : self
     {
-        $depth += ITree::c($dataset->numRows()) - 1.0;
-
-        return new self($depth);
+        return new self($depth + ITree::c($dataset->numRows()) - 1.0);
     }
 
     /**
@@ -47,11 +44,6 @@ class Cell implements BinaryNode, Leaf
      */
     public function __construct(float $depth)
     {
-        if ($depth < 0.0) {
-            throw new InvalidArgumentException('Depth cannot be less'
-                . " than 0, $depth given.");
-        }
-
         $this->depth = $depth;
     }
 

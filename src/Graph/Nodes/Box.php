@@ -4,11 +4,9 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
 use Traversable;
 
 use function Rubix\ML\argmax;
-use function count;
 
 /**
  * Hypercube
@@ -92,20 +90,9 @@ class Box implements BinaryNode, Hypercube
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param (int|float)[] $min
      * @param (int|float)[] $max
-     * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups, array $min, array $max)
     {
-        if (count($groups) !== 2) {
-            throw new InvalidArgumentException('The number of groups'
-                . ' must be exactly 2.');
-        }
-
-        if (count($min) !== count($max)) {
-            throw new InvalidArgumentException('Min and max vectors must be'
-                . ' the same dimensionality.');
-        }
-
         $this->column = $column;
         $this->value = $value;
         $this->groups = $groups;

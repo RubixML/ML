@@ -256,7 +256,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */

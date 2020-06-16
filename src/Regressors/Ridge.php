@@ -82,7 +82,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */

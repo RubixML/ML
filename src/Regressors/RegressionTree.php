@@ -68,7 +68,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */

@@ -64,7 +64,7 @@ class SkipGram implements Tokenizer
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $n = 2, int $skip = 2, Word $wordTokenizer = null)
+    public function __construct(int $n = 2, int $skip = 2, ?Word $wordTokenizer = null)
     {
         if ($n < 2) {
             throw new InvalidArgumentException('The number of words'

@@ -4,10 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
 use Traversable;
-
-use function count;
 
 /**
  * Neighborhood
@@ -66,23 +63,9 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param (int|float)[] $min
      * @param (int|float)[] $max
-     * @throws \InvalidArgumentException
      */
     public function __construct(Labeled $dataset, array $min, array $max)
     {
-        if (count($min) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('Minimum must be'
-                . ' same dimensionality as dataset,'
-                . " {$dataset->numColumns()} expected but "
-                . count($min) . ' given.');
-        }
-
-        if (count($max) !== count($min)) {
-            throw new InvalidArgumentException('Maximum must be'
-                . ' same dimensionality as minimum, ' . count($min)
-                . ' expected but ' . count($max) . ' given.');
-        }
-
         $this->dataset = $dataset;
         $this->min = $min;
         $this->max = $max;

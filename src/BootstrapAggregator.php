@@ -118,7 +118,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -209,7 +209,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         switch ($this->type()) {
             case EstimatorType::classifier():
             case EstimatorType::anomalyDetector():
-                return array_map([self::class, 'decideDiscrete'], $aggregate);
+                return array_map([$this, 'decideDiscrete'], $aggregate);
 
             default:
                 return array_map([Stats::class, 'mean'], $aggregate);

@@ -6,10 +6,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
 
 use function Rubix\ML\argmax;
-use function count;
 
 /**
  * Ball
@@ -92,20 +90,9 @@ class Ball implements BinaryNode, Hypersphere
      * @param (string|int|float)[] $center
      * @param float $radius
      * @param \Rubix\ML\Datasets\Labeled[] $groups
-     * @throws \InvalidArgumentException
      */
     public function __construct(array $center, float $radius, array $groups)
     {
-        if ($radius < 0.0) {
-            throw new InvalidArgumentException('Radius must be'
-                . " greater than 0, $radius given.");
-        }
-
-        if (count($groups) !== 2) {
-            throw new InvalidArgumentException('The number of groups'
-                . ' must be exactly 2.');
-        }
-
         $this->center = $center;
         $this->radius = $radius;
         $this->groups = $groups;

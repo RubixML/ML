@@ -21,8 +21,6 @@ trait ProbaSingle
      */
     public function probaSample(array $sample) : array
     {
-        $probabilities = $this->proba(Unlabeled::build([$sample]));
-
-        return current($probabilities) ?: [];
+        return current($this->proba(Unlabeled::build([$sample]))) ?: [];
     }
 }

@@ -225,7 +225,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -381,7 +381,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'assign'], $dataset->samples());
+        return array_map([$this, 'assign'], $dataset->samples());
     }
 
     /**
@@ -397,7 +397,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'membership'], $dataset->samples());
+        return array_map([$this, 'membership'], $dataset->samples());
     }
 
     /**

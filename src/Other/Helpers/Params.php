@@ -138,9 +138,9 @@ class Params
             switch (gettype($param)) {
                 case 'object':
                     if ($param instanceof Estimator) {
-                        $temp = '(' . self::stringify($param->params(), $separator) . ')';
+                        $paramString = '(' . self::stringify($param->params(), $separator) . ')';
 
-                        $param = self::shortName(get_class($param)) . $temp;
+                        $param = self::shortName(get_class($param)) . $paramString;
                     } else {
                         $param = self::shortName(get_class($param));
                     }
@@ -159,6 +159,12 @@ class Params
 
                     break 1;
 
+                case 'integer':
+                case 'double':
+                    $param = (string) $param;
+
+                    break 1;
+
                 case 'boolean':
                     $param = $param ? 'true' : 'false';
 
@@ -170,7 +176,7 @@ class Params
                     break 1;
             }
 
-            $strings[] = (string) $arg . '=' . (string) $param;
+            $strings[] = (string) $arg . '=' . $param;
         }
 
         return implode($separator, $strings);

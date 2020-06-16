@@ -142,7 +142,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -210,7 +210,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         $this->delta = $this->estimators * ITree::c($k);
 
         if (isset($this->contamination)) {
-            $scores = array_map([self::class, 'isolationScore'], $dataset->samples());
+            $scores = array_map([$this, 'isolationScore'], $dataset->samples());
 
             $threshold = Stats::quantile($scores, 1.0 - $this->contamination);
         }
@@ -226,7 +226,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([self::class, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->rank($dataset));
     }
 
     /**
@@ -242,7 +242,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'isolationScore'], $dataset->samples());
+        return array_map([$this, 'isolationScore'], $dataset->samples());
     }
 
     /**

@@ -113,7 +113,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -198,7 +198,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([self::class, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->rank($dataset));
     }
 
     /**
@@ -214,7 +214,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'z'], $dataset->samples());
+        return array_map([$this, 'z'], $dataset->samples());
     }
 
     /**

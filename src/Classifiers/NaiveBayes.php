@@ -130,7 +130,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -282,7 +282,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
+        $jll = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
         return array_map('Rubix\ML\argmax', $jll);
     }

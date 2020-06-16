@@ -291,7 +291,7 @@ class BallTree implements BinaryTree, Spatial
      */
     public function destroy() : void
     {
-        unset($this->root);
+        $this->root = null;
     }
 
     /**

@@ -25,7 +25,7 @@ trait LoggerAware
     protected $logger;
 
     /**
-     * Sets a logger instance on the object.
+     * Sets a PSR-3 logger instance.
      *
      * @param \Psr\Log\LoggerInterface $logger
      */
@@ -35,7 +35,7 @@ trait LoggerAware
     }
 
     /**
-     * Return if the logger is logging or not.
+     * Return the PSR-3 logger instance.
      *
      * @return \Psr\Log\LoggerInterface|null
      */

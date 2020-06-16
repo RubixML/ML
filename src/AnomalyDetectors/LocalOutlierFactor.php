@@ -129,7 +129,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -201,10 +201,10 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
             $this->kdistances[] = end($distances);
         }
 
-        $this->lrds = array_map([self::class, 'localReachabilityDensity'], $iHat, $dHat);
+        $this->lrds = array_map([$this, 'localReachabilityDensity'], $iHat, $dHat);
 
         if (isset($this->contamination)) {
-            $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
+            $lofs = array_map([$this, 'localOutlierFactor'], $dataset->samples());
 
             $threshold = Stats::quantile($lofs, 1.0 - $this->contamination);
         }
@@ -220,7 +220,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([self::class, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->rank($dataset));
     }
 
     /**
@@ -236,7 +236,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'localOutlierFactor'], $dataset->samples());
+        return array_map([$this, 'localOutlierFactor'], $dataset->samples());
     }
 
     /**

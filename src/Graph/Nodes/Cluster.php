@@ -6,9 +6,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
 
-use function count;
 use function Rubix\ML\argmax;
 
 /**
@@ -79,22 +77,9 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param (string|int|float)[] $center
      * @param float $radius
-     * @throws \InvalidArgumentException
      */
     public function __construct(Labeled $dataset, array $center, float $radius)
     {
-        if (count($center) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('Center must be'
-                . ' same dimensionality as dataset,'
-                . " {$dataset->numColumns()} expected but "
-                . count($center) . ' given.');
-        }
-
-        if ($radius < 0.0) {
-            throw new InvalidArgumentException('Radius must be'
-                . " 0 or greater, $radius given.");
-        }
-
         $this->dataset = $dataset;
         $this->center = $center;
         $this->radius = $radius;

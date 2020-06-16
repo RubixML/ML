@@ -4,9 +4,6 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use InvalidArgumentException;
-
-use function count;
 
 use const Rubix\ML\PHI;
 
@@ -80,11 +77,6 @@ class Isolator implements BinaryNode
      */
     public function __construct(int $column, $value, array $groups)
     {
-        if (count($groups) !== 2) {
-            throw new InvalidArgumentException('The number of groups'
-                . ' must be exactly 2.');
-        }
-
         $this->column = $column;
         $this->value = $value;
         $this->groups = $groups;

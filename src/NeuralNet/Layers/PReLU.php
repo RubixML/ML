@@ -151,7 +151,7 @@ class PReLU implements Hidden, Parametric
 
         $z = $this->input;
 
-        unset($this->input);
+        $this->input = null;
 
         return new Deferred([$this, 'gradient'], [$z, $dOut]);
     }

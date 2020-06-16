@@ -21,8 +21,6 @@ trait PredictsSingle
      */
     public function predictSample(array $sample)
     {
-        $predictions = $this->predict(Unlabeled::build([$sample]));
-
-        return current($predictions) ?: null;
+        return current($this->predict(Unlabeled::build([$sample]))) ?: null;
     }
 }

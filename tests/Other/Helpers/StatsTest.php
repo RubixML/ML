@@ -111,14 +111,6 @@ class StatsTest extends TestCase
     /**
      * @test
      */
-    public function mode() : void
-    {
-        $this->assertEquals(13, Stats::mode(self::TEST_VALUES));
-    }
-
-    /**
-     * @test
-     */
     public function mad() : void
     {
         $this->assertEquals(3.5, Stats::mad(self::TEST_VALUES));

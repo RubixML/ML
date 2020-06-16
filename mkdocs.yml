@@ -254,7 +254,6 @@ nav:
   - Loggers:
     - Screen: other/loggers/screen.md
   - Strategies:
-    - API Reference: other/strategies/api.md
     - Constant: other/strategies/constant.md
     - K Most Frequent: other/strategies/k-most-frequent.md
     - Mean: other/strategies/mean.md
@@ -262,7 +261,6 @@ nav:
     - Prior: other/strategies/prior.md
     - Wild Guess: other/strategies/wild-guess.md
   - Tokenizers:
-    - API Reference: other/tokenizers/api.md
     - N-Gram: other/tokenizers/n-gram.md
     - Skip Gram: other/tokenizers/skip-gram.md
     - Whitespace: other/tokenizers/whitespace.md

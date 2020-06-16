@@ -194,7 +194,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     }
 
     /**
-     * Return the data types that the model is compatible with.
+     * Return the data types that the estimator is compatible with.
      *
      * @return \Rubix\ML\DataType[]
      */
@@ -321,7 +321,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             $loss = 0.0;
 
             foreach ($batches as $i => &$batch) {
-                $assignments = array_map([self::class, 'assign'], $batch->samples());
+                $assignments = array_map([$this, 'assign'], $batch->samples());
 
                 $labels = $batch->labels();
 
@@ -408,7 +408,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'assign'], $dataset->samples());
+        return array_map([$this, 'assign'], $dataset->samples());
     }
 
     /**
@@ -424,7 +424,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'membership'], $dataset->samples());
+        return array_map([$this, 'membership'], $dataset->samples());
     }
 
     /**

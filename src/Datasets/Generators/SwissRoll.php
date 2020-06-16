@@ -8,6 +8,8 @@ use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+use const Rubix\ML\HALF_PI;
+
 /**
  * Swiss Roll
  *
@@ -112,7 +114,7 @@ class SwissRoll implements Generator
         $t = ColumnVector::rand($n)
             ->multiply(2)
             ->add(1)
-            ->multiply(1.5 * M_PI);
+            ->multiply(M_PI + HALF_PI);
 
         $x = $t->multiply($t->cos());
         $y = ColumnVector::rand($n)->multiply($this->depth);

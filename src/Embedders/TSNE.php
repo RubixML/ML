@@ -504,7 +504,7 @@ class TSNE implements Embedder, Verbose
                     if ($maxBeta === INF) {
                         $beta *= 2.0;
                     } else {
-                        $beta = ($beta + $maxBeta) / 2.0;
+                        $beta = 0.5 * ($beta + $maxBeta);
                     }
                 } else {
                     $maxBeta = $beta;
@@ -512,7 +512,7 @@ class TSNE implements Embedder, Verbose
                     if ($minBeta === -INF) {
                         $beta /= 2.0;
                     } else {
-                        $beta = ($beta + $minBeta) / 2.0;
+                        $beta = 0.5 * ($beta + $minBeta);
                     }
                 }
             }

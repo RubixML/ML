@@ -4,7 +4,6 @@ namespace Rubix\ML\Other\Helpers;
 
 use InvalidArgumentException;
 
-use function Rubix\ML\argmax;
 use function array_slice;
 use function count;
 
@@ -13,7 +12,7 @@ use const Rubix\ML\EPSILON;
 /**
  * Stats
  *
- * A helper class providing common statistical functions.
+ * A helper class providing statistical functions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -25,18 +24,15 @@ class Stats
      * Compute the population mean of a set of values.
      *
      * @param mixed[] $values
-     * @param int|null $n
      * @return float
      */
-    public static function mean(array $values, ?int $n = null) : float
+    public static function mean(array $values) : float
     {
-        $n = $n ?? count($values);
-
-        if ($n < 1) {
+        if (empty($values)) {
             throw new InvalidArgumentException('Mean is undefined for empty set.');
         }
 
-        return array_sum($values) / $n;
+        return array_sum($values) / count($values);
     }
 
     /**
@@ -48,18 +44,20 @@ class Stats
      */
     public static function weightedMean(array $values, array $weights) : float
     {
-        $n = count($values);
-
-        if ($n < 1) {
+        if (empty($values)) {
             throw new InvalidArgumentException('Weighted mean is undefined for empty set.');
         }
 
-        if (count($weights) !== $n) {
+        if (count($values) !== count($weights)) {
             throw new InvalidArgumentException('The number of weights must'
                 . ' equal the number of values.');
         }
 
-        $total = array_sum($weights) ?: EPSILON;
+        $total = array_sum($weights);
+
+        if ($total == 0) {
+            throw new InvalidArgumentException('Total weight cannot equal 0.');
+        }
 
         $sigma = 0.0;
 
@@ -78,26 +76,7 @@ class Stats
      */
     public static function midrange(array $values) : float
     {
-        return (min($values) + max($values)) / 2.0;
-    }
-
-    /**
-     * Find a mode of a set of values i.e a value that appears most often in the
-     * set.
-     *
-     * @param mixed[] $values
-     * @throws \InvalidArgumentException
-     * @return float
-     */
-    public static function mode(array $values) : float
-    {
-        if (empty($values)) {
-            throw new InvalidArgumentException('Mode is undefined for empty set.');
-        }
-
-        $counts = array_count_values(array_map('strval', $values));
-
-        return (float) argmax($counts);
+        return 0.5 * (min($values) + max($values));
     }
 
     /**
@@ -106,16 +85,13 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
-    public static function variance(array $values, ?float $mean = null, ?int $n = null) : float
+    public static function variance(array $values, ?float $mean = null) : float
     {
-        $n = $n ?? count($values);
-
-        if ($n < 1) {
-            throw new InvalidArgumentException('Variance is undefined for an empty set.');
+        if (empty($values)) {
+            throw new InvalidArgumentException('Variance is undefined for empty set.');
         }
 
         $mean = $mean ?? self::mean($values);
@@ -126,7 +102,7 @@ class Stats
             $ssd += ($value - $mean) ** 2;
         }
 
-        return $ssd / $n;
+        return $ssd / count($values);
     }
 
     /**
@@ -138,11 +114,11 @@ class Stats
      */
     public static function median(array $values) : float
     {
-        $n = count($values);
-
-        if ($n < 1) {
+        if (empty($values)) {
             throw new InvalidArgumentException('Median is undefined for empty set.');
         }
+
+        $n = count($values);
 
         $mid = intdiv($n, 2);
 
@@ -151,7 +127,7 @@ class Stats
         if ($n % 2 === 1) {
             $median = $values[$mid];
         } else {
-            $median = ($values[$mid - 1] + $values[$mid]) / 2.0;
+            $median = 0.5 * ($values[$mid - 1] + $values[$mid]);
         }
 
         return $median;
@@ -220,12 +196,12 @@ class Stats
      */
     public static function iqr(array $values) : float
     {
-        $n = count($values);
-
-        if ($n < 1) {
+        if (empty($values)) {
             throw new InvalidArgumentException('Interquartile range is'
-                . ' undefined for an empty set.');
+                . ' undefined for empty set.');
         }
+
+        $n = count($values);
 
         $mid = intdiv($n, 2);
 
@@ -247,10 +223,16 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $median
+     * @throws \InvalidArgumentException
      * @return float
      */
     public static function mad(array $values, ?float $median = null) : float
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Median absolute deviation'
+                . ' is undefined for empty set.');
+        }
+
         $median = $median ?? self::median($values);
 
         $deviations = [];
@@ -263,57 +245,21 @@ class Stats
     }
 
     /**
-     * Compute the n-th central moment of a set of values.
-     *
-     * @param mixed[] $values
-     * @param int $moment
-     * @param float|null $mean
-     * @param int|null $n
-     * @throws \InvalidArgumentException
-     * @return float
-     */
-    public static function centralMoment(array $values, int $moment, ?float $mean = null, ?int $n = null) : float
-    {
-        $n = $n ?? count($values);
-
-        if ($n < 1) {
-            throw new InvalidArgumentException('Central moment is undefined for empty set.');
-        }
-
-        if ($moment < 1) {
-            throw new InvalidArgumentException('Moment cannot be less than 1.');
-        }
-
-        $mean = $mean ?? self::mean($values, $n);
-
-        $sigma = 0.0;
-
-        foreach ($values as $value) {
-            $sigma += ($value - $mean) ** $moment;
-        }
-
-        return $sigma / $n;
-    }
-
-    /**
      * Compute the skewness of a set of values given a mean and n degrees of
      * freedom.
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
-    public static function skewness(array $values, ?float $mean = null, ?int $n = null) : float
+    public static function skewness(array $values, ?float $mean = null) : float
     {
-        $n = $n ?? count($values);
-
-        if ($n < 1) {
+        if (empty($values)) {
             throw new InvalidArgumentException('Skewness is undefined for empty set.');
         }
 
-        $mean = $mean ?? self::mean($values, $n);
+        $mean = $mean ?? self::mean($values);
 
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
@@ -326,24 +272,51 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
-    public static function kurtosis(array $values, ?float $mean = null, ?int $n = null) : float
+    public static function kurtosis(array $values, ?float $mean = null) : float
     {
-        $n = $n ?? count($values);
+        if (empty($values)) {
+            throw new InvalidArgumentException('Kurtosis is undefined for empty set.');
+        }
 
-        if ($n < 1) {
+        $mean = $mean ?? self::mean($values);
+
+        $numerator = self::centralMoment($values, 4, $mean);
+        $denominator = self::centralMoment($values, 2, $mean) ** 2;
+
+        return $numerator / ($denominator ?: EPSILON) - 3.0;
+    }
+
+    /**
+     * Compute the n-th central moment of a set of values.
+     *
+     * @param mixed[] $values
+     * @param int $moment
+     * @param float|null $mean
+     * @throws \InvalidArgumentException
+     * @return float
+     */
+    public static function centralMoment(array $values, int $moment, ?float $mean = null) : float
+    {
+        if (empty($values)) {
             throw new InvalidArgumentException('Central moment is undefined for empty set.');
         }
 
-        $mean = $mean ?? self::mean($values, $n);
+        if ($moment < 1) {
+            throw new InvalidArgumentException('Moment cannot be less than 1.');
+        }
 
-        $numerator = self::centralMoment($values, 4, $mean, $n);
-        $denominator = self::centralMoment($values, 2, $mean, $n) ** 2;
+        $mean = $mean ?? self::mean($values);
 
-        return $numerator / ($denominator ?: EPSILON) - 3.0;
+        $sigma = 0.0;
+
+        foreach ($values as $value) {
+            $sigma += ($value - $mean) ** $moment;
+        }
+
+        return $sigma / count($values);
     }
 
     /**

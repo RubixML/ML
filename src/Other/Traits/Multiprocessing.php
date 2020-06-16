@@ -23,7 +23,7 @@ use Rubix\ML\Backends\Backend;
 trait Multiprocessing
 {
     /**
-     * The backend processing engine.
+     * The parallel processing backend.
      *
      * @var \Rubix\ML\Backends\Backend
      */

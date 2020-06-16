@@ -131,7 +131,7 @@ class Activation implements Hidden
         $input = $this->input;
         $computed = $this->computed;
 
-        unset($this->input, $this->computed);
+        $this->input = $this->computed = null;
 
         return new Deferred(
             [$this, 'gradient'],
