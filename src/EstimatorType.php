@@ -148,6 +148,14 @@ class EstimatorType
     }
 
     /**
+     * Is the estimator type supervised?
+     */
+    public function isSupervised() : bool
+    {
+        return $this->isClassifier() or $this->isRegressor();
+    }
+
+    /**
      * Is it a classifier?
      *
      * @return bool

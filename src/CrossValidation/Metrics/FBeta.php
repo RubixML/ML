@@ -41,7 +41,7 @@ class FBeta implements Metric
      */
     public static function precision(int $tp, int $fp) : float
     {
-        return $tp / (($tp + $fp) ?: EPSILON);
+        return $tp / ($tp + $fp);
     }
 
     /**
@@ -53,7 +53,7 @@ class FBeta implements Metric
      */
     public static function recall(int $tp, int $fn) : float
     {
-        return $tp / (($tp + $fn) ?: EPSILON);
+        return $tp / ($tp + $fn);
     }
 
     /**

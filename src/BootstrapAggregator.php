@@ -160,7 +160,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($this->type()->isClassifier() or $this->type()->isRegressor()) {
+        if ($this->type()->isSupervised()) {
             if (!$dataset instanceof Labeled) {
                 throw new InvalidArgumentException('Learner requires a'
                     . ' Labeled training set.');

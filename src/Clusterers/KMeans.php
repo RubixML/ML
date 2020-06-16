@@ -471,7 +471,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 $sigma += $distanceA / $distanceB;
             }
 
-            $membership[] = 1.0 / ($sigma ?: EPSILON);
+            $membership[] = 1.0 / $sigma;
         }
 
         return $membership;

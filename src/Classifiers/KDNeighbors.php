@@ -21,8 +21,6 @@ use RuntimeException;
 
 use function Rubix\ML\argmax;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * K-d Neighbors
  *
@@ -225,7 +223,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 $weights = array_count_values($labels);
             }
 
-            $total = array_sum($weights) ?: EPSILON;
+            $total = array_sum($weights);
 
             $dist = $this->classes;
 

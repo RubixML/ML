@@ -22,7 +22,6 @@ use RuntimeException;
 use function Rubix\ML\logsumexp;
 use function count;
 
-use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
 
 /**
@@ -45,7 +44,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     use PredictsSingle, ProbaSingle;
 
     /**
-     * The amount of additive (Laplace) smoothing to apply to the probabilities.
+     * The amount of (Laplace) smoothing added to the probabilities.
      *
      * @var float
      */
@@ -106,16 +105,28 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . " greater than 0, $alpha given.");
         }
 
-        if ($priors) {
-            $total = array_sum($priors) ?: EPSILON;
+        $logPriors = [];
 
-            foreach ($priors as &$prior) {
-                $prior = log($prior / $total);
+        if ($priors) {
+            $total = array_sum($priors);
+
+            if ($total == 0) {
+                throw new InvalidArgumentException('Total class prior'
+                    . ' probability cannot be equal to 0.');
+            }
+
+            foreach ($priors as $prior) {
+                if ($prior < 0) {
+                    throw new InvalidArgumentException('Prior probability'
+                        . " must be greater than 0, $prior given.");
+                }
+
+                $logPriors[] = log($prior / $total);
             }
         }
 
         $this->alpha = $alpha;
-        $this->logPriors = $priors;
+        $this->logPriors = $logPriors;
         $this->fitPriors = is_null($priors);
     }
 
@@ -236,9 +247,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     }
                 }
 
-                $total = (array_sum($columnCounts)
-                    + (count($columnCounts) * $this->alpha))
-                    ?: EPSILON;
+                $total = array_sum($columnCounts)
+                    + (count($columnCounts) * $this->alpha);
 
                 $probs = [];
 
@@ -259,9 +269,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         if ($this->fitPriors) {
             $this->logPriors = [];
 
-            $total = (array_sum($this->weights)
-                + (count($this->weights) * $this->alpha))
-                ?: EPSILON;
+            $total = array_sum($this->weights)
+                + (count($this->weights) * $this->alpha);
 
             foreach ($this->weights as $class => $weight) {
                 $this->logPriors[$class] = log(($weight + $this->alpha) / $total);

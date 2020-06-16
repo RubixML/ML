@@ -22,8 +22,6 @@ use RuntimeException;
 use function Rubix\ML\argmax;
 use function in_array;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Radius Neighbors
  *
@@ -271,7 +269,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 $weights = array_count_values($labels);
             }
 
-            $total = array_sum($weights) ?: EPSILON;
+            $total = array_sum($weights);
 
             foreach ($weights as $class => $weight) {
                 $dist[$class] = $weight / $total;

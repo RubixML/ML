@@ -444,7 +444,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 $sigma += $distanceA / $distanceB;
             }
 
-            $membership[] = 1.0 / ($sigma ?: EPSILON);
+            $membership[] = 1.0 / $sigma;
         }
 
         return $membership;

@@ -10,7 +10,7 @@ Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifie
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training set. |
+| 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training data. |
 
 ## Example
 ```php

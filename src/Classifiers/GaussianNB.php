@@ -93,15 +93,27 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function __construct(?array $priors = null)
     {
-        if ($priors) {
-            $total = array_sum($priors) ?: EPSILON;
+        $logPriors = [];
 
-            foreach ($priors as &$prior) {
-                $prior = log($prior / $total);
+        if ($priors) {
+            $total = array_sum($priors);
+
+            if ($total == 0) {
+                throw new InvalidArgumentException('Total class prior'
+                    . ' probability cannot be equal to 0.');
+            }
+
+            foreach ($priors as $class => $prior) {
+                if ($prior < 0) {
+                    throw new InvalidArgumentException('Prior probability'
+                        . " must be greater than 0, $prior given.");
+                }
+
+                $logPriors[$class] = log($prior / $total);
             }
         }
 
-        $this->logPriors = $priors;
+        $this->logPriors = $logPriors;
         $this->fitPriors = is_null($priors);
     }
 
@@ -160,7 +172,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Return the running mean of each feature column of the training data.
+     * Return the running means of each feature column of the training data by class.
      *
      * @return array[]|null
      */
@@ -170,7 +182,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Return the running variances of each feature column of the training data.
+     * Return the running variances of each feature column of the training data by class.
      *
      * @return array[]|null
      */
@@ -221,7 +233,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         if ($this->fitPriors) {
             $this->logPriors = [];
 
-            $total = array_sum($this->weights) ?: EPSILON;
+            $total = array_sum($this->weights);
 
             foreach ($this->weights as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);
@@ -283,7 +295,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights) ?: EPSILON;
+            $total = array_sum($this->weights);
 
             foreach ($this->weights as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);

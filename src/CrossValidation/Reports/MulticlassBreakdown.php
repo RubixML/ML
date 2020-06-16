@@ -94,11 +94,11 @@ class MulticlassBreakdown implements Report
             $fp = $falsePos[$label];
             $fn = $falseNeg[$label];
 
-            $accuracy = ($tp + $tn) / (($tp + $tn + $fp + $fn) ?: EPSILON);
-            $precision = $tp / (($tp + $fp) ?: EPSILON);
-            $recall = $tp / (($tp + $fn) ?: EPSILON);
-            $specificity = $tn / (($tn + $fp) ?: EPSILON);
-            $npv = $tn / (($tn + $fn) ?: EPSILON);
+            $accuracy = ($tp + $tn) / ($tp + $tn + $fp + $fn);
+            $precision = $tp / ($tp + $fp);
+            $recall = $tp / ($tp + $fn);
+            $specificity = $tn / ($tn + $fp);
+            $npv = $tn / ($tn + $fn);
 
             $threatScore = $tp / ($tp + $fn + $fp);
 
@@ -106,7 +106,7 @@ class MulticlassBreakdown implements Report
                 / (($precision + $recall) ?: EPSILON);
 
             $mcc = ($tp * $tn - $fp * $fn)
-                / sqrt((($tp + $fp) * ($tp + $fn)
+                / (sqrt(($tp + $fp) * ($tp + $fn)
                 * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
 
             $cardinality = $tp + $fn;

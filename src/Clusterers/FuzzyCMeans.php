@@ -272,7 +272,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                         $total += $weight;
                     }
 
-                    $means[] = $sigma / ($total ?: EPSILON);
+                    $means[] = $sigma / $total;
                 }
 
                 $centroid = $means;
@@ -352,7 +352,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 $sigma += ($distanceA / $distanceB) ** $this->rho;
             }
 
-            $membership[] = 1.0 / ($sigma ?: EPSILON);
+            $membership[] = 1.0 / $sigma;
         }
 
         return $membership;

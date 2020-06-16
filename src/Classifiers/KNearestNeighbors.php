@@ -23,8 +23,6 @@ use RuntimeException;
 use function Rubix\ML\argmax;
 use function array_slice;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * K Nearest Neighbors
  *
@@ -257,7 +255,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 $weights = array_count_values($labels);
             }
 
-            $total = array_sum($weights) ?: EPSILON;
+            $total = array_sum($weights);
 
             $dist = $this->classes;
 

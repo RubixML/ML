@@ -294,7 +294,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
 
-                $total = array_sum($mHat) ?: EPSILON;
+                $total = array_sum($mHat);
 
                 $means = $variances = [];
 
