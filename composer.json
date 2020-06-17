@@ -10,14 +10,15 @@
         "cart", "classification", "classifier", "clustering", "cross validation", "dataset",
         "data science", "data mining", "dbscan", "deep learning", "dimensionality reduction",
         "ensemble", "estimator", "feature extraction", "feature selection", "feature importance",
-        "gaussian mixture", "gmm", "gradient boost", "grid search", "imputation", "isolation forest",
-        "k-means", "kmeans", "k-nearest neighbors", "knn", "linear regression", "loda",
-        "local outlier factor", "logistic regression", "machine learning", "manifold learning",
-        "mean shift", "ml", "multilayer perceptron", "naive bayes", "neural network",
-        "natural language processing", "nearest neighbors", "nlp", "php", "php ml",
-        "predictive modeling", "prediction", "random forest", "regression", "regressor",
-        "recommendation", "rubix", "rubixml", "rubix ml", "support vector machine", "svm", "t-sne",
-        "tsne"
+        "gaussian mixture", "gmm", "gradient boost", "grid search", "image recognition",
+        "imputation", "isolation forest", "k-means", "kmeans", "k-nearest neighbors", "knn",
+        "linear regression", "loda", "local outlier factor", "logistic regression",
+        "machine learning", "manifold learning", "mean shift", "ml", "multilayer perceptron",
+        "naive bayes", "neural network", "natural language processing", "nearest neighbors", "nlp",
+        "outlier detection", "php", "php machine learning", "php ml", "predictive modeling",
+        "prediction", "random forest", "regression", "regressor", "recommendation", "rubix",
+        "rubixml", "rubix ml", "supervised", "support vector machine", "svm", "t-sne", "tsne",
+        "unsupervised"
     ],
     "authors": [
         {
