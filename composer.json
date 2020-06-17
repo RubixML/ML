@@ -6,11 +6,18 @@
     "license": "MIT",
     "readme": "README.md",
     "keywords": [
-        "php", "machine learning", "data science", "data mining", "predictive modeling", "prediction", "classification",
-        "classifier", "regression", "clustering", "anomaly detection", "neural network", "manifold learning",
-        "dimensionality reduction", "artificial intelligence", "ai", "cross validation", "feature extraction",
-        "deep learning", "rubix", "ml", "analytics", "naive bayes", "naive", "bayes", "k-means", "kmeans", 
-        "k-nearest neighbors", "knn", "recommendation"
+        "adaboost", "ai", "algorithm", "analytics", "anomaly detection", "artificial intelligence",
+        "cart", "classification", "classifier", "clustering", "cross validation", "dataset",
+        "data science", "data mining", "dbscan", "deep learning", "dimensionality reduction",
+        "ensemble", "estimator", "feature extraction", "feature selection", "feature importance",
+        "gaussian mixture", "gmm", "gradient boost", "grid search", "imputation", "isolation forest",
+        "k-means", "kmeans", "k-nearest neighbors", "knn", "linear regression", "loda",
+        "local outlier factor", "logistic regression", "machine learning", "manifold learning",
+        "mean shift", "ml", "multilayer perceptron", "naive bayes", "neural network",
+        "natural language processing", "nearest neighbors", "nlp", "php", "php ml",
+        "predictive modeling", "prediction", "random forest", "regression", "regressor",
+        "recommendation", "rubix", "rubixml", "rubix ml", "support vector machine", "svm", "t-sne",
+        "tsne"
     ],
     "authors": [
         {
