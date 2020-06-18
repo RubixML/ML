@@ -2,7 +2,7 @@
 The Estimator interface is implemented by all learners in Rubix ML. It provides basic inference functionality through the `predict()` method which returns a set of predictions from a dataset. Additionally, it provides methods for returning estimator type and data type compatibility declarations.
 
 ### Make Predictions
-Return the predictions from a dataset in an array:
+Return the predictions from a dataset containing unknown samples in an array:
 ```php
 public predict(Dataset $dataset) : array
 ```
@@ -37,44 +37,17 @@ public type() : int
 **Example**
 
 ```php
-use Rubix\ML\Estimator;
-
-$type = $estimator->type();
-
-var_dump($type); // Dump integer-encoded type
-
-var_dump(Estimator::TYPE_STRINGS[$type]); // Dump human readable type
+echo $estimator->type();
 ```
 
 ```sh
-int(1)
-
-string(10) "classifier"
+classifier
 ```
 
 ### Data Type Compatibility
 Return the data types that this estimator is compatible with:
 ```php
 public compatibility() : array
-```
-
-**Example**
-
-```php
-var_dump($estimator->compatibility());
-```
-
-```sh
-array(2) {
-  [0]=>
-  object(Rubix\ML\DataType)#20257 (1) {
-    ["type":protected]=> int(2)
-  }
-  [1]=>
-  object(Rubix\ML\DataType)#20265 (1) {
-    ["type":protected]=> int(1)
-  }
-}
 ```
 
 ### Hyper-parameters

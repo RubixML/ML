@@ -28,10 +28,6 @@
             "role": "Lead Engineer"
         },
         {
-            "name": "Core Team",
-            "homepage": "https://github.com/orgs/RubixML/teams/core"
-        },
-        {
             "name": "Contributors",
             "homepage": "https://github.com/RubixML/RubixML/graphs/contributors"
         }

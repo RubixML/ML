@@ -14,8 +14,8 @@ The library comes with a built-in higher-order type system which distinguishes t
 
 | Rubix ML Data Type | PHP Internal Type |
 |---|---|
-| Continuous | Integer or Floating Point Number |
 | Categorical | String |
+| Continuous | Integer or Floating Point Number |
 | Image | GD Resource |
 
 ## Quantities

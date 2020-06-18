@@ -1,8 +1,8 @@
 # Learner
-Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can form a generalized internal function that maps future unknown samples to good predictions.
+Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can form a generalized representation or *model* of the dataset.
 
 ### Train a Learner
-To train a learner pass a training dataset to the `train()` method:
+To train a learner pass a training dataset as argument to the `train()` method:
 ```php
 public train(Dataset $training) : void
 ```

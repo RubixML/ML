@@ -22,10 +22,7 @@ $tree = new KDTree(30, new Euclidean());
 ```
 
 ## Additional Methods
-Return the path of a sample taken from the root node to a leaf node in an array.
-```php
-public path(array $sample) : array
-```
+This tree does not have any additional methods.
 
 ### References
 >- J. L. Bentley. (1975). Multidimensional Binary Search Trees Used for Associative Searching.

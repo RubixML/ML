@@ -32,7 +32,7 @@ array(2) {
 }
 ```
 
-## Joint Probabilities of a Single Sample
+## Probabilities of a Single Sample
 Predict the probabilities of a single sample and return the joint distribution:
 ```php
 public probaSample(array $sample) : array
