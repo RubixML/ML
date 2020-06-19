@@ -29,8 +29,8 @@ class RegexFilterTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            ['I was not proud of what I had learned, but I never doubted that it was worth knowing'],
-            ['Too weird to live, contact@rubixml.com too rare to die https://rubixml.com'],
+            ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],
+            ['Too weird to live, support@rubixml.com too rare to die https://rubixml.com'],
             ['A man who procrastinates in @his choosing will inevitably have his choice made for him by #circumstance'],
         ]);
 
@@ -39,6 +39,7 @@ class RegexFilterTest extends TestCase
             RegexFilter::EMAIL,
             RegexFilter::MENTION,
             RegexFilter::HASHTAG,
+            RegexFilter::EXTRA_CHARACTERS,
         ]);
     }
 
@@ -59,7 +60,7 @@ class RegexFilterTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $expected = [
-            ['I was not proud of what I had learned, but I never doubted that it was worth knowing'],
+            ['I was not proud of what I had learned, but I never doubted that it was worth $ knowing.'],
             ['Too weird to live,  too rare to die '],
             ['A man who procrastinates in  choosing will inevitably have his choice made for him by '],
         ];

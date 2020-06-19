@@ -1,6 +1,7 @@
 - Unreleased
     - Whitespace Trimmer is now a separate transformer
     - Text Normalizers no longer remove extra whitespace
+    - Added extra characters pattern to Regex Filter
 
 - 0.1.0-rc4
     - Added Multibyte Text Normalizer transformer

@@ -20,6 +20,7 @@ $transformer = new RegexFilter([
     RegexFilter::URL,
     RegexFilter::MENTION,
     '/(?<me>.+)/',
+    RegexFilter::EXTRA_CHARACTERS,
 ]);
 ```
 
@@ -32,6 +33,7 @@ $transformer = new RegexFilter([
 | EMAIL | A pattern to match any email address. |
 | MENTION | A pattern that matches Twitter-style mentions (@example). |
 | HASHTAG | Matches Twitter-style hashtags (#example). |
+| EXTRA_CHARACTERS | Matches extra non word or number characters such as repeated punctuation and special characters. |
 
 ## Additional Methods
 This transformer does not have any additional methods.
