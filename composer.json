@@ -88,6 +88,8 @@
         "sort-packages": true,
         "process-timeout": 3000
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "funding": [
         {
             "type": "github",
