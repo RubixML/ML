@@ -1,18 +1,16 @@
 # Preprocessing
-Sometimes, one or more preprocessing steps will need to be taken to condition data for a learner. Some examples of preprocessing include feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy-to-use interface.
+Sometimes, one or more preprocessing steps will need to be taken to condition data for a learner. Some examples of preprocessing steps include feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy-to-use interface.
 
-[Stateful](transformers/api.md#stateful) transformers must be *fitted* to a dataset before transforming. After fitting a transformer, it will expect the features to be present in the same order when transforming subsequent datasets. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting using the `update()` method.
+[Stateful](transformers/api.md#stateful) transformers are a type of transformer that must be *fitted* to a dataset before transforming. After fitting a stateful transformer, it will expect the features to be present in the same order when transforming subsequent datasets. A few transformers are *supervised* meaning they must be fitted with a [Labeled](datasets/labeled.md) dataset. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting.
 
 ## Transform a Dataset
-An example of a transformation is one that converts the categorical features of a dataset to continuous ones using a [*one hot*](https://en.wikipedia.org/wiki/One-hot) encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) instance to a [Dataset](datasets/api.md) object's `apply()` method which automatically handles fitting the dataset and transforming the samples.
+An example of a transformation is one that converts the categorical features of a dataset to continuous ones using a [*one hot*](https://en.wikipedia.org/wiki/One-hot) encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) transformer instance to the [Dataset](datasets/api.md) object's `apply()` method. This method automatically handles fitting and transforming the samples.
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
 $dataset->apply(new OneHotEncoder());
 ```
-
-> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on the [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) instance.
 
 Transformations can be chained by calling the `apply()` method fluently.
 
@@ -26,8 +24,10 @@ $dataset->apply(new RandomHotDeckImputer(5))
     ->apply(new ZScaleStandardizer());
 ```
 
+> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on the [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) instance.
+
 ## Transformer Pipelines
-[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) which allow you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will transparently be fitted and/or transformed in the background before it arrives in the learner's context.
+[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will automatically be fitted and/or transformed before it arrives in the learner's context.
 
 Let's apply the same 3 transformers as in the example above by passing the transformer instances in the order we want them applied along with a base estimator to the constructor of Pipeline like in the example below.
 
@@ -71,16 +71,8 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 | [Robust Standardizer](transformers/robust-standardizer.md) | Columns | [-∞, ∞] | ● | |
 | [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns | [-∞, ∞] | ● | ● |
 
-## Feature Extraction
-Higher-order data such as images and text blobs are actually composites of many scalar features. Thus, it is often necessary to extract those features from their original representation in order to train a learner.
-
-| Transformer | Source | Stateful | Elastic |
-|---|---|---|---|
-| [Image Vectorizer](transformers/image-vectorizer.md) | Images | ● | |
-| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | Text Blobs | ● | |
-
 ## Feature Conversion
-Since learners can be compatible with different data types, it may be necessary to convert features of an incompatible type to a compatible one. Feature converters do just that for all the columns of a dataset in a fast and efficient manner.
+Feature converters are transformers that convert feature columns of one type to another. Since learners can be compatible with different data types, it may be necessary sometimes to convert features of an incompatible type to a compatible one.
 
 | Transformer | From | To | Stateful | Elastic |
 |---|---|---|---|---|
@@ -107,29 +99,39 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 | [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 
 ## Imputation
-One technique for handling missing data is a preprocessing step called *imputation*. Imputation is the process of replacing missing values in the dataset with a pretty good substitution. Examples include the average value for a feature or the sample's nearest neighbor's value. Imputation allows you to get more value from your data and limits the introduction of certain biases in the process.
+One technique for handling missing data is a preprocessing step called *imputation*. Imputation is the process of replacing missing values in the dataset with a pretty good substitution. Examples include the average value for a feature or the sample's nearest neighbor's value. Imputation allows you to get more value from your data and limits the introduction of bias in the process.
 
-| Transformer | Data Types | Stateful | Elastic |
+| Transformer | Compatibility | Stateful | Elastic |
 |---|---|---|---|
 | [KNN Imputer](transformers/knn-imputer.md) | Continuous, Categorical | ● | |
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | Continuous, Categorical | ● | |
 | [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | Continuous, Categorical | ● | |
 
-## Text Cleaning
-For natural language processing (NLP) tasks, cleaning the text will help eliminate noise such as *stop words* or other uninformative tokens like URLs and email addresses from the corpus. Another common step is to *normalize* the text so that words like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word.
+## Text Transformers
+We provide a number of transformers for natural language processing (NLP) tasks such as those for text cleaning, normalization, and feature extraction. Cleaning the text will help eliminate noise such as *stop words* or other uninformative tokens like URLs and email addresses from the corpus. Normalizing the text ensures that words like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word. Encoding the text into fixed-length feature vectors is the job of feature extractors such as [Word Count Vectorizer](transformers/word-count-vectorizer.md).
 
-**Examples**
+| Transformer | Stateful | Elastic |
+|---|---|---|
+| [HTML Stripper](transformers/html-stripper.md) | | |
+| [Regex Filter](transformers/regex-filter.md) | | |
+| [Text Normalizer](transformers/text-normalizer.md) | | |
+| [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | |
+| [Stop Word Filter](transformers/stop-word-filter.md) | | |
+| [TF-IDF Transformer](transformers/tf-idf-transformer.md) | ● | ● |
+| [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | |
+| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | ● | |
 
-- [HTML Stripper](transformers/html-stripper.md)
-- [Regex Filter](transformers/regex-filter.md)
-- [Text Normalizer](transformers/text-normalizer.md)
-- [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md)
-- [Stop Word Filter](transformers/stop-word-filter.md)
-- [Whitespace Trimmer](transformers/whitespace-trimmer.md)
+## Image Transformers
+For computer vision tasks, images may need to be processed to ensure they are the correct size and shape.
 
-## Image Processing
-For computer vision tasks, images may need to be processed to ensure they are the correct size and shape. Other forms of image processing may include color correction and blurring/sharpening.
+| Transformer | Stateful | Elastic |
+|---|---|---|
+| [Image Resizer](transformers/image-resizer.md) | | |
+| [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-**Examples**
+## Other Transformers
+Here are a list of other transformers that do not fall into a category.
 
-- [Image Resizer](transformers/image-resizer.md)
+| Transformer | Stateful | Elastic |
+|---|---|---|
+| [Polynomial Expander](transformers/polynomial-expander.md) | | |

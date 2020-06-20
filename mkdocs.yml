@@ -116,21 +116,17 @@ nav:
     - Interval Discretizer: transformers/interval-discretizer.md
     - One Hot Encoder: transformers/one-hot-encoder.md
     - Numeric String Converter: transformers/numeric-string-converter.md
-  - Feature Extraction:
-    - Image Vectorizer: transformers/image-vectorizer.md
-    - Word Count Vectorizer: transformers/word-count-vectorizer.md
   - Feature Selection:
     - Variance Threshold Filter: transformers/variance-threshold-filter.md
-  - Image Processing:
+  - Image Transformers:
     - Image Resizer: transformers/image-resizer.md
+    - Image Vectorizer: transformers/image-vectorizer.md
   - Imputation:
     - KNN Imputer: transformers/knn-imputer.md
     - Missing Data Imputer: transformers/missing-data-imputer.md
     - Random Hot Deck Imputer: transformers/random-hot-deck-imputer.md
   - Other:
-    - Lambda Function: transformers/lambda-function.md
     - Polynomial Expander: transformers/polynomial-expander.md
-    - TF-IDF Transformer: transformers/tf-idf-transformer.md
   - Standardization and Normalization:
     - L1 Normalizer: transformers/l1-normalizer.md
     - L2 Normalizer: transformers/l2-normalizer.md
@@ -138,13 +134,15 @@ nav:
     - Min Max Normalizer: transformers/min-max-normalizer.md
     - Robust Standardizer: transformers/robust-standardizer.md
     - Z Scale Standardizer: transformers/z-scale-standardizer.md
-  - Text Cleaning:
+  - Text Transformers:
     - HTML Stripper: transformers/html-stripper.md
     - Regex Filter: transformers/regex-filter.md
     - Text Normalizer: transformers/text-normalizer.md
     - Multibyte Text Normalizer: transformers/multibyte-text-normalizer.md
     - Stop Word Filter: transformers/stop-word-filter.md
+    - TF-IDF Transformer: transformers/tf-idf-transformer.md
     - Whitespace Trimmer: transformers/whitespace-trimmer.md
+    - Word Count Vectorizer: transformers/word-count-vectorizer.md
 - Neural Network:
   - Activation Functions:
     - ELU: neural-network/activation-functions/elu.md
