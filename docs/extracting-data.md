@@ -63,9 +63,9 @@ Another plain-text format called [NDJSON](http://ndjson.org/) or *Newline Delimi
 
 **Example**
 
-```ndjson
-{"attitude":"nice","texture":"furry","sociability":"friendly","rating":4,"class":"not monster"}
-["mean","furry","loner",-1.5,"monster"]
+```json
+{"attitude": "nice", "texture": "furry", "sociability": "friendly", "rating": 4, "class": "not monster"}
+["mean", "furry", "loner", -1.5, "monster"]
 ```
 
 The [NDJSON](extractors/ndjson.md) extractor can be used to instantiate a new dataset object from a NDJSON file. Optionally, it can be combined with the standard PHP library's [Limit Iterator](https://www.php.net/manual/en/class.limititerator.php) to only load a portion of the data into memory. In the example below, we load the first 1,000 rows of data from an NDJSON file into an [Unlabeled](datasets/unlabeled.md) dataset.
@@ -115,4 +115,18 @@ foreach (glob('train/*.png') as $file) {
 
 $dataset = Labeled::build($samples, $labels)
     ->apply(new ImageVectorizer());
+```
+
+## Converting Formats
+Sometimes, you may want to extract a dataset from one format, do something to it, and then save it in a different format. In the example below we use the [CSV](extractors/csv.md) extractor to read the data in CSV format and then write to NDJSON format using the `toNDJSON()` method on the dataset object. See the [Dataset](datasets/api.md#output-formats) API for details about all the supported formats.
+
+```php
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\CSV;
+
+$dataset = Labeled::fromIterator(new CSV('example.csv'));
+
+// Do something
+
+file_put_contents('example.ndjson', $dataset->toNDJSON());
 ```
