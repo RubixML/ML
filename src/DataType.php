@@ -91,7 +91,7 @@ class DataType
      * @param mixed $value
      * @return self
      */
-    public static function determine($value) : self
+    public static function detect($value) : self
     {
         switch (gettype($value)) {
             case 'double':

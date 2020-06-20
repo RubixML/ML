@@ -88,7 +88,7 @@ class ImageResizer implements Transformer
 
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
-                if (DataType::determine($value)->isImage()) {
+                if (DataType::detect($value)->isImage()) {
                     $width = imagesx($value);
                     $height = imagesy($value);
 

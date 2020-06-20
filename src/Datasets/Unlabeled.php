@@ -58,9 +58,7 @@ class Unlabeled extends Dataset
      */
     public static function fromIterator(iterable $iterator) : self
     {
-        $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator);
-
-        return self::build($samples);
+        return self::build(is_array($iterator) ? $iterator : iterator_to_array($iterator));
     }
 
     /**
@@ -73,6 +71,8 @@ class Unlabeled extends Dataset
      */
     public static function stack(array $datasets) : self
     {
+        $n = current($datasets)->numColumns();
+
         $samples = [];
 
         foreach ($datasets as $dataset) {
@@ -80,6 +80,12 @@ class Unlabeled extends Dataset
                 throw new InvalidArgumentException('Dataset must be an'
                     . ' instance of Dataset, ' . get_class($dataset)
                     . ' given.');
+            }
+
+            if ($dataset->numColumns() !== $n) {
+                throw new InvalidArgumentException('Dataset must have'
+                    . " the same number of columns, $n expected but "
+                    . $dataset->numColumns() . ' given.');
             }
 
             $samples[] = $dataset->samples();
@@ -334,9 +340,9 @@ class Unlabeled extends Dataset
      */
     public function fold(int $k = 3) : array
     {
-        if ($k < 2) {
-            throw new InvalidArgumentException('Cannot create less than 2'
-                . " folds, $k given.");
+        if ($k < 1) {
+            throw new InvalidArgumentException('Cannot create less than 1'
+                . " fold, $k given.");
         }
 
         $samples = $this->samples;

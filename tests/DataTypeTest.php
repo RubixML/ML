@@ -34,7 +34,7 @@ class DataTypeTest extends TestCase
      */
     public function determine($value, DataType $expected) : void
     {
-        $this->assertEquals($expected, DataType::determine($value));
+        $this->assertEquals($expected, DataType::detect($value));
     }
 
     /**
@@ -67,7 +67,7 @@ class DataTypeTest extends TestCase
     {
         $value = imagecreatefromjpeg('tests/space.jpg');
 
-        $this->assertEquals(DataType::image(), DataType::determine($value));
+        $this->assertEquals(DataType::image(), DataType::detect($value));
     }
 
     /**

@@ -97,6 +97,8 @@ class Labeled extends Dataset
      */
     public static function stack(array $datasets) : self
     {
+        $n = current($datasets)->numColumns();
+
         $samples = $labels = [];
 
         foreach ($datasets as $dataset) {
@@ -104,6 +106,12 @@ class Labeled extends Dataset
                 throw new InvalidArgumentException('Dataset must be'
                     . ' an instance of Labeled, ' . get_class($dataset)
                     . ' given.');
+            }
+
+            if ($dataset->numColumns() !== $n) {
+                throw new InvalidArgumentException('Dataset must have'
+                    . " the same number of columns, $n expected but "
+                    . $dataset->numColumns() . ' given.');
             }
 
             $samples[] = $dataset->samples();
@@ -133,7 +141,7 @@ class Labeled extends Dataset
         if ($validate and $labels) {
             $labels = array_values($labels);
 
-            $type = DataType::determine($labels[0]);
+            $type = DataType::detect($labels[0]);
 
             if (!$type->isCategorical() and !$type->isContinuous()) {
                 throw new InvalidArgumentException('Label type must be'
@@ -141,10 +149,10 @@ class Labeled extends Dataset
             }
 
             foreach ($labels as $label) {
-                if (DataType::determine($label) != $type) {
+                if (DataType::detect($label) != $type) {
                     throw new InvalidArgumentException('Labels must be'
                         . " the same data type, $type expected but "
-                        . DataType::determine($label) . ' given.');
+                        . DataType::detect($label) . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
@@ -197,7 +205,7 @@ class Labeled extends Dataset
             throw new RuntimeException('Dataset is empty.');
         }
 
-        return DataType::determine(current($this->labels));
+        return DataType::detect(current($this->labels));
     }
 
     /**
@@ -221,78 +229,6 @@ class Labeled extends Dataset
         $this->labels = $labels;
 
         return $this;
-    }
-
-    /**
-     * Describe the features of the dataset broken down by label.
-     *
-     * @return mixed[]
-     */
-    public function describeByLabel() : array
-    {
-        $stats = [];
-
-        foreach ($this->stratify() as $label => $stratum) {
-            $stats[$label] = $stratum->describe();
-        }
-
-        return $stats;
-    }
-
-    /**
-     * Return an array of descriptive statistics about the labels in the
-     * dataset.
-     *
-     * @return mixed[]
-     */
-    public function describeLabels() : array
-    {
-        $type = $this->labelType();
-
-        $desc = [];
-
-        $desc['type'] = (string) $type;
-
-        switch ($type) {
-            case DataType::continuous():
-                [$mean, $variance] = Stats::meanVar($this->labels);
-
-                $desc['mean'] = $mean;
-                $desc['variance'] = $variance;
-                $desc['std_dev'] = sqrt($variance ?: EPSILON);
-                $desc['skewness'] = Stats::skewness($this->labels, $mean);
-                $desc['kurtosis'] = Stats::kurtosis($this->labels, $mean);
-
-                $quartiles = Stats::quantiles($this->labels, [
-                    0.0, 0.25, 0.5, 0.75, 1.0,
-                ]);
-
-                $desc['min'] = $quartiles[0];
-                $desc['25%'] = $quartiles[1];
-                $desc['median'] = $quartiles[2];
-                $desc['75%'] = $quartiles[3];
-                $desc['max'] = $quartiles[4];
-
-                break 1;
-
-            case DataType::categorical():
-                $counts = array_count_values($this->labels);
-
-                $total = count($this->labels) ?: EPSILON;
-
-                $probabilities = [];
-
-                foreach ($counts as $class => $count) {
-                    $probabilities[$class] = $count / $total;
-                }
-
-                $desc['num_categories'] = count($counts);
-                $desc['probabilities'] = $probabilities;
-
-                break 1;
-        }
-
-        return $desc;
     }
 
     /**
@@ -680,9 +616,9 @@ class Labeled extends Dataset
      */
     public function fold(int $k = 10) : array
     {
-        if ($k < 2) {
+        if ($k < 1) {
             throw new InvalidArgumentException('Cannot create less than'
-                . " 2 folds, $k given.");
+                . " 1 fold, $k given.");
         }
 
         $n = (int) floor($this->numRows() / $k);
@@ -978,6 +914,81 @@ class Labeled extends Dataset
         $this->labels = array_values(array_intersect_key($this->labels, $table));
 
         return $this;
+    }
+
+    /**
+     * Describe the features of the dataset broken down by label.
+     *
+     * @return mixed[]
+     */
+    public function describeByLabel() : array
+    {
+        $stats = [];
+
+        foreach ($this->stratify() as $label => $stratum) {
+            $stats[$label] = $stratum->describe();
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Return an array of descriptive statistics about the labels in the
+     * dataset.
+     *
+     * @return mixed[]
+     */
+    public function describeLabels() : array
+    {
+        $type = $this->labelType();
+
+        $desc = [];
+
+        $desc['type'] = (string) $type;
+
+        switch ($type) {
+            case DataType::continuous():
+                [$mean, $variance] = Stats::meanVar($this->labels);
+
+                $quartiles = Stats::quantiles($this->labels, [
+                    0.0, 0.25, 0.5, 0.75, 1.0,
+                ]);
+
+                $desc += [
+                    'mean' => $mean,
+                    'variance' => $variance,
+                    'std_dev' => sqrt($variance ?: EPSILON),
+                    'skewness' => Stats::skewness($this->labels, $mean),
+                    'kurtosis' => Stats::kurtosis($this->labels, $mean),
+                    'min' => $quartiles[0],
+                    '25%' => $quartiles[1],
+                    'median' => $quartiles[2],
+                    '75%' => $quartiles[3],
+                    'max' => $quartiles[4],
+                ];
+
+                break 1;
+
+            case DataType::categorical():
+                $counts = array_count_values($this->labels);
+
+                $total = count($this->labels);
+
+                $probabilities = [];
+
+                foreach ($counts as $class => $count) {
+                    $probabilities[$class] = $count / $total;
+                }
+
+                $desc += [
+                    'num_categories' => count($counts),
+                    'probabilities' => $probabilities,
+                ];
+
+                break 1;
+        }
+
+        return $desc;
     }
 
     /**

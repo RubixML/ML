@@ -72,14 +72,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function __construct(array $samples = [], bool $validate = true)
     {
-        if ($validate and $samples) {
+        if ($samples and $validate) {
             $samples = array_values($samples);
 
-            $proto = isset($samples[0]) ? array_values($samples[0]) : [];
+            $prototype = isset($samples[0]) ? array_values($samples[0]) : [];
 
-            $n = count($proto);
+            $n = count($prototype);
 
-            $types = array_map([DataType::class, 'determine'], $proto);
+            $types = array_map([DataType::class, 'detect'], $prototype);
 
             foreach ($samples as $row => &$sample) {
                 $sample = array_values($sample);
@@ -91,11 +91,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 }
 
                 foreach ($sample as $column => $value) {
-                    if (DataType::determine($value) != $types[$column]) {
+                    if (DataType::detect($value) != $types[$column]) {
                         throw new InvalidArgumentException("Column $column must"
                             . ' contain values of the same data type,'
                             . " $types[$column] expected but "
-                            . DataType::determine($value) . ' given.');
+                            . DataType::detect($value) . ' given.');
                     }
                 }
             }
@@ -168,7 +168,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function columnTypes() : array
     {
-        return array_map([DataType::class, 'determine'], $this->samples[0] ?? []);
+        return array_map([DataType::class, 'detect'], $this->samples[0] ?? []);
     }
 
     /**
@@ -211,11 +211,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 . " $offset does not exist.");
         }
 
-        return DataType::determine($this->samples[0][$offset]);
+        return DataType::detect($this->samples[0][$offset]);
     }
 
     /**
-     * Return a tuple containing the shape of the dataset i.e the number of
+     * Return a 2-tuple containing the shape of the dataset i.e the number of
      * rows and columns.
      *
      * @return int[]
@@ -254,13 +254,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function columnsByType(DataType $type) : array
     {
-        $n = $this->numColumns();
-
         $columns = [];
 
-        for ($i = 0; $i < $n; ++$i) {
-            if ($this->columnType($i) == $type) {
-                $columns[$i] = $this->column($i);
+        foreach ($this->columnTypes() as $offset => $columnType) {
+            if ($columnType == $type) {
+                $columns[$offset] = $this->column($offset);
             }
         }
 
@@ -270,21 +268,21 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Transform a feature column with a callback function.
      *
-     * @param int $column
+     * @param int $offset
      * @param callable $callback
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function transformColumn(int $column, callable $callback) : self
+    public function transformColumn(int $offset, callable $callback) : self
     {
-        if ($column < 0 or $column >= $this->numColumns()) {
-            throw new InvalidArgumentException('Column number must'
-                . " be between 0 and {$this->numColumns()}, $column"
+        if ($offset < 0 or $offset >= $this->numColumns()) {
+            throw new InvalidArgumentException('Column offset must'
+                . " be between 0 and {$this->numColumns()}, $offset"
                 . ' given.');
         }
 
         foreach ($this->samples as &$sample) {
-            $value = &$sample[$column];
+            $value = &$sample[$offset];
 
             $value = $callback($value);
         }
@@ -340,81 +338,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
         $transformer->transform($this->samples);
 
         return $this;
-    }
-
-    /**
-     * Return an array of statistics such as the central tendency, dispersion
-     * and shape of each continuous feature column and the joint probabilities
-     * of every categorical feature column.
-     *
-     * @return mixed[]
-     */
-    public function describe() : array
-    {
-        $stats = [];
-
-        foreach ($this->columnTypes() as $column => $type) {
-            $desc = [];
-
-            $desc['type'] = (string) $type;
-
-            switch ($type->code()) {
-                case DataType::CONTINUOUS:
-                    $values = $this->column($column);
-
-                    [$mean, $variance] = Stats::meanVar($values);
-
-                    $desc['mean'] = $mean;
-                    $desc['variance'] = $variance;
-                    $desc['std_dev'] = sqrt($variance ?: EPSILON);
-                    $desc['skewness'] = Stats::skewness($values, $mean);
-                    $desc['kurtosis'] = Stats::kurtosis($values, $mean);
-
-                    $quartiles = Stats::quantiles($values, [
-                        0.0, 0.25, 0.5, 0.75, 1.0,
-                    ]);
-
-                    $desc['min'] = $quartiles[0];
-                    $desc['25%'] = $quartiles[1];
-                    $desc['median'] = $quartiles[2];
-                    $desc['75%'] = $quartiles[3];
-                    $desc['max'] = $quartiles[4];
-
-                    break 1;
-
-                case DataType::CATEGORICAL:
-                    $values = $this->column($column);
-
-                    $counts = array_count_values($values);
-
-                    $total = count($values) ?: EPSILON;
-
-                    $probabilities = [];
-
-                    foreach ($counts as $category => $count) {
-                        $probabilities[$category] = $count / $total;
-                    }
-
-                    $desc['num_categories'] = count($counts);
-                    $desc['probabilities'] = $probabilities;
-
-                    break 1;
-            }
-
-            $stats[$column] = $desc;
-        }
-
-        return $stats;
-    }
-
-    /**
-     * Is the dataset empty?
-     *
-     * @return bool
-     */
-    public function empty() : bool
-    {
-        return empty($this->samples);
     }
 
     /**
@@ -479,6 +402,84 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
         }
 
         return $csv;
+    }
+
+    /**
+     * Return an array of statistics such as the central tendency, dispersion
+     * and shape of each continuous feature column and the joint probabilities
+     * of every categorical feature column.
+     *
+     * @return mixed[]
+     */
+    public function describe() : array
+    {
+        $stats = [];
+
+        foreach ($this->columnTypes() as $offset => $type) {
+            $desc = [
+                'type' => (string) $type,
+            ];
+
+            switch ($type->code()) {
+                case DataType::CONTINUOUS:
+                    $values = $this->column($offset);
+
+                    [$mean, $variance] = Stats::meanVar($values);
+
+                    $quartiles = Stats::quantiles($values, [
+                        0.0, 0.25, 0.5, 0.75, 1.0,
+                    ]);
+
+                    $desc += [
+                        'mean' => $mean,
+                        'variance' => $variance,
+                        'std_dev' => sqrt($variance ?: EPSILON),
+                        'skewness' => Stats::skewness($values, $mean),
+                        'kurtosis' => Stats::kurtosis($values, $mean),
+                        'min' => $quartiles[0],
+                        '25%' => $quartiles[1],
+                        'median' => $quartiles[2],
+                        '75%' => $quartiles[3],
+                        'max' => $quartiles[4],
+                    ];
+
+                    break 1;
+
+                case DataType::CATEGORICAL:
+                    $values = $this->column($offset);
+
+                    $counts = array_count_values($values);
+
+                    $total = count($values);
+
+                    $probabilities = [];
+
+                    foreach ($counts as $category => $count) {
+                        $probabilities[$category] = $count / $total;
+                    }
+
+                    $desc += [
+                        'num_categories' => count($counts),
+                        'probabilities' => $probabilities,
+                    ];
+
+                    break 1;
+            }
+
+            $stats[] = $desc;
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Is the dataset empty?
+     *
+     * @return bool
+     */
+    public function empty() : bool
+    {
+        return empty($this->samples);
     }
 
     /**
