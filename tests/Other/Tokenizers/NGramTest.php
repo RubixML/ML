@@ -49,7 +49,7 @@ class NGramTest extends TestCase
 
         $tokens = $this->tokenizer->tokenize($text);
 
-        $this->assertCount(24, $tokens);
         $this->assertEquals($expected, $tokens);
+        $this->assertCount(24, $tokens);
     }
 }

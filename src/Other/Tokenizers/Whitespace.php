@@ -37,7 +37,7 @@ class Whitespace implements Tokenizer
     }
 
     /**
-     * Tokenize a block of text.
+     * Tokenize a blob of text.
      *
      * @param string $string
      * @return string[]

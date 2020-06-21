@@ -21,7 +21,7 @@ class Word implements Tokenizer
     protected const WORD_REGEX = '/\w+/u';
 
     /**
-     * Tokenize a block of text.
+     * Tokenize a blob of text.
      *
      * @param string $string
      * @return string[]

@@ -50,7 +50,7 @@ class SkipGramTest extends TestCase
 
         $tokens = $this->tokenizer->tokenize($text);
 
-        $this->assertCount(26, $tokens);
         $this->assertEquals($expected, $tokens);
+        $this->assertCount(26, $tokens);
     }
 }

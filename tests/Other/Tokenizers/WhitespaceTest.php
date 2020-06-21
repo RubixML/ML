@@ -45,7 +45,7 @@ class WhitespaceTest extends TestCase
 
         $tokens = $this->tokenizer->tokenize($text);
 
-        $this->assertCount(13, $tokens);
         $this->assertEquals($expected, $tokens);
+        $this->assertCount(13, $tokens);
     }
 }
