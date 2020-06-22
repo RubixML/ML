@@ -9,8 +9,7 @@ use svm;
 /**
  * Polynomial
  *
- * Operating in high dimensions, the polynomial to the pth degree of the
- * sample vector.
+ * Operating in high dimensions, the polynomial to the pth degree of the sample vector.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -46,7 +45,7 @@ class Polynomial implements Kernel
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function __construct(int $degree = 3, ?float $gamma = null, float $coef0 = 0.)
+    public function __construct(int $degree = 3, ?float $gamma = null, float $coef0 = 0.0)
     {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'

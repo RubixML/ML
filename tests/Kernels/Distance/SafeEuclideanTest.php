@@ -58,10 +58,19 @@ class SafeEuclideanTest extends TestCase
      */
     public function computeProvider() : Generator
     {
-        yield [[2, 1, 4, NAN], [-2, 1, 8, -2], 6.531972647421808];
+        yield [
+            [2, 1, 4, NAN], [-2, 1, 8, -2],
+            6.531972647421808,
+        ];
 
-        yield [[7.4, -2.5, 0.001], [NAN, -1, 0.075], 1.8393515161599752];
+        yield [
+            [7.4, -2.5, 0.001], [NAN, -1, 0.075],
+            1.8393515161599752,
+        ];
 
-        yield [[1000, NAN, 3000], [1000, NAN, 3000], 0.0];
+        yield [
+            [1000, NAN, 3000], [1000, NAN, 3000],
+            0.0,
+        ];
     }
 }

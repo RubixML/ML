@@ -8,7 +8,7 @@ use svm;
 /**
  * Sigmoidal
  *
- * S shaped nonliearity kernel.
+ * S shaped nonlinearity kernel.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -35,7 +35,7 @@ class Sigmoidal implements Kernel
      * @param float $coef0
      * @throws \RuntimeException
      */
-    public function __construct(?float $gamma = null, float $coef0 = 0.)
+    public function __construct(?float $gamma = null, float $coef0 = 0.0)
     {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'

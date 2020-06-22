@@ -47,7 +47,7 @@ class CosineTest extends TestCase
     {
         $distance = $this->kernel->compute($a, $b);
 
-        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertGreaterThanOrEqual(0.0, $distance);
         $this->assertEquals($expected, $distance);
     }
 
@@ -56,10 +56,19 @@ class CosineTest extends TestCase
      */
     public function computeProvider() : Generator
     {
-        yield [[2, 1, 4, 0], [-2, 1, 8, -2], 0.2593263058537443];
+        yield [
+            [2, 1, 4, 0], [-2, 1, 8, -2],
+            0.2593263058537443,
+        ];
 
-        yield [[7.4, -2.5], [0.01, -1], 0.6704765571747832];
+        yield [
+            [7.4, -2.5], [0.01, -1],
+            0.6704765571747832,
+        ];
 
-        yield [[1000, -2000, 3000], [1000, -2000, 3000], 0.0];
+        yield [
+            [1000, -2000, 3000], [1000, -2000, 3000],
+            0.0,
+        ];
     }
 }

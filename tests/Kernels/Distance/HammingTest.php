@@ -56,10 +56,19 @@ class HammingTest extends TestCase
      */
     public function computeProvider() : Generator
     {
-        yield [['soup', 'turkey', 'broccoli', 'cake'], ['salad', 'turkey', 'broccoli', 'pie'], 2.0];
+        yield [
+            ['soup', 'turkey', 'broccoli', 'cake'], ['salad', 'turkey', 'broccoli', 'pie'],
+            2.0,
+        ];
 
-        yield [['salad', 'ham', 'peas', 'jello'], ['bread', 'steak', 'potato', 'cake'], 4.0];
+        yield [
+            ['salad', 'ham', 'peas', 'jello'], ['bread', 'steak', 'potato', 'cake'],
+            4.0,
+        ];
 
-        yield [['toast', 'eggs', 'bacon'], ['toast', 'eggs', 'bacon'], 0.0];
+        yield [
+            ['toast', 'eggs', 'bacon'], ['toast', 'eggs', 'bacon'],
+            0.0,
+        ];
     }
 }

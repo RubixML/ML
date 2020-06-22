@@ -18,9 +18,9 @@ use function is_null;
  * Word Count Vectorizer
  *
  * The Word Count Vectorizer builds a vocabulary from the training samples and transforms text
- * blobs into fixed length feature vectors. Each feature column represents a word or *token*
- * from the vocabulary and the value denotes the number of times that word appears in a given
- * document.
+ * blobs into fixed length sparse feature vectors. Each feature column represents a word or
+ * *token* from the vocabulary and the value denotes the number of times that word appears in a
+ * given document.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -44,6 +44,14 @@ class WordCountVectorizer implements Transformer, Stateful
     protected $minDocumentFrequency;
 
     /**
+     * The maximum number of documents a word can appear in to be added to
+     * the vocabulary.
+     *
+     * @var int
+     */
+    protected $maxDocumentFrequency;
+
+    /**
      * The tokenizer used to extract tokens from blobs of text.
      *
      * @var \Rubix\ML\Other\Tokenizers\Tokenizer
@@ -60,11 +68,13 @@ class WordCountVectorizer implements Transformer, Stateful
     /**
      * @param int $maxVocabulary
      * @param int $minDocumentFrequency
+     * @param int $maxDocumentFrequency
      * @param \Rubix\ML\Other\Tokenizers\Tokenizer|null $tokenizer
      */
     public function __construct(
         int $maxVocabulary = PHP_INT_MAX,
         int $minDocumentFrequency = 1,
+        int $maxDocumentFrequency = PHP_INT_MAX,
         ?Tokenizer $tokenizer = null
     ) {
         if ($maxVocabulary < 1) {
@@ -77,8 +87,14 @@ class WordCountVectorizer implements Transformer, Stateful
                 . " must be greater than 0, $minDocumentFrequency given.");
         }
 
+        if ($maxDocumentFrequency < $minDocumentFrequency) {
+            throw new InvalidArgumentException('Maximum document frequency'
+                . ' cannot be less than minimum document frequency.');
+        }
+
         $this->maxVocabulary = $maxVocabulary;
         $this->minDocumentFrequency = $minDocumentFrequency;
+        $this->maxDocumentFrequency = $maxDocumentFrequency;
         $this->tokenizer = $tokenizer ?? new Word();
     }
 
@@ -103,7 +119,7 @@ class WordCountVectorizer implements Transformer, Stateful
     }
 
     /**
-     * Return an array of words in each of the vocabularies.
+     * Return an array of words that comprise each of the vocabularies.
      *
      * @return array[]
      */
@@ -145,11 +161,9 @@ class WordCountVectorizer implements Transformer, Stateful
                     }
                 }
 
-                if ($this->minDocumentFrequency > 1) {
-                    foreach ($dfs as $token => $frequency) {
-                        if ($frequency < $this->minDocumentFrequency) {
-                            unset($tfs[$token]);
-                        }
+                foreach ($dfs as $token => $df) {
+                    if ($df < $this->minDocumentFrequency or $df > $this->maxDocumentFrequency) {
+                        unset($tfs[$token]);
                     }
                 }
 

@@ -6,10 +6,9 @@ use RuntimeException;
 use svm;
 
 /**
- * Linear
+ * RBF
  *
- * Non linear radias basis function computes the distance from a centroid
- * or origin.
+ * Non-linear radial basis function computes the distance from a centroid or origin.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

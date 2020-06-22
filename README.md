@@ -18,9 +18,11 @@ $ composer require rubix/ml
 ### Requirements
 - [PHP](https://php.net/manual/en/install.php) 7.2 or above
 
+#### Recommended
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
+
 #### Optional
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 - [Extras Package](https://github.com/RubixML/Extras) for experimental features
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation

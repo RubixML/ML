@@ -126,7 +126,7 @@ class Amp implements Backend
     }
 
     /**
-     * Gather and memoize the results from the worker pool.
+     * Gather and memorize the results from the worker pool.
      *
      * @return \Generator<\Amp\Promise>
      */

@@ -1,4 +1,5 @@
 - Unreleased
+    - Added max document frequency to Word Count Vectorizer
     - Whitespace Trimmer is now a separate transformer
     - Text Normalizers no longer remove extra whitespace
     - Added extra characters pattern to Regex Filter
