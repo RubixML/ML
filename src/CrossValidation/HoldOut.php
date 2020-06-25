@@ -69,4 +69,14 @@ class HoldOut implements Validator
 
         return $metric->score($predictions, $testing->labels());
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Hold Out (ratio={$this->ratio})";
+    }
 }

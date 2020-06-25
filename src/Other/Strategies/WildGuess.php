@@ -64,4 +64,14 @@ class WildGuess implements Continuous
 
         return rand($this->min, $this->max) / PHI;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Wild Guess';
+    }
 }

@@ -12,4 +12,11 @@ interface Embedder extends Transformer
      * @return mixed[]
      */
     public function params() : array;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

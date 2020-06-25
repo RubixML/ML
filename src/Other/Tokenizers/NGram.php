@@ -109,4 +109,15 @@ class NGram implements Tokenizer
 
         return $tokens;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Skip Gram (min={$this->min} max={$this->max}"
+            . " word_tokenizer={$this->wordTokenizer})";
+    }
 }

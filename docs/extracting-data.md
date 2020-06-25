@@ -1,10 +1,8 @@
 # Extracting Data
-Data are a first class citizen in Rubix ML. The library makes it easy to work with datasets through its [Dataset](datasets/api.md) object, which is a specialized data container that every learner can recognize. There are a number of ways to instantiate a new dataset object, but all of them require the data to be extracted from source into memory first.
-
-Data can be stored in many forms but the most common formats are structured plain-text such as CSV or NDJSON and in a database such as MySQL or MongoDB. No matter how your data is delivered, you have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help make extraction simple for more common use cases, the library provides a number of [Extractor](extractors/api.md) objects.
+There are a number of ways to instantiate a new [Dataset](datasets/api.md) object, but all of them require that the data is loaded into memory first. Datasets can be stored in many forms but the most common formats are structured plain-text such as CSV or NDJSON and in a database such as MySQL or MongoDB. No matter how your data is delivered, you have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help make extraction simple for more common use cases, the library provides a number of [Extractor](extractors/api.md) objects.
 
 ## CSV
-A common plain-text format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) or CSV for short. A CSV file contains a table with individual samples indicated by rows and the values of the features in each column. Columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row. CSV files have the advantage of being able to be processed line by line, however, their disadvantage is that type information cannot be inferred from the format. Thus, all data are imported as categorical (strings) by default.
+A common plain-text format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) or CSV for short. A CSV file contains a table with individual samples indicated by rows and the values of the features stored in each column. Columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row. CSV files have the advantage of being able to be processed line by line, however, their disadvantage is that type information cannot be inferred from the format. Thus, all CSV data are imported as categorical (strings) by default.
 
 **Example**
 
@@ -118,15 +116,13 @@ $dataset = Labeled::build($samples, $labels)
 ```
 
 ## Converting Formats
-Sometimes, you may want to extract a dataset from one format, do something to it, and then save it in a different format. In the example below we use the [CSV](extractors/csv.md) extractor to read the data in CSV format and then write to NDJSON format using the `toNDJSON()` method on the dataset object. See the [Dataset](datasets/api.md#output-formats) API for details about all the supported formats.
+Sometimes, you may want to convert a dataset from one format to another format. In the example below we use the [CSV](extractors/csv.md) extractor to read the data in CSV format and then write to NDJSON format using the `toNDJSON()` method on the dataset object. See the [Dataset](datasets/api.md#output-formats) API for details about all the supported formats.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\CSV;
 
-$dataset = Labeled::fromIterator(new CSV('example.csv'));
+$data = Labeled::fromIterator(new CSV('example.csv'))->toNDJSON();
 
-// Do something
-
-file_put_contents('example.ndjson', $dataset->toNDJSON());
+file_put_contents('example.ndjson', $data);
 ```

@@ -31,4 +31,14 @@ class RMSE extends MeanSquaredError
     {
         return -sqrt(-parent::score($predictions, $labels));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'RMSE';
+    }
 }

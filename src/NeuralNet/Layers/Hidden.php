@@ -15,4 +15,11 @@ interface Hidden extends Layer
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

@@ -75,4 +75,14 @@ class PolynomialExpander implements Transformer
             $sample = $vector;
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Polynomial Expander (degree={$this->degree})";
+    }
 }

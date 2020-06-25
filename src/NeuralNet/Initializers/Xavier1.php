@@ -34,4 +34,14 @@ class Xavier1 implements Initializer
         return Matrix::uniform($fanOut, $fanIn)
             ->multiply(sqrt(6.0 / ($fanOut + $fanIn)));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Xavier 1';
+    }
 }

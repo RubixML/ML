@@ -93,4 +93,14 @@ class StepDecay implements Optimizer
 
         return $gradient->multiply($rate);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Step Decay (rate={$this->rate} steps={$this->steps} decay={$this->decay})";
+    }
 }

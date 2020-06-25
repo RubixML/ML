@@ -22,4 +22,11 @@ interface ActivationFunction
      * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

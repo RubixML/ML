@@ -308,4 +308,15 @@ class BatchNorm implements Hidden, Parametric
         $this->beta = $parameters['beta'];
         $this->gamma = $parameters['gamma'];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Batch Norm (decay={$this->decay} beta_initializer={$this->betaInitializer}"
+            . " gamma_initializer={$this->gammaInitializer})";
+    }
 }

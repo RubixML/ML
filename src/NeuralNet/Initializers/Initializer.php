@@ -14,4 +14,11 @@ interface Initializer
      * @return \Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

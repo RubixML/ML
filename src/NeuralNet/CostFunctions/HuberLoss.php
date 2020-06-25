@@ -87,4 +87,14 @@ class HuberLoss implements RegressionLoss
     {
         return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Huber Loss (alpha={$this->alpha})";
+    }
 }

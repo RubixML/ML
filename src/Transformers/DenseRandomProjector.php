@@ -24,4 +24,14 @@ class DenseRandomProjector extends SparseRandomProjector
      * @var float[]
      */
     protected const DISTRIBUTION = [-1.0, 1.0];
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Dense Random Projector (dimensions={$this->dimensions})";
+    }
 }

@@ -44,4 +44,14 @@ class MultibyteTextNormalizer implements Transformer
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Multibyte Text Normalizer';
+    }
 }

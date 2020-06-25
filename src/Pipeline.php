@@ -316,4 +316,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, 
 
         return $this->base->$name(...$arguments);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Pipeline (' . Params::stringify($this->params()) . ')';
+    }
 }

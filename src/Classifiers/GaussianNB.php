@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -147,7 +148,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     public function params() : array
     {
         return [
-            'priors' => $this->priors(),
+            'priors' => $this->fitPriors ? null : $this->priors(),
         ];
     }
 
@@ -383,5 +384,15 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         return $likelihoods;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Gaussian NB (' . Params::stringify($this->params()) . ')';
     }
 }

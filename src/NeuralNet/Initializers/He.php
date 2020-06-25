@@ -41,4 +41,14 @@ class He implements Initializer
         return Matrix::uniform($fanOut, $fanIn)
             ->multiply((6.0 / ($fanOut + $fanIn)) ** self::ETA);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'He';
+    }
 }

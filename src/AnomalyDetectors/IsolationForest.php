@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -275,5 +276,15 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     protected function decide(float $score) : int
     {
         return $score > $this->threshold ? 1 : 0;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Isolation Forest (' . Params::stringify($this->params()) . ')';
     }
 }

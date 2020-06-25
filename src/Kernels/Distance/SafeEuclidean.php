@@ -73,4 +73,14 @@ class SafeEuclidean implements Distance, NaNSafe
 
         return sqrt($n / ($n - $nn) * $distance);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Safe Euclidean';
+    }
 }

@@ -10,6 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -291,5 +292,15 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         $labels = array_intersect_key($this->labels, $distances);
 
         return [$labels, $distances];
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'K Nearest Neighbors (' . Params::stringify($this->params()) . ')';
     }
 }

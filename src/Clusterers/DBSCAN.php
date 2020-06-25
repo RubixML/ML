@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -191,5 +192,15 @@ class DBSCAN implements Estimator
         $this->tree->destroy();
 
         return $predictions;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'DBSCAN (' . Params::stringify($this->params()) . ')';
     }
 }

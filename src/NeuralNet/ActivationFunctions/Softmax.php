@@ -32,4 +32,14 @@ class Softmax extends Sigmoid
 
         return $zHat->divide($total)->transpose();
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Softmax';
+    }
 }

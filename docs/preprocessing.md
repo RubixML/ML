@@ -24,7 +24,13 @@ $dataset->apply(new RandomHotDeckImputer(5))
     ->apply(new ZScaleStandardizer());
 ```
 
-> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on the [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) instance.
+> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) dataset instance.
+
+Sometimes, we might just want to transform a single column of the dataset. In the example below we use the `transformColumn()` method on the dataset to log transform a specified column.
+
+```php
+$dataset->transformColumn(6, 'log1p');
+```
 
 ## Transformer Pipelines
 [Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will automatically be fitted and/or transformed before it arrives in the learner's context.

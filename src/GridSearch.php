@@ -106,10 +106,8 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
      */
     public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
-        $score = $validator->test($estimator, $dataset, $metric);
-
         return [
-            'score' => $score,
+            'score' => $validator->test($estimator, $dataset, $metric),
             'params' => $estimator->params(),
         ];
     }
@@ -283,7 +281,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
         $combinations = $this->combinations();
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+            $this->logger->info("Learner init $this");
 
             $this->logger->info('Searching ' . count($combinations)
                 . ' combinations of hyper-parameters');
@@ -391,5 +389,15 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, 
     public function __call(string $name, array $arguments)
     {
         return $this->estimator->$name(...$arguments);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Grid Search (' . Params::stringify($this->params()) . ')';
     }
 }

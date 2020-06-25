@@ -49,4 +49,14 @@ class Stochastic implements Optimizer
     {
         return $gradient->multiply($this->rate);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Stochastic (rate={$this->rate})";
+    }
 }

@@ -119,4 +119,14 @@ class GaussianRandomProjector implements Transformer, Stateful
             ->matmul($this->r)
             ->asArray();
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Gaussian Random Projector (dimensions={$this->dimensions})";
+    }
 }

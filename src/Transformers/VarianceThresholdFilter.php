@@ -128,4 +128,14 @@ class VarianceThresholdFilter implements Transformer, Stateful
             $sample = array_values(array_intersect_key($sample, $this->variances));
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Variance Threshold Filter (max_features={$this->maxFeatures})";
+    }
 }

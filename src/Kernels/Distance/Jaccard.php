@@ -51,4 +51,14 @@ class Jaccard implements Distance
 
         return 1.0 - ($min / ($max ?: EPSILON));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Jaccard';
+    }
 }

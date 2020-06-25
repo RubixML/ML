@@ -38,4 +38,14 @@ class Linear implements Kernel
             svm::OPT_KERNEL_TYPE => svm::KERNEL_LINEAR,
         ];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Linear';
+    }
 }

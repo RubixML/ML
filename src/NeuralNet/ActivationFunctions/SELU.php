@@ -82,4 +82,14 @@ class SELU implements ActivationFunction
     {
         return $computed > 0.0 ? self::SCALE : self::SCALE * ($computed + self::ALPHA);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'SELU';
+    }
 }

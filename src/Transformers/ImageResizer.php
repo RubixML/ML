@@ -126,4 +126,14 @@ class ImageResizer implements Transformer
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Image Resizer (width={$this->width} height={$this->height})";
+    }
 }

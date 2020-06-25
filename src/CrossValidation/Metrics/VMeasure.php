@@ -87,4 +87,14 @@ class VMeasure implements Metric
         return (1.0 + $this->beta) * $homogeneity * $completeness
             / (($this->beta * $homogeneity + $completeness) ?: EPSILON);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "V Measure (beta={$this->beta})";
+    }
 }

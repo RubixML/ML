@@ -6,6 +6,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -225,5 +226,15 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     public function decideDiscrete(array $votes) : string
     {
         return argmax(array_count_values($votes));
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Bootstrap Aggregator (' . Params::stringify($this->params()) . ')';
     }
 }

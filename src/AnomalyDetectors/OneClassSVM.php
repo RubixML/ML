@@ -9,6 +9,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -225,5 +226,15 @@ class OneClassSVM implements Estimator, Learner
     public function load(string $path) : void
     {
         $this->model = new svmmodel($path);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'One Class SVM (' . Params::stringify($this->params()) . ')';
     }
 }

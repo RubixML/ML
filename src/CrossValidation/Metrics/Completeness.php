@@ -79,4 +79,14 @@ class Completeness implements Metric
 
         return $score / count($table);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Completeness';
+    }
 }

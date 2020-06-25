@@ -91,4 +91,14 @@ class RandIndex implements Metric
 
         return ($sigma - $pHat) / ($mean - $pHat);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Rand Index';
+    }
 }

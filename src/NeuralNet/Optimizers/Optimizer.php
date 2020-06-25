@@ -15,4 +15,11 @@ interface Optimizer
      * @return \Tensor\Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

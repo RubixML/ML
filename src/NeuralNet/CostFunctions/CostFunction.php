@@ -23,4 +23,11 @@ interface CostFunction
      * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

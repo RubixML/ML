@@ -19,4 +19,11 @@ interface Persister
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

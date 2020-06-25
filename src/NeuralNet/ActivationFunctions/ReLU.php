@@ -51,4 +51,14 @@ class ReLU implements ActivationFunction
     {
         return $z > 0.0 ? $z : 0.0;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'ReLU';
+    }
 }

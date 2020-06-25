@@ -83,4 +83,14 @@ class ELU implements ActivationFunction
     {
         return $computed > 0.0 ? 1.0 : $computed + $this->alpha;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "ELU (alpha={$this->alpha})";
+    }
 }

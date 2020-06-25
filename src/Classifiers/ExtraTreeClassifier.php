@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -243,5 +244,15 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         }
 
         return $entropy;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Extra Tree Classifier (' . Params::stringify($this->params()) . ')';
     }
 }

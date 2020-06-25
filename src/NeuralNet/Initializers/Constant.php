@@ -48,4 +48,14 @@ class Constant implements Initializer
     {
         return Matrix::fill($this->value, $fanOut, $fanIn);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Constant (value={$this->value})";
+    }
 }

@@ -51,4 +51,14 @@ class Cosine implements Distance
 
         return 1.0 - ($a->dot($b) / (($a->l2Norm() * $b->l2Norm()) ?: EPSILON));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Cosine';
+    }
 }

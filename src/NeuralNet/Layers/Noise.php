@@ -26,7 +26,7 @@ use RuntimeException;
 class Noise implements Hidden
 {
     /**
-     * The standard devaiation of the gaussian noise to add to the inputs.
+     * The amount (standard deviation) of the gaussian noise to add to the inputs.
      *
      * @var float
      */
@@ -119,5 +119,15 @@ class Noise implements Hidden
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         return $prevGradient;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Noise (stddev={$this->stdDev})";
     }
 }

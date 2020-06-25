@@ -54,4 +54,15 @@ class AdaMax extends Adam
 
         return $velocity->divide($norm->clipLower(EPSILON))->multiply($rate);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "AdaMax (rate={$this->rate} momentum_decay={$this->momentumDecay}"
+            . " norm_decay={$this->normDecay})";
+    }
 }

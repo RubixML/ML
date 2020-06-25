@@ -49,4 +49,14 @@ class Igbinary implements Serializer
     {
         return igbinary_unserialize($data);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Igbinary';
+    }
 }

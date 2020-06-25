@@ -197,4 +197,14 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
             ->matmul($this->eigenvectors)
             ->asArray();
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Principal Component Analysis (dimensions={$this->dimensions})";
+    }
 }

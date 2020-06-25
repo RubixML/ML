@@ -159,4 +159,15 @@ class Adam implements Optimizer, Adaptive
         return $velocity->multiply($this->rate)
             ->divide($norm->sqrt()->clipLower(EPSILON));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Adam (rate={$this->rate} momentum_decay={$this->momentumDecay}"
+            . " norm_decay={$this->normDecay})";
+    }
 }

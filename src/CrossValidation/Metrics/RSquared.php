@@ -78,4 +78,14 @@ class RSquared implements Metric
 
         return 1.0 - ($ssr / ($sst ?: EPSILON));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'R Squared';
+    }
 }

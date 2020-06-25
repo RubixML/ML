@@ -52,4 +52,14 @@ class L2Normalizer implements Transformer
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'L2 Normalizer';
+    }
 }

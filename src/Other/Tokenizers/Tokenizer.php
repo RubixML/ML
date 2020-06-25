@@ -11,4 +11,11 @@ interface Tokenizer
      * @return string[]
      */
     public function tokenize(string $string) : array;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

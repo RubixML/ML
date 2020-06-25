@@ -76,4 +76,14 @@ class Polynomial implements Kernel
             svm::OPT_COEF_ZERO => $this->coef0,
         ];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Polynomial (degree={$this->degree} gamma={$this->gamma} coef0={$this->coef0})";
+    }
 }

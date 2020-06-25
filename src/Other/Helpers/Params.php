@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
 use function count;
@@ -137,10 +136,8 @@ class Params
         foreach ($params as $arg => $param) {
             switch (gettype($param)) {
                 case 'object':
-                    if ($param instanceof Estimator) {
-                        $paramString = '(' . self::stringify($param->params(), $separator) . ')';
-
-                        $param = self::shortName(get_class($param)) . $paramString;
+                    if (method_exists($param, '__toString')) {
+                        $param = (string) $param;
                     } else {
                         $param = self::shortName(get_class($param));
                     }

@@ -293,4 +293,16 @@ class Dense implements Hidden, Parametric
         $this->weights = $parameters['weights'];
         $this->biases = $parameters['biases'] ?? null;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Dense (neurons={$this->neurons} alpha={$this->alpha} bias={$this->bias}"
+            . " weight_initializer={$this->weightInitializer}"
+            . " bias_initializer={$this->biasInitializer})";
+    }
 }

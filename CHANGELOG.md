@@ -1,4 +1,5 @@
 - Unreleased
+    - Improved logging for Verbose Learners
     - Added max document frequency to Word Count Vectorizer
     - Whitespace Trimmer is now a separate transformer
     - Text Normalizers no longer remove extra whitespace

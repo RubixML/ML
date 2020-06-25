@@ -142,4 +142,14 @@ class Amp implements Backend
     {
         $this->queue = $this->results = [];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Amp (workers={$this->workers()})";
+    }
 }

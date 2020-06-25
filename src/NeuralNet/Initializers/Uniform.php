@@ -49,4 +49,14 @@ class Uniform implements Initializer
     {
         return Matrix::uniform($fanOut, $fanIn)->multiply($this->beta);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Uniform (beta={$this->beta})";
+    }
 }

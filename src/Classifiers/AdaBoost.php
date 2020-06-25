@@ -286,7 +286,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+            $this->logger->info("Learner init $this");
 
             $this->logger->info('Training started');
         }
@@ -331,7 +331,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch Exponential Loss=$loss");
             }
 
             if (is_nan($loss)) {
@@ -348,8 +348,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if ($loss >= $maxLoss) {
                 if ($this->logger) {
-                    $this->logger->info('Estimator dropped due'
-                        . ' to high training loss');
+                    $this->logger->info('Estimator dropped due to'
+                        . ' high training loss');
                 }
 
                 continue 1;
@@ -458,5 +458,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         }
 
         return $scores;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'AdaBoost (' . Params::stringify($this->params()) . ')';
     }
 }

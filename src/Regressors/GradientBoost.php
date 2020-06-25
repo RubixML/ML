@@ -338,8 +338,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -400,7 +399,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->scores[] = $score;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch {$this->metric}=$score L2 Loss=$loss");
             }
 
             if ($score > $bestScore) {
@@ -498,5 +497,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         return $importances;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Gradient Boost (' . Params::stringify($this->params()) . ')';
     }
 }

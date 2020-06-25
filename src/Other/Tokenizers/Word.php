@@ -34,4 +34,14 @@ class Word implements Tokenizer
 
         return $tokens[0];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Word';
+    }
 }

@@ -127,4 +127,15 @@ class Cyclical implements Optimizer
 
         return $gradient->multiply($rate);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Cyclical (lower={$this->lower} upper={$this->upper}"
+            . " steps={$this->steps} decay={$this->decay})";
+    }
 }

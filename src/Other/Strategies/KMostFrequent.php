@@ -85,4 +85,14 @@ class KMostFrequent implements Categorical
 
         return $this->classes[rand(0, $this->k - 1)];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "K Most Frequent (k={$this->k})";
+    }
 }

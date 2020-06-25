@@ -117,4 +117,14 @@ class OneHotEncoder implements Transformer, Stateful
             $sample = array_merge($sample, ...$vectors);
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'One Hot Encoder';
+    }
 }

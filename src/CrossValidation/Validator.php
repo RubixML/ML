@@ -17,4 +17,11 @@ interface Validator
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

@@ -17,4 +17,11 @@ interface Transformer
      * @param array[] $samples
      */
     public function transform(array &$samples) : void;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

@@ -17,7 +17,7 @@ use const Rubix\ML\EPSILON;
  * A weighted harmonic mean of precision and recall, F-Beta is a both a versatile and balanced
  * metric. The beta parameter controls the weight of precision in the combined score. As beta
  * goes to infinity the score only considers recall, whereas when it goes to 0 it only
- * considers precision. When beta is equal to 1, the metric is called an F1 score.
+ * considers precision. When beta is equal to 1, this metric is called an F1 score.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -139,5 +139,15 @@ class FBeta implements Metric
 
         return (1.0 + $this->beta ** 2) * $precision * $recall
             / (($this->beta ** 2 * $precision + $recall) ?: EPSILON);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "F Beta (beta={$this->beta})";
     }
 }

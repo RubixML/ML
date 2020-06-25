@@ -241,8 +241,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -281,7 +280,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch Inertia=$loss");
             }
 
             if (is_nan($loss)) {
@@ -383,5 +382,15 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         }
 
         return $inertia / count($samples);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Fuzzy C Means (' . Params::stringify($this->params()) . ')';
     }
 }

@@ -143,4 +143,14 @@ class RobustStandardizer implements Transformer, Stateful
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Robust Standardizer (center={$this->center})";
+    }
 }

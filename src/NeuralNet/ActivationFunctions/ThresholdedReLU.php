@@ -73,4 +73,14 @@ class ThresholdedReLU implements ActivationFunction
     {
         return $z > $this->threshold ? $z : 0.0;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Thresholded ReLU (threshold={$this->threshold})";
+    }
 }

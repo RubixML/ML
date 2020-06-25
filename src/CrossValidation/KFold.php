@@ -95,4 +95,14 @@ class KFold implements Validator, Parallel
 
         return Stats::mean($scores);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "K Fold (k={$this->k})";
+    }
 }

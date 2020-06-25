@@ -327,10 +327,8 @@ class TSNE implements Embedder, Verbose
         SamplesAreCompatibleWithDistance::check(new Unlabeled($samples), $this->kernel);
 
         if ($this->logger) {
-            $this->logger->info('Embedder init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Embedder init $this");
             $this->logger->info('Embedding started');
-
             $this->logger->info('Computing high-dimensional affinities');
         }
 
@@ -384,7 +382,7 @@ class TSNE implements Embedder, Verbose
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch Gradient=$loss");
             }
 
             if ($loss < $bestLoss) {
@@ -553,5 +551,15 @@ class TSNE implements Embedder, Verbose
 
         return Matrix::quick($gradient)
             ->multiply($this->c);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 't-SNE (' . Params::stringify($this->params()) . ')';
     }
 }

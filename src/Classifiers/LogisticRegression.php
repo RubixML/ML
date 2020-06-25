@@ -305,8 +305,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -327,7 +326,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch {$this->costFn}=$loss");
             }
 
             if ($loss < $bestLoss) {
@@ -423,5 +422,15 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $importances = $layer->weights()->rowAsVector(0)->abs();
 
         return $importances->divide($importances->sum())->asArray();
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
     }
 }

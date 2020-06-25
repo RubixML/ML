@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
@@ -142,5 +143,15 @@ class DummyRegressor implements Estimator, Learner, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Dummy Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

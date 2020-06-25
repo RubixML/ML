@@ -74,4 +74,14 @@ class MedianAbsoluteError implements Metric
 
         return -Stats::median($errors);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Median Absolute Error';
+    }
 }

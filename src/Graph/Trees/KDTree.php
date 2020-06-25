@@ -343,4 +343,14 @@ class KDTree implements BinaryTree, Spatial
 
         return $path;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "K-d Tree (max_leaf_size={$this->maxLeafSize} kernel={$this->kernel})";
+    }
 }

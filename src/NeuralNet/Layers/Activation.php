@@ -152,4 +152,14 @@ class Activation implements Hidden
         return $this->activationFn->differentiate($input, $computed)
             ->multiply($prevGradient());
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Activation (activation_fn={$this->activationFn})";
+    }
 }

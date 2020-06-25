@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\ProbaSingle;
@@ -334,5 +335,15 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         }
 
         return $importances;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Random Forest (' . Params::stringify($this->params()) . ')';
     }
 }

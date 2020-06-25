@@ -8,8 +8,8 @@ use InvalidArgumentException;
 /**
  * Normal
  *
- * Generates a random weight matrix from a Gaussian distribution with
- * user-specified standard deviation.
+ * Generates a random weight matrix from a Gaussian distribution with user-specified standard
+ * deviation.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,20 +22,20 @@ class Normal implements Initializer
      *
      * @var float
      */
-    protected $stddev;
+    protected $stdDev;
 
     /**
-     * @param float $stddev
+     * @param float $stdDev
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $stddev = 0.05)
+    public function __construct(float $stdDev = 0.05)
     {
-        if ($stddev <= 0.0) {
+        if ($stdDev <= 0.0) {
             throw new InvalidArgumentException('Standard deviation must'
-                . " be greater than 0, $stddev given.");
+                . " be greater than 0, $stdDev given.");
         }
 
-        $this->stddev = $stddev;
+        $this->stdDev = $stdDev;
     }
 
     /**
@@ -47,6 +47,16 @@ class Normal implements Initializer
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
-        return Matrix::gaussian($fanOut, $fanIn)->multiply($this->stddev);
+        return Matrix::gaussian($fanOut, $fanIn)->multiply($this->stdDev);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Normal (stdDev={$this->stdDev})";
     }
 }

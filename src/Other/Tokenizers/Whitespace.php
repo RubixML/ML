@@ -46,4 +46,14 @@ class Whitespace implements Tokenizer
     {
         return explode($this->delimiter, $string) ?: [];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Whitespace (delimiter={$this->delimiter})";
+    }
 }

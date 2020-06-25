@@ -97,4 +97,14 @@ class Momentum implements Optimizer, Adaptive
 
         return $velocity;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Momentum (rate={$this->rate} decay={$this->decay})";
+    }
 }

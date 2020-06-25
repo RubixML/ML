@@ -75,4 +75,14 @@ class Percentile implements Continuous
 
         return $this->percentile;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Percentile (p={$this->p})";
+    }
 }

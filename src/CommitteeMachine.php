@@ -238,7 +238,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
+            $this->logger->info("Learner init $this");
 
             $this->logger->info('Training started');
         }
@@ -287,8 +287,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         }
 
         if ($this->logger) {
-            $this->logger->info(Params::shortName(get_class($estimator))
-                . ' finished training');
+            $this->logger->info("$estimator finished training");
         }
     }
 
@@ -348,5 +347,15 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     public function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Committee Machine (' . Params::stringify($this->params()) . ')';
     }
 }

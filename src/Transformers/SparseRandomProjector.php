@@ -66,4 +66,14 @@ class SparseRandomProjector extends GaussianRandomProjector
 
         $this->r = Matrix::quick($r);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Sparse Random Projector (dimensions={$this->dimensions})";
+    }
 }

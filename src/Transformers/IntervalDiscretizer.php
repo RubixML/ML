@@ -164,4 +164,14 @@ class IntervalDiscretizer implements Transformer, Stateful
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Interval Discretizer (bins={$this->bins})";
+    }
 }

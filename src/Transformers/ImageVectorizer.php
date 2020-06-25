@@ -142,4 +142,14 @@ class ImageVectorizer implements Transformer, Stateful
             $sample = array_merge($sample, ...$vectors);
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Image Vectorizer (grayscale={$this->grayscale})";
+    }
 }

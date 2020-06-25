@@ -159,4 +159,14 @@ class Dropout implements Hidden
     {
         return $prevGradient()->multiply($mask);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Dropout (ratio={$this->ratio})";
+    }
 }

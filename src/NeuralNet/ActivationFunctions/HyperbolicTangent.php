@@ -47,4 +47,14 @@ class HyperbolicTangent implements ActivationFunction
     {
         return 1.0 - ($computed ** 2);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Hyperbolic Tangent';
+    }
 }

@@ -125,4 +125,14 @@ class Filesystem implements Persister
 
         return $this->serializer->unserialize($data);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Filesystem (path={$this->path} history={$this->history} serializer={$this->serializer})";
+    }
 }

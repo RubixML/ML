@@ -84,4 +84,14 @@ class LeakyReLU implements ActivationFunction
     {
         return $z > 0.0 ? 1.0 : $this->leakage;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Leaky ReLU (leakage={$this->leakage})";
+    }
 }

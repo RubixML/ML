@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -239,5 +240,15 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         }
 
         return $gini;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Classification Tree (' . Params::stringify($this->params()) . ')';
     }
 }

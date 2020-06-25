@@ -46,4 +46,11 @@ interface Spatial extends Tree
      * Remove the root node and its descendants from the tree.
      */
     public function destroy() : void;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

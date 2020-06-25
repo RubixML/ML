@@ -37,4 +37,14 @@ class StopWordFilter extends RegexFilter
 
         parent::__construct($patterns);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Stop Word Filter';
+    }
 }

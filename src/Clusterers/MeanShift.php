@@ -294,8 +294,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -345,7 +344,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch Shift=$loss");
             }
 
             if (is_nan($loss)) {
@@ -470,5 +469,15 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         }
 
         return $shift;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Mean Shift (' . Params::stringify($this->params()) . ')';
     }
 }

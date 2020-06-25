@@ -50,4 +50,14 @@ class Hamming implements Distance
 
         return (float) $distance;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Hamming';
+    }
 }

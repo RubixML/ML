@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -235,5 +236,15 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'K-d Neighbors (' . Params::stringify($this->params()) . ')';
     }
 }

@@ -49,4 +49,14 @@ class RBF implements Kernel
             svm::OPT_GAMMA => $this->gamma,
         ];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "RBF (gamma={$this->gamma})";
+    }
 }

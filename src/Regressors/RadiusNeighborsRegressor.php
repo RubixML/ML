@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -194,5 +195,15 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Radius Neighbors Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

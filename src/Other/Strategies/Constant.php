@@ -47,4 +47,14 @@ class Constant implements Continuous
     {
         return $this->value;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Constant (value={$this->value})";
+    }
 }

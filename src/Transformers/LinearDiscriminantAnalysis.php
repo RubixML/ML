@@ -207,4 +207,14 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
             ->matmul($this->eigenvectors)
             ->asArray();
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Linear Discriminant Analysis (dimensions={$this->dimensions})";
+    }
 }

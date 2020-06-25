@@ -51,4 +51,14 @@ class Native implements Serializer
 
         return $unserialized;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Native';
+    }
 }

@@ -26,4 +26,11 @@ interface Metric
      * @return float
      */
     public function score(array $predictions, array $labels) : float;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

@@ -59,4 +59,14 @@ class SoftPlus implements ActivationFunction
     {
         return 1.0 / (1.0 + exp(-$computed));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Soft Plus';
+    }
 }

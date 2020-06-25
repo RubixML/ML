@@ -73,4 +73,14 @@ class Prior implements Categorical
 
         return (string) key($this->counts);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Prior';
+    }
 }

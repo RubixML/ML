@@ -81,4 +81,14 @@ class SMAPE implements Metric
 
         return -($error / count($predictions));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'SMAPE';
+    }
 }

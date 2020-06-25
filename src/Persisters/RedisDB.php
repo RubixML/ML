@@ -131,4 +131,14 @@ class RedisDB implements Persister
 
         return $this->serializer->unserialize($data);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Redis DB (key={$this->key} serializer={$this->serializer})";
+    }
 }

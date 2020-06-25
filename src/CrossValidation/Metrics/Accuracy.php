@@ -74,4 +74,14 @@ class Accuracy implements Metric
 
         return $score / count($predictions);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Accuracy';
+    }
 }

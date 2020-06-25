@@ -335,4 +335,14 @@ class BallTree implements BinaryTree, Spatial
 
         return $path;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Ball Tree (max_leaf_size={$this->maxLeafSize} kernel={$this->kernel})";
+    }
 }

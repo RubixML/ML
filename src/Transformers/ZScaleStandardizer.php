@@ -210,4 +210,14 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Z Scale Standardizer (center={$this->center})";
+    }
 }

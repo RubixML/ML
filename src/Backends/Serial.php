@@ -72,4 +72,14 @@ class Serial implements Backend
     {
         $this->queue = [];
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Serial';
+    }
 }

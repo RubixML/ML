@@ -375,8 +375,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -412,7 +411,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $this->scores[] = $score;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch {$this->metric}=$score {$this->costFn}=$loss");
             }
 
             if ($score > $bestScore) {
@@ -472,5 +471,15 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         }
 
         return $this->network->infer($dataset)->column(0);
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'MLP Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

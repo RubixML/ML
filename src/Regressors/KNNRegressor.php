@@ -10,6 +10,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -232,5 +233,15 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
         $labels = array_intersect_key($this->labels, $distances);
 
         return [$labels, $distances];
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'KNN Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

@@ -59,4 +59,14 @@ class NumericStringConverter implements Transformer
             }
         }
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Numeric String Converter';
+    }
 }

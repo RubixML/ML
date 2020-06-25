@@ -83,4 +83,14 @@ class AdaGrad implements Optimizer, Adaptive
         return $gradient->multiply($this->rate)
             ->divide($norm->sqrt()->clipLower(EPSILON));
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "AdaGrad (rate={$this->rate})";
+    }
 }

@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Prior;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Categorical;
@@ -142,5 +143,15 @@ class DummyClassifier implements Estimator, Learner, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Dummy Classifier (' . Params::stringify($this->params()) . ')';
     }
 }

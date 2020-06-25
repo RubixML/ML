@@ -119,4 +119,15 @@ class SkipGram implements Tokenizer
 
         return $tokens;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Skip Gram (n={$this->n} skip={$this->skip}"
+            . " word_tokenizer={$this->wordTokenizer})";
+    }
 }

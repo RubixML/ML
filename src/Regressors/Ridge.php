@@ -12,6 +12,7 @@ use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -209,5 +210,15 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $importances = $this->coefficients->abs();
 
         return $importances->divide($importances->sum())->asArray();
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Ridge (' . Params::stringify($this->params()) . ')';
     }
 }

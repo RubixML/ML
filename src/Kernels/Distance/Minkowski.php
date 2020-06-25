@@ -78,4 +78,14 @@ class Minkowski implements Distance
 
         return $distance ** $this->inverse;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Minkowski (lambda={$this->lambda})";
+    }
 }

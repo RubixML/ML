@@ -251,8 +251,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -483,5 +482,15 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         }
 
         return [$means, $variances];
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Gaussian Mixture (' . Params::stringify($this->params()) . ')';
     }
 }

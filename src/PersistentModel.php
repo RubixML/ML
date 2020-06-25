@@ -212,4 +212,14 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     {
         return $this->base->$name(...$arguments);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Persistent Model (' . Params::stringify($this->params()) . ')';
+    }
 }

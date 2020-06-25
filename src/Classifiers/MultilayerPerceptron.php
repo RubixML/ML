@@ -390,8 +390,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner init ' . Params::stringify($this->params()));
-
+            $this->logger->info("Learner init $this");
             $this->logger->info('Training started');
         }
 
@@ -427,7 +426,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $this->scores[] = $score;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch {$this->metric}=$score {$this->costFn}=$loss");
             }
 
             if ($score > $bestScore) {
@@ -505,5 +504,15 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Multilayer Perceptron (' . Params::stringify($this->params()) . ')';
     }
 }

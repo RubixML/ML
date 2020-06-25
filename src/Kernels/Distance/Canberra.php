@@ -55,4 +55,14 @@ class Canberra implements Distance
 
         return $distance;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Canberra';
+    }
 }

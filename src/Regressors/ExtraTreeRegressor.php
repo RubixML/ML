@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -173,5 +174,15 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     protected function impurity(Labeled $dataset) : float
     {
         return Stats::variance($dataset->labels());
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Extra Tree Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

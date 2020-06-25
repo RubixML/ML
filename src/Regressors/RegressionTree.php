@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -173,5 +174,15 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     protected function impurity(Labeled $dataset) : float
     {
         return Stats::variance($dataset->labels());
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Regression Tree (' . Params::stringify($this->params()) . ')';
     }
 }
