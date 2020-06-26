@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -20,7 +21,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Accuracy implements Metric
+class Accuracy implements Metric, Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.

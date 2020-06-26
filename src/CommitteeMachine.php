@@ -16,6 +16,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 use function get_class;
@@ -38,7 +39,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Verbose
+class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable, Stringable
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 

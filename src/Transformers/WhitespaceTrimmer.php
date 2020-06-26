@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 /**
  * Whitespace Trimmer
@@ -13,7 +14,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WhitespaceTrimmer implements Transformer
+class WhitespaceTrimmer implements Transformer, Stringable
 {
     /**
      * A pattern to match whitespace.

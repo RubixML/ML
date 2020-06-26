@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Leaky ReLU
@@ -20,7 +21,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeakyReLU implements ActivationFunction
+class LeakyReLU implements ActivationFunction, Stringable
 {
     /**
      * The amount of leakage as a ratio of the input value to allow to pass

@@ -20,6 +20,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -39,7 +40,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Loda implements Estimator, Learner, Online, Ranking, Persistable
+class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringable
 {
     use PredictsSingle, RanksSingle;
 

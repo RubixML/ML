@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 use Generator;
 
 use const Rubix\ML\EPSILON;
@@ -31,7 +32,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BatchNorm implements Hidden, Parametric
+class BatchNorm implements Hidden, Parametric, Stringable
 {
     /**
      * The decay rate of the previous running averages of the global mean

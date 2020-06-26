@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
+use Stringable;
 
 use function get_class;
 
@@ -25,7 +26,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaGrad implements Optimizer, Adaptive
+class AdaGrad implements Optimizer, Adaptive, Stringable
 {
     /**
      * The learning rate that controls the global step size.

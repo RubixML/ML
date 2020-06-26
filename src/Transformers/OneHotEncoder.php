@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
+use Stringable;
 
 use function count;
 use function is_null;
@@ -25,7 +26,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneHotEncoder implements Transformer, Stateful
+class OneHotEncoder implements Transformer, Stateful, Stringable
 {
     /**
      * The set of unique possible categories per feature column of the training set.

@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Thresholded ReLU
@@ -19,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ThresholdedReLU implements ActivationFunction
+class ThresholdedReLU implements ActivationFunction, Stringable
 {
     /**
      * The input value necessary to trigger an activation.

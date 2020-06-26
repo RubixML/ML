@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
+use Stringable;
 
 use function count;
 use function array_slice;
@@ -32,7 +33,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDTree implements BinaryTree, Spatial
+class KDTree implements BinaryTree, Spatial, Stringable
 {
     /**
      * The maximum number of samples that each neighborhood node can contain.

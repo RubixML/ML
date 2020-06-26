@@ -13,6 +13,7 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function get_class;
 
@@ -34,7 +35,7 @@ use function get_class;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Persistable, Verbose
+class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, RanksSingle;
 

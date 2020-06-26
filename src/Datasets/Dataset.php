@@ -12,6 +12,7 @@ use IteratorAggregate;
 use JsonSerializable;
 use RuntimeException;
 use ArrayAccess;
+use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  * @implements ArrayAccess<int, array>
  * @implements IteratorAggregate<int, array>
  */
-abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
+abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable, Stringable
 {
     /**
      * The rows of samples and columns of features that make up the

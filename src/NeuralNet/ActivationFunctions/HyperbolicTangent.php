@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Hyperbolic Tangent
@@ -14,7 +15,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HyperbolicTangent implements ActivationFunction
+class HyperbolicTangent implements ActivationFunction, Stringable
 {
     /**
      * Compute the output value.

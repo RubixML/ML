@@ -14,4 +14,11 @@ interface Seeder
      * @return array[]
      */
     public function seed(Dataset $dataset, int $k) : array;
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

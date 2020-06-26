@@ -18,6 +18,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Radius Neighbors Regressor
@@ -33,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
+class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Stringable
 {
     use PredictsSingle;
 

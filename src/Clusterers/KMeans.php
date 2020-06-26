@@ -25,6 +25,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 use function is_nan;
@@ -47,7 +48,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, Verbose
+class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -22,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RSquared implements Metric
+class RSquared implements Metric, Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.

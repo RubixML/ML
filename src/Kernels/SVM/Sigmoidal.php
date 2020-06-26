@@ -3,6 +3,7 @@
 namespace Rubix\ML\Kernels\SVM;
 
 use RuntimeException;
+use Stringable;
 use svm;
 
 /**
@@ -14,7 +15,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Sigmoidal implements Kernel
+class Sigmoidal implements Kernel, Stringable
 {
     /**
      * The kernel coefficient.

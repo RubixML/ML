@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * ELU
@@ -19,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ELU implements ActivationFunction
+class ELU implements ActivationFunction, Stringable
 {
     /**
      * At which negative value the ELU will saturate. For example if alpha

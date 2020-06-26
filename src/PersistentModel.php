@@ -10,6 +10,7 @@ use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Persistent Model
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Stringable
 {
     use PredictsSingle, ProbaSingle, RanksSingle;
 

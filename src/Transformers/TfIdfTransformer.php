@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function is_null;
 
@@ -29,7 +30,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TfIdfTransformer implements Transformer, Stateful, Elastic
+class TfIdfTransformer implements Transformer, Stateful, Elastic, Stringable
 {
     /**
      * The document frequencies of each word i.e. the number of times a word

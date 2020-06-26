@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use InvalidArgumentException;
+use Stringable;
 
 use function gettype;
 use function in_array;
@@ -14,7 +15,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DataType
+class DataType implements Stringable
 {
     /**
      * The continuous data type code.

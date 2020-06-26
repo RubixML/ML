@@ -3,6 +3,7 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 use function count;
 
@@ -21,7 +22,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SafeEuclidean implements Distance, NaNSafe
+class SafeEuclidean implements Distance, NaNSafe, Stringable
 {
     /**
      * Return the data types that this kernel is compatible with.

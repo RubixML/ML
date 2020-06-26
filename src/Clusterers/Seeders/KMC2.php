@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -24,7 +25,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMC2 implements Seeder
+class KMC2 implements Seeder, Stringable
 {
     /**
      * The number of candidate nodes in the Markov Chain.
@@ -97,5 +98,15 @@ class KMC2 implements Seeder
         }
 
         return $centroids;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "KMC2 (m={$this->m} kernel={$this->kernel})";
     }
 }

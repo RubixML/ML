@@ -7,6 +7,7 @@ use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Filesystem
@@ -19,7 +20,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Filesystem implements Persister
+class Filesystem implements Persister, Stringable
 {
     /**
      * The extension to give files created as part of a persistable's save history.

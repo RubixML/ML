@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Stringable;
+
 /**
  * Constant
  *
@@ -11,7 +13,7 @@ namespace Rubix\ML\Other\Strategies;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Constant implements Continuous
+class Constant implements Continuous, Stringable
 {
     /**
      * The value to constantly guess.

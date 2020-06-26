@@ -13,6 +13,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -33,7 +34,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Estimator
+class DBSCAN implements Estimator, Stringable
 {
     /**
      * The starting cluster number.

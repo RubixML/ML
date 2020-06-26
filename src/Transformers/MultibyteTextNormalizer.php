@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 /**
  * Multibyte Text Normalizer
@@ -17,7 +18,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Maxime Colin
  */
-class MultibyteTextNormalizer implements Transformer
+class MultibyteTextNormalizer implements Transformer, Stringable
 {
     /**
      * Return the data types that this transformer is compatible with.

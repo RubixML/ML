@@ -4,6 +4,7 @@ namespace Rubix\ML\Other\Strategies;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 
@@ -16,7 +17,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Prior implements Categorical
+class Prior implements Categorical, Stringable
 {
     /**
      * The counts of each unique class.

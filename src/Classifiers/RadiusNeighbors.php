@@ -19,6 +19,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\argmax;
 use function in_array;
@@ -36,7 +37,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
+class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle;
 

@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
+use Stringable;
+
 /**
  * Word
  *
@@ -11,7 +13,7 @@ namespace Rubix\ML\Other\Tokenizers;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Word implements Tokenizer
+class Word implements Tokenizer, Stringable
 {
     /**
      * The regular expression to match words in a sentence.

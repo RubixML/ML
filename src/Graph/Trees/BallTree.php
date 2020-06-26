@@ -11,6 +11,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
+use Stringable;
 
 use function count;
 use function array_slice;
@@ -33,7 +34,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BallTree implements BinaryTree, Spatial
+class BallTree implements BinaryTree, Spatial, Stringable
 {
     /**
      * The maximum number of samples that each leaf node can contain.

@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use InvalidArgumentException;
+use Stringable;
 
 use function in_array;
 
@@ -13,7 +14,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class EstimatorType
+class EstimatorType implements Stringable
 {
     /**
      * The classifier estimator type code.

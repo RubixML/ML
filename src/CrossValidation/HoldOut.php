@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Hold Out
@@ -21,7 +22,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HoldOut implements Validator
+class HoldOut implements Validator, Stringable
 {
     /**
      * The hold out ratio. i.e. the ratio of samples to use for testing.

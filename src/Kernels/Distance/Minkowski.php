@@ -4,6 +4,7 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Minkowski
@@ -16,7 +17,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Minkowski implements Distance
+class Minkowski implements Distance, Stringable
 {
     /**
      * This parameter controls the *roundedness* of the metric. There are

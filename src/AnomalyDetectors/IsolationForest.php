@@ -18,6 +18,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 
@@ -41,7 +42,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Ranking, Persistable
+class IsolationForest implements Estimator, Learner, Ranking, Persistable, Stringable
 {
     use PredictsSingle, RanksSingle;
 

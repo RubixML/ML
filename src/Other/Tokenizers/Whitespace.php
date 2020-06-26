@@ -3,6 +3,7 @@
 namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Whitespace
@@ -13,7 +14,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Whitespace implements Tokenizer
+class Whitespace implements Tokenizer, Stringable
 {
     /**
      * The whitespace character that delimits each token.

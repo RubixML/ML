@@ -20,6 +20,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\logsumexp;
 
@@ -43,7 +44,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
+class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle;
 

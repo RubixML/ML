@@ -4,6 +4,7 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
 use RuntimeException;
+use Stringable;
 
 use function get_class;
 use function is_object;
@@ -17,7 +18,7 @@ use function is_object;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Native implements Serializer
+class Native implements Serializer, Stringable
 {
     /**
      * Serialize a persistable object and return the data.

@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -23,7 +24,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MedianAbsoluteError implements Metric
+class MedianAbsoluteError implements Metric, Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.

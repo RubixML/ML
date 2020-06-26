@@ -4,6 +4,7 @@ namespace Rubix\ML\Kernels\SVM;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 use svm;
 
 /**
@@ -15,7 +16,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Polynomial implements Kernel
+class Polynomial implements Kernel, Stringable
 {
     /**
      * The degree of the polynomial.

@@ -5,6 +5,7 @@ namespace Rubix\ML\Clusterers\Seeders;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Stringable;
 
 use function count;
 
@@ -24,7 +25,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PlusPlus implements Seeder
+class PlusPlus implements Seeder, Stringable
 {
     /**
      * The distance kernel used to compute the distance between samples.
@@ -77,5 +78,15 @@ class PlusPlus implements Seeder
         }
 
         return $centroids;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Plus Plus (kernel={$this->kernel})";
     }
 }

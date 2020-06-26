@@ -3,6 +3,7 @@
 namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -17,7 +18,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NGram implements Tokenizer
+class NGram implements Tokenizer, Stringable
 {
     /**
      * The regular expression to match sentences in a blob of text.

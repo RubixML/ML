@@ -8,6 +8,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function is_null;
 
@@ -20,7 +21,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer, Stateful
+class VarianceThresholdFilter implements Transformer, Stateful, Stringable
 {
     /**
      * A type of feature selector that selects the top *k* features with the greatest variance.

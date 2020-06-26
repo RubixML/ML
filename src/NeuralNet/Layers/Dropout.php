@@ -7,6 +7,7 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Dropout
@@ -24,7 +25,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dropout implements Hidden
+class Dropout implements Hidden, Stringable
 {
     /**
      * The ratio of neurons that are dropped during each training pass.

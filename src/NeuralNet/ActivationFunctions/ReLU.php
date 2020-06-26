@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * ReLU
@@ -18,7 +19,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ReLU implements ActivationFunction
+class ReLU implements ActivationFunction, Stringable
 {
     /**
      * Compute the output value.

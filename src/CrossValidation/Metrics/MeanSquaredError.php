@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -22,7 +23,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanSquaredError implements Metric
+class MeanSquaredError implements Metric, Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 use function is_string;
 
@@ -15,7 +16,7 @@ use function is_string;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HTMLStripper implements Transformer
+class HTMLStripper implements Transformer, Stringable
 {
     /**
      * Return the data types that this transformer is compatible with.

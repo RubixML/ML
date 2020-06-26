@@ -9,6 +9,7 @@ use Rubix\ML\Other\Tokenizers\Tokenizer;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 use function array_slice;
@@ -26,7 +27,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WordCountVectorizer implements Transformer, Stateful
+class WordCountVectorizer implements Transformer, Stateful, Stringable
 {
     /**
      * The maximum size of the vocabulary.

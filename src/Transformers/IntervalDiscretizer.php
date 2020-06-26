@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function chr;
 use function ord;
@@ -23,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IntervalDiscretizer implements Transformer, Stateful
+class IntervalDiscretizer implements Transformer, Stateful, Stringable
 {
     /**
      * The value of the starting category for each feature column.

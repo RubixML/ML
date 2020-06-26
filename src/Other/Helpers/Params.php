@@ -3,6 +3,7 @@
 namespace Rubix\ML\Other\Helpers;
 
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 use function in_array;
@@ -136,7 +137,7 @@ class Params
         foreach ($params as $arg => $param) {
             switch (gettype($param)) {
                 case 'object':
-                    if (method_exists($param, '__toString')) {
+                    if ($param instanceof Stringable) {
                         $param = (string) $param;
                     } else {
                         $param = self::shortName(get_class($param));

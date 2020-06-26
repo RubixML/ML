@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -16,7 +17,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RelativeEntropy implements ClassificationLoss
+class RelativeEntropy implements ClassificationLoss, Stringable
 {
     /**
      * Compute the loss.

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Clusterers\Seeders;
 
 use Rubix\ML\Datasets\Dataset;
+use Stringable;
 
 /**
  * Random
@@ -13,7 +14,7 @@ use Rubix\ML\Datasets\Dataset;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Random implements Seeder
+class Random implements Seeder, Stringable
 {
     /**
      * Seed k cluster centroids from a dataset.
@@ -25,5 +26,15 @@ class Random implements Seeder
     public function seed(Dataset $dataset, int $k) : array
     {
         return $dataset->randomSubset($k)->samples();
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'Random';
     }
 }

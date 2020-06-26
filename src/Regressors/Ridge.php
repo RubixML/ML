@@ -19,6 +19,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function is_null;
 
@@ -33,7 +34,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ridge implements Estimator, Learner, RanksFeatures, Persistable
+class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringable
 {
     use PredictsSingle;
 

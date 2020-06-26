@@ -20,6 +20,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\argmax;
 use function array_slice;
@@ -38,7 +39,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
+class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle;
 

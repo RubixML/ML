@@ -3,6 +3,7 @@
 namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 use function array_slice;
@@ -21,7 +22,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SkipGram implements Tokenizer
+class SkipGram implements Tokenizer, Stringable
 {
     /**
      * The regular expression to match sentences in a blob of text.

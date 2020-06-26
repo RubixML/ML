@@ -17,6 +17,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function count;
 
@@ -31,7 +32,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DummyRegressor implements Estimator, Learner, Persistable
+class DummyRegressor implements Estimator, Learner, Persistable, Stringable
 {
     use PredictsSingle;
 

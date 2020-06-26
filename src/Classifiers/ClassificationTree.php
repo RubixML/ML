@@ -22,6 +22,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\argmax;
 
@@ -42,7 +43,7 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
+class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle;
 

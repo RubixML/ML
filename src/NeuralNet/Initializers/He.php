@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * He
@@ -20,7 +21,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class He implements Initializer
+class He implements Initializer, Stringable
 {
     /**
      * Half of the square root of 2.

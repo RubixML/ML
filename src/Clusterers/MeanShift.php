@@ -26,6 +26,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\array_transpose;
 use function is_nan;
@@ -49,7 +50,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

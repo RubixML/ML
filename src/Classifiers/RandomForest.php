@@ -24,6 +24,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\array_transpose;
@@ -45,7 +46,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Estimator, Learner, Probabilistic, Parallel, RanksFeatures, Persistable
+class RandomForest implements Estimator, Learner, Probabilistic, Parallel, RanksFeatures, Persistable, Stringable
 {
     use Multiprocessing, PredictsSingle, ProbaSingle;
 

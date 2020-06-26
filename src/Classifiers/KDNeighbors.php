@@ -19,6 +19,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\argmax;
 
@@ -36,7 +37,7 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
+class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle;
 

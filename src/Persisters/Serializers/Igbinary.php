@@ -4,6 +4,7 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
 use RuntimeException;
+use Stringable;
 
 /**
  * Igbinary
@@ -15,7 +16,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Igbinary implements Serializer
+class Igbinary implements Serializer, Stringable
 {
     /**
      * @throws \RuntimeException

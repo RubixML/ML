@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 use Generator;
 
 /**
@@ -25,7 +26,7 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dense implements Hidden, Parametric
+class Dense implements Hidden, Parametric, Stringable
 {
     /**
      * The number of nodes in the layer.

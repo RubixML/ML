@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * Polynomial Expander
@@ -17,7 +18,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PolynomialExpander implements Transformer
+class PolynomialExpander implements Transformer, Stringable
 {
     /**
      * The degree of the polynomials to generate. Higher order polynomials are

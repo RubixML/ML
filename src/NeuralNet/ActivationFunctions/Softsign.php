@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Softsign
@@ -18,7 +19,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Softsign implements ActivationFunction
+class Softsign implements ActivationFunction, Stringable
 {
     /**
      * Compute the output value.

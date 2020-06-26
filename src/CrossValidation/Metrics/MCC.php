@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -29,7 +30,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MCC implements Metric
+class MCC implements Metric, Stringable
 {
     /**
      * Compute the class mcc score.

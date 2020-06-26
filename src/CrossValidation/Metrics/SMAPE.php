@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -27,7 +28,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SMAPE implements Metric
+class SMAPE implements Metric, Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.

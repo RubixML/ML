@@ -19,6 +19,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -37,7 +38,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
+class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, Stringable
 {
     use PredictsSingle, RanksSingle;
 

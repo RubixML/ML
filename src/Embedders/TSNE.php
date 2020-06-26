@@ -13,6 +13,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
+use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -39,7 +40,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder, Verbose
+class TSNE implements Embedder, Verbose, Stringable
 {
     use LoggerAware;
 

@@ -21,6 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Regression Tree
@@ -38,7 +39,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, Persistable
+class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, Persistable, Stringable
 {
     use PredictsSingle;
 

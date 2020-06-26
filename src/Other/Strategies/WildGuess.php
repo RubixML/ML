@@ -4,6 +4,7 @@ namespace Rubix\ML\Other\Strategies;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use const Rubix\ML\PHI;
 
@@ -17,7 +18,7 @@ use const Rubix\ML\PHI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WildGuess implements Continuous
+class WildGuess implements Continuous, Stringable
 {
     /**
      * The minimum value of the fitted data.

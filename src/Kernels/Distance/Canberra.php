@@ -3,6 +3,7 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -21,7 +22,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Canberra implements Distance
+class Canberra implements Distance, Stringable
 {
     /**
      * Return the data types that this kernel is compatible with.

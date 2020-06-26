@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Gaussian Random Projector
@@ -23,7 +24,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianRandomProjector implements Transformer, Stateful
+class GaussianRandomProjector implements Transformer, Stateful, Stringable
 {
     /**
      * The target number of dimensions.

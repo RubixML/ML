@@ -15,6 +15,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 use svmmodel;
 use svm;
 
@@ -36,7 +37,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneClassSVM implements Estimator, Learner
+class OneClassSVM implements Estimator, Learner, Stringable
 {
     use PredictsSingle;
 

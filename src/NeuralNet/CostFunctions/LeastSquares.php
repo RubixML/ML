@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Least Squares
@@ -14,7 +15,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeastSquares implements RegressionLoss
+class LeastSquares implements RegressionLoss, Stringable
 {
     /**
      * Compute the loss score.

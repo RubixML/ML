@@ -35,6 +35,7 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function is_nan;
 use function count;
@@ -57,7 +58,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

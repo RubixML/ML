@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Soft Plus
@@ -17,7 +18,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftPlus implements ActivationFunction
+class SoftPlus implements ActivationFunction, Stringable
 {
     /**
      * Compute the output value.

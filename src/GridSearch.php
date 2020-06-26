@@ -21,6 +21,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
+use Stringable;
 
 use function count;
 
@@ -39,7 +40,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose, Wrapper
+class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Persistable, Stringable
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 

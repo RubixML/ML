@@ -6,6 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
+use Stringable;
 
 use function is_null;
 
@@ -22,7 +23,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ImageVectorizer implements Transformer, Stateful
+class ImageVectorizer implements Transformer, Stateful, Stringable
 {
     /**
      * Encode the images as grayscale?

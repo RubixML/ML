@@ -29,6 +29,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function is_nan;
 use function count;
@@ -47,7 +48,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
+class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable, Stringable
 {
     use PredictsSingle, LoggerAware;
 

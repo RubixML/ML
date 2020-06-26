@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -17,7 +18,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L1Normalizer implements Transformer
+class L1Normalizer implements Transformer, Stringable
 {
     /**
      * Return the data types that this transformer is compatible with.

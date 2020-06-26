@@ -22,6 +22,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\array_transpose;
@@ -50,7 +51,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

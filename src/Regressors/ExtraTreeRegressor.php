@@ -21,6 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use Stringable;
 
 /**
  * Extra Tree Regressor
@@ -37,7 +38,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
+class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable, Stringable
 {
     use PredictsSingle;
 
