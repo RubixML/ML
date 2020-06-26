@@ -200,46 +200,9 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
+        $this->means = $this->variances = $this->weights = [];
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
-
-        $classes = $dataset->possibleOutcomes();
-
-        $this->weights = array_fill_keys($classes, 0.0);
-
-        $this->means = $this->variances = array_fill_keys($classes, []);
-
-        foreach ($dataset->stratify() as $class => $stratum) {
-            $means = $variances = [];
-
-            foreach ($stratum->columns() as $values) {
-                [$mean, $variance] = Stats::meanVar($values);
-
-                $means[] = $mean;
-                $variances[] = $variance ?: EPSILON;
-            }
-
-            $this->means[$class] = $means;
-            $this->variances[$class] = $variances;
-
-            $this->weights[$class] += $stratum->numRows();
-        }
-
-        if ($this->fitPriors) {
-            $this->logPriors = [];
-
-            $total = array_sum($this->weights);
-
-            foreach ($this->weights as $class => $weight) {
-                $this->logPriors[$class] = log($weight / $total);
-            }
-        }
+        $this->partial($dataset);
     }
 
     /**
@@ -250,12 +213,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$this->weights or !$this->means or !$this->variances) {
-            $this->train($dataset);
-
-            return;
-        }
-
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Learner requires a'
                 . ' Labeled training set.');
@@ -266,33 +223,48 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            $means = $oldMeans = $this->means[$class] ?? [];
-            $variances = $oldVariances = $this->variances[$class] ?? [];
+            if (isset($this->means[$class])) {
+                $means = $oldMeans = $this->means[$class];
+                $variances = $oldVariances = $this->variances[$class];
+                $oldWeight = $this->weights[$class];
 
-            $oldWeight = $this->weights[$class] ?? 0;
+                $n = $stratum->numRows();
 
-            $n = $stratum->numRows();
+                $means = $variances = [];
 
-            foreach ($stratum->columns() as $column => $values) {
-                [$mean, $variance] = Stats::meanVar($values);
+                foreach ($stratum->columns() as $column => $values) {
+                    [$mean, $variance] = Stats::meanVar($values);
 
-                $means[$column] = (($n * $mean)
-                    + ($oldWeight * $oldMeans[$column]))
-                    / ($oldWeight + $n);
+                    $means[] = (($n * $mean)
+                        + ($oldWeight * $oldMeans[$column]))
+                        / ($oldWeight + $n);
 
-                $vHat = ($oldWeight
-                    * $oldVariances[$column] + ($n * $variance)
-                    + ($oldWeight / ($n * ($oldWeight + $n)))
-                    * ($n * $oldMeans[$column] - $n * $mean) ** 2)
-                    / ($oldWeight + $n);
+                    $vHat = ($oldWeight
+                        * $oldVariances[$column] + ($n * $variance)
+                        + ($oldWeight / ($n * ($oldWeight + $n)))
+                        * ($n * $oldMeans[$column] - $n * $mean) ** 2)
+                        / ($oldWeight + $n);
 
-                $variances[$column] = $vHat ?: EPSILON;
+                    $variances[] = $vHat ?: EPSILON;
+                }
+
+                $weight = $oldWeight + $n;
+            } else {
+                $means = $variances = [];
+
+                foreach ($stratum->columns() as $values) {
+                    [$mean, $variance] = Stats::meanVar($values);
+
+                    $means[] = $mean;
+                    $variances[] = $variance ?: EPSILON;
+                }
+
+                $weight = $stratum->numRows();
             }
 
             $this->means[$class] = $means;
             $this->variances[$class] = $variances;
-
-            $this->weights[$class] = $oldWeight + $n;
+            $this->weights[$class] = $weight;
         }
 
         if ($this->fitPriors) {

@@ -393,7 +393,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             foreach ($row as &$value) {
                 $value = (string) $value;
 
-                if (strpos($value, $delimiter) !== false) {
+                if (str_contains($value, $delimiter)) {
                     $value = $enclosure . $value . $enclosure;
                 }
             }
