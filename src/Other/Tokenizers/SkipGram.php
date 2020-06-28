@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use Stringable;
 
 use function count;
-use function array_slice;
 
 /**
  * Skip Gram
@@ -68,13 +67,13 @@ class SkipGram implements Tokenizer, Stringable
     public function __construct(int $n = 2, int $skip = 2, ?Word $wordTokenizer = null)
     {
         if ($n < 2) {
-            throw new InvalidArgumentException('The number of words'
-                . " per token must be greater than 1, $n given.");
+            throw new InvalidArgumentException('Number of words per'
+                . " token must be greater than 1, $n given.");
         }
 
-        if ($skip < 2) {
-            throw new InvalidArgumentException('The number of words'
-                . " to skip must be greater than 1, $skip given.");
+        if ($skip < 0) {
+            throw new InvalidArgumentException('Skip words must be'
+                . " greater than 1, $skip given.");
         }
 
         $this->n = $n;
@@ -97,13 +96,13 @@ class SkipGram implements Tokenizer, Stringable
         foreach ($sentences as $sentence) {
             $words = $this->wordTokenizer->tokenize($sentence);
 
-            $length = count($words) - ($this->n + $this->skip);
+            $n = count($words);
 
-            for ($i = 0; $i <= $length; ++$i) {
-                $first = $words[$i];
+            foreach ($words as $i => $word) {
+                $p = min($n - ($i + $this->n), $this->skip);
 
-                for ($j = 0; $j <= $this->skip; ++$j) {
-                    $skipGram = $first;
+                for ($j = 0; $j <= $p; ++$j) {
+                    $skipGram = $word;
 
                     for ($k = 1; $k < $this->n; ++$k) {
                         $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
@@ -112,10 +111,6 @@ class SkipGram implements Tokenizer, Stringable
                     $tokens[] = $skipGram;
                 }
             }
-
-            $last = array_slice($words, -$this->n);
-
-            $tokens[] = implode(self::SEPARATOR, $last);
         }
 
         return $tokens;

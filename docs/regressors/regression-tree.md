@@ -23,12 +23,18 @@ $estimator = new RegressionTree(20, 2, null, 1e-3);
 ```
 
 ## Additional Methods
-Return a human readable text representation of the decision tree ruleset:
+Return a human-readable text representation of the decision tree ruleset:
 ```php
-public rules() : string
+public rules(?array $header = null) : string
 ```
 
-Return the height of the tree:
+**Example**
+
+```php
+echo $estimator->rules(['x', 'y', 'z']);
+```
+
+Return the height of the tree i.e. the number of layers:
 ```php
 public height() : int
 ```

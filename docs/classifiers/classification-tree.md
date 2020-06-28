@@ -23,12 +23,34 @@ $estimator = new ClassificationTree(10, 7, 4, 0.01);
 ```
 
 ## Additional Methods
-Return a human readable text representation of the decision tree ruleset:
+Return a human-readable text representation of the decision tree ruleset:
 ```php
-public rules() : string
+public rules(?array $header = null) : string
 ```
 
-Return the height of the tree:
+**Example**
+
+```php
+echo $estimator->rules(['age', 'height', 'income']);
+```
+
+```sh
+├─── age < 70
+├───├─── income < 260734.0
+├───├───├─── income < 80207.0
+├───├───├───├─── height < 182.0
+├───├───├───├───├─── Best (outcome=high school impurity=0.19546677755182 n=9)
+├───├───├───├─── height >= 182.0
+├───├───├───├───├─── Best (outcome=bachelors impurity=-0 n=67)
+├───├───├─── income >= 80207.0
+├───├───├───├─── Best (outcome=masters impurity=-0 n=77)
+├───├─── income >= 260.73460601
+├───├───├─── Best (outcome=doctorate impurity=-0 n=49)
+├─── age >= 70
+├───├─── Best (outcome=high school impurity=-0 n=98)
+```
+
+Return the height of the tree i.e. the number of layers:
 ```php
 public height() : int
 ```

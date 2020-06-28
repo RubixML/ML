@@ -5,6 +5,8 @@
     - Text Normalizers no longer remove extra whitespace
     - Added extra characters pattern to Regex Filter
     - Moved Lambda Function transformer to Extras package
+    - GaussianNB new class labels during partial train
+    - Decision Tree print ruleset now accepts a header
 
 - 0.1.0-rc4
     - Added Multibyte Text Normalizer transformer

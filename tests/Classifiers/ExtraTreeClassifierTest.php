@@ -167,7 +167,7 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertCount(3, $importances);
         $this->assertEquals(1.0, array_sum($importances));
 
-        $rules = $this->estimator->rules();
+        $rules = $this->estimator->rules(['r', 'g', 'b']);
 
         $this->assertIsString($rules);
     }

@@ -30,18 +30,11 @@ use const Rubix\ML\EPSILON;
 abstract class CART
 {
     /**
-     * The amount of impurity to tolerate when determining a perfect split.
-     *
-     * @var float
-     */
-    protected const IMPURITY_TOLERANCE = 1e-4;
-
-    /**
      * The glyph that denotes a branch of the tree.
      *
      * @var string
      */
-    protected const BRANCH_INDENTER = '|---';
+    protected const BRANCH_INDENTER = '├───';
 
     /**
      * The root node of the tree.
@@ -331,18 +324,26 @@ abstract class CART
     /**
      * Print a human readable text representation of the decision tree.
      *
+     * @param string[] $header
      * @throws RuntimeException
      * @return string
      */
-    public function rules() : string
+    public function rules(?array $header = null) : string
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
         }
 
+        if (isset($header) and count($header) !== $this->featureCount) {
+            throw new InvalidArgumentException('Header must have the'
+                . ' same number of columns as the training set, '
+                . "{$this->featureCount} expected but "
+                . count($header) . ' given.');
+        }
+
         $carry = '';
 
-        $this->_rules($carry, $this->root);
+        $this->_rules($carry, $this->root, $header);
 
         return $carry;
     }
@@ -405,7 +406,7 @@ abstract class CART
                     $bestImpurity = $impurity;
                 }
 
-                if ($impurity <= self::IMPURITY_TOLERANCE) {
+                if ($impurity <= 0.0) {
                     break 2;
                 }
             }
@@ -450,34 +451,37 @@ abstract class CART
      *
      * @param string $carry
      * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param string[]|null $header
      * @param int $depth
      */
-    protected function _rules(string &$carry, BinaryNode $node, int $depth = 0) : void
+    protected function _rules(string &$carry, BinaryNode $node, ?array $header = null, int $depth = 0) : void
     {
         ++$depth;
 
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
         if ($node instanceof Comparison) {
+            $identifier = $header ? $header[$node->column()] : "Feature {$node->column()}";
+
             if ($node->left() !== null) {
                 $operator = is_string($node->value()) ? '==' : '<';
 
-                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+                $carry .= $prefix . "$identifier $operator {$node->value()}" . PHP_EOL;
 
-                $this->_rules($carry, $node->left(), $depth);
+                $this->_rules($carry, $node->left(), $header, $depth);
             }
 
             if ($node->right() !== null) {
                 $operator = is_string($node->value()) ? '!=' : '>=';
 
-                $carry .= $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+                $carry .= $prefix . "$identifier $operator {$node->value()}" . PHP_EOL;
 
-                $this->_rules($carry, $node->right(), $depth);
+                $this->_rules($carry, $node->right(), $header, $depth);
             }
         }
 
         if ($node instanceof Outcome) {
-            $carry .= $prefix . "Outcome={$node->outcome()} Impurity={$node->impurity()}" . PHP_EOL;
+            $carry .= $prefix . $node . PHP_EOL;
         }
     }
 

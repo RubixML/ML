@@ -99,4 +99,14 @@ class Best implements Outcome, Leaf
     {
         return $this->n;
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Best (outcome={$this->outcome} impurity={$this->impurity} n={$this->n})";
+    }
 }

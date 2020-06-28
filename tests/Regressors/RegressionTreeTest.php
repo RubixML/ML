@@ -160,7 +160,7 @@ class RegressionTreeTest extends TestCase
         $this->assertCount(2, $importances);
         $this->assertEquals(1.0, array_sum($importances));
 
-        $rules = $this->estimator->rules();
+        $rules = $this->estimator->rules(['x', 'y']);
 
         $this->assertIsString($rules);
     }

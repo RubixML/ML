@@ -10,4 +10,11 @@ interface Outcome extends Decision
      * @return int|float|string
      */
     public function outcome();
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function __toString() : string;
 }

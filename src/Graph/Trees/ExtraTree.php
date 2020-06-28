@@ -63,7 +63,7 @@ abstract class ExtraTree extends CART
                 $bestImpurity = $impurity;
             }
 
-            if ($impurity <= self::IMPURITY_TOLERANCE) {
+            if ($impurity <= 0.0) {
                 break 1;
             }
         }

@@ -23,12 +23,18 @@ $estimator = new ExtraTreeRegressor(30, 3, 20, 0.05);
 ```
 
 ## Additional Methods
-Return a human readable text representation of the decision tree ruleset:
+Return a human-readable text representation of the decision tree ruleset:
 ```php
-public rules() : string
+public rules(?array $header = null) : string
 ```
 
-Return the height of the tree:
+**Example**
+
+```php
+echo $estimator->rules(['x', 'y', 'z']);
+```
+
+Return the height of the tree i.e. the number of layers:
 ```php
 public height() : int
 ```
