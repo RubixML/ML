@@ -16,8 +16,7 @@ class DatasetIsNotEmpty
     public static function check(Dataset $dataset) : void
     {
         if ($dataset->empty()) {
-            throw new InvalidArgumentException('Dataset must contain'
-                . ' at least one record.');
+            throw new InvalidArgumentException('Dataset must contain at least one record.');
         }
     }
 }

@@ -361,7 +361,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         $ndjson = '';
 
-        foreach ($this->getIterator() as $row) {
+        foreach ($this as $row) {
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
@@ -378,9 +378,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function toCSV(string $delimiter = ',', string $enclosure = '"') : string
     {
-        if (strlen($delimiter) !== 1) {
+        if (empty($delimiter)) {
             throw new InvalidArgumentException('Delimiter must be'
-                . ' a single character.');
+                . ' at least 1 character.');
         }
 
         if (strlen($enclosure) !== 1) {
@@ -390,10 +390,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
         $csv = '';
 
-        foreach ($this->getIterator() as $row) {
+        foreach ($this as $row) {
             foreach ($row as &$value) {
-                $value = (string) $value;
-
                 if (str_contains($value, $delimiter)) {
                     $value = $enclosure . $value . $enclosure;
                 }

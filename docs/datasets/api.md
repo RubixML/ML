@@ -1,5 +1,5 @@
 # Dataset Objects
-Data are often passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like data structures that have operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Datasets require a matrix of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column. They have the additional constraint that each feature column must be homogenous i.e. they must contain values of the same high-level data type. For example, a continuous feature column must only contain integer or floating point numbers. Some datasets can contain labels for training or cross validation. In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels to the constructor.
+Data are passed in specialized in-memory containers called Dataset objects. Dataset objects are table-like data structures that have operations for data manipulation. They can hold a heterogeneous mix of data types and they make it easy to transport data in a canonical way. Datasets consist of a matrix of samples in which each row constitutes a sample and each column represents the value of the feature represented by that column. They have the additional constraint that each feature column must contain values of the same high-level data type. Some datasets can contain labels for training or cross validation. In the example below, we instantiate a new [Labeled](labeled.md) dataset object by passing the samples and their labels as arguments to the constructor.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -15,7 +15,7 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 ## Missing Values
-By convention, missing continuous values are denoted by `NaN` and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
+By convention, missing continuous values are denoted by the `NAN` constant and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
 
 ```php
 $samples = [
@@ -31,7 +31,7 @@ Build a dataset with the rows from a 2-dimensional iterable data table:
 public static fromIterator(Traversable $iterator) : self
 ```
 
-**Note:** Labels should always be in the last column of the data table by convention.
+**Note:** When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
 
 **Example**
 
@@ -143,11 +143,9 @@ public apply(Transformer $transformer) : self
 **Example**
 
 ```php
-use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$dataset->apply(new MissingDataImputer())
-    ->apply(new OneHotEncoder());
+$dataset->apply(new OneHotEncoder());
 ```
 
 You can also transform a single feature column using a callback function with the `transformColumn()` method.
@@ -210,7 +208,7 @@ To merge the columns of this dataset with another dataset:
 public augment(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have the same number of rows
+> **Note:** Datasets must have the same number of rows.
 
 **Example**
 

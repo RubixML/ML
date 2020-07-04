@@ -3,7 +3,7 @@
     - Added max document frequency to Word Count Vectorizer
     - Whitespace Trimmer is now a separate transformer
     - Text Normalizers no longer remove extra whitespace
-    - Added extra characters pattern to Regex Filter
+    - Added extra characters pattern to Regex Filter class constants
     - Moved Lambda Function transformer to Extras package
     - GaussianNB new class labels during partial train
     - Decision Tree print ruleset now accepts a header

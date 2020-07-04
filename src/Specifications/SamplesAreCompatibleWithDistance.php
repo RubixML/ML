@@ -3,12 +3,10 @@
 namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 use function count;
-use function get_class;
 
 class SamplesAreCompatibleWithDistance
 {
@@ -25,16 +23,13 @@ class SamplesAreCompatibleWithDistance
 
         $types = $dataset->uniqueTypes();
 
-        $same = array_intersect($types, $compatibility);
+        $compatible = array_intersect($types, $compatibility);
 
-        if (count($same) < count($types)) {
-            $diff = array_diff($types, $compatibility);
+        if (count($compatible) < count($types)) {
+            $incompatible = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                Params::shortName(get_class($kernel))
-                . ' is only compatible with '
-                . implode(', ', $compatibility) . ' data types, '
-                . implode(', ', $diff) . ' given.'
+                "$kernel is not compatible with " . implode(', ', $incompatible) . ' data types.'
             );
         }
     }

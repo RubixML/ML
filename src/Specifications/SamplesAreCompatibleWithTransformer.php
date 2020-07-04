@@ -3,12 +3,10 @@
 namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
 use function count;
-use function get_class;
 
 class SamplesAreCompatibleWithTransformer
 {
@@ -25,16 +23,13 @@ class SamplesAreCompatibleWithTransformer
 
         $types = $dataset->uniqueTypes();
 
-        $same = array_intersect($types, $compatibility);
+        $compatible = array_intersect($types, $compatibility);
 
-        if (count($same) < count($types)) {
-            $diff = array_diff($types, $compatibility);
+        if (count($compatible) < count($types)) {
+            $incompatible = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                Params::shortName(get_class($transformer))
-                . ' is only compatible with '
-                . implode(', ', $compatibility) . ' data types, '
-                . implode(', ', $diff) . ' given.'
+                "$transformer is not compatible with " . implode(', ', $incompatible) . ' data types.'
             );
         }
     }
