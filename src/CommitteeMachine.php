@@ -19,7 +19,6 @@ use RuntimeException;
 use Stringable;
 
 use function count;
-use function get_class;
 use function in_array;
 
 /**
@@ -283,8 +282,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     public function afterTrain(Learner $estimator) : void
     {
         if (!$estimator->trained()) {
-            throw new RuntimeException('There was a problem training '
-                . Params::shortName(get_class($estimator)) . '.');
+            throw new RuntimeException("There was a problem training $estimator.");
         }
 
         if ($this->logger) {

@@ -15,8 +15,6 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
-use function get_class;
-
 /**
  * Pipeline
  *
@@ -189,14 +187,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
                 $transformer->fit($dataset);
 
                 if ($this->logger) {
-                    $this->logger->info('Fitted ' . Params::shortName(get_class($transformer)));
+                    $this->logger->info("Fitted $transformer");
                 }
             }
 
             $dataset->apply($transformer);
 
             if ($this->logger) {
-                $this->logger->info('Applied ' . Params::shortName(get_class($transformer)));
+                $this->logger->info("Applied $transformer");
             }
         }
 
@@ -218,14 +216,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
                     $transformer->update($dataset);
 
                     if ($this->logger) {
-                        $this->logger->info('Updated ' . Params::shortName(get_class($transformer)));
+                        $this->logger->info("Updated $transformer");
                     }
                 }
 
                 $dataset->apply($transformer);
 
                 if ($this->logger) {
-                    $this->logger->info('Applied ' . Params::shortName(get_class($transformer)));
+                    $this->logger->info("Applied $transformer");
                 }
             }
         } else {

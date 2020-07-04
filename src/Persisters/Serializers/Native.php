@@ -46,7 +46,7 @@ class Native implements Serializer, Stringable
             throw new RuntimeException('Unserialized data is not an object.');
         }
 
-        if (!($unserialized instanceof Persistable)) {
+        if (!$unserialized instanceof Persistable) {
             throw new RuntimeException('Unserialized object is not a ' . Persistable::class . '. Got ' . get_class($unserialized));
         }
 

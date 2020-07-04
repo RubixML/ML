@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use Generator;
 
 use function count;
-use function get_class;
 use function array_slice;
 
 use const Rubix\ML\PHI;
@@ -77,15 +76,14 @@ class Unlabeled extends Dataset
 
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Dataset must be an'
-                    . ' instance of Dataset, ' . get_class($dataset)
-                    . ' given.');
+                throw new InvalidArgumentException('Dataset must implement'
+                    . ' the Dataset interface.');
             }
 
             if ($dataset->numColumns() !== $n) {
                 throw new InvalidArgumentException('Dataset must have'
-                    . " the same number of columns, $n expected but "
-                    . $dataset->numColumns() . ' given.');
+                    . " the same number of columns, $n expected but"
+                    . " {$dataset->numColumns()} given.");
             }
 
             $samples[] = $dataset->samples();
