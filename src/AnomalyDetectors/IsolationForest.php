@@ -286,6 +286,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function __toString() : string
     {
-        return 'Isolation Forest (' . Params::stringify($this->params()) . ')';
+        return 'Isolation Forest {' . Params::stringify($this->params()) . '}';
     }
 }

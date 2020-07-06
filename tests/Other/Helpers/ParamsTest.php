@@ -20,6 +20,10 @@ class ParamsTest extends TestCase
     {
         $values = Params::ints(0, 100, 5);
 
+        $this->assertContainsOnly('int', $values);
+
+        $this->assertEquals(array_unique($values), $values);
+
         foreach ($values as $value) {
             $this->assertThat(
                 $value,
@@ -35,6 +39,8 @@ class ParamsTest extends TestCase
     {
         $values = Params::floats(0, 100, 5);
 
+        $this->assertContainsOnly('float', $values);
+
         foreach ($values as $value) {
             $this->assertThat(
                 $value,
@@ -48,7 +54,9 @@ class ParamsTest extends TestCase
      */
     public function grid() : void
     {
-        $this->assertEquals(range(0, 100, 25), Params::grid(0, 100, 5));
+        $values = Params::grid(0, 100, 5);
+
+        $this->assertEquals(range(0, 100, 25), $values);
     }
 
     /**
@@ -56,11 +64,12 @@ class ParamsTest extends TestCase
      * @dataProvider stringifyProvider
      *
      * @param mixed[] $params
+     * @param string $separator
      * @param string $expected
      */
-    public function stringify(array $params, string $expected) : void
+    public function stringify(array $params, string $separator, string $expected) : void
     {
-        $this->assertEquals($expected, Params::stringify($params));
+        $this->assertEquals($expected, Params::stringify($params, $separator));
     }
 
     /**
@@ -74,7 +83,8 @@ class ParamsTest extends TestCase
                 'alpha' => 1e-4,
                 'priors' => null,
             ],
-            'learning_rate=0.1 alpha=0.0001 priors=null',
+            ', ',
+            'learning_rate: 0.1, alpha: 0.0001, priors: null',
         ];
 
         yield [
@@ -83,7 +93,8 @@ class ParamsTest extends TestCase
                 1.0,
                 0.8,
             ],
-            '0=K Nearest Neighbors (k=5 weighted=true kernel=Euclidean) 1=1 2=0.8',
+            ', ',
+            '0: K Nearest Neighbors {k: 5, weighted: true, kernel: Euclidean}, 1: 1, 2: 0.8',
         ];
 
         yield [
@@ -92,7 +103,8 @@ class ParamsTest extends TestCase
                 [2, 3, 4],
                 5,
             ],
-            '0=1 1=[0=2 1=3 2=4] 2=5',
+            ' - ',
+            '0: 1 - 1: [0: 2, 1: 3, 2: 4] - 2: 5',
         ];
     }
 

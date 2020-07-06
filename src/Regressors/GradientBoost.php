@@ -507,6 +507,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function __toString() : string
     {
-        return 'Gradient Boost (' . Params::stringify($this->params()) . ')';
+        return 'Gradient Boost {' . Params::stringify($this->params()) . '}';
     }
 }

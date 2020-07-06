@@ -228,9 +228,9 @@ class WordCountVectorizer implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Word Count Vectorizer (max_vocabulary={$this->maxVocabulary}"
-            . " min_document_frequency={$this->minDocumentFrequency}"
-            . " max_document_frequency={$this->maxDocumentFrequency}"
-            . " tokenizer={$this->tokenizer})";
+        return "Word Count Vectorizer {max_vocabulary: {$this->maxVocabulary},"
+            . " min_document_frequency: {$this->minDocumentFrequency},"
+            . " max_document_frequency: {$this->maxDocumentFrequency},"
+            . " tokenizer: {$this->tokenizer}}";
     }
 }

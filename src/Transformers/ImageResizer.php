@@ -135,6 +135,6 @@ class ImageResizer implements Transformer, Stringable
      */
     public function __toString() : string
     {
-        return "Image Resizer (width={$this->width} height={$this->height})";
+        return "Image Resizer {width: {$this->width}, height: {$this->height}}";
     }
 }

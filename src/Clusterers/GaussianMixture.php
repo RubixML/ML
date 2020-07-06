@@ -492,6 +492,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function __toString() : string
     {
-        return 'Gaussian Mixture (' . Params::stringify($this->params()) . ')';
+        return 'Gaussian Mixture {' . Params::stringify($this->params()) . '}';
     }
 }

@@ -399,6 +399,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function __toString() : string
     {
-        return 'Grid Search (' . Params::stringify($this->params()) . ')';
+        return 'Grid Search {' . Params::stringify($this->params()) . '}';
     }
 }

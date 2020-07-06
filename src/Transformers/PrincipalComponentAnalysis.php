@@ -206,6 +206,6 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Principal Component Analysis (dimensions={$this->dimensions})";
+        return "Principal Component Analysis {dimensions: {$this->dimensions}}";
     }
 }

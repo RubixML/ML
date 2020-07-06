@@ -360,6 +360,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function __toString() : string
     {
-        return 'Naive Bayes (' . Params::stringify($this->params()) . ')';
+        return 'Naive Bayes {' . Params::stringify($this->params()) . '}';
     }
 }

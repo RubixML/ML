@@ -267,6 +267,6 @@ class PReLU implements Hidden, Parametric, Stringable
      */
     public function __toString() : string
     {
-        return "PReLU (initializer={$this->initializer})";
+        return "PReLU {alpha_initializer: {$this->initializer}}";
     }
 }

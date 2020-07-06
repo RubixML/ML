@@ -220,6 +220,6 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
      */
     public function __toString() : string
     {
-        return 'Ridge (' . Params::stringify($this->params()) . ')';
+        return 'Ridge {' . Params::stringify($this->params()) . '}';
     }
 }

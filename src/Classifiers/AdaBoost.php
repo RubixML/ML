@@ -468,6 +468,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function __toString() : string
     {
-        return 'AdaBoost (' . Params::stringify($this->params()) . ')';
+        return 'AdaBoost {' . Params::stringify($this->params()) . '}';
     }
 }

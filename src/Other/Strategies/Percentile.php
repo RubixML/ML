@@ -84,6 +84,6 @@ class Percentile implements Continuous, Stringable
      */
     public function __toString() : string
     {
-        return "Percentile (p={$this->p})";
+        return "Percentile {p: {$this->p}}";
     }
 }

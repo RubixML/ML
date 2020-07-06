@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 use Stringable;
@@ -151,6 +152,6 @@ class ImageVectorizer implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Image Vectorizer (grayscale={$this->grayscale})";
+        return 'Image Vectorizer {grayscale: ' . Params::toString($this->grayscale) . '}';
     }
 }

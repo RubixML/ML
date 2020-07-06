@@ -130,54 +130,54 @@ class Params
      * @param string $separator
      * @return string
      */
-    public static function stringify(array $params, string $separator = ' ') : string
+    public static function stringify(array $params, string $separator = ', ') : string
     {
         $strings = [];
 
         foreach ($params as $arg => $param) {
-            switch (gettype($param)) {
-                case 'object':
-                    if ($param instanceof Stringable) {
-                        $param = (string) $param;
-                    } else {
-                        $param = self::shortName(get_class($param));
-                    }
-
-                    break 1;
-
-                case 'array':
-                    $param = '[' . self::stringify($param, $separator) . ']';
-
-                    break 1;
-
-                case 'string':
-                    if (class_exists($param)) {
-                        $param = self::shortName($param);
-                    }
-
-                    break 1;
-
-                case 'integer':
-                case 'double':
-                    $param = (string) $param;
-
-                    break 1;
-
-                case 'boolean':
-                    $param = $param ? 'true' : 'false';
-
-                    break 1;
-
-                case 'NULL':
-                    $param = 'null';
-
-                    break 1;
-            }
-
-            $strings[] = (string) $arg . '=' . $param;
+            $strings[] = $arg . ': ' . self::toString($param);
         }
 
         return implode($separator, $strings);
+    }
+
+    /**
+     * Convert the value of an argument to its string representation.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public static function toString($value) : string
+    {
+        switch (gettype($value)) {
+            case 'object':
+                if ($value instanceof Stringable) {
+                    return (string) $value;
+                }
+                    return self::shortName(get_class($value));
+
+            case 'array':
+                return '[' . self::stringify($value, ', ') . ']';
+
+            case 'string':
+                if (class_exists($value)) {
+                    return self::shortName($value);
+                }
+
+                break 1;
+
+            case 'integer':
+            case 'double':
+                return (string) $value;
+
+            case 'boolean':
+                return $value ? 'true' : 'false';
+
+            case 'NULL':
+                return 'null';
+        }
+
+        return $value;
     }
 
     /**

@@ -392,6 +392,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     public function __toString() : string
     {
-        return 'Fuzzy C Means (' . Params::stringify($this->params()) . ')';
+        return 'Fuzzy C Means {' . Params::stringify($this->params()) . '}';
     }
 }

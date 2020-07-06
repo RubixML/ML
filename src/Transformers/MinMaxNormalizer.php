@@ -209,6 +209,6 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function __toString() : string
     {
-        return "Min Max Normalizer (min={$this->min} max={$this->max})";
+        return "Min Max Normalizer {min: {$this->min}, max: {$this->max}}";
     }
 }

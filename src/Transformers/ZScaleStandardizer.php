@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 use Stringable;
@@ -219,6 +220,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function __toString() : string
     {
-        return "Z Scale Standardizer (center={$this->center})";
+        return 'Z Scale Standardizer {center=' . Params::toString($this->center) . '}';
     }
 }

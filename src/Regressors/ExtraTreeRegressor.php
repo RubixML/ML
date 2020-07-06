@@ -184,6 +184,6 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      */
     public function __toString() : string
     {
-        return 'Extra Tree Regressor (' . Params::stringify($this->params()) . ')';
+        return 'Extra Tree Regressor {' . Params::stringify($this->params()) . '}';
     }
 }

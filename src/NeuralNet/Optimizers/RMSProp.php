@@ -116,6 +116,6 @@ class RMSProp implements Optimizer, Adaptive, Stringable
      */
     public function __toString() : string
     {
-        return "RMS Prop (rate={$this->rate} decay={$this->decay})";
+        return "RMS Prop {rate: {$this->rate}, decay: {$this->decay}}";
     }
 }

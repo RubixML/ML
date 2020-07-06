@@ -216,6 +216,6 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Linear Discriminant Analysis (dimensions={$this->dimensions})";
+        return "Linear Discriminant Analysis {dimensions: {$this->dimensions}}";
     }
 }

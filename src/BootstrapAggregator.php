@@ -236,6 +236,6 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      */
     public function __toString() : string
     {
-        return 'Bootstrap Aggregator (' . Params::stringify($this->params()) . ')';
+        return 'Bootstrap Aggregator {' . Params::stringify($this->params()) . '}';
     }
 }

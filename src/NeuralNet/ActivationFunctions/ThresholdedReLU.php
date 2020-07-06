@@ -82,6 +82,6 @@ class ThresholdedReLU implements ActivationFunction, Stringable
      */
     public function __toString() : string
     {
-        return "Thresholded ReLU (threshold={$this->threshold})";
+        return "Thresholded ReLU {threshold: {$this->threshold}}";
     }
 }

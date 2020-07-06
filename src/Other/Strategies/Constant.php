@@ -57,6 +57,6 @@ class Constant implements Continuous, Stringable
      */
     public function __toString() : string
     {
-        return "Constant (value={$this->value})";
+        return "Constant {value: {$this->value}}";
     }
 }

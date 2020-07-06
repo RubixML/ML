@@ -153,6 +153,6 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      */
     public function __toString() : string
     {
-        return 'Dummy Regressor (' . Params::stringify($this->params()) . ')';
+        return 'Dummy Regressor {' . Params::stringify($this->params()) . '}';
     }
 }

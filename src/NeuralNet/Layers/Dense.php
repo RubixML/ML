@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -302,8 +303,9 @@ class Dense implements Hidden, Parametric, Stringable
      */
     public function __toString() : string
     {
-        return "Dense (neurons={$this->neurons} alpha={$this->alpha} bias={$this->bias}"
-            . " weight_initializer={$this->weightInitializer}"
-            . " bias_initializer={$this->biasInitializer})";
+        return "Dense {neurons: {$this->neurons}, alpha: {$this->alpha},"
+            . ' bias: ' . Params::toString($this->bias) . ','
+            . " weight_initializer: {$this->weightInitializer},"
+            . " bias_initializer: {$this->biasInitializer}}";
     }
 }

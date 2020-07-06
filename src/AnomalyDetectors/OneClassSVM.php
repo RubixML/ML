@@ -236,6 +236,6 @@ class OneClassSVM implements Estimator, Learner, Stringable
      */
     public function __toString() : string
     {
-        return 'One Class SVM (' . Params::stringify($this->params()) . ')';
+        return 'One Class SVM {' . Params::stringify($this->params()) . '}';
     }
 }

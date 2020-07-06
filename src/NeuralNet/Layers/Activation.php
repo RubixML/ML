@@ -161,6 +161,6 @@ class Activation implements Hidden, Stringable
      */
     public function __toString() : string
     {
-        return "Activation (activation_fn={$this->activationFn})";
+        return "Activation {activation_fn: {$this->activationFn}}";
     }
 }

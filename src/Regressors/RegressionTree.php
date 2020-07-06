@@ -184,6 +184,6 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      */
     public function __toString() : string
     {
-        return 'Regression Tree (' . Params::stringify($this->params()) . ')';
+        return 'Regression Tree {' . Params::stringify($this->params()) . '}';
     }
 }

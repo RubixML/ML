@@ -94,6 +94,6 @@ class KMostFrequent implements Categorical, Stringable
      */
     public function __toString() : string
     {
-        return "K Most Frequent (k={$this->k})";
+        return "K Most Frequent {k: {$this->k}}";
     }
 }

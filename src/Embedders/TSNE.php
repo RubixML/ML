@@ -561,6 +561,6 @@ class TSNE implements Embedder, Verbose, Stringable
      */
     public function __toString() : string
     {
-        return 't-SNE (' . Params::stringify($this->params()) . ')';
+        return 't-SNE {' . Params::stringify($this->params()) . '}';
     }
 }

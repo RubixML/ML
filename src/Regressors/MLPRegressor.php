@@ -481,6 +481,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
      */
     public function __toString() : string
     {
-        return 'MLP Regressor (' . Params::stringify($this->params()) . ')';
+        return 'MLP Regressor {' . Params::stringify($this->params()) . '}';
     }
 }

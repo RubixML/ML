@@ -391,6 +391,6 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      */
     public function __toString() : string
     {
-        return 'Loda (' . Params::stringify($this->params()) . ')';
+        return 'Loda {' . Params::stringify($this->params()) . '}';
     }
 }

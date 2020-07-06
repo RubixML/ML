@@ -58,6 +58,6 @@ class Normal implements Initializer, Stringable
      */
     public function __toString() : string
     {
-        return "Normal (stdDev={$this->stdDev})";
+        return "Normal {std_dev: {$this->stdDev}}";
     }
 }

@@ -89,6 +89,6 @@ class Average implements Outcome, Leaf
      */
     public function __toString() : string
     {
-        return "Average (outcome={$this->outcome} impurity={$this->impurity} n={$this->n})";
+        return "Average {outcome: {$this->outcome}, impurity: {$this->impurity}, n: {$this->n}}";
     }
 }

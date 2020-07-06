@@ -84,6 +84,6 @@ class PolynomialExpander implements Transformer, Stringable
      */
     public function __toString() : string
     {
-        return "Polynomial Expander (degree={$this->degree})";
+        return "Polynomial Expander {degree: {$this->degree}}";
     }
 }

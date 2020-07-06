@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use RuntimeException;
 use Stringable;
@@ -152,6 +153,6 @@ class RobustStandardizer implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Robust Standardizer (center={$this->center})";
+        return 'Robust Standardizer {center=' . Params::toString($this->center) . '}';
     }
 }

@@ -432,6 +432,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      */
     public function __toString() : string
     {
-        return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
+        return 'Logistic Regression {' . Params::stringify($this->params()) . '}';
     }
 }

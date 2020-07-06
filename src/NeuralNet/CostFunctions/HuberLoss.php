@@ -96,6 +96,6 @@ class HuberLoss implements RegressionLoss, Stringable
      */
     public function __toString() : string
     {
-        return "Huber Loss (alpha={$this->alpha})";
+        return "Huber Loss {alpha: {$this->alpha}}";
     }
 }

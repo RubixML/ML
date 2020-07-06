@@ -149,7 +149,7 @@ class AdalineTest extends TestCase
     /**
      * @test
      */
-    public function trainPredict() : void
+    public function trainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
 

@@ -168,7 +168,7 @@ class Adam implements Optimizer, Adaptive, Stringable
      */
     public function __toString() : string
     {
-        return "Adam (rate={$this->rate} momentum_decay={$this->momentumDecay}"
-            . " norm_decay={$this->normDecay})";
+        return "Adam {rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
+            . " norm_decay: {$this->normDecay}}";
     }
 }

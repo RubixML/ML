@@ -58,6 +58,6 @@ class Stochastic implements Optimizer, Stringable
      */
     public function __toString() : string
     {
-        return "Stochastic (rate={$this->rate})";
+        return "Stochastic {rate: {$this->rate}}";
     }
 }

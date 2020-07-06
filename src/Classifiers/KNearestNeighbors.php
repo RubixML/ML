@@ -302,6 +302,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function __toString() : string
     {
-        return 'K Nearest Neighbors (' . Params::stringify($this->params()) . ')';
+        return 'K Nearest Neighbors {' . Params::stringify($this->params()) . '}';
     }
 }

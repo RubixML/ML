@@ -137,6 +137,6 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Variance Threshold Filter (max_features={$this->maxFeatures})";
+        return "Variance Threshold Filter {max_features: {$this->maxFeatures}}";
     }
 }

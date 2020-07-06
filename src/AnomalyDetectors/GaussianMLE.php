@@ -301,6 +301,6 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      */
     public function __toString() : string
     {
-        return 'Gaussian MLE (' . Params::stringify($this->params()) . ')';
+        return 'Gaussian MLE {' . Params::stringify($this->params()) . '}';
     }
 }

@@ -243,6 +243,6 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
      */
     public function __toString() : string
     {
-        return 'KNN Regressor (' . Params::stringify($this->params()) . ')';
+        return 'KNN Regressor {' . Params::stringify($this->params()) . '}';
     }
 }

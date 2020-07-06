@@ -254,6 +254,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function __toString() : string
     {
-        return 'Extra Tree Classifier (' . Params::stringify($this->params()) . ')';
+        return 'Extra Tree Classifier {' . Params::stringify($this->params()) . '}';
     }
 }

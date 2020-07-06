@@ -92,6 +92,6 @@ class ELU implements ActivationFunction, Stringable
      */
     public function __toString() : string
     {
-        return "ELU (alpha={$this->alpha})";
+        return "ELU {alpha: {$this->alpha}}";
     }
 }

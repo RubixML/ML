@@ -3,6 +3,7 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use InvalidArgumentException;
@@ -93,7 +94,7 @@ class Filesystem implements Persister, Stringable
         }
 
         if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("File $this->path is not writable.");
+            throw new RuntimeException("File {$this->path} is not writable.");
         }
 
         $data = $this->serializer->serialize($persistable);
@@ -114,13 +115,13 @@ class Filesystem implements Persister, Stringable
     public function load() : Persistable
     {
         if (!is_readable($this->path)) {
-            throw new RuntimeException("File $this->path is not readable.");
+            throw new RuntimeException("File {$this->path} is not readable.");
         }
 
         $data = file_get_contents($this->path) ?: '';
 
         if (empty($data)) {
-            throw new RuntimeException("File $this->path does not"
+            throw new RuntimeException("File {$this->path} does not"
                 . ' contain any data.');
         }
 
@@ -134,6 +135,8 @@ class Filesystem implements Persister, Stringable
      */
     public function __toString() : string
     {
-        return "Filesystem (path={$this->path} history={$this->history} serializer={$this->serializer})";
+        return "Filesystem {path: {$this->path},"
+            . ' history: ' . Params::toString($this->history) . ','
+            . " serializer: {$this->serializer}}";
     }
 }

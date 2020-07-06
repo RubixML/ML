@@ -345,6 +345,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      */
     public function __toString() : string
     {
-        return 'Random Forest (' . Params::stringify($this->params()) . ')';
+        return 'Random Forest {' . Params::stringify($this->params()) . '}';
     }
 }

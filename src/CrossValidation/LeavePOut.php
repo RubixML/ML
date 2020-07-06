@@ -92,6 +92,6 @@ class LeavePOut implements Validator, Parallel, Stringable
      */
     public function __toString() : string
     {
-        return "Leave P Out (p={$this->p})";
+        return "Leave P Out (p: {$this->p})";
     }
 }

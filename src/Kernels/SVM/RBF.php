@@ -58,6 +58,6 @@ class RBF implements Kernel, Stringable
      */
     public function __toString() : string
     {
-        return "RBF (gamma={$this->gamma})";
+        return "RBF {gamma: {$this->gamma}}";
     }
 }
