@@ -76,8 +76,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The count of each feature from the training set used for online
-     * probability calculation.
+     * The count of each feature from the training set used for online probability
+     * calculation.
      *
      * @var array[]
      */
@@ -86,8 +86,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed negative log probabilities of each feature conditioned on
-     * a given class label.
+     * The precomputed negative log probabilities of each feature conditioned on a
+     * given class label.
      *
      * @var array[]
      */
@@ -188,7 +188,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Return the counts for each category per class.
+     * Return the counts for each category on a per class basis.
      *
      * @return array[]|null
      */
@@ -269,10 +269,10 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $this->logPriors = [];
-
             $total = array_sum($this->weights)
                 + (count($this->weights) * $this->alpha);
+
+            $this->logPriors = [];
 
             foreach ($this->weights as $class => $weight) {
                 $this->logPriors[$class] = log(($weight + $this->alpha) / $total);

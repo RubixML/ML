@@ -5,7 +5,6 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
@@ -90,12 +89,9 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
-
         $this->dfs = array_fill(0, $dataset->numColumns(), 1);
         $this->n = 1;
 
@@ -106,13 +102,11 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Stringable
      * Update the fitting of the transformer.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
     public function update(Dataset $dataset) : void
     {
-        if (!$dataset->homogeneous() or $dataset->columnType(0) != DataType::continuous()) {
-            throw new InvalidArgumentException('This Transformer is'
-                . ' only compatible with continuous data types.');
-        }
+        SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
         if (is_null($this->dfs) or is_null($this->n)) {
             $this->fit($dataset);
@@ -121,8 +115,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Stringable
         }
 
         foreach ($dataset->samples() as $sample) {
-            foreach ($sample as $column => $feature) {
-                if ($feature > 0) {
+            foreach ($sample as $column => $value) {
+                if ($value > 0) {
                     ++$this->dfs[$column];
                 }
             }

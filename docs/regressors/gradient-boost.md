@@ -34,14 +34,14 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 10, 
 ```
 
 ## Additional Methods
-Return the validation score at each epoch:
+Return the validation score at each epoch from the last training session:
 ```php
-public scores() : array
+public scores() : float[]|null
 ```
 
-Return the training loss at each epoch:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 ### References

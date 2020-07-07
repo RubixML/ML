@@ -28,9 +28,9 @@ $estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, 10
 ```
 
 ## Additional Methods
-Return the training loss at each epoch:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:

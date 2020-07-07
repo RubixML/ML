@@ -162,8 +162,16 @@ class FuzzyCMeansTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertIsArray($this->estimator->steps());
-        $this->assertContainsOnly('float', $this->estimator->steps());
+        $centroids = $this->estimator->centroids();
+
+        $this->assertIsArray($centroids);
+        $this->assertCount(3, $centroids);
+        $this->assertContainsOnly('array', $centroids);
+
+        $losses = $this->estimator->steps();
+
+        $this->assertIsArray($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 

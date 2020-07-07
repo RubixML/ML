@@ -183,11 +183,15 @@ class MLPRegressorTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertIsArray($this->estimator->steps());
-        $this->assertContainsOnly('float', $this->estimator->steps());
+        $losses = $this->estimator->steps();
 
-        $this->assertIsArray($this->estimator->scores());
-        $this->assertContainsOnly('float', $this->estimator->scores());
+        $this->assertIsArray($losses);
+        $this->assertContainsOnly('float', $losses);
+
+        $scores = $this->estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertContainsOnly('float', $scores);
 
         $predictions = $this->estimator->predict($testing);
 

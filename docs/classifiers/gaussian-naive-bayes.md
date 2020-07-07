@@ -25,17 +25,17 @@ $estimator = new GaussianNB([
 ## Additional Methods
 Return the class prior probabilities:
 ```php
-public priors() : ?array
+public priors() : float[]|null
 ```
 
 Return the running mean of each feature column for each class:
 ```php
-public means() : ?array
+public means() : array[]|null
 ```
 
 Return the running variance of each feature column for each class:
 ```php
-public variances() : ?array
+public variances() : array[]|null
 ```
 
 ### References

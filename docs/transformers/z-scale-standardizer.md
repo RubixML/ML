@@ -10,7 +10,7 @@ A method of centering and scaling a dataset such that it has 0 mean and unit var
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | center | true | bool | Should we center the sample dataset? |
+| 1 | center | true | bool | Should we center the data at 0? |
 
 ## Example
 ```php
@@ -32,7 +32,7 @@ public variances() : array
 
 Return the standard deviations calculated during fitting:
 ```php
-public stddevs() : array
+public stdDevs() : array
 ```
 
 ### References

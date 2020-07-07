@@ -32,7 +32,7 @@ use const Rubix\ML\EPSILON;
 class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
 {
     /**
-     * Should we center the data?
+     * Should we center the data at 0?
      *
      * @var bool
      */
@@ -64,7 +64,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      *
      * @var (int|float)[]|null
      */
-    protected $stddevs;
+    protected $stdDevs;
 
     /**
      * @param bool $center
@@ -119,9 +119,9 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      *
      * @return (int|float)[]|null
      */
-    public function stddevs() : ?array
+    public function stdDevs() : ?array
     {
-        return $this->stddevs;
+        return $this->stdDevs;
     }
 
     /**
@@ -133,7 +133,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
     {
         SamplesAreCompatibleWithTransformer::check($dataset, $this);
 
-        $this->means = $this->variances = $this->stddevs = [];
+        $this->means = $this->variances = $this->stdDevs = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
@@ -143,7 +143,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
 
                 $this->means[$column] = $mean;
                 $this->variances[$column] = $variance;
-                $this->stddevs[$column] = sqrt($variance ?: EPSILON);
+                $this->stdDevs[$column] = sqrt($variance ?: EPSILON);
             }
         }
 
@@ -182,7 +182,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
 
             $this->means[$column] = $muHat;
             $this->variances[$column] = $vHat;
-            $this->stddevs[$column] = sqrt($vHat ?: EPSILON);
+            $this->stdDevs[$column] = sqrt($vHat ?: EPSILON);
         }
 
         $this->n += $n;
@@ -196,12 +196,12 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->means) or is_null($this->stddevs)) {
+        if (is_null($this->means) or is_null($this->stdDevs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            foreach ($this->stddevs as $column => $stddev) {
+            foreach ($this->stdDevs as $column => $stddev) {
                 $value = &$sample[$column];
 
                 if ($this->center) {

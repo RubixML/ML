@@ -10,7 +10,7 @@ This standardizer transforms continuous features by centering them around the me
 ## Parameters
 | # | Param | Default | Type | Description | 
 |---|---|---|---|---|
-| 1 | center | true | bool | Should we center the sample dataset? |
+| 1 | center | true | bool | Should we center the data at 0? |
 
 ## Example
 ```php

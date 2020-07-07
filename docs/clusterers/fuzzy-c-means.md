@@ -29,12 +29,12 @@ $estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
 ## Additional Methods
 Return the *c* computed centroids of the training set:
 ```php
-public centroids() : array
+public centroids() : array[]
 ```
 
 Returns the inertia at each epoch from the last round of training:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 ### References

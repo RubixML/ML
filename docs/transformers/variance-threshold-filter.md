@@ -20,12 +20,7 @@ $transformer = new VarianceThresholdFilter(50);
 ```
 
 ## Additional Methods
-Return the offsets of the columns that were selected during fitting:
-```php
-public selected() : array
-```
-
-Return the variances of the selected feature columns:
+Return the variances of the dropped feature columns:
 ```php
 public variances() : ?array
 ```

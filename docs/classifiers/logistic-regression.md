@@ -28,9 +28,9 @@ $estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 5, new
 ```
 
 ## Additional Methods
-Return the training loss at each epoch:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:

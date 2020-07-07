@@ -161,6 +161,18 @@ class RobustZScoreTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $medians = $this->estimator->medians();
+
+        $this->assertIsArray($medians);
+        $this->assertCount(2, $medians);
+        $this->assertContainsOnly('float', $medians);
+
+        $mads = $this->estimator->mads();
+
+        $this->assertIsArray($mads);
+        $this->assertCount(2, $mads);
+        $this->assertContainsOnly('float', $mads);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());

@@ -143,22 +143,18 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
     protected $network;
 
     /**
-     * The validation scores at each epoch.
+     * The validation scores at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $scores = [
-        //
-    ];
+    protected $scores;
 
     /**
-     * The average training loss at each epoch.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
@@ -294,9 +290,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
     /**
      * Return the validation score at each epoch.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function scores() : array
+    public function scores() : ?array
     {
         return $this->scores;
     }
@@ -304,9 +300,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
     /**
      * Return the training loss at each epoch.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
@@ -347,8 +343,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             $this->optimizer
         );
 
-        $this->scores = $this->steps = [];
-
         $this->partial($dataset);
     }
 
@@ -388,6 +382,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         $bestEpoch = $delta = 0;
         $snapshot = null;
         $prevLoss = INF;
+
+        $this->scores = $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);

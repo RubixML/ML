@@ -198,13 +198,11 @@ class TSNE implements Embedder, Verbose, Stringable
     protected $kernel;
 
     /**
-     * The training loss at each epoch since the last embedding.
+     * The loss at each epoch from the last embedding.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param int $dimensions
@@ -311,9 +309,9 @@ class TSNE implements Embedder, Verbose, Stringable
      * Return the magnitudes of the gradient at each epoch from the last
      * embedding.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }

@@ -26,17 +26,22 @@ $estimator = new GaussianMixture(5, 1e-4, 100, new KMC2(50));
 ## Additional Methods
 Return the cluster prior probabilities based on their representation over all training samples:
 ```php
-public priors() : array
+public priors() : float[]
 ```
 
 Return the running means of each feature column for each cluster:
 ```php
-public means() : array
+public means() : array[]
 ```
 
 Return the variance of each feature column for each cluster:
 ```php
-public variances() : array
+public variances() : array[]
+```
+
+Return the loss at each epoch from the last training session:
+```php
+public steps() : float[]|null
 ```
 
 ### References

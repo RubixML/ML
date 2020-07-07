@@ -36,12 +36,12 @@ public static estimateRadius(Dataset $dataset, float $percentile = 30.0, ?Distan
 
 Return the centroids computed from the training set:
 ```php
-public centroids() : array
+public centroids() : array[]
 ```
 
 Returns the amount of centroid shift during each epoch of training:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 ### References

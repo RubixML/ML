@@ -153,20 +153,16 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * The validation scores at each epoch.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $scores = [
-        //
-    ];
+    protected $scores;
 
     /**
      * The average training loss at each epoch.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param \Rubix\ML\Learner|null $booster
@@ -302,21 +298,21 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     }
 
     /**
-     * Return the validation scores at each epoch.
+     * Return the validation scores at each epoch from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function scores() : array
+    public function scores() : ?array
     {
         return $this->scores;
     }
 
     /**
-     * Return the average cost at every epoch.
+     * Return the loss at each epoch from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }

@@ -25,12 +25,12 @@ $estimator = new RobustZScore(3.0, 0.3);
 ## Additional Methods
 Return the median of each feature column in the training set:
 ```php
-public medians() : ?array
+public medians() : float[]|null
 ```
 
 Return the median absolute deviation (MAD) of each feature column in the training set:
 ```php
-public mads() : ?array
+public mads() : float[]|null
 ```
 
 ### References

@@ -32,7 +32,7 @@ $embedder = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());
 ## Additional Methods
 Return the magnitudes of the gradient at each epoch from the last embedding:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 ### References

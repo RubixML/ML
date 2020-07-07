@@ -3,5 +3,7 @@ composer.lock
 *.model
 .phpunit.result.cache
 .php_cs.cache
+.DS_Store
+.idea
 .vscode
 .vs

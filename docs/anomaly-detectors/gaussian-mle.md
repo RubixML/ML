@@ -22,12 +22,12 @@ $estimator = new GaussianMLE(0.03);
 ## Additional Methods
 Return the column means computed from the training set:
 ```php
-public means() : array
+public means() : float[]
 ```
 
 Return the column variances computed from the training set:
 ```php
-public variances() : array
+public variances() : float[]
 ```
 
 ### References

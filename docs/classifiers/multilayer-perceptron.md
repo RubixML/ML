@@ -46,14 +46,14 @@ $estimator = new MultilayerPerceptron([
 ```
 
 ## Additional Methods
-Return the training loss at each epoch:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
-Return the validation scores at each epoch:
+Return the validation score at each epoch from the last training session:
 ```php
-public scores() : array
+public scores() : float[]|null
 ```
 
 Returns the underlying neural network instance or `null` if untrained:

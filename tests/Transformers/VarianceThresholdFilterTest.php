@@ -54,20 +54,21 @@ class VarianceThresholdFilterTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
-        $sample = $this->generator->generate(1)
-            ->apply($this->transformer)
-            ->sample(0);
+        $variances = $this->transformer->variances();
 
-        $this->assertCount(2, $sample);
+        $this->assertIsArray($variances);
+        $this->assertContainsOnly('float', $variances);
 
-        $this->assertEqualsWithDelta(0, $sample[0], 3);
-        $this->assertEqualsWithDelta(0, $sample[1], 15);
+        $dataset = $this->generator->generate(3)
+            ->apply($this->transformer);
+
+        $this->assertSame(2, $dataset->numColumns());
     }
 
     /**
      * @test
      */
-    public function transformUfitted() : void
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -132,15 +132,16 @@ class GridSearchTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $best = $this->estimator->best();
+
+        $this->assertIsArray($best);
+        $this->assertCount(3, $best);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $best = $this->estimator->best() ?? [];
-
-        $this->assertCount(3, $best);
     }
 
     protected function assertPreConditions() : void

@@ -112,13 +112,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     protected $network;
 
     /**
-     * The average training loss at each epoch.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param int $batchSize
@@ -224,11 +222,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Return the training loss at each epoch.
+     * Return the loss at each epoch from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
@@ -265,8 +263,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $this->optimizer
         );
 
-        $this->steps = [];
-
         $this->partial($dataset);
     }
 
@@ -300,6 +296,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $prevLoss = $bestLoss = INF;
         $delta = 0;
+
+        $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);

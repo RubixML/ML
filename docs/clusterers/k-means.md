@@ -30,17 +30,17 @@ $estimator = new KMeans(3, 128, 300, 10.0, 10, new Euclidean(), new PlusPlus());
 ## Additional Methods
 Return the *k* computed centroids of the training set:
 ```php
-public centroids() : array
+public centroids() : array[]
 ```
 
 Return the number of training samples that each centroid is responsible for:
 ```php
-public sizes() : array
+public sizes() : int[]
 ```
 
-Return the value of the loss function at each epoch from the last round of training:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 ### References

@@ -156,18 +156,20 @@ class ClassificationTreeTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertIsArray($importances);
+        $this->assertCount(3, $importances);
+        $this->assertContainsOnly('float', $importances);
+        $this->assertEqualsWithDelta(1.0, array_sum($importances), 1e-8);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
-        $importances = $this->estimator->featureImportances();
-
-        $this->assertCount(3, $importances);
-        $this->assertEquals(1.0, array_sum($importances));
-
-        $rules = $this->estimator->rules();
+        $rules = $this->estimator->rules(['r', 'g', 'b']);
 
         $this->assertIsString($rules);
     }

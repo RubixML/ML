@@ -123,13 +123,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     ];
 
     /**
-     * The inertia at each epoch from the last round of training.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param int $k
@@ -255,12 +253,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     }
 
     /**
-     * Return the value of the inertial function at each epoch from the last
-     * round of training.
+     * Return the loss at each epoch from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
@@ -281,8 +278,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         $sizes[0] = $dataset->numRows();
 
         $this->sizes = $sizes;
-
-        $this->steps = [];
 
         $this->partial($dataset);
     }
@@ -314,6 +309,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
         $prevLoss = $bestLoss = INF;
         $nu = 0;
+
+        $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);

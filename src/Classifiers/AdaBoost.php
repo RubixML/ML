@@ -103,17 +103,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     ];
 
     /**
-     * The weight of each training sample in the dataset.
-     *
-     * @var float[]
-     */
-    protected $weights = [
-        //
-    ];
-
-    /**
-     * The amount of influence a particular classifier has. i.e. the
-     * classifier's ability to make accurate predictions.
+     * The amount of influence a particular classifier has in the model.
      *
      * @var float[]
      */
@@ -129,13 +119,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected $classes;
 
     /**
-     * The average training loss at each epoch.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param \Rubix\ML\Learner|null $base
@@ -240,17 +228,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the calculated weight values of the samples in the last training set.
-     *
-     * @return float[]
-     */
-    public function weights() : array
-    {
-        return $this->weights;
-    }
-
-    /**
-     * Return the list of influence values for each classifier in the ensemble.
+     * Return the influence scores for each classifier in the ensemble.
      *
      * @return float[]
      */
@@ -260,11 +238,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the training loss at each epoch.
+     * Return the loss at each epoch of the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
@@ -391,8 +369,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $prevLoss = $loss;
         }
-
-        $this->weights = $weights;
 
         if ($this->logger) {
             $this->logger->info('Training complete');

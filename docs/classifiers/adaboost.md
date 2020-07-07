@@ -28,19 +28,14 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 10);
 ```
 
 ## Additional Methods
-Return the calculated weight values of the samples in the last training set:
+Return the loss at each epoch from the last training session:
 ```php
-public weights() : array
+public steps() : float[]|null
 ```
 
-Return the influence scores for each boosted classifier:
+Return the influence scores for each classifier in the ensemble:
 ```php
-public influences() : array
-```
-
-Return the training loss at each epoch:
-```php
-public steps() : array
+public influences() : float[]
 ```
 
 ### References

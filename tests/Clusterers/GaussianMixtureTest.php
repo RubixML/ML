@@ -159,8 +159,28 @@ class GaussianMixtureTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertIsArray($this->estimator->steps());
-        $this->assertContainsOnly('float', $this->estimator->steps());
+        $priors = $this->estimator->priors();
+
+        $this->assertIsArray($priors);
+        $this->assertCount(3, $priors);
+        $this->assertContainsOnly('float', $priors);
+
+        $means = $this->estimator->means();
+
+        $this->assertIsArray($means);
+        $this->assertCount(3, $means);
+        $this->assertContainsOnly('array', $means);
+
+        $variances = $this->estimator->variances();
+
+        $this->assertIsArray($variances);
+        $this->assertCount(3, $variances);
+        $this->assertContainsOnly('array', $variances);
+
+        $losses = $this->estimator->steps();
+
+        $this->assertIsArray($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 

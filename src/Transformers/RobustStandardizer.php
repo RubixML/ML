@@ -29,7 +29,7 @@ use const Rubix\ML\EPSILON;
 class RobustStandardizer implements Transformer, Stateful, Stringable
 {
     /**
-     * Should we center the data?
+     * Should we center the data at 0?
      *
      * @var bool
      */

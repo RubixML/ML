@@ -173,8 +173,10 @@ class SoftmaxClassifierTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertIsArray($this->estimator->steps());
-        $this->assertContainsOnly('float', $this->estimator->steps());
+        $losses = $this->estimator->steps();
+
+        $this->assertIsArray($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 

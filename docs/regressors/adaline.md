@@ -28,9 +28,9 @@ $estimator = new Adaline(256, new Adam(0.001), 500, 1e-6, 5, new HuberLoss(2.5))
 ```
 
 ## Additional Methods
-Return the training loss at each epoch:
+Return the loss at each epoch from the last training session:
 ```php
-public steps() : array
+public steps() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:

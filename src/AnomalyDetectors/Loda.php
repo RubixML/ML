@@ -95,7 +95,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
     protected $r;
 
     /**
-     * The edges, and bin counts of each histogram.
+     * The edges and bin counts of each histogram.
      *
      * @var array[]
      */

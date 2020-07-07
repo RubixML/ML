@@ -146,6 +146,18 @@ class GaussianMLETest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $means = $this->estimator->means();
+
+        $this->assertIsArray($means);
+        $this->assertCount(2, $means);
+        $this->assertContainsOnly('float', $means);
+
+        $variances = $this->estimator->variances();
+
+        $this->assertIsArray($variances);
+        $this->assertCount(2, $variances);
+        $this->assertContainsOnly('float', $variances);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());

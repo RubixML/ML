@@ -112,13 +112,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     ];
 
     /**
-     * The amount of gaussian shift during each epoch of training.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param int $k
@@ -232,11 +230,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     }
 
     /**
-     * Return the loss at each epoch of training.
+     * Return the loss at each epoch of training from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }

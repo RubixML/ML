@@ -119,13 +119,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected $classes;
 
     /**
-     * The average training loss at each epoch.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param int $batchSize
@@ -231,11 +229,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Return the training loss at each epoch.
+     * Return the loss at each epoch from the last training session.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
@@ -277,8 +275,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->classes = $classes;
 
-        $this->steps = [];
-
         $this->partial($dataset);
     }
 
@@ -312,6 +308,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $prevLoss = $bestLoss = INF;
         $delta = 0;
+
+        $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);

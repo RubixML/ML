@@ -31,7 +31,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
     protected $maxFeatures;
 
     /**
-     * The variances of the selected feature columns.
+     * The variances of the dropped feature columns.
      *
      * @var float[]|null
      */
@@ -72,17 +72,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
     }
 
     /**
-     * Return the offsets of the columns that were selected during fitting.
-     *
-     * @return int[]
-     */
-    public function selected() : array
-    {
-        return array_keys($this->variances ?: []);
-    }
-
-    /**
-     * Return the variances of the selected feature columns.
+     * Return the variances of the dropped feature columns.
      *
      * @return float[]|null
      */
@@ -108,9 +98,11 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
             }
         }
 
-        arsort($variances);
+        asort($variances);
 
-        $this->variances = array_slice($variances, 0, $this->maxFeatures, true);
+        $k = max(0, $dataset->numColumns() - $this->maxFeatures);
+
+        $this->variances = array_slice($variances, 0, $k, true);
     }
 
     /**
@@ -126,7 +118,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
         }
 
         foreach ($samples as &$sample) {
-            $sample = array_values(array_intersect_key($sample, $this->variances));
+            $sample = array_values(array_diff_key($sample, $this->variances));
         }
     }
 

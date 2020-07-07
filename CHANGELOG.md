@@ -1,4 +1,4 @@
-- Unreleased
+- 0.1.0-rc5
     - Improved logging for Verbose Learners
     - Added max document frequency to Word Count Vectorizer
     - Whitespace Trimmer is now a separate transformer
@@ -7,6 +7,8 @@
     - Moved Lambda Function transformer to Extras package
     - GaussianNB new class labels during partial train
     - Decision Tree print ruleset now accepts a header
+    - Fixed Variance Threshold Filter drop categorical by default
+    - Removed AdaBoost return learned sample weights
 
 - 0.1.0-rc4
     - Added Multibyte Text Normalizer transformer

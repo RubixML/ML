@@ -120,13 +120,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     ];
 
     /**
-     * The amount of centroid shift during each epoch of training.
+     * The loss at each epoch from the last training session.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected $steps = [
-        //
-    ];
+    protected $steps;
 
     /**
      * Estimate the radius of a cluster that encompasses a certain percentage of
@@ -277,9 +275,9 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the amount of centroid shift at each epoch of training.
      *
-     * @return float[]
+     * @return float[]|null
      */
-    public function steps() : array
+    public function steps() : ?array
     {
         return $this->steps;
     }
