@@ -35,43 +35,43 @@ class Blob implements Generator
      *
      * @var \Tensor\Vector|int|float
      */
-    protected $stddev;
+    protected $stdDev;
 
     /**
      * @param (int|float)[] $center
-     * @param int|float|(int|float)[] $stddev
+     * @param int|float|(int|float)[] $stdDev
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $center = [0, 0], $stddev = 1.0)
+    public function __construct(array $center = [0, 0], $stdDev = 1.0)
     {
         if (empty($center)) {
             throw new InvalidArgumentException('Cannot generate samples'
                 . ' with dimensionality less than 1.');
         }
 
-        if (is_array($stddev)) {
-            if (count($center) !== count($stddev)) {
+        if (is_array($stdDev)) {
+            if (count($center) !== count($stdDev)) {
                 throw new InvalidArgumentException('Number of center'
                     . ' coordinates and standard deviations must be equal.');
             }
 
-            foreach ($stddev as $value) {
+            foreach ($stdDev as $value) {
                 if ($value < 0) {
                     throw new InvalidArgumentException('Standard deviation'
                         . " must be greater than 0, $value given.");
                 }
             }
 
-            $stddev = Vector::quick($stddev);
+            $stdDev = Vector::quick($stdDev);
         } else {
-            if ($stddev <= 0) {
+            if ($stdDev <= 0) {
                 throw new InvalidArgumentException('Standard deviation'
-                    . " must be greater than 0, $stddev given.");
+                    . " must be greater than 0, $stdDev given.");
             }
         }
 
         $this->center = Vector::quick($center);
-        $this->stddev = $stddev;
+        $this->stdDev = $stdDev;
     }
 
     /**
@@ -95,7 +95,7 @@ class Blob implements Generator
         $d = $this->dimensions();
 
         $samples = Matrix::gaussian($n, $d)
-            ->multiply($this->stddev)
+            ->multiply($this->stdDev)
             ->add($this->center)
             ->asArray();
 

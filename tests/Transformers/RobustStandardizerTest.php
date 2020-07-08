@@ -54,6 +54,18 @@ class RobustStandardizerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $medians = $this->transformer->medians();
+
+        $this->assertIsArray($medians);
+        $this->assertCount(3, $medians);
+        $this->assertContainsOnly('float', $medians);
+
+        $mads = $this->transformer->mads();
+
+        $this->assertIsArray($mads);
+        $this->assertCount(3, $mads);
+        $this->assertContainsOnly('float', $mads);
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);

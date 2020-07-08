@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\GaussianRandomProjector;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Generator;
 
 /**
  * @group Transformers
@@ -47,10 +48,41 @@ class GaussianRandomProjectorTest extends TestCase
 
     /**
      * @test
+     * @dataProvider minDimensionsProvider
+     *
+     * @param int $n
+     * @param float $maxDistortion
+     * @param int $expected
      */
-    public function minDimensions() : void
+    public function minDimensions(int $n, float $maxDistortion, int $expected) : void
     {
-        $this->assertEquals(663, GaussianRandomProjector::minDimensions(1000000, 0.5));
+        $this->assertEquals($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function minDimensionsProvider() : Generator
+    {
+        yield [10, 0.1, 1974];
+
+        yield [100, 0.1, 3947];
+
+        yield [1000, 0.1, 5921];
+
+        yield [10000, 0.1, 7895];
+
+        yield [100000, 0.1, 9868];
+
+        yield [1000000, 0.1, 11842];
+
+        yield [10000, 0.01, 741772];
+
+        yield [10000, 0.3, 1023];
+
+        yield [10000, 0.5, 442];
+
+        yield [10000, 0.99, 221];
     }
 
     /**
