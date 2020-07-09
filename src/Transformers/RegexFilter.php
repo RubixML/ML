@@ -75,6 +75,13 @@ class RegexFilter implements Transformer, Stringable
     public const EXTRA_CHARACTERS = '/([^\w\s])(?=[^\w\s]*\1)/';
 
     /**
+     * Matches extra (consecutively repeated) words.
+     *
+     * @var string
+     */
+    public const EXTRA_WORDS = '/\b(\w+)(?=\s+\1+\b)/ui';
+
+    /**
      * A list of regular expression patterns used to filter the text columns of
      * the dataset.
      *
