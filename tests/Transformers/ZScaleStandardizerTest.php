@@ -58,6 +58,18 @@ class ZScaleStandardizerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $means = $this->transformer->means();
+
+        $this->assertIsArray($means);
+        $this->assertCount(3, $means);
+        $this->assertContainsOnly('float', $means);
+
+        $variances = $this->transformer->variances();
+
+        $this->assertIsArray($variances);
+        $this->assertCount(3, $variances);
+        $this->assertContainsOnly('float', $variances);
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);

@@ -58,6 +58,12 @@ class WordCountVectorizerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $vocabulary = current($this->transformer->vocabularies());
+
+        $this->assertIsArray($vocabulary);
+        $this->assertCount(20, $vocabulary);
+        $this->assertContainsOnly('string', $vocabulary);
+
         $this->dataset->apply($this->transformer);
 
         $outcome = [

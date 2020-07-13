@@ -34,6 +34,7 @@ $transformer = new RegexFilter([
 | MENTION | A pattern that matches Twitter-style mentions (@example). |
 | HASHTAG | Matches Twitter-style hashtags (#example). |
 | EXTRA_CHARACTERS | Matches extra non word or number characters such as repeated punctuation and special characters. |
+| EXTRA_WORDS | Matches extra (consecutively repeated) words.
 
 ## Additional Methods
 This transformer does not have any additional methods.

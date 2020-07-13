@@ -46,10 +46,16 @@ class GaussianRandomProjector implements Transformer, Stateful, Stringable
      *
      * @param int $n
      * @param float $maxDistortion
+     * @throws \InvalidArgumentException
      * @return int
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
     {
+        if ($n < 0) {
+            throw new InvalidArgumentException('Number of samples'
+                . " must be be greater than 0, $n given.");
+        }
+
         $denominator = $maxDistortion ** 2 / 2.0 - $maxDistortion ** 3 / 3.0;
 
         return (int) round(4.0 * log($n) / $denominator);
