@@ -34,22 +34,23 @@ $estimator->train($dataset);
 ```
 
 ```sh
-[2020-02-08 06:02:57] example.INFO: Learner init booster=RegressionTree(max_depth=4 max_leaf_size=3 max_features=null min_purity_increase=1.0E-7) rate=0.1 ratio=0.5 estimators=1000 min_change=
-0.0001 window=10 hold_out=0.1 metric=RSquared base=DummyRegressor(strategy=Mean)
-[2020-02-08 06:02:57] example.INFO: Training base learner
-[2020-02-08 06:02:58] example.INFO: Epoch 1 score=0.097751119226963 loss=6281265049.8042
-[2020-02-08 06:02:58] example.INFO: Epoch 2 score=0.20067635817301 loss=5537137575.1759
-[2020-02-08 06:02:58] example.INFO: Epoch 3 score=0.28331060230153 loss=4869582841.9896
-[2020-02-08 06:02:59] example.INFO: Epoch 4 score=0.36730710929531 loss=4370856640.0286
-[2020-02-08 06:02:59] example.INFO: Epoch 5 score=0.44183724381919 loss=3869890119.1739
+[2020-07-12 23:52:59] housing.INFO: Learner init Gradient Boost {booster: Regression Tree {max_depth: 4, max_leaf_size: 3, max_features: null, min_purity_increase: 1.0E-7}, rate: 0.1, ratio: 0
+.5, estimators: 1000, min_change: 0.0001, window: 10, hold_out: 0.1, metric: RMSE, base: Dummy Regressor {strategy: Mean}}
+[2020-07-12 23:52:59] housing.INFO: Training started
+[2020-07-12 23:52:59] housing.INFO: Training base learner
+[2020-07-12 23:52:59] housing.INFO: Epoch 1 RMSE=-75966.144307681 L2 Loss=6273028418.4053
+[2020-07-12 23:52:59] housing.INFO: Epoch 2 RMSE=-71837.423145166 L2 Loss=5398183359.0029
+[2020-07-12 23:52:59] housing.INFO: Epoch 3 RMSE=-67949.979096606 L2 Loss=4847398522.703
+[2020-07-12 23:53:00] housing.INFO: Epoch 4 RMSE=-63802.65363341 L2 Loss=4515203001.2578
+[2020-07-12 23:53:00] housing.INFO: Epoch 5 RMSE=-61624.027074156 L2 Loss=3988666807.5813
 ...
-[2020-02-08 06:04:07] example.INFO: Epoch 189 score=0.91416877793484 loss=192224708.33229
-[2020-02-08 06:04:07] example.INFO: Epoch 190 score=0.91412704964864 loss=191766700.22592
-[2020-02-08 06:04:08] example.INFO: Epoch 191 score=0.91395637122531 loss=191053995.23096
-[2020-02-08 06:04:08] example.INFO: Epoch 192 score=0.91420102466788 loss=189569206.71289
-[2020-02-08 06:04:08] example.INFO: Epoch 193 score=0.91410009100939 loss=188312560.73359
-[2020-02-08 06:04:08] example.INFO: Ensemble restored to epoch 183
-[2020-02-08 06:04:08] example.INFO: Training complete
+[2020-07-12 23:53:06] housing.INFO: Epoch 67 RMSE=-24464.486466965 L2 Loss=706106123.97902
+[2020-07-12 23:53:06] housing.INFO: Epoch 68 RMSE=-24473.10530312 L2 Loss=701284659.63732
+[2020-07-12 23:53:06] housing.INFO: Epoch 69 RMSE=-24347.871068021 L2 Loss=696422563.57693
+[2020-07-12 23:53:06] housing.INFO: Epoch 70 RMSE=-24328.676819944 L2 Loss=690861140.1853
+[2020-07-12 23:53:06] housing.INFO: Epoch 71 RMSE=-24068.607669273 L2 Loss=685669903.74276
+[2020-07-12 23:53:06] housing.INFO: Restoring ensemble state to epoch 61
+[2020-07-12 23:53:06] housing.INFO: Training complete
 ```
 
 ## Feature Importances
@@ -57,8 +58,6 @@ Learners that implement the [Ranks Features](ranks-features.md) interface can ev
 
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
-
-// Import dataset
 
 $estimator = new ClassificationTree(10);
 
@@ -77,5 +76,3 @@ array(4) {
   [3]=> float(0.041239516522901)
 }
 ```
-
-In this example, feature columns 1 and 2 are the most important whereas 0 and 3 only contribute a small amount to the model.

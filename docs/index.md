@@ -2,9 +2,9 @@
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
-- **Developer-friendly** API is easy and delightful to use
-- **Modular** architecture combines power, flexibility, and extensibility
-- **40+** modern supervised and unsupervised learning algorithms
+- **Developer-friendly** API is delightful to use
+- **40+** supervised and unsupervised learning algorithms
+- **Support** for ETL, preprocessing, and cross-validation
 - **Open source** and free to use commercially
 
 ## Installation
@@ -31,10 +31,10 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## What is Rubix ML?
-Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, validation, and production with over 40 supervised and unsupervised learning algorithms.
+Rubix ML is a free open-source library for the PHP language that allows you to build programs that learn from your data. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms.
 
 ## Getting Started
-If you are new to machine learning, we recommend the section [What is Machine Learning?](what-is-machine-learning.md) to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](basic-introduction.md) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](what-is-machine-learning.md) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](basic-introduction.md) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
 Check out these example projects using the Rubix ML library. Most come with instructions and a pre-cleaned dataset.
@@ -51,7 +51,7 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
 ## Funding
-Rubix ML is funded entirely by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
+Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
 
 - [Github Sponsors](https://github.com/sponsors/RubixML)
 - [Patreon](https://www.patreon.com/rubixml)
@@ -60,4 +60,4 @@ Rubix ML is funded entirely by donations from the community. You can become a sp
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
 
 ## License
-[MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)
+The code is licensed [MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
