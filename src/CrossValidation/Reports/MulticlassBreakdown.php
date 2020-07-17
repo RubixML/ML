@@ -94,16 +94,15 @@ class MulticlassBreakdown implements Report
             $fp = $falsePos[$label];
             $fn = $falseNeg[$label];
 
-            $accuracy = ($tp + $tn) / ($tp + $tn + $fp + $fn);
-            $precision = $tp / ($tp + $fp);
-            $recall = $tp / ($tp + $fn);
-            $specificity = $tn / ($tn + $fp);
-            $npv = $tn / ($tn + $fn);
+            $accuracy = ($tp + $tn) / (($tp + $tn + $fp + $fn) ?: EPSILON);
+            $precision = $tp / (($tp + $fp) ?: EPSILON);
+            $recall = $tp / (($tp + $fn) ?: EPSILON);
+            $specificity = $tn / (($tn + $fp) ?: EPSILON);
+            $npv = $tn / (($tn + $fn) ?: EPSILON);
+            $threatScore = $tp / (($tp + $fn + $fp) ?: EPSILON);
 
-            $threatScore = $tp / ($tp + $fn + $fp);
-
-            $f1score = 2.0 * (($precision * $recall))
-                / (($precision + $recall) ?: EPSILON);
+            $f1score = 2.0 * (($precision * $recall)
+                / (($precision + $recall) ?: EPSILON));
 
             $mcc = ($tp * $tn - $fp * $fn)
                 / (sqrt(($tp + $fp) * ($tp + $fn)
@@ -132,7 +131,7 @@ class MulticlassBreakdown implements Report
                 'false_positives' => $fp,
                 'false_negatives' => $fn,
                 'cardinality' => $cardinality,
-                'percentage' => $cardinality / $n * 100.00,
+                'proportion' => $cardinality / $n,
             ];
 
             $overall['accuracy'] += $accuracy;

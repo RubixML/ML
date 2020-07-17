@@ -220,6 +220,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function __toString() : string
     {
-        return 'Z Scale Standardizer {center=' . Params::toString($this->center) . '}';
+        return 'Z Scale Standardizer {center: ' . Params::toString($this->center) . '}';
     }
 }
