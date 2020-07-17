@@ -13,9 +13,8 @@ use const Rubix\ML\EPSILON;
 /**
  * Multiclass Breakdown
  *
- * A classification and anomaly detection report that drills down into unique class
- * statistics as well as provide an overall picture. The report includes metrics
- * such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
+ * A multiclass classification report that computes a number of metrics (Accuracy, Precision,
+ * Recall, etc.) derived from their confusion matrix on an overall and individual class basis.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -61,6 +61,7 @@ class MulticlassBreakdownTest extends TestCase
     {
         $result = $this->report->generate($predictions, $labels);
 
+        $this->assertIsArray($result);
         $this->assertEquals($expected, $result);
     }
 

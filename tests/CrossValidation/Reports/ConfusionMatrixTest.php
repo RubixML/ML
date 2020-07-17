@@ -24,7 +24,7 @@ class ConfusionMatrixTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->report = new ConfusionMatrix();
+        $this->report = new ConfusionMatrix(['wolf', 'lamb']);
     }
 
     /**
@@ -70,8 +70,8 @@ class ConfusionMatrixTest extends TestCase
     public function generateProvider() : Generator
     {
         yield [
-            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf', 'morgan', 'lamb'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf', 'lamb', 'tammy'],
             [
                 'wolf' => [
                     'wolf' => 2,

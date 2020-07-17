@@ -7,14 +7,13 @@ use Rubix\ML\EstimatorType;
 use InvalidArgumentException;
 
 use function count;
+use function is_null;
 
 /**
  * Confusion Matrix
  *
- * A Confusion Matrix is a table that visualizes the true positives, false positives,
- * true negatives, and false negatives of a classification experiment. The name stems
- * from the fact that the matrix makes it clear to see if the estimator is *confusing*
- * any two classes.
+ * A Confusion Matrix is a square matrix (table) that visualizes the true positives, false positives,
+ * true negatives, and false negatives of a set of class predictions and their corresponding labels.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,6 +21,21 @@ use function count;
  */
 class ConfusionMatrix implements Report
 {
+    /**
+     * The classes to include in the report.
+     *
+     * @var (string|int)[]|null
+     */
+    protected $classes;
+
+    /**
+     * @param (string|int)[]|null $classes
+     */
+    public function __construct(?array $classes = null)
+    {
+        $this->classes = $classes;
+    }
+
     /**
      * The estimator types that this report is compatible with.
      *
@@ -50,12 +64,24 @@ class ConfusionMatrix implements Report
                 . ' and labels must be equal.');
         }
 
-        $classes = array_unique(array_merge($predictions, $labels));
+        if (is_null($this->classes)) {
+            $classes = array_unique(array_merge($predictions, $labels));
+        } else {
+            $classes = $this->classes;
+        }
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
+        $classes = array_flip($classes);
+
         foreach ($predictions as $i => $prediction) {
-            ++$matrix[$prediction][$labels[$i]];
+            if (isset($classes[$prediction])) {
+                $label = $labels[$i];
+
+                if (isset($classes[$label])) {
+                    ++$matrix[$prediction][$label];
+                }
+            }
         }
 
         return $matrix;

@@ -1,3 +1,7 @@
+- Unreleased
+    - Allow classes to be selected for Confusion Matrix
+    - Fixed divide by zero in Multiclass Breakdown
+
 - 0.1.0-rc5
     - Improved logging for Verbose Learners
     - Added max document frequency to Word Count Vectorizer
