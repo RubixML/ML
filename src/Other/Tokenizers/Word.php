@@ -20,7 +20,7 @@ class Word implements Tokenizer, Stringable
      *
      * @var string
      */
-    protected const WORD_REGEX = '/\w+/u';
+    protected const WORD_REGEX = "/[\w'-]+/u";
 
     /**
      * Tokenize a blob of text.

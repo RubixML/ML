@@ -1,6 +1,7 @@
 - Unreleased
     - Allow classes to be selected for Confusion Matrix
     - Fixed divide by zero in Multiclass Breakdown
+    - Allow hyphens and apostrophes in Word Tokenizer
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

@@ -39,16 +39,16 @@ class WordTest extends TestCase
      */
     public function tokenize() : void
     {
-        $text = 'I would like to die on Mars, just not on impact. The end.';
+        $text = 'I\'d like to die on Mars, just not on-impact. The end.';
 
         $expected = [
-            'I', 'would', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on', 'impact',
+            'I\'d', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on-impact',
             'The', 'end',
         ];
 
         $tokens = $this->tokenizer->tokenize($text);
 
         $this->assertEquals($expected, $tokens);
-        $this->assertCount(13, $tokens);
+        $this->assertCount(11, $tokens);
     }
 }
