@@ -61,11 +61,11 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
     public function __construct(int $bins = 5)
     {
         if ($bins < 3) {
-            throw new InvalidArgumentException('Bins must be greater'
+            throw new InvalidArgumentException('Number of bins must be'
                 . " greater than 3, $bins given.");
         }
 
-        $last = chr(ord(self::START_CATEGORY) + $bins);
+        $last = chr(ord(self::START_CATEGORY) + $bins - 1);
 
         $categories = array_map('strval', range(self::START_CATEGORY, $last));
 
@@ -94,7 +94,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
     }
 
     /**
-     * Return the possible categories of each feature column.
+     * Return the list of possible category values for each discretized feature column.
      *
      * @return string[]
      */
@@ -104,8 +104,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
     }
 
     /**
-     * Return the intervals of each continuous feature column
-     * calculated during fitting.
+     * Return the intervals for each continuous feature column calculated during fitting.
      *
      * @return array[]|null
      */

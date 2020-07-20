@@ -20,12 +20,12 @@ $transformer = new IntervalDiscretizer(10);
 ```
 
 ## Additional Methods
-Return the possible categories of each feature column:
+Return the list of possible category values for each discretized feature column:
 ```php
 public categories() : array
 ```
 
-Return the intervals of each continuous feature column calculated during fitting:
+Return the intervals for each continuous feature column calculated during fitting:
 ```php
 public intervals() : array
 ```

@@ -58,6 +58,16 @@ class MinMaxNormalizerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $minimums = $this->transformer->minimums();
+
+        $this->assertIsArray($minimums);
+        $this->assertCount(3, $minimums);
+
+        $maximums = $this->transformer->maximums();
+
+        $this->assertIsArray($maximums);
+        $this->assertCount(3, $maximums);
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);

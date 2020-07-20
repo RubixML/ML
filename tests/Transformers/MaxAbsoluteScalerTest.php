@@ -58,6 +58,11 @@ class MaxAbsoluteScalerTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $maxabs = $this->transformer->maxabs();
+
+        $this->assertIsArray($maxabs);
+        $this->assertCount(3, $maxabs);
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);

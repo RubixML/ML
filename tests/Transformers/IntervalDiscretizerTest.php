@@ -21,7 +21,7 @@ class IntervalDiscretizerTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\Stateful
+     * @var \Rubix\ML\Transformers\IntervalDiscretizer
      */
     protected $transformer;
 
@@ -55,6 +55,18 @@ class IntervalDiscretizerTest extends TestCase
         $this->transformer->fit($this->generator->generate(30));
 
         $this->assertTrue($this->transformer->fitted());
+
+        $categories = $this->transformer->categories();
+
+        $this->assertIsArray($categories);
+        $this->assertCount(5, $categories);
+        $this->assertContainsOnly('string', $categories);
+
+        $intervals = $this->transformer->intervals();
+
+        $this->assertIsArray($intervals);
+        $this->assertCount(4, $intervals);
+        $this->assertContainsOnly('array', $intervals);
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)

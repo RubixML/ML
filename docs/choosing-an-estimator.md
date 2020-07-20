@@ -8,10 +8,10 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $estimator = new KNearestNeighbors(10, false, new Minkowski(2.0));
 ```
 
-Choosing the right estimator for your project will help achieve the best results. A common theme among all estimator types is the notion of model *flexibility*. How flexibility is expressed depends on the estimator type but greater flexibility usually includes the capacity to handle more difficult tasks. The tradeoff for increased flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). For most use cases, we recommend selecting the simplest model that does not [underfit](cross-validation.md#underfitting) your dataset. In the next sections, we'll break down the estimators available to you in Rubix ML by type, grade their flexibility, and describe some of their advantages and disadvantages.
+Choosing the right estimator for your project will help achieve the best results. A common theme among all estimator types is the notion of model *flexibility*. How flexibility is expressed depends on the estimator type but greater flexibility usually includes the capacity to handle more difficult tasks. The tradeoff for increased flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). For most use cases, we recommend selecting the simplest model that does not [underfit](cross-validation.md#underfitting) your dataset. In the next sections, we'll break down the estimators available to you in the library by type, grade their flexibility, and describe some of their advantages and disadvantages.
 
 ## Classifiers
-Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. A linear classifier such as [Logistic Regression](classifiers/logistic-regresion.md) can only fully distinguish classes that are *linearly separable*. On the other hand, highly flexible models such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) is known to be a universal function approximator and can theoretically learn any decision boundary.
+Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. A linear classifier such as [Logistic Regression](classifiers/logistic-regresion.md) can only fully distinguish classes that are *linearly separable*. On the other hand, highly flexible models such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) is known to be a universal function approximator because it can theoretically learn any decision boundary.
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -30,7 +30,7 @@ Classifiers can be assessed by their ability to form decision boundaries around 
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
-In regression, flexibility is expressed by the ability of a regressor to model the function that generated the outcomes of the training samples. Simple models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and output variables and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
+In regression, flexibility is expressed by the degree to which a regressor can mimic the function that generated the outcomes of the training samples. Simple models such as [Ridge](regressors/ridge.md) assume a completely linear relationship between input and output variables and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
 
 | Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@ In regression, flexibility is expressed by the ability of a regressor to model t
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers express flexibility by their capacity to represent an outer hull surrounding samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters with potential overlap. This works well for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular.
+Clusterers express flexibility in their capacity to represent an outer hull surrounding samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters with potential overlap. This works well for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -57,7 +57,7 @@ Clusterers express flexibility by their capacity to represent an outer hull surr
 | [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
-Anomaly Detectors fall into one of two groups - those that consider the entire training set when determining an anomaly, and those that focus on a *local region* of the training set. A local region can either be a subset of the samples as with [LOF](anomaly-detectors/local-outlier-factor.md) or a subset of the features as with [Isolation Forest](anomaly-detectors/isolation-forest.md). Local anomaly detectors are typically more accurate but come with higher computational complexity. Global anomaly detectors are fast but may produce a higher number of false positives and/or negatives.
+Anomaly Detectors fall into one of two groups - those that consider the entire training set when determining an anomaly, and those that focus on a *local region* of the training set. A local region can either be a subset of the samples as with [LOF](anomaly-detectors/local-outlier-factor.md) or a subset of the features as with [Isolation Forest](anomaly-detectors/isolation-forest.md). Local anomaly detectors are typically more accurate but come with higher computational complexity. In contrast, global anomaly detectors are fast but may produce a higher number of false positives and/or negatives.
 
 | Anomaly Detector | Scope | Ranking | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -69,7 +69,7 @@ Anomaly Detectors fall into one of two groups - those that consider the entire t
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Interpretable model, Robust to outliers in the training set | Problems with highly skewed dataset  |
 
 ## Meta-estimators
-Meta-estimators wrap and enhance other estimators with extra functionality. They are polymorphic in the sense that they take on the type of the base estimator they wrap. A characteristic feature of meta-estimators that implement the [Wrapper](wrapper.md) interface is that they allow methods to be called on the base estimator by calling them from the meta-estimator.
+Meta-estimators wrap and enhance other estimators with extra functionality. They are *polymorphic* in the sense that they take on the type of the base estimator they wrap. A characteristic feature of meta-estimators that implement the [Wrapper](wrapper.md) interface is that they allow methods to be called on the base estimator by calling them from the meta-estimator.
 
 | Meta-estimator | Wrapper | Parallel | Verbose | Compatibility |
 |---|---|---|---|---|

@@ -59,6 +59,12 @@ class OneHotEncoderTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $categories = $this->transformer->categories();
+
+        $this->assertIsArray($categories);
+        $this->assertCount(3, $categories);
+        $this->assertContainsOnly('array', $categories);
+
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
