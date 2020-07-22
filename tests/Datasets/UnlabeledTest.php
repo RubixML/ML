@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
@@ -646,7 +647,10 @@ class UnlabeledTest extends TestCase
     {
         $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
 
-        $this->assertEquals($expected, $this->dataset->toJSON());
+        $encoding = $this->dataset->toJSON();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**
@@ -661,7 +665,10 @@ class UnlabeledTest extends TestCase
         . '["nice","rough","friendly",2.9]' . PHP_EOL
         . '["nice","furry","loner",-5]' . PHP_EOL;
 
-        $this->assertEquals($expected, $this->dataset->toNDJSON());
+        $encoding = $this->dataset->toNDJSON();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**
@@ -676,7 +683,10 @@ class UnlabeledTest extends TestCase
             . 'nice,rough,friendly,2.9' . PHP_EOL
             . 'nice,furry,loner,-5' . PHP_EOL;
 
-        $this->assertEquals($expected, $this->dataset->toCSV());
+        $encoding = $this->dataset->toCSV();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**

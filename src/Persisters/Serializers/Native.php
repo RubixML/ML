@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Persisters\Serializers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use RuntimeException;
 use Stringable;
@@ -24,21 +25,21 @@ class Native implements Serializer, Stringable
      * Serialize a persistable object and return the data.
      *
      * @param \Rubix\ML\Persistable $persistable
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function serialize(Persistable $persistable) : string
+    public function serialize(Persistable $persistable) : Encoding
     {
-        return serialize($persistable);
+        return new Encoding(serialize($persistable));
     }
 
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param string $data
+     * @param \Rubix\ML\Encoding $data
      * @throws RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(string $data) : Persistable
+    public function unserialize(Encoding $data) : Persistable
     {
         $unserialized = unserialize($data);
 

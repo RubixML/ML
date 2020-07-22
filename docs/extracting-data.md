@@ -115,14 +115,23 @@ $dataset = Labeled::build($samples, $labels)
     ->apply(new ImageVectorizer());
 ```
 
-## Converting Formats
-Sometimes, you may want to convert a dataset from one format to another format. In the example below we use the [CSV](extractors/csv.md) extractor to read the data in CSV format and then write to NDJSON format using the `toNDJSON()` method on the dataset object. See the [Dataset](datasets/api.md#output-formats) API for details about all the supported formats.
+## Missing Values
+By convention, missing continuous feature values are denoted by the `NAN` constant and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of image or other data types.
+
+```php
+$samples = [
+    [0.01, -500, 'furry'], // Complete sample
+    [0.001, NAN, 'rough'], // Missing a continuous value
+    [0.25, -1000, '?'], // Missing a categorical value
+];
+```
+
+## Converting Dataset Formats
+Sometimes, you may want to convert a dataset stored in one format to another format. In the example below we'll use the [CSV](extractors/csv.md) extractor to read the data from a file in CSV format and then convert to NDJSON format using the `toNDJSON()` method on the [Dataset](datasets/api.md#convert-to-encoding) object. Then we'll write the returned encoding to a file on disk by specifying the path as an argument to the `write()` method.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\CSV;
 
-$data = Labeled::fromIterator(new CSV('example.csv'))->toNDJSON();
-
-file_put_contents('example.ndjson', $data);
+Labeled::fromIterator(new CSV('example.csv'))->toNDJSON()->write('example.ndjson');
 ```

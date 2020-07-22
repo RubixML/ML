@@ -13,19 +13,6 @@ use Generator;
 class DataTypeTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\DataType
-     */
-    protected $type;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->type = new DataType(DataType::CONTINUOUS);
-    }
-
-    /**
      * @test
      * @dataProvider determineProvider
      *
@@ -65,17 +52,35 @@ class DataTypeTest extends TestCase
      */
     public function determineImage() : void
     {
-        $value = imagecreatefromjpeg('tests/space.jpg');
+        $value = imagecreatefromjpeg('tests/test.jpg');
 
         $this->assertEquals(DataType::image(), DataType::detect($value));
     }
 
     /**
      * @test
+     * @dataProvider codeProvider
+     *
+     * @param \Rubix\ML\DataType $type
+     * @param int $expected
      */
-    public function code() : void
+    public function code(DataType $type, int $expected) : void
     {
-        $this->assertSame(DataType::CONTINUOUS, $this->type->code());
+        $this->assertSame($expected, $type->code());
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function codeProvider() : Generator
+    {
+        yield [DataType::categorical(), DataType::CATEGORICAL];
+
+        yield [DataType::continuous(), DataType::CONTINUOUS];
+
+        yield [DataType::image(), DataType::IMAGE];
+
+        yield [DataType::other(), DataType::OTHER];
     }
 
     /**
@@ -83,7 +88,7 @@ class DataTypeTest extends TestCase
      */
     public function isCategorical() : void
     {
-        $this->assertFalse($this->type->isCategorical());
+        $this->assertFalse(DataType::continuous()->isCategorical());
     }
 
     /**
@@ -91,7 +96,7 @@ class DataTypeTest extends TestCase
      */
     public function isContinuous() : void
     {
-        $this->assertTrue($this->type->isContinuous());
+        $this->assertTrue(DataType::continuous()->isContinuous());
     }
 
     /**
@@ -99,7 +104,7 @@ class DataTypeTest extends TestCase
      */
     public function isImage() : void
     {
-        $this->assertFalse($this->type->isImage());
+        $this->assertFalse(DataType::continuous()->isImage());
     }
 
     /**
@@ -107,7 +112,7 @@ class DataTypeTest extends TestCase
      */
     public function isOther() : void
     {
-        $this->assertFalse($this->type->isOther());
+        $this->assertFalse(DataType::continuous()->isOther());
     }
 
     /**
@@ -115,6 +120,6 @@ class DataTypeTest extends TestCase
      */
     public function testToString() : void
     {
-        $this->assertEquals('continuous', (string) $this->type);
+        $this->assertEquals('continuous', (string) DataType::continuous());
     }
 }

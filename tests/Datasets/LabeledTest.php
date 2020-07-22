@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
@@ -915,7 +916,10 @@ class LabeledTest extends TestCase
     {
         $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
 
-        $this->assertEquals($expected, $this->dataset->toJSON());
+        $encoding = $this->dataset->toJSON();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**
@@ -930,13 +934,16 @@ class LabeledTest extends TestCase
         . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
         . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
 
-        $this->assertEquals($expected, $this->dataset->toNDJSON());
+        $encoding = $this->dataset->toNDJSON();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**
      * @test
      */
-    public function toCsv() : void
+    public function toCSV() : void
     {
         $expected = 'nice,furry,friendly,4,not monster' . PHP_EOL
             . 'mean,furry,loner,-1.5,monster' . PHP_EOL
@@ -945,7 +952,10 @@ class LabeledTest extends TestCase
             . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
             . 'nice,furry,loner,-5,not monster' . PHP_EOL;
 
-        $this->assertEquals($expected, $this->dataset->toCSV());
+        $encoding = $this->dataset->toCSV();
+
+        $this->assertInstanceOf(Encoding::class, $encoding);
+        $this->assertEquals($expected, $encoding);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Persisters\Serializers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Persisters\Serializers\Igbinary;
@@ -51,7 +52,7 @@ class IgbinaryTest extends TestCase
     {
         $data = $this->serializer->serialize($this->persistable);
 
-        $this->assertIsString($data);
+        $this->assertInstanceOf(Encoding::class, $data);
 
         $persistable = $this->serializer->unserialize($data);
 

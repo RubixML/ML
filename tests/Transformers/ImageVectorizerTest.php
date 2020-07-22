@@ -32,7 +32,7 @@ class ImageVectorizerTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            [imagecreatefromjpeg('tests/space.jpg'), 'something else'],
+            [imagecreatefromjpeg('tests/test.jpg'), 'something else'],
         ]);
 
         $this->transformer = new ImageVectorizer(false);

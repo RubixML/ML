@@ -14,17 +14,6 @@ $labels = ['not monster', 'monster'];
 $dataset = new Labeled($samples, $labels);
 ```
 
-## Missing Values
-By convention, missing continuous values are denoted by the `NAN` constant and missing categorical values are denoted by a special placeholder category (ex. the `?` category). Dataset objects do not allow missing values of resource or other data types.
-
-```php
-$samples = [
-    [0.01, -500, 'furry'], // Complete sample
-    [0.001, NAN, 'rough'], // Missing a continuous value
-    [0.25, -1000, '?'], // Missing a categorical value
-];
-```
-
 ## Factory Methods
 Build a dataset with the rows from a 2-dimensional iterable data table:
 ```php
@@ -437,43 +426,34 @@ Remove duplicate rows from the dataset:
 public deduplicate() : self
 ```
 
-## Output Formats
-Return the dataset object as a data table array:
-```php
-public toArray() : array
-```
-
-**Example**
-
-```php
-$table = $dataset->toArray();
-```
-
+## Convert to Encoding
 Return a JSON representation of the dataset:
 ```php
-public toJSON(bool $pretty = false) : string
+public toJSON(bool $pretty = false) : Encoding
 ```
 
-Return a newline delimited JSON representation of the dataset:
+Return a newline delimited JSON encoding of the dataset:
 ```php
 public toNDJSON() : string
 ```
 
-**Example**
-
+Return the dataset as comma-separated values (CSV) encoding:
 ```php
-file_put_contents('dataset.ndjson', $dataset->toNDJSON());
-```
-
-Return the dataset as comma-separated values (CSV) string:
-```php
-public toCSV(string $delimiter = ',', string $enclosure = '"') : string
+public toCSV(string $delimiter = ',', string $enclosure = '"') : Encoding
 ```
 
 **Example**
 
 ```php
-file_put_contents('dataset.csv', $dataset->toCSV());
+$data = $dataset->toCSV(',');
+
+echo $data;
+```
+
+```sh
+4.5,2.3,1.3,0.3,Iris-setosa
+4.4,3.2,1.3,0.2,Iris-setosa
+5.0,3.5,1.6,0.6,Iris-setosa
 ```
 
 ## Previewing in the Console

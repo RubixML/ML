@@ -3,6 +3,7 @@
 namespace Rubix\ML\Datasets;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
@@ -345,19 +346,19 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Return a JSON representation of the dataset.
      *
      * @param bool $pretty
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function toJSON(bool $pretty = false) : string
+    public function toJSON(bool $pretty = false) : Encoding
     {
-        return json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '';
+        return new Encoding(json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
     }
 
     /**
      * Return a newline delimited JSON representation of the dataset.
      *
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function toNDJSON() : string
+    public function toNDJSON() : Encoding
     {
         $ndjson = '';
 
@@ -365,7 +366,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
-        return $ndjson;
+        return new Encoding($ndjson);
     }
 
     /**
@@ -374,9 +375,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @param string $delimiter
      * @param string $enclosure
      * @throws \InvalidArgumentException
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function toCSV(string $delimiter = ',', string $enclosure = '"') : string
+    public function toCSV(string $delimiter = ',', string $enclosure = '"') : Encoding
     {
         if (empty($delimiter)) {
             throw new InvalidArgumentException('Delimiter must be'
@@ -400,7 +401,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             $csv .= implode($delimiter, $row) . PHP_EOL;
         }
 
-        return $csv;
+        return new Encoding($csv);
     }
 
     /**

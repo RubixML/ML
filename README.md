@@ -53,6 +53,12 @@ Check out these example projects using the Rubix ML library. Most come with inst
 - [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 
+## Interact With The Community
+
+- [Join Our Telegram Channel](https://t.me/RubixML)
+- [Receive Our Newsletter](https://rubixml.com/#get-notified)
+- [Meet In The LinkedIn Group](https://www.linkedin.com/groups/8952251/)
+
 ## Funding
 Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
 

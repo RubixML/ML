@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Persisters;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
@@ -64,6 +65,10 @@ class Filesystem implements Persister, Stringable
                 . ' is not writable, check path and permissions.');
         }
 
+        if (is_file($path) and !is_writable($path)) {
+            throw new InvalidArgumentException("Preexisting file {$path} is not writable.");
+        }
+
         $this->path = $path;
         $this->history = $history;
         $this->serializer = $serializer ?? new Native();
@@ -93,17 +98,7 @@ class Filesystem implements Persister, Stringable
             }
         }
 
-        if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("File {$this->path} is not writable.");
-        }
-
-        $data = $this->serializer->serialize($persistable);
-
-        $success = file_put_contents($this->path, $data, LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException('Failed to write to the filesystem');
-        }
+        $this->serializer->serialize($persistable)->write($this->path);
     }
 
     /**
@@ -118,9 +113,9 @@ class Filesystem implements Persister, Stringable
             throw new RuntimeException("File {$this->path} is not readable.");
         }
 
-        $data = file_get_contents($this->path) ?: '';
+        $data = new Encoding(file_get_contents($this->path) ?: '');
 
-        if (empty($data)) {
+        if ($data->bytes() === 0) {
             throw new RuntimeException("File {$this->path} does not"
                 . ' contain any data.');
         }

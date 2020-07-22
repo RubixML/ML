@@ -46,7 +46,9 @@ Sometimes, we might just want to transform a single column of the dataset. In th
 $dataset->transformColumn(6, 'log1p');
 ```
 
-## Standardization and Normalization
+## Types of Preprocessing
+
+### Standardization and Normalization
 Oftentimes, the continuous features of a dataset will be on different scales because they were measured by different methods. For example, age (0 - 100) and income (0 - 9,999,999) are on two widely different scales. Standardization is the processes of transforming a dataset such that the features are all on one scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns or the rows of the dataset.
 
 | Transformer | Operates On | Range | Stateful | Elastic |
@@ -58,7 +60,7 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 | [Robust Standardizer](transformers/robust-standardizer.md) | Columns | [-∞, ∞] | ● | |
 | [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns | [-∞, ∞] | ● | ● |
 
-## Feature Conversion
+### Feature Conversion
 Feature converters are transformers that convert feature columns of one type to another. Since learners can be compatible with different data types, it may be necessary sometimes to convert features of an incompatible type to a compatible one.
 
 | Transformer | From | To | Stateful | Elastic |
@@ -67,7 +69,7 @@ Feature converters are transformers that convert feature columns of one type to 
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
 | [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
 
-## Dimensionality Reduction
+### Dimensionality Reduction
 Dimensionality reduction in machine learning is analogous to compression in the context of sending data over a wire. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
 
 | Transformer | Supervised | Stateful | Elastic |
@@ -78,14 +80,14 @@ Dimensionality reduction in machine learning is analogous to compression in the 
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
 | [Sparse Random Projector](transformers/sparse-random-projector.md) | | ● | |
 
-## Feature Selection
+### Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
 | [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 
-## Imputation
+### Imputation
 One technique for handling missing data is a preprocessing step called *imputation*. Imputation is the process of replacing missing values in the dataset with a pretty good substitution. Examples include the average value for a feature or the sample's nearest neighbor's value. Imputation allows you to get more value from your data and can limit the introduction of bias in the process.
 
 | Transformer | Continuous | Categorical | Stateful | Elastic |
@@ -94,7 +96,7 @@ One technique for handling missing data is a preprocessing step called *imputati
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | ● | ● | ● | |
 | [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | ● | ● | ● | |
 
-## Text Transformers
+### Text Transformers
 The library provides a number of transformers for natural language processing (NLP) tasks such as those for text cleaning, normalization, and feature extraction. Cleaning the text will help eliminate noise such as *stop words* or other uninformative tokens like URLs and email addresses from the corpus. Normalizing the text ensures that words like `therapist`, `Therapist`, and `ThErApIsT` are recognized as the same word. Feature extractors such as [Word Count Vectorizer](transformers/word-count-vectorizer.md) encode text features as fixed-length numerical feature vectors for input to a learner.
 
 | Transformer | Stateful | Elastic |
@@ -108,13 +110,13 @@ The library provides a number of transformers for natural language processing (N
 | [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | |
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | ● | |
 
-## Image Transformers
+### Image Transformers
 | Transformer | Stateful | Elastic |
 |---|---|---|
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-## Other Transformers
+### Other Transformers
 | Transformer | Stateful | Elastic |
 |---|---|---|
 | [Polynomial Expander](transformers/polynomial-expander.md) | | |
@@ -150,4 +152,13 @@ Any time a dataset is passed to the Pipeline it will automatically be transforme
 
 ```php
 $predictions = $estimator->predict($dataset); // Dataset automatically transformed
+```
+
+## Saving a Dataset
+If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`, etc.) on the [Dataset](datasets/api.md#convert-to-encoding) object to return an encoding that can be written directly to disk at a specified path.
+
+```php
+use Rubix\ML\Transformers\MissingDataImputer;
+
+$dataset->apply(new MissingDataImputer())->toCSV()->write('dataset.csv');
 ```

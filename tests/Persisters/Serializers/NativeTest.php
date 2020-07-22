@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Persisters\Serializers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Persisters\Serializers\Native;
@@ -54,7 +55,7 @@ class NativeTest extends TestCase
     {
         $data = $this->serializer->serialize($this->persistable);
 
-        $this->assertIsString($data);
+        $this->assertInstanceOf(Encoding::class, $data);
 
         $persistable = $this->serializer->unserialize($data);
 
@@ -82,7 +83,8 @@ class NativeTest extends TestCase
      */
     public function deserializeBadData($obj) : void
     {
-        $data = serialize($obj);
+        $data = new Encoding(serialize($obj));
+
         $this->expectException(RuntimeException::class);
 
         $this->serializer->unserialize($data);

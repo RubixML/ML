@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Persisters;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
@@ -128,7 +129,7 @@ class RedisDB implements Persister, Stringable
      */
     public function load() : Persistable
     {
-        $data = $this->db->get($this->key) ?: '';
+        $data = new Encoding($this->db->get($this->key) ?: '');
 
         return $this->serializer->unserialize($data);
     }

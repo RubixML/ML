@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Persisters\Serializers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 
 interface Serializer
@@ -10,18 +11,18 @@ interface Serializer
      * Serialize a persistable object and return the data.
      *
      * @param \Rubix\ML\Persistable $persistable
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function serialize(Persistable $persistable) : string;
+    public function serialize(Persistable $persistable) : Encoding;
 
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param string $data
+     * @param \Rubix\ML\Encoding $data
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(string $data) : Persistable;
+    public function unserialize(Encoding $data) : Persistable;
 
     /**
      * Return the string representation of the object.
