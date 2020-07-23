@@ -43,8 +43,7 @@ class MCC implements Metric, Stringable
      */
     public static function compute(int $tp, int $tn, int $fp, int $fn) : float
     {
-        return ($tp * $tn - $fp * $fn)
-            / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
+        return ($tp * $tn - $fp * $fn) / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
     }
 
     /**

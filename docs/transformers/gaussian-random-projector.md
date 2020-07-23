@@ -20,17 +20,13 @@ $transformer = new GaussianRandomProjector(100);
 ```
 
 ## Additional Methods
-Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
+Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n* samples using the Johnson-Lindenstrauss lemma:
 ```php
-public static estimate(int $n, float $maxDistortion = 0.1) : int
+public static minDimensions(int $n, float $maxDistortion = 0.5) : int
 ```
-
-**Example**
 
 ```php
 use Rubix\ML\Transformers\GaussianRandomProjector;
 
-$dimensions = GaussianRandomProjector::estimate(2000);
-
-$transformer = new GaussianRandomProjector($dimensions);
+$dimensions = GaussianRandomProjector::minDimensions(5000, 0.2);
 ```

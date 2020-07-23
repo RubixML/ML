@@ -15,9 +15,9 @@ use const Rubix\ML\EPSILON;
 /**
  * Informedness
  *
- * Informedness is a measure of the probability that an estimator will make an informed
- * decision. Its value ranges from -1 through 1 and has a value of 0 when the test yields
- * no useful information.
+ * Informedness a multiclass generalization of Youden's J Statistic and can be interpreted as the
+ * probability that an estimator will make an informed prediction. Its value ranges from -1 through
+ * 1 and has a value of 0 when the test yields no useful information.
  *
  * References:
  * [1] W. J. Youden. (1950). Index for Rating Diagnostic Tests.
@@ -29,7 +29,7 @@ use const Rubix\ML\EPSILON;
 class Informedness implements Metric, Stringable
 {
     /**
-     * Compute the class informedness score.
+     * Compute the class Informedness score.
      *
      * @param int $tp
      * @param int $tn

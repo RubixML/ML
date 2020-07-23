@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">[source]</a></span>
 
 # KNN Imputer
-An unsupervised imputer that replaces missing values in datasets with the distance-weighted average of the samples' *k* nearest neighbors' values.
+An unsupervised imputer that replaces missing values in a dataset with the distance-weighted average of the samples' *k* nearest neighbors' values. The average for a continuous feature column is defined as the mean of the values of each donor sample while average is defined as the most frequent for categorical features.
 
-**Note:** NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), are required for continuous features.
+**Note:** Requires NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), for continuous features.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful)
 
@@ -13,7 +13,7 @@ An unsupervised imputer that replaces missing values in datasets with the distan
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when imputing a value. |
-| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when imputing values? |
+| 2 | weighted | true | bool | Should we use distances as weights when selecting a donor sample? |
 | 3 | placeholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 

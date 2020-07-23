@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php">[source]</a></span>
 
 # Informedness
-Informedness is a measure of the probability that an estimator will make an informed decision. Its value ranges from -1 through 1 and has a value of 0 when the test yields no useful information.
+Informedness a multiclass generalization of Youden's J Statistic and can be interpreted as the probability that an estimator will make an informed prediction. Its value ranges from -1 through 1 and has a value of 0 when the test yields no useful information.
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 

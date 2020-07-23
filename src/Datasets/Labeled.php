@@ -1032,7 +1032,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * Stratifying subroutine groups samples by their categorical label.
+     * Stratifying subroutine groups samples by their categorical label. Note that integer string
+     * labels will silently be converted to integers by PHP.
      *
      * @throws \RuntimeException
      * @return array[]

@@ -24,10 +24,11 @@ use function is_null;
  * KNN Imputer
  *
  * An unsupervised imputer that replaces missing values in datasets with the distance-weighted
- * average of the samples' *k* nearest neighbors' values.
+ * average of the samples' *k* nearest neighbors' values. The average for a continuous feature
+ * column is defined as the mean of the values of each donor sample while average is defined as
+ * the most frequent for categorical features.
  *
- * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required for continuous
- * features.
+ * **Note:** Requires NaN-safe distance kernels, such as Safe Euclidean, for continuous features.
  *
  * References:
  * [1] O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.

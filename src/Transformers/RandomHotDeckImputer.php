@@ -9,10 +9,10 @@ use const Rubix\ML\PHI;
 /**
  * Random Hot Deck Imputer
  *
- * A method of imputation similar to KNN Imputer but instead of computing a weighted average
- * of the neighbors' features, Random Hot Deck picks a value from the neighborhood randomly
- * but sampled by distance. This makes Random Hot Deck Imputer slightly more computationally
- * efficient while satisfying some balancing equations at the same time.
+ * A method of imputation that is similar to KNN Imputer but instead of computing a weighted average
+ * of the neighbors' feature values, Random Hot Deck picks a value from the neighborhood randomly
+ * but weighted by distance. Compared to its KNN counterpart, Random Hot Deck Imputer is slightly
+ * more computationally efficient while satisfying some balancing equations at the same time.
  *
  * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required
  * for continuous features.

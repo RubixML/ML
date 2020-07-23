@@ -12,6 +12,8 @@ use Stringable;
  * Useful for when extracting from a source that only recognizes data as string
  * types such as CSV.
  *
+ * **Note:** The string representation of the PHP constant NAN (not a number) is `NaN`.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

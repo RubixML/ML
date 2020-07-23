@@ -17,7 +17,7 @@ nav:
 - Training: training.md
 - Inference: inference.md
 - Cross Validation: cross-validation.md
-- Model Selection: model-selection.md
+- AutoML: automl.md
 - Model Persistence: model-persistence.md
 - FAQ: faq.md
 - General API Reference:

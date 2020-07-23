@@ -3,6 +3,8 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
+**Note:** Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings to denote class labels. Instead, use an appropriate non-integer string class label such as `first` or `second`.
+
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
@@ -78,8 +80,6 @@ Group samples by their class label and return them in their own dataset:
 public stratify() : array
 ```
 
-**Example**
-
 ```php
 $strata = $dataset->stratify();
 ```
@@ -89,8 +89,6 @@ Split the dataset into left and right subsets such that the proportions of class
 public stratifiedSplit($ratio = 0.5) : array
 ```
 
-**Example**
-
 ```php
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
@@ -99,8 +97,6 @@ Return *k* equal size subsets of the dataset such that class proportions remain 
 ```php
 public stratifiedFold($k = 10) : array
 ```
-
-**Example**
 
 ```php
 $folds = $dataset->stratifiedFold(3);
@@ -113,8 +109,6 @@ public transformLabels(callable $fn) : self
 ```
 
 > **Note:** The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
-
-**Example**
 
 ```php
 $dataset->transformLabels('intval');
@@ -150,8 +144,6 @@ public filterByLabel(callable $fn) : self
 
 > **Note:** The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
 
-**Example**
-
 ```php
 $filtered = $dataset->filterByLabel(function ($label)) {
 	return $label <= 10000;;
@@ -170,8 +162,6 @@ Return an array of descriptive statistics about the labels in the dataset:
 ```php
 public describeByLabel() : array
 ```
-
-**Example**
 
 ```php
 print_r($dataset->describeByLabel());
@@ -246,8 +236,6 @@ Return an array of descriptive statistics about the labels in the dataset:
 ```php
 public describeLabels() : array
 ```
-
-**Example**
 
 ```php
 print_r($dataset->describeLabels());

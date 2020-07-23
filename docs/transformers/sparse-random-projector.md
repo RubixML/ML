@@ -20,9 +20,15 @@ $transformer = new SparseRandomProjector(30);
 ```
 
 ## Additional Methods
-Calculate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n* samples using the Johnson-Lindenstrauss lemma:
 ```php
-public static minDimensions(int $n, float $maxDistortion = 0.1) : int
+public static minDimensions(int $n, float $maxDistortion = 0.5) : int
+```
+
+```php
+use Rubix\ML\Transformers\SparseRandomProjector;
+
+$dimensions = SparseRandomProjector::minDimensions(10000, 0.5);
 ```
 
 ### References

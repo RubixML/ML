@@ -41,19 +41,24 @@ class GaussianRandomProjector implements Transformer, Stateful, Stringable
     protected $r;
 
     /**
-     * Calculate the minimum number of dimensions for n total samples with a
-     * given maximum distortion using the Johnson-Lindenstrauss lemma.
+     * Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n*
+     * samples using the Johnson-Lindenstrauss lemma.
      *
      * @param int $n
      * @param float $maxDistortion
      * @throws \InvalidArgumentException
      * @return int
      */
-    public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
+    public static function minDimensions(int $n, float $maxDistortion = 0.5) : int
     {
         if ($n < 0) {
             throw new InvalidArgumentException('Number of samples'
                 . " must be be greater than 0, $n given.");
+        }
+
+        if ($maxDistortion <= 0.0) {
+            throw new InvalidArgumentException('Max distortion must be'
+                . " greater than 0, $maxDistortion given.");
         }
 
         $denominator = $maxDistortion ** 2 / 2.0 - $maxDistortion ** 3 / 3.0;
