@@ -24,6 +24,7 @@ A multilayer feed forward neural network with a continuous output layer suitable
 ## Example
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
@@ -34,7 +35,7 @@ $estimator = new MLPRegressor([
 	new Dense(100),
 	new Activation(new ReLU()),
 	new Dense(100),
-	new Activation(new ReLU(),
+	new Activation(new ReLU()),
 	new Dense(50),
 	new Activation(new ReLU()),
 	new Dense(50),
