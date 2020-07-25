@@ -5,6 +5,7 @@
     - Allow classes to be selected for Confusion Matrix
     - Fixed divide by zero in Multiclass Breakdown
     - Changed Random Projector minDimensions default max distortion
+    - Fixed Naive Bayes user-defined class prior probabilities
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

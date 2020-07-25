@@ -86,8 +86,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed negative log probabilities of each feature conditioned on a
-     * given class label.
+     * The precomputed negative log likelihoods of each feature conditioned on a
+     * particular class label.
      *
      * @var array[]
      */
@@ -117,13 +117,13 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     . ' probability cannot be equal to 0.');
             }
 
-            foreach ($priors as $prior) {
+            foreach ($priors as $class => $prior) {
                 if ($prior < 0) {
                     throw new InvalidArgumentException('Prior probability'
                         . " must be greater than 0, $prior given.");
                 }
 
-                $logPriors[] = log($prior / $total);
+                $logPriors[$class] = log($prior / $total);
             }
         }
 
@@ -249,8 +249,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     }
                 }
 
-                $total = array_sum($columnCounts)
-                    + (count($columnCounts) * $this->alpha);
+                $total = array_sum($columnCounts) + (count($columnCounts) * $this->alpha);
 
                 $probs = [];
 
@@ -269,8 +268,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights)
-                + (count($this->weights) * $this->alpha);
+            $total = array_sum($this->weights) + (count($this->weights) * $this->alpha);
 
             $this->logPriors = [];
 
