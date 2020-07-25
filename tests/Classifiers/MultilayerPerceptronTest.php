@@ -210,6 +210,18 @@ class MultilayerPerceptronTest extends TestCase
     /**
      * @test
      */
+    public function trainTinyDataset() : void
+    {
+        $dataset = $this->generator->generate(3);
+
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->train($dataset);
+    }
+
+    /**
+     * @test
+     */
     public function trainUnlabeled() : void
     {
         $this->expectException(InvalidArgumentException::class);

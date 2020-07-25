@@ -322,6 +322,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function train(Dataset $dataset) : void
     {
@@ -342,6 +343,12 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->featureCount = $dataset->numColumns();
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
+
+        if ($testing->empty()) {
+            throw new RuntimeException('Dataset does not contain'
+                . ' enough records to create a validation set with a'
+                . " hold out ratio of {$this->holdOut}.");
+        }
 
         [$min, $max] = $this->metric->range();
 

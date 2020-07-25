@@ -351,6 +351,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -375,6 +376,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
+
+        if ($testing->empty()) {
+            throw new RuntimeException('Dataset does not contain'
+                . ' enough records to create a validation set with a'
+                . " hold out ratio of {$this->holdOut}.");
+        }
 
         [$min, $max] = $this->metric->range();
 

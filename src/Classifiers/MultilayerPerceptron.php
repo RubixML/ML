@@ -366,6 +366,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -390,6 +391,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+
+        if ($testing->empty()) {
+            throw new RuntimeException('Dataset does not contain'
+                . ' enough records to create a validation set with a'
+                . " hold out ratio of {$this->holdOut}.");
+        }
 
         [$min, $max] = $this->metric->range();
 

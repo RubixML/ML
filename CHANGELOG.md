@@ -6,6 +6,7 @@
     - Fixed divide by zero in Multiclass Breakdown
     - Changed Random Projector minDimensions default max distortion
     - Fixed Naive Bayes user-defined class prior probabilities
+    - Internal CV Learners now check for sufficient hold out data
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners
