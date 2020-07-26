@@ -14,6 +14,7 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
+use RuntimeException;
 use Stringable;
 
 /**
@@ -76,12 +77,18 @@ class MonteCarlo implements Validator, Parallel, Stringable
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
+
+        if ($dataset->numRows() * $this->ratio < 1) {
+            throw new RuntimeException('Dataset does not contain'
+                . ' enough records to create a validation set with a'
+                . " hold out ratio of {$this->ratio}.");
+        }
 
         $stratify = $dataset->labelType()->isCategorical();
 

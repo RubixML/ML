@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
+use RuntimeException;
 use Stringable;
 
 /**
@@ -51,7 +52,7 @@ class HoldOut implements Validator, Stringable
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
@@ -63,6 +64,12 @@ class HoldOut implements Validator, Stringable
         [$testing, $training] = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedSplit($this->ratio)
             : $dataset->split($this->ratio);
+
+        if ($testing->empty()) {
+            throw new RuntimeException('Dataset does not contain'
+                . ' enough records to create a validation set with a'
+                . " hold out ratio of {$this->ratio}.");
+        }
 
         $estimator->train($training);
 

@@ -118,9 +118,8 @@ abstract class CART
         }
 
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('At least one sample'
-                . ' is required to form a leaf node, '
-                . " $maxLeafSize given.");
+            throw new InvalidArgumentException('At least one sample is'
+                . " required to form a leaf node, $maxLeafSize given.");
         }
 
         if ($minPurityIncrease < 0.0) {

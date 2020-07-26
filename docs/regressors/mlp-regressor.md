@@ -3,6 +3,8 @@
 # MLP Regressor
 A multilayer feed forward neural network with a continuous output layer suitable for regression problems. Like the [Multilayer Perceptron](../classifiers/multilayer-perceptron.md) classifier, the MLP Regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate hidden layers.
 
+> **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
+
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
@@ -17,7 +19,7 @@ A multilayer feed forward neural network with a continuous output layer suitable
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 7 | window | 3 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 8 | holdout | 0.1 | float | The proportion of training samples to use for validation and progress monitoring. |
+| 8 | hold out | 0.1 | float | The proportion of training samples to use for progress monitoring, snapshotting, and early stopping. |
 | 9 | cost fn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 

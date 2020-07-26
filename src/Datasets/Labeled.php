@@ -431,7 +431,11 @@ class Labeled extends Dataset
      */
     public function randomize() : self
     {
-        $order = range(0, max(0, $this->numRows() - 1));
+        if ($this->empty()) {
+            return $this;
+        }
+
+        $order = range(0, $this->numRows() - 1);
 
         shuffle($order);
 
