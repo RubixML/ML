@@ -18,8 +18,6 @@ Try adjusting the `memory_limit` option in your php.ini file to something more r
 
 You can temporarily set the `memory_limit` in your script by using the `ini_set()` function.
 
-**Example**
-
 ```php
 ini_set('memory_limit', '-1');
 ```
@@ -34,8 +32,6 @@ Training time depends on a number of factors including size of the dataset and c
 
 ## What is a Tuple?
 A *tuple* is a way to denote an immutable sequential heterogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
-
-**Example**
 
 ```php
 $tuple = ['first', 'second', 0.001]; // a 3-tuple

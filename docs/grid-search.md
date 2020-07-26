@@ -42,8 +42,6 @@ Return an array containing the best parameters from the last search:
 public best() : ?array
 ```
 
-**Example**
-
 ```php
 
 var_dump($estimator->best());

@@ -7,8 +7,6 @@ To create **k** seeds from a dataset:
 public function seed(Dataset $dataset, int $k) : array;
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 

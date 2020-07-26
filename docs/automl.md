@@ -1,5 +1,5 @@
 # AutoML
-Automated Machine Learning (AutoML) is the application of automated tools in designing machine learning models. Some examples of automated machine learning include feature selection, model selection, and hyper-parameter optimization. The benefits of AutoML include quicker prototyping and the discovery of sometimes simpler and more accurate solutions than could otherwise be discovered through human intuition.
+Automated Machine Learning (AutoML) is the application of automated tools in designing machine learning models. Some examples of [automated machine learning](https://en.wikipedia.org/wiki/Automated_machine_learning) include feature selection, model selection, and hyper-parameter optimization. The benefits of AutoML include quicker prototyping and the discovery of simpler and more accurate solutions than could otherwise be discovered through human intuition.
 
 ## Hyper-parameter Optimization
 Hyper-parameter optimization aims to find the best combination of hyper-parameters that maximize a particular cross-validation [Metric](cross-validation/metrics/api.md). The [Grid Search](grid-search.md) meta-estimator learns the best hyper-parameters by training and testing a unique model for each combination of hyper-parameters. Since Grid Search implements the [Parallel](parallel.md) interface, each model can be trained on its own CPU core in parallel.
@@ -44,8 +44,6 @@ $base = $estimator->base();
 ### Grid Search
 When the possible values of the hyper-parameters are selected such that they are spaced out evenly, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically. Instead of choosing the values of *k* manually, for this example we'll generate a grid of 4 values equally spaced between 1 and 10.
 
-**Example**
-
 ```php
 use Rubix\ML\Other\Helpers\Params;
 
@@ -56,8 +54,6 @@ $params = [
 
 ### Random Search
 When the list of possible hyper-parameters is randomly chosen from a distribution, we call that *random search*. In the absence of a good manual strategy, random search has the advantage of being able to search the hyper-parameter space more effectively by testing combinations of parameters that might not have been considered otherwise. To generate a list of random values from a uniform distribution you can use either the `ints()` or `floats()` method on the [Params](other/helpers/params.md) helper. In the example below, we'll generate 4 unique random integers between 1 and 10 as possible values for *k*.
-
-**Example**
 
 ```php
 use Rubix\ML\Other\Helpers\Params;

@@ -9,8 +9,6 @@ To train and test a Learner on a dataset and return the validation score:
 public test(Learner $estimator, Labeled $dataset, Metric $metric) : float
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;

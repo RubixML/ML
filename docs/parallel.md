@@ -11,8 +11,6 @@ To set the backend processing engine:
 public setBackend(Backend $backend) : void
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Backends\Amp;

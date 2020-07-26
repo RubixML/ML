@@ -128,16 +128,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     }
 
     /**
-     * Set the storage driver used to save the model.
-     *
-     * @param \Rubix\ML\Persisters\Persister $persister
-     */
-    public function setPersister(Persister $persister) : void
-    {
-        $this->persister = $persister;
-    }
-
-    /**
      * Save the model to storage.
      */
     public function save() : void

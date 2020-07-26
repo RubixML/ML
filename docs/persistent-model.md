@@ -23,12 +23,10 @@ $estimator = new PersistentModel(new KMeans(10), new Filesystem('example.model')
 ```
 
 ## Additional Methods
-Load the model from storage:
+Load the model:
 ```php
 public static load(Persister $persister) : self
 ```
-
-**Example**
 
 ```php
 use Rubix\ML\PersistentModel;
@@ -37,18 +35,11 @@ use Rubix\ML\Persisters\Filesystem;
 $estimator = PersistentModel::load(new Filesystem('example.model'));
 ```
 
-Save the model to storage:
+Save the model:
 ```php
 public save() : void
 ```
 
-**Example**
-
 ```php
 $estimator->save();
-```
-
-Set the storage driver used to save the model:
-```php
-public setPersister(Persister $persister) : void
 ```

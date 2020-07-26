@@ -7,8 +7,6 @@ Return the predictions from a dataset containing unknown samples in an array:
 public predict(Dataset $dataset) : array
 ```
 
-**Example**
- 
 ```php
 $predictions = $estimator->predict($dataset);
 
@@ -34,8 +32,6 @@ Return the integer-encoded estimator type:
 public type() : int
 ```
 
-**Example**
-
 ```php
 echo $estimator->type();
 ```
@@ -55,8 +51,6 @@ Return the settings of the hyper-parameters in an associative array:
 ```php
 public params() : array
 ```
-
-**Example**
 
 ```php
 var_dump($estimator->params());

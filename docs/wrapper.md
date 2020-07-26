@@ -6,9 +6,3 @@ To return the base estimator:
 ```php
 public base() : Estimator
 ```
-
-**Example**
-
-```php
-$base = $estimator->base();
-```

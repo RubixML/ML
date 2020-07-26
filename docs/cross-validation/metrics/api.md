@@ -7,12 +7,8 @@ To compute a validation score, pass in the predictions from an estimator along w
 public score(array $predictions, array $labels) : float
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
-
-// ...
 
 $predictions = $estimator->predict($dataset);
 
@@ -34,8 +30,6 @@ Output the range of values the validation score can take on in a [2-tuple](../..
 ```php
 public range() : array
 ```
-
-**Example**
 
 ```php
 [$min, $max] = $metric->range();

@@ -15,8 +15,6 @@ The transformer can directly transform the samples in place via the `transform()
 public transform(array &$samples) : void
 ```
 
-**Example**
-
 ```php
 $transformer->transform($samples);
 ```
@@ -34,8 +32,6 @@ Check if the transformer has been fitted:
 ```php
 public fitted() : bool
 ```
-
-**Example**
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -66,8 +62,6 @@ Some transformers are able to adapt to new training data. The `update()` method 
 ```php
 public update(Dataset $dataset) : void
 ```
-
-**Example**
 
 ```php
 use Rubix\ML\Transformers\ZScaleStandardizer;

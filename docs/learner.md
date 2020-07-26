@@ -7,8 +7,6 @@ To train a learner pass a training dataset as argument to the `train()` method:
 public train(Dataset $training) : void
 ```
 
-**Example**
-
 ```php
 $estimator->train($dataset);
 ```
@@ -20,8 +18,6 @@ Return whether or not the learner has been trained:
 ```php
 public trained() : bool
 ```
-
-**Example**
 
 ```php
 var_dump($estimator->trained());
@@ -36,8 +32,6 @@ Pass a single sample through the model and return the prediction:
 ```php
 public predictSample(array $sample) : mixed
 ```
-
-**Example**
 
 ```php
 $prediction = $estimator->predictSample([4, 'furry', 'loner', 8.65]);

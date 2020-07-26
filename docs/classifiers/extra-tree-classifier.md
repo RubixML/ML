@@ -28,8 +28,6 @@ Return a human-readable text representation of the decision tree ruleset:
 public rules(?array $header = null) : string
 ```
 
-**Example**
-
 ```php
 echo $estimator->rules(['age', 'height', 'income']);
 ```

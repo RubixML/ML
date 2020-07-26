@@ -7,8 +7,6 @@ Return the joint probability estimates from a dataset:
 public proba(Dataset $dataset) : array
 ```
 
-**Example**
-
 ```php
 $probabilities = $estimator->proba($dataset);  
 
@@ -37,8 +35,6 @@ Predict the probabilities of a single sample and return the joint distribution:
 ```php
 public probaSample(array $sample) : array
 ```
-
-**Example**
 
 ```php
 $probabilities = $estimator->probaSample(['mean', 'furry', 'loner', -0.25]);

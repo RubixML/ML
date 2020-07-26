@@ -7,8 +7,6 @@ To store a persistable object:
 public save(Persistable $persistable) : void
 ```
 
-**Example**
-
 ```php
 $persister->save($estimator);
 ```
@@ -18,8 +16,6 @@ Load the saved object from persistence:
 ```php
 public load() : Persistable
 ```
-
-**Example**
 
 ```php
 $estimator = $persister->load();

@@ -1,5 +1,5 @@
 # Training
-Most estimators have the ability to be trained using a dataset. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners require a dataset with labels. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model. Every learner has a unique way of learning but no matter *how* it works under the hood the training API is the same.
+Most estimators have the ability to be trained with data. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners require a dataset with labels that act as a signal to guide the learner. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model.
 
 To begin training a learner, pass a dataset object to the `train()` method on the learner instance like in the example below.
 
@@ -20,7 +20,7 @@ $estimator->partial($folds[1]);
 $estimator->partial($folds[2]);
 ```
 
-> **Note:** After the initial training, the learner will expect subsequent datasets to contain the same count and order of features.
+> **Note:** After the initial training, the learner will expect subsequent datasets to contain the same number and order of features.
 
 ## Monitoring Progress
 Since training is often an iterative process, it is useful to obtain feedback as to how the learner is progressing in real-time. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback can indicate model overfitting or improperly tuned hyper-parameters. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with a [Screen Logger](other/loggers/screen.md) that does the job for most cases.

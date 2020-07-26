@@ -37,8 +37,6 @@ Fit the transformer pipeline to a dataset:
 public fit(Dataset $dataset) : void
 ```
 
-**Example**
-
 ```php
 $estimator->fit($dataset);
 ```
@@ -48,8 +46,6 @@ Update the fittings of elastic transformers:
 public update(Dataset $dataset) : void
 ```
 
-**Example**
-
 ```php
 $estimator->update($dataset);
 ```
@@ -58,8 +54,6 @@ Apply the transformer stack to a dataset:
 ```php
 public preprocess(Dataset $dataset) : void
 ```
-
-**Example**
 
 ```php
 $estimator->preprocess($dataset);

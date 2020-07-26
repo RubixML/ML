@@ -7,8 +7,6 @@ To partially train an Online learner pass it a training set to its `partial()` m
 public partial(Dataset $dataset) : void
 ```
 
-**Example**
-
 ```php
 $folds = $dataset->fold(3);
 

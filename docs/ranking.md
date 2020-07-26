@@ -7,8 +7,6 @@ Return the anomaly scores assigned to the samples in a dataset:
 public rank(Dataset $dataset) : array
 ```
 
-**Example**
-
 ```php
 $scores = $estimator->rank($dataset);
 
@@ -28,8 +26,6 @@ Return the anomaly score of a single sample:
 ```php
 public rankSample(array $sample) : float
 ```
-
-**Example**
 
 ```php
 $score = $estimator->rankSample([0.001, 6.99, 'chicago', 20000]);

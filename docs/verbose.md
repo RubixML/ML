@@ -13,8 +13,6 @@ Return the logger or null if not set:
 public logger() : ?LoggerInterface
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Other\Loggers\Screen;

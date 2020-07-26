@@ -22,8 +22,6 @@ public static fromIterator(Traversable $iterator) : self
 
 **Note:** When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Extractors\CSV;
@@ -57,8 +55,6 @@ Return the columns of the sample matrix of a particular type:
 public columnsByType(DataType $type) : array
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\DataType;
 
@@ -76,8 +72,6 @@ Return the number of columns in the samples matrix:
 public numColumns() : int
 ```
 
-**Example**
-
 ```php
 $m = $dataset->numRows();
 
@@ -88,8 +82,6 @@ Return a 2-tuple with the *shape* of the samples matrix:
 ```php
 public shape() : array
 ```
-
-**Example**
 
 ```php
 [$m, $n] = $dataset->shape();
@@ -112,8 +104,6 @@ Return the data type for a given column offset:
 public columnType(int $offset) : DataType
 ```
 
-**Example**
-
 ```php
 echo $dataset->columnType(15);
 ```
@@ -124,26 +114,20 @@ categorical
 
 ## Applying Transformations
 You can apply a [Transformer](#transformers) directly to the samples in a Dataset object by passing it as an arguent to the `apply()` method on the dataset object.
-
 ```php
 public apply(Transformer $transformer) : self
 ```
 
-**Example**
-
 ```php
-use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\RobustStandardizer;
 
-$dataset->apply(new OneHotEncoder());
+$dataset->apply(new RobustStandardizer);
 ```
 
 You can also transform a single feature column using a callback function with the `transformColumn()` method.
-
 ```php
 public transformColumn(int $column, callable $callback) : self
 ```
-
-**Example**
 
 ```php
 $dataset->transformColumn(0, 'log1p');
@@ -165,8 +149,6 @@ public static stack(array $datasets) : self
 
 > **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Labeled;
 
@@ -186,8 +168,6 @@ public merge(Dataset $dataset) : self
 
 > **Note:** Datasets must have the same number of columns.
 
-**Example**
-
 ```php
 $dataset = $dataset1->merge($dataset2);
 ```
@@ -198,8 +178,6 @@ public augment(Dataset $dataset) : self
 ```
 
 > **Note:** Datasets must have the same number of rows.
-
-**Example**
 
 ```php
 $dataset = $dataset1->augment($dataset2);
@@ -215,8 +193,6 @@ Return the last *n* rows of data in a new dataset object:
 ```php
 public tail(int $n = 10) : self
 ```
-
-**Example**
 
 ```php
 $subset = $dataset->head(10);
@@ -241,8 +217,6 @@ Split the dataset into left and right subsets:
 public split(float $ratio = 0.5) : array
 ```
 
-**Example**
-
 ```php
 [$training, $testing] = $dataset->split(0.8);
 ```
@@ -254,8 +228,6 @@ public fold(int $k = 10) : array
 ```
 
 > **Note:** If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
-
-**Example**
 
 ```php
 $folds = $dataset->fold(8);
@@ -278,8 +250,6 @@ Batch the dataset into subsets containing a maximum of *n* rows per batch:
 public batch(int $n = 50) : array
 ```
 
-**Example**
-
 ```php
 $batches = $dataset->batch(250);
 ```
@@ -290,18 +260,10 @@ Randomize the order of the dataset and return it for method chaining:
 public randomize() : self
 ```
 
-**Example**
-
-```php
-$dataset->randomize();
-```
-
 Generate a random subset of the dataset without replacement of size *n*:
 ```php
 public randomSubset(int $n) : self
 ```
-
-**Example**
 
 ```php
 $subset = $dataset->randomSubset(50);
@@ -312,8 +274,6 @@ Generate a random subset with replacement:
 public randomSubsetWithReplacement($n) : self
 ```
 
-**Example**
-
 ```php
 $subset = $dataset->randomSubsetWithReplacement(500);
 ```
@@ -322,8 +282,6 @@ Generate a random *weighted* subset with replacement of size *n*:
 ```php
 public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```
-
-**Example**
 
 ```php
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
@@ -334,8 +292,6 @@ Filter the rows of the dataset using the values of a feature column at the given
 ```php
 public filterByColumn(int $offset, callable $fn) : self
 ```
-
-**Example**
 
 ```php
 $tallPeople = $dataset->filterByColumn(3, function ($value) {
@@ -348,8 +304,6 @@ To sort a dataset in place by a specific feature column:
 ```php
 public sortByColumn(int $offset, bool $descending = false) : self
 ```
-
-**Example**
 
 ```php
 $dataset->sortByColumn(5);
@@ -381,8 +335,6 @@ Return an array of statistics such as the central tendency, dispersion and shape
 ```php
 public describe() : array
 ```
-
-**Example**
 
 ```php
 print_r($dataset->describe());
@@ -441,8 +393,6 @@ Return the dataset as comma-separated values (CSV) encoding:
 ```php
 public toCSV(string $delimiter = ',', string $enclosure = '"') : Encoding
 ```
-
-**Example**
 
 ```php
 $data = $dataset->toCSV(',');

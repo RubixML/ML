@@ -8,10 +8,11 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $estimator = new KNearestNeighbors(10, false, new Minkowski(2.0));
 ```
 
-Choosing the right estimator for your project will help achieve the best results. A common theme among all estimator types is the notion of model *flexibility*. How flexibility is expressed depends on the estimator type but greater flexibility usually includes the capacity to handle more difficult tasks. The tradeoff for increased flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). For most use cases, we recommend selecting the simplest model that does not [underfit](cross-validation.md#underfitting) your dataset. In the next sections, we'll break down the estimators available to you in the library by type, grade their flexibility, and describe some of their advantages and disadvantages.
+### Bias-variance Tradeoff
+A characteristic of all estimator types is the notion of model *flexibility*. Flexibility can be expressed in different ways by each estimator type but greater flexibility usually comes with the capacity to handle more difficult tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting) - the latter consequence coming from what is commonly referred to as the [bias-variance tradeoff](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff). Models that are inflexible have high bias whereas flexible models tend to make predictions that can vary quite a bit (high variance). In contrast to flexible models, inflexible models tend to [underfit](cross-validation.md#underfitting) datasets that complex and non-linear. Ideally, we'd like to find a model that has just the right amount of bias and variance for our dataset.
 
 ## Classifiers
-Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. A linear classifier such as [Logistic Regression](classifiers/logistic-regresion.md) can only fully distinguish classes that are *linearly separable*. On the other hand, highly flexible models such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) is known to be a universal function approximator because it can theoretically learn any decision boundary.
+Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. A linear classifier such as [Logistic Regression](classifiers/logistic-regresion.md) can only fully distinguish classes that are *linearly separable*. On the other hand, highly flexible models such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) is a *universal function approximator* because it can theoretically learn any decision boundary.
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -30,7 +31,7 @@ Classifiers can be assessed by their ability to form decision boundaries around 
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
-In regression, flexibility is expressed by the degree to which a regressor can mimic the function that generated the outcomes of the training samples. Simple models such as [Ridge](regressors/ridge.md) assume a completely linear relationship between input and output variables and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
+In regression, flexibility is expressed by the degree to which a regressor can mimic the function that generated the outcomes of the training samples. Highly biased models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and output variables and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
 
 | Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -46,7 +47,7 @@ In regression, flexibility is expressed by the degree to which a regressor can m
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers express flexibility in their capacity to represent an outer hull surrounding samples in a cluster. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters with potential overlap. This works well for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular.
+Clusterers express flexibility in their capacity to represent an outer hull surrounding the members of a cluster of training samples. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters with potential overlap. This works well for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -85,12 +86,10 @@ In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
-// Import dataset
-
 $estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
 
 $estimator->train($dataset);
 ```
 
 ## No Free Lunch Theorem
-At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the *No Free Lunch* (NFL) theorem which states that, when averaged over the space of *all* possible problems, no learner performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.
+At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the [No Free Lunch Theorem](https://en.wikipedia.org/wiki/No_free_lunch_theorem) which states that, when averaged over the space of *all* possible problems, no learner performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.

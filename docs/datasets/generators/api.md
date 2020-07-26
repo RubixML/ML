@@ -7,8 +7,6 @@ To generate a Dataset object with *n* rows:
 public generate(int $n) : Dataset
 ```
 
-**Example**
-
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
@@ -47,8 +45,6 @@ Return the dimensionality of the samples produced by the generator:
 ```php
 public dimensions() : int
 ```
-
-**Example**
 
 ```php
 var_dump($generator->dimensions());

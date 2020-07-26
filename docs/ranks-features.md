@@ -7,10 +7,8 @@ Return the normalized importance scores of each feature column of the training s
 public featureImportances() : array
 ```
 
-**Example**
-
 ```php
-// Train the learner
+$estimator->train($dataset);
 
 $importances = $estimator->featureImportances();
 
