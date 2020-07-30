@@ -16,6 +16,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -208,6 +209,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
@@ -241,6 +244,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         if (!$this->samples or !$this->labels or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
 
         $probabilities = [];
 

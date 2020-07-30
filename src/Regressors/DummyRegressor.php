@@ -14,6 +14,7 @@ use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,11 +45,11 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
     protected $strategy;
 
     /**
-     * Has the learner been trained?
+     * The dimensionality of the training set.
      *
-     * @var bool
+     * @var int|null
      */
-    protected $trained;
+    protected $featureCount;
 
     /**
      * @param \Rubix\ML\Other\Strategies\Continuous|null $strategy
@@ -56,7 +57,6 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
     public function __construct(?Continuous $strategy = null)
     {
         $this->strategy = $strategy ?? new Mean();
-        $this->trained = false;
     }
 
     /**
@@ -98,7 +98,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      */
     public function trained() : bool
     {
-        return $this->trained;
+        return isset($this->featureCount);
     }
 
     /**
@@ -119,7 +119,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
 
         $this->strategy->fit($dataset->labels());
 
-        $this->trained = true;
+        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -131,9 +131,11 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->trained) {
+        if (!$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $n = $dataset->numRows();
 

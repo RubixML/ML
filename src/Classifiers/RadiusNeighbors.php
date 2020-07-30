@@ -15,6 +15,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -42,7 +43,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
     use PredictsSingle, ProbaSingle;
 
     /**
-     * The radius within which points are considered neighboors.
+     * The radius within which points are considered neighbors.
      *
      * @var float
      */
@@ -76,6 +77,13 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      * @var float[]|null
      */
     protected $classes;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
 
     /**
      * @param float $radius
@@ -190,6 +198,8 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
 
         $this->classes = array_fill_keys($classes, 0.0);
 
+        $this->featureCount = $dataset->numColumns();
+
         $this->tree->grow($dataset);
     }
 
@@ -202,9 +212,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
+        if ($this->tree->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = [];
 
@@ -242,9 +254,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->tree->bare() or !$this->classes) {
+        if ($this->tree->bare() or !$this->classes or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $probabilities = [];
 

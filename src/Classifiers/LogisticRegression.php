@@ -26,6 +26,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -298,6 +299,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -384,6 +386,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+
         [$classA, $classB] = $this->classes;
 
         $activations = $this->network->infer($dataset);
@@ -415,7 +419,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $layer = current($this->network->hidden());
 
         if (!$layer instanceof Dense) {
-            throw new RuntimeException('Weight layer is missing.');
+            throw new RuntimeException('Weight layer not found.');
         }
 
         $importances = $layer->weights()->rowAsVector(0)->abs();

@@ -18,6 +18,7 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -144,7 +145,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     ];
 
     /**
-     * The number of feature columns in the training set.
+     * The dimensionality of the training set.
      *
      * @var int|null
      */
@@ -459,9 +460,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->base->trained() or !$this->ensemble) {
+        if (!$this->ensemble or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = $this->base->predict($dataset);
 

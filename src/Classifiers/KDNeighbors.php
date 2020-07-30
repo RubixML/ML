@@ -15,6 +15,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -68,6 +69,13 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      * @var float[]|null
      */
     protected $classes;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
 
     /**
      * @param int $k
@@ -160,6 +168,8 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
+        $this->featureCount = $dataset->numColumns();
+
         $this->tree->grow($dataset);
     }
 
@@ -172,9 +182,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
+        if ($this->tree->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = [];
 
@@ -206,9 +218,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->tree->bare() or !$this->classes) {
+        if ($this->tree->bare() or !$this->classes or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $probabilities = [];
 

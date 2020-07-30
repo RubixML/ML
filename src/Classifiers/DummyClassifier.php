@@ -14,6 +14,7 @@ use Rubix\ML\Other\Strategies\Prior;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,11 +45,11 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
     protected $strategy;
 
     /**
-     * Has the learner been trained?
+     * The dimensionality of the training set.
      *
-     * @var bool
+     * @var int|null
      */
-    protected $trained;
+    protected $featureCount;
 
     /**
      * @param \Rubix\ML\Other\Strategies\Categorical|null $strategy
@@ -56,7 +57,6 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
     public function __construct(?Categorical $strategy = null)
     {
         $this->strategy = $strategy ?? new Prior();
-        $this->trained = false;
     }
 
     /**
@@ -98,7 +98,7 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
      */
     public function trained() : bool
     {
-        return $this->trained;
+        return isset($this->featureCount);
     }
 
     /**
@@ -119,7 +119,7 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
 
         $this->strategy->fit($dataset->labels());
 
-        $this->trained = true;
+        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -131,15 +131,17 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->trained) {
+        if (!$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $n = $dataset->numRows();
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
+
+        $m = $dataset->numRows();
 
         $predictions = [];
 
-        while (count($predictions) < $n) {
+        while (count($predictions) < $m) {
             $predictions[] = $this->strategy->guess();
         }
 

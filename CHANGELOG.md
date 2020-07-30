@@ -9,6 +9,7 @@
     - Internal CV Learners now check for sufficient hold out data
     - Fixed randomize empty dataset object
     - Removed setPersister method from Persistent Model
+    - Added Dataset Has Dimensionality Specification
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

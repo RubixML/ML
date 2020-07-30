@@ -17,6 +17,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -272,6 +273,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
 
         DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetHasDimensionality::check($dataset, $this->r->m());
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
@@ -329,6 +331,8 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
         if (!$this->r or !$this->histograms or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->r->m());
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)

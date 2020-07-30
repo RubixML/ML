@@ -29,6 +29,7 @@ use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
@@ -382,6 +383,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -498,6 +500,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if (!$this->network or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
 
         $activations = $this->network->infer($dataset);
 

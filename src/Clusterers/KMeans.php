@@ -22,6 +22,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -296,6 +297,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -405,6 +407,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+
         return array_map([$this, 'assign'], $dataset->samples());
     }
 
@@ -420,6 +424,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         if (!$this->centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
 
         return array_map([$this, 'membership'], $dataset->samples());
     }

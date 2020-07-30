@@ -19,6 +19,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -361,6 +362,8 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+
         $jlls = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
         return array_map('Rubix\ML\argmax', $jlls);
@@ -378,6 +381,8 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         if (empty($this->logPriors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count(current($this->means)));
 
         $probabilities = [];
 

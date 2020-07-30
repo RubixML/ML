@@ -15,6 +15,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -124,6 +125,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @var float[]|null
      */
     protected $steps;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
 
     /**
      * @param \Rubix\ML\Learner|null $base
@@ -270,12 +278,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->logger->info('Training started');
         }
 
+        [$m, $n] = $dataset->shape();
+
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+
+        $this->featureCount = $n;
 
         $labels = $dataset->labels();
 
-        $n = $dataset->numRows();
-        $p = (int) ceil($this->ratio * $n);
+        $p = (int) ceil($this->ratio * $m);
         $k = count($this->classes);
 
         $maxLoss = 1.0 - (1.0 / $k);
@@ -284,7 +295,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->ensemble = $this->influences = $this->steps = [];
 
-        $weights = array_fill(0, $n, 1 / $n);
+        $weights = array_fill(0, $m, 1 / $m);
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $estimator = clone $this->base;
@@ -420,9 +431,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     protected function score(Dataset $dataset) : array
     {
-        if (!$this->ensemble or !$this->influences or !$this->classes) {
+        if (!$this->ensemble or !$this->influences or !$this->classes or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $scores = array_fill(0, $dataset->numRows(), $this->classes);
 

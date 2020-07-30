@@ -140,6 +140,16 @@ abstract class CART
     }
 
     /**
+     * Return the dimensionality of the dataset used to grow the tree.
+     *
+     * @return int
+     */
+    public function dimensions() : int
+    {
+        return count($this->columns);
+    }
+
+    /**
      * Return the height of the tree i.e. the number of levels.
      *
      * @return int
@@ -248,8 +258,7 @@ abstract class CART
             }
         }
 
-        $this->types = [];
-        $this->columns = [];
+        $this->types = $this->columns = [];
     }
 
     /**

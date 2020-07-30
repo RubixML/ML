@@ -25,6 +25,7 @@ use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -286,6 +287,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -360,6 +362,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         if (!$this->network) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
 
         return $this->network->infer($dataset)->column(0);
     }

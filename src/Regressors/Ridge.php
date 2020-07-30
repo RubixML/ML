@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -189,6 +190,8 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
         if (!$this->coefficients or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count($this->coefficients));
 
         return Matrix::build($dataset->samples())
             ->dot($this->coefficients)

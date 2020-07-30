@@ -28,6 +28,7 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -367,6 +368,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
@@ -473,6 +475,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         if (!$this->network) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
 
         return $this->network->infer($dataset)->column(0);
     }

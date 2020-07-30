@@ -20,6 +20,7 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -103,7 +104,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     protected $classes;
 
     /**
-     * The number of feature columns in the training set.
+     * The dimensionality of the training set.
      *
      * @var int|null
      */
@@ -250,9 +251,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->trees) {
+        if (!$this->trees or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $this->backend->flush();
 
@@ -280,9 +283,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->trees or !$this->classes) {
+        if (!$this->trees or !$this->classes or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $probabilities = array_fill(0, $dataset->numRows(), $this->classes);
 

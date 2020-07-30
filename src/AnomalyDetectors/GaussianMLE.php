@@ -15,6 +15,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -201,6 +202,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
         }
 
         DatasetIsNotEmpty::check($dataset);
+        DatasetHasDimensionality::check($dataset, count($this->means));
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
         $n = $dataset->numRows();
@@ -257,6 +259,8 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
         if (!$this->means or !$this->variances or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count($this->means));
 
         return array_map([$this, 'logLikelihood'], $dataset->samples());
     }

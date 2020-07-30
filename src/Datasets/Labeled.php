@@ -80,16 +80,15 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($iterator as $record) {
-            $samples[] = array_slice($record, 0, -1);
-            $labels[] = end($record);
+            $labels[] = array_pop($record);
+            $samples[] = $record;
         }
 
         return self::build($samples, $labels);
     }
 
     /**
-     * Stack a number of datasets on top of each other to form a single
-     * dataset.
+     * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled[] $datasets
      * @throws \InvalidArgumentException

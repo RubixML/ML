@@ -19,6 +19,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -325,6 +326,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
 
         return array_map([$this, 'membership'], $dataset->samples());
     }

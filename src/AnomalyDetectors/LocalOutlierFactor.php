@@ -16,6 +16,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -96,6 +97,13 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      * @var float|null
      */
     protected $threshold;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
 
     /**
      * @param int $k
@@ -212,6 +220,8 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
         }
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
+
+        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -234,9 +244,11 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function rank(Dataset $dataset) : array
     {
-        if ($this->tree->bare() or empty($this->lrds)) {
+        if ($this->tree->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         return array_map([$this, 'localOutlierFactor'], $dataset->samples());
     }

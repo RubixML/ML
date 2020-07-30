@@ -16,6 +16,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -291,6 +292,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+
         $jll = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
         return array_map('Rubix\ML\argmax', $jll);
@@ -308,6 +311,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         if (!$this->means or !$this->variances) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, count(current($this->means)));
 
         $probabilities = [];
 

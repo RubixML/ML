@@ -14,6 +14,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -58,6 +59,13 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable, Stringabl
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
     protected $tree;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
 
     /**
      * @param int $k
@@ -146,6 +154,8 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable, Stringabl
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
+        $this->featureCount = $dataset->numColumns();
+
         $this->tree->grow($dataset);
     }
 
@@ -158,9 +168,11 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable, Stringabl
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
+        if ($this->tree->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = [];
 
