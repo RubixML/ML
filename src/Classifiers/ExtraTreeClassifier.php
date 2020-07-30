@@ -18,6 +18,7 @@ use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -53,19 +54,19 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     protected $classes;
 
     /**
-     * @param int $maxDepth
+     * @param int $maxHeight
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $maxDepth = PHP_INT_MAX,
+        int $maxHeight = PHP_INT_MAX,
         int $maxLeafSize = 3,
         ?int $maxFeatures = null,
         float $minPurityIncrease = 1e-7
     ) {
-        parent::__construct($maxDepth, $maxLeafSize, $maxFeatures, $minPurityIncrease);
+        parent::__construct($maxHeight, $maxLeafSize, $maxFeatures, $minPurityIncrease);
     }
 
     /**
@@ -99,7 +100,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     public function params() : array
     {
         return [
-            'max_depth' => $this->maxDepth,
+            'max_height' => $this->maxHeight,
             'max_leaf_size' => $this->maxLeafSize,
             'max_features' => $this->maxFeatures,
             'min_purity_increase' => $this->minPurityIncrease,
@@ -147,9 +148,11 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = [];
 
@@ -173,9 +176,11 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !$this->classes) {
+        if ($this->bare() or !$this->classes or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $probabilities = [];
 

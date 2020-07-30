@@ -3,7 +3,7 @@
 # Gradient Boost
 Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set.
 
-> **Note:** The default base regressor is a [Dummy Regressor](dummy-regressor.md) using the [Mean](../other/strategies/mean.md) strategy and the default booster is a [Regression Tree](regression-tree.md) with a max depth of 3.
+> **Note:** The default base regressor is a [Dummy Regressor](dummy-regressor.md) using the [Mean](../other/strategies/mean.md) strategy and the default booster is a [Regression Tree](regression-tree.md) with a max height of 3.
 
 > **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
 

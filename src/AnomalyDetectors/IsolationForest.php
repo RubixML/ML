@@ -203,12 +203,12 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
         $k = $this->ratio ? (int) ceil($this->ratio * $n)
             : min(self::DEFAULT_SUBSAMPLE, $n);
 
-        $maxDepth = (int) max(1, round(log($k, 2)));
+        $maxHeight = (int) max(1, round(log($k, 2)));
 
         $this->trees = [];
 
         while (count($this->trees) < $this->estimators) {
-            $tree = new ITree($maxDepth);
+            $tree = new ITree($maxHeight);
 
             $subset = $dataset->randomSubset($k);
 

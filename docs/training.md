@@ -34,7 +34,7 @@ $estimator->train($dataset);
 ```
 
 ```sh
-[2020-07-12 23:52:59] housing.INFO: Learner init Gradient Boost {booster: Regression Tree {max_depth: 4, max_leaf_size: 3, max_features: null, min_purity_increase: 1.0E-7}, rate: 0.1, ratio: 0
+[2020-07-12 23:52:59] housing.INFO: Learner init Gradient Boost {booster: Regression Tree {max_height: 4, max_leaf_size: 3, max_features: null, min_purity_increase: 1.0E-7}, rate: 0.1, ratio: 0
 .5, estimators: 1000, min_change: 0.0001, window: 10, hold_out: 0.1, metric: RMSE, base: Dummy Regressor {strategy: Mean}}
 [2020-07-12 23:52:59] housing.INFO: Training started
 [2020-07-12 23:52:59] housing.INFO: Training base learner

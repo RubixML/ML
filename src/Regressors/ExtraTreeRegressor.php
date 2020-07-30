@@ -17,6 +17,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -43,19 +44,19 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     use PredictsSingle;
 
     /**
-     * @param int $maxDepth
+     * @param int $maxHeight
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $maxDepth = PHP_INT_MAX,
+        int $maxHeight = PHP_INT_MAX,
         int $maxLeafSize = 3,
         ?int $maxFeatures = null,
         float $minPurityIncrease = 1e-7
     ) {
-        parent::__construct($maxDepth, $maxLeafSize, $maxFeatures, $minPurityIncrease);
+        parent::__construct($maxHeight, $maxLeafSize, $maxFeatures, $minPurityIncrease);
     }
 
     /**
@@ -89,7 +90,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     public function params() : array
     {
         return [
-            'max_depth' => $this->maxDepth,
+            'max_height' => $this->maxHeight,
             'max_leaf_size' => $this->maxLeafSize,
             'max_features' => $this->maxFeatures,
             'min_purity_increase' => $this->minPurityIncrease,
@@ -136,9 +137,11 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetHasDimensionality::check($dataset, $this->featureCount);
 
         $predictions = [];
 

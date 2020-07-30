@@ -1,7 +1,7 @@
 - Unreleased
     - Allow hyphens and apostrophes in Word Tokenizer
     - Dataset conversion methods now return an Encoding object
-    - Encodings are writeable to disk
+    - Encodings are now writeable to disk
     - Allow classes to be selected for Confusion Matrix
     - Fixed divide by zero in Multiclass Breakdown
     - Changed Random Projector minDimensions default max distortion
@@ -10,6 +10,7 @@
     - Fixed randomize empty dataset object
     - Removed setPersister method from Persistent Model
     - Added Dataset Has Dimensionality Specification
+    - Changed name of Tree max depth parameter to max height
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

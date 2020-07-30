@@ -58,7 +58,7 @@ var_dump($estimator->params());
 
 ```sh
 array(4) {
-  ["max_depth"]=> int(10)
+  ["max_height"]=> int(10)
   ["max_leaf_size"]=> int(2)
   ["max_features"]=> int(3)
   ["min_purity_increase"]=> float(1.0E-7)

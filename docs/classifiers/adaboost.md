@@ -3,7 +3,7 @@
 # AdaBoost
 Short for *Adaptive Boosting*, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. It builds an additive model where, at each stage, a new learner is trained and given an influence score inversely proportional to the loss it incurs at that epoch.
 
-> **Note:** The default base learner is a [Classification Tree](classifiers/classification-tree) with a max depth of 1 i.e a *Decision Stump*.
+> **Note:** The default base learner is a [Classification Tree](classifiers/classification-tree) with a max height of 1 i.e a *Decision Stump*.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 

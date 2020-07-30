@@ -41,7 +41,7 @@ class ITree implements BinaryTree
      *
      * @var int
      */
-    protected $maxDepth;
+    protected $maxHeight;
 
     /**
      * Calculate the average path length of an unsuccessful search among n nodes.
@@ -64,17 +64,17 @@ class ITree implements BinaryTree
     }
 
     /**
-     * @param int $maxDepth
+     * @param int $maxHeight
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX)
+    public function __construct(int $maxHeight = PHP_INT_MAX)
     {
-        if ($maxDepth < 1) {
+        if ($maxHeight < 1) {
             throw new InvalidArgumentException('A tree cannot have a depth'
-                . " of less than 1, $maxDepth given.");
+                . " of less than 1, $maxHeight given.");
         }
 
-        $this->maxDepth = $maxDepth;
+        $this->maxHeight = $maxHeight;
     }
 
     /**
@@ -130,7 +130,7 @@ class ITree implements BinaryTree
 
             ++$depth;
 
-            if ($depth >= $this->maxDepth) {
+            if ($depth >= $this->maxHeight) {
                 $current->attachLeft(Cell::terminate($left, $depth));
                 $current->attachRight(Cell::terminate($right, $depth));
 

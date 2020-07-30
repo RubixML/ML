@@ -36,7 +36,7 @@ use const Rubix\ML\EPSILON;
  * is instantiated and trained.
  *
  * > **Note**: The default base classifier is a *Decision Stump* i.e a
- * Classification Tree with a max depth of 1.
+ * Classification Tree with a max height of 1.
  *
  * References:
  * [1] Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line

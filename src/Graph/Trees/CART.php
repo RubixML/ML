@@ -48,7 +48,7 @@ abstract class CART
      *
      * @var int
      */
-    protected $maxDepth;
+    protected $maxHeight;
 
     /**
      * The maximum number of samples that a leaf node can contain.
@@ -100,21 +100,21 @@ abstract class CART
     protected $columns = [];
 
     /**
-     * @param int $maxDepth
+     * @param int $maxHeight
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $maxDepth,
+        int $maxHeight,
         int $maxLeafSize,
         ?int $maxFeatures,
         float $minPurityIncrease
     ) {
-        if ($maxDepth < 1) {
+        if ($maxHeight < 1) {
             throw new InvalidArgumentException('Tree must have'
-                . " depth greater than 0, $maxDepth given.");
+                . " depth greater than 0, $maxHeight given.");
         }
 
         if ($maxLeafSize < 1) {
@@ -132,7 +132,7 @@ abstract class CART
                 . " feature to determine a split, $maxFeatures given.");
         }
 
-        $this->maxDepth = $maxDepth;
+        $this->maxHeight = $maxHeight;
         $this->maxLeafSize = $maxLeafSize;
         $this->minPurityIncrease = $minPurityIncrease;
         $this->maxFeatures = $maxFeatures;
@@ -222,7 +222,7 @@ abstract class CART
                 continue 1;
             }
 
-            if ($depth >= $this->maxDepth) {
+            if ($depth >= $this->maxHeight) {
                 $current->attachLeft($this->terminate($left));
                 $current->attachRight($this->terminate($right));
 

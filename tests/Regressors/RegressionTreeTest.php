@@ -128,7 +128,7 @@ class RegressionTreeTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'max_depth' => 10,
+            'max_height' => 10,
             'max_leaf_size' => 2,
             'max_features' => 3,
             'min_purity_increase' => 1.0E-7,

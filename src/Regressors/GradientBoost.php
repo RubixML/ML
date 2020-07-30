@@ -41,7 +41,7 @@ use function in_array;
  * the ratio of samples to subsample uniformly at random from the training set.
  *
  * > **Note**: The default base classifier is a Dummy Classifier using the Mean strategy
- * and the default booster is a Regression Tree with a max depth of 3.
+ * and the default booster is a Regression Tree with a max height of 3.
  *
  * References:
  * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient
