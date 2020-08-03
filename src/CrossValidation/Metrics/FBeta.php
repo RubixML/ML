@@ -42,7 +42,7 @@ class FBeta implements Metric, Stringable
      */
     public static function precision(int $tp, int $fp) : float
     {
-        return $tp / ($tp + $fp);
+        return $tp / (($tp + $fp) ?: EPSILON);
     }
 
     /**
@@ -54,7 +54,7 @@ class FBeta implements Metric, Stringable
      */
     public static function recall(int $tp, int $fn) : float
     {
-        return $tp / ($tp + $fn);
+        return $tp / (($tp + $fn) ?: EPSILON);
     }
 
     /**

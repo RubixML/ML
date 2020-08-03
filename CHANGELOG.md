@@ -3,7 +3,7 @@
     - Dataset conversion methods now return an Encoding object
     - Encodings are now writeable to disk
     - Allow classes to be selected for Confusion Matrix
-    - Fixed divide by zero in Multiclass Breakdown
+    - Fixed divide by zero in Multiclass Breakdown report
     - Changed Random Projector minDimensions default max distortion
     - Fixed Naive Bayes user-defined class prior probabilities
     - Internal CV Learners now check for sufficient hold out data
@@ -11,6 +11,7 @@
     - Removed setPersister method from Persistent Model
     - Added Dataset Has Dimensionality Specification
     - Changed name of Tree max depth parameter to max height
+    - Fixed F Beta division by zero
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners
