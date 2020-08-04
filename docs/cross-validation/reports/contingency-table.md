@@ -19,7 +19,7 @@ $result = $report->generate($predictions, $labels);
 echo $result;
 ```
 
-```sh
+```json
 [
     {
         "lamb": 11,

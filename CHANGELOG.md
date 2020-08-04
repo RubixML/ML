@@ -1,5 +1,6 @@
 - Unreleased
     - CV Report Generators now return Report objects
+    - Dataset describe methods now return Report objects
     - Allow hyphens and apostrophes in Word Tokenizer
     - Dataset conversion methods now return an Encoding object
     - Encodings are now writeable to disk

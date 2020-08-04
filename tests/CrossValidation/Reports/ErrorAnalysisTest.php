@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
-use Rubix\ML\CrossValidation\Reports\Results\Report;
+use Rubix\ML\Report;
 use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use PHPUnit\Framework\TestCase;
 use Generator;

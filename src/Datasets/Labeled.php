@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
@@ -922,26 +923,26 @@ class Labeled extends Dataset
     /**
      * Describe the features of the dataset broken down by label.
      *
-     * @return mixed[]
+     * @return \Rubix\ML\Report
      */
-    public function describeByLabel() : array
+    public function describeByLabel() : Report
     {
         $stats = [];
 
         foreach ($this->stratify() as $label => $stratum) {
-            $stats[$label] = $stratum->describe();
+            $stats[$label] = $stratum->describe()->toArray();
         }
 
-        return $stats;
+        return new Report($stats);
     }
 
     /**
      * Return an array of descriptive statistics about the labels in the
      * dataset.
      *
-     * @return mixed[]
+     * @return \Rubix\ML\Report
      */
-    public function describeLabels() : array
+    public function describeLabels() : Report
     {
         $type = $this->labelType();
 
@@ -991,7 +992,7 @@ class Labeled extends Dataset
                 break 1;
         }
 
-        return $desc;
+        return new Report($desc);
     }
 
     /**
@@ -1007,7 +1008,7 @@ class Labeled extends Dataset
     /**
      * Return a row from the dataset at the given offset.
      *
-     * @param mixed $offset
+     * @param int $offset
      * @throws \InvalidArgumentException
      * @return mixed[]
      */

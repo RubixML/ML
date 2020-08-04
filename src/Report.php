@@ -1,8 +1,7 @@
 <?php
 
-namespace Rubix\ML\CrossValidation\Reports\Results;
+namespace Rubix\ML;
 
-use Rubix\ML\Encoding;
 use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;

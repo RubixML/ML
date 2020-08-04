@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\CrossValidation\Reports\Results\Report;
+use Rubix\ML\Report;
 use InvalidArgumentException;
 
 use function count;
@@ -43,7 +43,7 @@ class ErrorAnalysis implements ReportGenerator
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
+     * @return \Rubix\ML\Report
      */
     public function generate(array $predictions, array $labels) : Report
     {

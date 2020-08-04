@@ -333,43 +333,37 @@ public dropColumns(array $indices) : self
 ## Descriptive Statistics
 Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
 ```php
-public describe() : array
+public describe() : Report
 ```
 
 ```php
-print_r($dataset->describe());
+echo $dataset->describe();
 ```
 
-```sh
-Array
-(
-    [2] => Array
-        (
-            [type] => categorical
-            [num_categories] => 2
-            [probabilities] => Array
-                (
-                    [friendly] => 0.66666666666667
-                    [loner] => 0.33333333333333
-                )
-
-        )
-
-    [3] => Array
-        (
-            [type] => continuous
-            [mean] => 0.33333333333333
-            [variance] => 9.7922222222222
-            [std_dev] => 3.1292526619342
-            [skewness] => -0.44810308436906
-            [kurtosis] => -1.1330702741786
-            [min] => -5
-            [25%] => -1.375
-            [median] => 0.8
-            [75%] => 2.825
-            [max] => 4
-        )
-)
+```json
+[
+    {
+        "type": "categorical",
+        "num_categories": 2,
+        "probabilities": {
+            "friendly": 0.6666666666666666,
+            "loner": 0.3333333333333333
+        }
+    },
+    {
+        "type": "continuous",
+        "mean": 0.3333333333333333,
+        "variance": 9.792222222222222,
+        "std_dev": 3.129252661934191,
+        "skewness": -0.4481030843690633,
+        "kurtosis": -1.1330702741786107,
+        "min": -5,
+        "25%": -1.375,
+        "median": 0.8,
+        "75%": 2.825,
+        "max": 4
+    }
+]
 ```
 
 ## De-duplication

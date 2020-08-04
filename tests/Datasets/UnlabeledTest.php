@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Datasets;
 
+use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
@@ -205,6 +206,18 @@ class UnlabeledTest extends TestCase
         $expected = array_transpose(self::SAMPLES);
 
         $this->assertEquals($expected, $this->dataset->columns());
+    }
+
+    /**
+     * @test
+     */
+    public function transformColumn() : void
+    {
+        $dataset = $this->dataset->transformColumn(3, 'abs');
+
+        $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
+
+        $this->assertEquals($expected, $dataset->column(3));
     }
 
     /**
@@ -556,7 +569,7 @@ class UnlabeledTest extends TestCase
      */
     public function describe() : void
     {
-        $stats = $this->dataset->describe();
+        $results = $this->dataset->describe();
 
         $expected = [
             [
@@ -598,19 +611,8 @@ class UnlabeledTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected, $stats);
-    }
-
-    /**
-     * @test
-     */
-    public function transformColumn() : void
-    {
-        $dataset = $this->dataset->transformColumn(3, 'abs');
-
-        $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
-
-        $this->assertEquals($expected, $dataset->column(3));
+        $this->assertInstanceOf(Report::class, $results);
+        $this->assertEquals($expected, $results->toArray());
     }
 
     /**

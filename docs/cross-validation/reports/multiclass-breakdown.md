@@ -19,52 +19,77 @@ $results = $report->generate($predictions, $labels);
 echo $results;
 ```
 
-```sh
-...
-['wolf']=> array(21) {
-	['accuracy']=> float(0.6)
-	['accuracy_balanced']=> float(0.5833333333333333)
-	['f1_score']=> float(0.66666666666667)
-	['precision']=> float(0.66666666666667)
-	['recall']=> float(0.66666666666667)
-	['specificity']=> float(0.5)
-	['negative_predictive_value']=> float(0.5)
-	['false_discovery_rate']=> float(0.33333333333333)
-	['miss_rate']=> float(0.33333333333333)
-	['fall_out']=> float(0.5)
-	['false_omission_rate']=> float(0.5)
-	['threat_score']=> float(0.5)
-	['mcc']=> float(0.16666666666667)
-	['informedness']=> float(0.16666666666667)
-	['markedness']=> float(0.16666666666667)
-	['true_positives']=> int(2)
-	['true_negatives']=> int(1)
-	['false_positives']=> int(1)
-	['false_negatives']=> int(1)
-	['cardinality']=> int(3)
-	['proportion']=> float(0.6)
-}
-["lamb"]=> array(21) {
-	["accuracy"]=> float(0.6)
-	["accuracy_balanced"]=> float(0.58333333333333)
-	["f1_score"]=> float(0.5)
-	["precision"]=> float(0.5)
-	["recall"]=> float(0.5)
-	["specificity"]=> float(0.66666666666667)
-	["negative_predictive_value"]=> float(0.66666666666667)
-	["false_discovery_rate"]=> float(0.5)
-	["miss_rate"]=> float(0.5)
-	["fall_out"]=> float(0.33333333333333)
-	["false_omission_rate"]=> float(0.33333333333333)
-	["threat_score"]=> float(0.33333333333333)
-	["informedness"]=> float(0.16666666666667)
-	["markedness"]=> float(0.16666666666667)
-	["mcc"]=> float(0.16666666666667)
-	["true_positives"]=> int(1)
-	["true_negatives"]=> int(2)
-	["false_positives"]=> int(1)
-	["false_negatives"]=> int(1)
-	["cardinality"]=> int(2)
-	["proportion"]=> float(0.4)
+```json
+{
+    "overall": {
+        "accuracy": 0.6,
+        "accuracy_balanced": 0.5833333333333333,
+        "f1_score": 0.5833333333333333,
+        "precision": 0.5833333333333333,
+        "recall": 0.5833333333333333,
+        "specificity": 0.5833333333333333,
+        "negative_predictive_value": 0.5833333333333333,
+        "false_discovery_rate": 0.4166666666666667,
+        "miss_rate": 0.4166666666666667,
+        "fall_out": 0.4166666666666667,
+        "false_omission_rate": 0.4166666666666667,
+        "threat_score": 0.41666666666666663,
+        "mcc": 0.16666666666666666,
+        "informedness": 0.16666666666666652,
+        "markedness": 0.16666666666666652,
+        "true_positives": 3,
+        "true_negatives": 3,
+        "false_positives": 2,
+        "false_negatives": 2,
+        "cardinality": 5
+    },
+    "classes": {
+        "wolf": {
+            "accuracy": 0.6,
+            "accuracy_balanced": 0.5833333333333333,
+            "f1_score": 0.6666666666666666,
+            "precision": 0.6666666666666666,
+            "recall": 0.6666666666666666,
+            "specificity": 0.5,
+            "negative_predictive_value": 0.5,
+            "false_discovery_rate": 0.33333333333333337,
+            "miss_rate": 0.33333333333333337,
+            "fall_out": 0.5,
+            "false_omission_rate": 0.5,
+            "threat_score": 0.5,
+            "informedness": 0.16666666666666652,
+            "markedness": 0.16666666666666652,
+            "mcc": 0.16666666666666666,
+            "true_positives": 2,
+            "true_negatives": 1,
+            "false_positives": 1,
+            "false_negatives": 1,
+            "cardinality": 3,
+            "proportion": 0.6
+        },
+        "lamb": {
+            "accuracy": 0.6,
+            "accuracy_balanced": 0.5833333333333333,
+            "f1_score": 0.5,
+            "precision": 0.5,
+            "recall": 0.5,
+            "specificity": 0.6666666666666666,
+            "negative_predictive_value": 0.6666666666666666,
+            "false_discovery_rate": 0.5,
+            "miss_rate": 0.5,
+            "fall_out": 0.33333333333333337,
+            "false_omission_rate": 0.33333333333333337,
+            "threat_score": 0.3333333333333333,
+            "informedness": 0.16666666666666652,
+            "markedness": 0.16666666666666652,
+            "mcc": 0.16666666666666666,
+            "true_positives": 1,
+            "true_negatives": 2,
+            "false_positives": 1,
+            "false_negatives": 1,
+            "cardinality": 2,
+            "proportion": 0.4
+        }
+    }
 }
 ```

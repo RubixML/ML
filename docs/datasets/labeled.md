@@ -154,99 +154,82 @@ public sortByLabel(bool $descending = false) : self
 
 ### Describe by Label
 Describe the features of the dataset broken down by label:
-Return an array of descriptive statistics about the labels in the dataset:
 ```php
-public describeByLabel() : array
+public describeByLabel() : Report
 ```
 
 ```php
-print_r($dataset->describeByLabel());
+echo $dataset->describeByLabel();
 ```
 
-```sh
-Array
-(
-    [not monster] => Array
-        (
-            [0] => Array
-                (
-                    [type] => categorical
-                    [num_categories] => 1
-                    [probabilities] => Array
-                        (
-                            [nice] => 1
-                        )
-
-                )
-
-            [1] => Array
-                (
-                    [type] => categorical
-                    [num_categories] => 2
-                    [probabilities] => Array
-                        (
-                            [furry] => 0.5
-                            [rough] => 0.5
-                        )
-
-                )
-
-            [2] => Array
-                (
-                    [type] => categorical
-                    [num_categories] => 2
-                    [probabilities] => Array
-                        (
-                            [friendly] => 0.75
-                            [loner] => 0.25
-                        )
-
-                )
-
-            [3] => Array
-                (
-                    [type] => continuous
-                    [mean] => 1.125
-                    [variance] => 12.776875
-                    [std_dev] => 3.5744754859979
-                    [skewness] => -1.0795676577114
-                    [kurtosis] => -0.71758677657925
-                    [min] => -5
-                    [25%] => 0.7
-                    [median] => 2.75
-                    [75%] => 3.175
-                    [max] => 4
-                )
-
-        )
-
-    [monster] => Array
-        (
-            ...
-        )
-)
+```json
+{
+    "not monster": [
+        {
+            "type": "categorical",
+            "num_categories": 2,
+            "probabilities": {
+                "friendly": 0.75,
+                "loner": 0.25
+            }
+        },
+        {
+            "type": "continuous",
+            "mean": 1.125,
+            "variance": 12.776875,
+            "std_dev": 3.574475485997911,
+            "skewness": -1.0795676577113944,
+            "kurtosis": -0.7175867765792474,
+            "min": -5,
+            "25%": 0.6999999999999993,
+            "median": 2.75,
+            "75%": 3.175,
+            "max": 4
+        }
+    ],
+    "monster": [
+        {
+            "type": "categorical",
+            "num_categories": 2,
+            "probabilities": {
+                "loner": 0.5,
+                "friendly": 0.5
+            }
+        },
+        {
+            "type": "continuous",
+            "mean": -1.25,
+            "variance": 0.0625,
+            "std_dev": 0.25,
+            "skewness": 0,
+            "kurtosis": -2,
+            "min": -1.5,
+            "25%": -1.375,
+            "median": -1.25,
+            "75%": -1.125,
+            "max": -1
+        }
+    ]
+}
 ```
 
 ### Describe the Labels
 Return an array of descriptive statistics about the labels in the dataset:
 ```php
-public describeLabels() : array
+public describeLabels() : Report
 ```
 
 ```php
-print_r($dataset->describeLabels());
+echo $dataset->describeLabels();
 ```
 
-```sh
-Array
-(
-    [type] => categorical
-    [num_categories] => 2
-    [probabilities] => Array
-        (
-            [monster] => 0.33333333333333
-            [not monster] => 0.66666666666667
-        )
-
-)
+```json
+{
+    "type": "categorical",
+    "num_categories": 2,
+    "probabilities": {
+        "not monster": 0.6666666666666666,
+        "monster": 0.3333333333333333
+    }
+}
 ```

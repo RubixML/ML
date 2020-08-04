@@ -19,25 +19,25 @@ $results = $report->generate($predictions, $labels);
 echo $results;
 ```
 
-```sh
-array(18) {
-  ["mean_absolute_error"]=> float(0.8)
-  ["median_absolute_error"]=> float(1)
-  ["mean_squared_error"]=> float(1)
-  ["mean_absolute_percentage_error"]=> float(14.020774976657)
-  ["rms_error"]=> float(1)
-  ["mean_squared_log_error"]=> float(0.019107097505647)
-  ["r_squared"]=> float(0.99589305515627)
-  ["error_mean"]=> float(-0.2)
-  ["error_midrange"]=> float(-0.5)
-  ["error_median"]=> float(0)
-  ["error_variance"]=> float(0.96)
-  ["error_mad"]=> float(1)
-  ["error_iqr"]=> float(2)
-  ["error_skewness"]=> float(-0.22963966338592)
-  ["error_kurtosis"]=> float(-1.0520833333333)
-  ["error_min"]=> int(-2)
-  ["error_max"]=> int(1)
-  ["cardinality"]=> int(10)
+```json
+{
+    "mean_absolute_error": 0.18220216502615122,
+    "median_absolute_error": 0.17700000000000005,
+    "mean_squared_error": 0.05292430893457563,
+    "mean_absolute_percentage_error": 18.174348688407402,
+    "rms_error": 0.23005283944036775,
+    "mean_squared_log_error": 51.96853354084834,
+    "r_squared": 0.9999669635675313,
+    "error_mean": -0.07112216502615118,
+    "error_midrange": -0.12315541256537399,
+    "error_median": 0.0007000000000000001,
+    "error_variance": 0.04786594657656853,
+    "error_mad": 0.17630000000000004,
+    "error_iqr": 0.455155412565378,
+    "error_skewness": -0.49093461098755187,
+    "error_kurtosis": -1.216490935575394,
+    "error_min": -0.423310825130748,
+    "error_max": 0.17700000000000005,
+    "cardinality": 5
 }
 ```

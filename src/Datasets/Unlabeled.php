@@ -588,7 +588,7 @@ class Unlabeled extends Dataset
     /**
      * Return a row from the dataset at the given offset.
      *
-     * @param mixed $offset
+     * @param int $offset
      * @throws \InvalidArgumentException
      * @return array[]
      */

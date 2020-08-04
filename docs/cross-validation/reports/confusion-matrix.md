@@ -23,7 +23,7 @@ $result = $report->generate($predictions, $labels);
 echo $result;
 ```
 
-```sh
+```json
 {
     "dog": {
         "dog": 12,

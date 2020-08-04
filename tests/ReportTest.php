@@ -1,7 +1,8 @@
 <?php
 
-namespace Rubix\ML\CrossValidation\Reports\Results;
+namespace Rubix\ML\Tests;
 
+use Rubix\ML\Report;
 use Rubix\ML\Encoding;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
@@ -11,12 +12,12 @@ use Stringable;
 
 /**
  * @group Results
- * @covers \Rubix\ML\CrossValidation\Reports\Results\Report
+ * @covers \Rubix\ML\Report
  */
 class ReportTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\Results\Report
+     * @var \Rubix\ML\Report
      */
     protected $results;
 

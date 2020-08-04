@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
 use Rubix\ML\Other\Helpers\Stats;
@@ -409,9 +410,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.
      *
-     * @return mixed[]
+     * @return \Rubix\ML\Report
      */
-    public function describe() : array
+    public function describe() : Report
     {
         $stats = [];
 
@@ -469,7 +470,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
             $stats[] = $desc;
         }
 
-        return $stats;
+        return new Report($stats);
     }
 
     /**
@@ -696,7 +697,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * @param mixed $offset
+     * @param int $offset
      * @param mixed[] $values
      * @throws \RuntimeException
      */
@@ -708,7 +709,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Does a given row exist in the dataset.
      *
-     * @param mixed $offset
+     * @param int $offset
      * @return bool
      */
     public function offsetExists($offset) : bool
@@ -717,7 +718,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * @param mixed $offset
+     * @param int $offset
      * @throws \RuntimeException
      */
     public function offsetUnset($offset) : void
