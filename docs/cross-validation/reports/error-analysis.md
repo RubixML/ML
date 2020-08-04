@@ -14,9 +14,9 @@ use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
 
 $report = new ErrorAnalysis();
 
-$result = $report->generate($predictions, $labels);
+$results = $report->generate($predictions, $labels);
 
-var_dump($result);
+echo $results;
 ```
 
 ```sh

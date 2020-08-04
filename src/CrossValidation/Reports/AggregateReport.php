@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Reports;
 
+use Rubix\ML\CrossValidation\Reports\Results\Report;
 use InvalidArgumentException;
 
 use function count;
@@ -9,19 +10,19 @@ use function count;
 /**
  * Aggregate Report
  *
- * A report that aggregates the output of multiple reports.
+ * A report generator that aggregates the output of multiple reports.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AggregateReport implements Report
+class AggregateReport implements ReportGenerator
 {
     /**
      * The report middleware stack. i.e. the reports to generate when the reports
      * method is called.
      *
-     * @var \Rubix\ML\CrossValidation\Reports\Report[]
+     * @var \Rubix\ML\CrossValidation\Reports\ReportGenerator[]
      */
     protected $reports = [
         //
@@ -35,7 +36,7 @@ class AggregateReport implements Report
     protected $compatibility;
 
     /**
-     * @param \Rubix\ML\CrossValidation\Reports\Report[] $reports
+     * @param \Rubix\ML\CrossValidation\Reports\ReportGenerator[] $reports
      * @throws \InvalidArgumentException
      */
     public function __construct(array $reports)
@@ -48,9 +49,9 @@ class AggregateReport implements Report
         $compatibilities = [];
 
         foreach ($reports as $report) {
-            if (!$report instanceof Report) {
+            if (!$report instanceof ReportGenerator) {
                 throw new InvalidArgumentException('Sub report must'
-                    . ' implement the Report interface.');
+                    . ' implement the ReportGenerator interface.');
             }
 
             $compatibilities[] = $report->compatibility();
@@ -83,9 +84,9 @@ class AggregateReport implements Report
      *
      * @param (string|int|float)[] $predictions
      * @param (string|int|float)[] $labels
-     * @return mixed[]
+     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(array $predictions, array $labels) : Report
     {
         $report = [];
 
@@ -93,6 +94,6 @@ class AggregateReport implements Report
             $report[$name] = $subReport->generate($predictions, $labels);
         }
 
-        return $report;
+        return new Report($report);
     }
 }

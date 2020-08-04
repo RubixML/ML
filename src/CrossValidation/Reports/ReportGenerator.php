@@ -2,7 +2,9 @@
 
 namespace Rubix\ML\CrossValidation\Reports;
 
-interface Report
+use Rubix\ML\CrossValidation\Reports\Results\Report;
+
+interface ReportGenerator
 {
     /**
      * The estimator types that this report is compatible with.
@@ -16,7 +18,7 @@ interface Report
      *
      * @param (string|int|float)[] $predictions
      * @param (string|int|float)[] $labels
-     * @return mixed[]
+     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
      */
-    public function generate(array $predictions, array $labels) : array;
+    public function generate(array $predictions, array $labels) : Report;
 }

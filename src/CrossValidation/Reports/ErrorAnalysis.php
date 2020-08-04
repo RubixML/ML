@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\CrossValidation\Reports\Results\Report;
 use InvalidArgumentException;
 
 use function count;
@@ -22,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ErrorAnalysis implements Report
+class ErrorAnalysis implements ReportGenerator
 {
     /**
      * The estimator types that this report is compatible with.
@@ -42,9 +43,9 @@ class ErrorAnalysis implements Report
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
      * @throws \InvalidArgumentException
-     * @return mixed[]
+     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(array $predictions, array $labels) : Report
     {
         if (count($predictions) !== count($labels)) {
             throw new InvalidArgumentException('Number of predictions'
@@ -79,7 +80,7 @@ class ErrorAnalysis implements Report
         $min = min($errors);
         $max = max($errors);
 
-        return [
+        return new Report([
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
@@ -98,6 +99,6 @@ class ErrorAnalysis implements Report
             'error_min' => $min,
             'error_max' => $max,
             'cardinality' => count($predictions),
-        ];
+        ]);
     }
 }

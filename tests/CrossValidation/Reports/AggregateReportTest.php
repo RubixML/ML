@@ -3,7 +3,8 @@
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use Rubix\ML\EstimatorType;
-use Rubix\ML\CrossValidation\Reports\Report;
+use Rubix\ML\CrossValidation\Reports\Results\Report;
+use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
@@ -26,8 +27,8 @@ class AggregateReportTest extends TestCase
     protected function setUp() : void
     {
         $this->report = new AggregateReport([
-            new ConfusionMatrix(),
-            new MulticlassBreakdown(),
+            'matrix' => new ConfusionMatrix(),
+            'breakdown' => new MulticlassBreakdown(),
         ]);
     }
 
@@ -37,7 +38,7 @@ class AggregateReportTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(AggregateReport::class, $this->report);
-        $this->assertInstanceOf(Report::class, $this->report);
+        $this->assertInstanceOf(ReportGenerator::class, $this->report);
     }
 
     /**
@@ -64,7 +65,7 @@ class AggregateReportTest extends TestCase
 
         $result = $this->report->generate($predictions, $labels);
 
-        $this->assertIsArray($result);
-        $this->assertCount(2, $result);
+        $this->assertInstanceOf(Report::class, $result);
+        $this->assertCount(2, $result->toArray());
     }
 }

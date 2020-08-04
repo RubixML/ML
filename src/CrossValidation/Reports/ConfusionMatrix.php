@@ -4,6 +4,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\CrossValidation\Reports\Results\Report;
 use InvalidArgumentException;
 
 use function count;
@@ -19,7 +20,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ConfusionMatrix implements Report
+class ConfusionMatrix implements ReportGenerator
 {
     /**
      * The classes to include in the report.
@@ -55,9 +56,9 @@ class ConfusionMatrix implements Report
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(array $predictions, array $labels) : Report
     {
         if (count($predictions) !== count($labels)) {
             throw new InvalidArgumentException('Number of predictions'
@@ -84,6 +85,6 @@ class ConfusionMatrix implements Report
             }
         }
 
-        return $matrix;
+        return new Report($matrix);
     }
 }

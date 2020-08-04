@@ -12,34 +12,22 @@ This report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
-// Import labels and make predictions
-
 $report = new ContingencyTable();
 
 $result = $report->generate($predictions, $labels);
 
-var_dump($result);
+echo $result;
 ```
 
 ```sh
-array(3) {
-  [0]=>
-    array(3) {
-      ["dog"]=> int(13)
-      ["frog"]=> int(0)
-      ["cat"]=> int(2)
+[
+    {
+        "lamb": 11,
+        "wolf": 2
+    },
+    {
+        "lamb": 1,
+        "wolf": 5
     }
-  [1]=>
-    array(3) {
-      ["dog"]=> int(1)
-      ["frog"]=> int(0)
-      ["cat"]=> int(12)
-    }
-  [2]=>
-    array(3) {
-      ["dog"]=> int(0)
-      ["frog"]=> int(14)
-      ["cat"]=> int(0)
-    }
-  }
+]
 ```

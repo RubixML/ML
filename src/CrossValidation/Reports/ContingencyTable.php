@@ -4,6 +4,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\CrossValidation\Reports\Results\Report;
 use InvalidArgumentException;
 
 /**
@@ -17,7 +18,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ContingencyTable implements Report
+class ContingencyTable implements ReportGenerator
 {
     /**
      * The estimator types that this report is compatible with.
@@ -37,9 +38,9 @@ class ContingencyTable implements Report
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return \Rubix\ML\CrossValidation\Reports\Results\Report
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(array $predictions, array $labels) : Report
     {
         if (count($predictions) !== count($labels)) {
             throw new InvalidArgumentException('Number of predictions'
@@ -55,6 +56,6 @@ class ContingencyTable implements Report
             ++$table[$predictions[$i]][$class];
         }
 
-        return $table;
+        return new Report($table);
     }
 }

@@ -80,7 +80,7 @@ class RandIndex implements Metric, Stringable
             return 0.0;
         }
 
-        $table = Matrix::build((new ContingencyTable())->generate($labels, $predictions));
+        $table = Matrix::build((new ContingencyTable())->generate($labels, $predictions)->toArray());
 
         $sigma = $table->map([self::class, 'comb2'])->sum()->sum();
 

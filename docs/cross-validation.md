@@ -74,53 +74,77 @@ float(0.85)
 ```
 
 ## Reports
-Cross validation [Reports](cross-validation/reports/api.md) give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method takes a set of predictions and their corresponding ground-truth labels and returns an associative array (i.e. dictionary or map) filled with useful statistics.
+Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.
 
-### Classification and Anomaly Detection
+### Types of Reports
+
+**Classification and Anomaly Detection**
+
 - [Confusion Matrix](cross-validation/reports/confusion-matrix.md)
 - [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md)
 
-### Regression
+**Regression**
+
 - [Error Analysis](cross-validation/reports/error-analysis.md)
 
-### Clustering
+**Clustering**
+
 - [Contingency Table](cross-validation/reports/contingency-table.md)
 
-For example, the [Error Analysis](cross-validation/reports/error-analysis.md) report computes a variety of regression metrics.
+
+### Generating a Report
+To generate the report, pass the predictions made by an estimator and their ground-truth labels to the `generate()` method on the report generator instance.
 
 ```php
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
 
-$predictions = $estimator->predict($testing);
-
 $report = new ErrorAnalysis();
 
-$result = $report->generate($predictions, $testing->labels());
+$results = $report->generate($predictions, $labels);
+```
 
-var_dump($result);
+### Printing a Report
+The results of the report are returned in a [Report](cross-validation/reports/api.md#report-objects) object. Report objects implement the Stringable interface which means they can be cast to strings to output the human-readable form of the report.
+
+```php
+echo $results;
 ```
 
 ```sh
-array(18) {
-  ["mean_absolute_error"]=> float(0.8)
-  ["median_absolute_error"]=> float(1)
-  ["mean_squared_error"]=> float(1)
-  ["mean_absolute_percentage_error"]=> float(14.020774976657)
-  ["rms_error"]=> float(1)
-  ["mean_squared_log_error"]=> float(0.019107097505647)
-  ["r_squared"]=> float(0.99589305515627)
-  ["error_mean"]=> float(-0.2)
-  ["error_midrange"]=> float(-0.5)
-  ["error_median"]=> float(0)
-  ["error_variance"]=> float(0.96)
-  ["error_mad"]=> float(1)
-  ["error_iqr"]=> float(2)
-  ["error_skewness"]=> float(-0.22963966338592)
-  ["error_kurtosis"]=> float(-1.0520833333333)
-  ["error_min"]=> int(-2)
-  ["error_max"]=> int(1)
-  ["cardinality"]=> int(10)
-}
+{
+    "mean_absolute_error": 0.8,
+    "median_absolute_error": 1,
+    "mean_squared_error": 1,
+    "mean_absolute_percentage_error": 14.02077497665733,
+    "rms_error": 1,
+    "mean_squared_log_error": 0.019107097505647368,
+    "r_squared": 0.9958930551562692,
+    "error_mean": -0.2,
+    "error_midrange": -0.5,
+    "error_median": 0,
+    "error_variance": 0.9599999999999997,
+    "error_mad": 1,
+    "error_iqr": 2,
+    "error_skewness": -0.22963966338592326,
+    "error_kurtosis": -1.0520833333333324,
+    "error_min": -2,
+    "error_max": 1,
+    "cardinality": 10
+}.
+```
+
+## Accessing Report Attributes
+You can access individual report attributes by treating the report object as an associative array.
+
+```php
+$accuracy = $results['accuracy'];
+```
+
+### Saving a Report
+You may want to save the results of a report for later reference. To do so, you can call the `toJSON()` method on the report object and subsequently the `write()` method on the returned encoding.
+
+```php
+$results->toJSON()->write('report.json');
 ```
 
 ## Validators

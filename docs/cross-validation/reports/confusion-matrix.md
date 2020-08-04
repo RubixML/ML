@@ -20,25 +20,25 @@ $report = new ConfusionMatrix([
 
 $result = $report->generate($predictions, $labels);
 
-var_dump($result);
+echo $result;
 ```
 
 ```sh
-array(3) {
-  ["dog"]=> array(3) {
-    ["dog"]=> int(842)
-    ["cat"]=> int(5)
-    ["turtle"]=> int(0)
-  }
-  ["cat"]=> array(3) {
-    ["dog"]=> int(0)
-    ["cat"]=> int(783)
-    ["turtle"]=> int(3)
-  }
-  ["turtle"]=> array(2) {
-    ["dog"]=> int(31)
-    ["cat"]=> int(79)
-    ["turtle"]=> int(496)
-  }
+{
+    "dog": {
+        "dog": 12,
+        "cat": 3,
+        "turtle": 0
+    },
+    "cat": {
+        "dog": 2,
+        "cat": 9,
+        "turtle": 1
+    },
+    "turtle": {
+        "dog": 1,
+        "cat": 0,
+        "turtle": 11
+    }
 }
 ```

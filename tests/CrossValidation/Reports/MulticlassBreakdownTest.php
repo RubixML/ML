@@ -3,7 +3,8 @@
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use Rubix\ML\EstimatorType;
-use Rubix\ML\CrossValidation\Reports\Report;
+use Rubix\ML\CrossValidation\Reports\Results\Report;
+use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -33,7 +34,7 @@ class MulticlassBreakdownTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(MulticlassBreakdown::class, $this->report);
-        $this->assertInstanceOf(Report::class, $this->report);
+        $this->assertInstanceOf(ReportGenerator::class, $this->report);
     }
 
     /**
@@ -61,8 +62,8 @@ class MulticlassBreakdownTest extends TestCase
     {
         $result = $this->report->generate($predictions, $labels);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($expected, $result);
+        $this->assertInstanceOf(Report::class, $result);
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**

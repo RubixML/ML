@@ -1,0 +1,148 @@
+<?php
+
+namespace Rubix\ML\CrossValidation\Reports\Results;
+
+use Rubix\ML\Encoding;
+use InvalidArgumentException;
+use IteratorAggregate;
+use JsonSerializable;
+use RuntimeException;
+use ArrayAccess;
+use Stringable;
+use Generator;
+use Countable;
+
+/**
+ * Report
+ *
+ * The results of a cross-validation report.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ *
+ * @implements ArrayAccess<int, array>
+ * @implements IteratorAggregate<int, array>
+ */
+class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Stringable, Countable
+{
+    /**
+     * The attributes that make up the report.
+     *
+     * @var mixed[]
+     */
+    protected $attributes;
+
+    /**
+     * @param mixed[] $attributes
+     */
+    public function __construct(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * Return an array representation of the report.
+     *
+     * @return mixed[]
+     */
+    public function toArray() : array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Return a JSON representation of the report.
+     *
+     * @param bool $pretty
+     * @return \Rubix\ML\Encoding
+     */
+    public function toJSON(bool $pretty = true) : Encoding
+    {
+        return new Encoding(json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * @param string|int $key
+     * @param mixed[] $values
+     * @throws \RuntimeException
+     */
+    public function offsetSet($key, $values) : void
+    {
+        throw new RuntimeException('Reports cannot be mutated directly.');
+    }
+
+    /**
+     * Does a given row exist in the dataset.
+     *
+     * @param string|int $key
+     * @return bool
+     */
+    public function offsetExists($key) : bool
+    {
+        return isset($this->attributes[$key]);
+    }
+
+    /**
+     * Return an attribute from the report with the given key.
+     *
+     * @param string|int $key
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
+        }
+
+        throw new InvalidArgumentException("Attribute with key $key not found.");
+    }
+
+    /**
+     * @param string|int $key
+     * @throws \RuntimeException
+     */
+    public function offsetUnset($key) : void
+    {
+        throw new RuntimeException('Reports cannot be mutated directly.');
+    }
+
+    /**
+     * Get an iterator for the attributes in the report.
+     *
+     * @return \Generator<array>
+     */
+    public function getIterator() : Generator
+    {
+        yield from $this->attributes;
+    }
+
+    /**
+     * Return the number of level 1 attributes in the report.
+     *
+     * @return int
+     */
+    public function count() : int
+    {
+        return count($this->attributes);
+    }
+
+    /**
+     * Return the string representation of the report.
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return (string) $this->toJSON(true);
+    }
+}

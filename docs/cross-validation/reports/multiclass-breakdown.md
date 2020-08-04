@@ -14,9 +14,9 @@ use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 $report = new MulticlassBreakdown();
 
-$result = $report->generate($predictions, $labels);
+$results = $report->generate($predictions, $labels);
 
-var_dump($result['classes']);
+echo $results;
 ```
 
 ```sh

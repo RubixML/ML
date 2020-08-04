@@ -6,7 +6,7 @@ use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Backends
+ * @group Other
  * @covers \Rubix\ML\Deferred
  */
 class DeferredTest extends TestCase
