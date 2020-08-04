@@ -218,7 +218,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $probabilities[$class] = $count / $n;
         }
 
-        $impurity = 1.0 - (max($counts) / $n) ** 2;
+        $impurity = 1.0 - ($counts[$outcome] / $n) ** 2;
 
         return new Best($outcome, $probabilities, $impurity, $n);
     }

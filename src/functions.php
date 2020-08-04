@@ -36,6 +36,18 @@ namespace Rubix\ML
     }
 
     /**
+     * Compute n choose k.
+     *
+     * @param int $n
+     * @param int $k
+     * @return int
+     */
+    function comb(int $n, int $k) : int
+    {
+        return $k === 0 ? 1 : (int) (($n * comb($n - 1, $k - 1)) / $k);
+    }
+
+    /**
      * Transpose a 2-dimensional array i.e. rotate the data table.
      *
      * @param array[] $table
@@ -59,17 +71,5 @@ namespace Rubix\ML
             default:
                 return array_map(null, ...$table);
         }
-    }
-
-    /**
-     * Compute n choose k.
-     *
-     * @param int $n
-     * @param int $k
-     * @return int
-     */
-    function comb(int $n, int $k) : int
-    {
-        return $k === 0 ? 1 : (int) (($n * comb($n - 1, $k - 1)) / $k);
     }
 }

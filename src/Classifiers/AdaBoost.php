@@ -336,7 +336,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 ++$delta;
             }
 
-            if ($loss >= $maxLoss) {
+            if ($loss > $maxLoss) {
                 if ($this->logger) {
                     $this->logger->info('Estimator dropped due to'
                         . ' high training loss');
@@ -351,10 +351,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
-
-            if ($loss <= 0.0) {
-                break 1;
-            }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;

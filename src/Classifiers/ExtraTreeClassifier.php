@@ -25,6 +25,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
+use function Rubix\ML\argmax;
+
 /**
  * Extra Tree Classifier
  *
@@ -208,9 +210,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $counts = array_count_values($dataset->labels());
 
-        $max = max($counts);
-
-        $outcome = (string) array_search($max, $counts);
+        $outcome = argmax($counts);
 
         $probabilities = [];
 
@@ -218,7 +218,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
             $probabilities[$class] = $count / $n;
         }
 
-        $p = $n ? $max / $n : 1.0;
+        $p = $counts[$outcome] / $n;
 
         $impurity = -($p * log($p));
 

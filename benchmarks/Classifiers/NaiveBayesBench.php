@@ -2,16 +2,16 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
  * @Groups({"Classifiers"})
+ * @BeforeMethods({"setUp"})
  */
-class RandomForestBench
+class NaiveBayesBench
 {
     protected const TRAINING_SIZE = 2500;
 
@@ -28,26 +28,11 @@ class RandomForestBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\RandomForest
+     * @var \Rubix\ML\Classifiers\NaiveBayes
      */
     protected $estimator;
 
-    public function setUpContinuous() : void
-    {
-        $generator = new Agglomerate([
-            'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
-            'Iris-versicolor' => new Blob([5.94, 2.77, 4.26, 1.33], [0.51, 0.31, 0.47, 0.2]),
-            'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
-        ]);
-
-        $this->training = $generator->generate(self::TRAINING_SIZE);
-
-        $this->testing = $generator->generate(self::TESTING_SIZE);
-
-        $this->estimator = new RandomForest(new ClassificationTree(30));
-    }
-
-    public function setUpCategorical() : void
+    public function setUp() : void
     {
         $generator = new Agglomerate([
             'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
@@ -62,29 +47,15 @@ class RandomForestBench
 
         $this->training = $dataset;
 
-        $this->estimator = new RandomForest(new ClassificationTree(30));
+        $this->estimator = new NaiveBayes();
     }
 
     /**
      * @Subject
      * @Iterations(3)
-     * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function continuous() : void
-    {
-        $this->estimator->train($this->training);
-
-        $this->estimator->predict($this->testing);
-    }
-
-    /**
-     * @Subject
-     * @Iterations(3)
-     * @BeforeMethods({"setUpCategorical"})
-     * @OutputTimeUnit("seconds", precision=3)
-     */
-    public function categorical() : void
+    public function trainPredict() : void
     {
         $this->estimator->train($this->training);
 

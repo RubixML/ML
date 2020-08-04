@@ -328,7 +328,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Apply a transformation to the dataset.
      *
      * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @return self
+     * @return static
      */
     public function apply(Transformer $transformer) : self
     {
@@ -418,6 +418,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
         foreach ($this->columnTypes() as $offset => $type) {
             $desc = [
+                'column' => $offset,
                 'type' => (string) $type,
             ];
 
@@ -459,8 +460,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                         $probabilities[$category] = $count / $total;
                     }
 
+                    arsort($probabilities);
+
                     $desc += [
-                        'num_categories' => count($counts),
+                        'num_categories' => count($probabilities),
                         'probabilities' => $probabilities,
                     ];
 

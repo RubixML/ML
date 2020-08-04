@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**

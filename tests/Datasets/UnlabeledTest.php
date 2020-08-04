@@ -573,6 +573,7 @@ class UnlabeledTest extends TestCase
 
         $expected = [
             [
+                'column' => 0,
                 'type' => 'categorical',
                 'num_categories' => 2,
                 'probabilities' => [
@@ -581,6 +582,7 @@ class UnlabeledTest extends TestCase
                 ],
             ],
             [
+                'column' => 1,
                 'type' => 'categorical',
                 'num_categories' => 2,
                 'probabilities' => [
@@ -589,6 +591,7 @@ class UnlabeledTest extends TestCase
                 ],
             ],
             [
+                'column' => 2,
                 'type' => 'categorical',
                 'num_categories' => 2,
                 'probabilities' => [
@@ -597,6 +600,7 @@ class UnlabeledTest extends TestCase
                 ],
             ],
             [
+                'column' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
                 'variance' => 9.792222222222222,

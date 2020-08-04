@@ -62,14 +62,6 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     }
 
     /**
-     * @return mixed[]
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
-    }
-
-    /**
      * @param string|int $key
      * @param mixed[] $values
      * @throws \RuntimeException
@@ -116,9 +108,17 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     }
 
     /**
+     * @return mixed[]
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
+    }
+
+    /**
      * Get an iterator for the attributes in the report.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed>
      */
     public function getIterator() : Generator
     {
@@ -136,12 +136,12 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     }
 
     /**
-     * Return the string representation of the report.
+     * Return a human-readable string representation of the report.
      *
      * @return string
      */
     public function __toString() : string
     {
-        return (string) $this->toJSON(true);
+        return (string) $this->toJSON(true) . PHP_EOL;
     }
 }

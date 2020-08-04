@@ -946,9 +946,7 @@ class Labeled extends Dataset
     {
         $type = $this->labelType();
 
-        $desc = [];
-
-        $desc['type'] = (string) $type;
+        $desc = ['type' => (string) $type];
 
         switch ($type) {
             case DataType::continuous():
@@ -980,12 +978,14 @@ class Labeled extends Dataset
 
                 $probabilities = [];
 
-                foreach ($counts as $class => $count) {
-                    $probabilities[$class] = $count / $total;
+                foreach ($counts as $category => $count) {
+                    $probabilities[$category] = $count / $total;
                 }
 
+                arsort($probabilities);
+
                 $desc += [
-                    'num_categories' => count($counts),
+                    'num_categories' => count($probabilities),
                     'probabilities' => $probabilities,
                 ];
 
