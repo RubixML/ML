@@ -5,7 +5,7 @@ namespace Rubix\ML\Other\Loggers;
 /**
  * Screen
  *
- * A logger that outputs to the php standard output.
+ * A logger that displays log messages to the standard output.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -31,10 +31,8 @@ class Screen extends Logger
      * @param string $channel
      * @param string $format
      */
-    public function __construct(
-        string $channel = 'main',
-        string $format = 'Y-m-d H:i:s'
-    ) {
+    public function __construct(string $channel = '', string $format = 'Y-m-d H:i:s')
+    {
         $this->channel = trim($channel);
         $this->format = $format;
     }
@@ -50,8 +48,12 @@ class Screen extends Logger
     {
         $prefix = $this->format ? '[' . date($this->format) . '] ' : '';
 
-        $prefix .= $this->channel . '.' . strtoupper((string) $level) . ': ';
+        if (!empty($this->channel)) {
+            $prefix .= $this->channel . '.';
+        }
 
-        echo $prefix . trim($message) . PHP_EOL;
+        $prefix .= strtoupper((string) $level);
+
+        echo $prefix . ': ' . trim($message) . PHP_EOL;
     }
 }

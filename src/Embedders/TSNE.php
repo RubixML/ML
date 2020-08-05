@@ -381,7 +381,7 @@ class TSNE implements Embedder, Verbose, Stringable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Gradient=$loss");
+                $this->logger->info("Epoch $epoch - Gradient: $loss");
             }
 
             if ($loss < $bestLoss) {

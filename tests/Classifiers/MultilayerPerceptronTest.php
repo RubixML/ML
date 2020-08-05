@@ -16,7 +16,7 @@ use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Optimizers\AdaMax;
-use Rubix\ML\CrossValidation\Metrics\MCC;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
@@ -92,7 +92,7 @@ class MultilayerPerceptronTest extends TestCase
             new Activation(new LeakyReLU()),
             new Dense(10),
             new Activation(new LeakyReLU()),
-        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, 3, 0.1, new CrossEntropy(), new MCC());
+        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, 3, 0.1, new CrossEntropy(), new FBeta());
 
         $this->metric = new Accuracy();
 
@@ -163,7 +163,7 @@ class MultilayerPerceptronTest extends TestCase
             'window' => 3,
             'hold_out' => 0.1,
             'cost_fn' => new CrossEntropy(),
-            'metric' => new MCC(),
+            'metric' => new FBeta(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

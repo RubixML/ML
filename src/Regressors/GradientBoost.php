@@ -404,7 +404,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->scores[] = $score;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch {$this->metric}=$score L2 Loss=$loss");
+                $this->logger->info("Epoch $epoch - {$this->metric}: $score, L2 Loss: $loss");
             }
 
             if ($score > $bestScore) {

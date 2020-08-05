@@ -315,7 +315,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch {$this->costFn}=$loss");
+                $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
             }
 
             if ($loss < $bestLoss) {

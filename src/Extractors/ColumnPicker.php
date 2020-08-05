@@ -55,7 +55,7 @@ class ColumnPicker implements Extractor
 
             foreach ($this->keys as $key) {
                 if (!isset($record[$key])) {
-                    throw new RuntimeException("Column $key not found"
+                    throw new RuntimeException("Column '$key' not found"
                         . " at row offset $i.");
                 }
 

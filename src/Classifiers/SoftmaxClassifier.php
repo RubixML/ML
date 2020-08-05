@@ -324,7 +324,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch {$this->costFn}=$loss");
+                $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
             }
 
             if ($loss < $bestLoss) {

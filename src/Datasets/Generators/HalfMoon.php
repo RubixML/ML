@@ -11,7 +11,8 @@ use InvalidArgumentException;
 /**
  * Half Moon
  *
- * Generate a dataset consisting of 2-d samples that form a half moon shape.
+ * Generates a dataset consisting of 2-d samples that form the shape of a half moon when
+ * plotted on a scatter plot chart.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

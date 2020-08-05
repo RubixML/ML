@@ -357,7 +357,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Inertia=$loss");
+                $this->logger->info("Epoch $epoch - Inertia: $loss");
             }
 
             if ($loss < $bestLoss) {

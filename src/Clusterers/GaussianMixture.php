@@ -326,7 +326,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch - loss: $loss");
             }
 
             if (is_nan($loss)) {

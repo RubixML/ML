@@ -280,7 +280,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Inertia=$loss");
+                $this->logger->info("Epoch $epoch - Inertia: $loss");
             }
 
             if (is_nan($loss)) {

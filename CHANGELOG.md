@@ -1,4 +1,4 @@
-- Unreleased
+- unreleased
     - CV Report Generators now return Report objects
     - Dataset describe methods now return Report objects
     - Allow hyphens and apostrophes in Word Tokenizer
@@ -15,6 +15,8 @@
     - Changed name of Tree max depth parameter to max height
     - Fixed F Beta division by zero
     - Dataset toCSV and toNDJSON accept optional header
+    - Nicer Verbose Learner logger output
+    - Screen Logger uses empty channel name by default
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

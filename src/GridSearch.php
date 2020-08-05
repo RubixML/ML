@@ -108,8 +108,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
         return [
-            'score' => $validator->test($estimator, $dataset, $metric),
-            'params' => $estimator->params(),
+            $validator->test($estimator, $dataset, $metric),
+            $estimator->params(),
         ];
     }
 
@@ -373,11 +373,18 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function afterScore(array $result) : void
     {
+        [$score, $params] = $result;
+
         if ($this->logger) {
-            $this->logger->info(Params::stringify($result));
+            $this->logger->info(
+                "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
+            );
         }
 
-        $this->results[] = $result;
+        $this->results[] = [
+            'score' => $score,
+            'params' => $params,
+        ];
     }
 
     /**

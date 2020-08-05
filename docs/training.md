@@ -28,7 +28,7 @@ Since training is often an iterative process, it is useful to obtain feedback as
 ```php
 use Rubix\ML\Other\Loggers\Screen;
 
-$estimator->setLogger(new Screen('example'));
+$estimator->setLogger(new Screen());
 
 $estimator->train($dataset);
 ```
@@ -36,21 +36,21 @@ $estimator->train($dataset);
 ```sh
 [2020-07-12 23:52:59] housing.INFO: Learner init Gradient Boost {booster: Regression Tree {max_height: 4, max_leaf_size: 3, max_features: null, min_purity_increase: 1.0E-7}, rate: 0.1, ratio: 0
 .5, estimators: 1000, min_change: 0.0001, window: 10, hold_out: 0.1, metric: RMSE, base: Dummy Regressor {strategy: Mean}}
-[2020-07-12 23:52:59] housing.INFO: Training started
-[2020-07-12 23:52:59] housing.INFO: Training base learner
-[2020-07-12 23:52:59] housing.INFO: Epoch 1 RMSE=-75966.144307681 L2 Loss=6273028418.4053
-[2020-07-12 23:52:59] housing.INFO: Epoch 2 RMSE=-71837.423145166 L2 Loss=5398183359.0029
-[2020-07-12 23:52:59] housing.INFO: Epoch 3 RMSE=-67949.979096606 L2 Loss=4847398522.703
-[2020-07-12 23:53:00] housing.INFO: Epoch 4 RMSE=-63802.65363341 L2 Loss=4515203001.2578
-[2020-07-12 23:53:00] housing.INFO: Epoch 5 RMSE=-61624.027074156 L2 Loss=3988666807.5813
+[2020-07-12 23:52:59] INFO: Training started
+[2020-07-12 23:52:59] INFO: Training base learner
+[2020-07-12 23:52:59] INFO: Epoch 1 - RMSE: -75966.144307681, L2 Loss: 6273028418.4053
+[2020-07-12 23:52:59] INFO: Epoch 2 - RMSE: -71837.423145166, L2 Loss: 5398183359.0029
+[2020-07-12 23:52:59] INFO: Epoch 3 - RMSE: -67949.979096606, L2 Loss: 4847398522.703
+[2020-07-12 23:53:00] INFO: Epoch 4 - RMSE: -63802.65363341, L2 Loss: 4515203001.2578
+[2020-07-12 23:53:00] INFO: Epoch 5 - RMSE: -61624.027074156, L2 Loss: 3988666807.5813
 ...
-[2020-07-12 23:53:06] housing.INFO: Epoch 67 RMSE=-24464.486466965 L2 Loss=706106123.97902
-[2020-07-12 23:53:06] housing.INFO: Epoch 68 RMSE=-24473.10530312 L2 Loss=701284659.63732
-[2020-07-12 23:53:06] housing.INFO: Epoch 69 RMSE=-24347.871068021 L2 Loss=696422563.57693
-[2020-07-12 23:53:06] housing.INFO: Epoch 70 RMSE=-24328.676819944 L2 Loss=690861140.1853
-[2020-07-12 23:53:06] housing.INFO: Epoch 71 RMSE=-24068.607669273 L2 Loss=685669903.74276
-[2020-07-12 23:53:06] housing.INFO: Restoring ensemble state to epoch 61
-[2020-07-12 23:53:06] housing.INFO: Training complete
+[2020-07-12 23:53:06] INFO: Epoch 67 - RMSE: -24464.486466965, L2 Loss: 706106123.97902
+[2020-07-12 23:53:06] INFO: Epoch 68 - RMSE: -24473.10530312, L2 Loss: 701284659.63732
+[2020-07-12 23:53:06] INFO: Epoch 69 - RMSE: -24347.871068021, L2 Loss: 696422563.57693
+[2020-07-12 23:53:06] INFO: Epoch 70 - RMSE: -24328.676819944, L2 Loss: 690861140.1853
+[2020-07-12 23:53:06] INFO: Epoch 71 - RMSE: -24068.607669273, L2 Loss: 685669903.74276
+[2020-07-12 23:53:06] INFO: Restoring ensemble state to epoch 61
+[2020-07-12 23:53:06] INFO: Training complete
 ```
 
 ## Feature Importances
