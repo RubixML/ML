@@ -372,7 +372,7 @@ Remove duplicate rows from the dataset:
 public deduplicate() : self
 ```
 
-## Convert to Encoding
+## Encode the Dataset
 Return a JSON representation of the dataset:
 ```php
 public toJSON(bool $pretty = false) : Encoding
@@ -380,21 +380,38 @@ public toJSON(bool $pretty = false) : Encoding
 
 Return a newline delimited JSON encoding of the dataset:
 ```php
-public toNDJSON() : string
-```
-
-Return the dataset as comma-separated values (CSV) encoding:
-```php
-public toCSV(string $delimiter = ',', string $enclosure = '"') : Encoding
+public toNDJSON(?array $header = null) : string
 ```
 
 ```php
-$data = $dataset->toCSV(',');
+$encoding = $dataset->toNDJSON([
+    'sepal length', 'sepal width', 'petal length', 'petal width',
+]);
 
-echo $data;
+echo $encoding;
 ```
 
-```sh
+```json
+{"sepal length":4.5,"sepal width":2.3,"petal length":1.3,"petal width":0.3,"class":"Iris-setosa"}
+{"sepal length":4.4,"sepal width":3.2,"petal length":1.3,"petal width":0.2,"class":"Iris-setosa"}
+{"sepal length":5.0,"sepal width":3.5,"petal length":1.6,"petal width":0.6,"class":"Iris-setosa"}
+```
+
+Return the dataset as comma-separated values (CSV) encoding with an optional header:
+```php
+public toCSV(?array $header = null, string $delimiter = ',', string $enclosure = '"') : Encoding
+```
+
+```php
+$encoding = $dataset->toCSV([
+    'sepal length', 'sepal width', 'petal length', 'petal width', 'class',
+]);
+
+echo $encoding;
+```
+
+```csv
+sepal length,sepal width,petal length,petal width,class
 4.5,2.3,1.3,0.3,Iris-setosa
 4.4,3.2,1.3,0.2,Iris-setosa
 5.0,3.5,1.6,0.6,Iris-setosa

@@ -662,16 +662,18 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function toNdjson() : void
+    public function toNDJSON() : void
     {
-        $expected = '["nice","furry","friendly",4]' . PHP_EOL
-        . '["mean","furry","loner",-1.5]' . PHP_EOL
-        . '["nice","rough","friendly",2.6]' . PHP_EOL
-        . '["mean","rough","friendly",-1]' . PHP_EOL
-        . '["nice","rough","friendly",2.9]' . PHP_EOL
-        . '["nice","furry","loner",-5]' . PHP_EOL;
+        $expected = '{"temperament":"nice","texture":"furry","sociability":"friendly","rating":4}' . PHP_EOL
+        . '{"temperament":"mean","texture":"furry","sociability":"loner","rating":-1.5}' . PHP_EOL
+        . '{"temperament":"nice","texture":"rough","sociability":"friendly","rating":2.6}' . PHP_EOL
+        . '{"temperament":"mean","texture":"rough","sociability":"friendly","rating":-1}' . PHP_EOL
+        . '{"temperament":"nice","texture":"rough","sociability":"friendly","rating":2.9}' . PHP_EOL
+        . '{"temperament":"nice","texture":"furry","sociability":"loner","rating":-5}' . PHP_EOL;
 
-        $encoding = $this->dataset->toNDJSON();
+        $encoding = $this->dataset->toNDJSON([
+            'temperament', 'texture', 'sociability', 'rating',
+        ]);
 
         $this->assertInstanceOf(Encoding::class, $encoding);
         $this->assertEquals($expected, $encoding);

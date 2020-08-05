@@ -127,11 +127,13 @@ $samples = [
 ```
 
 ## Converting Formats
-Sometimes, you may want to convert a dataset stored in one format to another format. In the example below we'll use the [CSV](extractors/csv.md) extractor to read the data from a file in CSV format and then convert to NDJSON format using the `toNDJSON()` method on the [Dataset](datasets/api.md#convert-to-encoding) object. Then we'll write the returned encoding to a file on disk by specifying the path as an argument to the `write()` method.
+Sometimes, you may want to convert a dataset stored in one format to another format. In the example below we'll use the [CSV](extractors/csv.md) extractor to read the data from a file in CSV format and then convert to NDJSON format using the `toNDJSON()` method on the [Dataset](datasets/api.md#encode-the-dataset) object. Then we'll write the returned encoding to a file on disk by specifying the path as an argument to the `write()` method.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\CSV;
 
-Labeled::fromIterator(new CSV('example.csv'))->toNDJSON()->write('example.ndjson');
+Labeled::fromIterator(new CSV('example.csv'))
+    ->toNDJSON()
+    ->write('example.ndjson');
 ```

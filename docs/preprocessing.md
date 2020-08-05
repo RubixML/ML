@@ -155,7 +155,7 @@ $predictions = $estimator->predict($dataset); // Dataset automatically transform
 ```
 
 ## Saving a Dataset
-If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`, etc.) on the [Dataset](datasets/api.md#convert-to-encoding) object to return an encoding that can be written directly to disk at a specified path.
+If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`, etc.) on the [Dataset](datasets/api.md#encode-the-dataset) object to return an encoding that can be written directly to disk at a specified path.
 
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;

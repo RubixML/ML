@@ -110,7 +110,7 @@ The results of the report are returned in a [Report](cross-validation/reports/ap
 echo $results;
 ```
 
-```sh
+```json
 {
     "mean_absolute_error": 0.8,
     "median_absolute_error": 1,

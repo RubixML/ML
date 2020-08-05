@@ -357,13 +357,28 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return a newline delimited JSON representation of the dataset.
      *
+     * @param string[]|null $header
      * @return \Rubix\ML\Encoding
      */
-    public function toNDJSON() : Encoding
+    public function toNDJSON(?array $header = null) : Encoding
     {
+        if ($header) {
+            $cols = $this->numColumns()
+                + ($this instanceof Labeled ? 1 : 0);
+
+            if (count($header) !== $cols) {
+                throw new InvalidArgumentException('Header must have'
+                    . " $cols columns, " . count($header) . ' given.');
+            }
+        }
+
         $ndjson = '';
 
         foreach ($this as $row) {
+            if ($header) {
+                $row = array_combine($header, $row);
+            }
+
             $ndjson .= json_encode($row) . PHP_EOL;
         }
 
@@ -373,13 +388,24 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return the dataset as comma-separated values (CSV) string.
      *
+     * @param string[]|null $header
      * @param string $delimiter
      * @param string $enclosure
      * @throws \InvalidArgumentException
      * @return \Rubix\ML\Encoding
      */
-    public function toCSV(string $delimiter = ',', string $enclosure = '"') : Encoding
+    public function toCSV(?array $header = null, string $delimiter = ',', string $enclosure = '"') : Encoding
     {
+        if ($header) {
+            $cols = $this->numColumns()
+                + ($this instanceof Labeled ? 1 : 0);
+
+            if (count($header) !== $cols) {
+                throw new InvalidArgumentException('Header must have'
+                    . " $cols columns, " . count($header) . ' given.');
+            }
+        }
+
         if (empty($delimiter)) {
             throw new InvalidArgumentException('Delimiter must be'
                 . ' at least 1 character.');
@@ -391,6 +417,16 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
         }
 
         $csv = '';
+
+        if ($header) {
+            foreach ($header as $title) {
+                if (str_contains($title, $delimiter)) {
+                    $title = $enclosure . $title . $enclosure;
+                }
+            }
+
+            $csv .= implode($delimiter, $header) . PHP_EOL;
+        }
 
         foreach ($this as $row) {
             foreach ($row as &$value) {

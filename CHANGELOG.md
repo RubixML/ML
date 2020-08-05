@@ -14,6 +14,7 @@
     - Added Dataset Has Dimensionality Specification
     - Changed name of Tree max depth parameter to max height
     - Fixed F Beta division by zero
+    - Dataset toCSV and toNDJSON accept optional header
 
 - 0.1.0-rc5
     - Improved logging for Verbose Learners

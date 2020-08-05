@@ -962,14 +962,17 @@ class LabeledTest extends TestCase
      */
     public function toCSV() : void
     {
-        $expected = 'nice,furry,friendly,4,not monster' . PHP_EOL
+        $expected = 'temperament,texture,sociability,rating,class' . PHP_EOL
+            . 'nice,furry,friendly,4,not monster' . PHP_EOL
             . 'mean,furry,loner,-1.5,monster' . PHP_EOL
             . 'nice,rough,friendly,2.6,not monster' . PHP_EOL
             . 'mean,rough,friendly,-1,monster' . PHP_EOL
             . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
             . 'nice,furry,loner,-5,not monster' . PHP_EOL;
 
-        $encoding = $this->dataset->toCSV();
+        $encoding = $this->dataset->toCSV([
+            'temperament', 'texture', 'sociability', 'rating', 'class',
+        ]);
 
         $this->assertInstanceOf(Encoding::class, $encoding);
         $this->assertEquals($expected, $encoding);
