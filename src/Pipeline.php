@@ -9,6 +9,7 @@ use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
@@ -35,7 +36,7 @@ use Stringable;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
 {
-    use PredictsSingle, ProbaSingle, RanksSingle;
+    use PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
 
     /**
      * A list of transformers to be applied in order.
@@ -140,16 +141,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
         }
 
         $this->logger = $logger;
-    }
-
-    /**
-     * Return the logger or null if not set.
-     *
-     * @return \Psr\Log\LoggerInterface|null
-     */
-    public function logger() : ?LoggerInterface
-    {
-        return $this->logger;
     }
 
     /**

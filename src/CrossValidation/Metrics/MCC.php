@@ -5,10 +5,8 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
-use InvalidArgumentException;
+use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Stringable;
-
-use function count;
 
 use const Rubix\ML\EPSILON;
 
@@ -79,10 +77,7 @@ class MCC implements Metric, Stringable
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('Number of predictions'
-                . ' and labels must be equal.');
-        }
+        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
 
         if (empty($predictions)) {
             return 0.0;

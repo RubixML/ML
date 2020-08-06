@@ -78,10 +78,6 @@ class VMeasure implements Metric, Stringable
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (empty($predictions)) {
-            return 0.0;
-        }
-
         $homogeneity = (new Homogeneity())->score($predictions, $labels);
         $completeness = (new Completeness())->score($predictions, $labels);
 

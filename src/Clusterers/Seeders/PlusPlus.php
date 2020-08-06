@@ -5,6 +5,7 @@ namespace Rubix\ML\Clusterers\Seeders;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Stringable;
 
 use function count;
@@ -51,14 +52,14 @@ class PlusPlus implements Seeder, Stringable
      */
     public function seed(Dataset $dataset, int $k) : array
     {
-        $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
+        DatasetIsNotEmpty::check($dataset);
 
-        $samples = $dataset->samples();
+        $centroids = $dataset->randomSubset(1)->samples();
 
         while (count($centroids) < $k) {
             $weights = [];
 
-            foreach ($samples as $sample) {
+            foreach ($dataset->samples() as $sample) {
                 $bestDistance = INF;
 
                 foreach ($centroids as $centroid) {
@@ -72,9 +73,7 @@ class PlusPlus implements Seeder, Stringable
                 $weights[] = $bestDistance ** 2;
             }
 
-            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
-
-            $centroids[] = $subset->sample(0);
+            $centroids[] = $dataset->randomWeightedSubsetWithReplacement(1, $weights)->sample(0);
         }
 
         return $centroids;
@@ -87,6 +86,6 @@ class PlusPlus implements Seeder, Stringable
      */
     public function __toString() : string
     {
-        return "Plus Plus (kernel: {$this->kernel})";
+        return "Plus Plus {kernel: {$this->kernel}}";
     }
 }

@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use InvalidArgumentException;
+use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Stringable;
 
 use function count;
@@ -57,15 +57,11 @@ class SMAPE implements Metric, Stringable
      *
      * @param (int|float)[] $predictions
      * @param (int|float)[] $labels
-     * @throws \InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('Number of predictions'
-                . ' and labels must be equal.');
-        }
+        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
 
         if (empty($predictions)) {
             return 0.0;

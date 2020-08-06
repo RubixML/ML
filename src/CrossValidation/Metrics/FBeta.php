@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use InvalidArgumentException;
 use Stringable;
 
@@ -99,15 +100,11 @@ class FBeta implements Metric, Stringable
      *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
-     * @throws \InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float
     {
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('Number of predictions'
-                . ' and labels must be equal.');
-        }
+        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
 
         if (empty($predictions)) {
             return 0.0;

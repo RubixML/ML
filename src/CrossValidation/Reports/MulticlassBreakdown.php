@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\CrossValidation\Reports;
 
+use Rubix\ML\Report;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Report;
-use InvalidArgumentException;
+use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 
 use function count;
 
@@ -41,15 +41,11 @@ class MulticlassBreakdown implements ReportGenerator
      *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
-     * @throws \InvalidArgumentException
      * @return \Rubix\ML\Report
      */
     public function generate(array $predictions, array $labels) : Report
     {
-        if (count($predictions) !== count($labels)) {
-            throw new InvalidArgumentException('Number of predictions'
-                . ' and labels must be equal.');
-        }
+        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
 
         $classes = array_unique(array_merge($predictions, $labels));
 

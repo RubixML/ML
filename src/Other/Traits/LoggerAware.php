@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Traits;
 
-use Rubix\ML\Verbose;
 use Psr\Log\LoggerInterface;
 
 /**

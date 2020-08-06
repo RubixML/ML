@@ -17,9 +17,11 @@ class DatasetHasDimensionality
     public static function check(Dataset $dataset, int $dimensions) : void
     {
         if ($dataset->numColumns() !== $dimensions) {
-            throw new InvalidArgumentException('Dataset must contain'
+            throw new InvalidArgumentException(
+                'Dataset must contain'
                 . " samples with exactly $dimensions dimensions,"
-                . " {$dataset->numColumns()} given.");
+                . " {$dataset->numColumns()} given."
+            );
         }
     }
 }

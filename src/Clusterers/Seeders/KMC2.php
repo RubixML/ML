@@ -5,6 +5,7 @@ namespace Rubix\ML\Clusterers\Seeders;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use InvalidArgumentException;
 use Stringable;
 
@@ -62,21 +63,20 @@ class KMC2 implements Seeder, Stringable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
-     * @throws \RuntimeException
      * @return array[]
      */
     public function seed(Dataset $dataset, int $k) : array
     {
-        $max = getrandmax();
+        DatasetIsNotEmpty::check($dataset);
 
-        $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
+        $centroids = $dataset->randomSubset(1)->samples();
 
         while (count($centroids) < $k) {
-            $target = end($centroids) ?: [];
-
             $candidates = $dataset->randomSubsetWithReplacement($this->m)->samples();
 
             $x = array_pop($candidates) ?? [];
+
+            $target = end($centroids) ?: [];
 
             $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 
@@ -85,7 +85,7 @@ class KMC2 implements Seeder, Stringable
 
                 $density = min(1.0, $yDistance / $xDistance);
 
-                $threshold = rand() / $max;
+                $threshold = rand() / PHP_INT_MAX;
 
                 if ($density > $threshold) {
                     $xDistance = $yDistance;
@@ -107,6 +107,6 @@ class KMC2 implements Seeder, Stringable
      */
     public function __toString() : string
     {
-        return "KMC2 (m: {$this->m} kernel: {$this->kernel})";
+        return "KMC2 {m: {$this->m} kernel: {$this->kernel}}";
     }
 }

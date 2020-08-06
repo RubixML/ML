@@ -46,9 +46,13 @@ class Screen extends Logger
      */
     public function log($level, $message, array $context = []) : void
     {
-        $prefix = $this->format ? '[' . date($this->format) . '] ' : '';
+        $prefix = '';
 
-        if (!empty($this->channel)) {
+        if ($this->format) {
+            $prefix .= '[' . date($this->format) . '] ';
+        }
+
+        if ($this->channel) {
             $prefix .= $this->channel . '.';
         }
 

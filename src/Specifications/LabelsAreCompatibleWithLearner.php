@@ -22,16 +22,20 @@ class LabelsAreCompatibleWithLearner
         switch ($estimator->type()) {
             case EstimatorType::classifier():
                 if ($dataset->labelType() != DataType::categorical()) {
-                    throw new InvalidArgumentException('Classifiers require categorical'
-                        . " labels, {$dataset->labelType()} given.");
+                    throw new InvalidArgumentException(
+                        'Classifiers require categorical'
+                        . " labels, {$dataset->labelType()} given."
+                    );
                 }
 
                 break 1;
 
             case EstimatorType::regressor():
                 if ($dataset->labelType() != DataType::continuous()) {
-                    throw new InvalidArgumentException('Regressors require continuous'
-                        . " labels, {$dataset->labelType()} given.");
+                    throw new InvalidArgumentException(
+                        'Regressors require continuous'
+                        . " labels, {$dataset->labelType()} given."
+                    );
                 }
 
                 break 1;
