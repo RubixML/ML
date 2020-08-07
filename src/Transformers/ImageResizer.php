@@ -81,12 +81,6 @@ class ImageResizer implements Transformer, Stringable
      */
     public function transform(array &$samples) : void
     {
-        $resized = imagecreatetruecolor($this->width, $this->height);
-
-        if (!$resized) {
-            throw new RuntimeException('Could not create resized image.');
-        }
-
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (DataType::detect($value)->isImage()) {
@@ -108,6 +102,8 @@ class ImageResizer implements Transformer, Stringable
                         $srcX = (int) ceil(0.5 * ($width - $srcW));
                         $srcY = 0;
                     }
+
+                    $resized = imagecreatetruecolor($this->width, $this->height);
 
                     imagecopyresampled(
                         $resized,

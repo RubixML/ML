@@ -1,4 +1,5 @@
 - Unreleased
+    - Fixed Image Resizer placeholder image
     - Fixed Filesystem no write permissions on instantiation
     - Nicer object string representations
 
