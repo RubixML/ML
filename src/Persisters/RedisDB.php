@@ -141,6 +141,6 @@ class RedisDB implements Persister, Stringable
      */
     public function __toString() : string
     {
-        return "Redis DB {key: {$this->key}, serializer: {$this->serializer}}";
+        return "Redis DB (key: {$this->key}, serializer: {$this->serializer})";
     }
 }

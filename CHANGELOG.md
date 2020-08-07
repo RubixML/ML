@@ -3,6 +3,7 @@
     - Fixed Filesystem no write permissions on instantiation
     - Nicer object string representations
     - Do not terminate empty spatial leaf nodes
+    - Additional Filesystem persister checks
 
 - 0.1.0
     - CV Report Generators now return Report objects

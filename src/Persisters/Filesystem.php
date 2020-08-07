@@ -10,6 +10,8 @@ use Rubix\ML\Persisters\Serializers\Serializer;
 use RuntimeException;
 use Stringable;
 
+use function is_file;
+
 /**
  * Filesystem
  *
@@ -72,13 +74,11 @@ class Filesystem implements Persister, Stringable
     public function save(Persistable $persistable) : void
     {
         if (!is_file($this->path) and !is_writable(dirname($this->path))) {
-            throw new RuntimeException('Folder does not exist or'
-                . ' is not writable, check path and permissions.');
+            throw new RuntimeException('Folder does not exist or is not writable');
         }
 
         if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("Preexisting file {$this->path}"
-                . ' is not writable.');
+            throw new RuntimeException("File {$this->path} is not writable.");
         }
 
         if ($this->history and is_file($this->path)) {
@@ -108,6 +108,10 @@ class Filesystem implements Persister, Stringable
      */
     public function load() : Persistable
     {
+        if (!is_file($this->path)) {
+            throw new RuntimeException("File {$this->path} does not exist.");
+        }
+
         if (!is_readable($this->path)) {
             throw new RuntimeException("File {$this->path} is not readable.");
         }
@@ -129,8 +133,8 @@ class Filesystem implements Persister, Stringable
      */
     public function __toString() : string
     {
-        return "Filesystem {path: {$this->path},"
+        return "Filesystem (path: {$this->path},"
             . ' history: ' . Params::toString($this->history) . ','
-            . " serializer: {$this->serializer}}";
+            . " serializer: {$this->serializer})";
     }
 }

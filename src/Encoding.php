@@ -2,7 +2,6 @@
 
 namespace Rubix\ML;
 
-use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
@@ -47,18 +46,16 @@ class Encoding implements Stringable
      * Write the encoding to a file at the path specified.
      *
      * @param string $path
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function write(string $path) : void
     {
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or'
-                . ' is not writable, check path and permissions.');
+        if (!is_file($path) and !is_writable(dirname($path))) {
+            throw new RuntimeException('Folder does not exist or is not writable');
         }
 
         if (is_file($path) and !is_writable($path)) {
-            throw new InvalidArgumentException("Preexisting file $path is not writable.");
+            throw new RuntimeException("File $path is not writable.");
         }
 
         $success = file_put_contents($path, $this->data, LOCK_EX);
