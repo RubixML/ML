@@ -104,6 +104,6 @@ class KFold implements Validator, Parallel, Stringable
      */
     public function __toString() : string
     {
-        return "K Fold {k: {$this->k}}";
+        return "K Fold (k: {$this->k})";
     }
 }

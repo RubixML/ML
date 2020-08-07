@@ -154,7 +154,8 @@ class Params
                 if ($value instanceof Stringable) {
                     return (string) $value;
                 }
-                    return self::shortName(get_class($value));
+
+                return self::shortName(get_class($value));
 
             case 'array':
                 return '[' . self::stringify($value, ', ') . ']';

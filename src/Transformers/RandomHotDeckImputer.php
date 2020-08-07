@@ -72,8 +72,8 @@ class RandomHotDeckImputer extends KNNImputer
      */
     public function __toString() : string
     {
-        return "Random Hot Deck Imputer {k: {$this->k}, weighted: {$this->weighted},"
+        return "Random Hot Deck Imputer (k: {$this->k}, weighted: {$this->weighted},"
             . " categorical_placeholder: {$this->categoricalPlaceholder},"
-            . " tree: {$this->tree}}";
+            . " tree: {$this->tree})";
     }
 }

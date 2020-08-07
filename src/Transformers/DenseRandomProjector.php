@@ -32,6 +32,6 @@ class DenseRandomProjector extends SparseRandomProjector
      */
     public function __toString() : string
     {
-        return "Dense Random Projector {dimensions: {$this->dimensions}}";
+        return "Dense Random Projector (dimensions: {$this->dimensions})";
     }
 }

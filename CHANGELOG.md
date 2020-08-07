@@ -1,5 +1,6 @@
 - Unreleased
     - Fixed Filesystem no write permissions on instantiation
+    - Nicer object string representations
 
 - 0.1.0
     - CV Report Generators now return Report objects

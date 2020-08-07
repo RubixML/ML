@@ -258,6 +258,6 @@ class SVR implements Estimator, Learner, Stringable
      */
     public function __toString() : string
     {
-        return 'SVR {' . Params::stringify($this->params()) . '}';
+        return 'SVR (' . Params::stringify($this->params()) . ')';
     }
 }

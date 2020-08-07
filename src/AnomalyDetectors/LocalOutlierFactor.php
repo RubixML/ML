@@ -314,6 +314,6 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function __toString() : string
     {
-        return 'Local Outlier Factor {' . Params::stringify($this->params()) . '}';
+        return 'Local Outlier Factor (' . Params::stringify($this->params()) . ')';
     }
 }

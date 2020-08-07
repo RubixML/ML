@@ -55,6 +55,6 @@ class Whitespace implements Tokenizer, Stringable
      */
     public function __toString() : string
     {
-        return "Whitespace {delimiter: {$this->delimiter}}";
+        return "Whitespace (delimiter: {$this->delimiter})";
     }
 }

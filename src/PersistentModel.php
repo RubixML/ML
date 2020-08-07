@@ -211,6 +211,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function __toString() : string
     {
-        return 'Persistent Model {' . Params::stringify($this->params()) . '}';
+        return 'Persistent Model (' . Params::stringify($this->params()) . ')';
     }
 }

@@ -146,6 +146,6 @@ class FBeta implements Metric, Stringable
      */
     public function __toString() : string
     {
-        return "F Beta {beta: {$this->beta}}";
+        return "F Beta (beta: {$this->beta})";
     }
 }

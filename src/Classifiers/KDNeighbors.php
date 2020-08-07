@@ -260,6 +260,6 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      */
     public function __toString() : string
     {
-        return 'K-d Neighbors {' . Params::stringify($this->params()) . '}';
+        return 'K-d Neighbors (' . Params::stringify($this->params()) . ')';
     }
 }

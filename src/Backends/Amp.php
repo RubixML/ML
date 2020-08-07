@@ -151,6 +151,6 @@ class Amp implements Backend, Stringable
      */
     public function __toString() : string
     {
-        return "Amp {workers: {$this->workers()}}";
+        return "Amp (workers: {$this->workers()})";
     }
 }

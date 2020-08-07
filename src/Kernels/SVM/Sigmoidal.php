@@ -68,6 +68,6 @@ class Sigmoidal implements Kernel, Stringable
      */
     public function __toString() : string
     {
-        return "Sigmoidal {gamma: {$this->gamma}, coef0: {$this->coef0}}";
+        return "Sigmoidal (gamma: {$this->gamma}, coef0: {$this->coef0})";
     }
 }

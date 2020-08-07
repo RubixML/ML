@@ -85,6 +85,6 @@ class HoldOut implements Validator, Stringable
      */
     public function __toString() : string
     {
-        return "Hold Out {ratio: {$this->ratio}}";
+        return "Hold Out (ratio: {$this->ratio})";
     }
 }

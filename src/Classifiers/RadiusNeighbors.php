@@ -304,6 +304,6 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      */
     public function __toString() : string
     {
-        return 'Radius Neighbors {' . Params::stringify($this->params()) . '}';
+        return 'Radius Neighbors (' . Params::stringify($this->params()) . ')';
     }
 }

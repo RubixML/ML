@@ -352,6 +352,6 @@ class KDTree implements BinaryTree, Spatial, Stringable
      */
     public function __toString() : string
     {
-        return "K-d Tree {max_leaf_size: {$this->maxLeafSize}, kernel: {$this->kernel}}";
+        return "K-d Tree (max_leaf_size: {$this->maxLeafSize}, kernel: {$this->kernel})";
     }
 }

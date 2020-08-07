@@ -92,6 +92,6 @@ class AdaGrad implements Optimizer, Adaptive, Stringable
      */
     public function __toString() : string
     {
-        return "AdaGrad {rate: {$this->rate}}";
+        return "AdaGrad (rate: {$this->rate})";
     }
 }

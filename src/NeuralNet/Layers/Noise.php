@@ -129,6 +129,6 @@ class Noise implements Hidden, Stringable
      */
     public function __toString() : string
     {
-        return "Noise {std_dev: {$this->stdDev}}";
+        return "Noise (std_dev: {$this->stdDev})";
     }
 }

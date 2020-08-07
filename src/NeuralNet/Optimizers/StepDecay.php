@@ -102,6 +102,6 @@ class StepDecay implements Optimizer, Stringable
      */
     public function __toString() : string
     {
-        return "Step Decay {rate: {$this->rate}, steps: {$this->steps}, decay: {$this->decay}}";
+        return "Step Decay (rate: {$this->rate}, steps: {$this->steps}, decay: {$this->decay})";
     }
 }

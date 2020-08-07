@@ -168,6 +168,6 @@ class Dropout implements Hidden, Stringable
      */
     public function __toString() : string
     {
-        return "Dropout {ratio: {$this->ratio}}";
+        return "Dropout (ratio: {$this->ratio})";
     }
 }

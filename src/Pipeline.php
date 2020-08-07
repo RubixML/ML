@@ -314,6 +314,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      */
     public function __toString() : string
     {
-        return 'Pipeline {' . Params::stringify($this->params()) . '}';
+        return 'Pipeline (' . Params::stringify($this->params()) . ')';
     }
 }

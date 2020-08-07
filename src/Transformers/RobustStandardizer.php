@@ -153,6 +153,6 @@ class RobustStandardizer implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return 'Robust Standardizer {center: ' . Params::toString($this->center) . '}';
+        return 'Robust Standardizer {center: ' . Params::toString($this->center) . ')';
     }
 }

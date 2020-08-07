@@ -87,6 +87,6 @@ class Minkowski implements Distance, Stringable
      */
     public function __toString() : string
     {
-        return "Minkowski {lambda: {$this->lambda}}";
+        return "Minkowski (lambda: {$this->lambda})";
     }
 }

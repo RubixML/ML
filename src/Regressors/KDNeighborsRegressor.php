@@ -202,6 +202,6 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable, Stringabl
      */
     public function __toString() : string
     {
-        return 'K-d Neighbors Regressor {' . Params::stringify($this->params()) . '}';
+        return 'K-d Neighbors Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

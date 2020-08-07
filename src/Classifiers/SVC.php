@@ -264,6 +264,6 @@ class SVC implements Estimator, Learner, Stringable
      */
     public function __toString() : string
     {
-        return 'SVC {' . Params::stringify($this->params()) . '}';
+        return 'SVC (' . Params::stringify($this->params()) . ')';
     }
 }

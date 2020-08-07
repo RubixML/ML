@@ -261,6 +261,6 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      */
     public function __toString() : string
     {
-        return 'Robust Z Score {' . Params::stringify($this->params()) . '}';
+        return 'Robust Z Score (' . Params::stringify($this->params()) . ')';
     }
 }

@@ -303,9 +303,9 @@ class Dense implements Hidden, Parametric, Stringable
      */
     public function __toString() : string
     {
-        return "Dense {neurons: {$this->neurons}, alpha: {$this->alpha},"
+        return "Dense (neurons: {$this->neurons}, alpha: {$this->alpha},"
             . ' bias: ' . Params::toString($this->bias) . ','
             . " weight_initializer: {$this->weightInitializer},"
-            . " bias_initializer: {$this->biasInitializer}}";
+            . " bias_initializer: {$this->biasInitializer})";
     }
 }

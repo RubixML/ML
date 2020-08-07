@@ -74,6 +74,6 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function __toString() : string
     {
-        return "Sparse Random Projector {dimensions: {$this->dimensions}}";
+        return "Sparse Random Projector (dimensions: {$this->dimensions})";
     }
 }

@@ -202,6 +202,6 @@ class DBSCAN implements Estimator, Stringable
      */
     public function __toString() : string
     {
-        return 'DBSCAN {' . Params::stringify($this->params()) . '}';
+        return 'DBSCAN (' . Params::stringify($this->params()) . ')';
     }
 }

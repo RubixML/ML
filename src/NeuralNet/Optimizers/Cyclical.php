@@ -136,7 +136,7 @@ class Cyclical implements Optimizer, Stringable
      */
     public function __toString() : string
     {
-        return "Cyclical {lower: {$this->lower}, upper: {$this->upper},"
-            . " steps: {$this->steps}, decay: {$this->decay}}";
+        return "Cyclical (lower: {$this->lower}, upper: {$this->upper},"
+            . " steps: {$this->steps}, decay: {$this->decay})";
     }
 }

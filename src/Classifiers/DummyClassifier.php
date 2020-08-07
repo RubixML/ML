@@ -155,6 +155,6 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
      */
     public function __toString() : string
     {
-        return 'Dummy Classifier {' . Params::stringify($this->params()) . '}';
+        return 'Dummy Classifier (' . Params::stringify($this->params()) . ')';
     }
 }

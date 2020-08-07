@@ -85,6 +85,6 @@ class Polynomial implements Kernel, Stringable
      */
     public function __toString() : string
     {
-        return "Polynomial {degree: {$this->degree}, gamma: {$this->gamma}, coef0: {$this->coef0}}";
+        return "Polynomial (degree: {$this->degree}, gamma: {$this->gamma}, coef0: {$this->coef0})";
     }
 }

@@ -107,6 +107,6 @@ class KMC2 implements Seeder, Stringable
      */
     public function __toString() : string
     {
-        return "KMC2 {m: {$this->m} kernel: {$this->kernel}}";
+        return "KMC2 (m: {$this->m}, kernel: {$this->kernel})";
     }
 }

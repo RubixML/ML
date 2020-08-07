@@ -482,6 +482,6 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public function __toString() : string
     {
-        return 'Mean Shift {' . Params::stringify($this->params()) . '}';
+        return 'Mean Shift (' . Params::stringify($this->params()) . ')';
     }
 }

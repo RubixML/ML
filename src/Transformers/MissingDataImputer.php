@@ -197,8 +197,8 @@ class MissingDataImputer implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Missing Data Imputer {continuous_strategy: {$this->continuous},"
-            . " cateogrical_strategy: {$this->categorical},"
-            . " categorical_placeholder: {$this->categoricalPlaceholder}}";
+        return "Missing Data Imputer (continuous_strategy: {$this->continuous},"
+            . " categorical_strategy: {$this->categorical},"
+            . " categorical_placeholder: {$this->categoricalPlaceholder})";
     }
 }

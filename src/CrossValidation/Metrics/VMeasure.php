@@ -92,6 +92,6 @@ class VMeasure implements Metric, Stringable
      */
     public function __toString() : string
     {
-        return "V Measure {beta: {$this->beta}}";
+        return "V Measure (beta: {$this->beta})";
     }
 }

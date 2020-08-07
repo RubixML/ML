@@ -93,6 +93,6 @@ class LeakyReLU implements ActivationFunction, Stringable
      */
     public function __toString() : string
     {
-        return "Leaky ReLU {leakage: {$this->leakage}}";
+        return "Leaky ReLU (leakage: {$this->leakage})";
     }
 }

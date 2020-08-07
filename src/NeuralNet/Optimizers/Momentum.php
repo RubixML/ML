@@ -106,6 +106,6 @@ class Momentum implements Optimizer, Adaptive, Stringable
      */
     public function __toString() : string
     {
-        return "Momentum {rate: {$this->rate}, decay: {$this->decay}}";
+        return "Momentum (rate: {$this->rate}, decay: {$this->decay})";
     }
 }

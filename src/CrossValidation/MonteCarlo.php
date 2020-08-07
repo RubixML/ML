@@ -118,6 +118,6 @@ class MonteCarlo implements Validator, Parallel, Stringable
      */
     public function __toString() : string
     {
-        return "Monte Carlo {simulations: {$this->simulations} ratio: {$this->ratio}}";
+        return "Monte Carlo (simulations: {$this->simulations}, ratio: {$this->ratio})";
     }
 }

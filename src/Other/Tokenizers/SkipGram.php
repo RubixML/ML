@@ -123,6 +123,6 @@ class SkipGram implements Tokenizer, Stringable
      */
     public function __toString() : string
     {
-        return "Skip Gram {n: {$this->n}, skip: {$this->skip}, word_tokenizer: {$this->wordTokenizer}}";
+        return "Skip Gram (n: {$this->n}, skip: {$this->skip}, word_tokenizer: {$this->wordTokenizer})";
     }
 }

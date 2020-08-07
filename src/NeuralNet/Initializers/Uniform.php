@@ -58,6 +58,6 @@ class Uniform implements Initializer, Stringable
      */
     public function __toString() : string
     {
-        return "Uniform {beta: {$this->beta}}";
+        return "Uniform (beta: {$this->beta})";
     }
 }

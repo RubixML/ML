@@ -217,6 +217,6 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      */
     public function __toString() : string
     {
-        return 'Radius Neighbors Regressor {' . Params::stringify($this->params()) . '}';
+        return 'Radius Neighbors Regressor (' . Params::stringify($this->params()) . ')';
     }
 }

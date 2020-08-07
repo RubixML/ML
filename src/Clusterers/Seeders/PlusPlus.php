@@ -86,6 +86,6 @@ class PlusPlus implements Seeder, Stringable
      */
     public function __toString() : string
     {
-        return "Plus Plus {kernel: {$this->kernel}}";
+        return "Plus Plus (kernel: {$this->kernel})";
     }
 }

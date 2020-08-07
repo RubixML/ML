@@ -139,6 +139,6 @@ class GaussianRandomProjector implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Gaussian Random Projector {dimensions: {$this->dimensions}}";
+        return "Gaussian Random Projector (dimensions: {$this->dimensions})";
     }
 }

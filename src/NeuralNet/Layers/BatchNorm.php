@@ -317,7 +317,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      */
     public function __toString() : string
     {
-        return "Batch Norm {decay: {$this->decay}, beta_initializer: {$this->betaInitializer},"
-            . " gamma_initializer: {$this->gammaInitializer}}";
+        return "Batch Norm (decay: {$this->decay}, beta_initializer: {$this->betaInitializer},"
+            . " gamma_initializer: {$this->gammaInitializer})";
     }
 }

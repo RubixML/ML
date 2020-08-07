@@ -255,6 +255,6 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function __toString() : string
     {
-        return 'Classification Tree {' . Params::stringify($this->params()) . '}';
+        return 'Classification Tree (' . Params::stringify($this->params()) . ')';
     }
 }

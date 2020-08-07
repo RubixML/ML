@@ -521,6 +521,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      */
     public function __toString() : string
     {
-        return 'Multilayer Perceptron {' . Params::stringify($this->params()) . '}';
+        return 'Multilayer Perceptron (' . Params::stringify($this->params()) . ')';
     }
 }

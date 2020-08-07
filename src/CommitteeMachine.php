@@ -355,6 +355,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      */
     public function __toString() : string
     {
-        return 'Committee Machine {' . Params::stringify($this->params()) . '}';
+        return 'Committee Machine (' . Params::stringify($this->params()) . ')';
     }
 }

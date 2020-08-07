@@ -512,6 +512,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function __toString() : string
     {
-        return 'K Means {' . Params::stringify($this->params()) . '}';
+        return 'K Means (' . Params::stringify($this->params()) . ')';
     }
 }

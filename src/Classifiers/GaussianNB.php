@@ -371,6 +371,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function __toString() : string
     {
-        return 'Gaussian NB {' . Params::stringify($this->params()) . '}';
+        return 'Gaussian NB (' . Params::stringify($this->params()) . ')';
     }
 }

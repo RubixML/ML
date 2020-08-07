@@ -403,6 +403,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      */
     public function __toString() : string
     {
-        return 'Softmax Classifier {' . Params::stringify($this->params()) . '}';
+        return 'Softmax Classifier (' . Params::stringify($this->params()) . ')';
     }
 }

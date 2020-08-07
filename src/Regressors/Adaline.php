@@ -398,6 +398,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      */
     public function __toString() : string
     {
-        return 'Adaline {' . Params::stringify($this->params()) . '}';
+        return 'Adaline (' . Params::stringify($this->params()) . ')';
     }
 }
