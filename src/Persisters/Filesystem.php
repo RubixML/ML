@@ -7,7 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
-use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
@@ -56,19 +55,9 @@ class Filesystem implements Persister, Stringable
      * @param string $path
      * @param bool $history
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
-     * @throws \InvalidArgumentException
      */
     public function __construct(string $path, bool $history = false, ?Serializer $serializer = null)
     {
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or'
-                . ' is not writable, check path and permissions.');
-        }
-
-        if (is_file($path) and !is_writable($path)) {
-            throw new InvalidArgumentException("Preexisting file {$path} is not writable.");
-        }
-
         $this->path = $path;
         $this->history = $history;
         $this->serializer = $serializer ?? new Native();
@@ -82,6 +71,16 @@ class Filesystem implements Persister, Stringable
      */
     public function save(Persistable $persistable) : void
     {
+        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
+            throw new RuntimeException('Folder does not exist or'
+                . ' is not writable, check path and permissions.');
+        }
+
+        if (is_file($this->path) and !is_writable($this->path)) {
+            throw new RuntimeException("Preexisting file {$this->path}"
+                . ' is not writable.');
+        }
+
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 

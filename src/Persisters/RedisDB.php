@@ -73,7 +73,7 @@ class RedisDB implements Persister, Stringable
         }
 
         if (empty($key)) {
-            throw new InvalidArgumentException('Key cannot be an empty string.');
+            throw new InvalidArgumentException('Key cannot be empty.');
         }
 
         if ($timeout <= 0.0) {
