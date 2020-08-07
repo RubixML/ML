@@ -152,7 +152,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
                 $stack[] = $node;
 
                 $current->attachLeft($node);
-            } else {
+            } elseif (!$left->empty()) {
                 $current->attachLeft(Neighborhood::terminate($left));
             }
 
@@ -162,7 +162,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
                 $stack[] = $node;
 
                 $current->attachRight($node);
-            } else {
+            } elseif (!$right->empty()) {
                 $current->attachRight(Neighborhood::terminate($right));
             }
         }

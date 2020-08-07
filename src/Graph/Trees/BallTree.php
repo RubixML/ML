@@ -143,7 +143,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 $stack[] = $node;
 
                 $current->attachLeft($node);
-            } else {
+            } elseif (!$left->empty()) {
                 $current->attachLeft(Cluster::terminate($left, $this->kernel));
             }
 
@@ -153,7 +153,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 $stack[] = $node;
 
                 $current->attachRight($node);
-            } else {
+            } elseif (!$right->empty()) {
                 $current->attachRight(Cluster::terminate($right, $this->kernel));
             }
         }
