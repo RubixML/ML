@@ -105,6 +105,10 @@ class ImageResizer implements Transformer, Stringable
 
                     $resized = imagecreatetruecolor($this->width, $this->height);
 
+                    if (!$resized) {
+                        throw new RuntimeException('Could not create placeholder image.');
+                    }
+
                     imagecopyresampled(
                         $resized,
                         $value,
