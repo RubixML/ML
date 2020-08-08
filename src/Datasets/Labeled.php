@@ -18,6 +18,10 @@ use function count;
 use function get_class;
 use function gettype;
 use function array_slice;
+use function is_string;
+use function is_numeric;
+use function is_float;
+use function is_nan;
 
 use const Rubix\ML\PHI;
 use const Rubix\ML\EPSILON;
@@ -148,16 +152,16 @@ class Labeled extends Dataset
                     . " categorical or continuous, $type given.");
             }
 
-            foreach ($labels as $label) {
+            foreach ($labels as $offset => $label) {
                 if (DataType::detect($label) != $type) {
-                    throw new InvalidArgumentException('Labels must be'
-                        . " the same data type, $type expected but "
+                    throw new InvalidArgumentException('Invalid label type'
+                        . " found at offset $offset, $type expected but "
                         . DataType::detect($label) . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
                     throw new InvalidArgumentException('Labels must not'
-                        . ' contain NaN values.');
+                        . " contain NaN values, NaN found at offset $offset.");
                 }
             }
         }

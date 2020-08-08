@@ -1,9 +1,10 @@
-- Unreleased
+- 0.1.1
     - Fixed Image Resizer placeholder image
     - Fixed Filesystem no write permissions on instantiation
-    - Nicer object string representations
-    - Do not terminate empty spatial leaf nodes
+    - Nicer Stringable object string representations
+    - Do not terminate empty Spatial tree leaf nodes
     - Additional Filesystem persister checks
+    - Nicer Dataset object validation error messages
 
 - 0.1.0
     - CV Report Generators now return Report objects

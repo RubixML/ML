@@ -3,7 +3,7 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
-**Note:** Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class label such as `first` or `class 1`.
+**Note:** Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class name such as `'class 1'`, `'#1'`, or `'first'`.
 
 ## Parameters
 | # | Param | Default | Type | Description |

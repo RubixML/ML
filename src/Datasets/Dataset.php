@@ -90,7 +90,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('Number of columns'
                         . " must be equal for all samples, $n expected but"
-                        . ' ' . count($sample) . ' given.');
+                        . ' ' . count($sample) . " given at row $row.");
                 }
 
                 foreach ($sample as $column => $value) {
@@ -98,7 +98,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                         throw new InvalidArgumentException("Column $column must"
                             . ' contain values of the same data type,'
                             . " $types[$column] expected but "
-                            . DataType::detect($value) . ' given.');
+                            . DataType::detect($value) . " given at row $row.");
                     }
                 }
             }
