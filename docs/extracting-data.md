@@ -23,6 +23,23 @@ $dataset = Labeled::fromIterator(new CSV('example.csv', true))
     ->apply(new NumericStringConverter());
 ```
 
+Also you might want to create a new dataset by extracting specific columns from a CSV file with no header which values are separated by semicolons:
+
+```php
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\ColumnPicker;
+use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Transformers\NumericStringConverter;
+
+$extractor = new ColumnPicker(new CSV('example.csv', false, ';'), [1, 2, 3, 4, 5, 6]);
+
+$dataset = Labeled::fromIterator($extractor)
+    ->apply(new NumericStringConverter())
+    ->transformLabels('floatval');
+```
+
+For further information on converting labels to continuous please visit [Transform Labels](datasets/labeled.md#transform-labels).
+
 ## JSON
 Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is used to represent structured data such as objects and arrays. The records of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data in the proper type. One downside, however, is that the entire document must be read into memory all at once.
 
