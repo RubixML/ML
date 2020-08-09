@@ -38,7 +38,7 @@ $dataset = Labeled::fromIterator($extractor)
     ->transformLabels('floatval');
 ```
 
-For further information on converting labels to continuous please visit [Transform Labels](datasets/labeled.md#transform-labels).
+For further information on converting string labels to numbers please visit [Transform Labels](datasets/labeled.md#transform-labels) or have a look at the [Housing Price Predictor](https://github.com/RubixML/Housing) example. 
 
 ## JSON
 Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is used to represent structured data such as objects and arrays. The records of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data in the proper type. One downside, however, is that the entire document must be read into memory all at once.
