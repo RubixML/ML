@@ -1,10 +1,11 @@
 # Preprocessing
-Sometimes, one or more preprocessing steps may need to be taken to transform the dataset before handing it to a Learner. Some examples include feature extraction, standardization, normalization, imputation, and dimensionality reduction. Preprocessing in Rubix ML is handled through [Transformer](transformers/api.md) objects whose logic is hidden behind an easy-to-use interface.
+Sometimes, one or more preprocessing steps may need to be taken to transform the dataset before handing it off to a Learner. Some examples of preprocessing include feature extraction, standardization, normalization, imputation, and dimensionality reduction.
 
-[Stateful](transformers/api.md#stateful) transformers are a type of transformer that must be *fitted* to a dataset. Fitting a dataset to a transformer is much like training a learner but in the context of preprocessing rather than inference. After fitting a stateful transformer, it will expect the features to be present in the same order when transforming subsequent datasets. A few transformers are *supervised* meaning they must be fitted with a [Labeled](datasets/labeled.md) dataset. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting.
+## Transformers
+[Transformers](transformers/api.md) are objects that perform various preprocessing steps to the samples in a dataset. [Stateful](transformers/api.md#stateful) transformers are a type of transformer that must be *fitted* to a dataset. Fitting a dataset to a transformer is much like training a learner but in the context of preprocessing rather than inference. After fitting a stateful transformer, it will expect the features to be present in the same order when transforming subsequent datasets. A few transformers are *supervised* meaning they must be fitted with a [Labeled](datasets/labeled.md) dataset. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting.
 
-## Transform a Dataset
-An example of a transformation is one that converts the categorical features of a dataset to continuous ones using a [*one hot*](https://en.wikipedia.org/wiki/One-hot) encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to the [Dataset](datasets/api.md) object's `apply()` method. Note that this method handles fitting automatically.
+### Transform a Dataset
+An example of a transformation is one that converts the categorical features of a dataset to continuous ones using a [*one hot*](https://en.wikipedia.org/wiki/One-hot) encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to the [Dataset](datasets/api.md) object's `apply()` method. Note that the `apply()` method also handles fitting automatically.
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -26,7 +27,7 @@ $dataset->apply(new RandomHotDeckImputer(5))
 
 > **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) dataset instance.
 
-## Manually Fitting
+### Manually Fitting
 If for some reason you need to fit a stateful transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
 
 ```php

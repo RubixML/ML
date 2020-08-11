@@ -35,7 +35,7 @@ Limiting tests to public methods is usually sufficient. It is important to test 
 Bugs usually indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
 
 ### Learner Testing
-Rubix ML uses a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to new data. Since not all learners are the same, choose a dataset and minimum validation score that is appropriate for a real world use case.
+We use a unique end-to-end testing schema for all learners that involves generating a controlled training and testing set, training the learner, and then validating its predictions using an industry-standard scoring metric. The reason for this type of test is to be able to confirm that the learner offers the ability to generalize its training to new data. Since not all learners are the same, choose a dataset and minimum validation score that is appropriate for a real world use case.
 
 > **Note:** Be sure to seed the random number generator with a known constant in your tests to make them deterministic.
 
@@ -56,7 +56,7 @@ $ composer fix
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are private or protected and state must be mutated only through a well-defined public API.
 
 ### Comments
-Please provide a docblock for every class, property, method, constant, and function that includes a brief description of what the thing does. Inline comments are not permissable -  instead use expressive syntax and abstractions to articulate your intent using code.
+Please provide a docblock for every class, property, method, constant, and function that includes a brief description of what the thing does. Inline comments are not permissable -  instead use expressive syntax and abstractions to articulate your intent in code.
 
 ### Anonymous Classes and Functions
 Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.
@@ -68,6 +68,9 @@ To run the benchmarking suite:
 ```sh
 $ composer benchmark
 ```
+
+## Code Review
+We use pull requests as an opportunity to communicate with our contributors. Oftentimes, we can improve code readability, find bugs, and make optimizations during the code review process. Every pull request must have the approval from at least one core engineer before merging into the main codebase.
 
 ## Anti Plagiarism Policy
 Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.
