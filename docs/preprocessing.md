@@ -86,6 +86,7 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
+| [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
 | [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 
 ### Imputation

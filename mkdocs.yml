@@ -117,6 +117,7 @@ nav:
     - One Hot Encoder: transformers/one-hot-encoder.md
     - Numeric String Converter: transformers/numeric-string-converter.md
   - Feature Selection:
+    - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
     - Variance Threshold Filter: transformers/variance-threshold-filter.md
   - Image Transformers:
     - Image Resizer: transformers/image-resizer.md

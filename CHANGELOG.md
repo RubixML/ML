@@ -1,3 +1,6 @@
+- Unreleased
+    - Add Recursive Feature Eliminator feature selector
+
 - 0.1.1
     - Fixed Image Resizer placeholder image
     - Fixed Filesystem no write permissions on instantiation
