@@ -352,7 +352,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 }
             }
 
-            $loss /= count($batches);
+            $loss /= $dataset->numRows();
 
             $this->steps[] = $loss;
 

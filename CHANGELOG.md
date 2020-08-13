@@ -1,3 +1,6 @@
+- Unreleased
+    - Fixed K Means average loss calculation
+
 - 0.1.1
     - Fixed Image Resizer placeholder image
     - Fixed Filesystem no write permissions on instantiation
