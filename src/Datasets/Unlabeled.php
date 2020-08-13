@@ -316,8 +316,8 @@ class Unlabeled extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be strictly'
+        if ($ratio < 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 

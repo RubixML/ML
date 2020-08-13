@@ -224,7 +224,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut <= 0.0 or $holdOut > 0.5) {
+        if ($holdOut < 0.0 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
         }
@@ -389,16 +389,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
-
-        if ($testing->empty()) {
-            throw new RuntimeException('Dataset does not contain'
-                . ' enough records to create a validation set with a'
-                . " hold out ratio of {$this->holdOut}.");
-        }
 
         [$min, $max] = $this->metric->range();
 
@@ -412,41 +407,54 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.0;
+            $loss = $score = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= count($batches);
-
             if (is_nan($loss)) {
                 throw new RuntimeException('Numerical under/overflow detected.');
             }
 
-            $predictions = $this->predict($testing);
-
-            $score = $this->metric->score($predictions, $testing->labels());
+            $loss /= count($batches);
 
             $this->steps[] = $loss;
-            $this->scores[] = $score;
+
+            if (!$testing->empty()) {
+                $predictions = $this->predict($testing);
+
+                $score = $this->metric->score($predictions, $testing->labels());
+
+                $this->scores[] = $score;
+            }
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - {$this->metric}: $score, {$this->costFn}: $loss");
             }
 
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestEpoch = $epoch;
+            if (!$testing->empty()) {
+                if ($score >= $max) {
+                    break 1;
+                }
 
-                $snapshot = Snapshot::take($this->network);
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
 
-                $delta = 0;
-            } else {
-                ++$delta;
+                    $snapshot = Snapshot::take($this->network);
+
+                    $delta = 0;
+                } else {
+                    ++$delta;
+                }
+
+                if ($delta >= $this->window) {
+                    break 1;
+                }
             }
 
-            if ($loss <= 0.0 or $score >= $max) {
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -454,21 +462,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break 1;
             }
 
-            if ($delta >= $this->window) {
-                break 1;
-            }
-
             $prevLoss = $loss;
         }
 
-        if (end($this->scores) < $bestScore) {
-            if ($snapshot) {
-                $snapshot->restore();
+        if ($snapshot and end($this->scores) < $bestScore) {
+            $snapshot->restore();
 
-                if ($this->logger) {
-                    $this->logger->info('Parameters restored from'
-                        . " snapshot at epoch $bestEpoch.");
-                }
+            if ($this->logger) {
+                $this->logger->info("Network restored from snapshot at epoch $bestEpoch");
             }
         }
 

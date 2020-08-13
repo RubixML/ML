@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultilayerPerceptron.php">[source]</a></span>
 
 # Multilayer Perceptron
-A multiclass feed forward neural network classifier with user-defined hidden layers. The Multilayer Perceptron is a deep learning model capable of forming higher-order feature representations through layers of computation. In addition, the MLP features progress monitoring which stops training when it can no longer make progress. It utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
+A multiclass feed forward neural network classifier with user-defined hidden layers. The Multilayer Perceptron is a deep learning model capable of forming higher-order feature representations through layers of computation. In addition, the MLP features progress monitoring which stops training when it can no longer improve the validation score. It utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
-> **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
+> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then snapshotting and progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 

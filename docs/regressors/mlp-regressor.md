@@ -3,7 +3,7 @@
 # MLP Regressor
 A multilayer feed forward neural network with a continuous output layer suitable for regression problems. Like the [Multilayer Perceptron](../classifiers/multilayer-perceptron.md) classifier, the MLP Regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate hidden layers.
 
-> **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
+> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then snapshotting and progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 

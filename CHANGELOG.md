@@ -1,5 +1,6 @@
 - Unreleased
     - Add Recursive Feature Eliminator feature selector
+    - Can now disable holdout validation in MLP learners
 
 - 0.1.1
     - Fixed Image Resizer placeholder image
