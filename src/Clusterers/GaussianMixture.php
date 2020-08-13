@@ -252,6 +252,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
@@ -288,7 +289,21 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $memberships[] = $dist;
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $loss /= $n;
+
+            $this->steps[] = $loss;
+
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch - loss: $loss");
+            }
 
             for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
@@ -321,16 +336,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $this->means[$cluster] = $means;
                 $this->variances[$cluster] = $variances;
                 $this->logPriors[$cluster] = $logPrior;
-            }
-
-            $this->steps[] = $loss;
-
-            if ($this->logger) {
-                $this->logger->info("Epoch $epoch - loss: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
             }
 
             if ($loss <= 0.0) {

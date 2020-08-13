@@ -1,6 +1,8 @@
 - Unreleased
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners
+    - Added instability detection to gradient-based learners
+    - Gradient Boost validation set holdout can now be 0
 
 - 0.1.1
     - Fixed Image Resizer placeholder image

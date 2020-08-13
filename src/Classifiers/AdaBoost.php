@@ -314,6 +314,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $total = array_sum($weights) ?: EPSILON;
 
             $loss /= $total;
@@ -322,18 +330,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Exp Loss: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
-            if ($loss > $bestLoss) {
-                $bestLoss = $loss;
-
-                $delta = 0;
-            } else {
-                ++$delta;
             }
 
             if ($loss > $maxLoss) {
@@ -354,6 +350,14 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
+            }
+
+            if ($loss > $bestLoss) {
+                $bestLoss = $loss;
+
+                $delta = 0;
+            } else {
+                ++$delta;
             }
 
             if ($delta >= $this->window) {

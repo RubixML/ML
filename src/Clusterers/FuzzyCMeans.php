@@ -242,6 +242,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
@@ -257,6 +258,22 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $memberships = array_map([$this, 'membership'], $dataset->samples());
 
             $loss = $this->inertia($dataset->samples(), $memberships);
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
+            $loss /= $dataset->numRows();
+
+            $this->steps[] = $loss;
+
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch - Inertia: $loss");
+            }
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 $means = [];
@@ -275,16 +292,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 }
 
                 $centroid = $means;
-            }
-
-            $this->steps[] = $loss;
-
-            if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Inertia: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
             }
 
             if ($loss <= 0.0) {
@@ -360,8 +367,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     }
 
     /**
-     * Calculate the average sum of distances between all samples and their closest
-     * centroid.
+     * Calculate the  sum of distances between all samples and their closest centroid.
      *
      * @param array[] $samples
      * @param array[] $memberships
@@ -369,10 +375,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     protected function inertia(array $samples, array $memberships) : float
     {
-        if (empty($samples)) {
-            return 0.0;
-        }
-
         $inertia = 0.0;
 
         foreach ($samples as $i => $sample) {
@@ -383,7 +385,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             }
         }
 
-        return $inertia / count($samples);
+        return $inertia;
     }
 
     /**

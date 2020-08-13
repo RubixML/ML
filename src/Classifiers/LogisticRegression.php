@@ -305,6 +305,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
@@ -322,6 +323,14 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $loss += $this->network->roundtrip($batch);
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $loss /= count($batches);
 
             $this->steps[] = $loss;
@@ -330,24 +339,20 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $delta = 0;
-            } else {
-                ++$delta;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
             if ($loss <= 0.0) {
                 break 1;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
+            }
+
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+
+                $delta = 0;
+            } else {
+                ++$delta;
             }
 
             if ($delta >= $this->window) {

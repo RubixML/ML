@@ -392,14 +392,19 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = $score = 0.0;
+            $loss = 0.0;
+            $score = null;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
             }
 
             if (is_nan($loss)) {
-                throw new RuntimeException('Numerical under/overflow detected.');
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
             }
 
             $loss /= count($batches);
@@ -415,10 +420,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: $score, {$this->costFn}: $loss");
+                $this->logger->info("Epoch $epoch - {$this->metric}: "
+                    . ($score ?? 'n/a') . ", {$this->costFn}: $loss");
             }
 
-            if (!$testing->empty()) {
+            if (isset($score)) {
                 if ($score >= $max) {
                     break 1;
                 }

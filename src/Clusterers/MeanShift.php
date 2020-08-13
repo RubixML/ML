@@ -295,6 +295,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
@@ -341,14 +342,20 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
             $loss = $this->shift($centroids, $previous);
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
+            $loss /= $n;
+
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Shift: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
+                $this->logger->info("Epoch $epoch - loss: $loss");
             }
 
             if ($loss < $this->minShift) {

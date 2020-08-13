@@ -386,7 +386,7 @@ abstract class CART
 
         $k = (int) round(sqrt($dataset->numRows()));
 
-        $q = range(0.0, 1.0, 1.0 / ($k - 1));
+        $q = range(0.0, 1.0, 1 / max(1, $k - 1));
 
         $bestImpurity = INF;
         $bestColumn = 0;

@@ -310,6 +310,14 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $loss += $this->network->roundtrip($batch);
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical under/overflow detected');
+                }
+
+                break 1;
+            }
+
             $loss /= count($batches);
 
             $this->steps[] = $loss;
@@ -324,10 +332,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $delta = 0;
             } else {
                 ++$delta;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
             }
 
             if ($loss <= 0.0) {
