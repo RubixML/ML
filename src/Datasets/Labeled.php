@@ -765,7 +765,7 @@ class Labeled extends Dataset
 
         $kernel = $kernel ?? new Euclidean();
 
-        SamplesAreCompatibleWithDistance::check($this, $kernel);
+        SamplesAreCompatibleWithDistance::with($this, $kernel)->check();
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 

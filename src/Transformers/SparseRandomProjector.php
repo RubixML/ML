@@ -46,7 +46,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $columns = $dataset->numColumns();
 

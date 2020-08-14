@@ -7,19 +7,53 @@ use InvalidArgumentException;
 class PredictionAndLabelCountsAreEqual
 {
     /**
-     * Perform a check of the specification.
+     * The predictions returned from an estimator.
+     *
+     * @var (string|int|float)[]
+     */
+    protected $predictions;
+
+    /**
+     * The ground-truth labels.
+     *
+     * @var (string|int|float)[]
+     */
+    protected $labels;
+
+    /**
+     * Build a specification object with the given arguments.
      *
      * @param (string|int|float)[] $predictions
      * @param (string|int|float)[] $labels
+     * @return self
+     */
+    public static function with(array $predictions, array $labels) : self
+    {
+        return new self($predictions, $labels);
+    }
+
+    /**
+     * @param (string|int|float)[] $predictions
+     * @param (string|int|float)[] $labels
+     */
+    public function __construct(array $predictions, array $labels)
+    {
+        $this->predictions = $predictions;
+        $this->labels = $labels;
+    }
+
+    /**
+     * Perform a check of the specification and throw an exception if invalid.
+     *
      * @throws \InvalidArgumentException
      */
-    public static function check(array $predictions, array $labels) : void
+    public function check() : void
     {
-        if (count($predictions) !== count($labels)) {
+        if (count($this->predictions) !== count($this->labels)) {
             throw new InvalidArgumentException(
-                'Number of predictions'
-                . ' and labels must be equal, ' . count($predictions)
-                . ' predictions and ' . count($labels) . ' labels given.'
+                'Number of predictions and labels must be equal '
+                . count($this->predictions) . ' predictions but '
+                . count($this->labels) . ' labels given.'
             );
         }
     }

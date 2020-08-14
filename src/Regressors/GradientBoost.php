@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -67,6 +68,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];
+
+    /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The regressor that will fix up the error residuals of the *weak* base
@@ -224,7 +232,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         if ($base and $base->type() != EstimatorType::regressor()) {
@@ -332,9 +340,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -359,7 +369,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $out = $prevOut = Vector::quick($this->base->predict($training));
         $target = Vector::quick($training->labels());
 
-        $k = (int) ceil($this->ratio * $training->numRows());
+        $prevPred = Vector::quick($this->base->predict($testing));
+
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numRows()));
 
         if (!$testing->empty()) {
             $prevPred = Vector::quick($this->base->predict($testing));
@@ -377,7 +389,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $booster = clone $this->booster;
 
-            $subset = $training->randomSubset($k);
+            $subset = $training->randomSubset($p);
 
             $booster->train($subset);
 
@@ -477,7 +489,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = $this->base->predict($dataset);
 

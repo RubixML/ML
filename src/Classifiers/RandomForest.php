@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -60,6 +61,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
+
+    /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
@@ -203,11 +211,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
-        $k = (int) ceil($this->ratio * $dataset->numRows());
+        $p = max(self::MIN_SUBSAMPLE, (int) ceil($this->ratio * $dataset->numRows()));
 
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
@@ -227,9 +237,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             $estimator = clone $this->base;
 
             if (isset($weights)) {
-                $subset = $dataset->randomWeightedSubsetWithReplacement($k, $weights);
+                $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
             } else {
-                $subset = $dataset->randomSubsetWithReplacement($k);
+                $subset = $dataset->randomSubsetWithReplacement($p);
             }
 
             $this->backend->enqueue(new TrainLearner($estimator, $subset));
@@ -255,7 +265,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $this->backend->flush();
 
@@ -287,7 +297,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $probabilities = array_fill(0, $dataset->numRows(), $this->classes);
 

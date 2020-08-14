@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -48,6 +49,13 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
         EstimatorType::REGRESSOR,
         EstimatorType::ANOMALY_DETECTOR,
     ];
+
+    /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
@@ -169,10 +177,12 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
             }
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
-        $p = (int) ceil($this->ratio * $dataset->numRows());
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numRows()));
 
         $this->backend->flush();
 

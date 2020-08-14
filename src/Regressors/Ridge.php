@@ -13,6 +13,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -151,9 +152,11 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $biases = Matrix::ones($dataset->numRows(), 1);
 
@@ -191,7 +194,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count($this->coefficients));
+        DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
         return Matrix::build($dataset->samples())
             ->dot($this->coefficients)

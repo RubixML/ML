@@ -104,7 +104,7 @@ class FBeta implements Metric, Stringable
      */
     public function score(array $predictions, array $labels) : float
     {
-        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
+        PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
         if (empty($predictions)) {
             return 0.0;

@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -50,6 +51,13 @@ use const Rubix\ML\EPSILON;
 class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
+
+    /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The base classifier to be boosted.
@@ -268,9 +276,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -286,10 +296,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $labels = $dataset->labels();
 
-        $p = (int) ceil($this->ratio * $m);
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
         $k = count($this->classes);
 
-        $maxLoss = 1.0 - (1.0 / $k);
+        $lossThreshold = 1.0 - (1.0 / $k);
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
@@ -332,7 +342,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $this->logger->info("Epoch $epoch - Exp Loss: $loss");
             }
 
-            if ($loss > $maxLoss) {
+            if ($loss > $lossThreshold) {
                 if ($this->logger) {
                     $this->logger->info('Estimator dropped due to'
                         . ' high training loss');
@@ -435,7 +445,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $scores = array_fill(0, $dataset->numRows(), $this->classes);
 

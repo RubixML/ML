@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Clusterers\Seeders\Seeder;
@@ -247,8 +248,10 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -367,7 +370,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $jlls = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
@@ -387,7 +390,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $probabilities = [];
 

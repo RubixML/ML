@@ -144,7 +144,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Stringable
                 . ' Labeled training set.');
         }
 
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         if ($dataset->labelType() != DataType::categorical()) {
             throw new InvalidArgumentException('Transformer requires'

@@ -2,17 +2,15 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Estimator;
 use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
-use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -23,55 +21,58 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Estimator $estimator, Metric $metric, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        EstimatorIsCompatibleWithMetric::check($estimator, $metric);
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            new SoftmaxClassifier(),
-            new MeanSquaredError(),
+            EstimatorIsCompatibleWithMetric::with(
+                new SoftmaxClassifier(),
+                new MeanSquaredError()
+            ),
             false,
         ];
 
         yield [
-            new SoftmaxClassifier(),
-            new Accuracy(),
+            EstimatorIsCompatibleWithMetric::with(
+                new SoftmaxClassifier(),
+                new Accuracy()
+            ),
             true,
         ];
 
         yield [
-            new RobustZScore(),
-            new Accuracy(),
+            EstimatorIsCompatibleWithMetric::with(
+                new RobustZScore(),
+                new Accuracy()
+            ),
             true,
         ];
 
         yield [
-            new Ridge(),
-            new VMeasure(),
+            EstimatorIsCompatibleWithMetric::with(
+                new Ridge(),
+                new VMeasure()
+            ),
             false,
         ];
 
         yield [
-            new Ridge(),
-            new MeanSquaredError(),
+            EstimatorIsCompatibleWithMetric::with(
+                new Ridge(),
+                new MeanSquaredError()
+            ),
             true,
         ];
     }

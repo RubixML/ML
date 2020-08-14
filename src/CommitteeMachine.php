@@ -234,8 +234,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
             }
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");

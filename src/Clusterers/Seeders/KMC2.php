@@ -67,7 +67,7 @@ class KMC2 implements Seeder, Stringable
      */
     public function seed(Dataset $dataset, int $k) : array
     {
-        DatasetIsNotEmpty::check($dataset);
+        DatasetIsNotEmpty::with($dataset)->check();
 
         $centroids = $dataset->randomSubset(1)->samples();
 

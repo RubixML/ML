@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -53,6 +54,13 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      * @var float
      */
     public const DEFAULT_THRESHOLD = 0.5;
+
+    /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The default sample size of each training subset.
@@ -195,29 +203,32 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $n = $dataset->numRows();
 
-        $k = $this->ratio ? (int) ceil($this->ratio * $n)
+        $p = $this->ratio
+            ? max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $n))
             : min(self::DEFAULT_SUBSAMPLE, $n);
 
-        $maxHeight = (int) max(1, round(log($k, 2)));
+        $maxHeight = (int) max(1, round(log($p, 2)));
 
         $this->trees = [];
 
         while (count($this->trees) < $this->estimators) {
             $tree = new ITree($maxHeight);
 
-            $subset = $dataset->randomSubset($k);
+            $subset = $dataset->randomSubset($p);
 
             $tree->grow($subset);
 
             $this->trees[] = $tree;
         }
 
-        $this->delta = $this->estimators * ITree::c($k);
+        $this->delta = $this->estimators * ITree::c($p);
 
         if (isset($this->contamination)) {
             $scores = array_map([$this, 'isolationScore'], $dataset->samples());
@@ -254,7 +265,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'isolationScore'], $dataset->samples());
     }

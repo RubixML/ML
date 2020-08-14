@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -165,8 +166,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
@@ -188,9 +191,11 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
@@ -209,7 +214,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+        DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
         $predictions = [];
 
@@ -245,7 +250,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+        DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
         $probabilities = [];
 

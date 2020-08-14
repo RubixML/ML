@@ -66,7 +66,7 @@ class KFold implements Validator, Parallel, Stringable
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        EstimatorIsCompatibleWithMetric::check($estimator, $metric);
+        EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
         $dataset->randomize();
 
