@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -169,8 +170,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $this->means = $this->variances = [];
 
@@ -201,9 +204,11 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
             return;
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, count($this->means));
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, count($this->means)),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $n = $dataset->numRows();
 
@@ -260,7 +265,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count($this->means));
+        DatasetHasDimensionality::with($dataset, count($this->means))->check();
 
         return array_map([$this, 'logLikelihood'], $dataset->samples());
     }

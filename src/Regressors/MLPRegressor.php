@@ -220,7 +220,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         $this->hiddenLayers = $hiddenLayers;
@@ -331,7 +331,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
+        DatasetIsNotEmpty::with($dataset)->check();
 
         $hiddenLayers = $this->hiddenLayers;
 
@@ -367,10 +367,10 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -483,7 +483,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
         return $this->network->infer($dataset)->column(0);
     }

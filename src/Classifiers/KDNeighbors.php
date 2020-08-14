@@ -162,9 +162,9 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
@@ -186,7 +186,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = [];
 
@@ -222,7 +222,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $probabilities = [];
 

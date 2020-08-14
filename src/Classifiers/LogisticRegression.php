@@ -262,8 +262,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $classes = $dataset->possibleOutcomes();
 
@@ -298,10 +298,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -391,7 +391,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
         [$classA, $classB] = $this->classes;
 

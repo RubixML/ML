@@ -35,7 +35,7 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        EstimatorIsCompatibleWithMetric::check($estimator, $metric);
+        EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
         $this->assertTrue($valid);
     }

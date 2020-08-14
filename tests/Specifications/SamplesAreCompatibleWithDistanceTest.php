@@ -32,7 +32,7 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        SamplesAreCompatibleWithDistance::check($dataset, $kernel);
+        SamplesAreCompatibleWithDistance::with($dataset, $kernel)->check();
 
         $this->assertTrue($valid);
     }

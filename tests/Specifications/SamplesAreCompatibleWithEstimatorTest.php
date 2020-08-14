@@ -33,7 +33,7 @@ class SamplesAreCompatibleWithEstimatorTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        SamplesAreCompatibleWithEstimator::check($dataset, $estimator);
+        SamplesAreCompatibleWithEstimator::with($dataset, $estimator)->check();
 
         $this->assertTrue($valid);
     }

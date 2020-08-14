@@ -194,9 +194,9 @@ class SVR implements Estimator, Learner, Stringable
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $labels = $dataset->labels();
 

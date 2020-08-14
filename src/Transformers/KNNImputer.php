@@ -136,7 +136,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $donors = [];
 

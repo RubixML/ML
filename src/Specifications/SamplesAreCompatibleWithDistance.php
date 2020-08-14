@@ -8,20 +8,54 @@ use InvalidArgumentException;
 
 use function count;
 
-class SamplesAreCompatibleWithDistance
+class SamplesAreCompatibleWithDistance extends Specification
 {
     /**
-     * Perform a check of the specification.
+     * The dataset that contains samples under validation.
+     *
+     * @var \Rubix\ML\Datasets\Dataset
+     */
+    protected $dataset;
+
+    /**
+     * The distance kernel.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
+
+    /**
+     * Build a specification object with the given arguments.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @return self
+     */
+    public static function with(Dataset $dataset, Distance $kernel) : self
+    {
+        return new self($dataset, $kernel);
+    }
+
+    /**
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     */
+    public function __construct(Dataset $dataset, Distance $kernel)
+    {
+        $this->dataset = $dataset;
+        $this->kernel = $kernel;
+    }
+
+    /**
+     * Perform a check of the specification and throw an exception if invalid.
+     *
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Distance $kernel) : void
+    public function check() : void
     {
-        $compatibility = $kernel->compatibility();
+        $compatibility = $this->kernel->compatibility();
 
-        $types = $dataset->uniqueTypes();
+        $types = $this->dataset->uniqueTypes();
 
         $compatible = array_intersect($types, $compatibility);
 
@@ -29,7 +63,7 @@ class SamplesAreCompatibleWithDistance
             $incompatible = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                "$kernel is not compatible with " . implode(', ', $incompatible) . ' data types.'
+                "{$this->kernel} is incompatible with " . implode(', ', $incompatible) . ' data types.'
             );
         }
     }

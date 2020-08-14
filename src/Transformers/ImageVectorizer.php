@@ -83,7 +83,7 @@ class ImageVectorizer implements Transformer, Stateful, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $sample = $dataset->sample(0);
 

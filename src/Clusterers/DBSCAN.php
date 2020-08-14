@@ -137,8 +137,8 @@ class DBSCAN implements Estimator, Stringable
      */
     public function predict(Dataset $dataset) : array
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $labels = range(0, $dataset->numRows() - 1);
 

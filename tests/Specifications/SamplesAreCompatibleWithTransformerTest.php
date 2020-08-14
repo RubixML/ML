@@ -33,7 +33,7 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        SamplesAreCompatibleWithTransformer::check($dataset, $transformer);
+        SamplesAreCompatibleWithTransformer::with($dataset, $transformer)->check();
 
         $this->assertTrue($valid);
     }

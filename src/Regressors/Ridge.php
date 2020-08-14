@@ -151,9 +151,9 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $biases = Matrix::ones($dataset->numRows(), 1);
 
@@ -191,7 +191,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count($this->coefficients));
+        DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
         return Matrix::build($dataset->samples())
             ->dot($this->coefficients)

@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -275,9 +276,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -337,18 +340,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Exp Loss: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
-            if ($loss > $bestLoss) {
-                $bestLoss = $loss;
-
-                $delta = 0;
-            } else {
-                ++$delta;
             }
 
             if ($loss > $lossThreshold) {
@@ -454,7 +445,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $scores = array_fill(0, $dataset->numRows(), $this->classes);
 

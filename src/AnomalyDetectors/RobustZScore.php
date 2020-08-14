@@ -178,8 +178,8 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $this->medians = $this->mads = [];
 
@@ -217,7 +217,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count($this->medians));
+        DatasetHasDimensionality::with($dataset, count($this->medians))->check();
 
         return array_map([$this, 'z'], $dataset->samples());
     }

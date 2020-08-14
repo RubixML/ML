@@ -247,8 +247,8 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -367,7 +367,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $jlls = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
@@ -387,7 +387,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $probabilities = [];
 

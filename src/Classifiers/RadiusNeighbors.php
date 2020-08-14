@@ -183,9 +183,9 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $classes = $dataset->possibleOutcomes();
 
@@ -216,7 +216,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = [];
 
@@ -258,7 +258,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $probabilities = [];
 

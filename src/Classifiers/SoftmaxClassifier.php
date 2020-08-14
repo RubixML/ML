@@ -259,8 +259,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $classes = $dataset->possibleOutcomes();
 
@@ -295,10 +295,10 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -388,7 +388,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
         $activations = $this->network->infer($dataset);
 

@@ -323,11 +323,13 @@ class TSNE implements Embedder, Verbose, Stringable
      */
     public function transform(array &$samples) : void
     {
-        SamplesAreCompatibleWithDistance::check(new Unlabeled($samples), $this->kernel);
+        SamplesAreCompatibleWithDistance::with(new Unlabeled($samples), $this->kernel)->check();
 
         if ($this->logger) {
             $this->logger->info("Embedder init $this");
+
             $this->logger->info('Embedding started');
+
             $this->logger->info('Computing high-dimensional affinities');
         }
 
@@ -378,10 +380,22 @@ class TSNE implements Embedder, Verbose, Stringable
 
             $loss = $gradient->l2Norm();
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $this->steps[] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Gradient: $loss");
+            }
+
+            if ($loss < $this->minGradient) {
+                break 1;
             }
 
             if ($loss < $bestLoss) {
@@ -390,14 +404,6 @@ class TSNE implements Embedder, Verbose, Stringable
                 $delta = 0;
             } else {
                 ++$delta;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
-            if ($loss < $this->minGradient) {
-                break 1;
             }
 
             if ($delta >= $this->window) {

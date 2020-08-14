@@ -110,7 +110,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $this->r = Matrix::gaussian($dataset->numColumns(), $this->dimensions);
     }

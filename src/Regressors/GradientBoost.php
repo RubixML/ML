@@ -231,7 +231,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         if ($base and $base->type() != EstimatorType::regressor()) {
@@ -339,9 +339,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -486,7 +486,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = $this->base->predict($dataset);
 

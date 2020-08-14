@@ -290,8 +290,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -387,7 +387,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'assign'], $dataset->samples());
     }
@@ -405,7 +405,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'membership'], $dataset->samples());
     }

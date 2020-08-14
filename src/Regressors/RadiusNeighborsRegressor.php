@@ -159,9 +159,9 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->featureCount = $dataset->numColumns();
 
@@ -181,7 +181,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = [];
 

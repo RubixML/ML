@@ -64,7 +64,7 @@ class LeavePOut implements Validator, Parallel, Stringable
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        EstimatorIsCompatibleWithMetric::check($estimator, $metric);
+        EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
         $n = (int) round($dataset->numRows() / $this->p);
 

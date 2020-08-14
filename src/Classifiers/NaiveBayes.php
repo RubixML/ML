@@ -223,9 +223,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         foreach ($dataset->stratify() as $class => $stratum) {
             if (isset($this->counts[$class])) {
@@ -292,7 +292,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->probs)));
+        DatasetHasDimensionality::with($dataset, count(current($this->probs)))->check();
 
         $jll = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
@@ -312,7 +312,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->probs)));
+        DatasetHasDimensionality::with($dataset, count(current($this->probs)))->check();
 
         $probabilities = [];
 

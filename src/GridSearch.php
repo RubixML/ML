@@ -146,7 +146,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($proxy, $metric);
+            EstimatorIsCompatibleWithMetric::with($proxy, $metric)->check();
         } else {
             switch ($proxy->type()) {
                 case EstimatorType::classifier():
@@ -276,8 +276,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $combinations = $this->combinations();
 

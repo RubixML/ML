@@ -211,8 +211,8 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         [$m, $n] = $dataset->shape();
 
@@ -271,9 +271,9 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
             return;
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        DatasetHasDimensionality::check($dataset, $this->r->m());
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        DatasetHasDimensionality::with($dataset, $this->r->m())->check();
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
@@ -332,7 +332,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->r->m());
+        DatasetHasDimensionality::with($dataset, $this->r->m())->check();
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)

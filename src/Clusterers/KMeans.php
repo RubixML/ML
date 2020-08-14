@@ -270,8 +270,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
@@ -296,9 +296,9 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             return;
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -412,7 +412,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'assign'], $dataset->samples());
     }
@@ -430,7 +430,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'membership'], $dataset->samples());
     }

@@ -114,8 +114,8 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->strategy->fit($dataset->labels());
 
@@ -135,7 +135,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $n = $dataset->numRows();
 

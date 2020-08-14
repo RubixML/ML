@@ -45,7 +45,7 @@ class MulticlassBreakdown implements ReportGenerator
      */
     public function generate(array $predictions, array $labels) : Report
     {
-        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
+        PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
         $classes = array_unique(array_merge($predictions, $labels));
 

@@ -165,8 +165,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
@@ -188,9 +188,9 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
@@ -209,7 +209,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+        DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
         $predictions = [];
 
@@ -245,7 +245,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+        DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
         $probabilities = [];
 

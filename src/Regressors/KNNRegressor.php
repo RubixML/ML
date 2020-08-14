@@ -169,9 +169,9 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
@@ -190,7 +190,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->samples)));
+        DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
         $predictions = [];
 

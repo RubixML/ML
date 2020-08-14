@@ -31,7 +31,7 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        LabelsAreCompatibleWithLearner::check($dataset, $estimator);
+        LabelsAreCompatibleWithLearner::with($dataset, $estimator)->check();
 
         $this->assertTrue($valid);
     }

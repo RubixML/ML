@@ -28,7 +28,7 @@ class DatasetIsNotEmptyTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        DatasetIsNotEmpty::check($dataset);
+        DatasetIsNotEmpty::with($dataset)->check();
 
         $this->assertTrue($valid);
     }

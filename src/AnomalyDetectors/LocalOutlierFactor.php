@@ -189,8 +189,8 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $labels = range(0, $dataset->numRows() - 1);
 
@@ -248,7 +248,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'localOutlierFactor'], $dataset->samples());
     }

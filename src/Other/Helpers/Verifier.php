@@ -1,0 +1,22 @@
+<?php
+
+namespace Rubix\ML\Other\Helpers;
+
+use Rubix\ML\Specifications\Specification;
+
+class Verifier
+{
+    /**
+     * Eagerly check a list of specifications.
+     *
+     * @param iterable<\Rubix\ML\Specifications\Specification> $specifications
+     */
+    public static function check(iterable $specifications) : void
+    {
+        foreach ($specifications as $specification) {
+            if ($specification instanceof Specification) {
+                $specification->check();
+            }
+        }
+    }
+}

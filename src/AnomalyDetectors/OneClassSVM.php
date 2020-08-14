@@ -175,8 +175,8 @@ class OneClassSVM implements Estimator, Learner, Stringable
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsNotEmpty::with($dataset)->check();
+        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
 
         $this->model = $this->svm->train($dataset->samples());
     }
