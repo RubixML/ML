@@ -62,11 +62,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     ];
 
     /**
-     * The minimum number of records to sample for the bootstrap set.
+     * The minimum size of each training subset.
      *
      * @var int
      */
-    protected const MIN_BOOTSTRAP = 1;
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
@@ -214,7 +214,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
         LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
 
-        $p = max(self::MIN_BOOTSTRAP, (int) ceil($this->ratio * $dataset->numRows()));
+        $p = max(self::MIN_SUBSAMPLE, (int) ceil($this->ratio * $dataset->numRows()));
 
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());

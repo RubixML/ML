@@ -56,6 +56,13 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
     public const DEFAULT_THRESHOLD = 0.5;
 
     /**
+     * The minimum size of each training subset.
+     *
+     * @var int
+     */
+    protected const MIN_SUBSAMPLE = 1;
+
+    /**
      * The default sample size of each training subset.
      *
      * @var int
@@ -203,24 +210,25 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
 
         $n = $dataset->numRows();
 
-        $k = $this->ratio ? (int) ceil($this->ratio * $n)
+        $p = $this->ratio
+            ? max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $n))
             : min(self::DEFAULT_SUBSAMPLE, $n);
 
-        $maxHeight = (int) max(1, round(log($k, 2)));
+        $maxHeight = (int) max(1, round(log($p, 2)));
 
         $this->trees = [];
 
         while (count($this->trees) < $this->estimators) {
             $tree = new ITree($maxHeight);
 
-            $subset = $dataset->randomSubset($k);
+            $subset = $dataset->randomSubset($p);
 
             $tree->grow($subset);
 
             $this->trees[] = $tree;
         }
 
-        $this->delta = $this->estimators * ITree::c($k);
+        $this->delta = $this->estimators * ITree::c($p);
 
         if (isset($this->contamination)) {
             $scores = array_map([$this, 'isolationScore'], $dataset->samples());

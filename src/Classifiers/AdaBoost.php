@@ -53,11 +53,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
-     * The minimum number of records to sample for the bootstrap set.
+     * The minimum size of each training subset.
      *
      * @var int
      */
-    protected const MIN_BOOTSTRAP = 1;
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The base classifier to be boosted.
@@ -296,7 +296,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $labels = $dataset->labels();
 
-        $p = max(self::MIN_BOOTSTRAP, (int) round($this->ratio * $m));
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
         $k = count($this->classes);
 
         $lossThreshold = 1.0 - (1.0 / $k);
