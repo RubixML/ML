@@ -52,6 +52,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     use PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
+     * The minimum number of records to sample for the bootstrap set.
+     *
+     * @var int
+     */
+    protected const MIN_BOOTSTRAP = 1;
+
+    /**
      * The base classifier to be boosted.
      *
      * @var \Rubix\ML\Learner
@@ -286,10 +293,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $labels = $dataset->labels();
 
-        $p = (int) ceil($this->ratio * $m);
+        $p = max(self::MIN_BOOTSTRAP, (int) round($this->ratio * $m));
         $k = count($this->classes);
 
-        $maxLoss = 1.0 - (1.0 / $k);
+        $lossThreshold = 1.0 - (1.0 / $k);
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
@@ -336,7 +343,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 ++$delta;
             }
 
-            if ($loss > $maxLoss) {
+            if ($loss > $lossThreshold) {
                 if ($this->logger) {
                     $this->logger->info('Estimator dropped due to'
                         . ' high training loss');

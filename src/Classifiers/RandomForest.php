@@ -62,6 +62,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     ];
 
     /**
+     * The minimum number of records to sample for the bootstrap set.
+     *
+     * @var int
+     */
+    protected const MIN_BOOTSTRAP = 1;
+
+    /**
      * The base learner.
      *
      * @var \Rubix\ML\Learner
@@ -207,7 +214,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
         LabelsAreCompatibleWithLearner::check($dataset, $this);
 
-        $k = (int) ceil($this->ratio * $dataset->numRows());
+        $p = max(self::MIN_BOOTSTRAP, (int) ceil($this->ratio * $dataset->numRows()));
 
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
@@ -227,9 +234,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             $estimator = clone $this->base;
 
             if (isset($weights)) {
-                $subset = $dataset->randomWeightedSubsetWithReplacement($k, $weights);
+                $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
             } else {
-                $subset = $dataset->randomSubsetWithReplacement($k);
+                $subset = $dataset->randomSubsetWithReplacement($p);
             }
 
             $this->backend->enqueue(new TrainLearner($estimator, $subset));

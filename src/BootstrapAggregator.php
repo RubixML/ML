@@ -50,6 +50,13 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     ];
 
     /**
+     * The minimum number of records to sample for the bootstrap set.
+     *
+     * @var int
+     */
+    protected const MIN_BOOTSTRAP = 1;
+
+    /**
      * The base learner.
      *
      * @var \Rubix\ML\Learner
@@ -172,7 +179,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
         DatasetIsNotEmpty::check($dataset);
         SamplesAreCompatibleWithEstimator::check($dataset, $this);
 
-        $p = (int) ceil($this->ratio * $dataset->numRows());
+        $p = max(self::MIN_BOOTSTRAP, (int) round($this->ratio * $dataset->numRows()));
 
         $this->backend->flush();
 
