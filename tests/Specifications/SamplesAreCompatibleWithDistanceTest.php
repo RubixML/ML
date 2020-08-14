@@ -2,14 +2,12 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Hamming;
-use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -20,57 +18,58 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Dataset $dataset, Distance $kernel, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        SamplesAreCompatibleWithDistance::with($dataset, $kernel)->check();
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            Unlabeled::quick([
-                ['swamp', 'island', 'black knight', 'counter spell'],
-            ]),
-            new Hamming(),
+            SamplesAreCompatibleWithDistance::with(
+                Unlabeled::quick([
+                    ['swamp', 'island', 'black knight', 'counter spell'],
+                ]),
+                new Hamming()
+            ),
             true,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new Euclidean(),
+            SamplesAreCompatibleWithDistance::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new Euclidean()
+            ),
             false,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new Hamming(),
+            SamplesAreCompatibleWithDistance::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new Hamming()
+            ),
             false,
         ];
 
         yield [
-            Unlabeled::quick([
-                [1, 2, 3, 4, 5],
-            ]),
-            new Euclidean(),
+            SamplesAreCompatibleWithDistance::with(
+                Unlabeled::quick([
+                    [1, 2, 3, 4, 5],
+                ]),
+                new Euclidean()
+            ),
             true,
         ];
     }

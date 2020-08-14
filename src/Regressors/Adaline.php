@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -286,13 +287,16 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, $this->network->input()->width()),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
+
             $this->logger->info('Training started');
         }
 
@@ -326,20 +330,20 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $delta = 0;
-            } else {
-                ++$delta;
-            }
-
             if ($loss <= 0.0) {
                 break 1;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
+            }
+
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+
+                $delta = 0;
+            } else {
+                ++$delta;
             }
 
             if ($delta >= $this->window) {

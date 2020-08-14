@@ -15,6 +15,7 @@ use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -121,9 +122,11 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $this->grow($dataset);
     }

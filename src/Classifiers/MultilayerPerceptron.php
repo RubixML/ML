@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -341,8 +342,10 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $classes = $dataset->possibleOutcomes();
 
@@ -382,10 +385,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, $this->network->input()->width()),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");

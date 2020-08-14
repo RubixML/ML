@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -270,8 +271,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::with($dataset)->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
@@ -296,9 +299,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             return;
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, count(current($this->centroids))),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");

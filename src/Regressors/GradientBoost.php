@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -339,9 +340,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");

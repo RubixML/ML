@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -210,9 +211,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
-        LabelsAreCompatibleWithLearner::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $p = max(self::MIN_SUBSAMPLE, (int) ceil($this->ratio * $dataset->numRows()));
 

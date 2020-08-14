@@ -2,15 +2,13 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Clusterers\GaussianMixture;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -21,57 +19,58 @@ class SamplesAreCompatibleWithEstimatorTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Estimator $estimator
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Dataset $dataset, Estimator $estimator, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        SamplesAreCompatibleWithEstimator::with($dataset, $estimator)->check();
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            Unlabeled::quick([
-                ['swamp', 'island', 'black knight', 'counter spell'],
-            ]),
-            new NaiveBayes(),
+            SamplesAreCompatibleWithEstimator::with(
+                Unlabeled::quick([
+                    ['swamp', 'island', 'black knight', 'counter spell'],
+                ]),
+                new NaiveBayes()
+            ),
             true,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new RegressionTree(),
+            SamplesAreCompatibleWithEstimator::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new RegressionTree()
+            ),
             true,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new NaiveBayes(),
+            SamplesAreCompatibleWithEstimator::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new NaiveBayes()
+            ),
             false,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new GaussianMixture(3),
+            SamplesAreCompatibleWithEstimator::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new GaussianMixture(3)
+            ),
             false,
         ];
     }

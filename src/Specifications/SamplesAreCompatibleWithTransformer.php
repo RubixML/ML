@@ -8,7 +8,7 @@ use InvalidArgumentException;
 
 use function count;
 
-class SamplesAreCompatibleWithTransformer
+class SamplesAreCompatibleWithTransformer extends Specification
 {
     /**
      * The dataset that contains samples under validation.

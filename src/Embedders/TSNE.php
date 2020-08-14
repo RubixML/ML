@@ -11,7 +11,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use Stringable;
 
@@ -323,7 +323,7 @@ class TSNE implements Embedder, Verbose, Stringable
      */
     public function transform(array &$samples) : void
     {
-        SamplesAreCompatibleWithDistance::with(new Unlabeled($samples), $this->kernel)->check();
+        SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
         if ($this->logger) {
             $this->logger->info("Embedder init $this");

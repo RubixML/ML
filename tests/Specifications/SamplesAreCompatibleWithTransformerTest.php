@@ -2,15 +2,13 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\L1Normalizer;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -21,57 +19,58 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Dataset $dataset, Transformer $transformer, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        SamplesAreCompatibleWithTransformer::with($dataset, $transformer)->check();
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new L1Normalizer(),
+            SamplesAreCompatibleWithTransformer::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new L1Normalizer()
+            ),
             false,
         ];
 
         yield [
-            Unlabeled::quick([
-                [1, 2, 3, 4, 5]
-            ]),
-            new L1Normalizer(),
+            SamplesAreCompatibleWithTransformer::with(
+                Unlabeled::quick([
+                    [1, 2, 3, 4, 5]
+                ]),
+                new L1Normalizer()
+            ),
             true,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new OneHotEncoder(),
+            SamplesAreCompatibleWithTransformer::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new OneHotEncoder()
+            ),
             true,
         ];
 
         yield [
-            Unlabeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ]),
-            new TfIdfTransformer(),
+            SamplesAreCompatibleWithTransformer::with(
+                Unlabeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ]),
+                new TfIdfTransformer()
+            ),
             false,
         ];
     }

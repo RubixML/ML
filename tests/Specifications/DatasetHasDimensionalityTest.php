@@ -4,15 +4,15 @@ namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Specifications\Specification;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 /**
  * @group Specifications
- * @covers \Rubix\ML\Specifications\DatasetIsNotEmpty
+ * @covers \Rubix\ML\Specifications\DatasetHasDimensionality
  */
-class DatasetIsNotEmptyTest extends TestCase
+class DatasetHasDimensionalityTest extends TestCase
 {
     /**
      * @test
@@ -32,14 +32,16 @@ class DatasetIsNotEmptyTest extends TestCase
     public function passesProvider() : Generator
     {
         yield [
-            DatasetIsNotEmpty::with(Unlabeled::quick([
+            DatasetHasDimensionality::with(Unlabeled::quick([
                 ['swamp', 'island', 'black knight', 'counter spell'],
-            ])),
+            ]), 4),
             true,
         ];
 
         yield [
-            DatasetIsNotEmpty::with(Unlabeled::quick()),
+            DatasetHasDimensionality::with(Unlabeled::quick([
+                [0.0, 1.0, 2.0],
+            ]), 4),
             false,
         ];
     }

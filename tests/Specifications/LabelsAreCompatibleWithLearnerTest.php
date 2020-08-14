@@ -2,13 +2,12 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Regressors\GradientBoost;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -19,57 +18,58 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\Learner $estimator
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Labeled $dataset, Learner $estimator, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        LabelsAreCompatibleWithLearner::with($dataset, $estimator)->check();
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            Labeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ], [200]),
-            new GradientBoost(),
+            LabelsAreCompatibleWithLearner::with(
+                Labeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ], [200]),
+                new GradientBoost()
+            ),
             true,
         ];
 
         yield [
-            Labeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ], ['stormy night']),
-            new AdaBoost(),
+            LabelsAreCompatibleWithLearner::with(
+                Labeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ], ['stormy night']),
+                new AdaBoost()
+            ),
             true,
         ];
 
         yield [
-            Labeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ], ['stormy night']),
-            new GradientBoost(),
+            LabelsAreCompatibleWithLearner::with(
+                Labeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ], ['stormy night']),
+                new GradientBoost()
+            ),
             false,
         ];
 
         yield [
-            Labeled::quick([
-                [6.0, -1.1, 5, 'college'],
-            ], [200]),
-            new AdaBoost(),
+            LabelsAreCompatibleWithLearner::with(
+                Labeled::quick([
+                    [6.0, -1.1, 5, 'college'],
+                ], [200]),
+                new AdaBoost()
+            ),
             false,
         ];
     }

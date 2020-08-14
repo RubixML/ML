@@ -3,6 +3,7 @@
 namespace Rubix\ML\Other\Helpers;
 
 use Rubix\ML\Specifications\Specification;
+use InvalidArgumentException;
 
 class Verifier
 {
@@ -14,9 +15,11 @@ class Verifier
     public static function check(iterable $specifications) : void
     {
         foreach ($specifications as $specification) {
-            if ($specification instanceof Specification) {
-                $specification->check();
+            if (!$specification instanceof Specification) {
+                throw new InvalidArgumentException('Invalid specification.');
             }
+
+            $specification->check();
         }
     }
 }
