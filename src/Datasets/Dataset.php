@@ -70,12 +70,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
     /**
      * @param array[] $samples
-     * @param bool $validate
+     * @param bool $verify
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples = [], bool $validate = true)
+    public function __construct(array $samples = [], bool $verify = true)
     {
-        if ($samples and $validate) {
+        if ($samples and $verify) {
             $samples = array_values($samples);
 
             $prototype = isset($samples[0]) ? array_values($samples[0]) : [];

@@ -10,7 +10,7 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |
-| 3 | validate | true | bool | Should we validate the data? |
+| 2 | verify | true | bool | Should we verify the data? |
 
 ## Example
 

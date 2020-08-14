@@ -131,10 +131,10 @@ class Labeled extends Dataset
     /**
      * @param array[] $samples
      * @param (string|int|float)[] $labels
-     * @param bool $validate
+     * @param bool $verify
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples = [], array $labels = [], bool $validate = true)
+    public function __construct(array $samples = [], array $labels = [], bool $verify = true)
     {
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('Number of samples'
@@ -142,7 +142,7 @@ class Labeled extends Dataset
              . ' samples but ' . count($labels) . ' labels given.');
         }
 
-        if ($validate and $labels) {
+        if ($verify and $labels) {
             $labels = array_values($labels);
 
             $type = DataType::detect($labels[0]);
@@ -168,7 +168,7 @@ class Labeled extends Dataset
 
         $this->labels = $labels;
 
-        parent::__construct($samples, $validate);
+        parent::__construct($samples, $verify);
     }
 
     /**

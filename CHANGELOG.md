@@ -4,6 +4,7 @@
     - Added instability detection to gradient-based learners
     - Gradient Boost validation set holdout can now be 0
     - Specifications now extend base class
+    - Rename Dataset validate argument to verify
     
 - 0.1.2
     - Fixed K Means average loss calculation
