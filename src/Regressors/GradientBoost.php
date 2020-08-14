@@ -69,11 +69,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     ];
 
     /**
-     * The minimum records to subsample from the training set.
+     * The minimum size of each training subset.
      *
      * @var int
      */
-    protected const MIN_SUBSET = 1;
+    protected const MIN_SUBSAMPLE = 1;
 
     /**
      * The regressor that will fix up the error residuals of the *weak* base
@@ -373,7 +373,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $prevPred = Vector::quick($this->base->predict($testing));
 
-        $p = max(self::MIN_SUBSET, (int) round($this->ratio * $training->numRows()));
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numRows()));
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;
