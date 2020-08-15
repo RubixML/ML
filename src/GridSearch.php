@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -150,7 +151,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         } else {
             switch ($proxy->type()) {
                 case EstimatorType::classifier():
-                    $metric = new FBeta(1.0);
+                    $metric = new FBeta();
 
                     break 1;
 
@@ -165,7 +166,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                     break 1;
 
                 case EstimatorType::anomalyDetector():
-                    $metric = new FBeta(1.0);
+                    $metric = new FBeta();
 
                     break 1;
 
@@ -199,11 +200,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function compatibility() : array
     {
-        if (!$this->trained()) {
-            return DataType::all();
-        }
-
-        return $this->estimator->compatibility();
+        return $this->trained()
+            ? $this->estimator->compatibility()
+            : DataType::all();
     }
 
     /**
@@ -277,8 +276,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::with($dataset)->check();
-        SamplesAreCompatibleWithEstimator::with($dataset, $this)->check();
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $combinations = $this->combinations();
 
@@ -314,9 +315,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
         $this->results = array_transpose([$scores, $combinations]);
 
-        $best = array_values(reset($combinations));
+        $best = reset($combinations);
 
-        $estimator = new $this->base(...$best);
+        $estimator = new $this->base(...array_values($best));
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters');
@@ -376,9 +377,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function afterScore(array $result) : void
     {
-        [$score, $params] = $result;
-
         if ($this->logger) {
+            [$score, $params] = $result;
+            
             $this->logger->info(
                 "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
             );

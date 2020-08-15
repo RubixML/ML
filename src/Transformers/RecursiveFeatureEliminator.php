@@ -32,6 +32,13 @@ use function is_null;
 class RecursiveFeatureEliminator implements Transformer, Stateful
 {
     /**
+     * The minimum number of features to drop per iteration.
+     *
+     * @var int
+     */
+    protected const DROP_MIN = 1;
+
+    /**
      * The maximum number of features to select.
      *
      * @var int
@@ -154,11 +161,11 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
 
         $selected = range(0, $n - 1);
 
-        $k = (int) max(round(max($n - $this->maxFeatures, 0) / $this->epochs), 1);
+        $k = max(self::DROP_MIN, (int) ceil(($n - $this->maxFeatures) / $this->epochs));
 
         $subset = clone $dataset;
 
-        do {
+        for ($epoch = 0; $epoch < $this->epochs; ++$epoch) {
             $this->base->train($subset);
 
             $importances = $this->base->featureImportances();
@@ -169,10 +176,18 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
 
             $selected = array_values(array_diff_key($selected, $dropped));
 
-            $subset->dropColumns(array_keys($dropped));
-        } while (count($selected) > $this->maxFeatures);
+            if (count($selected) <= $this->maxFeatures) {
+                break 1;
+            }
 
-        $importances = array_diff_key($importances, $dropped ?? []);
+            $subset->dropColumns(array_keys($dropped));
+        }
+
+        if (isset($importances) and isset($dropped)) {
+            $importances = array_diff_key($importances, $dropped);
+        } else {
+            $importances = $this->base->featureImportances();
+        }
 
         $this->importances = array_combine($selected, $importances) ?: [];
     }
@@ -201,7 +216,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
      */
     public function __toString() : string
     {
-        return "Recursive Feature Eliminator {max features: {$this->maxFeatures}}"
-            . " {epochs: {$this->epochs} base: {$this->base}}";
+        return "Recursive Feature Eliminator (max features: {$this->maxFeatures},"
+            . " epochs: {$this->epochs}, base: {$this->base})";
     }
 }
