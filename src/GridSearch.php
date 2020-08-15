@@ -243,13 +243,14 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     }
 
     /**
-     * Return an array containing the best parameters from the last search.
+     * Return an array containing the hyper-parameters with the highest validation score
+     * from the last search.
      *
      * @return mixed[]|null
      */
     public function best() : ?array
     {
-        return $this->results ? $this->results[0]['params'] : null;
+        return $this->results ? $this->results[0][1] : null;
     }
 
     /**
@@ -290,8 +291,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
         $this->backend->flush();
 
-        $this->results = [];
-
         foreach ($combinations as $params) {
             $estimator = new $this->base(...$params);
 
@@ -309,15 +308,19 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
             );
         }
 
-        [$scores, $params] = array_transpose($this->backend->process());
+        [$scores, $combinations] = array_transpose($this->backend->process());
 
         array_multisort($scores, $combinations, SORT_DESC);
 
-        if ($this->logger) {
-            $this->logger->info('Training base learner');
-        }
+        $this->results = array_transpose([$scores, $combinations]);
 
-        $estimator = new $this->base(...reset($combinations));
+        $best = array_values(reset($combinations));
+
+        $estimator = new $this->base(...$best);
+
+        if ($this->logger) {
+            $this->logger->info('Training with best hyper-parameters');
+        }
 
         $estimator->train($dataset);
 
@@ -338,11 +341,11 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     {
         $combinations = [[]];
 
-        foreach ($this->params as $i => $tuple) {
+        foreach ($this->params as $i => $params) {
             $append = [];
 
             foreach ($combinations as $product) {
-                foreach ($tuple as $param) {
+                foreach ($params as $param) {
                     $product[$i] = $param;
                     $append[] = $product;
                 }
@@ -380,11 +383,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                 "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
             );
         }
-
-        $this->results[] = [
-            'score' => $score,
-            'params' => $params,
-        ];
     }
 
     /**
