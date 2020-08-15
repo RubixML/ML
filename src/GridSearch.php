@@ -379,7 +379,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     {
         if ($this->logger) {
             [$score, $params] = $result;
-            
+
             $this->logger->info(
                 "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
             );

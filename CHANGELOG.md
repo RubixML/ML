@@ -1,4 +1,4 @@
-- Unreleased
+- 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners
     - Added instability detection to gradient-based learners
