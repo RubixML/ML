@@ -7,6 +7,7 @@
     - Rename Dataset validate argument to verify
     
 - 0.1.2
+    - Fixed Grid Search best hyper-parameters method
     - Fixed K Means average loss calculation
     - Fixed bootstrap estimators tiny bootstrap sets
 

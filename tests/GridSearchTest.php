@@ -132,10 +132,16 @@ class GridSearchTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $results = $this->estimator->results();
+
+        $this->assertIsArray($results);
+        $this->assertCount(6, $results);
+
         $best = $this->estimator->best();
 
         $this->assertIsArray($best);
         $this->assertCount(3, $best);
+        $this->assertEquals($results[0][1], $best);
 
         $predictions = $this->estimator->predict($testing);
 
