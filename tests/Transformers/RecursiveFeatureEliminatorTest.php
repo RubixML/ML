@@ -32,7 +32,7 @@ class RecursiveFeatureEliminatorTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
         ], [0.45, 0.55]);
 
-        $this->transformer = new RecursiveFeatureEliminator(1);
+        $this->transformer = new RecursiveFeatureEliminator(1, 1, 0.5);
     }
 
     /**

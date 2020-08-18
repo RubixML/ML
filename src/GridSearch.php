@@ -108,10 +108,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
-        return [
-            $validator->test($estimator, $dataset, $metric),
-            $estimator->params(),
-        ];
+        $score = $validator->test($estimator, $dataset, $metric);
+
+        return [$score, $estimator->params()];
     }
 
     /**
@@ -139,11 +138,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         }
 
         foreach ($params as &$tuple) {
-            if (empty($tuple)) {
-                $tuple = [null];
-            } else {
-                $tuple = array_values(array_unique($tuple, SORT_REGULAR));
-            }
+            $tuple = empty($tuple) ? [null] : array_values(array_unique($tuple, SORT_REGULAR));
         }
 
         if ($metric) {

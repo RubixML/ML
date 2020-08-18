@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Classifiers\ClassificationTree;
 use InvalidArgumentException;
@@ -17,9 +19,10 @@ use function is_null;
 /**
  * Recursive Feature Eliminator
  *
- * Recursive Feature Eliminator or RFE is a supervised feature selector that uses the importance
- * scores returned by a learner implementing the RanksFeatures interface to recursively drop
- * feature columns with the lowest importance until max features is reached.
+ * Recursive Feature Eliminator or *RFE* is a supervised feature selector that uses the
+ * importance scores returned by a learner implementing the RanksFeatures interface to
+ * recursively drop feature columns with the lowest importance until the minimum number
+ * of features has been reached.
  *
  * References:
  * [1] I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector
@@ -29,69 +32,82 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RecursiveFeatureEliminator implements Transformer, Stateful
+class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
 {
+    use LoggerAware;
+
     /**
-     * The minimum number of features to drop per iteration.
+     * The minimum number of features to select.
      *
      * @var int
      */
-    protected const DROP_MIN = 1;
+    protected $minFeatures;
 
     /**
-     * The maximum number of features to select.
+     * The maximum number of features to drop from the dataset per iteration.
      *
      * @var int
      */
-    protected $maxFeatures;
+    protected $maxDropFeatures;
 
     /**
-     * The maximum number of iterations to recurse upon the dataset.
+     * The maximum importance to drop from the dataset per iteration.
      *
-     * @var int
+     * @var float
      */
-    protected $epochs;
+    protected $maxDropImportance;
 
     /**
-     * The base feature ranking learner instance.
+     * The base feature ranking learner.
      *
      * @var \Rubix\ML\RanksFeatures|null
      */
     protected $base;
 
     /**
-     * Should the base learner be fitted?
+     * Should the base feature ranking learner be fitted?
      *
      * @var bool
      */
     protected $fitBase;
 
     /**
-     * The final feature importances of the selected columns.
+     * The final importances of the selected feature columns.
      *
      * @var float[]|null
      */
     protected $importances;
 
     /**
-     * @param int $maxFeatures
-     * @param int $epochs
+     * @param int $minFeatures
+     * @param int $maxDropFeatures
+     * @param float $maxDropImportance
      * @param \Rubix\ML\RanksFeatures|null $base
      */
-    public function __construct(int $maxFeatures, int $epochs = 10, ?RanksFeatures $base = null)
-    {
-        if ($maxFeatures < 1) {
+    public function __construct(
+        int $minFeatures,
+        int $maxDropFeatures = 3,
+        float $maxDropImportance = 0.2,
+        ?RanksFeatures $base = null
+    ) {
+        if ($minFeatures < 1) {
             throw new InvalidArgumentException('Maximum features must'
-                . " be greater than 0, $maxFeatures given.");
+                . " be greater than 0, $minFeatures given.");
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs must'
-                . " be greater than 0, $epochs given.");
+        if ($maxDropFeatures < 1) {
+            throw new InvalidArgumentException('Maximum dropped features'
+                . " must be greater than 0, $maxDropFeatures given.");
         }
 
-        $this->maxFeatures = $maxFeatures;
-        $this->epochs = $epochs;
+        if ($maxDropImportance < 0.0 or $maxDropImportance > 1.0) {
+            throw new InvalidArgumentException('Maximum dropped importance'
+                . " must be between 0 and 1, $maxDropImportance given.");
+        }
+
+        $this->minFeatures = $minFeatures;
+        $this->maxDropFeatures = $maxDropFeatures;
+        $this->maxDropImportance = $maxDropImportance;
         $this->base = $base;
         $this->fitBase = is_null($base);
     }
@@ -117,7 +133,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
     }
 
     /**
-     * Return the final importances scores of the selected feature columns.
+     * Return the final importances of the selected feature columns.
      *
      * @return float[]|null
      */
@@ -152,44 +168,75 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
                     break 1;
 
                 default:
-                    throw new InvalidArgumentException('Label type is'
-                        . ' not compatible with base learner.');
+                    throw new InvalidArgumentException('No compatible base'
+                        . " learner for {$dataset->labelType()} label type.");
             }
         }
 
-        $n = $dataset->numColumns();
-
-        $selected = range(0, $n - 1);
-
-        $k = max(self::DROP_MIN, (int) ceil(($n - $this->maxFeatures) / $this->epochs));
+        if ($this->logger) {
+            $this->logger->info("$this initialized");
+        }
 
         $subset = clone $dataset;
 
-        for ($epoch = 0; $epoch < $this->epochs; ++$epoch) {
+        $selected = range(0, $dataset->numColumns() - 1);
+        $epoch = 0;
+
+        while (count($selected) > $this->minFeatures) {
+            ++$epoch;
+
             $this->base->train($subset);
 
             $importances = $this->base->featureImportances();
 
             asort($importances);
 
-            $dropped = array_slice($importances, 0, $k, true);
+            $dropped = [];
+            $total = 0.0;
 
-            $selected = array_values(array_diff_key($selected, $dropped));
+            foreach ($importances as $column => $importance) {
+                if ($importance >= $this->maxDropImportance - $total) {
+                    break 1;
+                }
 
-            if (count($selected) <= $this->maxFeatures) {
-                break 1;
+                $dropped[] = (int) $column;
+                unset($selected[$column]);
+
+                $total += $importance;
+
+                if (count($dropped) >= $this->maxDropFeatures) {
+                    break 1;
+                }
+
+                if (count($selected) <= $this->minFeatures) {
+                    break 1;
+                }
             }
 
-            $subset->dropColumns(array_keys($dropped));
+            $selected = array_values($selected);
+
+            $subset->dropColumns($dropped);
+
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch - Dropped "
+                    . count($dropped) . "/{$subset->numColumns()} columns,"
+                    . " Total Dropped Importance: $total");
+            }
+
+            if (empty($dropped)) {
+                break 1;
+            }
         }
 
-        if (isset($importances) and isset($dropped)) {
-            $importances = array_diff_key($importances, $dropped);
-        } else {
-            $importances = $this->base->featureImportances();
-        }
+        $this->base->train($subset);
+
+        $importances = $this->base->featureImportances();
 
         $this->importances = array_combine($selected, $importances) ?: [];
+
+        if ($this->logger) {
+            $this->logger->info('Fitting complete');
+        }
     }
 
     /**
@@ -216,7 +263,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful
      */
     public function __toString() : string
     {
-        return "Recursive Feature Eliminator (max features: {$this->maxFeatures},"
-            . " epochs: {$this->epochs}, base: {$this->base})";
+        return "Recursive Feature Eliminator (min_features: {$this->minFeatures},"
+            . " max_drop_features: {$this->maxDropFeatures}, "
+            . " max_drop_importance: {$this->maxDropImportance}, base: {$this->base})";
     }
 }

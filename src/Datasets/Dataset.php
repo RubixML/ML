@@ -313,6 +313,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function dropColumns(array $offsets) : self
     {
+        if (empty($offsets)) {
+            return $this;
+        }
+
         foreach ($this->samples as &$sample) {
             foreach ($offsets as $offset) {
                 unset($sample[$offset]);
