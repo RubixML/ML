@@ -283,9 +283,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         [$m, $n] = $dataset->shape();

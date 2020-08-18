@@ -309,9 +309,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $prevLoss = $bestLoss = INF;

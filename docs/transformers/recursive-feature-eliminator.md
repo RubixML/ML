@@ -15,7 +15,7 @@ Recursive Feature Eliminator or *RFE* is a supervised feature selector that uses
 | 1 | min features | | int | The minimum number of features to select. |
 | 2 | max drop features | 3 | int | The maximum number of features to drop from the dataset per iteration. |
 | 3 | max drop importance | 0.2 | float | The maximum importance to drop from the dataset per iteration. |
-| 4 | base | Auto | RanksFeatures | The base feature ranking learner instance. |
+| 4 | estimator | Auto | RanksFeatures | The base feature ranking learner instance. |
 
 ## Additional Methods
 Return the final importances of the selected feature columns:

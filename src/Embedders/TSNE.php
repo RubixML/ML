@@ -326,9 +326,7 @@ class TSNE implements Embedder, Verbose, Stringable
         SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
         if ($this->logger) {
-            $this->logger->info("Embedder init $this");
-
-            $this->logger->info('Embedding started');
+            $this->logger->info("$this initialized");
 
             $this->logger->info('Computing high-dimensional affinities');
         }

@@ -375,9 +375,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);

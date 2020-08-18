@@ -295,9 +295,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $prevLoss = $bestLoss = INF;

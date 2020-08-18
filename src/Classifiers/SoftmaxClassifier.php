@@ -306,9 +306,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $prevLoss = $bestLoss = INF;

@@ -393,9 +393,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);

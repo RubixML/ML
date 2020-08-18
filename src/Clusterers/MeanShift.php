@@ -297,9 +297,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $n = $dataset->numRows();

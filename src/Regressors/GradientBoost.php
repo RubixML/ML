@@ -347,9 +347,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $this->featureCount = $dataset->numColumns();

@@ -306,9 +306,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $labels = array_fill(0, $dataset->numRows(), 0);

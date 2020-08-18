@@ -62,7 +62,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
      *
      * @var \Rubix\ML\RanksFeatures|null
      */
-    protected $base;
+    protected $estimator;
 
     /**
      * Should the base feature ranking learner be fitted?
@@ -82,13 +82,13 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
      * @param int $minFeatures
      * @param int $maxDropFeatures
      * @param float $maxDropImportance
-     * @param \Rubix\ML\RanksFeatures|null $base
+     * @param \Rubix\ML\RanksFeatures|null $estimator
      */
     public function __construct(
         int $minFeatures,
         int $maxDropFeatures = 3,
         float $maxDropImportance = 0.2,
-        ?RanksFeatures $base = null
+        ?RanksFeatures $estimator = null
     ) {
         if ($minFeatures < 1) {
             throw new InvalidArgumentException('Maximum features must'
@@ -108,8 +108,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
         $this->minFeatures = $minFeatures;
         $this->maxDropFeatures = $maxDropFeatures;
         $this->maxDropImportance = $maxDropImportance;
-        $this->base = $base;
-        $this->fitBase = is_null($base);
+        $this->estimator = $estimator;
+        $this->fitBase = is_null($estimator);
     }
 
     /**
@@ -155,15 +155,15 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 . ' Labeled training set.');
         }
 
-        if ($this->fitBase or is_null($this->base)) {
+        if ($this->fitBase or is_null($this->estimator)) {
             switch ($dataset->labelType()) {
                 case DataType::categorical():
-                    $this->base = new ClassificationTree();
+                    $this->estimator = new ClassificationTree();
 
                     break 1;
 
                 case DataType::continuous():
-                    $this->base = new RegressionTree();
+                    $this->estimator = new RegressionTree();
 
                     break 1;
 
@@ -185,9 +185,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
         while (count($selected) > $this->minFeatures) {
             ++$epoch;
 
-            $this->base->train($subset);
+            $this->estimator->train($subset);
 
-            $importances = $this->base->featureImportances();
+            $importances = $this->estimator->featureImportances();
 
             asort($importances);
 
@@ -213,9 +213,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 }
             }
 
-            $selected = array_values($selected);
-
             $subset->dropColumns($dropped);
+
+            $selected = array_values($selected);
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Dropped "
@@ -228,9 +228,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             }
         }
 
-        $this->base->train($subset);
+        $this->estimator->train($subset);
 
-        $importances = $this->base->featureImportances();
+        $importances = $this->estimator->featureImportances();
 
         $this->importances = array_combine($selected, $importances) ?: [];
 
@@ -264,7 +264,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
     public function __toString() : string
     {
         return "Recursive Feature Eliminator (min_features: {$this->minFeatures},"
-            . " max_drop_features: {$this->maxDropFeatures}, "
-            . " max_drop_importance: {$this->maxDropImportance}, base: {$this->base})";
+            . " max_drop_features: {$this->maxDropFeatures},"
+            . " max_drop_importance: {$this->maxDropImportance},"
+            . " estimator: {$this->estimator})";
     }
 }

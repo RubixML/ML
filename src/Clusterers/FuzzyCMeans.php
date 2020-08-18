@@ -244,9 +244,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $this->centroids = $this->seeder->seed($dataset, $this->c);

@@ -279,7 +279,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         $combinations = $this->combinations();
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
+            $this->logger->info("$this initialized");
 
             $this->logger->info('Searching ' . count($combinations)
                 . ' combinations of hyper-parameters');
