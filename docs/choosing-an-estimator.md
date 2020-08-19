@@ -1,53 +1,50 @@
 # Choosing an Estimator
-Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Most estimators allow tuning by adjusting their user-defined hyper-parameters. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
+Estimators make up the core of the Rubix ML library and include classifiers, regressors, clusterers, anomaly detectors, and meta-estimators organized into their own namespaces. They are responsible for making predictions and are usually trained with data. Most estimators allow tuning by adjusting their user-defined hyper-parameters. Hyper-parameters are arguments to the learning algorithm that effect its behavior during training and inference. The values for the hyper-parameters can be chosen by intuition, [tuning](choosing-an-esimator.md#hyper-parameter-tuning), [optimization](automl.md#hyper-parameter-optimization), or completely at random. The defaults provided by the library are a good place to start for most problems. To instantiate a new estimator, pass the desired values of the hyper-parameters to the estimator's constructor like in the example below.
 
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KNearestNeighbors(10, false, new Minkowski(2.0));
+$estimator = new KNearestNeighbors(10, false, new Minkowski(2.5));
 ```
 
-### Bias-variance Tradeoff
-A characteristic of all estimator types is the notion of model *flexibility*. Flexibility can be expressed in different ways by each estimator type but greater flexibility usually comes with the capacity to handle more difficult tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting) - the latter consequence coming from what is commonly referred to as the [bias-variance tradeoff](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff). Models that are inflexible have high bias whereas flexible models tend to make predictions that can vary quite a bit (high variance). In contrast to flexible models, inflexible models tend to [underfit](cross-validation.md#underfitting) datasets that complex and non-linear. Ideally, we'd like to find a model that has just the right amount of bias and variance for our dataset.
-
 ## Classifiers
-Classifiers can be assessed by their ability to form decision boundaries around the areas that define the classes. A linear classifier such as [Logistic Regression](classifiers/logistic-regresion.md) can only fully distinguish classes that are *linearly separable*. On the other hand, highly flexible models such as [Multilayer Perceptron](classifiers/multilayer-perceptron.md) is a *universal function approximator* because it can theoretically learn any decision boundary.
+Classifiers are supervised learners that predict a categorical *class* label. They can be used to recognize (`cat`, `dog`, `turtle`), differentiate (`spam`, `not spam`), or describe (`running`, `walking`) the samples in a dataset based on the labels it was trained on. In addition, classifiers that implement the [Probabilistic](probabilistic.md) interface can predict the joint probability distribution of each possible class from the training set.
 
 | Classifier | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
 | [AdaBoost](classifiers/adaboost.md) | High | ● | | Boosts most classifiers, Learns sample weights | Sensitive to noise, Susceptible to overfitting |
-| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, Automatic feature selection | High variance |
-| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Faster training, Lower variance | Similar to Classification Tree |
+| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Interpretable model, Automatic feature selection | High variance error |
+| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Faster training, Lower variance error | Similar to Classification Tree |
 | [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
 | [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Faster inference | Not compatible with certain distance kernels |
 | [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
-| [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | Prone to underfitting, Limited to binary classification |
+| [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | High bias error, Limited to binary classification |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong feature independence assumption |
 | [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | Handles imbalanced datasets, Computes reliable feature importances | High computation and memory cost |
-| [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
+| [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | High bias error |
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Regressors
-In regression, flexibility is expressed by the degree to which a regressor can mimic the function that generated the outcomes of the training samples. Highly biased models such as [Ridge](regressors/ridge.md) assume a linear relationship between input and output variables and tend to underfit a function that is complex and nonlinear. More flexible models such as [Gradient Boost](regressors/gradient-boost.md) can model complex non-linear functions but are more prone to overfitting if not tuned properly.
+Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, regressors' range of predictions is unbounded such that the number of possible predictions it could make is infinite.
 
 | Regressor | Flexibility | Online | Verbose | Advantages | Disadvantages |
 |---|---|---|---|---|---|
-| [Adaline](regressors/adaline.md) | Low | ● | ● | Highly Scalable | Prone to underfitting |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Faster training, Lower variance | Similar to Regression Tree |
+| [Adaline](regressors/adaline.md) | Low | ● | ● | Highly Scalable | High bias error |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Faster training, Lower variance error | Similar to Regression Tree |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | High precision, Computes reliable feature importances | Prone to overfitting, High computation and memory cost |
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Faster inference | Not compatible with certain distance kernels |
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
-| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, Automatic feature selection | High variance |
-| [Ridge](regressors/ridge.md) | Low | | | Interpretable model | Prone to underfitting |
+| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, Automatic feature selection | High variance error |
+| [Ridge](regressors/ridge.md) | Low | | | Interpretable model | High bias error |
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 
 ## Clusterers
-Clusterers express flexibility in their capacity to represent an outer hull surrounding the members of a cluster of training samples. *Hard* clustering algorithms such as [K Means](clusterers/k-means.md) establish a uniform hypersphere around the clusters with potential overlap. This works well for clusters that are linearly separable, however, it breaks down when clusters become more interspersed. More flexible models such as [DBSCAN](clusterers/dbscan.md) can better conform to the shape of the cluster by allowing the surface of the hull to be irregular.
+Clusterers are unsupervised learners that predict the integer-valued cluster number of the sample such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers focus on differentiating and grouping samples using only the patterns discovered in the sample's features. Clusterers that implement the [Probabilistic](probabilistic.md) interface also have the facility to output the probability that a sample belongs to a particular cluster.
 
 | Clusterer | Flexibility | Proba | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
@@ -58,19 +55,25 @@ Clusterers express flexibility in their capacity to represent an outer hull surr
 | [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Handles non-convex clusters, No local minima | Slower training |
 
 ## Anomaly Detectors
-Anomaly Detectors fall into one of two groups - those that consider the entire training set when determining an anomaly, and those that focus on a *local region* of the training set. A local region can either be a subset of the samples as with [LOF](anomaly-detectors/local-outlier-factor.md) or a subset of the features as with [Isolation Forest](anomaly-detectors/isolation-forest.md). Local anomaly detectors are typically more accurate but come with higher computational complexity. In contrast, global anomaly detectors are fast but may produce a higher number of false positives and/or negatives.
+Anomaly Detectors are unsupervised learners that predict a boolean-valued outcome encoded as `1` for an outlier or `0` for a regular sample. They are specialized to perform *one class* classification on unbalanced datasets without the need for labeled data. In addition, anomaly detectors that implement the [Ranking](ranking.md) interface can output an anomaly score for each sample in a dataset which can be used to rank the samples from highest to lowest likelihood of being an outlier.
 
 | Anomaly Detector | Scope | Ranking | Online | Advantages | Disadvantages |
 |---|---|---|---|---|---|
 | [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | Fast training and inference, Highly scalable | Strong Gaussian and feature independence assumption, Sensitive to noise |
-| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local | ● | | Fast training, Handles high dimensional data | Slower Inference |
-| [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | Intuitable model, Finds anomalies within clusters | Suffers from the curse of dimensionality |
-| [Loda](anomaly-detectors/loda.md) | Local | ● | ● | Highly scalable | High memory cost |
+| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local (Features) | ● | | Faster training, Handles high dimensional data | Slower Inference |
+| [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local (Samples) | ● | | Intuitable model, Finds anomalies within clusters | Suffers from the curse of dimensionality |
+| [Loda](anomaly-detectors/loda.md) | Local (Features) | ● | ● | Highly scalable | High memory cost |
 | [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Interpretable model, Robust to outliers in the training set | Problems with highly skewed dataset  |
 
+## Model Flexibility
+A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret, quicker to train, but are more prone to [underfitting](cross-validation.md#underfitting) due to high bias error. We recommend choosing the simplest estimator for your project that does not underfit your training data.
+
+## Hyper-parameter Tuning
+When choosing an estimator for your project it often helps to fine-tune its hyper-parameters in order to get the best accuracy from the model. Hyper-parameter tuning is an experimental process that incorporates [cross-validation](cross-validation.md) to guide hyper-parameter selection. In a typical scenario, a user will train an estimator with one set of hyper-parameters, obtain a validation score, and use that as a baseline to make future adjustments. The goal at each iteration is to determine whether the adjustments improve the model or make it worse. We can consider a model to be *fully* tuned when adjustments to the hyper-parameters can no longer make improvements to the validation score obtained through cross-validation.
+
 ## Meta-estimators
-Meta-estimators wrap and enhance other estimators with extra functionality. They are *polymorphic* in the sense that they take on the type of the base estimator they wrap. A characteristic feature of meta-estimators that implement the [Wrapper](wrapper.md) interface is that they allow methods to be called on the base estimator by calling them from the meta-estimator.
+Meta-estimators wrap and enhance other estimators with added functionality. They are *polymorphic* in the sense that they take on the type of the base estimator they wrap. Meta-estimators that implement the [Wrapper](wrapper.md) interface allow methods to be called on the base estimator from the meta-estimator.
 
 | Meta-estimator | Wrapper | Parallel | Verbose | Compatibility |
 |---|---|---|---|---|
@@ -86,7 +89,7 @@ In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new BootstrapAggregator(new RegressionTree(4), 1000);
+$estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
 
 $estimator->train($dataset);
 ```
