@@ -68,7 +68,7 @@ class Cluster implements BinaryNode, Hypersphere, Leaf
             $distances[] = $kernel->compute($sample, $center);
         }
 
-        $radius = max($distances);
+        $radius = max($distances) ?: 0.0;
 
         return new self($dataset, $center, $radius);
     }

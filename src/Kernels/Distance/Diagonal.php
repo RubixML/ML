@@ -45,7 +45,7 @@ class Diagonal implements Distance, Stringable
             $deltas[] = abs($value - $b[$i]);
         }
 
-        return max($deltas);
+        return max($deltas) ?: 0.0;
     }
 
     /**

@@ -69,7 +69,7 @@ class Ball implements BinaryNode, Hypersphere
             $distances[] = $kernel->compute($sample, $center);
         }
 
-        $radius = max($distances);
+        $radius = max($distances) ?: 0.0;
 
         $leftCentroid = $dataset->sample(argmax($distances));
 
