@@ -57,7 +57,7 @@ class Cosine implements Distance, Stringable
             $ssB += $valueB ** 2;
         }
 
-        return 1.0 - ($sigma / ((sqrt($ssA) * sqrt($ssB)) ?: EPSILON));
+        return 1.0 - ($sigma / (sqrt($ssA * $ssB) ?: EPSILON));
     }
 
     /**
