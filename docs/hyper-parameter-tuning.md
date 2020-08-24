@@ -1,0 +1,61 @@
+# Hyper-parameter Tuning
+When choosing an estimator for your project it often helps to fine-tune its hyper-parameters in order to get the best accuracy and performance from the model. Hyper-parameter tuning is an experimental process that incorporates [cross-validation](cross-validation.md) to guide hyper-parameter selection.
+
+In a basic scenario, a user will train an estimator with one set of hyper-parameters, obtain a validation score, and then use that as a baseline to make future adjustments. The goal at each iteration is to determine whether the adjustments improve accuracy or cause it to decrease. We can consider a model to be *fully* tuned when adjustments to the hyper-parameters can no longer make improvements to the validation score.
+
+## Hyper-parameter Optimization
+In distinction to manual tuning, Hyper-parameter optimization is an AutoML technique that employs search and meta-learning strategies to explore various algorithm configurations. In Rubix, hyper-parameter optimizers are implemented as meta-estimators that wrap a base learner whose hyper-parameters we wish to optimize.
+
+## Grid Search
+[Grid Search](grid-search.md) is a meta-estimator that aims to find the combination of hyper-parameters that maximizes a particular cross-validation [Metric](cross-validation/metrics/api.md). It works by training and testing a unique model for each combination of possible hyper-parameters and then picking the combination that returns the highest validation score. Since Grid Search implements the [Parallel](parallel.md) interface, we can greatly reduce the search time by training many models in parallel.
+
+As an example, we could attempt to find the best setting for the hyper-parameter *k* in [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) from a list of possible values `1`, `3`, `5`, and `10`. In addition, we could try each value of *k* with distance weighting turned on or off. We might also want to know if the data is sensitive to the underlying distance kernel so we'll try the standard [Euclidean](https://docs.rubixml.com/en/latest/kernels/distance/euclidean.html) as well as the [Manhattan](https://docs.rubixml.com/en/latest/kernels/distance/manhattan.html) distances. The order in which the sets of possible parameters are given to Grid Search is the same order they are given in the constructor of the learner.
+
+```php
+use Rubix\ML\GridSearch;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
+
+$params = [
+    [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()]
+];
+
+$estimator = new GridSearch(KNearestNeighbors::class, $params);
+
+$estimator->train($dataset);
+```
+
+Once training is complete, Grid Search automatically trains the base learner with the best hyper-parameters on the full dataset and can perform inference like a normal estimator. In addition, you can dump the results of the search for future reference using the `results()` method. In the example below, we'll just return the parameters that received the highest validation score using the `best()` method.
+
+```php
+var_dump($estimator->best());
+```
+
+```sh
+array(3) {
+  [0]=> int(3)
+  [1]=> bool(true)
+  [2]=> object(Rubix\ML\Kernels\Distance\Manhattan) {}
+}
+```
+### Grid Search vs. Random Search
+When the possible values of the continuous hyper-parameters are selected such that they are evenly spaced out in a grid, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically.
+
+```php
+use Rubix\ML\Other\Helpers\Params;
+
+$params = [
+    Params::grid(1, 10, 4), [true, false], // ...
+];
+```
+
+When the list of possible continuous-valued hyper-parameters is randomly chosen from a distribution, we call that *random search*. In the absence of a good manual strategy, random search has the advantage of being able to search the hyper-parameter space more effectively by testing combinations of parameters that might not have been considered otherwise. To generate a list of random values from a uniform distribution you can use either the `ints()` or `floats()` method on the [Params](other/helpers/params.md) helper.
+
+```php
+use Rubix\ML\Other\Helpers\Params;
+
+$params = [
+    Params::ints(1, 10, 4), [true, false], // ...
+];
+```

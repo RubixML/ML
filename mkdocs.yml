@@ -17,7 +17,7 @@ nav:
 - Training: training.md
 - Inference: inference.md
 - Cross Validation: cross-validation.md
-- AutoML: automl.md
+- Hyper-parameter Tuning: hyper-parameter-tuning.md
 - Model Persistence: model-persistence.md
 - FAQ: faq.md
 - General API Reference:

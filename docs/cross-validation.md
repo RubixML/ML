@@ -14,7 +14,7 @@ The first method of creating a training and testing set that works for all datas
 You can also use the `take()` or `leave()` methods to extract a testing set while leaving the remaining samples in the master dataset.
 
 ```php
-$testing = $dataset->randomize()->take(1000);
+$testing = $training->randomize()->take(1000);
 ```
 
 ### Stratified Split
@@ -30,30 +30,30 @@ Cross validation [Metrics](cross-validation/metrics/api.md) are used to score th
 > **Note:** All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/en/latest/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/en/latest/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
 
 ### Classification and Anomaly Detection
-| Metric | Range | 
-|---|---|
-| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] |
-| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] |
-| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] |
-| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] |
+| Metric | Range | Notes |
+|---|---|---|
+| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | Not suitable for imbalanced datasets |
+| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | Balances precision and recall |
+| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | Multiclass Youden's J statistic |
+| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | Balanced metric |
 
 ### Regression
-| Metric | Range | 
-|---|---|
-| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] |
-| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] |
-| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] |
-| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] |
-| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] |
-| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] |
+| Metric | Range | Notes |
+|---|---|---|
+| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | Error in same units as prediction |
+| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | Sensitive to outliers |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | Robust to outliers |
+| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | Proportion of explained variance |
+| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | Error in same units as prediction |
+| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | Error as a percentage |
 
 ### Clustering
-| Metric | Range | 
-|---|---|
-| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] |
-| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] |
-| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] |
-| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] |
+| Metric | Range | Notes |
+|---|---|---|
+| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | Not suitable for hyper-parameter tuning |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | Not suitable for hyper-parameter tuning |
+| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | Adjusted for chance |
+| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | Balances homogeneity and completeness |
 
 To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.
 
@@ -66,11 +66,11 @@ $metric = new Accuracy();
 
 $score = $metric->score($predictions, $testing->labels());
 
-var_dump($score);
+echo $score;
 ```
 
 ```sh
-float(0.85)
+0.85
 ```
 
 ## Reports
@@ -133,7 +133,7 @@ echo $results;
 }.
 ```
 
-## Accessing Report Attributes
+### Accessing Report Attributes
 You can access individual report attributes by treating the report object as an associative array.
 
 ```php
@@ -148,7 +148,7 @@ $results->toJSON()->write('report.json');
 ```
 
 ## Validators
-Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm employed under the hood. Most validators implement the [Parallel](parallel.md) interface which allows multiple tests to be run at the same time on multiple CPU cores.
+Metrics can be used stand-alone or they can be used within a [Validator](cross-validation/api.md) object as the scoring function. Validators automate the cross validation process by training and testing a learner on different subsets of a master dataset. The way in which subsets are chosen depends on the algorithm employed under the hood. Most validators implement the [Parallel](parallel.md) interface which allows multiple tests to be run at the same time in parallel.
 
 | Validator | Test Coverage | Parallel |
 |---|---|---|
@@ -167,20 +167,18 @@ $validator = new KFold(10);
 
 $score = $validator->test($estimator, $dataset, new FBeta());
 
-var_dump($score);
+echo $score;
 ```
 
 ```sh
-float(0.9175)
+0.9175
 ```
 
-## Common Problems
+## Underfitting
+A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear resulting in high bias error. Adding more features can help with underfitting, however if the problem is too severe, a more flexible learner can be chosen for the task instead.
 
-### Underfitting
-A poorly performing model can sometimes be explained as *underfiting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. Underfitting mostly occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features can help with underfitting, however if the problem is too severe, a more flexible learner can be chosen for the task instead.
+## Overfitting
+When a model performs well on training data but poorly during cross-validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. Flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, or and tree pruning to control overfitting. Adding more samples to the dataset can also help.
 
-### Overfitting
-When a model performs well on training data but poorly during cross validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training set data and therefore fails to generalize well to new data or make predictions reliably. Some degree of overfitting can occur with any model, but more flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, and tree pruning to control overfitting. Adding more samples to the dataset can also help.
-
-### Selection Bias
+## Selection Bias
 When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs with mostly (say 90%) images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented.

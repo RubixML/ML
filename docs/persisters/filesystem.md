@@ -15,7 +15,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Persisters\Serializers\Igbinary;
 
-$persister = new Filesystem('/path/to/example.model', true, new Iginary());
+$persister = new Filesystem('/path/to/example.model', true, new Igbinary());
 ```
 
 ## Additional Methods

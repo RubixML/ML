@@ -138,7 +138,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         }
 
         foreach ($params as &$tuple) {
-            $tuple = empty($tuple) ? [null] : array_values(array_unique($tuple, SORT_REGULAR));
+            $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }
 
         if ($metric) {

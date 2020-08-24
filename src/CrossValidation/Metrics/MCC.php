@@ -31,7 +31,7 @@ use const Rubix\ML\EPSILON;
 class MCC implements Metric, Stringable
 {
     /**
-     * Compute the class mcc score.
+     * Compute the MCC score from a confusion matrix.
      *
      * @param int $tp
      * @param int $tn

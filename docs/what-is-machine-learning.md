@@ -5,13 +5,13 @@ Machine learning (ML) is a form of programming that uses data to train a compute
 Supervised learning is a type of machine learning that incorporates a training signal in the form of *labels* which are often annotated by humans. Labels are the desired output of a learner given the sample we are showing it. For this reason, you can think of supervised leaning as learning *by example*. There are two types of supervised learning to consider in Rubix ML.
 
 ### Classification
-For classification problems, a learner is trained to differentiate samples among a set of *k* possible discrete classes. In this type of problem, the training labels are the classes that each sample belongs to. Examples of class labels can include *cat*, *dog*, *human*, or any other discrete label represented as a string. Classification problems include [image recognition](https://github.com/RubixML/CIFAR-10), [text sentiment analysis](https://github.com/RubixML/Sentiment), and [Iris flower classification](https://github.com/RubixML/Iris).
+For classification problems, a learner is trained to differentiate samples among a set of *k* possible discrete classes. In this type of problem, the training labels are the classes that each sample belongs to. Examples of class labels include `cat`, `dog`, `human`, or any other discrete categorical label. Classification problems include [image recognition](https://github.com/RubixML/CIFAR-10), [text sentiment analysis](https://github.com/RubixML/Sentiment), and [Iris flower classification](https://github.com/RubixML/Iris).
 
 ### Regression
-Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as integers and floating point numbers. Unlike classifiers, the range of predictions that a regressor can make is infinite. Regression problems include estimating the [sale price of a home](https://github.com/RubixML/Housing), credit scoring, and determining the steering angle of a self-driving vehicle.
+Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as integers and floating point numbers. Regression problems include estimating the [sale price of a home](https://github.com/RubixML/Housing), credit scoring, and determining the steering angle of a self-driving vehicle.
 
 ## Unsupervised Learning
-A form of learning that does not require training labels is called Unsupervised learning. Unsupervised learners focus on digesting patterns within raw samples. There are three types of unsupervised learning to consider in Rubix ML.
+A form of learning that does not require training labels is called Unsupervised learning. Unsupervised learners focus on digesting patterns within the samples. There are three types of unsupervised learning we offer in Rubix ML.
 
 ### Clustering
 Clustering takes a dataset and assigns each of the samples a discrete cluster number based on its similarity to other samples from the training set. It can be viewed as a weaker form of classification where the class names are unknown. Clustering is used in tissue differentiation from PET scan images, customer database market segmentation, and to discover communities within social networks.
@@ -24,6 +24,9 @@ Manifold learning is a type of unsupervised non-linear dimensionality reduction 
 
 ## Deep Learning
 Deep Learning is a subset of machine learning that involves layers of computation that form feature representations of greater and greater complexity. It is a paradigm shift from human-engineered features to letting the learner construct its own features from the raw data. Deep Learning is used in image recognition, natural language processing, and for other tasks demanding very high dimensionality.
+
+## AutoML
+Automated Machine Learning (AutoML) is the application of automated tools when designing machine learning models. The goal of AutoML is to simplify the machine learning lifecycle for non-experts and to facilitate rapid prototyping. In addition, AutoML can aid in the discovery of simpler and more accurate solutions than could otherwise be discovered via human intuition. Rubix provides a number of tools to help automate the machine learning process including [hyper-parameter optimizers](hyper-parameter-tuning.md#hyper-parameter-optimization) and [feature selectors](preprocessing.md#feature-selection).
 
 ## Other Forms of ML
 Although the supervised and unsupervised learning framework covers a substantial number of problems, there are other types of machine learning that the library does *not* support out of the box.
