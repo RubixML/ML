@@ -1,3 +1,6 @@
+- 0.1.3
+    - Optimized Cosine distance kernel
+
 - 0.1.2
     - Fixed Grid Search best hyper-parameters method
     - Fixed K Means average loss calculation
