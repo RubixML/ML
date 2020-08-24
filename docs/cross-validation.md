@@ -137,11 +137,11 @@ echo $results;
 You can access individual report attributes by treating the report object as an associative array.
 
 ```php
-$accuracy = $results['accuracy'];
+$mae = $results['mean_absolute_error'];
 ```
 
 ### Saving a Report
-You may want to save the results of a report for later reference. To do so, you can call the `toJSON()` method on the report object and subsequently the `write()` method on the returned encoding.
+You may want to save the results of a report for later reference. To do so, you may call the `toJSON()` method on the report object and subsequently the `write()` method on the returned encoding to save the report to a file.
 
 ```php
 $results->toJSON()->write('report.json');
