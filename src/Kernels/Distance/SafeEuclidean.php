@@ -6,6 +6,8 @@ use Rubix\ML\DataType;
 use Stringable;
 
 use function count;
+use function is_float;
+use function is_nan;
 
 /**
  * Safe Euclidean
