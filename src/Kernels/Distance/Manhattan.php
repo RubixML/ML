@@ -8,9 +8,8 @@ use Stringable;
 /**
  * Manhattan
  *
- * A distance metric that constrains movement to horizontal and vertical,
- * similar to navigating the city blocks of Manhattan. An example that used this
- * type of movement is a checkers board.
+ * A distance metric that constrains movement to horizontal and vertical, similar to navigating the
+ * city blocks of Manhattan. An example of a board game that uses this type of movement is Checkers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

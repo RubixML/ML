@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Tensor\Vector;
 use Rubix\ML\DataType;
 use Stringable;
 
@@ -47,10 +46,18 @@ class Cosine implements Distance, Stringable
      */
     public function compute(array $a, array $b) : float
     {
-        $a = Vector::quick($a);
-        $b = Vector::quick($b);
+        $sigma = $ssA = $ssB = 0.0;
 
-        return 1.0 - ($a->dot($b) / (($a->l2Norm() * $b->l2Norm()) ?: EPSILON));
+        foreach ($a as $i => $valueA) {
+            $valueB = $b[$i];
+
+            $sigma += $valueA * $valueB;
+
+            $ssA += $valueA ** 2;
+            $ssB += $valueB ** 2;
+        }
+
+        return 1.0 - ($sigma / (sqrt($ssA * $ssB) ?: EPSILON));
     }
 
     /**
