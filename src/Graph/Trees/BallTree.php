@@ -160,8 +160,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
     }
 
     /**
-     * Run a k nearest neighbors search and return the samples, labels, and
-     * distances in a 3-tuple.
+     * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
      *
      * @param (string|int|float)[] $sample
      * @param int $k
@@ -177,13 +176,11 @@ class BallTree implements BinaryTree, Spatial, Stringable
 
         $visited = new SplObjectStorage();
 
-        $samples = $labels = $distances = [];
-
         $stack = $this->path($sample);
 
-        while ($stack) {
-            $current = array_pop($stack);
+        $samples = $labels = $distances = [];
 
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -234,8 +231,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
     }
 
     /**
-     * Return all samples, labels, and distances within a given radius of a
-     * sample.
+     * Return all samples, labels, and distances within a given radius of a sample.
      *
      * @param (string|int|float)[] $sample
      * @param float $radius
@@ -250,13 +246,11 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 . " greater than 0, $radius given.");
         }
 
-        $samples = $labels = $distances = [];
-
         $stack = [$this->root];
 
-        while ($stack) {
-            $current = array_pop($stack);
+        $samples = $labels = $distances = [];
 
+        while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
                     $distance = $this->kernel->compute($sample, $child->center());
@@ -296,8 +290,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
     }
 
     /**
-     * Return the path of a sample taken from the root node to a leaf node
-     * in an array.
+     * Return the path of a sample taken from the root node to a leaf node in an array.
      *
      * @param (string|int|float)[] $sample
      * @return \Rubix\ML\Graph\Nodes\Hypersphere[]
@@ -324,14 +317,24 @@ class BallTree implements BinaryTree, Spatial, Stringable
                     } else {
                         $current = $right;
                     }
+
+                    continue 1;
                 }
 
-                continue 1;
+                if ($left instanceof Hypersphere) {
+                    $current = $left;
+
+                    continue 1;
+                }
+
+                if ($right instanceof Hypersphere) {
+                    $current = $right;
+
+                    continue 1;
+                }
             }
 
-            if ($current instanceof Cluster) {
-                break 1;
-            }
+            break 1;
         }
 
         return $path;

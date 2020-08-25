@@ -2,6 +2,7 @@
     - Optimized Cosine distance kernel
     - Optimized (NaN) Safe Euclidean distance kernel
     - Fixed markedness calculation in Multiclass Breakdown
+    - Prevent infinite loop during spatial tree path finding
 
 - 0.1.2
     - Fixed Grid Search best hyper-parameters method
