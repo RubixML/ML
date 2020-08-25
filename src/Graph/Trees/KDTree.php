@@ -337,9 +337,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
                 continue 1;
             }
 
-            if ($current instanceof Neighborhood) {
-                break 1;
-            }
+            break 1;
         }
 
         return $path;
