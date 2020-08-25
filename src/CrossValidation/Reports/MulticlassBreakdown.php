@@ -120,7 +120,7 @@ class MulticlassBreakdown implements ReportGenerator
                 'false_omission_rate' => 1.0 - $npv,
                 'threat_score' => $threatScore,
                 'informedness' => $recall + $specificity - 1.0,
-                'markedness' => $recall + $specificity - 1.0,
+                'markedness' => $precision + $npv - 1.0,
                 'mcc' => $mcc,
                 'true_positives' => $tp,
                 'true_negatives' => $tn,
