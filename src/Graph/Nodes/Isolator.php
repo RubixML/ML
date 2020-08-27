@@ -10,8 +10,8 @@ use const Rubix\ML\PHI;
 /**
  * Isolator
  *
- * Isolator nodes represent splits in a tree designed to isolate groups
- * into cells by randomly dividing them.
+ * Isolator nodes represent splits in a tree designed to isolate groups into cells by randomly
+ * dividing them.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -61,7 +61,7 @@ class Isolator implements BinaryNode
 
             $value = rand($min, $max) / PHI;
         } else {
-            $value = $values[array_rand($values)];
+            $value = $values[array_rand(array_unique($values))];
         }
 
         $groups = $dataset->partitionByColumn($column, $value);

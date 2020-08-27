@@ -10,7 +10,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use function Rubix\ML\argmax;
 
 /**
- * Cluster
+ * Clique
  *
  * A leaf node that contains all of the points that fall within radius of the node's center.
  *
@@ -18,7 +18,7 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cluster implements BinaryNode, Hypersphere, Leaf
+class Clique implements BinaryNode, Hypersphere, Leaf
 {
     use HasBinaryChildren;
 

@@ -9,10 +9,10 @@ use Traversable;
 use function Rubix\ML\argmax;
 
 /**
- * Hypercube
+ * Box
  *
- * A hypercube node represents a cell of points contained within a
- * d-dimensional bounding box.
+ * A 1-dimensional split node with bounding box containing samples in both left and right
+ * subtrees.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

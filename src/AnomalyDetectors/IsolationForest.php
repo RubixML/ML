@@ -9,6 +9,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
@@ -228,7 +229,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
             $this->trees[] = $tree;
         }
 
-        $this->delta = $this->estimators * ITree::c($p);
+        $this->delta = $this->estimators * Depth::c($p);
 
         if (isset($this->contamination)) {
             $scores = array_map([$this, 'isolationScore'], $dataset->samples());

@@ -2,18 +2,18 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use Rubix\ML\Graph\Nodes\Cell;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
+use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Cell
+ * @covers \Rubix\ML\Graph\Nodes\Depth
  */
-class CellTest extends TestCase
+class DepthTest extends TestCase
 {
     protected const SAMPLES = [
         [5.0, 2.0, -3],
@@ -26,7 +26,7 @@ class CellTest extends TestCase
     protected const C = 8.207392357589622;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Cell
+     * @var \Rubix\ML\Graph\Nodes\Depth
      */
     protected $node;
 
@@ -35,7 +35,7 @@ class CellTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->node = new Cell(self::C);
+        $this->node = new Depth(self::C);
     }
 
     /**
@@ -43,10 +43,22 @@ class CellTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Cell::class, $this->node);
+        $this->assertInstanceOf(Depth::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Leaf::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
+    }
+
+    /**
+     * @test
+     */
+    public function c() : void
+    {
+        $this->assertEquals(3.748880484475505, Depth::c(10));
+        $this->assertEquals(8.364671030072245, Depth::c(100));
+        $this->assertEquals(12.969940887100174, Depth::c(1000));
+        $this->assertEquals(17.575112063754766, Depth::c(10000));
+        $this->assertEquals(22.180282259643523, Depth::c(100000));
     }
 
     /**
@@ -56,7 +68,7 @@ class CellTest extends TestCase
     {
         $dataset = Unlabeled::quick(self::SAMPLES);
 
-        $node = Cell::terminate($dataset, self::DEPTH);
+        $node = Depth::terminate($dataset, self::DEPTH);
 
         $this->assertEquals(self::C, $node->depth());
     }

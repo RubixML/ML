@@ -5,6 +5,8 @@
     - Gradient Boost validation set holdout can now be 0
     - Specifications now extend base class
     - Rename Dataset validate argument to verify
+    - Ball Tree Cluster nodes are now called Cliques
+    - ITree cells are now called Depth nodes
     
 - 0.1.3
     - Optimized Cosine distance kernel

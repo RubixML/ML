@@ -227,7 +227,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
     /**
      * Return an array containing the validation scores and hyper-parameters under test
-     * for each combination resulting from the last search.
+     * for each combination in a 2-tuple.
      *
      * @return array[]|null
      */
