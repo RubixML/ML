@@ -8,6 +8,9 @@
     - Ball Tree Cluster nodes are now called Cliques
     - ITree cells are now called Depth nodes
     
+- 0.1.4
+    - Optimized Cosine distance for sparse vectors
+
 - 0.1.3
     - Optimized Cosine distance kernel
     - Optimized (NaN) Safe Euclidean distance kernel
