@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Kernels\Distance;
 
-use Rubix\ML\Datasets\Generators\Blob;
+use Tensor\Matrix;
 use Rubix\ML\Kernels\Distance\Cosine;
 
 /**
@@ -28,12 +28,10 @@ class CosineBench
      */
     protected $kernel;
 
-    public function setUp() : void
+    public function setUpDense() : void
     {
-        $generator = new Blob([0, 0, 0, 0, 0, 0, 0, 0], 5.0);
-
-        $this->aSamples = $generator->generate(self::NUM_SAMPLES)->samples();
-        $this->bSamples = $generator->generate(self::NUM_SAMPLES)->samples();
+        $this->aSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)->asArray();
+        $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)->asArray();
 
         $this->kernel = new Cosine();
     }
@@ -41,9 +39,70 @@ class CosineBench
     /**
      * @Subject
      * @Iterations(5)
+     * @BeforeMethods({"setUpDense"})
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function compute() : void
+    public function computeDense() : void
+    {
+        array_map([$this->kernel, 'compute'], $this->aSamples, $this->bSamples);
+    }
+
+    public function setUpSparse() : void
+    {
+        $mask = Matrix::rand(self::NUM_SAMPLES, 8)
+            ->greater(0.5);
+
+        $this->aSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
+            ->multiply($mask)
+            ->asArray();
+
+        $mask = Matrix::rand(self::NUM_SAMPLES, 8)
+            ->greater(0.5);
+
+        $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
+            ->multiply($mask)
+            ->asArray();
+
+        $this->kernel = new Cosine();
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @BeforeMethods({"setUpSparse"})
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function computeSparse() : void
+    {
+        array_map([$this->kernel, 'compute'], $this->aSamples, $this->bSamples);
+    }
+
+    public function setUpVerySparse() : void
+    {
+        $mask = Matrix::rand(self::NUM_SAMPLES, 8)
+            ->greater(0.9);
+
+        $this->aSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
+            ->multiply($mask)
+            ->asArray();
+
+        $mask = Matrix::rand(self::NUM_SAMPLES, 8)
+            ->greater(0.9);
+
+        $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
+            ->multiply($mask)
+            ->asArray();
+
+        $this->kernel = new Cosine();
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @BeforeMethods({"setUpVerySparse"})
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function computeVerySparse() : void
     {
         array_map([$this->kernel, 'compute'], $this->aSamples, $this->bSamples);
     }

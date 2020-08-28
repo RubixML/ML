@@ -49,17 +49,13 @@ class Cosine implements Distance, Stringable
         $sigma = $ssA = $ssB = 0.0;
 
         foreach ($a as $i => $valueA) {
-            $valueB = $b[$i];
-
-            $sigma += $valueA * $valueB;
+            $sigma += $valueA * $b[$i];
         }
 
         if (abs($sigma) > EPSILON) {
             foreach ($a as $i => $valueA) {
-                $valueB = $b[$i];
-
                 $ssA += $valueA ** 2;
-                $ssB += $valueB ** 2;
+                $ssB += $b[$i] ** 2;
             }
         }
 

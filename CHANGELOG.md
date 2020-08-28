@@ -1,3 +1,6 @@
+- 0.1.4
+    - Optimized Cosine distance for sparse vectors
+
 - 0.1.3
     - Optimized Cosine distance kernel
     - Optimized (NaN) Safe Euclidean distance kernel
