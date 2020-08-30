@@ -28,12 +28,15 @@ class CosineBench
      */
     protected $kernel;
 
+    public function setUp() : void
+    {
+        $this->kernel = new Cosine();
+    }
+
     public function setUpDense() : void
     {
         $this->aSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)->asArray();
         $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)->asArray();
-
-        $this->kernel = new Cosine();
     }
 
     /**
@@ -62,8 +65,6 @@ class CosineBench
         $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
             ->multiply($mask)
             ->asArray();
-
-        $this->kernel = new Cosine();
     }
 
     /**
@@ -92,8 +93,6 @@ class CosineBench
         $this->bSamples = Matrix::gaussian(self::NUM_SAMPLES, 8)
             ->multiply($mask)
             ->asArray();
-
-        $this->kernel = new Cosine();
     }
 
     /**

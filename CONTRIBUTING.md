@@ -56,7 +56,7 @@ $ composer fix
 ```
 
 ### Naming
-Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. With few exceptions, interfaces and the classes that implement them should be named after what the object *does* whereas value objects and classes that extend a base class should be named after what the object *is*. Method and function names should be verbs unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
+Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. With some exceptions, interfaces and the classes that implement them should be named after what the object *does* whereas value objects and classes that extend a base class should be named after what the object *is*. Prefer verbs for function and method names unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
 
 #### Domain-driven Design
 We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', 'mass', and 'PDF.'
@@ -77,6 +77,9 @@ To run the benchmarking suite:
 ```sh
 $ composer benchmark
 ```
+<<<<<<< HEAD
 
 ## Anti Plagiarism Policy
 Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.
+=======
+>>>>>>> master

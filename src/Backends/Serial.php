@@ -13,7 +13,7 @@ use Stringable;
  * than a parallel backend in cases where the computations are minimal such as with
  * small datasets.
  *
- * > **Note:** The Serial backend is the default for most objects that capable of
+ * > **Note:** The Serial backend is the default for most objects that are capable of
  * parallel processing.
  *
  * @category    Machine Learning

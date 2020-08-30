@@ -144,7 +144,7 @@ class CSV implements Extractor
             }
 
             if (!$record) {
-                throw new RuntimeException("Malformed CSV on line $line.");
+                throw new RuntimeException("Malformed record on line $line.");
             }
 
             yield $record;
