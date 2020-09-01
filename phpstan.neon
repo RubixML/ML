@@ -4,6 +4,8 @@ includes:
 
 parameters:
     level: 8
+    bootstrapFiles:
+        - src/constants.php
     paths:
         - 'src'
         - 'tests'

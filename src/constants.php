@@ -1,7 +1,25 @@
 <?php
 
-namespace Rubix\ML
-{
+namespace {
+
+    /**
+     * PROJECT_DIR defines the directory path to the root of this project.
+     *
+     * ~@var string
+     */
+    define('PROJECT_DIR', dirname(__DIR__));
+
+    /**
+     * TMP_DIR defines the directory path used for temporary files.
+     *
+     * ~@var string
+     */
+    define('TMP_DIR', sys_get_temp_dir());
+
+}
+
+namespace Rubix\ML {
+
     /**
      * A small number used in substitution of 0.
      *
