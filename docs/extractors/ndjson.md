@@ -9,6 +9,7 @@
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the NDJSON file. |
+| 2 | filesystem | `Storage::local()`  | `Filesystem` | The filesystem to read from. The default behaviour is to target the local filesystem.  |
 
 ## Example
 ```php

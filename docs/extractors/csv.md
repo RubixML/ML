@@ -8,10 +8,11 @@ A plain-text format that use newlines to delineate rows and a user-specified del
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | path |  | string | The path to the CSV file. |
-| 2 | header | false | bool | Does the CSV document have a header as the first row? |
-| 3 | delimiter | ',' | string | The character that delineates the values of the columns of the data table. |
-| 4 | enclosure | '"' | string | The character used to enclose a cell that contains a delimiter in the body. |
+| 1 | path |  | `string` | The path to the CSV file. |
+| 2 | header | `false` | `bool` | Does the CSV document have a header as the first row? |
+| 3 | delimiter | '`,`' | `string` | The character that delineates the values of the columns of the data table. |
+| 4 | enclosure | '`"`' | `string` | The character used to enclose a cell that contains a delimiter in the body. |
+| 5 | filesystem | `Storage::local()`  | `Filesystem` | The filesystem to read from. The default behaviour is to target the local filesystem.  |
 
 ## Example
 ```php
