@@ -76,21 +76,12 @@ echo $score;
 ## Reports
 Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.
 
-### Types of Reports
-
-**Classification and Anomaly Detection**
-
-- [Confusion Matrix](cross-validation/reports/confusion-matrix.md)
-- [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md)
-
-**Regression**
-
-- [Error Analysis](cross-validation/reports/error-analysis.md)
-
-**Clustering**
-
-- [Contingency Table](cross-validation/reports/contingency-table.md)
-
+| Report | Usage |
+|---|---|
+| [Confusion Matrix](cross-validation/reports/confusion-matrix.md) | Classification or Anomaly Detection |
+| [Contingency Table](cross-validation/reports/contingency-table.md) | Clustering |
+| [Error Analysis](cross-validation/reports/error-analysis.md) | Regression |
+| [Multiclass Breakdown](cross-validation/reports/multiclass-breakdown.md) | Classification or Anomaly Detection |
 
 ### Generating a Report
 To generate the report, pass the predictions made by an estimator and their ground-truth labels to the `generate()` method on the report generator instance.
@@ -174,11 +165,14 @@ echo $score;
 0.9175
 ```
 
-## Underfitting
-A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear resulting in high bias error. Adding more features can help with underfitting, however if the problem is too severe, a more flexible learner can be chosen for the task instead.
+## Common Issues
+Poor generalization can be explained by one or more common issues detailed below.
 
-## Overfitting
-When a model performs well on training data but poorly during cross-validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. Flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, or and tree pruning to control overfitting. Adding more samples to the dataset can also help.
+### Underfitting
+A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. The result is a model with high bias error. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features can help, however if the problem is too severe, a more flexible learner can be chosen for the task instead.
 
-## Selection Bias
-When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs with mostly (say 90%) images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented.
+### Overfitting
+When a model performs well on training data but poorly during cross-validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. These models tend to have high variance error. Flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, or and tree pruning to control overfitting. Adding more training samples can also help.
+
+### Selection Bias
+When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs with mostly (90%) images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented. To correct selection bias, you can either add more samples of the underrepresented class or up-sample the class as a preprocessing step.

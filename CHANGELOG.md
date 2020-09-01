@@ -7,6 +7,8 @@
     - Rename Dataset validate argument to verify
     - Ball Tree Cluster nodes are now called Cliques
     - ITree cells are now called Depth nodes
+    - Added Dataset join method
+    - Deprecated Dataset augment method
     
 - 0.1.4
     - Optimized Cosine distance for sparse vectors

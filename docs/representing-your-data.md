@@ -1,5 +1,5 @@
 # Representing Your Data
-Data are a first class citizen in Rubix ML. The library makes it easy to work with datasets through its [Dataset](datasets/api.md) object, which is a specialized data container that every learner can recognize. A dataset is made up of a matrix of *samples* comprised of *features* which are usually scalar values. Each sample is a sequentially-numbered array with exactly the same number of elements as the other samples. The columns of the matrix contain the values for the particular feature represented by that column. The *dimensionality* of a sample is equal to the number of features it has. For example, the samples below are said to be *3-dimensional* because they contain 3 feature columns. You'll notice that samples can be made up of a heterogeneous mix of data types which we'll describe in detail in the next sections.
+Data are a first class citizen in Rubix ML. The library makes it easy to work with datasets via its [Dataset](datasets/api.md) object, which is a specialized data container that every learner can recognize. A dataset is made up of a matrix of *samples* comprised of *features* which are usually scalar values. Each sample is a sequentially-ordered array with exactly the same number of elements as every other sample. The columns of the matrix contain the values for a particular feature represented by that column. The *dimensionality* of a sample is equal to the number of features it has. For example, the samples below are said to be *3-dimensional* because they contain 3 feature columns. You'll notice that samples can be made up of a heterogeneous mix of data types which we'll describe in detail in the next sections.
 
 ```php
 $samples = [
@@ -12,7 +12,7 @@ $samples = [
 ## High-level Data Types
 The library comes with a built-in higher-order type system which distinguishes types that are continuous (numerical), categorical (discrete), or some other data type. Continuous features represent some *quantitative* property of the sample such as temperature or credit limit, whereas categorical features form a *qualitative* property of a sample such as color or texture.
 
-| Rubix ML Data Type | PHP Internal Type |
+| Rubix Data Type | PHP Internal Type |
 |---|---|
 | Categorical | String |
 | Continuous | Integer or Floating Point Number |

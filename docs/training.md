@@ -1,5 +1,5 @@
 # Training
-Most estimators have the ability to be trained with data. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to a learner so that it can build an internal representation (or *model*) of the problem. Supervised learners require a dataset with labels that act as a signal to guide the learner. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model.
+Most estimators have the ability to be trained with data. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to the learner so that it can build an internal representation (or *model*). Supervised learners require a dataset with labels. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model.
 
 To begin training a learner, pass a dataset object to the `train()` method on the learner instance like in the example below.
 

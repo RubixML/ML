@@ -10,6 +10,8 @@ use function in_array;
 /**
  * Estimator Type
  *
+ * Estimator type enum.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

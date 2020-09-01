@@ -609,7 +609,7 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function augment() : void
+    public function join() : void
     {
         $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numColumns());
 
@@ -622,13 +622,13 @@ class LabeledTest extends TestCase
             [6],
         ]);
 
-        $augmented = $this->dataset->augment($dataset);
+        $joined = $this->dataset->join($dataset);
 
-        $this->assertEquals(count(current(self::SAMPLES)) + 1, $augmented->numColumns());
+        $this->assertEquals(count(current(self::SAMPLES)) + 1, $joined->numColumns());
 
-        $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $augmented->sample(1));
-        $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $augmented->sample(2));
-        $this->assertEquals(self::LABELS, $augmented->labels());
+        $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $joined->sample(1));
+        $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $joined->sample(2));
+        $this->assertEquals(self::LABELS, $joined->labels());
     }
 
     /**

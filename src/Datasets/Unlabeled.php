@@ -206,13 +206,13 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Merge the columns of this dataset with another dataset.
+     * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function augment(Dataset $dataset) : self
+    public function join(Dataset $dataset) : self
     {
         if ($dataset->numRows() !== $this->numRows()) {
             throw new InvalidArgumentException('Datasets must have'
@@ -227,6 +227,22 @@ class Unlabeled extends Dataset
         }
 
         return self::quick($samples);
+    }
+
+    /**
+     * Merge the columns of this dataset with another dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function augment(Dataset $dataset) : self
+    {
+        trigger_error('Deprecated, use join() instead.', E_USER_DEPRECATED);
+
+        return $this->join($dataset);
     }
 
     /**
