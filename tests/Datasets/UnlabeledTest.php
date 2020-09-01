@@ -75,7 +75,7 @@ class UnlabeledTest extends TestCase
      */
     public function fromIterator() : void
     {
-        $dataset = Unlabeled::fromIterator(new NDJSON('tests/test.ndjson'));
+        $dataset = Unlabeled::fromIterator(new NDJSON(PROJECT_DIR . '/tests/test.ndjson'));
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
     }

@@ -25,7 +25,7 @@ class ColumnPickerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->extractor = new ColumnPicker(new CSV('tests/test.csv', true), [
+        $this->extractor = new ColumnPicker(new CSV(PROJECT_DIR . '/tests/test.csv', true), [
             'attitude', 'texture', 'class', 'rating',
         ]);
     }

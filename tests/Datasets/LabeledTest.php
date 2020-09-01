@@ -83,7 +83,7 @@ class LabeledTest extends TestCase
      */
     public function fromIterator() : void
     {
-        $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'));
+        $dataset = Labeled::fromIterator(new NDJSON(PROJECT_DIR . '/tests/test.ndjson'));
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertEquals(self::SAMPLES, $dataset->samples());
