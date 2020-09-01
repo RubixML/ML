@@ -24,7 +24,7 @@ class CSVTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->extractor = new CSV('tests/test.csv', true, ',', '"');
+        $this->extractor = new CSV(PROJECT_DIR . '/tests/test.csv', true, ',', '"');
     }
 
     /**

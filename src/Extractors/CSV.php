@@ -3,6 +3,9 @@
 namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
+use League\Flysystem\FilesystemInterface;
+use Rubix\ML\FilesystemAware;
+use Rubix\ML\Other\Traits\FilesystemTrait;
 use RuntimeException;
 use Generator;
 
@@ -26,8 +29,10 @@ use function strlen;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor
+class CSV implements Extractor, FilesystemAware
 {
+    use FilesystemTrait;
+
     /**
      * The file handle.
      *
@@ -61,21 +66,21 @@ class CSV implements Extractor
      * @param bool $header
      * @param string $delimiter
      * @param string $enclosure
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @param FilesystemInterface|null $filesystem
      */
     public function __construct(
         string $path,
         bool $header = false,
         string $delimiter = ',',
-        string $enclosure = '"'
+        string $enclosure = '"',
+        ?FilesystemInterface $filesystem = null
     ) {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if ($filesystem) {
+            $this->setFilesystem($filesystem);
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        if (!$this->filesystem()->has($path)) {
+            throw new InvalidArgumentException("Path $path does not exist.");
         }
 
         if (strlen($delimiter) !== 1) {
@@ -88,7 +93,7 @@ class CSV implements Extractor
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
-        $handle = fopen($path, 'r');
+        $handle = $this->filesystem()->readStream($path);
 
         if (!$handle) {
             throw new RuntimeException("Could not open $path.");
