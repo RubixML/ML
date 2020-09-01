@@ -2,9 +2,12 @@
 
 namespace Rubix\ML\Extractors;
 
-use InvalidArgumentException;
-use RuntimeException;
 use Generator;
+use InvalidArgumentException;
+use League\Flysystem\FilesystemInterface;
+use Rubix\ML\FilesystemAware;
+use Rubix\ML\Other\Traits\FilesystemTrait;
+use RuntimeException;
 
 use function is_null;
 
@@ -22,8 +25,10 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class JSON implements Extractor
+class JSON implements Extractor, FilesystemAware
 {
+    use FilesystemTrait;
+
     /**
      * The path to the JSON file.
      *
@@ -33,16 +38,17 @@ class JSON implements Extractor
 
     /**
      * @param string $path
+     * @param ?FilesystemInterface $filesystem
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $path)
+    public function __construct(string $path, ?FilesystemInterface $filesystem = null)
     {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if ($filesystem) {
+            $this->setFilesystem($filesystem);
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        if (!$this->filesystem()->has($path)) {
+            throw new InvalidArgumentException("Path $path does not exist.");
         }
 
         $this->path = $path;
@@ -56,7 +62,7 @@ class JSON implements Extractor
      */
     public function getIterator() : Generator
     {
-        $data = file_get_contents($this->path);
+        $data = $this->filesystem()->read($this->path);
 
         if (!$data) {
             throw new RuntimeException("Could not open $this->path.");

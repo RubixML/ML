@@ -24,7 +24,7 @@ class JSONTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->extractor = new JSON('tests/test.json');
+        $this->extractor = new JSON(PROJECT_DIR . '/tests/test.json');
     }
 
     /**
