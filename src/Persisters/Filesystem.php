@@ -2,15 +2,16 @@
 
 namespace Rubix\ML\Persisters;
 
+use League\Flysystem\FilesystemInterface;
 use Rubix\ML\Encoding;
+use Rubix\ML\FilesystemAware;
+use Rubix\ML\Other\Traits\FilesystemTrait;
 use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use RuntimeException;
 use Stringable;
-
-use function is_file;
 
 /**
  * Filesystem
@@ -23,8 +24,10 @@ use function is_file;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Filesystem implements Persister, Stringable
+class Filesystem implements FilesystemAware, Persister, Stringable
 {
+    use FilesystemTrait;
+
     /**
      * The extension to give files created as part of a persistable's save history.
      *
@@ -56,10 +59,15 @@ class Filesystem implements Persister, Stringable
     /**
      * @param string $path
      * @param bool $history
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
+     * @param Serializer|null $serializer
+     * @param FilesystemInterface|null $filesystem
      */
-    public function __construct(string $path, bool $history = false, ?Serializer $serializer = null)
+    public function __construct(string $path, bool $history = false, ?Serializer $serializer = null, ?FilesystemInterface $filesystem = null)
     {
+        if ($filesystem) {
+            $this->setFilesystem($filesystem);
+        }
+
         $this->path = $path;
         $this->history = $history;
         $this->serializer = $serializer ?? new Native();
@@ -73,31 +81,23 @@ class Filesystem implements Persister, Stringable
      */
     public function save(Persistable $persistable) : void
     {
-        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
-            throw new RuntimeException('Folder does not exist or is not writable');
-        }
-
-        if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("File {$this->path} is not writable.");
-        }
-
-        if ($this->history and is_file($this->path)) {
+        if ($this->history and $this->filesystem()->has($this->path)) {
             $timestamp = (string) time();
 
             $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
 
             $num = 0;
 
-            while (file_exists($filename)) {
+            while ($this->filesystem()->has($filename)) {
                 $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
             }
 
-            if (!rename($this->path, $filename)) {
+            if (!$this->filesystem()->rename($this->path, $filename)) {
                 throw new RuntimeException('Failed to create history file.');
             }
         }
 
-        $this->serializer->serialize($persistable)->write($this->path);
+        $this->serializer->serialize($persistable)->write($this->path, $this->filesystem());
     }
 
     /**
@@ -108,15 +108,11 @@ class Filesystem implements Persister, Stringable
      */
     public function load() : Persistable
     {
-        if (!is_file($this->path)) {
+        if (!$this->filesystem()->has($this->path)) {
             throw new RuntimeException("File {$this->path} does not exist.");
         }
 
-        if (!is_readable($this->path)) {
-            throw new RuntimeException("File {$this->path} is not readable.");
-        }
-
-        $data = new Encoding(file_get_contents($this->path) ?: '');
+        $data = new Encoding((string) $this->filesystem()->read($this->path));
 
         if ($data->bytes() === 0) {
             throw new RuntimeException("File {$this->path} does not"

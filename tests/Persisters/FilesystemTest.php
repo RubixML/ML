@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Persisters;
 
+use Rubix\ML\Other\Helpers\Storage;
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Persisters\Filesystem;
@@ -31,15 +32,19 @@ class FilesystemTest extends TestCase
     protected $path;
 
     /**
+     * @var \League\Flysystem\FilesystemInterface
+     */
+    protected $filesystem;
+
+    /**
      * @before
      */
     protected function setUp() : void
     {
         $this->path = __DIR__ . '/test.model';
-
         $this->persistable = new DummyClassifier();
-
-        $this->persister = new Filesystem($this->path, true, new Native());
+        $this->filesystem = Storage::memory();
+        $this->persister = new Filesystem($this->path, true, new Native(), $this->filesystem);
     }
 
     /**
@@ -47,12 +52,8 @@ class FilesystemTest extends TestCase
      */
     protected function tearDown() : void
     {
-        if (file_exists($this->path)) {
-            unlink($this->path);
-        }
-
-        foreach (glob("$this->path.*.old") ?: [] as $filename) {
-            unlink($filename);
+        if ($this->filesystem->has($this->path)) {
+            $this->filesystem->delete($this->path);
         }
     }
 
@@ -71,8 +72,10 @@ class FilesystemTest extends TestCase
     public function saveLoad() : void
     {
         $this->persister->save($this->persistable);
-
-        $this->assertFileExists($this->path);
+        $this->assertTrue(
+            $this->filesystem->has($this->path),
+            'Persistable was not saved as expected'
+        );
 
         $model = $this->persister->load();
 
@@ -82,6 +85,9 @@ class FilesystemTest extends TestCase
 
     protected function assertPreConditions() : void
     {
-        $this->assertFileNotExists($this->path);
+        $this->assertFalse(
+            $this->filesystem->has($this->path),
+            sprintf('File: %s already exists', $this->path)
+        );
     }
 }

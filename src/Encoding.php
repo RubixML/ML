@@ -2,6 +2,8 @@
 
 namespace Rubix\ML;
 
+use League\Flysystem\FilesystemInterface;
+use Rubix\ML\Other\Helpers\Storage;
 use RuntimeException;
 use Stringable;
 
@@ -46,19 +48,16 @@ class Encoding implements Stringable
      * Write the encoding to a file at the path specified.
      *
      * @param string $path
-     * @throws \RuntimeException
+     * @param FilesystemInterface|null $filesystem The filesystem to use. If null this method uses the local filesystem
+     * @throws \Exception If the file cannot be successfully written to the filesystem
      */
-    public function write(string $path) : void
+    public function write(string $path, ?FilesystemInterface $filesystem = null) : void
     {
-        if (!is_file($path) and !is_writable(dirname($path))) {
-            throw new RuntimeException('Folder does not exist or is not writable');
+        if (!$filesystem) {
+            $filesystem = Storage::local();
         }
 
-        if (is_file($path) and !is_writable($path)) {
-            throw new RuntimeException("File $path is not writable.");
-        }
-
-        $success = file_put_contents($path, $this->data, LOCK_EX);
+        $success = $filesystem->write($path, $this->data());
 
         if (!$success) {
             throw new RuntimeException('Failed to write to the filesystem.');
