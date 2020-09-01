@@ -3,6 +3,9 @@
 namespace Rubix\ML\Extractors;
 
 use InvalidArgumentException;
+use League\Flysystem\FilesystemInterface;
+use Rubix\ML\FilesystemAware;
+use Rubix\ML\Other\Traits\FilesystemTrait;
 use RuntimeException;
 use Generator;
 
@@ -21,8 +24,10 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor
+class NDJSON implements Extractor, FilesystemAware
 {
+    use FilesystemTrait;
+
     /**
      * The file handle.
      *
@@ -32,20 +37,19 @@ class NDJSON implements Extractor
 
     /**
      * @param string $path
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @param FilesystemInterface|null $filesystem
      */
-    public function __construct(string $path)
+    public function __construct(string $path, ?FilesystemInterface $filesystem = null)
     {
-        if (!is_file($path)) {
+        if ($filesystem) {
+            $this->setFilesystem($filesystem);
+        }
+
+        if (!$this->filesystem()->has($path)) {
             throw new InvalidArgumentException("Path $path does not exist.");
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
-        }
-
-        $handle = fopen($path, 'r');
+        $handle = $this->filesystem()->readStream($path);
 
         if (!$handle) {
             throw new RuntimeException("Could not open $path.");

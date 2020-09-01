@@ -24,7 +24,7 @@ class NDJSONTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->extractor = new NDJSON('tests/test.ndjson');
+        $this->extractor = new NDJSON(PROJECT_DIR . '/tests/test.ndjson');
     }
 
     /**
