@@ -192,6 +192,15 @@ $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
 ```
 
+## Filtering Records
+In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The `filterByColumn()` method on the dataset object uses a callback function to determine whether or not to return a row in the new dataset by the value of the feature at a given column offset.
+
+```php
+$tallPeople = $dataset->filterByColumn(3, function ($value) {
+	return $value > 178.5;
+});
+```
+
 ## De-duplication
 When it is undesirable for a dataset to contain duplicate records, you can remove all duplicates by calling the `deduplicate()` method on the dataset object.
 

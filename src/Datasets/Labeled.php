@@ -409,7 +409,7 @@ class Labeled extends Dataset
      */
     public function augment(Dataset $dataset) : self
     {
-        trigger_error('Deprecated use join() instead.', E_USER_DEPRECATED);
+        trigger_error('Deprecated, use join() instead.', E_USER_DEPRECATED);
 
         return $this->join($dataset);
     }

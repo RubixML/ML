@@ -14,7 +14,7 @@ use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -47,7 +47,7 @@ use const Rubix\ML\EPSILON;
  */
 class IsolationForest implements Estimator, Learner, Ranking, Persistable, Stringable
 {
-    use PredictsSingle, RanksSingle;
+    use PredictsSingle, ScoresSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -250,7 +250,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->score($dataset));
     }
 
     /**
@@ -260,7 +260,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         if (empty($this->trees) or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
@@ -269,6 +269,21 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'isolationScore'], $dataset->samples());
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+
+        return $this->score($dataset);
     }
 
     /**

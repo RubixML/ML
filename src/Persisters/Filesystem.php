@@ -84,12 +84,12 @@ class Filesystem implements Persister, Stringable
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 
-            $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
+            $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
 
             $num = 0;
 
             while (file_exists($filename)) {
-                $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
+                $filename = "{$this->path}-$timestamp-" . ++$num . '.' . self::HISTORY_EXT;
             }
 
             if (!rename($this->path, $filename)) {

@@ -1,5 +1,5 @@
 # Extracting Data
-There are a number of ways to instantiate a new [Dataset](datasets/api.md) object, but all of them require that the data is loaded into memory first. Datasets can be stored in many forms but the most common formats are structured plain-text such as CSV or NDJSON and in a database such as MySQL or MongoDB. No matter how your data is delivered, you have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help make extraction simple for more common use cases, the library provides a number of [Extractor](extractors/api.md) objects.
+There are a number of ways to instantiate a new [Dataset](datasets/api.md) object, but all of them require that the data is loaded into memory first. The most common formats you'll find data are in structured plain-text such as CSV or NDJSON - or in a database such as MySQL or MongoDB. No matter how your data are delivered, you have the freedom and flexibility to implement the data source to fit the scale of the problem and your current infrastructure. To help make extraction simple for more common use cases, the library provides a number of [Extractor](extractors/api.md) objects that implement the [Iterator Aggregate](https://www.php.net/manual/en/class.iteratoraggregate.php) interface.
 
 ## CSV
 A common plain-text format for small to medium-sized datasets is [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) or CSV for short. A CSV file contains a table with individual samples indicated by rows and the values of the features stored in each column. Columns are separated by a *delimiter* such as the `,` or `;` character and may be enclosed on both ends with an optional *enclosure* such as `"`. The file can sometimes contain a header as the first row. CSV files have the advantage of being able to be processed line by line, however, their disadvantage is that type information cannot be inferred from the format. Thus, all CSV data are imported as categorical (strings) by default.
@@ -12,7 +12,7 @@ nice,furry,friendly,4,not monster
 mean,furry,loner,-1.5,monster
 ```
 
-The library provides the [CSV](extractors/csv.md) Extractor to help import data from the CSV format. Since extractors are [iterators](https://www.php.net/manual/en/class.iterator.php) they can be used in conjunction with the Dataset's `fromIterator()` static method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format immediately after instantiation.
+The library provides the [CSV](extractors/csv.md) Extractor to help import data from the CSV format. Since extractors are [iterators](https://www.php.net/manual/en/class.iterator.php) under the hood, they can be used in conjunction with the Dataset's `fromIterator()` method to instantiate a new dataset object. In the example below, we'll apply the [Numeric String Converter](transformers/numeric-string-converter.md) to the newly instantiated dataset object to convert the numeric data to the proper format immediately after instantiation.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -81,7 +81,7 @@ $dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com), or [PostgreSQL](https://www.postgresql.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows of data from the `patients` table. Then, we'll load those samples into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
+Medium to large datasets will often be stored in an RDBMS (relational database management system) like [MySQL](https://www.mysql.com) or [PostgreSQL](https://www.postgresql.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows of data from the `patients` table. Then, we'll load those samples into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;

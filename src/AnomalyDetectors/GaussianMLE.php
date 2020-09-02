@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -43,7 +43,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, Stringable
 {
-    use PredictsSingle, RanksSingle;
+    use PredictsSingle, ScoresSingle;
 
     /**
      * The proportion of outliers that are assumed to be present in the
@@ -249,7 +249,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->score($dataset));
     }
 
     /**
@@ -259,7 +259,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         if (!$this->means or !$this->variances or !$this->threshold) {
             throw new RuntimeException('Estimator has not been trained.');
@@ -268,6 +268,21 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
         DatasetHasDimensionality::with($dataset, count($this->means))->check();
 
         return array_map([$this, 'logLikelihood'], $dataset->samples());
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+
+        return $this->score($dataset);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
@@ -24,7 +24,7 @@ use Stringable;
  */
 class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Stringable
 {
-    use PredictsSingle, ProbaSingle, RanksSingle;
+    use PredictsSingle, ProbaSingle, ScoresSingle;
 
     /**
      * The persistable base learner.
@@ -182,14 +182,29 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         if (!$this->base instanceof Ranking) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
 
-        return $this->base->rank($dataset);
+        return $this->base->score($dataset);
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+
+        return $this->score($dataset);
     }
 
     /**

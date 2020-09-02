@@ -1,14 +1,14 @@
 # Ranking
-A Ranking anomaly detector is one that assigns anomaly scores to unknown samples in a dataset. The interface provides the `rank()` method which returns a set of scores from the model. Higher scores indicate a greater degree of anomalousness. In addition, samples can be sorted by their anomaly score to identify the top outliers.
+A Ranking anomaly detector is one that assigns anomaly scores to unknown samples in a dataset. The interface provides the `score()` method which returns a set of scores from the model. Higher scores indicate a greater degree of anomalousness. In addition, samples can be sorted by their anomaly score to identify the top outliers.
 
 ## Score a Dataset
 Return the anomaly scores assigned to the samples in a dataset:
 ```php
-public rank(Dataset $dataset) : array
+public score(Dataset $dataset) : array
 ```
 
 ```php
-$scores = $estimator->rank($dataset);
+$scores = $estimator->score($dataset);
 
 var_dump($scores);
 ```
@@ -21,14 +21,14 @@ array(3) {
 }
 ```
 
-## Rank a Single Sample
+## Score a Single Sample
 Return the anomaly score of a single sample:
 ```php
-public rankSample(array $sample) : float
+public scoreSample(array $sample) : float
 ```
 
 ```php
-$score = $estimator->rankSample([0.001, 6.99, 'chicago', 20000]);
+$score = $estimator->scoreSample([0.001, 6.99, 'chicago', 20000]);
 
 var_dump($score);
 ```

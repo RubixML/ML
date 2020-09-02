@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -36,7 +36,7 @@ use Stringable;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
 {
-    use PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
 
     /**
      * A list of transformers to be applied in order.
@@ -265,7 +265,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         $this->preprocess($dataset);
 
@@ -274,7 +274,22 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
                 . ' implement the Ranking interface.');
         }
 
-        return $this->base->rank($dataset);
+        return $this->base->score($dataset);
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+
+        return $this->score($dataset);
     }
 
     /**

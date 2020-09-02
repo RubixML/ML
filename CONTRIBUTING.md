@@ -59,7 +59,7 @@ $ composer fix
 Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. With some exceptions, interfaces and the classes that implement them should be named after what the object *does* whereas value objects and classes that extend a base class should be named after what the object *is*. Prefer verbs for function and method names unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
 
 #### Domain-driven Design
-We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', 'mass', and 'PDF.'
+We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', and 'PDF.'
 
 ### Mutability
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are private or protected and state must be mutated only through a well-defined public API.

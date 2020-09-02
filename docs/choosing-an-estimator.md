@@ -69,16 +69,13 @@ Anomaly Detectors are unsupervised learners that predict a boolean-valued outcom
 ## Model Flexibility
 A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest estimator for your project that does not underfit the training data.
 
-## Meta-estimators
-Meta-estimators wrap and enhance other estimators with added functionality. They are *polymorphic* in the sense that they take on the type of the base estimator they wrap. Meta-estimators that implement the [Wrapper](wrapper.md) interface allow methods to be called on the base estimator from the meta-estimator.
+## Model Ensembles
+Ensemble learning is when multiple estimators are used in making the final prediction. Ensembles can either be multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. The work on the principal of averaging and can achieve greater accuracy than a single estimator.
 
-| Meta-estimator | Wrapper | Parallel | Verbose | Compatibility |
+| Meta-estimator | Parallel | Verbose | Supported Types |
 |---|---|---|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | | ● | | Classifiers, Regressors, Anomaly Detectors |
-| [Committee Machine](committee-machine.md) | | ● | ● | Classifiers, Regressors, Anomaly Detectors |
-| [Grid Search](grid-search.md) | ● | ● | ● | Any |
-| [Persistent Model](persistent-model.md) | ● | | | Any persistable estimator |
-| [Pipeline](pipeline.md) | ● | | ● | Any |
+| [Bootstrap Aggregator](bootstrap-aggregator.md) | ● | | Classifiers, Regressors, Anomaly Detectors |
+| [Committee Machine](committee-machine.md) | ● | ● | Classifiers, Regressors, Anomaly Detectors |
 
 In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to train a *forest* of 1000 trees.
 
