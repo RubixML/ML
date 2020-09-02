@@ -35,6 +35,7 @@
     "require": {
         "php": ">=7.2",
         "amphp/parallel": "^1.3",
+        "league/flysystem": "^1.1",
         "psr/log": "^1.1",
         "rubix/tensor": "^2.0",
         "symfony/polyfill-mbstring": "^1.0",
@@ -42,6 +43,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.16.*",
+        "league/flysystem-memory": "^1.0",
         "phpbench/phpbench": "0.17.*",
         "phpstan/phpstan": "0.12.*",
         "phpstan/phpstan-phpunit": "0.12.*",
