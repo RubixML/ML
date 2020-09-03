@@ -7,7 +7,6 @@ use Rubix\ML\Kernels\Distance\Cosine;
 
 /**
  * @Groups({"DistanceKernels"})
- * @BeforeMethods({"setUp"})
  */
 class CosineBench
 {
@@ -42,7 +41,7 @@ class CosineBench
     /**
      * @Subject
      * @Iterations(5)
-     * @BeforeMethods({"setUpDense"})
+     * @BeforeMethods({"setUp", "setUpDense"})
      * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function computeDense() : void
@@ -70,7 +69,7 @@ class CosineBench
     /**
      * @Subject
      * @Iterations(5)
-     * @BeforeMethods({"setUpSparse"})
+     * @BeforeMethods({"setUp", "setUpSparse"})
      * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function computeSparse() : void
@@ -98,7 +97,7 @@ class CosineBench
     /**
      * @Subject
      * @Iterations(5)
-     * @BeforeMethods({"setUpVerySparse"})
+     * @BeforeMethods({"setUp", "setUpVerySparse"})
      * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function computeVerySparse() : void

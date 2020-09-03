@@ -1,3 +1,6 @@
+- 0.1.5
+    - Compensate for zero vectors in Cosine kernel
+
 - 0.1.4
     - Optimized Cosine distance for sparse vectors
 
