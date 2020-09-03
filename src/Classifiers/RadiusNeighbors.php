@@ -32,7 +32,7 @@ use function in_array;
  * Radius Neighbors is a spatial tree-based classifier that takes the weighted vote of each
  * neighbor within a fixed user-defined radius. Since the radius of the search can be
  * constrained, Radius Neighbors is more robust to outliers than K Nearest Neighbors. In
- * addition, Radius Neighbors acts as a quasi anomaly detector by flagging samples that have
+ * addition, Radius Neighbors acts as a quasi outlier detector by flagging samples that have
  * 0 neighbors within radius.
  *
  * @category    Machine Learning
@@ -65,12 +65,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
     protected $tree;
 
     /**
-     * The class label for any samples that have no neighbors within the
-     * specified radius.
+     * The class label for any samples that have 0 neighbors within the specified radius.
      *
      * @var string
      */
-    protected $anomalyClass;
+    protected $outlierClass;
 
     /**
      * The zero vector for the possible class outcomes.
@@ -89,14 +88,14 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
     /**
      * @param float $radius
      * @param bool $weighted
-     * @param string $anomalyClass
+     * @param string $outlierClass
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius = 1.0,
         bool $weighted = true,
-        string $anomalyClass = '?',
+        string $outlierClass = '?',
         ?Spatial $tree = null
     ) {
         if ($radius <= 0.0) {
@@ -104,14 +103,14 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
                 . " greater than 0, $radius given.");
         }
 
-        if (empty($anomalyClass)) {
+        if (empty($outlierClass)) {
             throw new InvalidArgumentException('Anomaly class'
                 . ' cannot be an empty string.');
         }
 
         $this->radius = $radius;
         $this->weighted = $weighted;
-        $this->anomalyClass = $anomalyClass;
+        $this->outlierClass = $outlierClass;
         $this->tree = $tree ?? new BallTree();
     }
 
@@ -145,7 +144,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
         return [
             'radius' => $this->radius,
             'weighted' => $this->weighted,
-            'anomaly_class' => $this->anomalyClass,
+            'outlier_class' => $this->outlierClass,
             'tree' => $this->tree,
         ];
     }
@@ -192,12 +191,12 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
 
         $classes = $dataset->possibleOutcomes();
 
-        if (in_array($this->anomalyClass, $classes)) {
+        if (in_array($this->outlierClass, $classes)) {
             throw new RuntimeException('Training set cannot contain'
-                . ' labels of the anomaly class.');
+                . ' labels of the outlier class.');
         }
 
-        $classes[] = $this->anomalyClass;
+        $classes[] = $this->outlierClass;
 
         $this->classes = array_fill_keys($classes, 0.0);
 
@@ -227,7 +226,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
-                $predictions[] = $this->anomalyClass;
+                $predictions[] = $this->outlierClass;
 
                 continue 1;
             }
@@ -271,7 +270,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
             $dist = $this->classes;
 
             if (empty($labels)) {
-                $dist[$this->anomalyClass] = 1.0;
+                $dist[$this->outlierClass] = 1.0;
 
                 $probabilities[] = $dist;
 

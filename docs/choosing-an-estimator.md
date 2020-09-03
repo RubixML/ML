@@ -22,7 +22,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | High bias error, Limited to binary classification |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong feature independence assumption |
-| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Radius may be hard to tune, Not guaranteed to return a prediction |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | Handles imbalanced datasets, Computes reliable feature importances | High computation and memory cost |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | High bias error |
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
@@ -38,7 +38,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Faster inference | Not compatible with certain distance kernels |
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Radius may be hard to tune, Not guaranteed to return a prediction |
 | [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, Automatic feature selection | High variance error |
 | [Ridge](regressors/ridge.md) | Low | | | Interpretable model | High bias error |
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |

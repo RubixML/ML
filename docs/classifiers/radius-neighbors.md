@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RadiusNeighbors.php">[source]</a></span>
 
 # Radius Neighbors
-Radius Neighbors is a spatial tree-based classifier that takes the weighted vote of each neighbor within a cluster of a fixed user-defined radius. Since the radius of the search can be constrained, Radius Neighbors is more robust to outliers than [K Nearest Neighbors](k-nearest-neighbors.md). In addition, Radius Neighbors acts as a quasi-anomaly detector by flagging samples that have 0 neighbors within the search radius.
+Radius Neighbors is a classifier that takes the distance-weighted vote of each neighbor within a cluster of a fixed user-defined radius to make a prediction. Since the radius of the search can be constrained, Radius Neighbors is more robust to outliers than [K Nearest Neighbors](k-nearest-neighbors.md). In addition, Radius Neighbors acts as a quasi-anomaly detector by flagging samples that have 0 neighbors within the search radius.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
@@ -12,7 +12,7 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
-| 3 | anomaly class | '?' | string | The class label for any samples that have no neighbors within the specified radius. |
+| 3 | outlier class | '?' | string | The class label for any samples that have 0 neighbors within the specified radius. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Example

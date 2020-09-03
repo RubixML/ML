@@ -45,7 +45,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      *
      * @var float
      */
-    public const OUTLIER = NAN;
+    public const OUTLIER_VALUE = NAN;
 
     /**
      * The radius within which points are considered neighboors.
@@ -192,7 +192,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
             [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
-                $predictions[] = self::OUTLIER;
+                $predictions[] = self::OUTLIER_VALUE;
 
                 continue 1;
             }

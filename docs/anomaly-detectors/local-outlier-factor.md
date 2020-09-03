@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LocalOutlierFactor.php">[source]</a></span>
 
 # Local Outlier Factor
-Local Outlier Factor (LOF) measures the local deviation of density of an unknown sample with respect to its *k* nearest neighbors from the training set. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
+Local Outlier Factor (LOF) measures the local deviation of density of an unknown sample with respect to its *k* nearest neighbors from the training set. As such, LOF only considers the *neighborhood* of an unknown sample which enables it to detect anomalies within individual clusters of data.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/Loda.php">[source]</a></span>
 
 # Loda
-*Lightweight Online Detector of Anomalies* uses a series of sparse random projection vectors to produce scalar inputs to an ensemble of unique one-dimensional equi-width histograms. The histograms are then used to estimate the probability density of an unknown sample during inference.
+*Lightweight Online Detector of Anomalies* uses a collection of sparse random projection vectors to provide scalar inputs to an ensemble of unique one-dimensional equi-width histograms. Each histogram then estimates the probability density of the unknown sample using a limited feature set. The final predictions are derived from the averaged densities over the entire ensemble.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 

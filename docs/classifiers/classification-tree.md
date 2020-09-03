@@ -10,10 +10,10 @@ A binary tree-based learner that greedily constructs a decision map for classifi
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max height | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
+| 1 | max height | PHP_INT_MAX | int | The maximum height of the tree. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The max number of feature columns to consider when determining a best split. |
-| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
+| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
 
 ## Example
 ```php

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php">[source]</a></span>
 
 # Robust Z-Score
-A statistical anomaly detector that uses modified Z-Scores which are robust to preexisting outliers in the training set. The modified Z-Score uses the median and median absolute deviation (MAD) unlike the mean and standard deviation of a standard Z-Score - which are more sensitive to outliers. Anomalies are flagged if their final weighted Z-Score exceeds a user-defined threshold.
+A statistical anomaly detector that uses modified Z-Scores that are robust to preexisting outliers in the training set. The modified Z-Score is defined as the feature value minus the median over the median absolute deviation (MAD). Anomalies are flagged if their final weighted Z-Score exceeds a user-defined threshold.
 
 > **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score, whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
 

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php">[source]</a></span>
 
 # MLP Regressor
-A multilayer feed forward neural network with a continuous output layer suitable for regression problems. Like the [Multilayer Perceptron](../classifiers/multilayer-perceptron.md) classifier, the MLP Regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate hidden layers.
+A multilayer feed-forward neural network with a continuous output layer suitable for regression problems. The Multilayer Perceptron regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate user-defined hidden layers. The MLP also has network snapshotting and progress monitoring to ensure that the model achieves the highest validation score per a given training time budget.
 
 > **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 

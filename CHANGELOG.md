@@ -9,6 +9,7 @@
     - ITree cells are now called Depth nodes
     - Added Dataset join() method and deprecated augment()
     - Added score() method to Ranking API and deprecated rank()
+    - Renamed Radius Neighbors anomalyClass to outlierClass
     
 - 0.1.4
     - Optimized Cosine distance for sparse vectors

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php">[source]</a></span>
 
 # Regression Tree
-A decision tree based on the CART (*Classification and Regression Tree*) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split.
+A decision tree based on the CART (*Classification and Regression Tree*) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split. Regression Trees can be used on their own or as the booster in algorithms such as [Gradient Boost](gradient-boost.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
@@ -10,10 +10,10 @@ A decision tree based on the CART (*Classification and Regression Tree*) learnin
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max height | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
-| 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
-| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
+| 1 | max height | PHP_INT_MAX | int | The maximum height of the tree. |
+| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
+| 3 | max features | Auto | int | The max number of feature columns to consider when determining a best split. |
+| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
 
 ## Example
 ```php
@@ -26,10 +26,6 @@ $estimator = new RegressionTree(20, 2, null, 1e-3);
 Return a human-readable text representation of the decision tree ruleset:
 ```php
 public rules(?array $header = null) : string
-```
-
-```php
-echo $estimator->rules(['x', 'y', 'z']);
 ```
 
 Return the height of the tree i.e. the number of layers:

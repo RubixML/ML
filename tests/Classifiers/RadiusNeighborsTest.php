@@ -78,7 +78,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new RadiusNeighbors(30.0, true, 'outlier', new BallTree());
+        $this->estimator = new RadiusNeighbors(30.0, true, '?', new BallTree());
 
         $this->metric = new Accuracy();
 
@@ -135,7 +135,7 @@ class RadiusNeighborsTest extends TestCase
         $expected = [
             'radius' => 30.0,
             'weighted' => true,
-            'anomaly_class' => 'outlier',
+            'outlier_class' => '?',
             'tree' => new BallTree(),
         ];
 

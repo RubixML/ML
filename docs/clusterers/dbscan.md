@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php">[source]</a></span>
 
 # DBSCAN
-*Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters given a radius and density constraint. In addition, DBSCAN also has the ability to flag outliers (noise samples) and can thus be used as a *quasi* anomaly detector.
+*Density-Based Spatial Clustering of Applications with Noise* (DBSCAN) is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters given a radius and density constraint. In addition, DBSCAN can flag outliers (noise samples) and thus be used as a quasi-anomaly detector.
 
 > **Note:** Noise samples are assigned the cluster number -1.
 
