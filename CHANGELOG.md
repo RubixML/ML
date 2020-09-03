@@ -11,6 +11,9 @@
     - Added score() method to Ranking API and deprecated rank()
     - Renamed Radius Neighbors anomalyClass to outlierClass
     
+- 0.1.5
+    - Compensate for zero vectors in Cosine kernel
+
 - 0.1.4
     - Optimized Cosine distance for sparse vectors
 
