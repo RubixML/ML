@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/IntervalDiscretizer.php">[source]</a></span>
 
 # Interval Discretizer
-Assigns each continuous feature to a discrete category using equi-width histograms. Useful for converting continuous data to categorical.
+Converts each continuous feature to a category using equi-width histograms with a user-specified number of bins for discretization.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 

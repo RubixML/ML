@@ -19,6 +19,28 @@ use function is_string;
 class HTMLStripper implements Transformer, Stringable
 {
     /**
+     * A list of html tags that should not be stripped ex. ['p', 'br']. Note this is converted
+     * to a string for backwards compatibility with PHP < 7.4.
+     *
+     * @var string
+     */
+    protected $allowedTags;
+
+    /**
+     * @param string[] $allowedTags
+     */
+    public function __construct(array $allowedTags = [])
+    {
+        $list = '';
+
+        foreach ($allowedTags as $tag) {
+            $list .= "<$tag>";
+        }
+
+        $this->allowedTags = $list;
+    }
+
+    /**
      * Return the data types that this transformer is compatible with.
      *
      * @return \Rubix\ML\DataType[]
@@ -38,7 +60,7 @@ class HTMLStripper implements Transformer, Stringable
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (is_string($value)) {
-                    $value = strip_tags($value);
+                    $value = strip_tags($value, $this->allowedTags);
                 }
             }
         }
@@ -51,6 +73,6 @@ class HTMLStripper implements Transformer, Stringable
      */
     public function __toString() : string
     {
-        return 'HTML Stripper';
+        return "HTML Stripper (allowed_tags: {$this->allowedTags})";
     }
 }

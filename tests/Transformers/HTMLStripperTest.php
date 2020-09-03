@@ -34,7 +34,7 @@ class HTMLStripperTest extends TestCase
             ['with a <i>Dandy</i> ubrella'],
         ]);
 
-        $this->transformer = new HTMLStripper();
+        $this->transformer = new HTMLStripper(['i']);
     }
 
     /**
@@ -56,7 +56,7 @@ class HTMLStripperTest extends TestCase
         $outcome = [
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
-            ['with a Dandy ubrella'],
+            ['with a <i>Dandy</i> ubrella'],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());

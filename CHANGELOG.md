@@ -10,6 +10,7 @@
     - Added Dataset join() method and deprecated augment()
     - Added score() method to Ranking API and deprecated rank()
     - Renamed Radius Neighbors anomalyClass to outlierClass
+    - HTML Stripper can now allow user-specified tags
     
 - 0.1.5
     - Compensate for zero vectors in Cosine kernel
