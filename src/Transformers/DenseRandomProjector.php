@@ -9,8 +9,10 @@ namespace Rubix\ML\Transformers;
  * distribution [-1, 1] to project a sample matrix onto a target dimensionality.
  *
  * References:
- * [1] D. Achlioptas. (2003). Database-friendly random projections:
- * Johnson-Lindenstrauss with binary coins.
+ * [1] D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss
+ * with binary coins.
+ *
+ * @deprecated
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,11 +21,14 @@ namespace Rubix\ML\Transformers;
 class DenseRandomProjector extends SparseRandomProjector
 {
     /**
-     * The numbers to draw from when generating the random matrix.
-     *
-     * @var float[]
+     * @param int $dimensions
      */
-    protected const DISTRIBUTION = [-1.0, 1.0];
+    public function __construct(int $dimensions)
+    {
+        trigger_error('Deprecated, use' . SparseRandomProjector::class . ' instead.', E_USER_DEPRECATED);
+
+        parent::__construct($dimensions, 1.0);
+    }
 
     /**
      * Return the string representation of the object.

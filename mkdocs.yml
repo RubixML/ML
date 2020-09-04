@@ -107,7 +107,6 @@ nav:
 - Transformers:
   - API Reference: transformers/api.md
   - Dimensionality Reduction:
-    - Dense Random Projector: transformers/dense-random-projector.md
     - Gaussian Random Projector: transformers/gaussian-random-projector.md
     - Linear Discriminant Analysis: transformers/linear-discriminant-analysis.md
     - Principal Component Analysis: transformers/principal-component-analysis.md

@@ -11,6 +11,8 @@
     - Added score() method to Ranking API and deprecated rank()
     - Renamed Radius Neighbors anomalyClass to outlierClass
     - HTML Stripper can now allow user-specified tags
+    - Sparse Random Projector now has variable sparsity
+    - Deprecated Dense Random Projector transformer
     
 - 0.1.5
     - Compensate for zero vectors in Cosine kernel

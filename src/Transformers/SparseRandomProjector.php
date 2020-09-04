@@ -5,18 +5,20 @@ namespace Rubix\ML\Transformers;
 use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
+use InvalidArgumentException;
 
 use function count;
 
 /**
  * Sparse Random Projector
  *
- * The Sparse Random Projector uses a random matrix sampled from a sparse uniform
- * distribution (mostly 0s) to project a sample matrix onto a target dimensionality.
+ * A *database-friendly* random projector that samples its random projection matrix from a
+ * sparse probabilistic approximation of the Gaussian distribution.
  *
  * References:
- * [1] D. Achlioptas. (2003). Database-friendly random projections:
- * Johnson-Lindenstrauss with binary coins.
+ * [1] D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss
+ * with binary coins.
+ * [2] P. Li at al. (2006). Very Sparse Random Projections.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -25,18 +27,28 @@ use function count;
 class SparseRandomProjector extends GaussianRandomProjector
 {
     /**
-     * The numbers to draw from when generating the random matrix.
-     *
-     * @var float[]
-     */
-    protected const DISTRIBUTION = [-self::ROOT_3, 0.0, 0.0, 0.0, 0.0, self::ROOT_3];
-
-    /**
-     * The square root of 3.
+     * The amount of sparsity in the random projection matrix.
      *
      * @var float
      */
-    protected const ROOT_3 = 1.73205080757;
+    protected $sparsity;
+
+    /**
+     * @param int $dimensions
+     * @param float $sparsity
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(int $dimensions, float $sparsity = 3.0)
+    {
+        if ($sparsity < 1.0) {
+            throw new InvalidArgumentException('Sparsity must be'
+                . " greater than 1, $sparsity given.");
+        }
+
+        parent::__construct($dimensions);
+
+        $this->sparsity = $sparsity;
+    }
 
     /**
      * Fit the transformer to a dataset.
@@ -48,17 +60,33 @@ class SparseRandomProjector extends GaussianRandomProjector
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $columns = $dataset->numColumns();
+        $n = $dataset->numColumns();
 
-        $p = count(static::DISTRIBUTION) - 1;
+        $max = getrandmax();
+
+        $distribution = [
+            [sqrt($this->sparsity), 1.0 / (2.0 * $this->sparsity)],
+            [0.0, 1.0 - (1.0 / $this->sparsity)],
+            [-sqrt($this->sparsity), 1.0 / (2.0 * $this->sparsity)],
+        ];
 
         $r = [];
 
-        while (count($r) < $columns) {
+        while (count($r) < $n) {
             $row = [];
 
             while (count($row) < $this->dimensions) {
-                $row[] = static::DISTRIBUTION[rand(0, $p)];
+                $delta = rand() / $max;
+
+                foreach ($distribution as [$value, $probability]) {
+                    $delta -= $probability;
+
+                    if ($delta <= 0.0) {
+                        $row[] = $value;
+
+                        break 1;
+                    }
+                }
             }
 
             $r[] = $row;
@@ -74,6 +102,6 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function __toString() : string
     {
-        return "Sparse Random Projector (dimensions: {$this->dimensions})";
+        return "Sparse Random Projector (dimensions: {$this->dimensions}, sparsity: {$this->sparsity})";
     }
 }

@@ -80,7 +80,6 @@ Dimensionality reduction is a preprocessing technique for embedding a dataset in
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
-| [Dense Random Projector](transformers/dense-random-projector.md) | | ● | |
 | [Gaussian Random Projector](transformers/gaussian-random-projector.md) | | ● | |
 | [Linear Discriminant Analysis](transformers/linear-discriminant-analysis.md) | ● | ● | |
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |

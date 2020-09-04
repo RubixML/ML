@@ -16,6 +16,13 @@ use RuntimeException;
 class SparseRandomProjectorTest extends TestCase
 {
     /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
+    protected const RANDOM_SEED = 0;
+
+    /**
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
@@ -32,7 +39,9 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
 
-        $this->transformer = new SparseRandomProjector(4);
+        $this->transformer = new SparseRandomProjector(4, 3.0);
+
+        srand(self::RANDOM_SEED);
     }
 
     /**
@@ -56,11 +65,19 @@ class SparseRandomProjectorTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $expected = [
+            -3.8861419746435,
+            17.801078083484,
+            -0.29819783331323,
+            12.191560356574,
+        ];
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);
 
         $this->assertCount(4, $sample);
+        $this->assertEquals($expected, $sample);
     }
 
     /**

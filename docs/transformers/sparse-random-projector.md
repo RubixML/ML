@@ -11,12 +11,13 @@ A *database-friendly* random projector that samples its random projection matrix
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
+| 2 | sparsity | 3.0 | float | The amount of sparsity in the random projection matrix. |
 
 ## Example
 ```php
 use Rubix\ML\Transformers\SparseRandomProjector;
 
-$transformer = new SparseRandomProjector(30);
+$transformer = new SparseRandomProjector(30, 5.0);
 ```
 
 ## Additional Methods
