@@ -134,13 +134,13 @@ use Rubix\ML\Pipeline;
 use Rubix\ML\Transformers\RandomHotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\Clusterers\KMeans;
 
 $estimator = new Pipeline([
     new RandomHotDeckImputer(5),
     new OneHotEncoder(),
     new ZScaleStandardizer(),
-], new SoftmaxClassifier(200));
+], new KMeans(10, 256));
 ```
 
 Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.

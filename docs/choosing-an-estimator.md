@@ -69,23 +69,37 @@ Anomaly Detectors are unsupervised learners that predict a boolean-valued outcom
 ## Model Flexibility
 A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest estimator for your project that does not underfit the training data.
 
-## Model Ensembles
-Ensemble learning is when multiple estimators are used in making the final prediction. Ensembles can either be multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. The work on the principal of averaging and can achieve greater accuracy than a single estimator.
+## Meta-estimator Ensembles
+Ensemble learning is when multiple estimators are used to make the final prediction on a sample. Meta-estimator Ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They are *polymorphic* in the sense that they take on the type of the base estimators they wrap. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
 
-| Meta-estimator | Parallel | Verbose | Supported Types |
-|---|---|---|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | ● | | Classifiers, Regressors, Anomaly Detectors |
-| [Committee Machine](committee-machine.md) | ● | ● | Classifiers, Regressors, Anomaly Detectors |
-
-In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to train a *forest* of 1000 trees.
+### Bootstrap Aggregator
+Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the average prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) meta-estimator to form a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
+```
 
-$estimator->train($dataset);
+### Committee Machine
+[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influence* weights that can be trained in [Parallel](parallel.md). 
+
+```php
+use Rubix\ML\CommitteeMachine;
+use Rubix\ML\RandomForest;
+new Rubix\ML\SoftmaxClassifier;
+use Rubix\ML\AdaBoost;
+use Rubix\ML\ClassificationTree;
+use Rubix\ML\Backends\Amp;
+
+$estimator = new CommitteeMachine([
+    new RandomForest(),
+    new SoftmaxClassifier(128),
+    new AdaBoost(new ClassificationTree(5), 1.0),
+], [
+    3.0, 1.0, 2.0, // Influences
+]);
 ```
 
 ## No Free Lunch Theorem

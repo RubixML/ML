@@ -81,9 +81,9 @@ class SparseRandomProjector extends GaussianRandomProjector
         $dHat = sqrt(1.0 / $density);
 
         $distribution = [
-            [$dHat, 0.5 * $density],
-            [0.0, 1.0 - $density],
             [-$dHat, 0.5 * $density],
+            [0.0, 1.0 - $density],
+            [$dHat, 0.5 * $density],
         ];
 
         $r = [];
