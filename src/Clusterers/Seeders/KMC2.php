@@ -71,6 +71,8 @@ class KMC2 implements Seeder, Stringable
 
         $centroids = $dataset->randomSubset(1)->samples();
 
+        $max = getrandmax();
+
         while (count($centroids) < $k) {
             $candidates = $dataset->randomSubsetWithReplacement($this->m)->samples();
 
@@ -85,7 +87,7 @@ class KMC2 implements Seeder, Stringable
 
                 $density = min(1.0, $yDistance / $xDistance);
 
-                $threshold = rand() / PHP_INT_MAX;
+                $threshold = rand() / $max;
 
                 if ($density > $threshold) {
                     $xDistance = $yDistance;
