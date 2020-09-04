@@ -8,6 +8,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 
 use function count;
+use function is_null;
 
 /**
  * Sparse Random Projector
@@ -27,22 +28,29 @@ use function count;
 class SparseRandomProjector extends GaussianRandomProjector
 {
     /**
-     * The amount of sparsity in the random projection matrix.
+     * The decimal representation of the fraction two thirds.
      *
      * @var float
+     */
+    protected const TWO_THIRDS = 2.0 / 3.0;
+
+    /**
+     * The proportion of zero to non-zero elements in the random projection matrix.
+     *
+     * @var float|null
      */
     protected $sparsity;
 
     /**
      * @param int $dimensions
-     * @param float $sparsity
+     * @param float|null $sparsity
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $dimensions, float $sparsity = 3.0)
+    public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
-        if ($sparsity < 1.0) {
+        if ($sparsity < 0.0 or $sparsity > 1.0) {
             throw new InvalidArgumentException('Sparsity must be'
-                . " greater than 1, $sparsity given.");
+                . " between 0 and 1, $sparsity given.");
         }
 
         parent::__construct($dimensions);
@@ -62,12 +70,20 @@ class SparseRandomProjector extends GaussianRandomProjector
 
         $n = $dataset->numColumns();
 
+        if (is_null($this->sparsity)) {
+            $density = 1.0 / (1.0 + sqrt($n));
+        } else {
+            $density = 1.0 - $this->sparsity;
+        }
+
         $max = getrandmax();
 
+        $dHat = sqrt(1.0 / $density);
+
         $distribution = [
-            [sqrt($this->sparsity), 1.0 / (2.0 * $this->sparsity)],
-            [0.0, 1.0 - (1.0 / $this->sparsity)],
-            [-sqrt($this->sparsity), 1.0 / (2.0 * $this->sparsity)],
+            [$dHat, 0.5 * $density],
+            [0.0, 1.0 - $density],
+            [-$dHat, 0.5 * $density],
         ];
 
         $r = [];

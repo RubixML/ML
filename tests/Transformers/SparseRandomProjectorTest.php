@@ -39,7 +39,7 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
 
-        $this->transformer = new SparseRandomProjector(4, 3.0);
+        $this->transformer = new SparseRandomProjector(4);
 
         srand(self::RANDOM_SEED);
     }
