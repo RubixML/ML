@@ -52,7 +52,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var float
      */
-    protected $alpha;
+    protected $smoothing;
 
     /**
      * The class prior log probabilities.
@@ -98,15 +98,15 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * @param float $alpha
+     * @param float $smoothing
      * @param (int|float)[]|null $priors
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 1.0, ?array $priors = null)
+    public function __construct(float $smoothing = 1.0, ?array $priors = null)
     {
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
         }
 
         $logPriors = [];
@@ -129,7 +129,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             }
         }
 
-        $this->alpha = $alpha;
+        $this->smoothing = $smoothing;
         $this->logPriors = $logPriors;
         $this->fitPriors = is_null($priors);
     }
@@ -164,7 +164,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function params() : array
     {
         return [
-            'alpha' => $this->alpha,
+            'smoothing' => $this->smoothing,
             'priors' => $this->fitPriors ? null : $this->priors(),
         ];
     }
@@ -253,12 +253,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     }
                 }
 
-                $total = array_sum($columnCounts) + (count($columnCounts) * $this->alpha);
+                $total = array_sum($columnCounts) + (count($columnCounts) * $this->smoothing);
 
                 $probs = [];
 
                 foreach ($columnCounts as $category => $count) {
-                    $probs[$category] = log(($count + $this->alpha) / $total);
+                    $probs[$category] = log(($count + $this->smoothing) / $total);
                 }
 
                 $classCounts[$column] = $columnCounts;
@@ -272,12 +272,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights) + (count($this->weights) * $this->alpha);
+            $total = array_sum($this->weights) + (count($this->weights) * $this->smoothing);
 
             $this->logPriors = [];
 
             foreach ($this->weights as $class => $weight) {
-                $this->logPriors[$class] = log(($weight + $this->alpha) / $total);
+                $this->logPriors[$class] = log(($weight + $this->smoothing) / $total);
             }
         }
     }

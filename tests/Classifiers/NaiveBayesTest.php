@@ -135,7 +135,7 @@ class NaiveBayesTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'alpha' => 1.0,
+            'smoothing' => 1.0,
             'priors' => null,
         ];
 

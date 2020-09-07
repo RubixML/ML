@@ -17,6 +17,7 @@
 - 0.1.5
     - Compensate for zero vectors in Cosine kernel
     - Fixed KMC2 random threshold calculation
+    - Fix Naive Bayes divide by zero when smoothing is 0
 
 - 0.1.4
     - Optimized Cosine distance for sparse vectors
