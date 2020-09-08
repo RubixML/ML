@@ -137,7 +137,11 @@ class Flysystem implements Persister, Stringable
                 $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
             }
 
-            if (!$this->filesystem->rename($this->path, $filename)) {
+            try {
+                if (!$this->filesystem->rename($this->path, $filename)) {
+                    throw new RuntimeException("Failed to create history file: '{$filename}' {$this}");
+                }
+            } catch (League\Flysystem\Exception $e) {
                 throw new RuntimeException("Failed to create history file: '{$filename}' {$this}");
             }
         }

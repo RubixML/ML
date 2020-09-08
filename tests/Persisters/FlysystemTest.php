@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Persisters;
 
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Memory\MemoryAdapter;
@@ -134,6 +135,46 @@ class FlysystemTest extends TestCase
         foreach ($files as $file) {
             $this->assertStringContainsString(self::PATH, '/' . $file['path']);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function testSaveMethodWhenHistoryCreationFails() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches('(^Failed to create history file:)');
+
+        $mock = $this->createMock(FilesystemInterface::class);
+        $mock->expects($this->any())
+            ->method('has')
+            ->willReturn($this->onConsecutiveCalls(true, true, false));
+        $mock->expects($this->any())
+            ->method('rename')
+            ->willReturn(false);
+
+        $this->persister = new Flysystem(self::PATH, $mock, true);
+        $this->persister->save($this->persistable);
+    }
+
+    /**
+     * @test
+     */
+    public function testSaveMethodWhenHistoryCreationInternallyFails() : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches('(^Failed to create history file:)');
+
+        $mock = $this->createMock(FilesystemInterface::class);
+        $mock->expects($this->any())
+            ->method('has')
+            ->willReturn($this->onConsecutiveCalls(true, true, false));
+        $mock->expects($this->any())
+            ->method('rename')
+            ->willThrowException(new FileNotFoundException(self::PATH));
+
+        $this->persister = new Flysystem(self::PATH, $mock, true);
+        $this->persister->save($this->persistable);
     }
 
     /**
