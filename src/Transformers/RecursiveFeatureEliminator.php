@@ -201,7 +201,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
 
                 $dropped[] = (int) $column;
                 unset($selected[$column]);
-                
+
                 $total += $importance;
 
                 if (count($dropped) >= $this->maxDroppedFeatures) {
