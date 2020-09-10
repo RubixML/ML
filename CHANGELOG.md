@@ -2,6 +2,7 @@
     - Added Flysystem persister for Local, S3, FTP, etc.
     - Add Recursive Feature Eliminator (RFE) feature selector
     - Can now disable holdout validation in MLP learners
+    - TF-IDF Transformer additive (Laplace) smoothing now variable
     - Added instability detection to gradient-based learners
     - Gradient Boost validation set holdout can now be 0
     - Specifications now extend base class
@@ -14,7 +15,6 @@
     - HTML Stripper can now allow user-specified tags
     - Sparse Random Projector now has variable sparsity
     - Deprecated Dense Random Projector transformer
-    - TF-IDF Transformer additive smoothing now variable
     
 - 0.1.5
     - Compensate for zero vectors in Cosine kernel

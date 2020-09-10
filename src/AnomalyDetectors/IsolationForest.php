@@ -23,6 +23,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -281,7 +282,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }

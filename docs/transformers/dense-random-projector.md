@@ -3,6 +3,8 @@
 # Dense Random Projector
 A *database-friendly* random projector with projection matrix sampled from a dense uniform distribution ([-1, 1]).
 
+> **Note:** Dense Random Projector has been deprecated, use [Sparse Random Projector](sparse-random-projector.md) with sparsity set to 0 instead.
+
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
 **Data Type Compatibility:** Continuous only

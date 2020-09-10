@@ -23,6 +23,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
+use function Rubix\ML\warn_deprecated;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -266,7 +268,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }

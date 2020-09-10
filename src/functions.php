@@ -48,7 +48,7 @@ namespace Rubix\ML
     }
 
     /**
-     * Transpose a 2-dimensional array i.e. rotate the data table.
+     * Transpose a 2-dimensional array i.e. columns become rows and rows become columns.
      *
      * @param array[] $table
      * @return array[]
@@ -71,5 +71,15 @@ namespace Rubix\ML
             default:
                 return array_map(null, ...$table);
         }
+    }
+
+    /**
+     * Emit a deprecation warning with a message.
+     *
+     * @param string $message
+     */
+    function warn_deprecated(string $message) : void
+    {
+        trigger_error($message, E_USER_DEPRECATED);
     }
 }

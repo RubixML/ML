@@ -22,6 +22,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
+use function Rubix\ML\warn_deprecated;
+
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
 
@@ -280,7 +282,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }
