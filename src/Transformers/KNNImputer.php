@@ -47,8 +47,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
     protected $k;
 
     /**
-     * Should we use the inverse distances as confidence scores when imputing
-     * values.
+     * Should we use the inverse distances as confidence scores when imputing values.
      *
      * @var bool
      */
@@ -105,7 +104,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
         $this->k = $k;
         $this->weighted = $weighted;
         $this->categoricalPlaceholder = $categoricalPlaceholder;
-        $this->tree = new BallTree(30, new SafeEuclidean());
+        $this->tree = $tree ?? new BallTree(30, new SafeEuclidean());
     }
 
     /**
@@ -157,14 +156,12 @@ class KNNImputer implements Transformer, Stateful, Stringable
         }
 
         if (empty($donors)) {
-            throw new RuntimeException('No complete donors found.');
+            throw new RuntimeException('No complete donors found in dataset.');
         }
 
-        $labels = array_fill(0, count($donors), 0);
+        $labels = array_fill(0, count($donors), '');
 
-        $dataset = Labeled::quick($donors, $labels);
-
-        $this->tree->grow($dataset);
+        $this->tree->grow(Labeled::quick($donors, $labels));
 
         $this->types = $dataset->columnTypes();
     }
@@ -210,33 +207,58 @@ class KNNImputer implements Transformer, Stateful, Stringable
      */
     protected function impute(array $values, array $distances, DataType $type)
     {
-        if ($type->isContinuous()) {
-            if ($this->weighted) {
-                $weights = [];
+        switch ($type) {
+            case DataType::continuous():
+                return $this->imputeContinuous($values, $distances);
 
-                foreach ($distances as $distance) {
-                    $weights[] = 1.0 / (1.0 + $distance);
-                }
+            case DataType::categorical():
+            default:
+                return $this->imputeCategorical($values, $distances);
+        }
+    }
 
-                $value = Stats::weightedMean($values, $weights);
-            } else {
-                $value = Stats::mean($values);
+    /**
+     * Return an imputed continuous value.
+     *
+     * @param (string|int|float)[] $values
+     * @param float[] $distances
+     * @return int|float
+     */
+    protected function imputeContinuous(array $values, array $distances)
+    {
+        if ($this->weighted) {
+            $weights = [];
+
+            foreach ($distances as $distance) {
+                $weights[] = 1.0 / (1.0 + $distance);
             }
-        } else {
-            if ($this->weighted) {
-                $weights = array_fill_keys($values, 0.0);
 
-                foreach ($distances as $i => $distance) {
-                    $weights[$values[$i]] += 1.0 / (1.0 + $distance);
-                }
-            } else {
-                $weights = array_count_values($values);
-            }
-
-            $value = argmax($weights);
+            return Stats::weightedMean($values, $weights);
         }
 
-        return $value;
+        return Stats::mean($values);
+    }
+
+    /**
+     * Return an imputed categorical value.
+     *
+     * @param (string|int|float)[] $values
+     * @param float[] $distances
+     * @return string
+     */
+    protected function imputeCategorical(array $values, array $distances) : string
+    {
+        if ($this->weighted) {
+            $weights = array_fill_keys($values, 0.0);
+
+            foreach ($distances as $i => $distance) {
+                $weights[$values[$i]] += 1.0 / (1.0 + $distance);
+            }
+        } else {
+            $weights = array_count_values($values);
+        }
+
+        return argmax($weights);
     }
 
     /**

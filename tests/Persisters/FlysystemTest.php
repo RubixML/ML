@@ -2,16 +2,17 @@
 
 namespace Rubix\ML\Tests\Persisters;
 
-use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
-use League\Flysystem\Memory\MemoryAdapter;
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Flysystem;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Classifiers\DummyClassifier;
-use RuntimeException;
+use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Flysystem\UnableToWriteFile;
+use League\Flysystem\UnableToMoveFile;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @group Persisters
@@ -20,12 +21,14 @@ use PHPUnit\Framework\TestCase;
 class FlysystemTest extends TestCase
 {
     /**
+     * The path to the test file.
+     *
      * @var string
      */
-    const PATH = '/path/to/test.model';
+    const PATH = __DIR__ . '/path/to/test.persistable';
 
     /**
-     * @var \League\Flysystem\FilesystemInterface
+     * @var \League\Flysystem\FilesystemOperator
      */
     protected $filesystem;
 
@@ -44,19 +47,11 @@ class FlysystemTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->filesystem = new Filesystem(new MemoryAdapter());
-        $this->persistable = new DummyClassifier();
-        $this->persister = new Flysystem(self::PATH, $this->filesystem);
-    }
+        $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
 
-    /**
-     * @after
-     */
-    protected function tearDown() : void
-    {
-        if ($this->filesystem->has(self::PATH)) {
-            $this->filesystem->delete(self::PATH);
-        }
+        $this->persistable = new DummyClassifier();
+
+        $this->persister = new Flysystem(self::PATH, $this->filesystem);
     }
 
     /**
@@ -74,116 +69,101 @@ class FlysystemTest extends TestCase
     public function saveLoad() : void
     {
         $this->persister->save($this->persistable);
-        $this->assertTrue($this->filesystem->has(self::PATH));
 
-        $model = $this->persister->load();
+        $this->assertTrue($this->filesystem->fileExists(self::PATH));
 
-        $this->assertInstanceOf(DummyClassifier::class, $model);
-        $this->assertInstanceOf(Persistable::class, $model);
+        $persistable = $this->persister->load();
+
+        $this->assertInstanceOf(DummyClassifier::class, $persistable);
+        $this->assertInstanceOf(Persistable::class, $persistable);
     }
 
     /**
      * @test
      */
-    public function testSaveMethodWhenFilesystemWriteFails() : void
+    public function saveMethodWhenFilesystemWriteFails() : void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageMatches('(^Could not write to filesystem)');
+        $filesystem = $this->createMock(FilesystemOperator::class);
 
-        $filesystem = $this->createMock(FilesystemInterface::class);
-        $filesystem->method('put')->with(self::PATH)->willReturn(false); // false: WRITE FAILED
+        $filesystem->method('write')
+            ->with(self::PATH)
+            ->willThrowException(new UnableToWriteFile());
 
         $this->persister = new Flysystem(self::PATH, $filesystem);
+
+        $this->expectException(RuntimeException::class);
+
         $this->persister->save($this->persistable);
     }
 
     /**
      * @test
      */
-    public function testSaveMethodWithHistoryDisabled() : void
+    public function saveMethodWithHistoryDisabled() : void
     {
         $directory = dirname(self::PATH);
+
         $this->persister = new Flysystem(self::PATH, $this->filesystem, false);
 
-        // Save
         $this->persister->save($this->persistable);
-        $this->assertCount(1, $this->filesystem->listContents($directory));
-        $this->assertTrue($this->filesystem->has(self::PATH));
 
-        // Save again. As history is disabled the existing model will be overwritten:
-        $this->persister->save($this->persistable);
         $this->assertCount(1, $this->filesystem->listContents($directory));
-        $this->assertTrue($this->filesystem->has(self::PATH));
+        $this->assertTrue($this->filesystem->fileExists(self::PATH));
+
+        $this->persister->save($this->persistable);
+
+        $this->assertCount(1, $this->filesystem->listContents($directory));
+        $this->assertTrue($this->filesystem->fileExists(self::PATH));
     }
 
     /**
      * @test
      */
-    public function testSaveMethodWithHistoryEnabled() : void
+    public function saveMethodWithHistoryEnabled() : void
     {
         $directory = dirname(self::PATH);
+
         $this->persister = new Flysystem(self::PATH, $this->filesystem, true);
 
-        // Save
         $this->persister->save($this->persistable);
-        $this->assertTrue($this->filesystem->has(self::PATH));
 
-        // Save again to the same path. The existing model will be renamed before saving the new model:
+        $this->assertTrue($this->filesystem->fileExists(self::PATH));
+
         $this->persister->save($this->persistable);
+
         $files = $this->filesystem->listContents($directory);
+
         $this->assertCount(2, $files);
-        foreach ($files as $file) {
-            $this->assertStringContainsString(self::PATH, '/' . $file['path']);
-        }
     }
 
     /**
      * @test
      */
-    public function testSaveMethodWhenHistoryCreationFails() : void
+    public function saveMethodWhenHistoryCreationFails() : void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageMatches('(^Failed to create history file:)');
+        $mock = $this->createMock(FilesystemOperator::class);
 
-        $mock = $this->createMock(FilesystemInterface::class);
         $mock->expects($this->any())
-            ->method('has')
-            ->willReturn($this->onConsecutiveCalls(true, true, false));
+            ->method('fileExists')
+            ->will($this->onConsecutiveCalls(true, true, false));
+
         $mock->expects($this->any())
-            ->method('rename')
-            ->willReturn(false);
+            ->method('move')
+            ->willThrowException(new UnableToMoveFile());
 
         $this->persister = new Flysystem(self::PATH, $mock, true);
+
+        $this->expectException(RuntimeException::class);
+
         $this->persister->save($this->persistable);
     }
 
     /**
      * @test
      */
-    public function testSaveMethodWhenHistoryCreationInternallyFails() : void
+    public function loadMethodWhenTargetNotExists() : void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageMatches('(^Failed to create history file:)');
-
-        $mock = $this->createMock(FilesystemInterface::class);
-        $mock->expects($this->any())
-            ->method('has')
-            ->willReturn($this->onConsecutiveCalls(true, true, false));
-        $mock->expects($this->any())
-            ->method('rename')
-            ->willThrowException(new FileNotFoundException(self::PATH));
-
-        $this->persister = new Flysystem(self::PATH, $mock, true);
-        $this->persister->save($this->persistable);
-    }
-
-    /**
-     * @test
-     */
-    public function testLoadMethodWhenTargetNotExists() : void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageMatches('(^File does not exist in filesystem)');
 
         $this->persister->load();
     }
@@ -191,17 +171,17 @@ class FlysystemTest extends TestCase
     /**
      * @test
      */
-    public function testLoadMethodWhenTargetIsEmpty() : void
+    public function loadMethodWhenTargetIsEmpty() : void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageMatches('(^File does not contain any data)');
+        $this->filesystem->write(self::PATH, '');
 
-        $this->filesystem->put(self::PATH, '');
+        $this->expectException(RuntimeException::class);
+
         $this->persister->load();
     }
 
     protected function assertPreConditions() : void
     {
-        $this->assertFalse($this->filesystem->has(self::PATH));
+        $this->assertFalse($this->filesystem->fileExists(self::PATH));
     }
 }

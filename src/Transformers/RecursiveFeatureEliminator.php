@@ -25,8 +25,8 @@ use function is_null;
  * of features has been reached.
  *
  * References:
- * [1] I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector
- * Machines.
+ * [1] I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support
+ * Vector Machines.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -200,9 +200,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 }
 
                 $dropped[] = (int) $column;
-                unset($selected[$column]);
-
                 $total += $importance;
+
+                unset($selected[$column]);
 
                 if (count($dropped) >= $this->maxDropFeatures) {
                     break 1;

@@ -26,10 +26,10 @@ class TfIdfTransformerBench
 
     public function setUp() : void
     {
-        $mask = Matrix::rand(self::NUM_SAMPLES, 100)
-            ->greater(0.8);
+        $mask = Matrix::rand(self::NUM_SAMPLES, 4)
+            ->greater(0.9);
 
-        $samples = Matrix::gaussian(self::NUM_SAMPLES, 100)
+        $samples = Matrix::gaussian(self::NUM_SAMPLES, 4)
             ->multiply($mask)
             ->asArray();
 
@@ -41,7 +41,7 @@ class TfIdfTransformerBench
     /**
      * @Subject
      * @Iterations(3)
-     * @OutputTimeUnit("seconds", precision=3)
+     * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function apply() : void
     {

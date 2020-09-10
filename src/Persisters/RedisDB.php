@@ -111,9 +111,9 @@ class RedisDB implements Persister, Stringable
      */
     public function save(Persistable $persistable) : void
     {
-        $data = $this->serializer->serialize($persistable);
+        $encoding = $this->serializer->serialize($persistable);
 
-        $success = $this->db->set($this->key, $data);
+        $success = $this->db->set($this->key, $encoding);
 
         if (!$success) {
             throw new RuntimeException('Failed to save '
@@ -122,16 +122,16 @@ class RedisDB implements Persister, Stringable
     }
 
     /**
-     * Load the last model that was saved.
+     * Load the last saved persistable instance.
      *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable
     {
-        $data = new Encoding($this->db->get($this->key) ?: '');
+        $encoding = new Encoding($this->db->get($this->key) ?: '');
 
-        return $this->serializer->unserialize($data);
+        return $this->serializer->unserialize($encoding);
     }
 
     /**

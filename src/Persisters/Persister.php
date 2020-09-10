@@ -7,14 +7,14 @@ use Rubix\ML\Persistable;
 interface Persister
 {
     /**
-     * Save the persistable model.
+     * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
      */
     public function save(Persistable $persistable) : void;
 
     /**
-     * Load the last model that was saved.
+     * Load the last saved persistable instance.
      *
      * @return \Rubix\ML\Persistable
      */

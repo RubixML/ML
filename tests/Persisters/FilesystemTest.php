@@ -16,6 +16,13 @@ use PHPUnit\Framework\TestCase;
 class FilesystemTest extends TestCase
 {
     /**
+     * The path to the test file.
+     *
+     * @var string
+     */
+    const PATH = __DIR__ . '/test.persistable';
+
+    /**
      * @var \Rubix\ML\Persistable
      */
     protected $persistable;
@@ -26,20 +33,13 @@ class FilesystemTest extends TestCase
     protected $persister;
 
     /**
-     * @var string
-     */
-    protected $path;
-
-    /**
      * @before
      */
     protected function setUp() : void
     {
-        $this->path = __DIR__ . '/test.model';
-
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem($this->path, true, new Native());
+        $this->persister = new Filesystem(self::PATH, true, new Native());
     }
 
     /**
@@ -47,11 +47,11 @@ class FilesystemTest extends TestCase
      */
     protected function tearDown() : void
     {
-        if (file_exists($this->path)) {
-            unlink($this->path);
+        if (file_exists(self::PATH)) {
+            unlink(self::PATH);
         }
 
-        foreach (glob("$this->path.*.old") ?: [] as $filename) {
+        foreach (glob(self::PATH . '.*.old') ?: [] as $filename) {
             unlink($filename);
         }
     }
@@ -72,16 +72,16 @@ class FilesystemTest extends TestCase
     {
         $this->persister->save($this->persistable);
 
-        $this->assertFileExists($this->path);
+        $this->assertFileExists(self::PATH);
 
-        $model = $this->persister->load();
+        $persistable = $this->persister->load();
 
-        $this->assertInstanceOf(DummyClassifier::class, $model);
-        $this->assertInstanceOf(Persistable::class, $model);
+        $this->assertInstanceOf(DummyClassifier::class, $persistable);
+        $this->assertInstanceOf(Persistable::class, $persistable);
     }
 
     protected function assertPreConditions() : void
     {
-        $this->assertFileNotExists($this->path);
+        $this->assertFileNotExists(self::PATH);
     }
 }
