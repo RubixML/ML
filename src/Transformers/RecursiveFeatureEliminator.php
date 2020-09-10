@@ -19,10 +19,10 @@ use function is_null;
 /**
  * Recursive Feature Eliminator
  *
- * Recursive Feature Eliminator or *RFE* is a supervised feature selector that uses the
+ * Recursive Feature Eliminator (RFE) is a supervised feature selector that uses the
  * importance scores returned by a learner implementing the RanksFeatures interface to
- * recursively drop feature columns with the lowest importance until the minimum number
- * of features has been reached.
+ * recursively drop feature columns with the lowest importance until a terminating
+ * condition is met.
  *
  * References:
  * [1] I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector
@@ -37,7 +37,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
     use LoggerAware;
 
     /**
-     * The minimum number of features to select.
+     * The minimum number of features to select from the dataset.
      *
      * @var int
      */
@@ -48,14 +48,14 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
      *
      * @var int
      */
-    protected $maxDropFeatures;
+    protected $maxDroppedFeatures;
 
     /**
      * The maximum importance to drop from the dataset per iteration.
      *
      * @var float
      */
-    protected $maxDropImportance;
+    protected $maxDroppedImportance;
 
     /**
      * The base feature ranking learner.
@@ -80,14 +80,14 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
 
     /**
      * @param int $minFeatures
-     * @param int $maxDropFeatures
-     * @param float $maxDropImportance
+     * @param int $maxDroppedFeatures
+     * @param float $maxDroppedImportance
      * @param \Rubix\ML\RanksFeatures|null $estimator
      */
     public function __construct(
         int $minFeatures,
-        int $maxDropFeatures = 3,
-        float $maxDropImportance = 0.2,
+        int $maxDroppedFeatures = 3,
+        float $maxDroppedImportance = 0.2,
         ?RanksFeatures $estimator = null
     ) {
         if ($minFeatures < 1) {
@@ -95,19 +95,19 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 . " be greater than 0, $minFeatures given.");
         }
 
-        if ($maxDropFeatures < 1) {
+        if ($maxDroppedFeatures < 1) {
             throw new InvalidArgumentException('Maximum dropped features'
-                . " must be greater than 0, $maxDropFeatures given.");
+                . " must be greater than 0, $maxDroppedFeatures given.");
         }
 
-        if ($maxDropImportance < 0.0 or $maxDropImportance > 1.0) {
+        if ($maxDroppedImportance < 0.0 or $maxDroppedImportance > 1.0) {
             throw new InvalidArgumentException('Maximum dropped importance'
-                . " must be between 0 and 1, $maxDropImportance given.");
+                . " must be between 0 and 1, $maxDroppedImportance given.");
         }
 
         $this->minFeatures = $minFeatures;
-        $this->maxDropFeatures = $maxDropFeatures;
-        $this->maxDropImportance = $maxDropImportance;
+        $this->maxDroppedFeatures = $maxDroppedFeatures;
+        $this->maxDroppedImportance = $maxDroppedImportance;
         $this->estimator = $estimator;
         $this->fitBase = is_null($estimator);
     }
@@ -195,7 +195,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             $total = 0.0;
 
             foreach ($importances as $column => $importance) {
-                if ($importance >= $this->maxDropImportance - $total) {
+                if ($importance >= $this->maxDroppedImportance - $total) {
                     break 1;
                 }
 
@@ -204,7 +204,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
 
                 $total += $importance;
 
-                if (count($dropped) >= $this->maxDropFeatures) {
+                if (count($dropped) >= $this->maxDroppedFeatures) {
                     break 1;
                 }
 
@@ -264,8 +264,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
     public function __toString() : string
     {
         return "Recursive Feature Eliminator (min_features: {$this->minFeatures},"
-            . " max_drop_features: {$this->maxDropFeatures},"
-            . " max_drop_importance: {$this->maxDropImportance},"
+            . " max_dropped_features: {$this->maxDroppedFeatures},"
+            . " max_dropped_importance: {$this->maxDroppedImportance},"
             . " estimator: {$this->estimator})";
     }
 }

@@ -9,6 +9,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use Generator;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 use function array_slice;
 
@@ -235,12 +236,11 @@ class Unlabeled extends Dataset
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @return self
      */
     public function augment(Dataset $dataset) : self
     {
-        trigger_error('Deprecated, use join() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Augment() is deprecated, use join() instead.');
 
         return $this->join($dataset);
     }

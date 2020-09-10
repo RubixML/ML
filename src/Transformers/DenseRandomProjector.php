@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use function Rubix\ML\warn_deprecated;
+
 /**
  * Dense Random Projector
  *
@@ -25,9 +27,9 @@ class DenseRandomProjector extends SparseRandomProjector
      */
     public function __construct(int $dimensions)
     {
-        trigger_error('Deprecated, use' . SparseRandomProjector::class . ' instead.', E_USER_DEPRECATED);
+        warn_deprecated('Dense Random Projector is deprecated, use Sparse Random Projector with sparsity set to 0 instead.');
 
-        parent::__construct($dimensions, 1.0);
+        parent::__construct($dimensions, 0.0);
     }
 
     /**

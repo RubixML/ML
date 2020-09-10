@@ -14,6 +14,7 @@ use RuntimeException;
 use ErrorException;
 use Generator;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 use function get_class;
 use function gettype;
@@ -404,12 +405,11 @@ class Labeled extends Dataset
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      * @return self
      */
     public function augment(Dataset $dataset) : self
     {
-        trigger_error('Deprecated, use join() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Augment() is deprecated, use join() instead.');
 
         return $this->join($dataset);
     }
