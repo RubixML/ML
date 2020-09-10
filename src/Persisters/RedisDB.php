@@ -116,8 +116,7 @@ class RedisDB implements Persister, Stringable
         $success = $this->db->set($this->key, $encoding);
 
         if (!$success) {
-            throw new RuntimeException('Failed to save '
-                . ' persistable to the database.');
+            throw new RuntimeException('Failed to save persistable to the database.');
         }
     }
 
@@ -130,6 +129,10 @@ class RedisDB implements Persister, Stringable
     public function load() : Persistable
     {
         $encoding = new Encoding($this->db->get($this->key) ?: '');
+
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException("Record at key '{$this->key}' does not contain any data.");
+        }
 
         return $this->serializer->unserialize($encoding);
     }

@@ -1,6 +1,6 @@
 - 0.2.0
-    - Added Flysystem persister for S3, Azure, FTP, etc.
-    - Add Recursive Feature Eliminator feature selector
+    - Added Flysystem persister for Local, S3, FTP, etc.
+    - Add Recursive Feature Eliminator (RFE) feature selector
     - Can now disable holdout validation in MLP learners
     - Added instability detection to gradient-based learners
     - Gradient Boost validation set holdout can now be 0

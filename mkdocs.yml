@@ -240,6 +240,7 @@ nav:
 - Persisters:
   - API Reference: persisters/api.md
   - Filesystem: persisters/filesystem.md
+  - Flysystem: persisters/flysystem.md
   - Redis DB: persisters/redis-db.md
   - Serializers:
     - Igbinary: persisters/serializers/igbinary.md

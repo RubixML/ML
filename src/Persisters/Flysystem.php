@@ -9,9 +9,9 @@ use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
+use League\Flysystem\FilesystemException;
 use RuntimeException;
 use Stringable;
-use Exception;
 
 /**
  * Flysystem
@@ -104,7 +104,7 @@ class Flysystem implements Persister, Stringable
 
             try {
                 $this->filesystem->move($this->path, $filename);
-            } catch (Exception $e) {
+            } catch (FilesystemException $e) {
                 throw new RuntimeException("Failed to create history file '$filename'.");
             }
         }
@@ -113,7 +113,7 @@ class Flysystem implements Persister, Stringable
 
         try {
             $this->filesystem->write($this->path, $encoding);
-        } catch (Exception $e) {
+        } catch (FilesystemException $e) {
             throw new RuntimeException('Could not write to filesystem.');
         }
     }
@@ -130,7 +130,13 @@ class Flysystem implements Persister, Stringable
             throw new RuntimeException("File does not exist at {$this->path}.");
         }
 
-        $encoding = new Encoding($this->filesystem->read($this->path) ?: '');
+        try {
+            $data = $this->filesystem->read($this->path);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException("Error reading data from {$this->path}.");
+        }
+
+        $encoding = new Encoding($data);
 
         if ($encoding->bytes() === 0) {
             throw new RuntimeException("File at {$this->path} does not contain any data.");
