@@ -15,6 +15,9 @@
     - Sparse Random Projector now has variable sparsity
     - Deprecated Dense Random Projector transformer
     
+- 0.1.6
+    - Fix KNN Imputer spatial tree dependency injection
+
 - 0.1.5
     - Compensate for zero vectors in Cosine kernel
     - Fixed KMC2 random threshold calculation
