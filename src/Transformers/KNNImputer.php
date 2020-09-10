@@ -105,7 +105,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
         $this->k = $k;
         $this->weighted = $weighted;
         $this->categoricalPlaceholder = $categoricalPlaceholder;
-        $this->tree = new BallTree(30, new SafeEuclidean());
+        $this->tree = $tree ?? new BallTree(30, new SafeEuclidean());
     }
 
     /**
