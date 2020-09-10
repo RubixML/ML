@@ -2,32 +2,31 @@
 
 namespace Rubix\ML\Persisters;
 
-use League;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Adapter\Ftp;
-use League\Flysystem\FilesystemInterface;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
+use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\FilesystemException;
 use RuntimeException;
 use Stringable;
 
 /**
  * Flysystem
  *
- * The flysystem persister serializes models to a file at a user-specified path, using a
- * user-provided flysystem instance.
+ * Flysystem is a filesystem library providing a unified storage interface and abstraction layer.
+ * It enables access to many different storage backends such as Local, Amazon S3, FTP, and more.
  *
- * Flysystem is a filesystem abstraction providing a unified interface for many different
- * filesystems. (Local, Amazon S3, Azure Blob Storage, Google Cloud Storage, Dropbox etc...)
+ * > **Note:** The Flysystem persister is designed to work with Flysystem version 2.0.
  *
  * @see https://flysystem.thephpleague.com
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Chris Simpson
+ * @author      Andrew DalPino
  */
 class Flysystem implements Persister, Stringable
 {
@@ -48,7 +47,7 @@ class Flysystem implements Persister, Stringable
     /**
      * The filesystem implementation providing access to your backend storage.
      *
-     * @var \League\Flysystem\FilesystemInterface
+     * @var \League\Flysystem\FilesystemOperator
      */
     protected $filesystem;
 
@@ -67,52 +66,17 @@ class Flysystem implements Persister, Stringable
     protected $serializer;
 
     /**
-     * Local
-     *
-     * Shortcut to return a Flysystem Persister backed by the Local filesystem
-     *
-     * @see https://flysystem.thephpleague.com/v1/docs/adapter/local/
-     *
-     * @param string $path The absolute path to the file on the filesystem.
-     * @param bool $history
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
-     * @return \Rubix\ML\Persisters\Flysystem
-     */
-    public static function local(string $path, bool $history = false, ?Serializer $serializer = null) : Flysystem
-    {
-        $filesystem = new League\Flysystem\Filesystem(new Local(dirname($path)));
-
-        return new Flysystem(basename($path), $filesystem, $history, $serializer);
-    }
-
-    /**
-     * FTP
-     *
-     * Shortcut to return a Flysystem Persister backed by an FTP Server
-     *
-     * @see https://flysystem.thephpleague.com/v1/docs/adapter/ftp/
-     *
      * @param string $path
-     * @param array<mixed> $config Configuration settings for the FTP adapter.
-     * @param bool $history
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
-     * @return \Rubix\ML\Persisters\Flysystem
-     */
-    public static function ftp(string $path, array $config, bool $history = false, ?Serializer $serializer = null) : Flysystem
-    {
-        $filesystem = new League\Flysystem\Filesystem(new Ftp($config));
-
-        return new Flysystem($path, $filesystem, $history, $serializer);
-    }
-
-    /**
-     * @param string $path
-     * @param FilesystemInterface $filesystem
+     * @param \League\Flysystem\FilesystemOperator $filesystem
      * @param bool $history
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      */
-    public function __construct(string $path, FilesystemInterface $filesystem, bool $history = false, ?Serializer $serializer = null)
-    {
+    public function __construct(
+        string $path,
+        FilesystemOperator $filesystem,
+        bool $history = false,
+        ?Serializer $serializer = null
+    ) {
         $this->path = $path;
         $this->filesystem = $filesystem;
         $this->history = $history;
@@ -120,37 +84,37 @@ class Flysystem implements Persister, Stringable
     }
 
     /**
-     * Save the persistable model.
+     * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
      */
     public function save(Persistable $persistable) : void
     {
-        if ($this->history and $this->filesystem->has($this->path)) {
+        if ($this->history and $this->filesystem->fileExists($this->path)) {
             $timestamp = (string) time();
 
-            $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
+            $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
 
             $num = 0;
-            while ($this->filesystem->has($filename)) {
-                $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
+
+            while ($this->filesystem->fileExists($filename)) {
+                $filename = "{$this->path}-$timestamp-" . ++$num . '.' . self::HISTORY_EXT;
             }
 
             try {
-                if (!$this->filesystem->rename($this->path, $filename)) {
-                    throw new RuntimeException("Failed to create history file: '{$filename}' {$this}");
-                }
-            } catch (League\Flysystem\Exception $e) {
-                throw new RuntimeException("Failed to create history file: '{$filename}' {$this}");
+                $this->filesystem->move($this->path, $filename);
+            } catch (FilesystemException $e) {
+                throw new RuntimeException("Failed to create history file '$filename'.");
             }
         }
 
-        $data = $this->serializer->serialize($persistable);
-        $success = $this->filesystem->put($this->path, (string) $data);
+        $encoding = $this->serializer->serialize($persistable);
 
-        if (!$success) {
-            throw new RuntimeException("Could not write to filesystem. {$this}");
+        try {
+            $this->filesystem->write($this->path, $encoding);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException('Could not write to filesystem.');
         }
     }
 
@@ -162,17 +126,23 @@ class Flysystem implements Persister, Stringable
      */
     public function load() : Persistable
     {
-        if (!$this->filesystem->has($this->path)) {
-            throw new RuntimeException("File does not exist in filesystem. {$this}");
+        if (!$this->filesystem->fileExists($this->path)) {
+            throw new RuntimeException("File does not exist at {$this->path}.");
         }
 
-        $data = new Encoding($this->filesystem->read($this->path) ?: '');
-
-        if ($data->bytes() === 0) {
-            throw new RuntimeException("File does not contain any data. {$this}");
+        try {
+            $data = $this->filesystem->read($this->path);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException("Error reading data from {$this->path}.");
         }
 
-        return $this->serializer->unserialize($data);
+        $encoding = new Encoding($data);
+
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException("File at {$this->path} does not contain any data.");
+        }
+
+        return $this->serializer->unserialize($encoding);
     }
 
     /**
@@ -182,12 +152,9 @@ class Flysystem implements Persister, Stringable
      */
     public function __toString() : string
     {
-        $filesystem = 'Flysystem';
-
-        if (method_exists($this->filesystem, 'getAdapter')) {
-            $filesystem .= ' <' . Params::toString($this->filesystem->getAdapter()) . '>';
-        }
-
-        return "{$filesystem} (path: '{$this->path}', serializer: {$this->serializer})";
+        return "Flysystem (path: {$this->path}, filesystem: "
+            . Params::toString($this->filesystem) . ', history: '
+            . Params::toString($this->history) . ', serializer: '
+            . "{$this->serializer})";
     }
 }
