@@ -97,7 +97,18 @@ class Filesystem implements Persister, Stringable
             }
         }
 
-        $this->serializer->serialize($persistable)->write($this->path);
+        $encoding = $this->serializer->serialize($persistable);
+
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException("File {$this->path} does not"
+                . ' contain any data.');
+        }
+
+        $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException('Failed to write to the filesystem.');
+        }
     }
 
     /**
@@ -116,14 +127,14 @@ class Filesystem implements Persister, Stringable
             throw new RuntimeException("File {$this->path} is not readable.");
         }
 
-        $data = new Encoding(file_get_contents($this->path) ?: '');
+        $encoding = new Encoding(file_get_contents($this->path) ?: '');
 
-        if ($data->bytes() === 0) {
+        if ($encoding->bytes() === 0) {
             throw new RuntimeException("File {$this->path} does not"
                 . ' contain any data.');
         }
 
-        return $this->serializer->unserialize($data);
+        return $this->serializer->unserialize($encoding);
     }
 
     /**
