@@ -100,8 +100,7 @@ class Filesystem implements Persister, Stringable
         $encoding = $this->serializer->serialize($persistable);
 
         if ($encoding->bytes() === 0) {
-            throw new RuntimeException("File {$this->path} does not"
-                . ' contain any data.');
+            throw new RuntimeException("Cannot save empty file to {$this->path}");
         }
 
         $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
