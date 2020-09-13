@@ -2,9 +2,9 @@
 In this basic introduction to machine learning in Rubix ML, you'll learn how to structure a project, train a learner to predict successful marriages, and then test the model for accuracy. We assume that you already have a basic understanding of the different types of machine learning such as classification and regression. If not, we recommend the section on [What is Machine Learning?](what-is-machine-learning.md) to start with.
 
 ## Obtaining Data
-Machine learning projects typically begin with a question. For example, you might want to answer the question of "who of my friends are most likely to stay married to their partner?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model to predict successful relationships based on the answers they gave you. In ML terms, the answers you collect are the values of the *features* that constitute measurements of the phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 10 features is said to be *10-dimensional*.
+Machine learning (ML) projects typically begin with a question. For example, you might want to answer the question of "who of my friends are most likely to stay married to their partner?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use the answers they gave you to build a model to predict successful relationships. In machine learning terms, the answers you collect are the values of the *features* that constitute measurements of the phenomena being observed - in this case, the response to a question. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 10 features is said to be *10-dimensional*.
 
-Suppose that you went out and asked 4 couples (2 married and 2 divorced) to rate their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You would structure the data in PHP like in the example below. You'll notice that the samples are represented in a 2-d array (or *matrix*) and the labels are represented as a 1-d array.
+Suppose that you went out and asked 4 couples (2 married and 2 divorced) to respond to 3 features - their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You would structure the data in PHP like in the example below. You'll notice that the samples are represented in a 2-d array (or *matrix*) and the labels are represented as a 1-d array.
 
 ```php
 $samples = [
@@ -17,7 +17,7 @@ $samples = [
 $labels = ['married', 'divorced', 'married', 'divorced'];
 ```
 
-> **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how Rubix ML treats various forms of data.
+> **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how the library treats various forms of data.
 
 ## The Dataset Object
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, splitting, randomizing, and sorting of the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions.
@@ -30,14 +30,14 @@ use Rubix\ML\Datasets\Labeled;
 $dataset = new Labeled($samples, $labels);
 ```
 
-> **Hint:** See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different storage mediums.
+> **Hint:** See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different formats and storage mediums.
 
 ## Choosing an Estimator
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
 
 In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be `married` or `divorced` since those are the class labels that we'll train it with.
 
-Like most estimators in Rubix ML, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge or completely at random. The defaults provided are a good place to start for most problems.
+Like most estimators in Rubix, the K Nearest Neighbors classifier requires a set of parameters (called *hyper-parameters*) to be chosen up-front by the user. These parameters are defined in the class's constructor and control how the learner behaves during training and inference. Hyper-parameters can be selected based on some prior knowledge or completely at random. The defaults provided are a good place to start for most problems.
 
 K Nearest Neighbors works by locating the closest training samples to an unknown sample and choosing the class label that is most common. The hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 3 closest neighbors to a given unknown sample have 2 married and 1 divorced label, then the algorithm will output a prediction of married since its the most common. To instantiate the learner, pass a set of hyper-parameters to the class's constructor. For this example, let's set *k* to 3 and leave the rest of the hyper-parameters as their default.
 
@@ -132,14 +132,14 @@ $dataset = new Labeled($samples, $labels);
 
 $score = $validator->test($estimator, $dataset, new Accuracy());
 
-var_dump($score);
+echo $score;
 ```
 
 ```sh
-float(0.90)
+0.88
 ```
 
-The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 90% accurate. Nice work!
+The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 88% accurate. Nice work!
 
 > **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 

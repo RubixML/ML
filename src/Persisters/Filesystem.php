@@ -66,7 +66,7 @@ class Filesystem implements Persister, Stringable
     }
 
     /**
-     * Save the persistable model.
+     * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
@@ -84,12 +84,12 @@ class Filesystem implements Persister, Stringable
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 
-            $filename = $this->path . '-' . $timestamp . '.' . self::HISTORY_EXT;
+            $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
 
             $num = 0;
 
             while (file_exists($filename)) {
-                $filename = $this->path . '-' . $timestamp . '-' . ++$num . '.' . self::HISTORY_EXT;
+                $filename = "{$this->path}-$timestamp-" . ++$num . '.' . self::HISTORY_EXT;
             }
 
             if (!rename($this->path, $filename)) {
@@ -97,11 +97,21 @@ class Filesystem implements Persister, Stringable
             }
         }
 
-        $this->serializer->serialize($persistable)->write($this->path);
+        $encoding = $this->serializer->serialize($persistable);
+
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException("Cannot save empty file to {$this->path}");
+        }
+
+        $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException('Failed to write to the filesystem.');
+        }
     }
 
     /**
-     * Load the last model that was saved.
+     * Load the last saved persistable instance.
      *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
@@ -116,14 +126,14 @@ class Filesystem implements Persister, Stringable
             throw new RuntimeException("File {$this->path} is not readable.");
         }
 
-        $data = new Encoding(file_get_contents($this->path) ?: '');
+        $encoding = new Encoding(file_get_contents($this->path) ?: '');
 
-        if ($data->bytes() === 0) {
+        if ($encoding->bytes() === 0) {
             throw new RuntimeException("File {$this->path} does not"
                 . ' contain any data.');
         }
 
-        return $this->serializer->unserialize($data);
+        return $this->serializer->unserialize($encoding);
     }
 
     /**

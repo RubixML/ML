@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
-use Rubix\ML\Graph\Nodes\Cluster;
+use Rubix\ML\Graph\Nodes\Clique;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Cluster
+ * @covers \Rubix\ML\Graph\Nodes\Clique
  */
-class ClusterTest extends TestCase
+class CliqueTest extends TestCase
 {
     protected const SAMPLES = [
         [5.0, 2.0, -3],
@@ -29,7 +29,7 @@ class ClusterTest extends TestCase
     protected const RADIUS = 1.5;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Cluster
+     * @var \Rubix\ML\Graph\Nodes\Clique
      */
     protected $node;
 
@@ -40,7 +40,7 @@ class ClusterTest extends TestCase
     {
         $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
-        $this->node = new Cluster($dataset, self::CENTER, self::RADIUS);
+        $this->node = new Clique($dataset, self::CENTER, self::RADIUS);
     }
 
     /**
@@ -48,7 +48,7 @@ class ClusterTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Cluster::class, $this->node);
+        $this->assertInstanceOf(Clique::class, $this->node);
         $this->assertInstanceOf(Hypersphere::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Leaf::class, $this->node);
@@ -62,9 +62,9 @@ class ClusterTest extends TestCase
     {
         $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
-        $node = Cluster::terminate($dataset, new Euclidean());
+        $node = Clique::terminate($dataset, new Euclidean());
 
-        $this->assertInstanceOf(Cluster::class, $node);
+        $this->assertInstanceOf(Clique::class, $node);
         $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::CENTER, $node->center());
         $this->assertEquals(self::RADIUS, $node->radius());

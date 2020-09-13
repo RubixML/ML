@@ -11,7 +11,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use InvalidArgumentException;
 use Stringable;
 
@@ -323,11 +323,11 @@ class TSNE implements Embedder, Verbose, Stringable
      */
     public function transform(array &$samples) : void
     {
-        SamplesAreCompatibleWithDistance::check(new Unlabeled($samples), $this->kernel);
+        SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
         if ($this->logger) {
-            $this->logger->info("Embedder init $this");
-            $this->logger->info('Embedding started');
+            $this->logger->info("$this initialized");
+
             $this->logger->info('Computing high-dimensional affinities');
         }
 
@@ -378,10 +378,22 @@ class TSNE implements Embedder, Verbose, Stringable
 
             $loss = $gradient->l2Norm();
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $this->steps[] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Gradient: $loss");
+            }
+
+            if ($loss < $this->minGradient) {
+                break 1;
             }
 
             if ($loss < $bestLoss) {
@@ -390,14 +402,6 @@ class TSNE implements Embedder, Verbose, Stringable
                 $delta = 0;
             } else {
                 ++$delta;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
-            if ($loss < $this->minGradient) {
-                break 1;
             }
 
             if ($delta >= $this->window) {

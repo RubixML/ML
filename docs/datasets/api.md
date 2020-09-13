@@ -172,15 +172,15 @@ public merge(Dataset $dataset) : self
 $dataset = $dataset1->merge($dataset2);
 ```
 
-To merge the columns of this dataset with another dataset:
+To join the columns of this dataset with another dataset:
 ```php
-public augment(Dataset $dataset) : self
+public join(Dataset $dataset) : self
 ```
 
 > **Note:** Datasets must have the same number of rows.
 
 ```php
-$dataset = $dataset1->augment($dataset2);
+$dataset = $dataset1->join($dataset2);
 ```
 
 ## Head and Tail

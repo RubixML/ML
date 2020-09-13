@@ -1,11 +1,11 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
 
 # Gradient Boost
-Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set.
+Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set. GBM also utilizes progress monitoring via an internal validation set for snapshotting and early stopping.
 
 > **Note:** The default base regressor is a [Dummy Regressor](dummy-regressor.md) using the [Mean](../other/strategies/mean.md) strategy and the default booster is a [Regression Tree](regression-tree.md) with a max height of 3.
 
-> **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
+> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
@@ -20,7 +20,7 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 4 | estimators | 1000 | int | The maximum number of boosters to train in the ensemble. |
 | 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 7 | hold out | 0.1 | float | The proportion of training samples to use for progress monitoring and early stopping. |
+| 7 | hold out | 0.1 | float | The proportion of training samples to use for progress monitoring. |
 | 8 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 | 9 | base | DummyRegressor | Learner | The *weak* base learner to be boosted. |
 

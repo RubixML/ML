@@ -37,7 +37,7 @@ class TfIdfTransformerTest extends TestCase
             [0, 0, 0, 1, 2, 3, 0, 0, 4, 2, 0, 0, 1, 0, 2, 0, 1, 0, 0],
         ]);
 
-        $this->transformer = new TfIdfTransformer();
+        $this->transformer = new TfIdfTransformer(1.0);
     }
 
     /**

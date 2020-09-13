@@ -22,7 +22,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Interpretable model, Highly Scalable | High bias error, Limited to binary classification |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
 | [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Requires little data, Highly scalable | Strong feature independence assumption |
-| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Robust to outliers, Quasi-anomaly detector | Radius may be hard to tune, Not guaranteed to return a prediction |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | Handles imbalanced datasets, Computes reliable feature importances | High computation and memory cost |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Highly Scalable | High bias error |
 | [SVC](classifiers/svc.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
@@ -38,7 +38,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Faster inference | Not compatible with certain distance kernels |
 | [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Intuitable model, Zero-cost training | Slower inference, Suffers from the curse of dimensionality |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Handles very high dimensional data, Universal function approximator | High computation and memory cost, Black box |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Not guaranteed to return a prediction |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Robust to outliers, Quasi-anomaly detector | Radius may be hard to tune, Not guaranteed to return a prediction |
 | [Regression Tree](regressors/regression-tree.md) | Moderate | | | Interpretable model, Automatic feature selection | High variance error |
 | [Ridge](regressors/ridge.md) | Low | | | Interpretable model | High bias error |
 | [SVR](regressors/svr.md) | High | | | Handles high dimensional data | Difficult to tune, Not suitable for large datasets |
@@ -67,31 +67,39 @@ Anomaly Detectors are unsupervised learners that predict a boolean-valued outcom
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Interpretable model, Robust to outliers in the training set | Problems with highly skewed dataset  |
 
 ## Model Flexibility
-A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret, quicker to train, but are more prone to [underfitting](cross-validation.md#underfitting) due to high bias error. We recommend choosing the simplest estimator for your project that does not underfit your training data.
+A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest estimator for your project that does not underfit the training data.
 
-## Hyper-parameter Tuning
-When choosing an estimator for your project it often helps to fine-tune its hyper-parameters in order to get the best accuracy from the model. Hyper-parameter tuning is an experimental process that incorporates [cross-validation](cross-validation.md) to guide hyper-parameter selection. In a typical scenario, a user will train an estimator with one set of hyper-parameters, obtain a validation score, and use that as a baseline to make future adjustments. The goal at each iteration is to determine whether the adjustments improve the model or make it worse. We can consider a model to be *fully* tuned when adjustments to the hyper-parameters can no longer make improvements to the validation score obtained through cross-validation.
+## Meta-estimator Ensembles
+Ensemble learning is when multiple estimators are used to make the final prediction on a sample. Meta-estimator Ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They are *polymorphic* in the sense that they take on the type of the base estimators they wrap. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
 
-## Meta-estimators
-Meta-estimators wrap and enhance other estimators with added functionality. They are *polymorphic* in the sense that they take on the type of the base estimator they wrap. Meta-estimators that implement the [Wrapper](wrapper.md) interface allow methods to be called on the base estimator from the meta-estimator.
-
-| Meta-estimator | Wrapper | Parallel | Verbose | Compatibility |
-|---|---|---|---|---|
-| [Bootstrap Aggregator](bootstrap-aggregator.md) | | ● | | Classifiers, Regressors, Anomaly Detectors |
-| [Committee Machine](committee-machine.md) | | ● | ● | Classifiers, Regressors, Anomaly Detectors |
-| [Grid Search](grid-search.md) | ● | ● | ● | Any |
-| [Persistent Model](persistent-model.md) | ● | | | Any persistable estimator |
-| [Pipeline](pipeline.md) | ● | | ● | Any |
-
-In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a Bootstrap Aggregator meta-estimator to train a *forest* of 1000 trees.
+### Bootstrap Aggregator
+Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the average prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) meta-estimator to form a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
+```
 
-$estimator->train($dataset);
+### Committee Machine
+[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influence* weights that can be trained in [Parallel](parallel.md). 
+
+```php
+use Rubix\ML\CommitteeMachine;
+use Rubix\ML\RandomForest;
+new Rubix\ML\SoftmaxClassifier;
+use Rubix\ML\AdaBoost;
+use Rubix\ML\ClassificationTree;
+use Rubix\ML\Backends\Amp;
+
+$estimator = new CommitteeMachine([
+    new RandomForest(),
+    new SoftmaxClassifier(128),
+    new AdaBoost(new ClassificationTree(5), 1.0),
+], [
+    3.0, 1.0, 2.0, // Influences
+]);
 ```
 
 ## No Free Lunch Theorem

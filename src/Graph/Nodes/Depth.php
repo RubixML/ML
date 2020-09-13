@@ -3,19 +3,21 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 
 /**
- * Cell
+ * Depth
  *
- * A cell node contains samples that are likely members of the same group.
+ * A node that estimates the depth that a sample reaches in the tree when performing an
+ * unsuccessful search. The depth is estimated using a combination of the actual depth at the
+ * point of termination plus an approximation based on the number of samples that are left to
+ * isolate.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cell implements BinaryNode, Leaf
+class Depth implements BinaryNode, Leaf
 {
     use HasBinaryChildren;
 
@@ -27,6 +29,27 @@ class Cell implements BinaryNode, Leaf
     protected $depth;
 
     /**
+     * Estimate the average path length of an unsuccessful search given n unisolated
+     * samples.
+     *
+     * @param int $n
+     * @return float
+     */
+    public static function c(int $n) : float
+    {
+        switch (true) {
+            case $n > 2:
+                return 2.0 * (log($n - 1) + M_EULER) - 2.0 * ($n - 1) / $n;
+
+            case $n === 2:
+                return 1.0;
+
+            default:
+                return 0.0;
+        }
+    }
+
+    /**
      * Terminate a branch with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -35,7 +58,7 @@ class Cell implements BinaryNode, Leaf
      */
     public static function terminate(Dataset $dataset, int $depth) : self
     {
-        return new self($depth + ITree::c($dataset->numRows()) - 1.0);
+        return new self($depth + self::c($dataset->numRows()) - 1.0);
     }
 
     /**

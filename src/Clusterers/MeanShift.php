@@ -15,6 +15,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -290,12 +291,13 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $n = $dataset->numRows();
@@ -341,14 +343,20 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
             $loss = $this->shift($centroids, $previous);
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
+            $loss /= $n;
+
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Shift: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
+                $this->logger->info("Epoch $epoch - loss: $loss");
             }
 
             if ($loss < $this->minShift) {
@@ -380,7 +388,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'assign'], $dataset->samples());
     }
@@ -398,7 +406,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'membership'], $dataset->samples());
     }

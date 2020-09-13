@@ -8,8 +8,8 @@ use Generator;
 /**
  * Binary Children
  *
- * A node of a binary tree i.e a tree whose nodes have a maximum of
- * two immediate children and one parent.
+ * A node of a binary tree i.e a tree whose nodes have a maximum of two immediate children
+ * and one parent.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -79,9 +79,8 @@ trait HasBinaryChildren
     }
 
     /**
-     * The balance factor of the node. Negative numbers indicate a
-     * lean to the left, positive to the right, and 0 is perfectly
-     * balanced.
+     * The balance factor of the node. Negative numbers indicate a lean to the left, positive
+     * to the right, and 0 is perfectly balanced.
      *
      * @return int
      */

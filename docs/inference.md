@@ -2,7 +2,7 @@
 Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of unknown samples.
 
 ## Estimator Types
-There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators can take on any one of these types depending on the base estimator that it wraps.
+There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are *polymorphic* in the sense that they take on the type of the base estimator they wrap.
 
 | Estimator Type | Prediction | PHP Type |
 |---|---|---|
@@ -68,11 +68,11 @@ array(2) {
 }
 ```
 
-## Ranking Samples
-Certain anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can produce an anomaly score from the samples in a dataset. Unnormalized anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples. In a common scenario, samples are sorted by their anomaly score and the top samples are then be flagged for further analysis.
+## Anomaly Scores
+Anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.
 
 ```php
-$scores = $estimator->rank($dataset);
+$scores = $estimator->score($dataset);
 
 var_dump($scores);
 ```

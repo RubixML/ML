@@ -4,13 +4,13 @@ namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Transformers\DenseRandomProjector;
+use Rubix\ML\Transformers\RecursiveFeatureEliminator;
 
 /**
  * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
-class DenseRandomProjectorBench
+class RecursiveFeatureEliminatorBench
 {
     protected const DATASET_SIZE = 10000;
 
@@ -20,7 +20,7 @@ class DenseRandomProjectorBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\DenseRandomProjector
+     * @var \Rubix\ML\Transformers\RecursiveFeatureEliminator
      */
     protected $transformer;
 
@@ -34,13 +34,13 @@ class DenseRandomProjectorBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->transformer = new DenseRandomProjector(1);
+        $this->transformer = new RecursiveFeatureEliminator(2);
     }
 
     /**
      * @Subject
      * @Iterations(3)
-     * @OutputTimeUnit("seconds", precision=3)
+     * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function apply() : void
     {

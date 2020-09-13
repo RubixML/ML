@@ -1,3 +1,20 @@
+- 0.2.0
+    - Add Recursive Feature Eliminator feature selector
+    - Can now disable holdout validation in MLP learners
+    - TF-IDF Transformer additive (Laplace) smoothing now variable
+    - Added instability detection to gradient-based learners
+    - Gradient Boost validation set holdout can now be 0
+    - Specifications now extend base class
+    - Rename Dataset validate argument to verify
+    - Ball Tree Cluster nodes are now called Cliques
+    - ITree cells are now called Depth nodes
+    - Added Dataset join() method and deprecated augment()
+    - Added score() method to Ranking API and deprecated rank()
+    - Renamed Radius Neighbors anomalyClass to outlierClass
+    - HTML Stripper can now allow user-specified tags
+    - Sparse Random Projector now has variable sparsity
+    - Deprecated Dense Random Projector transformer
+    
 - 0.1.6
     - Fix KNN Imputer spatial tree dependency injection
 

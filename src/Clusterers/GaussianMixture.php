@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Clusterers\Seeders\Seeder;
@@ -247,12 +248,13 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $n = $dataset->numRows();
@@ -288,7 +290,21 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $memberships[] = $dist;
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $loss /= $n;
+
+            $this->steps[] = $loss;
+
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch - loss: $loss");
+            }
 
             for ($cluster = 0; $cluster < $this->k; ++$cluster) {
                 $mHat = array_column($memberships, $cluster);
@@ -323,16 +339,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $this->logPriors[$cluster] = $logPrior;
             }
 
-            $this->steps[] = $loss;
-
-            if ($this->logger) {
-                $this->logger->info("Epoch $epoch - loss: $loss");
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
             if ($loss <= 0.0) {
                 break 1;
             }
@@ -362,7 +368,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $jlls = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
 
@@ -382,7 +388,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->means)));
+        DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
         $probabilities = [];
 

@@ -131,7 +131,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $this->means = $this->variances = $this->stdDevs = [];
 

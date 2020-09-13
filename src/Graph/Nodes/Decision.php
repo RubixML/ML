@@ -12,8 +12,7 @@ interface Decision extends BinaryNode
     public function impurity() : float;
 
     /**
-     * Return the number of samples from the training set that this
-     * node represents.
+     * Return the number of samples from the training set that this node represents.
      *
      * @return int
      */

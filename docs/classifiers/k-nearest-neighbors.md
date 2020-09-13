@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php">[source]</a></span>
 
 # K Nearest Neighbors
-A distance-based learning algorithm that locates the *k* nearest samples from the training set and predicts the class label that is most common.
+A brute-force distance-based learning algorithm that locates the *k* nearest samples from the training set and predicts the class label that is most common. K Nearest Neighbors (KNN) is considered a *lazy* learner because it performs most of its computation at inference time.
 
-> **Note:** KNN is considered a *lazy* learner because it does the majority of its computation during inference. For a faster spatial tree-accelerated version, see [KD Neighbors](kd-neighbors.md).
+> **Note:** For a faster spatial tree-accelerated version of KNN, see [KD Neighbors](kd-neighbors.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

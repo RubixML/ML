@@ -9,8 +9,8 @@ use Traversable;
 /**
  * Neighborhood
  *
- * Neighborhoods represent a group of samples that are close to each
- * other in distance but not *necessarily* the closest.
+ * Neighborhoods are hypercubes that contain samples that are close to each other in distance but
+ * not *necessarily* the closest.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

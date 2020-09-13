@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -225,13 +226,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut <= 0.0 or $holdOut > 0.5) {
+        if ($holdOut < 0.0 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         if ($base and $base->type() != EstimatorType::regressor()) {
@@ -339,29 +340,24 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $this->featureCount = $dataset->numColumns();
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
-        if ($testing->empty()) {
-            throw new RuntimeException('Dataset does not contain'
-                . ' enough records to create a validation set with a'
-                . " hold out ratio of {$this->holdOut}.");
-        }
-
         [$min, $max] = $this->metric->range();
 
         if ($this->logger) {
-            $this->logger->info('Training base learner');
+            $this->logger->info("Training {$this->base}");
         }
 
         $this->base->train($training);
@@ -375,8 +371,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numRows()));
 
+        if (!$testing->empty()) {
+            $prevPred = Vector::quick($this->base->predict($testing));
+        }
+
         $bestScore = $min;
         $bestEpoch = $delta = 0;
+        $score = null;
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
@@ -390,6 +391,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $booster->train($subset);
 
+            $this->ensemble[] = $booster;
+
             $predictions = $booster->predict($training);
 
             $out = Vector::quick($predictions)
@@ -398,36 +401,55 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $loss = $gradient->square()->mean();
 
-            $predictions = $booster->predict($testing);
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
 
-            $pred = Vector::quick($predictions)
-                ->multiply($this->rate)
-                ->add($prevPred);
-
-            $score = $this->metric->score($pred->asArray(), $testing->labels());
-
-            $this->ensemble[] = $booster;
-            $this->steps[] = $loss;
-            $this->scores[] = $score;
-
-            if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: $score, L2 Loss: $loss");
-            }
-
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestEpoch = $epoch;
-
-                $delta = 0;
-            } else {
-                ++$delta;
-            }
-
-            if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if ($loss <= 0.0 or $score >= $max) {
+            $this->steps[] = $loss;
+
+            if (isset($prevPred)) {
+                $predictions = $booster->predict($testing);
+
+                $pred = Vector::quick($predictions)
+                    ->multiply($this->rate)
+                    ->add($prevPred);
+
+                $score = $this->metric->score($pred->asArray(), $testing->labels());
+
+                $this->scores[] = $score;
+            }
+
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch - {$this->metric}: "
+                    . ($score ?? 'n/a') . ", L2 Loss: $loss");
+            }
+
+            if (isset($pred)) {
+                if ($score >= $max) {
+                    break 1;
+                }
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
+
+                    $delta = 0;
+                } else {
+                    ++$delta;
+                }
+
+                if ($delta >= $this->window) {
+                    break 1;
+                }
+
+                $prevPred = $pred;
+            }
+
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -435,19 +457,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break 1;
             }
 
-            if ($delta >= $this->window) {
-                break 1;
-            }
-
             $prevOut = $out;
-            $prevPred = $pred;
             $prevLoss = $loss;
         }
 
-        if (end($this->scores) < $bestScore) {
+        if ($this->scores and end($this->scores) < $bestScore) {
             if ($this->logger) {
-                $this->logger->info('Restoring ensemble state'
-                    . " to epoch $bestEpoch");
+                $this->logger->info("Restoring ensemble state to epoch $bestEpoch");
             }
 
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
@@ -471,7 +487,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $predictions = $this->base->predict($dataset);
 

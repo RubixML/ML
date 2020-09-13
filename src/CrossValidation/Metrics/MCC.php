@@ -31,7 +31,7 @@ use const Rubix\ML\EPSILON;
 class MCC implements Metric, Stringable
 {
     /**
-     * Compute the class mcc score.
+     * Compute the MCC score from a confusion matrix.
      *
      * @param int $tp
      * @param int $tn
@@ -77,7 +77,7 @@ class MCC implements Metric, Stringable
      */
     public function score(array $predictions, array $labels) : float
     {
-        PredictionAndLabelCountsAreEqual::check($predictions, $labels);
+        PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
         if (empty($predictions)) {
             return 0.0;

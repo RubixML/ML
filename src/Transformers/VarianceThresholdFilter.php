@@ -24,11 +24,11 @@ use function is_null;
 class VarianceThresholdFilter implements Transformer, Stateful, Stringable
 {
     /**
-     * A type of feature selector that selects the top *k* features with the greatest variance.
+     * The minimum number of features to select from the dataset.
      *
      * @var int
      */
-    protected $maxFeatures;
+    protected $minFeatures;
 
     /**
      * The variances of the dropped feature columns.
@@ -38,17 +38,17 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
     protected $variances;
 
     /**
-     * @param int $maxFeatures
+     * @param int $minFeatures
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $maxFeatures)
+    public function __construct(int $minFeatures)
     {
-        if ($maxFeatures < 1) {
-            throw new InvalidArgumentException('Maximum features'
-                . " must be greater than 0, $maxFeatures given.");
+        if ($minFeatures < 1) {
+            throw new InvalidArgumentException('Min features must be'
+                . " greater than 0, $minFeatures given.");
         }
 
-        $this->maxFeatures = $maxFeatures;
+        $this->minFeatures = $minFeatures;
     }
 
     /**
@@ -88,7 +88,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $variances = [];
 
@@ -100,7 +100,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
 
         asort($variances);
 
-        $k = max(0, $dataset->numColumns() - $this->maxFeatures);
+        $k = max(0, $dataset->numColumns() - $this->minFeatures);
 
         $this->variances = array_slice($variances, 0, $k, true);
     }
@@ -129,6 +129,6 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Variance Threshold Filter (max_features: {$this->maxFeatures})";
+        return "Variance Threshold Filter (max_features: {$this->minFeatures})";
     }
 }

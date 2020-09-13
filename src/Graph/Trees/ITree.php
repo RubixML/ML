@@ -3,7 +3,7 @@
 namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Nodes\Cell;
+use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Nodes\Isolator;
 use InvalidArgumentException;
 
@@ -42,26 +42,6 @@ class ITree implements BinaryTree
      * @var int
      */
     protected $maxHeight;
-
-    /**
-     * Calculate the average path length of an unsuccessful search among n nodes.
-     *
-     * @param int $n
-     * @return float
-     */
-    public static function c(int $n) : float
-    {
-        switch (true) {
-            case $n > 2:
-                return 2.0 * (log($n - 1) + M_EULER) - 2.0 * ($n - 1) / $n;
-
-            case $n === 2:
-                return 1.0;
-
-            default:
-                return 0.0;
-        }
-    }
 
     /**
      * @param int $maxHeight
@@ -131,8 +111,8 @@ class ITree implements BinaryTree
             ++$depth;
 
             if ($depth >= $this->maxHeight) {
-                $current->attachLeft(Cell::terminate($left, $depth));
-                $current->attachRight(Cell::terminate($right, $depth));
+                $current->attachLeft(Depth::terminate($left, $depth));
+                $current->attachRight(Depth::terminate($right, $depth));
 
                 continue 1;
             }
@@ -144,7 +124,7 @@ class ITree implements BinaryTree
 
                 $current->attachLeft($node);
             } else {
-                $current->attachLeft(Cell::terminate($left, $depth));
+                $current->attachLeft(Depth::terminate($left, $depth));
             }
 
             if ($right->numRows() > self::MAX_LEAF_SIZE) {
@@ -154,7 +134,7 @@ class ITree implements BinaryTree
 
                 $current->attachRight($node);
             } else {
-                $current->attachRight(Cell::terminate($right, $depth));
+                $current->attachRight(Depth::terminate($right, $depth));
             }
         }
     }
@@ -163,9 +143,9 @@ class ITree implements BinaryTree
      * Search the tree for a leaf node.
      *
      * @param (string|int|float)[] $sample
-     * @return \Rubix\ML\Graph\Nodes\Cell|null
+     * @return \Rubix\ML\Graph\Nodes\Depth|null
      */
-    public function search(array $sample) : ?Cell
+    public function search(array $sample) : ?Depth
     {
         $current = $this->root;
 
@@ -190,7 +170,7 @@ class ITree implements BinaryTree
                 continue 1;
             }
 
-            if ($current instanceof Cell) {
+            if ($current instanceof Depth) {
                 return $current;
             }
         }

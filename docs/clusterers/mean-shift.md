@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">[source]</a></span>
 
 # Mean Shift
-A hierarchical clustering algorithm that uses peak finding to locate the candidate centroids of a training set given a radius constraint. Near-duplicate candidates are merged together in a final post-processing step.
+A hierarchical clustering algorithm that uses peak (maxima) finding to locate the candidate centroids of a training set given a radius constraint. Near-duplicate centroids are merged together and the algorithm iterates on the remaining candidates in subsequent steps until the centroids stabilize.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 

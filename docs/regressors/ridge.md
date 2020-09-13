@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php">[source]</a></span>
 
 # Ridge
-L2 regularized Least Squares linear model solved using a closed-form solution. The addition of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting than ordinary linear regression.
+L2 regularized linear regression solved using a closed-form solution. The addition of regularization, controlled by the *alpha* hyper-parameter, makes Ridge less likely to overfit the training data than ordinary least squares (OLS).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 

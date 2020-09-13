@@ -9,6 +9,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use Generator;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 use function array_slice;
 
@@ -206,13 +207,13 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Merge the columns of this dataset with another dataset.
+     * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function augment(Dataset $dataset) : self
+    public function join(Dataset $dataset) : self
     {
         if ($dataset->numRows() !== $this->numRows()) {
             throw new InvalidArgumentException('Datasets must have'
@@ -227,6 +228,21 @@ class Unlabeled extends Dataset
         }
 
         return self::quick($samples);
+    }
+
+    /**
+     * Merge the columns of this dataset with another dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return self
+     */
+    public function augment(Dataset $dataset) : self
+    {
+        warn_deprecated('Augment() is deprecated, use join() instead.');
+
+        return $this->join($dataset);
     }
 
     /**
@@ -316,8 +332,8 @@ class Unlabeled extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be strictly'
+        if ($ratio < 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
@@ -429,7 +445,7 @@ class Unlabeled extends Dataset
 
         $kernel = $kernel ?? new Euclidean();
 
-        SamplesAreCompatibleWithDistance::check($this, $kernel);
+        SamplesAreCompatibleWithDistance::with($this, $kernel)->check();
 
         $left = $right = [];
 

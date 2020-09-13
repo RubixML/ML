@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ExtraTreeClassifier.php">[source]</a></span>
 
 # Extra Tree Classifier
-An *Extremely Randomized* Classification Tree that recursively chooses node splits with the least entropy among a set of *k* (given by max features) random split points. Extra Trees are useful in ensembles such as [Random Forest](random-forest.md) or [AdaBoost](adaboost.md) as the *weak* learner or they can be used on their own. The strength of Extra Trees as compared to standard decision trees are their computational efficiency and lower variance.
+An *Extremely Randomized* Classification Tree that recursively chooses node splits with the least entropy among a set of *k* (given by max features) random split points. Extra Trees are useful in ensembles such as [Random Forest](random-forest.md) or [AdaBoost](adaboost.md) as the *weak* learner or they can be used on their own. The strength of Extra Trees as compared to standard decision trees are their computational efficiency and lower prediction variance.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
@@ -10,10 +10,10 @@ An *Extremely Randomized* Classification Tree that recursively chooses node spli
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max height | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
+| 1 | max height | PHP_INT_MAX | int | The maximum height of the tree. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | max features | Auto | int | The max number of features columns to consider when determining a best split. |
-| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
+| 3 | max features | Auto | int | The max number of feature columns to consider when determining a best split. |
+| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
 
 ## Example
 ```php

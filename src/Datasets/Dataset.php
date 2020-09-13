@@ -70,12 +70,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
     /**
      * @param array[] $samples
-     * @param bool $validate
+     * @param bool $verify
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples = [], bool $validate = true)
+    public function __construct(array $samples = [], bool $verify = true)
     {
-        if ($samples and $validate) {
+        if ($samples and $verify) {
             $samples = array_values($samples);
 
             $prototype = isset($samples[0]) ? array_values($samples[0]) : [];
@@ -313,6 +313,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function dropColumns(array $offsets) : self
     {
+        if (empty($offsets)) {
+            return $this;
+        }
+
         foreach ($this->samples as &$sample) {
             foreach ($offsets as $offset) {
                 unset($sample[$offset]);
@@ -582,7 +586,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function merge(Dataset $dataset);
 
     /**
+     * Join the columns of this dataset with another dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    abstract public function join(Dataset $dataset);
+
+    /**
      * Merge the columns of this dataset with another dataset.
+     *
+     * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset

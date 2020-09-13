@@ -14,6 +14,7 @@ use RuntimeException;
 use ErrorException;
 use Generator;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 use function get_class;
 use function gettype;
@@ -131,10 +132,10 @@ class Labeled extends Dataset
     /**
      * @param array[] $samples
      * @param (string|int|float)[] $labels
-     * @param bool $validate
+     * @param bool $verify
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples = [], array $labels = [], bool $validate = true)
+    public function __construct(array $samples = [], array $labels = [], bool $verify = true)
     {
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('Number of samples'
@@ -142,7 +143,7 @@ class Labeled extends Dataset
              . ' samples but ' . count($labels) . ' labels given.');
         }
 
-        if ($validate and $labels) {
+        if ($verify and $labels) {
             $labels = array_values($labels);
 
             $type = DataType::detect($labels[0]);
@@ -168,7 +169,7 @@ class Labeled extends Dataset
 
         $this->labels = $labels;
 
-        parent::__construct($samples, $validate);
+        parent::__construct($samples, $verify);
     }
 
     /**
@@ -375,13 +376,13 @@ class Labeled extends Dataset
     }
 
     /**
-     * Merge the columns of this dataset with another dataset.
+     * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function augment(Dataset $dataset) : self
+    public function join(Dataset $dataset) : self
     {
         if ($dataset->numRows() !== $this->numRows()) {
             throw new InvalidArgumentException('Datasets must have'
@@ -396,6 +397,21 @@ class Labeled extends Dataset
         }
 
         return self::quick($samples, $this->labels);
+    }
+
+    /**
+     * Merge the columns of this dataset with another dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return self
+     */
+    public function augment(Dataset $dataset) : self
+    {
+        warn_deprecated('Augment() is deprecated, use join() instead.');
+
+        return $this->join($dataset);
     }
 
     /**
@@ -558,8 +574,8 @@ class Labeled extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Ratio must be strictly'
+        if ($ratio < 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
@@ -586,8 +602,8 @@ class Labeled extends Dataset
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException('Ratio must be strictly'
+        if ($ratio < 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
@@ -765,7 +781,7 @@ class Labeled extends Dataset
 
         $kernel = $kernel ?? new Euclidean();
 
-        SamplesAreCompatibleWithDistance::check($this, $kernel);
+        SamplesAreCompatibleWithDistance::with($this, $kernel)->check();
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 

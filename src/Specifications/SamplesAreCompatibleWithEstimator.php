@@ -8,20 +8,54 @@ use InvalidArgumentException;
 
 use function count;
 
-class SamplesAreCompatibleWithEstimator
+class SamplesAreCompatibleWithEstimator extends Specification
 {
     /**
-     * Perform a check of the specification.
+     * The dataset that contains samples under validation.
+     *
+     * @var \Rubix\ML\Datasets\Dataset
+     */
+    protected $dataset;
+
+    /**
+     * The estimator.
+     *
+     * @var \Rubix\ML\Estimator
+     */
+    protected $estimator;
+
+    /**
+     * Build a specification object with the given arguments.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Estimator $estimator
+     * @return self
+     */
+    public static function with(Dataset $dataset, Estimator $estimator) : self
+    {
+        return new self($dataset, $estimator);
+    }
+
+    /**
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Estimator $estimator
+     */
+    public function __construct(Dataset $dataset, Estimator $estimator)
+    {
+        $this->dataset = $dataset;
+        $this->estimator = $estimator;
+    }
+
+    /**
+     * Perform a check of the specification and throw an exception if invalid.
+     *
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Estimator $estimator) : void
+    public function check() : void
     {
-        $compatibility = $estimator->compatibility();
+        $compatibility = $this->estimator->compatibility();
 
-        $types = $dataset->uniqueTypes();
+        $types = $this->dataset->uniqueTypes();
 
         $compatible = array_intersect($types, $compatibility);
 
@@ -29,7 +63,7 @@ class SamplesAreCompatibleWithEstimator
             $incompatible = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                "$estimator is not compatible with " . implode(', ', $incompatible) . ' data types.'
+                "{$this->estimator} is incompatible with " . implode(', ', $incompatible) . ' data types.'
             );
         }
     }

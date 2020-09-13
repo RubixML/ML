@@ -8,20 +8,54 @@ use InvalidArgumentException;
 
 use function count;
 
-class SamplesAreCompatibleWithTransformer
+class SamplesAreCompatibleWithTransformer extends Specification
 {
     /**
-     * Perform a check of the specification.
+     * The dataset that contains samples under validation.
+     *
+     * @var \Rubix\ML\Datasets\Dataset
+     */
+    protected $dataset;
+
+    /**
+     * The transformer.
+     *
+     * @var \Rubix\ML\Transformers\Transformer
+     */
+    protected $transformer;
+
+    /**
+     * Build a specification object with the given arguments.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @return self
+     */
+    public static function with(Dataset $dataset, Transformer $transformer) : self
+    {
+        return new self($dataset, $transformer);
+    }
+
+    /**
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Transformers\Transformer $transformer
+     */
+    public function __construct(Dataset $dataset, Transformer $transformer)
+    {
+        $this->dataset = $dataset;
+        $this->transformer = $transformer;
+    }
+
+    /**
+     * Perform a check of the specification.
+     *
      * @throws \InvalidArgumentException
      */
-    public static function check(Dataset $dataset, Transformer $transformer) : void
+    public function check() : void
     {
-        $compatibility = $transformer->compatibility();
+        $compatibility = $this->transformer->compatibility();
 
-        $types = $dataset->uniqueTypes();
+        $types = $this->dataset->uniqueTypes();
 
         $compatible = array_intersect($types, $compatibility);
 
@@ -29,7 +63,7 @@ class SamplesAreCompatibleWithTransformer
             $incompatible = array_diff($types, $compatibility);
 
             throw new InvalidArgumentException(
-                "$transformer is not compatible with " . implode(', ', $incompatible) . ' data types.'
+                "{$this->transformer} is incompatible with " . implode(', ', $incompatible) . ' data types.'
             );
         }
     }

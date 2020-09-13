@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -270,8 +271,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
@@ -296,13 +299,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             return;
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, count(current($this->centroids))),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $labels = array_fill(0, $dataset->numRows(), 0);
@@ -310,7 +314,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $prevLoss = $bestLoss = INF;
-        $nu = 0;
+        $delta = 0;
 
         $this->steps = [];
 
@@ -339,6 +343,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
                 $loss += $this->inertia($batch->samples(), $labels);
 
+                if (is_nan($loss)) {
+                    if ($this->logger) {
+                        $this->logger->info('Numerical instability detected');
+                    }
+
+                    break 1;
+                }
+
                 foreach ($batch->stratify() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
@@ -360,18 +372,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 $this->logger->info("Epoch $epoch - Inertia: $loss");
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $nu = 0;
-            } else {
-                ++$nu;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
             if ($loss <= 0.0) {
                 break 1;
             }
@@ -380,7 +380,15 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 break 1;
             }
 
-            if ($nu >= $this->window) {
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+
+                $delta = 0;
+            } else {
+                ++$delta;
+            }
+
+            if ($delta >= $this->window) {
                 break 1;
             }
 
@@ -407,7 +415,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'assign'], $dataset->samples());
     }
@@ -425,7 +433,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, count(current($this->centroids)));
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
         return array_map([$this, 'membership'], $dataset->samples());
     }
@@ -490,10 +498,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     protected function inertia(array $samples, array $labels) : float
     {
-        if (empty($samples)) {
-            return 0.0;
-        }
-
         $inertia = 0.0;
 
         foreach ($samples as $i => $sample) {
@@ -502,7 +506,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $inertia += $this->kernel->compute($sample, $centroid);
         }
 
-        return $inertia / count($samples);
+        return $inertia;
     }
 
     /**

@@ -10,8 +10,7 @@ use function count;
 /**
  * Comparison
  *
- * A node that represents a comparison of a value in a single dimension
- * with the value on the node (i.e. the split value).
+ * A split node that compares the values in a single feature column with the value on the node (i.e. the split value).
  *
  * @category    Machine Learning
  * @package     Rubix/ML

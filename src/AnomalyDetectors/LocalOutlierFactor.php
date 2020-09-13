@@ -13,7 +13,8 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Helpers\Verifier;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -21,6 +22,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
+
+use function Rubix\ML\warn_deprecated;
 
 use const Rubix\ML\EPSILON;
 
@@ -41,7 +44,7 @@ use const Rubix\ML\EPSILON;
  */
 class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, Stringable
 {
-    use PredictsSingle, RanksSingle;
+    use PredictsSingle, ScoresSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -189,8 +192,10 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $labels = range(0, $dataset->numRows() - 1);
 
@@ -232,7 +237,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->score($dataset));
     }
 
     /**
@@ -242,15 +247,30 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         if ($this->tree->bare() or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'localOutlierFactor'], $dataset->samples());
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        warn_deprecated('Rank() is deprecated, use score() instead.');
+
+        return $this->score($dataset);
     }
 
     /**

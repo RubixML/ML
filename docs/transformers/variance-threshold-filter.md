@@ -10,7 +10,7 @@ A type of feature selector that selects the top *k* features with the greatest v
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | maxFeatures | | int | The maximum number of features to select from the dataset. |
+| 1 | minFeatures | | int | The minimum number of features to select from the dataset. |
 
 ## Example
 ```php

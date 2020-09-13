@@ -2,11 +2,10 @@
 
 namespace Rubix\ML\Tests\Specifications;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use Generator;
 
 /**
@@ -17,36 +16,30 @@ class DatasetIsNotEmptyTest extends TestCase
 {
     /**
      * @test
-     * @dataProvider checkProvider
+     * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param bool $valid
+     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param bool $expected
      */
-    public function check(Dataset $dataset, bool $valid) : void
+    public function passes(Specification $spec, bool $expected) : void
     {
-        if (!$valid) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        DatasetIsNotEmpty::check($dataset);
-
-        $this->assertTrue($valid);
+        $this->assertSame($expected, $spec->passes());
     }
 
     /**
      * @return \Generator<array>
      */
-    public function checkProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
-            Unlabeled::quick([
+            DatasetIsNotEmpty::with(Unlabeled::quick([
                 ['swamp', 'island', 'black knight', 'counter spell'],
-            ]),
+            ])),
             true,
         ];
 
         yield [
-            Unlabeled::quick(),
+            DatasetIsNotEmpty::with(Unlabeled::quick()),
             false,
         ];
     }

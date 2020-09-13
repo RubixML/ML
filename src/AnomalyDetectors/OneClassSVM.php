@@ -10,6 +10,7 @@ use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -175,8 +176,10 @@ class OneClassSVM implements Estimator, Learner, Stringable
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $this->model = $this->svm->train($dataset->samples());
     }

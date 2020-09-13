@@ -32,7 +32,7 @@ $ composer test
 ```
 
 ### General Object Testing
-Limiting tests to public methods is usually sufficient. It is important to test for edge cases such as mistakes that the user might make to ensure they are handled properly.
+Limiting tests to public methods is usually sufficient. It is also important to test for edge cases such as mistakes that the user might make to ensure they are handled properly.
 
 ### Bugfix Testing
 Bugs usually indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
@@ -59,7 +59,7 @@ $ composer fix
 Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. With some exceptions, interfaces and the classes that implement them should be named after what the object *does* whereas value objects and classes that extend a base class should be named after what the object *is*. Prefer verbs for function and method names unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
 
 #### Domain-driven Design
-We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', 'mass', and 'PDF.'
+We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', and 'PDF.'
 
 ### Mutability
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are private or protected and state must be mutated only through a well-defined public API.
@@ -71,7 +71,7 @@ Please provide a docblock for every class, property, method, constant, and funct
 Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.
 
 ## Benchmarks
-Performance can be critical for some machine learning projects. To ensure that our users have the best experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner to Rubix ML, please include a benchmark.
+Performance can be critical for some machine learning projects. To ensure that our users have the best experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner or transformer please include a benchmark.
 
 To run the benchmarking suite:
 ```sh

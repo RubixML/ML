@@ -31,8 +31,6 @@ class DenseRandomProjectorTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
-
-        $this->transformer = new DenseRandomProjector(3);
     }
 
     /**
@@ -40,9 +38,13 @@ class DenseRandomProjectorTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(DenseRandomProjector::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
+        $this->expectDeprecation();
+
+        $transformer = new DenseRandomProjector(3);
+
+        $this->assertInstanceOf(DenseRandomProjector::class, $transformer);
+        $this->assertInstanceOf(Transformer::class, $transformer);
+        $this->assertInstanceOf(Stateful::class, $transformer);
     }
 
     /**
@@ -50,11 +52,15 @@ class DenseRandomProjectorTest extends TestCase
      */
     public function fitTransform() : void
     {
+        $this->expectDeprecation();
+
+        $transformer = new DenseRandomProjector(3);
+
         $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
-        $this->transformer->fit($this->generator->generate(30));
+        $transformer->fit($this->generator->generate(30));
 
-        $this->assertTrue($this->transformer->fitted());
+        $this->assertTrue($transformer->fitted());
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
@@ -68,10 +74,14 @@ class DenseRandomProjectorTest extends TestCase
      */
     public function transformUnfitted() : void
     {
+        $this->expectDeprecation();
+
+        $transformer = new DenseRandomProjector(3);
+
         $this->expectException(RuntimeException::class);
 
         $samples = $this->generator->generate(1)->samples();
 
-        $this->transformer->transform($samples);
+        $transformer->transform($samples);
     }
 }

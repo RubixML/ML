@@ -16,8 +16,8 @@ nav:
 - Choosing an Estimator: choosing-an-estimator.md
 - Training: training.md
 - Inference: inference.md
-- Cross Validation: cross-validation.md
-- AutoML: automl.md
+- Cross-validation: cross-validation.md
+- Hyper-parameter Tuning: hyper-parameter-tuning.md
 - Model Persistence: model-persistence.md
 - FAQ: faq.md
 - General API Reference:
@@ -117,6 +117,7 @@ nav:
     - One Hot Encoder: transformers/one-hot-encoder.md
     - Numeric String Converter: transformers/numeric-string-converter.md
   - Feature Selection:
+    - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
     - Variance Threshold Filter: transformers/variance-threshold-filter.md
   - Image Transformers:
     - Image Resizer: transformers/image-resizer.md

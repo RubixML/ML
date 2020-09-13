@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -214,13 +215,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut <= 0.0 or $holdOut > 0.5) {
+        if ($holdOut < 0.0 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         $this->hiddenLayers = $hiddenLayers;
@@ -331,7 +332,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
+        DatasetIsNotEmpty::with($dataset)->check();
 
         $hiddenLayers = $this->hiddenLayers;
 
@@ -366,24 +367,18 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             throw new InvalidArgumentException('Learner requires a'
                 . ' Labeled training set.');
         }
-
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, $this->network->input()->width()),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
-
-        if ($testing->empty()) {
-            throw new RuntimeException('Dataset does not contain'
-                . ' enough records to create a validation set with a'
-                . " hold out ratio of {$this->holdOut}.");
-        }
 
         [$min, $max] = $this->metric->range();
 
@@ -398,40 +393,59 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.0;
+            $score = null;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $loss /= count($batches);
 
-            if (is_nan($loss)) {
-                throw new RuntimeException('Numerical under/overflow detected.');
-            }
-
-            $predictions = $this->predict($testing);
-
-            $score = $this->metric->score($predictions, $testing->labels());
-
             $this->steps[] = $loss;
-            $this->scores[] = $score;
+
+            if (!$testing->empty()) {
+                $predictions = $this->predict($testing);
+
+                $score = $this->metric->score($predictions, $testing->labels());
+
+                $this->scores[] = $score;
+            }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: $score, {$this->costFn}: $loss");
+                $this->logger->info("Epoch $epoch - {$this->metric}: "
+                    . ($score ?? 'n/a') . ", {$this->costFn}: $loss");
             }
 
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestEpoch = $epoch;
+            if (isset($score)) {
+                if ($score >= $max) {
+                    break 1;
+                }
 
-                $snapshot = Snapshot::take($this->network);
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
 
-                $delta = 0;
-            } else {
-                ++$delta;
+                    $snapshot = Snapshot::take($this->network);
+
+                    $delta = 0;
+                } else {
+                    ++$delta;
+                }
+
+                if ($delta >= $this->window) {
+                    break 1;
+                }
             }
 
-            if ($loss <= 0.0 or $score >= $max) {
+            if ($loss <= 0.0) {
                 break 1;
             }
 
@@ -439,21 +453,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 break 1;
             }
 
-            if ($delta >= $this->window) {
-                break 1;
-            }
-
             $prevLoss = $loss;
         }
 
-        if (end($this->scores) < $bestScore) {
-            if ($snapshot) {
-                $snapshot->restore();
+        if ($snapshot and end($this->scores) < $bestScore) {
+            $snapshot->restore();
 
-                if ($this->logger) {
-                    $this->logger->info('Parameters restored from'
-                        . " snapshot at epoch $bestEpoch.");
-                }
+            if ($this->logger) {
+                $this->logger->info("Network restored from snapshot at epoch $bestEpoch");
             }
         }
 
@@ -476,7 +483,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
         return $this->network->infer($dataset)->column(0);
     }

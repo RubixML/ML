@@ -12,7 +12,7 @@ use Rubix\ML\Transformers\TfIdfTransformer;
  */
 class TfIdfTransformerBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const DATASET_SIZE = 10000;
 
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -26,22 +26,22 @@ class TfIdfTransformerBench
 
     public function setUp() : void
     {
-        $mask = Matrix::rand(self::NUM_SAMPLES, 100)
+        $mask = Matrix::rand(self::DATASET_SIZE, 4)
             ->greater(0.8);
 
-        $samples = Matrix::gaussian(self::NUM_SAMPLES, 100)
+        $samples = Matrix::gaussian(self::DATASET_SIZE, 4)
             ->multiply($mask)
             ->asArray();
 
         $this->dataset = Unlabeled::quick($samples);
 
-        $this->transformer = new TfIdfTransformer();
+        $this->transformer = new TfIdfTransformer(1.0);
     }
 
     /**
      * @Subject
      * @Iterations(3)
-     * @OutputTimeUnit("seconds", precision=3)
+     * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function apply() : void
     {

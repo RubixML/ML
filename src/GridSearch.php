@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -107,10 +108,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
     {
-        return [
-            $validator->test($estimator, $dataset, $metric),
-            $estimator->params(),
-        ];
+        $score = $validator->test($estimator, $dataset, $metric);
+
+        return [$score, $estimator->params()];
     }
 
     /**
@@ -138,19 +138,15 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         }
 
         foreach ($params as &$tuple) {
-            if (empty($tuple)) {
-                $tuple = [null];
-            } else {
-                $tuple = array_values(array_unique($tuple, SORT_REGULAR));
-            }
+            $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }
 
         if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($proxy, $metric);
+            EstimatorIsCompatibleWithMetric::with($proxy, $metric)->check();
         } else {
             switch ($proxy->type()) {
                 case EstimatorType::classifier():
-                    $metric = new FBeta(1.0);
+                    $metric = new FBeta();
 
                     break 1;
 
@@ -165,7 +161,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                     break 1;
 
                 case EstimatorType::anomalyDetector():
-                    $metric = new FBeta(1.0);
+                    $metric = new FBeta();
 
                     break 1;
 
@@ -199,11 +195,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function compatibility() : array
     {
-        if (!$this->trained()) {
-            return DataType::all();
-        }
-
-        return $this->estimator->compatibility();
+        return $this->trained()
+            ? $this->estimator->compatibility()
+            : DataType::all();
     }
 
     /**
@@ -233,7 +227,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
     /**
      * Return an array containing the validation scores and hyper-parameters under test
-     * for each combination resulting from the last search.
+     * for each combination in a 2-tuple.
      *
      * @return array[]|null
      */
@@ -277,13 +271,15 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $combinations = $this->combinations();
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
+            $this->logger->info("$this initialized");
 
             $this->logger->info('Searching ' . count($combinations)
                 . ' combinations of hyper-parameters');
@@ -314,9 +310,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
         $this->results = array_transpose([$scores, $combinations]);
 
-        $best = array_values(reset($combinations));
+        $best = reset($combinations);
 
-        $estimator = new $this->base(...$best);
+        $estimator = new $this->base(...array_values($best));
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters');
@@ -376,9 +372,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function afterScore(array $result) : void
     {
-        [$score, $params] = $result;
-
         if ($this->logger) {
+            [$score, $params] = $result;
+
             $this->logger->info(
                 "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
             );

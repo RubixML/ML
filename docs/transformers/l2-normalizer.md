@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/L2Normalizer.php">[source]</a></span>
 
 # L2 Normalizer
-Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector. The resulting sample will have continuous features between 0 and 1.
+Transform each sample (row) vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
 **Interfaces:** [Transformer](api.md#transformer)
 

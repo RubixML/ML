@@ -10,15 +10,15 @@
         "cart", "classification", "classifier", "clustering", "cross validation", "dataset",
         "data science", "data mining", "dbscan", "deep learning", "dimensionality reduction",
         "ensemble", "estimator", "etl", "feature extraction", "feature selection", "feature importance",
-        "gaussian mixture", "gmm", "gradient boost", "grid search", "image recognition",
+        "gaussian mixture", "gbm", "gmm", "gradient boost", "grid search", "image recognition",
         "imputation", "inference", "isolation forest", "k-means", "kmeans", "k-nearest neighbors",
         "knn", "linear regression", "loda", "local outlier factor", "lof", "logistic regression",
         "machine learning", "manifold learning", "mean shift", "ml", "mlp", "multilayer perceptron",
         "naive bayes", "neural network", "natural language processing", "nearest neighbors", "nlp",
         "outlier detection", "php", "php ai", "php machine learning", "php ml", "predictive modeling",
-        "prediction", "random forest", "regression", "regressor", "recommendation", "ridge",
+        "prediction", "random forest", "ranking", "regression", "regressor", "recommendation", "ridge",
         "rubix", "rubixml", "rubix ml", "softmax", "supervised learning", "support vector machine",
-        "svm", "text mining", "t-sne", "tsne", "unsupervised learning"
+        "svm", "text mining", "tf-idf", "tf idf", "t-sne", "tsne", "unsupervised learning"
     ],
     "authors": [
         {

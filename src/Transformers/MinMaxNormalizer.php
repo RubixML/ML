@@ -128,7 +128,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Stringable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         $this->minimums = $this->maximums = $this->scales = $this->mins = [];
 
@@ -155,7 +155,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Stringable
             return;
         }
 
-        SamplesAreCompatibleWithTransformer::check($dataset, $this);
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {

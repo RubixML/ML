@@ -7,7 +7,7 @@ Unlabeled datasets are used to train unsupervised learners and for feeding unkno
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
-| 2 | validate | true | bool | Should we validate the input? |
+| 2 | verify | true | bool | Should we verify the data? |
 
 ## Example
 

@@ -13,6 +13,8 @@ use RuntimeException;
 use Generator;
 
 use function array_slice;
+use function is_string;
+use function is_null;
 
 use const Rubix\ML\EPSILON;
 
@@ -137,16 +139,6 @@ abstract class CART
         $this->minPurityIncrease = $minPurityIncrease;
         $this->maxFeatures = $maxFeatures;
         $this->fitMaxFeatures = is_null($maxFeatures);
-    }
-
-    /**
-     * Return the dimensionality of the dataset used to grow the tree.
-     *
-     * @return int
-     */
-    public function dimensions() : int
-    {
-        return count($this->columns);
     }
 
     /**
@@ -380,13 +372,13 @@ abstract class CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
+        $k = (int) round(sqrt($dataset->numRows()));
+
+        $q = range(0.0, 1.0, 1 / max(1, $k - 1));
+
         shuffle($this->columns);
 
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
-
-        $k = (int) round(sqrt($dataset->numRows()));
-
-        $q = range(0.0, 1.0, 1.0 / ($k - 1));
 
         $bestImpurity = INF;
         $bestColumn = 0;

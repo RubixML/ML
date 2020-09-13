@@ -17,6 +17,13 @@ use Generator;
 class GaussianRandomProjectorTest extends TestCase
 {
     /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
+    protected const RANDOM_SEED = 0;
+
+    /**
      * @var \Rubix\ML\Datasets\Generators\Blob
      */
     protected $generator;
@@ -34,6 +41,8 @@ class GaussianRandomProjectorTest extends TestCase
         $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
 
         $this->transformer = new GaussianRandomProjector(5);
+
+        srand(self::RANDOM_SEED);
     }
 
     /**
@@ -96,11 +105,20 @@ class GaussianRandomProjectorTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
+        $expected = [
+            -1.5798504291401145,
+            13.861277276658175,
+            6.8204901690218,
+            1.0068840164872395,
+            -13.878216040342053,
+        ];
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);
 
         $this->assertCount(5, $sample);
+        $this->assertEquals($expected, $sample);
     }
 
     /**

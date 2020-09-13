@@ -49,20 +49,20 @@ class RandomHotDeckImputer extends KNNImputer
 
             $delta = rand(0, $max) / PHI;
 
-            foreach ($weights as $index => $weight) {
+            foreach ($weights as $offset => $weight) {
                 $delta -= $weight;
 
                 if ($delta <= 0.0) {
-                    $value = $values[$index];
+                    $value = $values[$offset];
 
                     break 1;
                 }
             }
-        } else {
-            $value = $values[rand(0, $this->k - 1)];
+
+            return $value;
         }
 
-        return $value;
+        return $values[array_rand($values)];
     }
 
     /**

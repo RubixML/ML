@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php">[source]</a></span>
 
 # MLP Regressor
-A multilayer feed forward neural network with a continuous output layer suitable for regression problems. Like the [Multilayer Perceptron](../classifiers/multilayer-perceptron.md) classifier, the MLP Regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate hidden layers.
+A multilayer feed-forward neural network with a continuous output layer suitable for regression problems. The Multilayer Perceptron regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate user-defined hidden layers. The MLP also has network snapshotting and progress monitoring to ensure that the model achieves the highest validation score per a given training time budget.
 
-> **Note:** Each training set must contain enough records to build an internal validation set of at least 1 sample given the user-specified hold out ratio.
+> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -19,7 +19,7 @@ A multilayer feed forward neural network with a continuous output layer suitable
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 7 | window | 3 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 8 | hold out | 0.1 | float | The proportion of training samples to use for progress monitoring, snapshotting, and early stopping. |
+| 8 | hold out | 0.1 | float | The proportion of training samples to use for progress monitoring. |
 | 9 | cost fn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 

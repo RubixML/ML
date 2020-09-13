@@ -43,7 +43,7 @@ class TextNormalizerBench
     /**
      * @Subject
      * @Iterations(3)
-     * @OutputTimeUnit("seconds", precision=3)
+     * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function apply() : void
     {

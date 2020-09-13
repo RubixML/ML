@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -262,8 +263,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $classes = $dataset->possibleOutcomes();
 
@@ -298,14 +301,15 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            DatasetHasDimensionality::with($dataset, $this->network->input()->width()),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $prevLoss = $bestLoss = INF;
@@ -322,6 +326,14 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $loss += $this->network->roundtrip($batch);
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break 1;
+            }
+
             $loss /= count($batches);
 
             $this->steps[] = $loss;
@@ -330,24 +342,20 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $delta = 0;
-            } else {
-                ++$delta;
-            }
-
-            if (is_nan($loss)) {
-                break 1;
-            }
-
             if ($loss <= 0.0) {
                 break 1;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
+            }
+
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+
+                $delta = 0;
+            } else {
+                ++$delta;
             }
 
             if ($delta >= $this->window) {
@@ -386,7 +394,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->network->input()->width());
+        DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
         [$classA, $classB] = $this->classes;
 

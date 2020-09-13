@@ -8,8 +8,9 @@ use Generator;
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
-use function Rubix\ML\array_transpose;
 use function Rubix\ML\comb;
+use function Rubix\ML\array_transpose;
+use function Rubix\ML\warn_deprecated;
 
 /**
  * @group Functions
@@ -44,6 +45,33 @@ class FunctionsTest extends TestCase
         $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
 
         $this->assertEquals(2.8194175400311074, $value);
+    }
+
+    /**
+     * @test
+     * @dataProvider combProvider
+     *
+     * @param int $n
+     * @param int $k
+     * @param int $expected
+     */
+    public function comb(int $n, int $k, int $expected) : void
+    {
+        $this->assertEquals($expected, comb($n, $k));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function combProvider() : Generator
+    {
+        yield [1, 1, 1];
+
+        yield [2, 1, 2];
+
+        yield [8, 3, 56];
+
+        yield [10, 6, 210];
     }
 
     /**
@@ -95,28 +123,11 @@ class FunctionsTest extends TestCase
 
     /**
      * @test
-     * @dataProvider combProvider
-     *
-     * @param int $n
-     * @param int $k
-     * @param int $expected
      */
-    public function comb(int $n, int $k, int $expected) : void
+    public function warnDeprecated() : void
     {
-        $this->assertEquals($expected, comb($n, $k));
-    }
+        $this->expectDeprecation();
 
-    /**
-     * @return \Generator<array>
-     */
-    public function combProvider() : Generator
-    {
-        yield [1, 1, 1];
-
-        yield [2, 1, 2];
-
-        yield [8, 3, 56];
-
-        yield [10, 6, 210];
+        warn_deprecated('deprecated');
     }
 }

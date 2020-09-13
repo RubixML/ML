@@ -9,10 +9,12 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Helpers\Verifier;
+use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -21,6 +23,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Stringable;
 
+use function Rubix\ML\warn_deprecated;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -45,7 +48,7 @@ use const Rubix\ML\EPSILON;
  */
 class IsolationForest implements Estimator, Learner, Ranking, Persistable, Stringable
 {
-    use PredictsSingle, RanksSingle;
+    use PredictsSingle, ScoresSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -202,8 +205,10 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function train(Dataset $dataset) : void
     {
-        DatasetIsNotEmpty::check($dataset);
-        SamplesAreCompatibleWithEstimator::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            SamplesAreCompatibleWithEstimator::with($dataset, $this),
+        ]);
 
         $n = $dataset->numRows();
 
@@ -225,7 +230,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
             $this->trees[] = $tree;
         }
 
-        $this->delta = $this->estimators * ITree::c($p);
+        $this->delta = $this->estimators * Depth::c($p);
 
         if (isset($this->contamination)) {
             $scores = array_map([$this, 'isolationScore'], $dataset->samples());
@@ -246,7 +251,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->rank($dataset));
+        return array_map([$this, 'decide'], $this->score($dataset));
     }
 
     /**
@@ -256,15 +261,30 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      * @throws \RuntimeException
      * @return float[]
      */
-    public function rank(Dataset $dataset) : array
+    public function score(Dataset $dataset) : array
     {
         if (empty($this->trees) or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'isolationScore'], $dataset->samples());
+    }
+
+    /**
+     * Return the anomaly scores assigned to the samples in a dataset.
+     *
+     * @deprecated
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float[]
+     */
+    public function rank(Dataset $dataset) : array
+    {
+        warn_deprecated('Rank() is deprecated, use score() instead.');
+
+        return $this->score($dataset);
     }
 
     /**

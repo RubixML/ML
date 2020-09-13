@@ -5,7 +5,7 @@ namespace Rubix\ML\Graph\Trees;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Ball;
-use Rubix\ML\Graph\Nodes\Cluster;
+use Rubix\ML\Graph\Nodes\Clique;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -140,21 +140,21 @@ class BallTree implements BinaryTree, Spatial, Stringable
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($left, $this->kernel);
 
-                $stack[] = $node;
-
                 $current->attachLeft($node);
+
+                $stack[] = $node;
             } elseif (!$left->empty()) {
-                $current->attachLeft(Cluster::terminate($left, $this->kernel));
+                $current->attachLeft(Clique::terminate($left, $this->kernel));
             }
 
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($right, $this->kernel);
 
-                $stack[] = $node;
-
                 $current->attachRight($node);
+
+                $stack[] = $node;
             } elseif (!$right->empty()) {
-                $current->attachRight(Cluster::terminate($right, $this->kernel));
+                $current->attachRight(Clique::terminate($right, $this->kernel));
             }
         }
     }
@@ -205,7 +205,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 continue 1;
             }
 
-            if ($current instanceof Cluster) {
+            if ($current instanceof Clique) {
                 $dataset = $current->dataset();
 
                 foreach ($dataset->samples() as $neighbor) {
@@ -263,7 +263,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 continue 1;
             }
 
-            if ($current instanceof Cluster) {
+            if ($current instanceof Clique) {
                 $dataset = $current->dataset();
 
                 foreach ($dataset->samples() as $i => $neighbor) {

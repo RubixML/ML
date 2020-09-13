@@ -10,6 +10,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Strategies\Prior;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Categorical;
@@ -114,8 +115,10 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
                 . ' Labeled training set.');
         }
 
-        DatasetIsNotEmpty::check($dataset);
-        LabelsAreCompatibleWithLearner::check($dataset, $this);
+        Verifier::check([
+            DatasetIsNotEmpty::with($dataset),
+            LabelsAreCompatibleWithLearner::with($dataset, $this),
+        ]);
 
         $this->strategy->fit($dataset->labels());
 
@@ -135,7 +138,7 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::check($dataset, $this->featureCount);
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $m = $dataset->numRows();
 

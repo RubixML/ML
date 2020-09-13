@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/SparseRandomProjector.php">[source]</a></span>
 
 # Sparse Random Projector
-The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
+A *database-friendly* random projector that samples its random projection matrix from a sparse probabilistic approximation of the Gaussian distribution. The term *database-friendly* refers to the fact that the number of non-zero operations required to transform the input matrix is reduced by the sparsity factor.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
@@ -11,12 +11,13 @@ The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian 
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
+| 2 | sparsity | 0.66 | float | The proportion of zero to non-zero elements in the random projection matrix. If null, sparsity factor will be chosen automatically. |
 
 ## Example
 ```php
 use Rubix\ML\Transformers\SparseRandomProjector;
 
-$transformer = new SparseRandomProjector(30);
+$transformer = new SparseRandomProjector(30, null);
 ```
 
 ## Additional Methods
@@ -33,3 +34,4 @@ $dimensions = SparseRandomProjector::minDimensions(10000, 0.5);
 
 ### References
 >- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
+>- P. Li at al. (2006). Very Sparse Random Projections.

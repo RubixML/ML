@@ -3,7 +3,7 @@
 # Numeric String Converter
 Convert all numeric strings to their equivalent integer and floating point types. Useful for when extracting from a source that only recognizes data as string types such as CSV.
 
-**Note:** The string representation of the PHP constant NAN (not a number) is `NaN`.
+**Note:** The string representation of the PHP constant NAN (not a number) is defined as `'NaN'`.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
