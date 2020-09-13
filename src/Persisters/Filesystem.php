@@ -66,7 +66,7 @@ class Filesystem implements Persister, Stringable
     }
 
     /**
-     * Save the persistable model.
+     * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
@@ -111,7 +111,7 @@ class Filesystem implements Persister, Stringable
     }
 
     /**
-     * Load the last model that was saved.
+     * Load the last saved persistable instance.
      *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable

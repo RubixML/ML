@@ -13,6 +13,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Loggers\BlackHole;
+use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Optimizers\AdaMax;
@@ -82,14 +83,15 @@ class MultilayerPerceptronTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'inner' => new Circle(0., 0., 1., 0.01),
-            'middle' => new Circle(0., 0., 5., 0.05),
-            'outer' => new Circle(0., 0., 10., 0.1),
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
         ], [3, 3, 4]);
 
         $this->estimator = new MultilayerPerceptron([
             new Dense(10),
             new Activation(new LeakyReLU()),
+            new Dropout(0.1),
             new Dense(10),
             new Activation(new LeakyReLU()),
         ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, 3, 0.1, new CrossEntropy(), new FBeta());
@@ -152,6 +154,7 @@ class MultilayerPerceptronTest extends TestCase
             'hidden_layers' => [
                 new Dense(10),
                 new Activation(new LeakyReLU()),
+                new Dropout(0.1),
                 new Dense(10),
                 new Activation(new LeakyReLU()),
             ],

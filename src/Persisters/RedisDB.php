@@ -122,7 +122,7 @@ class RedisDB implements Persister, Stringable
     }
 
     /**
-     * Load the last model that was saved.
+     * Load the last saved persistable instance.
      *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable

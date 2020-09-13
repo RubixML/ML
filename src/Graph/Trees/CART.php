@@ -372,13 +372,13 @@ abstract class CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        shuffle($this->columns);
-
-        $columns = array_slice($this->columns, 0, $this->maxFeatures);
-
         $k = (int) round(sqrt($dataset->numRows()));
 
         $q = range(0.0, 1.0, 1 / max(1, $k - 1));
+
+        shuffle($this->columns);
+
+        $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
         $bestImpurity = INF;
         $bestColumn = 0;

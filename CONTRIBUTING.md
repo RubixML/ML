@@ -32,7 +32,7 @@ $ composer test
 ```
 
 ### General Object Testing
-Limiting tests to public methods is usually sufficient. It is important to test for edge cases such as mistakes that the user might make to ensure they are handled properly.
+Limiting tests to public methods is usually sufficient. It is also important to test for edge cases such as mistakes that the user might make to ensure they are handled properly.
 
 ### Bugfix Testing
 Bugs usually indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
@@ -77,9 +77,3 @@ To run the benchmarking suite:
 ```sh
 $ composer benchmark
 ```
-<<<<<<< HEAD
-
-## Anti Plagiarism Policy
-Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.
-=======
->>>>>>> master

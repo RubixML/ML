@@ -19,6 +19,8 @@ use const Rubix\ML\EPSILON;
  * satisfy the positive semi-definite condition, therefore the Cosine distance
  * is a number between 0 and 2.
  *
+ * > **Note:** This distance kernel is optimized for sparse (mainly zeros) coordinate vectors.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

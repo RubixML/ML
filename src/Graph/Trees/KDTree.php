@@ -149,9 +149,9 @@ class KDTree implements BinaryTree, Spatial, Stringable
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Box::split($left);
 
-                $stack[] = $node;
-
                 $current->attachLeft($node);
+
+                $stack[] = $node;
             } elseif (!$left->empty()) {
                 $current->attachLeft(Neighborhood::terminate($left));
             }
@@ -159,9 +159,9 @@ class KDTree implements BinaryTree, Spatial, Stringable
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Box::split($right);
 
-                $stack[] = $node;
-
                 $current->attachRight($node);
+
+                $stack[] = $node;
             } elseif (!$right->empty()) {
                 $current->attachRight(Neighborhood::terminate($right));
             }
@@ -169,8 +169,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
     }
 
     /**
-     * Run a k nearest neighbors search and return the samples, labels, and
-     * distances in a 3-tuple.
+     * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
      *
      * @param (int|float)[] $sample
      * @param int $k
@@ -190,9 +189,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
 
         $stack = $this->path($sample);
 
-        while ($stack) {
-            $current = array_pop($stack);
-
+        while ($current = array_pop($stack)) {
             if ($current instanceof Box) {
                 $radius = $distances[$k - 1] ?? INF;
 
@@ -264,9 +261,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
 
         $stack = [$this->root];
 
-        while ($stack) {
-            $current = array_pop($stack);
-
+        while ($current = array_pop($stack)) {
             if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
                     if ($child instanceof Hypercube) {

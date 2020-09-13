@@ -140,9 +140,9 @@ class BallTree implements BinaryTree, Spatial, Stringable
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($left, $this->kernel);
 
-                $stack[] = $node;
-
                 $current->attachLeft($node);
+
+                $stack[] = $node;
             } elseif (!$left->empty()) {
                 $current->attachLeft(Clique::terminate($left, $this->kernel));
             }
@@ -150,9 +150,9 @@ class BallTree implements BinaryTree, Spatial, Stringable
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($right, $this->kernel);
 
-                $stack[] = $node;
-
                 $current->attachRight($node);
+
+                $stack[] = $node;
             } elseif (!$right->empty()) {
                 $current->attachRight(Clique::terminate($right, $this->kernel));
             }
