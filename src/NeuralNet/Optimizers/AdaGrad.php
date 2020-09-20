@@ -40,7 +40,7 @@ class AdaGrad implements Optimizer, Adaptive, Stringable
      *
      * @var \Tensor\Tensor[]
      */
-    protected $cache;
+    protected $cache = [];
 
     /**
      * @param float $rate
