@@ -4,7 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function in_array;
 
@@ -49,7 +49,7 @@ class EstimatorIsCompatibleWithMetric extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Specifications;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 class PredictionAndLabelCountsAreEqual
 {
@@ -45,7 +45,7 @@ class PredictionAndLabelCountsAreEqual
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {
