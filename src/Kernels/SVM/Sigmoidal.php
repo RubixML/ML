@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 use svm;
 
@@ -34,7 +34,7 @@ class Sigmoidal implements Kernel, Stringable
     /**
      * @param float $gamma
      * @param float $coef0
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(?float $gamma = null, float $coef0 = 0.0)
     {
