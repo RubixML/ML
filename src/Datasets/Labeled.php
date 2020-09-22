@@ -8,8 +8,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use ErrorException;
 use Generator;
 
@@ -96,7 +96,7 @@ class Labeled extends Dataset
      * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled[] $datasets
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public static function stack(array $datasets) : self
@@ -132,7 +132,7 @@ class Labeled extends Dataset
      * @param array[] $samples
      * @param (string|int|float)[] $labels
      * @param bool $verify
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $samples = [], array $labels = [], bool $verify = true)
     {
@@ -185,7 +185,7 @@ class Labeled extends Dataset
      * Return a label at the given row offset.
      *
      * @param int $offset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return int|float|string
      */
     public function label(int $offset)
@@ -200,7 +200,7 @@ class Labeled extends Dataset
     /**
      * Return the integer encoded data type of the label or null if empty.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\DataType
      */
     public function labelType() : DataType
@@ -216,7 +216,7 @@ class Labeled extends Dataset
      * Map labels to their new values and return self for method chaining.
      *
      * @param callable $callback
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return self
      */
     public function transformLabels(callable $callback) : self
@@ -249,7 +249,7 @@ class Labeled extends Dataset
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function head(int $n = 10) : self
@@ -266,7 +266,7 @@ class Labeled extends Dataset
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function tail(int $n = 10) : self
@@ -284,7 +284,7 @@ class Labeled extends Dataset
      * dataset.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function take(int $n = 1) : self
@@ -302,7 +302,7 @@ class Labeled extends Dataset
      * dataset.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function leave(int $n = 1) : self
@@ -350,7 +350,7 @@ class Labeled extends Dataset
      * Merge the rows of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function merge(Dataset $dataset) : self
@@ -378,7 +378,7 @@ class Labeled extends Dataset
      * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function join(Dataset $dataset) : self
@@ -428,7 +428,7 @@ class Labeled extends Dataset
      * Drop the rows at the given indices.
      *
      * @param int[] $offsets
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function dropRows(array $offsets) : self
@@ -568,7 +568,7 @@ class Labeled extends Dataset
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function split(float $ratio = 0.5) : array
@@ -596,7 +596,7 @@ class Labeled extends Dataset
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
@@ -634,7 +634,7 @@ class Labeled extends Dataset
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return list<self>
      */
     public function fold(int $k = 10) : array
@@ -665,7 +665,7 @@ class Labeled extends Dataset
      * Fold the dataset into k equal sized stratified datasets.
      *
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return list<self>
      */
     public function stratifiedFold(int $k = 10) : array
@@ -719,7 +719,7 @@ class Labeled extends Dataset
      *
      * @param int $column
      * @param string|int|float $value
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function partitionByColumn(int $column, $value) : array
@@ -761,7 +761,7 @@ class Labeled extends Dataset
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null)
@@ -805,7 +805,7 @@ class Labeled extends Dataset
      * Generate a random subset without replacement.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomSubset(int $n) : self
@@ -838,7 +838,7 @@ class Labeled extends Dataset
      * Generate a random subset with replacement.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomSubsetWithReplacement(int $n) : self
@@ -867,7 +867,7 @@ class Labeled extends Dataset
      *
      * @param int $n
      * @param (int|float)[] $weights
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
@@ -1026,7 +1026,7 @@ class Labeled extends Dataset
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed[]
      */
     public function offsetGet($offset) : array
@@ -1056,7 +1056,7 @@ class Labeled extends Dataset
      * Stratifying subroutine groups samples by their categorical label. Note that integer string
      * labels will silently be converted to integers by PHP.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     protected function _stratify() : array

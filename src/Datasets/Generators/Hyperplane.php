@@ -5,7 +5,7 @@ namespace Rubix\ML\Datasets\Generators;
 use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Labeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Hyperplane
@@ -47,7 +47,7 @@ class Hyperplane implements Generator
      * @param (int|float)[] $coefficients
      * @param float $intercept
      * @param float $noise
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         array $coefficients = [1, -1],
