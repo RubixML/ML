@@ -26,8 +26,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\array_transpose;
@@ -139,7 +139,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param float $percentile
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function estimateRadius(
@@ -176,7 +176,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param float $minShift
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $radius,
@@ -379,7 +379,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -397,7 +397,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

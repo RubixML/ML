@@ -25,8 +25,8 @@ use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -139,7 +139,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $k,
@@ -406,7 +406,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -424,7 +424,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

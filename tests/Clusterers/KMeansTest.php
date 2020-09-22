@@ -19,8 +19,8 @@ use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Clusterers

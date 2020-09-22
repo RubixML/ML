@@ -13,7 +13,7 @@ use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -77,7 +77,7 @@ class DBSCAN implements Estimator, Stringable
      * @param float $radius
      * @param int $minDensity
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {

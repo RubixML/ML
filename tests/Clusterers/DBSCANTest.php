@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * @group Clusterers
