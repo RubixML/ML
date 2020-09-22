@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -31,7 +31,7 @@ class PolynomialExpander implements Transformer, Stringable
 
     /**
      * @param int $degree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $degree = 2)
     {

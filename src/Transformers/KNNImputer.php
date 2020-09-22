@@ -12,8 +12,8 @@ use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\argmax;
@@ -79,7 +79,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * @param bool $weighted
      * @param string $categoricalPlaceholder
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $k = 5,
@@ -131,7 +131,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -170,7 +170,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function is_null;
@@ -125,7 +125,7 @@ class RobustStandardizer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

@@ -5,7 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -91,7 +91,7 @@ class OneHotEncoder implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

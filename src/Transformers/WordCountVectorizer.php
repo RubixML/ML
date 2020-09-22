@@ -7,8 +7,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -188,7 +188,7 @@ class WordCountVectorizer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

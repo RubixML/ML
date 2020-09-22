@@ -8,7 +8,7 @@ use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Transformers
