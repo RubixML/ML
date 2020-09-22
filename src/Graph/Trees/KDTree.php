@@ -10,7 +10,7 @@ use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplObjectStorage;
 use Stringable;
 
@@ -59,7 +59,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
     /**
      * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)
     {
@@ -124,7 +124,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
      * condition is met.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -177,7 +177,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
      *
      * @param list<int|float> $sample
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{array[],mixed[],float[]}
      */
     public function nearest(array $sample, int $k = 1) : array
@@ -251,7 +251,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
      *
      * @param list<int|float> $sample
      * @param float $radius
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{array[],mixed[],float[]}
      */
     public function range(array $sample, float $radius) : array

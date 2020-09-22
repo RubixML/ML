@@ -8,8 +8,8 @@ use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use function array_slice;
@@ -106,7 +106,7 @@ abstract class CART
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $maxHeight,
@@ -178,7 +178,7 @@ abstract class CART
      * condition is met.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -298,7 +298,7 @@ abstract class CART
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function featureImportances() : array
@@ -328,7 +328,7 @@ abstract class CART
      * Print a human readable text representation of the decision tree.
      *
      * @param string[] $header
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */
     public function rules(?array $header = null) : string

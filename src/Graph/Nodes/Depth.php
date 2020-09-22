@@ -63,7 +63,7 @@ class Depth implements BinaryNode, Leaf
 
     /**
      * @param float $depth
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $depth)
     {

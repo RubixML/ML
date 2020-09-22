@@ -59,7 +59,7 @@ class Comparison implements Decision
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param float $impurity
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups, float $impurity, int $n)
     {
