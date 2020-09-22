@@ -22,8 +22,8 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Regressors

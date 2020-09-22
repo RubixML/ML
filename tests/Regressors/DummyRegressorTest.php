@@ -13,7 +13,7 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * @group Regressors

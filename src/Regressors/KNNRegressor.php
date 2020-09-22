@@ -19,8 +19,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function array_slice;
@@ -87,7 +87,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
@@ -161,7 +161,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -184,7 +184,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringabl
      * Make a prediction based on the nearest neighbors.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

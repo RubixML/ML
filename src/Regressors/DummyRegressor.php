@@ -17,8 +17,8 @@ use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -106,7 +106,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      * Fit the training set to the given guessing strategy.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -129,7 +129,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      * Make a prediction of a given sample dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

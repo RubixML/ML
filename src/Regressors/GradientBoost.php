@@ -23,8 +23,8 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -183,7 +183,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\Learner|null $base
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         ?Learner $booster = null,
@@ -330,8 +330,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * Train the estimator with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function train(Dataset $dataset) : void
     {
@@ -484,7 +484,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * Make a prediction from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -511,7 +511,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

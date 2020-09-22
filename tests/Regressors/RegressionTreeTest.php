@@ -13,8 +13,8 @@ use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Regressors
