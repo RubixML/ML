@@ -19,7 +19,7 @@ interface Serializer
      * Unserialize a persistable object and return it.
      *
      * @param \Rubix\ML\Encoding $encoding
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(Encoding $encoding) : Persistable;

@@ -5,7 +5,7 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use __PHP_Incomplete_Class;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function is_object;
@@ -36,7 +36,7 @@ class Native implements Serializer, Stringable
      * Unserialize a persistable object and return it.
      *
      * @param \Rubix\ML\Encoding $encoding
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(Encoding $encoding) : Persistable
