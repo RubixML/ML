@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Placeholder 1D
@@ -26,7 +26,7 @@ class Placeholder1D implements Input
 
     /**
      * @param int $inputs
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $inputs)
     {
@@ -62,7 +62,7 @@ class Placeholder1D implements Input
      * Compute a forward pass through the layer.
      *
      * @param \Tensor\Matrix $input
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
