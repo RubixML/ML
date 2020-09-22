@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -25,7 +25,7 @@ class Whitespace implements Tokenizer, Stringable
 
     /**
      * @param string $delimiter
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(string $delimiter = ' ')
     {

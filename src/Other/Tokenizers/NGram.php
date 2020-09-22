@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -59,7 +59,7 @@ class NGram implements Tokenizer, Stringable
      * @param int $min
      * @param int $max
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $min = 2, int $max = 2, ?Word $wordTokenizer = null)
     {

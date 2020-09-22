@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -37,7 +37,7 @@ class Prior implements Categorical, Stringable
      * Fit the guessing strategy to a set of values.
      *
      * @param string[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -53,7 +53,7 @@ class Prior implements Categorical, Stringable
     /**
      * Make a categorical guess.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */
     public function guess() : string

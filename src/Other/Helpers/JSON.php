@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use const JSON_ERROR_NONE;
 use const JSON_ERROR_SYNTAX;
@@ -45,7 +45,7 @@ class JSON
      * @param string $json
      * @param int $options
      * @param int $depth
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array<mixed>
      */
     public static function decode(string $json, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : array

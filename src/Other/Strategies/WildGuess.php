@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use const Rubix\ML\PHI;
@@ -38,7 +38,7 @@ class WildGuess implements Continuous, Stringable
      * Fit the guessing strategy to a set of values.
      *
      * @param (int|float)[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -54,7 +54,7 @@ class WildGuess implements Continuous, Stringable
     /**
      * Make a continuous guess.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float
      */
     public function guess() : float
