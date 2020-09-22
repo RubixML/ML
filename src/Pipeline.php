@@ -12,8 +12,8 @@ use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -79,7 +79,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
      * @param \Rubix\ML\Estimator $base
      * @param bool $elastic
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $transformers, Estimator $base, bool $elastic = true)
     {
@@ -243,7 +243,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -262,7 +262,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 class Encoding implements Stringable
@@ -46,7 +46,7 @@ class Encoding implements Stringable
      * Write the encoding to a file at the path specified.
      *
      * @param string $path
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function write(string $path) : void
     {

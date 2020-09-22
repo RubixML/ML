@@ -21,7 +21,7 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -118,7 +118,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      * @param array[] $params
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         string $base,
@@ -262,7 +262,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      * assign the best one as the base estimator of this instance.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -357,7 +357,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      * Make a prediction on a given sample dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

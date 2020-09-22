@@ -8,8 +8,8 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -61,7 +61,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
     /**
      * @param \Rubix\ML\Learner $base
      * @param \Rubix\ML\Persisters\Persister $persister
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(Learner $base, Persister $persister)
     {
@@ -162,7 +162,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -179,7 +179,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array
