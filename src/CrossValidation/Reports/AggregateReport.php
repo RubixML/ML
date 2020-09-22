@@ -3,7 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Report;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -37,7 +37,7 @@ class AggregateReport implements ReportGenerator
 
     /**
      * @param \Rubix\ML\CrossValidation\Reports\ReportGenerator[] $reports
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $reports)
     {
