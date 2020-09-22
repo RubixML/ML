@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Extractors;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 use Rubix\ML\Other\Helpers\JSON;
 
@@ -31,8 +31,8 @@ class NDJSON implements Extractor
 
     /**
      * @param string $path
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(string $path)
     {
@@ -64,7 +64,7 @@ class NDJSON implements Extractor
     /**
      * Return an iterator for the records in the data table.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator

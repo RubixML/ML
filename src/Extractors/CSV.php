@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Extractors;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use function strlen;
@@ -61,8 +61,8 @@ class CSV implements Extractor
      * @param bool $header
      * @param string $delimiter
      * @param string $enclosure
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(
         string $path,
@@ -111,7 +111,7 @@ class CSV implements Extractor
     /**
      * Return an iterator for the records in the data table.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
