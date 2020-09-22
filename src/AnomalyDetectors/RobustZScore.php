@@ -18,8 +18,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\warn_deprecated;
@@ -91,7 +91,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable,
     /**
      * @param float $threshold
      * @param float $alpha
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
@@ -178,7 +178,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable,
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -201,8 +201,8 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable,
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -214,7 +214,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable,
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array
