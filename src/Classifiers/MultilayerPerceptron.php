@@ -178,7 +178,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @param float $holdOut
      * @throws \InvalidArgumentException
      */
     public function __construct(

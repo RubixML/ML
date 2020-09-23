@@ -35,13 +35,13 @@ class Native implements Serializer, Stringable
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param \Rubix\ML\Encoding $data
-     * @throws RuntimeException
+     * @param \Rubix\ML\Encoding $encoding
+     *@throws RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $data) : Persistable
+    public function unserialize(Encoding $encoding) : Persistable
     {
-        $unserialized = unserialize($data);
+        $unserialized = unserialize($encoding->data());
 
         if (!is_object($unserialized)) {
             throw new RuntimeException('Unserialized data is not an object.');

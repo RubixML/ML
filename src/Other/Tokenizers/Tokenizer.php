@@ -8,7 +8,7 @@ interface Tokenizer
      * Tokenize a blob of text.
      *
      * @param string $string
-     * @return string[]
+     * @return list<string>
      */
     public function tokenize(string $string) : array;
 

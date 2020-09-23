@@ -44,12 +44,12 @@ class Igbinary implements Serializer, Stringable
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param \Rubix\ML\Encoding $data
+     * @param \Rubix\ML\Encoding $encoding
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $data) : Persistable
+    public function unserialize(Encoding $encoding) : Persistable
     {
-        return igbinary_unserialize($data);
+        return igbinary_unserialize($encoding->data());
     }
 
     /**

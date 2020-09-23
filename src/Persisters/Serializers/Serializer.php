@@ -18,11 +18,11 @@ interface Serializer
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param \Rubix\ML\Encoding $data
+     * @param \Rubix\ML\Encoding $encoding
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $data) : Persistable;
+    public function unserialize(Encoding $encoding) : Persistable;
 
     /**
      * Return the string representation of the object.
