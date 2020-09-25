@@ -22,7 +22,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Stringable
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Scoring, Ranking, Stringable
 {
     use PredictsSingle, ProbaSingle, ScoresSingle;
 
@@ -184,7 +184,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function score(Dataset $dataset) : array
     {
-        if (!$this->base instanceof Ranking) {
+        if (!$this->base instanceof Scoring) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }

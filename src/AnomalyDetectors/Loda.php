@@ -6,6 +6,7 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -44,7 +45,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringable
+class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable, Stringable
 {
     use PredictsSingle, ScoresSingle;
 

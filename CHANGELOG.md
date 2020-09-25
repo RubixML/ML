@@ -1,6 +1,8 @@
 - 0.3.0
-    - Can now silence Verbose learners with silence() method
     - Added Sentence tokenizer
+    - Can now silence Verbose learners with silence() method
+    - Added Scoring interface for estimators that score samples
+    - Deprecated the Ranking interface
 
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector

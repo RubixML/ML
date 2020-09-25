@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Ranking;
+use Rubix\ML\Scoring;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -93,7 +93,7 @@ class LodaTest extends TestCase
         $this->assertInstanceOf(Loda::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Ranking::class, $this->estimator);
+        $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

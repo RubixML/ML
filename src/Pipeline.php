@@ -34,7 +34,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
+class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
 
@@ -269,7 +269,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
     {
         $this->preprocess($dataset);
 
-        if (!$this->base instanceof Ranking) {
+        if (!$this->base instanceof Scoring) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }

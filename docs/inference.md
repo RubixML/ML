@@ -47,7 +47,7 @@ string(3) "cat"
 ```
 
 ## Estimation of Probabilities
-Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have the `proba()` method that computes the joint probability estimates for each class or cluster number as shown in the example below.
+Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](probabilistic.md) interface have the `proba()` method that computes the joint probability estimates for each class or cluster number as shown in the example below.
 
 ```php
 $probabilities = $estimator->proba($dataset);  
@@ -69,7 +69,7 @@ array(2) {
 ```
 
 ## Anomaly Scores
-Anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.
+Anomaly detectors that implement the [Scoring](scoring.md) interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.
 
 ```php
 $scores = $estimator->score($dataset);
