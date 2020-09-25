@@ -1,4 +1,5 @@
 - 0.3.0
+    - Can now silence Verbose learners with silence() method
     - Added Sentence tokenizer
 
 - 0.2.0

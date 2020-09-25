@@ -32,3 +32,9 @@ $estimator->train($dataset);
 [2020-08-05 04:26:11] example.INFO: Epoch 3 - Huber Loss {alpha: 1}: 0.0017358090553563
 [2020-08-05 04:26:11] example.INFO: Training complete
 ```
+
+## Silence Logging Output
+To remove the logger instance and silence logging output:
+```php
+$estimator->silence();
+```
