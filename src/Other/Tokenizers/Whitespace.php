@@ -40,12 +40,12 @@ class Whitespace implements Tokenizer, Stringable
     /**
      * Tokenize a blob of text.
      *
-     * @param string $string
+     * @param string $text
      * @return list<string>
      */
-    public function tokenize(string $string) : array
+    public function tokenize(string $text) : array
     {
-        return explode($this->delimiter, $string) ?: [];
+        return explode($this->delimiter, $text) ?: [];
     }
 
     /**

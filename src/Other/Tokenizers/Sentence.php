@@ -5,22 +5,22 @@ namespace Rubix\ML\Other\Tokenizers;
 use Stringable;
 
 /**
- * Word
+ * Sentence
  *
- * This tokenizer matches words with 1 or more characters.
+ * This tokenizer matches sentences starting with a letter and ending with a punctuation mark.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Word implements Tokenizer, Stringable
+class Sentence implements Tokenizer, Stringable
 {
     /**
-     * The regular expression to match words in a sentence.
+     * The regular expression to match sentences in a blob of text.
      *
      * @var string
      */
-    protected const WORD_REGEX = "/[\w'-]+/u";
+    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
 
     /**
      * Tokenize a blob of text.
@@ -30,11 +30,7 @@ class Word implements Tokenizer, Stringable
      */
     public function tokenize(string $text) : array
     {
-        $tokens = [];
-
-        preg_match_all(self::WORD_REGEX, $text, $tokens);
-
-        return $tokens[0];
+        return preg_split(self::SENTENCE_REGEX, $text) ?: [];
     }
 
     /**
@@ -44,6 +40,6 @@ class Word implements Tokenizer, Stringable
      */
     public function __toString() : string
     {
-        return 'Word';
+        return 'Sentence';
     }
 }

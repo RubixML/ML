@@ -21,13 +21,6 @@ use function count;
 class NGram implements Tokenizer, Stringable
 {
     /**
-     * The regular expression to match sentences in a blob of text.
-     *
-     * @var string
-     */
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
-
-    /**
      * The separator between words in the n-gram.
      *
      * @var string
@@ -56,6 +49,13 @@ class NGram implements Tokenizer, Stringable
     protected $wordTokenizer;
 
     /**
+     * The sentence tokenizer.
+     *
+     * @var \Rubix\ML\Other\Tokenizers\Sentence
+     */
+    protected $sentenceTokenizer;
+
+    /**
      * @param int $min
      * @param int $max
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
@@ -74,19 +74,20 @@ class NGram implements Tokenizer, Stringable
         $this->min = $min;
         $this->max = $max;
         $this->wordTokenizer = $wordTokenizer ?? new Word();
+        $this->sentenceTokenizer = new Sentence();
     }
 
     /**
      * Tokenize a blob of text.
      *
-     * @param string $string
+     * @param string $text
      * @return list<string>
      */
-    public function tokenize(string $string) : array
+    public function tokenize(string $text) : array
     {
-        $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
+        $sentences = $this->sentenceTokenizer->tokenize($text);
 
-        $tokens = [];
+        $nGrams = [];
 
         foreach ($sentences as $sentence) {
             $words = $this->wordTokenizer->tokenize($sentence);
@@ -103,12 +104,12 @@ class NGram implements Tokenizer, Stringable
                         $nGram .= self::SEPARATOR . $words[$i + $k];
                     }
 
-                    $tokens[] = $nGram;
+                    $nGrams[] = $nGram;
                 }
             }
         }
 
-        return $tokens;
+        return $nGrams;
     }
 
     /**

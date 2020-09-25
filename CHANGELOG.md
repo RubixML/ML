@@ -1,3 +1,6 @@
+- 0.3.0
+    - Added Sentence tokenizer
+
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners
