@@ -11,9 +11,9 @@ use Rubix\ML\Transformers\StopWordFilter;
  */
 class StopWordFilterBench
 {
-    protected const DATASET_SIZE = 100000;
+    protected const DATASET_SIZE = 10000;
 
-    protected const LUCENE_STOPWORDS_EN = [
+    protected const STOP_WORDS = [
         'a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'for', 'if', 'in', 'into', 'is', 'it',
         'no', 'not', 'of', 'on', 'or', 'such', 'that', 'the', 'their', 'then', 'there', 'these', 'they',
         'this', 'to', 'was', 'will', 'with',
@@ -43,7 +43,7 @@ class StopWordFilterBench
 
         $this->dataset = new Unlabeled($samples);
 
-        $this->transformer = new StopWordFilter(self::LUCENE_STOPWORDS_EN);
+        $this->transformer = new StopWordFilter(self::STOP_WORDS);
     }
 
     /**
