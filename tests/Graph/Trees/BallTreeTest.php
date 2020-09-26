@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Graph\Trees;
 
+use Tensor\Matrix;
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
@@ -9,6 +10,7 @@ use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -80,6 +82,32 @@ class BallTreeTest extends TestCase
         $this->assertCount(25, $labels);
         $this->assertCount(25, $distances);
 
+        $this->assertCount(1, array_unique($labels));
+    }
+
+    /**
+     * @test
+     */
+    public function growWithRepetitions() : void
+    {
+        $size = 25;
+
+        $samples = Matrix::fill(0.5, $size, 3)->asArray();
+        $dataset = Labeled::quick($samples, array_fill(0, $size, 'test'));
+
+        $this->tree->grow($dataset);
+
+        $this->assertEquals(2, $this->tree->height());
+
+        $sample = $dataset->sample(0);
+
+        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
+
+        $this->assertCount(5, $samples);
+        $this->assertCount(5, $labels);
+        $this->assertCount(5, $distances);
+
+        $this->assertCount(1, array_unique($samples, SORT_REGULAR));
         $this->assertCount(1, array_unique($labels));
     }
 
