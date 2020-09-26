@@ -95,11 +95,6 @@ class RegexFilter implements Transformer, Stringable
      */
     public function __construct(array $patterns)
     {
-        if (empty($patterns)) {
-            throw new InvalidArgumentException('Must specify at least'
-                . ' 1 regex pattern.');
-        }
-
         foreach ($patterns as $pattern) {
             if (!is_string($pattern)) {
                 throw new InvalidArgumentException('Pattern must be a'
