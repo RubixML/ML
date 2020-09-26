@@ -4,10 +4,10 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
+use __PHP_Incomplete_Class;
 use RuntimeException;
 use Stringable;
 
-use function get_class;
 use function is_object;
 
 /**
@@ -36,22 +36,34 @@ class Native implements Serializer, Stringable
      * Unserialize a persistable object and return it.
      *
      * @param \Rubix\ML\Encoding $encoding
-     *@throws RuntimeException
+     * @throws RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        $unserialized = unserialize($encoding->data());
+        $persistable = unserialize((string) $encoding);
 
-        if (!is_object($unserialized)) {
-            throw new RuntimeException('Unserialized data is not an object.');
+        if ($persistable === false) {
+            throw new RuntimeException('Cannot read encoding, wrong'
+                . ' format or corrupted data.');
         }
 
-        if (!$unserialized instanceof Persistable) {
-            throw new RuntimeException('Unserialized object is not a ' . Persistable::class . '. Got ' . get_class($unserialized));
+        if (!is_object($persistable)) {
+            throw new RuntimeException('Unserialized encoding must'
+                . ' be an object.');
         }
 
-        return $unserialized;
+        if ($persistable instanceof __PHP_Incomplete_Class) {
+            throw new RuntimeException('Missing class definition'
+                . ' for unserialized object.');
+        }
+
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Unserialized object must'
+                . ' implement the Persistable interface.');
+        }
+
+        return $persistable;
     }
 
     /**

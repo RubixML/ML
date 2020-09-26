@@ -1,3 +1,6 @@
+- 0.2.1
+    - Handle missing class definitions in Native and Igbinary
+
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners

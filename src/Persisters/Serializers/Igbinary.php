@@ -4,14 +4,18 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
+use __PHP_Incomplete_Class;
 use RuntimeException;
 use Stringable;
+
+use function is_null;
+use function is_object;
 
 /**
  * Igbinary
  *
- * Igbinary is a compact binary format that serves as a drop-in replacement for the
- * native PHP serializer.
+ * Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP
+ * serializer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -49,7 +53,29 @@ class Igbinary implements Serializer, Stringable
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        return igbinary_unserialize($encoding->data());
+        $persistable = igbinary_unserialize((string) $encoding);
+
+        if (is_null($persistable)) {
+            throw new RuntimeException('Cannot read encoding, wrong'
+                . ' format or corrupted data.');
+        }
+
+        if (!is_object($persistable)) {
+            throw new RuntimeException('Unserialized encoding must'
+                . ' be an object.');
+        }
+
+        if ($persistable instanceof __PHP_Incomplete_Class) {
+            throw new RuntimeException('Missing class definition'
+                . ' for unserialized object.');
+        }
+
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Unserialized object must'
+                . ' implement the Persistable interface.');
+        }
+
+        return $persistable;
     }
 
     /**
