@@ -149,9 +149,13 @@ class KDTree implements BinaryTree, Spatial, Stringable
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Box::split($left);
 
-                $current->attachLeft($node);
+                if ($node->isPoint()) {
+                    $current->attachLeft(Neighborhood::terminate($left));
+                } else {
+                    $current->attachLeft($node);
 
-                $stack[] = $node;
+                    $stack[] = $node;
+                }
             } elseif (!$left->empty()) {
                 $current->attachLeft(Neighborhood::terminate($left));
             }

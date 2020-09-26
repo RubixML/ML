@@ -142,6 +142,16 @@ class Box implements BinaryNode, Hypercube
     }
 
     /**
+     * Does the hypercube reduce to a single point?
+     *
+     * @return bool
+     */
+    public function isPoint() : bool
+    {
+        return $this->min == $this->max;
+    }
+
+    /**
      * Remove the left and right splits of the training data.
      */
     public function cleanup() : void

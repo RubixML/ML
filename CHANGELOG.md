@@ -3,6 +3,12 @@
     - Can now silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
+    
+- 0.2.1
+    - Optimized Stop Word Filter
+    - Allow list of empty regex patterns in Regex Filter
+    - Handle missing class definitions in Native and Igbinary
+    - Fixed infinite loop in Ball Tree & KD Tree grow method
 
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector

@@ -26,13 +26,17 @@ class StopWordFilter extends RegexFilter
     {
         $patterns = [];
 
-        foreach ($stopWords as $word) {
-            if (!is_string($word)) {
+        foreach ($stopWords as &$word) {
+            if (!is_string($word) or empty($word)) {
                 throw new InvalidArgumentException('Stop word must be a'
-                    . ' string, ' . gettype($word) . ' found.');
+                    . 'non-empty string, ' . gettype($word) . ' found.');
             }
 
-            $patterns[] = '/\b' . preg_quote($word, '/') . '\b/u';
+            $word = preg_quote($word, '/');
+        }
+
+        if (!empty($stopWords)) {
+            $patterns[] = sprintf('/\b(%s)\b/u', implode('|', $stopWords));
         }
 
         parent::__construct($patterns);

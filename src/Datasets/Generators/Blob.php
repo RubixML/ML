@@ -64,7 +64,7 @@ class Blob implements Generator
 
             $stdDev = Vector::quick($stdDev);
         } else {
-            if ($stdDev <= 0) {
+            if ($stdDev < 0) {
                 throw new InvalidArgumentException('Standard deviation'
                     . " must be greater than 0, $stdDev given.");
             }

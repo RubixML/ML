@@ -5,7 +5,6 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use Generator;
 
@@ -444,8 +443,6 @@ class Unlabeled extends Dataset
         }
 
         $kernel = $kernel ?? new Euclidean();
-
-        SamplesAreCompatibleWithDistance::with($this, $kernel)->check();
 
         $left = $right = [];
 
