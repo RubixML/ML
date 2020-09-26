@@ -4,6 +4,11 @@
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
 
+- 0.2.1
+    - Optimized Stop Word Filter
+    - Allow list of empty regex patterns in Regex Filter
+    - Handle missing class definitions in Native and Igbinary
+
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners

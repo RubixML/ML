@@ -24,18 +24,18 @@ class StopWordFilter extends RegexFilter
      */
     public function __construct(array $stopWords = [])
     {
-        $patterns = [];
-
-        foreach ($stopWords as $word) {
-            if (!is_string($word)) {
+        foreach ($stopWords as &$word) {
+            if (!is_string($word) or empty($word)) {
                 throw new InvalidArgumentException('Stop word must be a'
-                    . ' string, ' . gettype($word) . ' found.');
+                    . 'non-empty string, ' . gettype($word) . ' found.');
             }
 
-            $patterns[] = '/\b' . preg_quote($word, '/') . '\b/u';
+            $word = preg_quote($word, '/');
         }
 
-        parent::__construct($patterns);
+        $pattern = sprintf('/\b(%s)\b/u', implode('|', $stopWords));
+
+        parent::__construct([$pattern]);
     }
 
     /**
