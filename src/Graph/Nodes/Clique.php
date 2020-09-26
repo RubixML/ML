@@ -114,4 +114,14 @@ class Clique implements BinaryNode, Hypersphere, Leaf
     {
         return $this->radius;
     }
+
+    /**
+     * Does the hypersphere reduce to a single point?
+     *
+     * @return bool
+     */
+    public function isPoint() : bool
+    {
+        return $this->radius === 0.0;
+    }
 }

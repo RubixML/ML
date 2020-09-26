@@ -129,6 +129,16 @@ class Ball implements BinaryNode, Hypersphere
     }
 
     /**
+     * Does the hypersphere reduce to a single point?
+     *
+     * @return bool
+     */
+    public function isPoint() : bool
+    {
+        return $this->radius === 0.0;
+    }
+
+    /**
      * Remove the left and right splits of the training data.
      */
     public function cleanup() : void

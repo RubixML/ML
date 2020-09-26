@@ -27,8 +27,8 @@ nav:
   - Parallel: parallel.md
   - Persistable: persistable.md
   - Probabilistic: probabilistic.md
-  - Ranking: ranking.md
   - Ranks Features: ranks-features.md
+  - Scoring: scoring.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Extractors:

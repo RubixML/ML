@@ -91,4 +91,14 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
         yield $this->min;
         yield $this->max;
     }
+
+    /**
+     * Does the hypercube reduce to a single point?
+     *
+     * @return bool
+     */
+    public function isPoint() : bool
+    {
+        return $this->min == $this->max;
+    }
 }

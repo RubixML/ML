@@ -8,7 +8,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use InvalidArgumentException;
 use RuntimeException;
 use ErrorException;
@@ -780,8 +779,6 @@ class Labeled extends Dataset
         }
 
         $kernel = $kernel ?? new Euclidean();
-
-        SamplesAreCompatibleWithDistance::with($this, $kernel)->check();
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 

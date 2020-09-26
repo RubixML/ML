@@ -37,7 +37,7 @@ use function array_slice;
 class BallTree implements BinaryTree, Spatial, Stringable
 {
     /**
-     * The maximum number of samples that each leaf node can contain.
+     * The maximum number of unique samples that each leaf node can contain.
      *
      * @var int
      */
@@ -150,12 +150,11 @@ class BallTree implements BinaryTree, Spatial, Stringable
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = Ball::split($right, $this->kernel);
 
-                [$nleft, $nright] = $node->groups();
-
-                if ($left->empty() && $nleft->empty() && $right == $nright) {
+                if ($node->isPoint()) {
                     $current->attachRight(Clique::terminate($right, $this->kernel));
                 } else {
                     $current->attachRight($node);
+
                     $stack[] = $node;
                 }
             } elseif (!$right->empty()) {

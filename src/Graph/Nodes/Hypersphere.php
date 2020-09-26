@@ -17,4 +17,11 @@ interface Hypersphere extends Node
      * @return float
      */
     public function radius() : float;
+
+    /**
+     * Does the hypersphere reduce to a single point?
+     *
+     * @return bool
+     */
+    public function isPoint() : bool;
 }

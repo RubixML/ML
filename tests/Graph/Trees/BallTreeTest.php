@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Tensor\Matrix;
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
@@ -10,7 +9,6 @@ use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class BallTreeTest extends TestCase
 {
+    protected const DATASET_SIZE = 100;
+
     protected const RANDOM_SEED = 0;
 
     /**
@@ -62,7 +62,7 @@ class BallTreeTest extends TestCase
      */
     public function growNeighborsRange() : void
     {
-        $this->tree->grow($this->generator->generate(50));
+        $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
         $this->assertGreaterThan(2, $this->tree->height());
 
@@ -76,11 +76,11 @@ class BallTreeTest extends TestCase
 
         $this->assertCount(1, array_unique($labels));
 
-        [$samples, $labels, $distances] = $this->tree->range($sample, 5.);
+        [$samples, $labels, $distances] = $this->tree->range($sample, 4.3);
 
-        $this->assertCount(25, $samples);
-        $this->assertCount(25, $labels);
-        $this->assertCount(25, $distances);
+        $this->assertCount(50, $samples);
+        $this->assertCount(50, $labels);
+        $this->assertCount(50, $distances);
 
         $this->assertCount(1, array_unique($labels));
     }
@@ -90,10 +90,11 @@ class BallTreeTest extends TestCase
      */
     public function growWithRepetitions() : void
     {
-        $size = 25;
+        $generator = new Agglomerate([
+            'east' => new Blob([5, -2, 10], 0.0),
+        ]);
 
-        $samples = Matrix::fill(0.5, $size, 3)->asArray();
-        $dataset = Labeled::quick($samples, array_fill(0, $size, 'test'));
+        $dataset = $generator->generate(self::DATASET_SIZE);
 
         $this->tree->grow($dataset);
 
@@ -108,7 +109,7 @@ class BallTreeTest extends TestCase
         $this->assertCount(5, $distances);
 
         $this->assertCount(1, array_unique($samples, SORT_REGULAR));
-        $this->assertCount(1, array_unique($labels));
+        $this->assertCount(1, array_unique($distances));
     }
 
     protected function assertPreConditions() : void

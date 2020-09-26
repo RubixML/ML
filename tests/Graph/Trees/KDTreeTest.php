@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class KDTreeTest extends TestCase
 {
+    protected const DATASET_SIZE = 100;
+
     protected const RANDOM_SEED = 0;
 
     /**
@@ -60,7 +62,7 @@ class KDTreeTest extends TestCase
      */
     public function growNeighborsRange() : void
     {
-        $this->tree->grow($this->generator->generate(50));
+        $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
         $this->assertGreaterThan(2, $this->tree->height());
 
@@ -74,13 +76,40 @@ class KDTreeTest extends TestCase
 
         $this->assertCount(1, array_unique($labels));
 
-        [$samples, $labels, $distances] = $this->tree->range($sample, 5.);
+        [$samples, $labels, $distances] = $this->tree->range($sample, 5.0);
 
-        $this->assertCount(25, $samples);
-        $this->assertCount(25, $labels);
-        $this->assertCount(25, $distances);
+        $this->assertCount(50, $samples);
+        $this->assertCount(50, $labels);
+        $this->assertCount(50, $distances);
 
         $this->assertCount(1, array_unique($labels));
+    }
+
+    /**
+     * @test
+     */
+    public function growWithRepetitions() : void
+    {
+        $generator = new Agglomerate([
+            'east' => new Blob([5, -2, 10], 0.0),
+        ]);
+
+        $dataset = $generator->generate(self::DATASET_SIZE);
+
+        $this->tree->grow($dataset);
+
+        $this->assertEquals(2, $this->tree->height());
+
+        $sample = $dataset->sample(0);
+
+        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
+
+        $this->assertCount(5, $samples);
+        $this->assertCount(5, $labels);
+        $this->assertCount(5, $distances);
+
+        $this->assertCount(1, array_unique($samples, SORT_REGULAR));
+        $this->assertCount(1, array_unique($distances));
     }
 
     protected function assertPreConditions() : void
