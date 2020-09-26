@@ -1,10 +1,20 @@
 # Training
-Most estimators have the ability to be trained with data. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to the learner so that it can build an internal representation (or *model*). Supervised learners require a dataset with labels. Unsupervised learners can be trained with either a labeled or unlabeled dataset but only the samples are used to build the model.
+Most estimators have the ability to be trained with data. Estimators that require training are called [Learners](learner.md) and implement the `train()` method among others. Training is the process of feeding data to the learner so that it can build an internal representation (or *model*). Supervised learners require a [Labeled](datasets/labeled.md) training set. Unsupervised learners can be trained with either a Labeled or [Unlabeled](datasets/unlabeled.md) dataset but only the samples are used to build the model. Depending on the size of your dataset and choice of learning algorithm, training can a long time or just a few seconds. We recommend assessing your time (compute) and memory requirements before training large models.
 
-To begin training a learner, pass a dataset object to the `train()` method on the learner instance like in the example below.
+To begin training a learner, pass a training Dataset object to the `train()` method on the learner instance like in the example below.
 
 ```php
 $estimator->train($dataset);
+```
+
+We can verify that a learner has been trained by calling the `trained()` method which returns true if the estimator is ready to make predictions.
+
+```php
+var_dump($estimator->trained());
+```
+
+```sh
+bool(true)
 ```
 
 ## Batch vs Online Learning
@@ -21,7 +31,7 @@ $estimator->partial($dataset3);
 > **Note:** After the initial training, the learner will expect subsequent datasets to contain the same number and order of features.
 
 ## Monitoring Progress
-Since training is often an iterative process, it is useful to obtain feedback as to how the learner is progressing in real-time. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback can indicate model overfitting or improperly tuned hyper-parameters. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with a [Screen Logger](other/loggers/screen.md) that does the job for most cases.
+Since training is often an iterative process, it is useful to obtain feedback as to how the learner is progressing in real-time. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback saves you time by allowing you to abort training early if things aren't going well. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with the [Screen Logger](other/loggers/screen.md) that does the job for most cases.
 
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
@@ -58,7 +68,7 @@ $estimator->train($dataset);
 ```
 
 ## Parallel Training
-Learners that implement the [Parallel](parallel.md) interface can utilize a parallel processing (multiprocessing) backend for its training under the hood. Parallel training can greatly reduce training time on systems with multiple processing cores (multicore). Most parallel learners do not use parallel processing by default and so to enable it you must set a parallel backend using the `setBackend()` method. In the example below, we'll train a [Random Forest](classifiers/random-forest.md) classifier with 500 trees in parallel using the [Amp](backends/amp.md) backend under the hood. We can leave the `$workers` argument blank to let it auto-detect our system's processor core count.
+Learners that implement the [Parallel](parallel.md) interface can utilize a parallel processing (multiprocessing) backend for its training under the hood. Parallel training can greatly reduce training time on multicore systems. Most parallel learners do not use parallel processing by default, so to enable it you must set a parallel backend using the `setBackend()` method. In the example below, we'll train a [Random Forest](classifiers/random-forest.md) classifier with 500 trees in parallel using the [Amp](backends/amp.md) backend under the hood. By leaving the `$workers` argument empty we let the backend auto-detect our system's processor core count.
 
 ```php
 use Rubix\ML\Classifiers\RandomForest;

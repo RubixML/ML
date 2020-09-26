@@ -2,23 +2,23 @@
 Cross Validation (CV) is a technique for assessing the generalization performance of a model using data it has never seen before. The validation score gives us a sense for how well the model will perform in the real world. In addition, it allows the user to identify problems such as underfitting, overfitting, and selection bias which are discussed in the last section.
 
 ## Creating a Testing Set
-In some cases we might have a dedicated testing set, but in others we'll need to separate some of the samples from our master dataset to be used for testing. To ensure that both the training and testing sets contain samples that accurately represent the master dataset we have a number of useful methods on the dataset object to employ.
+For some projects we'll create a dedicated testing set, but in others we can separate some of the samples from our master dataset to be used for testing on the fly. To ensure that both the training and testing sets contain samples that accurately represent the master set we have a number of methods on the [Dataset](datasets/api.md) object we can employ.
 
 ### Randomized Split
-The first method of creating a training and testing set that works for all datasets is to randomize and then split the dataset into two subsets of varying proportions. In the example below we'll create a training set with 80% of the samples and a testing set with the remaining 20% using the `randomize()` and `split()` methods on the [Dataset](datasets/api.md) object.
+The first method of creating a training and testing set that works for all datasets is to randomize and then split the dataset into two subsets of varying proportions. In the example below we'll create a training set with 80% of the samples and a testing set with the remaining 20% using the `randomize()` and `split()` methods on the Dataset object.
 
 ```php
 [$training, $testing] = $dataset->randomize()->split(0.8);
 ```
 
-You can also use the `take()` or `leave()` methods to extract a testing set while leaving the remaining samples in the master dataset.
+You can also use the `take()` method to extract a testing set while leaving the remaining samples in the training set.
 
 ```php
 $testing = $training->randomize()->take(1000);
 ```
 
 ### Stratified Split
-If we have a [Labeled](datasets/labeled.md) dataset that has categorical labels, we can split the dataset in such a way that samples belonging to each class are represented equally in both sets. This *stratified* method helps to reduce selection bias by ensuring that each subset remains balanced.
+If we have a [Labeled](datasets/labeled.md) dataset containing class labels, we can split the dataset in such a way that samples belonging to each class are represented fairly in both sets. This *stratified* method helps to reduce selection bias by ensuring that each subset remains balanced.
 
 ```php
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
@@ -146,15 +146,15 @@ Metrics can be used stand-alone or they can be used within a [Validator](cross-v
 | [Hold Out](cross-validation/hold-out.md) | Partial | |
 | [K Fold](cross-validation/k-fold.md) | Full | ● |
 | [Leave P Out](cross-validation/leave-p-out.md) | Full | ● |
-| [Monte Carlo](cross-validation/monte-carlo.md) | Partial | ● |
+| [Monte Carlo](cross-validation/monte-carlo.md) | Asymptotically Full | ● |
 
-For example, the K Fold validator automatically selects one of k *folds* of the dataset to use as a validation set and then uses the rest of the folds to train the learner. It will do this until the learner is trained and tested on every sample in the dataset at least once. The final score is then an average of the k validation scores returned by each test. To begin, pass an untrained [Learner](learner.md), a [Labeled](datasets/labeled.md) dataset, and the chosen validation metric to the validator's `test()` method.
+For example, the K Fold validator automatically selects one of k subsets referred to as a *fold* as a validation set and then uses the rest of the folds to train the learner. It does this until the learner is trained and tested on every sample in the dataset at least once. The final score is then an average of the k validation scores returned by each test. To begin, pass an untrained [Learner](learner.md), a [Labeled](datasets/labeled.md) dataset, and your chosen validation metric to the validator's `test()` method.
 
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$validator = new KFold(10);
+$validator = new KFold(5);
 
 $score = $validator->test($estimator, $dataset, new FBeta());
 
@@ -166,7 +166,7 @@ echo $score;
 ```
 
 ## Common Issues
-Poor generalization can be explained by one or more common issues detailed below.
+Poor generalization performance can be explained by one or more of these common issues.
 
 ### Underfitting
 A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. The result is a model with high bias error. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features can help, however if the problem is too severe, a more flexible learner can be chosen for the task instead.

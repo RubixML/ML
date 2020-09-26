@@ -1,5 +1,5 @@
 # Inference
-Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of unknown samples.
+Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of unknown samples containing values of the features used to train it.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are *polymorphic* in the sense that they take on the type of the base estimator they wrap.
@@ -14,7 +14,7 @@ There are 4 base estimator types to consider in Rubix ML and each type outputs a
 ## Making Predictions
 All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array.
 
-> **Note:** The inference samples must contain the same number of features (and in the same order) as the samples used to train the learner.
+> **Note:** The inference samples must contain the same number and order of feature columns as the samples used to train the learner.
 
 ```php
 $predictions = $estimator->predict($dataset);
