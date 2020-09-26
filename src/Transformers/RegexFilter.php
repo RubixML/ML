@@ -122,6 +122,10 @@ class RegexFilter implements Transformer, Stringable
      */
     public function transform(array &$samples) : void
     {
+        if (empty($this->patterns)) {
+            return;
+        }
+
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (is_string($value)) {
