@@ -26,11 +26,6 @@ class StopWordFilterBench
      */
     protected $dataset;
 
-    /**
-     * @var \Rubix\ML\Transformers\StopWordFilter
-     */
-    protected $transformer;
-
     public function setUp() : void
     {
         $k = (int) strlen(self::SAMPLE_TEXT) / 8;
@@ -42,8 +37,6 @@ class StopWordFilterBench
         }
 
         $this->dataset = new Unlabeled($samples);
-
-        $this->transformer = new StopWordFilter(self::STOP_WORDS);
     }
 
     /**
@@ -53,6 +46,16 @@ class StopWordFilterBench
      */
     public function apply() : void
     {
-        $this->dataset->apply($this->transformer);
+        $this->dataset->apply(new StopWordFilter(self::STOP_WORDS));
+    }
+
+    /**
+     * @Subject
+     * @Iterations(3)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function applyEmpty() : void
+    {
+        $this->dataset->apply(new StopWordFilter([]));
     }
 }

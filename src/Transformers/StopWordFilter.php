@@ -24,6 +24,8 @@ class StopWordFilter extends RegexFilter
      */
     public function __construct(array $stopWords = [])
     {
+        $patterns = [];
+
         foreach ($stopWords as &$word) {
             if (!is_string($word) or empty($word)) {
                 throw new InvalidArgumentException('Stop word must be a'
@@ -33,9 +35,11 @@ class StopWordFilter extends RegexFilter
             $word = preg_quote($word, '/');
         }
 
-        $pattern = sprintf('/\b(%s)\b/u', implode('|', $stopWords));
+        if (!empty($stopWords)) {
+            $patterns[] = sprintf('/\b(%s)\b/u', implode('|', $stopWords));
+        }
 
-        parent::__construct([$pattern]);
+        parent::__construct($patterns);
     }
 
     /**
