@@ -23,7 +23,7 @@ class Hamming implements Distance, Stringable
     /**
      * Return the data types that this kernel is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -35,8 +35,8 @@ class Hamming implements Distance, Stringable
     /**
      * Compute the distance between two vectors.
      *
-     * @param string[] $a
-     * @param string[] $b
+     * @param list<string> $a
+     * @param list<string> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

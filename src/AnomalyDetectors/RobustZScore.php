@@ -121,7 +121,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -202,7 +202,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -214,7 +214,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return float[]
+     * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -233,7 +233,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
+     * @return list<float>
      */
     public function rank(Dataset $dataset) : array
     {
@@ -245,7 +245,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
     /**
      * Calculate the modified z score for a given sample.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float
      */
     protected function z(array $sample) : float

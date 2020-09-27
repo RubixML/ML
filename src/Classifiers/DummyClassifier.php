@@ -73,7 +73,7 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -130,7 +130,7 @@ class DummyClassifier implements Estimator, Learner, Persistable, Stringable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {

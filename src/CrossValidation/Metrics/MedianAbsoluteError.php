@@ -27,7 +27,7 @@ class MedianAbsoluteError implements Metric, Stringable
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return float[]
+     * @return array{float,float}
      */
     public function range() : array
     {
@@ -37,7 +37,7 @@ class MedianAbsoluteError implements Metric, Stringable
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -49,8 +49,8 @@ class MedianAbsoluteError implements Metric, Stringable
     /**
      * Score a set of predictions.
      *
-     * @param (int|float)[] $predictions
-     * @param (int|float)[] $labels
+     * @param list<int|float> $predictions
+     * @param list<int|float> $labels
      * @throws \InvalidArgumentException
      * @return float
      */

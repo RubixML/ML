@@ -167,7 +167,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Return an array of feature column data types autodectected using the first
      * sample in the dataset.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function columnTypes() : array
     {
@@ -177,7 +177,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return the unique data types.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function uniqueTypes() : array
     {
@@ -649,7 +649,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @return self[]
+     * @return array{self,self}
      */
     abstract public function split(float $ratio = 0.5) : array;
 
@@ -657,7 +657,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
-     * @return self[]
+     * @return list<self>
      */
     abstract public function fold(int $k = 10) : array;
 
@@ -667,7 +667,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * as many samples as possible.
      *
      * @param int $n
-     * @return self[]
+     * @return list<self>
      */
     abstract public function batch(int $n = 50) : array;
 
@@ -677,7 +677,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      *
      * @param int $offset
      * @param mixed $value
-     * @return self[]
+     * @return array{self,self}
      */
     abstract public function partitionByColumn(int $offset, $value) : array;
 
@@ -688,7 +688,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @return self[]
+     * @return array{self,self}
      */
     abstract public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null);
 

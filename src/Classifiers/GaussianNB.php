@@ -134,7 +134,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -287,7 +287,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -307,7 +307,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -339,7 +339,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     protected function jointLogLikelihood(array $sample) : array

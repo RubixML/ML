@@ -88,7 +88,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -186,7 +186,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return (int|float)[]
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {

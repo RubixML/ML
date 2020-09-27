@@ -264,7 +264,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -364,16 +364,20 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $this->ensemble = $this->scores = $this->steps = [];
 
-        $out = $prevOut = Vector::quick($this->base->predict($training));
+        /** @var list<int|float> $predictions */
+        $predictions = $this->base->predict($training);
+
+        $out = $prevOut = Vector::quick($predictions);
         $target = Vector::quick($training->labels());
 
-        $prevPred = Vector::quick($this->base->predict($testing));
+        if (!$testing->empty()) {
+            /** @var list<int|float> $predictions */
+            $predictions = $this->base->predict($testing);
+
+            $prevPred = Vector::quick($predictions);
+        }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numRows()));
-
-        if (!$testing->empty()) {
-            $prevPred = Vector::quick($this->base->predict($testing));
-        }
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;
@@ -393,6 +397,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->ensemble[] = $booster;
 
+            /** @var list<int|float> $predictions */
             $predictions = $booster->predict($training);
 
             $out = Vector::quick($predictions)
@@ -412,6 +417,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->steps[] = $loss;
 
             if (isset($prevPred)) {
+                /** @var list<int|float> $predictions */
                 $predictions = $booster->predict($testing);
 
                 $pred = Vector::quick($predictions)
@@ -479,7 +485,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return (int|float)[]
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -489,9 +495,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
+        /** @var list<int|float> $predictions */
         $predictions = $this->base->predict($dataset);
 
         foreach ($this->ensemble as $estimator) {
+            /** @var int $j */
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $predictions[$j] += $this->rate * $prediction;
             }

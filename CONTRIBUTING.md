@@ -65,7 +65,7 @@ We employ the Domain Driven Design (DDD) methodology in our naming and design. O
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are private or protected and state must be mutated only through a well-defined public API.
 
 ### Comments
-Please provide a docblock for every class, property, method, constant, and function that includes a brief description of what the thing does. Inline comments are not permissable - instead use expressive syntax and abstractions to articulate your intent in code.
+Please provide a docblock for every class, property, method, constant, and function that includes a brief description of what the thing does. Inline comments are strongly discouraged - instead use expressive syntax and abstractions to articulate your intent in code.
 
 ### Anonymous Classes and Functions
 Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.

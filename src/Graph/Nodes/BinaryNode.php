@@ -2,16 +2,16 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Generator;
+use Traversable;
 
 interface BinaryNode extends Node
 {
     /**
      * Return the children of this node in a generator.
      *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
+     * @return \Traversable<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
-    public function children() : Generator;
+    public function children() : Traversable;
 
     /**
      * Return the left child node.

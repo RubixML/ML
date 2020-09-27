@@ -193,7 +193,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -374,7 +374,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -386,7 +386,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {

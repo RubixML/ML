@@ -100,7 +100,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     /**
      * The decision trees that make up the forest.
      *
-     * @var (\Rubix\ML\Classifiers\ClassificationTree|\Rubix\ML\Classifiers\ExtraTreeClassifier)[]|null
+     * @var list<ClassificationTree|ExtraTreeClassifier>|null
      */
     protected $trees;
 
@@ -166,7 +166,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -257,7 +257,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -289,7 +289,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -310,6 +310,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $aggregate = $this->backend->process();
 
         foreach ($aggregate as $proba) {
+            /** @var int $i */
             foreach ($proba as $i => $joint) {
                 foreach ($joint as $class => $probability) {
                     $probabilities[$i][$class] += $probability;

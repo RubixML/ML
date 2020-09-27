@@ -10,6 +10,3 @@ parameters:
         - 'benchmarks'
     excludes_analyse:
         - src/Backends/Amp.php
-        - src/Graph/Trees/BallTree.php
-        - src/Graph/Trees/ITree.php
-        - src/Graph/Trees/KDTree.php

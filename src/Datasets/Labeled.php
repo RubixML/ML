@@ -569,7 +569,7 @@ class Labeled extends Dataset
      *
      * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return array{self,self}
      */
     public function split(float $ratio = 0.5) : array
     {
@@ -597,7 +597,7 @@ class Labeled extends Dataset
      *
      * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return array{self,self}
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
@@ -635,7 +635,7 @@ class Labeled extends Dataset
      *
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return list<self>
      */
     public function fold(int $k = 10) : array
     {
@@ -666,7 +666,7 @@ class Labeled extends Dataset
      *
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return list<self>
      */
     public function stratifiedFold(int $k = 10) : array
     {
@@ -702,7 +702,7 @@ class Labeled extends Dataset
      * as many samples and labels as possible.
      *
      * @param int $n
-     * @return self[]
+     * @return list<self>
      */
     public function batch(int $n = 50) : array
     {
@@ -720,7 +720,7 @@ class Labeled extends Dataset
      * @param int $column
      * @param string|int|float $value
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return array{self,self}
      */
     public function partitionByColumn(int $column, $value) : array
     {
@@ -762,7 +762,7 @@ class Labeled extends Dataset
      * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
-     * @return self[]
+     * @return array{self,self}
      */
     public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null)
     {

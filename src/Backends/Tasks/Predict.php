@@ -12,7 +12,7 @@ class Predict extends Task
      *
      * @param \Rubix\ML\Estimator $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return (int|float|string)[]
+     * @return list<string|int|float>
      */
     public static function predict(Estimator $estimator, Dataset $dataset) : array
     {

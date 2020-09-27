@@ -32,7 +32,7 @@ class Clique implements BinaryNode, Hypersphere, Leaf
     /**
      * The centroid or multivariate mean of the cluster.
      *
-     * @var (string|int|float)[]
+     * @var list<string|int|float>
      */
     protected $center;
 
@@ -75,7 +75,7 @@ class Clique implements BinaryNode, Hypersphere, Leaf
 
     /**
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param (string|int|float)[] $center
+     * @param list<string|int|float> $center
      * @param float $radius
      */
     public function __construct(Labeled $dataset, array $center, float $radius)
@@ -98,7 +98,7 @@ class Clique implements BinaryNode, Hypersphere, Leaf
     /**
      * Return the center vector.
      *
-     * @return (string|int|float)[]
+     * @return list<string|int|float>
      */
     public function center() : array
     {

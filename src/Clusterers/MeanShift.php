@@ -228,7 +228,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -380,7 +380,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -398,7 +398,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -414,7 +414,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return int
      */
     protected function assign(array $sample) : int
@@ -437,7 +437,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the membership of a sample to each of the centroids.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     protected function membership(array $sample) : array

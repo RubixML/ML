@@ -139,7 +139,7 @@ class OneClassSVM implements Estimator, Learner, Stringable
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -189,7 +189,7 @@ class OneClassSVM implements Estimator, Learner, Stringable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {

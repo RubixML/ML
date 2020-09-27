@@ -7,7 +7,7 @@ interface Hypersphere extends Node
     /**
      * Return the centroid of the hypersphere.
      *
-     * @return (int|float)[]
+     * @return list<string|int|float>
      */
     public function center() : array;
 

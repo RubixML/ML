@@ -197,7 +197,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -407,7 +407,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -425,7 +425,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -441,7 +441,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return int
      */
     protected function assign(array $sample) : int
@@ -464,7 +464,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Return the membership of a sample to each of the k centroids.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     protected function membership(array $sample) : array
@@ -492,8 +492,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
-     * @param array[] $samples
-     * @param int[] $labels
+     * @param list<list<int|float>> $samples
+     * @param list<int> $labels
      * @return float
      */
     protected function inertia(array $samples, array $labels) : float

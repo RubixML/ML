@@ -174,7 +174,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -319,7 +319,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -331,7 +331,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return float[]
+     * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -354,7 +354,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
+     * @return list<float>
      */
     public function rank(Dataset $dataset) : array
     {
@@ -368,7 +368,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      * using the histograms generated during training.
      *
      * @param \Tensor\Matrix $projections
-     * @return float[]
+     * @return list<float>
      */
     protected function densities(Matrix $projections) : array
     {

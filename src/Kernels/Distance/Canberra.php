@@ -27,7 +27,7 @@ class Canberra implements Distance, Stringable
     /**
      * Return the data types that this kernel is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -39,8 +39,8 @@ class Canberra implements Distance, Stringable
     /**
      * Compute the distance between two vectors.
      *
-     * @param (int|float)[] $a
-     * @param (int|float)[] $b
+     * @param list<int|float> $a
+     * @param list<int|float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

@@ -46,7 +46,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * The integer-encoded estimator types this ensemble is compatible with.
      *
-     * @var int[]
+     * @var list<int>
      */
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         EstimatorType::CLASSIFIER,
@@ -57,7 +57,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
-     * @var \Rubix\ML\Learner[]
+     * @var list<\Rubix\ML\Learner>
      */
     protected $experts;
 
@@ -71,7 +71,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * The data types that the committee is compatible with.
      *
-     * @var \Rubix\ML\DataType[]
+     * @var list<\Rubix\ML\DataType>
      */
     protected $compatibility;
 
@@ -170,7 +170,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {

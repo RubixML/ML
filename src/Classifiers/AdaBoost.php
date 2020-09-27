@@ -209,7 +209,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -398,7 +398,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -409,7 +409,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -435,7 +435,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     protected function score(Dataset $dataset) : array
     {

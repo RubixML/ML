@@ -106,7 +106,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -176,7 +176,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return (int|float)[]
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {
