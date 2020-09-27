@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use Generator;
+use Traversable;
 
 use function Rubix\ML\argmax;
 
@@ -135,7 +135,7 @@ class Box implements BinaryNode, Hypercube
      *
      * @return \Generator<list<int|float>>
      */
-    public function sides() : Generator
+    public function sides() : Traversable
     {
         yield $this->min;
         yield $this->max;

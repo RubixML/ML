@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use Generator;
+use Traversable;
 
 /**
  * Neighborhood
@@ -86,7 +86,7 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
      *
      * @return \Generator<list<int|float>>
      */
-    public function sides() : Generator
+    public function sides() : Traversable
     {
         yield $this->min;
         yield $this->max;
