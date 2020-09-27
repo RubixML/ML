@@ -149,7 +149,7 @@ class SVC implements Estimator, Learner, Stringable
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -217,7 +217,7 @@ class SVC implements Estimator, Learner, Stringable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {

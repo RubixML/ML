@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use Traversable;
+use Generator;
 
 use function Rubix\ML\argmax;
 
@@ -39,21 +39,21 @@ class Box implements BinaryNode, Hypercube
     /**
      * The left and right splits of the training data.
      *
-     * @var \Rubix\ML\Datasets\Labeled[]
+     * @var array{Labeled,Labeled}
      */
     protected $groups;
 
     /**
      * The minimum vector containing all points.
      *
-     * @var (int|float)[]
+     * @var list<int|float>
      */
     protected $min;
 
     /**
      * The maximum vector containing all points.
      *
-     * @var (int|float)[]
+     * @var list<int|float>
      */
     protected $max;
 
@@ -87,9 +87,9 @@ class Box implements BinaryNode, Hypercube
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param \Rubix\ML\Datasets\Labeled[] $groups
-     * @param (int|float)[] $min
-     * @param (int|float)[] $max
+     * @param array{Labeled,Labeled} $groups
+     * @param list<int|float> $min
+     * @param list<int|float> $max
      */
     public function __construct(int $column, $value, array $groups, array $min, array $max)
     {
@@ -123,7 +123,7 @@ class Box implements BinaryNode, Hypercube
     /**
      * Return the left and right splits of the training data.
      *
-     * @return \Rubix\ML\Datasets\Labeled[]
+     * @return array{Labeled,Labeled}
      */
     public function groups() : array
     {
@@ -133,9 +133,9 @@ class Box implements BinaryNode, Hypercube
     /**
      * Return a generator with the bounding box surrounding this node.
      *
-     * @return \Traversable<array>
+     * @return \Generator<list<int|float>>
      */
-    public function sides() : Traversable
+    public function sides() : Generator
     {
         yield $this->min;
         yield $this->max;

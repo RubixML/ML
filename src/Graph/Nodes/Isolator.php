@@ -38,7 +38,7 @@ class Isolator implements BinaryNode
     /**
      * The left and right splits of the training data.
      *
-     * @var \Rubix\ML\Datasets\Dataset[]
+     * @var array{Dataset,Dataset}
      */
     protected $groups;
 
@@ -72,7 +72,7 @@ class Isolator implements BinaryNode
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param \Rubix\ML\Datasets\Dataset[] $groups
+     * @param array{Dataset,Dataset} $groups
      * @throws \InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups)
@@ -105,7 +105,7 @@ class Isolator implements BinaryNode
     /**
      * Return the left and right splits of the training data.
      *
-     * @return \Rubix\ML\Datasets\Dataset[]
+     * @return array{Dataset,Dataset}
      */
     public function groups() : array
     {

@@ -43,7 +43,7 @@ class Informedness implements Metric, Stringable
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return float[]
+     * @return array{float,float}
      */
     public function range() : array
     {
@@ -53,7 +53,7 @@ class Informedness implements Metric, Stringable
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -66,8 +66,8 @@ class Informedness implements Metric, Stringable
     /**
      * Score a set of predictions.
      *
-     * @param (string|int)[] $predictions
-     * @param (string|int)[] $labels
+     * @param list<string|int> $predictions
+     * @param list<string|int> $labels
      * @return float
      */
     public function score(array $predictions, array $labels) : float

@@ -26,7 +26,7 @@ class MulticlassBreakdown implements ReportGenerator
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -39,8 +39,8 @@ class MulticlassBreakdown implements ReportGenerator
     /**
      * Generate the report.
      *
-     * @param (string|int)[] $predictions
-     * @param (string|int)[] $labels
+     * @param list<string|int> $predictions
+     * @param list<string|int> $labels
      * @return \Rubix\ML\Report
      */
     public function generate(array $predictions, array $labels) : Report

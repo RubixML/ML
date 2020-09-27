@@ -112,7 +112,7 @@ class CSV implements Extractor
      * Return an iterator for the records in the data table.
      *
      * @throws \RuntimeException
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

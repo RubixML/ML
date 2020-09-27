@@ -26,7 +26,7 @@ class RSquared implements Metric, Stringable
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return float[]
+     * @return array{float,float}
      */
     public function range() : array
     {
@@ -36,7 +36,7 @@ class RSquared implements Metric, Stringable
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -48,8 +48,8 @@ class RSquared implements Metric, Stringable
     /**
      * Score a set of predictions.
      *
-     * @param (int|float)[] $predictions
-     * @param (int|float)[] $labels
+     * @param list<int|float> $predictions
+     * @param list<int|float> $labels
      * @return float
      */
     public function score(array $predictions, array $labels) : float

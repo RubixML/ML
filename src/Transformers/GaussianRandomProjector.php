@@ -83,7 +83,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Stringable
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {

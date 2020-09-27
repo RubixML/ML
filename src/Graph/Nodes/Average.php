@@ -7,8 +7,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 /**
  * Average
  *
- * A decision node whose outcome is the average of all the labels it is
- * responsible for.
+ * A decision node whose outcome is the average of all the labels it is responsible for.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

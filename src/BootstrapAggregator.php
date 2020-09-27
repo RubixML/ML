@@ -42,7 +42,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     /**
      * The estimator type codes that the ensemble is compatible with.
      *
-     * @var int[]
+     * @var list<int>
      */
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         EstimatorType::CLASSIFIER,
@@ -81,7 +81,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     /**
      * The ensemble of estimators.
      *
-     * @var \Rubix\ML\Learner[]
+     * @var list<\Rubix\ML\Learner>
      */
     protected $ensemble = [
         //
@@ -130,7 +130,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {

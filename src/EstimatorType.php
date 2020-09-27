@@ -61,7 +61,7 @@ class EstimatorType implements Stringable
     /**
      * An array of all the estimator type codes.
      *
-     * @var int[]
+     * @var list<int>
      */
     protected const ALL = [
         self::CLASSIFIER,

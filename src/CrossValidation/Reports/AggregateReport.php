@@ -72,7 +72,7 @@ class AggregateReport implements ReportGenerator
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -82,8 +82,8 @@ class AggregateReport implements ReportGenerator
     /**
      * Generate the report.
      *
-     * @param (string|int|float)[] $predictions
-     * @param (string|int|float)[] $labels
+     * @param list<string|int|float> $predictions
+     * @param list<string|int|float> $labels
      * @return \Rubix\ML\Report
      */
     public function generate(array $predictions, array $labels) : Report

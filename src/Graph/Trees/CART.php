@@ -372,10 +372,6 @@ abstract class CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        $k = (int) round(sqrt($dataset->numRows()));
-
-        $q = range(0.0, 1.0, 1 / max(1, $k - 1));
-
         shuffle($this->columns);
 
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
@@ -389,6 +385,12 @@ abstract class CART
             $values = $dataset->column($column);
 
             if ($this->types[$column]->isContinuous()) {
+                if (!isset($q)) {
+                    $k = (int) round(sqrt($dataset->numRows()));
+
+                    $q = range(0.0, 1.0, 1 / max(1, $k - 1));
+                }
+
                 $values = Stats::quantiles($values, $q);
             } else {
                 $values = array_unique($values);

@@ -167,7 +167,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -360,7 +360,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -380,7 +380,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -413,7 +413,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * Calculate the joint log likelihood of a sample being a member
      * of each of the gaussian components.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     protected function jointLogLikelihood(array $sample) : array
@@ -453,6 +453,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     {
         $kernel = new Euclidean();
 
+        /** @var list<list<int|float>> $centroids */
         $centroids = $this->seeder->seed($dataset, $this->k);
 
         $clusters = array_fill(0, $this->k, []);

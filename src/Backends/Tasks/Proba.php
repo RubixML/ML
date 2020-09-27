@@ -12,7 +12,7 @@ class Proba extends Task
      *
      * @param \Rubix\ML\Probabilistic $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array[]
+     * @return list<float[]>
      */
     public static function proba(Probabilistic $estimator, Dataset $dataset) : array
     {

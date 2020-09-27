@@ -263,6 +263,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
 
         $samples = $labels = $distances = [];
 
+        /** @var list<Box|Neighborhood> */
         $stack = [$this->root];
 
         while ($current = array_pop($stack)) {

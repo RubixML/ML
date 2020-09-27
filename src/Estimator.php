@@ -16,7 +16,7 @@ interface Estimator
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array;
 
@@ -31,7 +31,7 @@ interface Estimator
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return mixed[]
+     * @return list<string|int|float>
      */
     public function predict(Dataset $dataset) : array;
 

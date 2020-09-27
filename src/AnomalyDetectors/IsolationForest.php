@@ -165,7 +165,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -248,7 +248,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -260,7 +260,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return float[]
+     * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -279,7 +279,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
+     * @return list<float>
      */
     public function rank(Dataset $dataset) : array
     {
@@ -291,7 +291,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
     /**
      * Return the isolation score of a sample.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return float
      */
     protected function isolationScore(array $sample) : float

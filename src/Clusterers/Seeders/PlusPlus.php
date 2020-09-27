@@ -48,7 +48,7 @@ class PlusPlus implements Seeder, Stringable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
-     * @return array[]
+     * @return list<list<string|int|float>>
      */
     public function seed(Dataset $dataset, int $k) : array
     {

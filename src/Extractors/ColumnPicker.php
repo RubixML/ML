@@ -34,7 +34,7 @@ class ColumnPicker implements Extractor
     protected $keys;
 
     /**
-     * @param iterable<array> $iterator
+     * @param iterable<mixed[]> $iterator
      * @param (string|int)[] $keys
      */
     public function __construct(iterable $iterator, array $keys)
@@ -46,7 +46,7 @@ class ColumnPicker implements Extractor
     /**
      * Return an iterator for the records in the data table.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

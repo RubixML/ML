@@ -28,7 +28,7 @@ class ErrorAnalysis implements ReportGenerator
     /**
      * The estimator types that this report is compatible with.
      *
-     * @return \Rubix\ML\EstimatorType[]
+     * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array
     {
@@ -40,8 +40,8 @@ class ErrorAnalysis implements ReportGenerator
     /**
      * Generate the report.
      *
-     * @param (int|float)[] $predictions
-     * @param (int|float)[] $labels
+     * @param list<int|float> $predictions
+     * @param list<int|float> $labels
      * @return \Rubix\ML\Report
      */
     public function generate(array $predictions, array $labels) : Report

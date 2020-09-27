@@ -175,7 +175,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -315,7 +315,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -327,7 +327,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -343,7 +343,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the membership of a sample to each of the c centroids.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     protected function membership(array $sample) : array

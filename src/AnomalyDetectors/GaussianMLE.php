@@ -115,7 +115,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -248,7 +248,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -260,7 +260,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return float[]
+     * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -279,7 +279,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
+     * @return list<float>
      */
     public function rank(Dataset $dataset) : array
     {
@@ -291,7 +291,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
     /**
      * Calculate the log likelihood of a sample being an outlier.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float
      */
     protected function logLikelihood(array $sample) : float

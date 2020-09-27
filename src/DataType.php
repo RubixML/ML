@@ -62,7 +62,7 @@ class DataType implements Stringable
     /**
      * An array of all the high-level data type codes.
      *
-     * @var int[]
+     * @var list<int>
      */
     protected const ALL = [
         self::CONTINUOUS,
@@ -159,7 +159,7 @@ class DataType implements Stringable
     /**
      * Return an array with all possible data types.
      *
-     * @return self[]
+     * @return list<self>
      */
     public static function all() : array
     {

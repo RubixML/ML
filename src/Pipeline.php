@@ -108,7 +108,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {

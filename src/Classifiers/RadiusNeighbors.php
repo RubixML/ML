@@ -127,7 +127,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -210,7 +210,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return string[]
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -252,7 +252,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {

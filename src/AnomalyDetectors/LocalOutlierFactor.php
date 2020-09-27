@@ -145,7 +145,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
     {
@@ -234,7 +234,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return int[]
+     * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -246,7 +246,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
-     * @return float[]
+     * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -265,7 +265,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * @deprecated
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
+     * @return list<float>
      */
     public function rank(Dataset $dataset) : array
     {
@@ -278,7 +278,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * Calculate the local outlier factor of a given sample given its k
      * nearest neighbors.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float
      */
     protected function localOutlierFactor(array $sample) : float
@@ -300,8 +300,8 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * Calculate the local reachability density of a sample given its
      * distances to its k nearest neighbors.
      *
-     * @param int[] $indices
-     * @param float[] $distances
+     * @param list<int> $indices
+     * @param list<float> $distances
      * @return float
      */
     protected function localReachabilityDensity(array $indices, array $distances) : float

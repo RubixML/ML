@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use Traversable;
+use Generator;
 
 /**
  * Neighborhood
@@ -30,14 +30,14 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * The multivariate minimum of the bounding box.
      *
-     * @var (int|float)[]
+     * @var list<int|float>
      */
     protected $min;
 
     /**
      * The multivariate maximum of the bounding box.
      *
-     * @var (int|float)[]
+     * @var list<int|float>
      */
     protected $max;
 
@@ -61,8 +61,8 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
 
     /**
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param (int|float)[] $min
-     * @param (int|float)[] $max
+     * @param list<int|float> $min
+     * @param list<int|float> $max
      */
     public function __construct(Labeled $dataset, array $min, array $max)
     {
@@ -84,9 +84,9 @@ class Neighborhood implements BinaryNode, Hypercube, Leaf
     /**
      * Return the bounding box surrounding this node.
      *
-     * @return \Traversable<array>
+     * @return \Generator<list<int|float>>
      */
-    public function sides() : Traversable
+    public function sides() : Generator
     {
         yield $this->min;
         yield $this->max;

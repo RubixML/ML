@@ -250,6 +250,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                 . " greater than 0, $radius given.");
         }
 
+        /** @var list<Ball|Clique> */
         $stack = [$this->root];
 
         $samples = $labels = $distances = [];
@@ -257,10 +258,12 @@ class BallTree implements BinaryTree, Spatial, Stringable
         while ($current = array_pop($stack)) {
             if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
-                    $distance = $this->kernel->compute($sample, $child->center());
+                    if ($child instanceof Hypersphere) {
+                        $distance = $this->kernel->compute($sample, $child->center());
 
-                    if ($distance - $child->radius() < $radius) {
-                        $stack[] = $child;
+                        if ($distance - $child->radius() < $radius) {
+                            $stack[] = $child;
+                        }
                     }
                 }
 

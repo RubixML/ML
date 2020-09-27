@@ -60,7 +60,6 @@ Check out these example projects using the Rubix ML library. Most come with inst
 Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
 
 - [Github Sponsors](https://github.com/sponsors/RubixML)
-- [Patreon](https://www.patreon.com/rubixml)
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.

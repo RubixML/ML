@@ -99,6 +99,7 @@ class ITree implements BinaryTree
     {
         $this->root = Isolator::split($dataset);
 
+        /** @var list<array{Isolator,int}> */
         $stack = [[$this->root, 1]];
 
         while ($stack) {
@@ -142,7 +143,7 @@ class ITree implements BinaryTree
     /**
      * Search the tree for a leaf node.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return \Rubix\ML\Graph\Nodes\Depth|null
      */
     public function search(array $sample) : ?Depth
