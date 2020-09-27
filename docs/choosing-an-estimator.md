@@ -12,7 +12,7 @@ $estimator = new KNearestNeighbors(10, false, new Minkowski(2.5));
 Classifiers are supervised learners that predict a categorical *class* label. They can be used to recognize (`cat`, `dog`, `turtle`), differentiate (`spam`, `not spam`), or describe (`running`, `walking`) the samples in a dataset based on the labels they were trained on. In addition, classifiers that implement the [Probabilistic](probabilistic.md) interface can infer the joint probability distribution of each possible class given an unclassified sample.
 
 | Classifier | Flexibility | Proba | Online | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | [AdaBoost](classifiers/adaboost.md) | High | ● | | Depends on base learner |
 | [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Categorical, Continuous |
 | [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Categorical, Continuous |
@@ -31,7 +31,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, regressors' range is unbounded. Thus, the number of possible continuous-valued predictions a regressor *could* make is infinite.
 
 | Regressor | Flexibility | Online | Verbose | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | ● | Continuous |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Categorical, Continuous |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | Categorical, Continuous |
@@ -47,7 +47,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however, since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers focus on differentiating and grouping samples using only the patterns discovered in the sample's features. Clusterers that implement the [Probabilistic](probabilistic.md) interface can also output the probabilities that a sample belongs to a particular cluster.
 
 | Clusterer | Flexibility | Proba | Online | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | [DBSCAN](clusterers/dbscan.md) | High | | | Depends on distance kernel |
 | [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Continuous |
 | [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Continuous |
@@ -58,7 +58,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 Anomaly Detectors are unsupervised learners that predict a boolean-valued outcome encoded as `1` for an outlier or `0` for a regular sample. They are specialized to perform *one class* classification on unbalanced datasets without the need for labeled data. In addition, anomaly detectors that implement the [Ranking](ranking.md) interface can output an anomaly score for each sample in a dataset which can be used to rank the samples from highest to lowest likelihood of being an outlier.
 
 | Anomaly Detector | Scope | Ranking | Online | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | Continuous |
 | [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local (Features) | ● | | Categorical, Continuous |
 | [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local (Samples) | ● | | Depends on distance kernel |
