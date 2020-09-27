@@ -3,7 +3,7 @@
 namespace Rubix\ML\Graph\Nodes\Traits;
 
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use Generator;
+use Traversable;
 
 /**
  * Binary Children
@@ -36,7 +36,7 @@ trait HasBinaryChildren
      *
      * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
-    public function children() : Generator
+    public function children() : Traversable
     {
         if ($this->left) {
             yield $this->left;
