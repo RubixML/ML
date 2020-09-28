@@ -72,7 +72,8 @@ abstract class ExtraTree extends CART
             $bestColumn,
             $bestValue,
             $bestGroups,
-            $bestImpurity
+            $bestImpurity,
+            $dataset->numRows(),
         );
     }
 }

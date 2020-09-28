@@ -57,15 +57,16 @@ class Comparison implements Decision
      * @param string|int|float $value
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param float $impurity
+     * @param int $n
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $groups, float $impurity)
+    public function __construct(int $column, $value, array $groups, float $impurity, int $n)
     {
         $this->column = $column;
         $this->value = $value;
         $this->groups = $groups;
         $this->impurity = $impurity;
-        $this->n = (int) array_sum(array_map('count', $groups));
+        $this->n = $n;
     }
 
     /**

@@ -184,26 +184,22 @@ abstract class CART
     {
         $this->featureCount = $dataset->numColumns();
 
-        $this->types = $dataset->columnTypes();
-
-        $this->columns = array_keys($this->types);
-
         if ($this->fitMaxFeatures) {
             $this->maxFeatures = (int) round(sqrt($this->featureCount));
         }
+
+        $this->types = $dataset->columnTypes();
+
+        $this->columns = array_keys($this->types);
 
         $this->root = $this->split($dataset);
 
         $stack = [[$this->root, 1]];
 
-        while ($stack) {
-            [$current, $depth] = array_pop($stack) ?? [];
-
+        while ([$current, $depth] = array_pop($stack)) {
             [$left, $right] = $current->groups();
 
             $current->cleanup();
-
-            $rightNode = $leftNode = null;
 
             ++$depth;
 
@@ -238,12 +234,7 @@ abstract class CART
             $current->attachLeft($leftNode);
             $current->attachRight($rightNode);
 
-            if ($current->purityIncrease() < $this->minPurityIncrease) {
-                $node = $this->terminate($left->merge($right));
-
-                $current->attachLeft($node);
-                $current->attachRight($node);
-            } else {
+            if ($current->purityIncrease() >= $this->minPurityIncrease) {
                 if ($leftNode instanceof Comparison) {
                     $stack[] = [$leftNode, $depth];
                 }
@@ -251,6 +242,11 @@ abstract class CART
                 if ($rightNode instanceof Comparison) {
                     $stack[] = [$rightNode, $depth];
                 }
+            } else {
+                $node = $this->terminate($left->merge($right));
+
+                $current->attachLeft($node);
+                $current->attachRight($node);
             }
         }
 
@@ -260,7 +256,7 @@ abstract class CART
     /**
      * Search the decision tree for a leaf node and return it.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return \Rubix\ML\Graph\Nodes\Outcome|null
      */
     public function search(array $sample) : ?Outcome
@@ -376,6 +372,8 @@ abstract class CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
+        $m = $dataset->numRows();
+
         shuffle($this->columns);
 
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
@@ -390,7 +388,7 @@ abstract class CART
 
             if ($this->types[$column]->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / max(2.0, sqrt($dataset->numRows()));
+                    $step = 1.0 / max(2.0, sqrt($m));
 
                     $q = array_slice(range(0.0, 1.0, $step), 1, -1);
                 }
@@ -422,7 +420,8 @@ abstract class CART
             $bestColumn,
             $bestValue,
             $bestGroups,
-            $bestImpurity
+            $bestImpurity,
+            $m,
         );
     }
 
