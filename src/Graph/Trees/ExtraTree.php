@@ -29,6 +29,8 @@ abstract class ExtraTree extends CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
+        $m = $dataset->numRows();
+
         shuffle($this->columns);
 
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
@@ -54,7 +56,7 @@ abstract class ExtraTree extends CART
 
             $groups = $dataset->partitionByColumn($column, $value);
 
-            $impurity = $this->splitImpurity($groups);
+            $impurity = $this->splitImpurity($groups, $m);
 
             if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
@@ -72,7 +74,8 @@ abstract class ExtraTree extends CART
             $bestColumn,
             $bestValue,
             $bestGroups,
-            $bestImpurity
+            $bestImpurity,
+            $m
         );
     }
 }
