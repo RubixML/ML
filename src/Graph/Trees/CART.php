@@ -403,7 +403,7 @@ abstract class CART
             foreach ($values as $value) {
                 $groups = $dataset->partitionByColumn($column, $value);
 
-                $impurity = $this->splitImpurity($groups);
+                $impurity = $this->splitImpurity($groups, $m);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
@@ -431,22 +431,21 @@ abstract class CART
      * Calculate the impurity of a given split.
      *
      * @param \Rubix\ML\Datasets\Labeled[] $groups
+     * @param int $n
      * @return float
      */
-    protected function splitImpurity(array $groups) : float
+    protected function splitImpurity(array $groups, int $n) : float
     {
-        $n = array_sum(array_map('count', $groups));
-
         $impurity = 0.0;
 
         foreach ($groups as $dataset) {
-            $m = $dataset->numRows();
+            $nHat = $dataset->numRows();
 
-            if ($m <= 1) {
+            if ($nHat <= 1) {
                 continue 1;
             }
 
-            $impurity += ($m / $n) * $this->impurity($dataset);
+            $impurity += ($nHat / $n) * $this->impurity($dataset);
         }
 
         return $impurity;
