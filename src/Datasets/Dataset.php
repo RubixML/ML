@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
@@ -355,7 +356,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function toJSON(bool $pretty = false) : Encoding
     {
-        return new Encoding(json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
+        return new Encoding(JSON::encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
     }
 
     /**
@@ -383,7 +384,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 $row = array_combine($header, $row);
             }
 
-            $ndjson .= json_encode($row) . PHP_EOL;
+            $ndjson .= JSON::encode($row) . PHP_EOL;
         }
 
         return new Encoding($ndjson);

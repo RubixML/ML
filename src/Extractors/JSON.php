@@ -5,8 +5,7 @@ namespace Rubix\ML\Extractors;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
-
-use function is_null;
+use Rubix\ML\Other\Helpers\JSON as JSONHelper;
 
 /**
  * JSON
@@ -62,12 +61,6 @@ class JSON implements Extractor
             throw new RuntimeException("Could not open $this->path.");
         }
 
-        $records = json_decode($data, true);
-
-        if (is_null($records)) {
-            throw new RuntimeException('Malformed JSON document.');
-        }
-
-        yield from $records;
+        yield from JSONHelper::decode($data);
     }
 }

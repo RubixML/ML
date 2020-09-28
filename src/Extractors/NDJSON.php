@@ -5,8 +5,7 @@ namespace Rubix\ML\Extractors;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
-
-use function is_null;
+use Rubix\ML\Other\Helpers\JSON;
 
 /**
  * NDJSON
@@ -83,13 +82,15 @@ class NDJSON implements Extractor
                 continue 1;
             }
 
-            $record = json_decode($data, true);
-
-            if (is_null($record)) {
-                throw new RuntimeException("Malformed JSON on line $line.");
+            try {
+                yield JSON::decode($data);
+            } catch (RuntimeException $e) {
+                throw new RuntimeException(
+                    "JSON Error on line: $line. (" . $e->getMessage() . ')',
+                    $e->getCode(),
+                    $e
+                );
             }
-
-            yield $record;
         }
     }
 }

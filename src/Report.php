@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
+use Rubix\ML\Other\Helpers\JSON;
 use RuntimeException;
 use ArrayAccess;
 use Stringable;
@@ -58,7 +59,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
      */
     public function toJSON(bool $pretty = true) : Encoding
     {
-        return new Encoding(json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
+        return new Encoding(JSON::encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
     }
 
     /**
