@@ -102,7 +102,9 @@ class ITree implements BinaryTree
         /** @var list<array{Isolator,int}> */
         $stack = [[$this->root, 1]];
 
-        while ([$current, $depth] = array_pop($stack)) {
+        while ($stack) {
+            [$current, $depth] = array_pop($stack);
+
             [$left, $right] = $current->groups();
 
             $current->cleanup();
