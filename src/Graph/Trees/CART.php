@@ -423,7 +423,7 @@ abstract class CART
             $bestValue,
             $bestGroups,
             $bestImpurity,
-            $m,
+            $m
         );
     }
 
