@@ -196,9 +196,7 @@ abstract class CART
 
         $stack = [[$this->root, 1]];
 
-        while ($stack) {
-            [$current, $depth] = array_pop($stack) ?? [];
-
+        while ([$current, $depth] = array_pop($stack)) {
             [$left, $right] = $current->groups();
 
             $current->cleanup();

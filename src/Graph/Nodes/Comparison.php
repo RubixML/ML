@@ -7,7 +7,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 /**
  * Comparison
  *
- * A split node that compares the values in a single feature column with the value on the node (i.e. the split value).
+ * A split node that compares the values in a single feature column with the value on the
+ * node (i.e. the split value).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -18,14 +19,14 @@ class Comparison implements Decision
     use HasBinaryChildren;
 
     /**
-     * The feature column (index) of the split value.
+     * The feature column offset.
      *
      * @var int
      */
     protected $column;
 
     /**
-     * The value that the node splits on.
+     * The value to split on.
      *
      * @var int|float|string
      */
