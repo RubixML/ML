@@ -203,6 +203,8 @@ abstract class CART
 
             $current->cleanup();
 
+            $rightNode = $leftNode = null;
+
             ++$depth;
 
             if ($left->empty() or $right->empty()) {
@@ -222,31 +224,33 @@ abstract class CART
             }
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->split($left);
-
-                if ($node->purityIncrease() >= $this->minPurityIncrease) {
-                    $current->attachLeft($node);
-
-                    $stack[] = [$node, $depth];
-                } else {
-                    $current->attachLeft($this->terminate($left));
-                }
+                $leftNode = $this->split($left);
             } else {
-                $current->attachLeft($this->terminate($left));
+                $leftNode = $this->terminate($left);
             }
 
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->split($right);
-
-                if ($node->purityIncrease() >= $this->minPurityIncrease) {
-                    $current->attachRight($node);
-
-                    $stack[] = [$node, $depth];
-                } else {
-                    $current->attachRight($this->terminate($right));
-                }
+                $rightNode = $this->split($right);
             } else {
-                $current->attachRight($this->terminate($right));
+                $rightNode = $this->terminate($right);
+            }
+
+            $current->attachLeft($leftNode);
+            $current->attachRight($rightNode);
+
+            if ($current->purityIncrease() < $this->minPurityIncrease) {
+                $node = $this->terminate($left->merge($right));
+
+                $current->attachLeft($node);
+                $current->attachRight($node);
+            } else {
+                if ($leftNode instanceof Comparison) {
+                    $stack[] = [$leftNode, $depth];
+                }
+
+                if ($rightNode instanceof Comparison) {
+                    $stack[] = [$rightNode, $depth];
+                }
             }
         }
 
@@ -386,9 +390,9 @@ abstract class CART
 
             if ($this->types[$column]->isContinuous()) {
                 if (!isset($q)) {
-                    $k = (int) round(sqrt($dataset->numRows()));
+                    $step = 1.0 / max(2.0, sqrt($dataset->numRows()));
 
-                    $q = range(0.0, 1.0, 1 / max(1, $k - 1));
+                    $q = array_slice(range(0.0, 1.0, $step), 1, -1);
                 }
 
                 $values = Stats::quantiles($values, $q);
