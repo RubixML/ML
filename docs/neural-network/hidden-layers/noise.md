@@ -6,7 +6,7 @@ This layer adds random Gaussian noise to the inputs with a user-defined standard
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | stddev | 0.1 | float | The standard deviation of the gaussian noise to add to the inputs. |
+| 1 | stddev | 0.1 | float | The standard deviation of the Gaussian noise added to the inputs. |
 
 ## Example
 ```php
