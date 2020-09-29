@@ -243,10 +243,13 @@ abstract class CART
                     $stack[] = [$rightNode, $depth];
                 }
             } else {
-                $node = $this->terminate($left->merge($right));
+                if ($leftNode instanceof Comparison) {
+                    $current->attachLeft($this->terminate($left));
+                }
 
-                $current->attachLeft($node);
-                $current->attachRight($node);
+                if ($rightNode instanceof Comparison) {
+                    $current->attachRight($this->terminate($right));
+                }
             }
         }
 
@@ -372,7 +375,7 @@ abstract class CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        $m = $dataset->numRows();
+        $n = $dataset->numRows();
 
         shuffle($this->columns);
 
@@ -388,7 +391,7 @@ abstract class CART
 
             if ($this->types[$column]->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / max(2.0, sqrt($m));
+                    $step = 1.0 / max(2.0, sqrt($n));
 
                     $q = array_slice(range(0.0, 1.0, $step), 1, -1);
                 }
@@ -401,7 +404,7 @@ abstract class CART
             foreach ($values as $value) {
                 $groups = $dataset->partitionByColumn($column, $value);
 
-                $impurity = $this->splitImpurity($groups, $m);
+                $impurity = $this->splitImpurity($groups, $n);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
@@ -410,7 +413,7 @@ abstract class CART
                     $bestImpurity = $impurity;
                 }
 
-                if ($impurity <= 0.0) {
+                if ($impurity === 0.0) {
                     break 2;
                 }
             }
@@ -421,7 +424,7 @@ abstract class CART
             $bestValue,
             $bestGroups,
             $bestImpurity,
-            $m
+            $n
         );
     }
 

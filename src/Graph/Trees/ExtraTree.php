@@ -29,7 +29,7 @@ abstract class ExtraTree extends CART
      */
     protected function split(Labeled $dataset) : Comparison
     {
-        $m = $dataset->numRows();
+        $n = $dataset->numRows();
 
         shuffle($this->columns);
 
@@ -56,7 +56,7 @@ abstract class ExtraTree extends CART
 
             $groups = $dataset->partitionByColumn($column, $value);
 
-            $impurity = $this->splitImpurity($groups, $m);
+            $impurity = $this->splitImpurity($groups, $n);
 
             if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
@@ -65,7 +65,7 @@ abstract class ExtraTree extends CART
                 $bestImpurity = $impurity;
             }
 
-            if ($impurity <= 0.0) {
+            if ($impurity === 0.0) {
                 break 1;
             }
         }
@@ -75,7 +75,7 @@ abstract class ExtraTree extends CART
             $bestValue,
             $bestGroups,
             $bestImpurity,
-            $m
+            $n
         );
     }
 }
