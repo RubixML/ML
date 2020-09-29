@@ -322,22 +322,18 @@ class KDTree implements BinaryTree, Spatial, Stringable
     {
         $current = $this->root;
 
-        $path = [];
+        $path = [$current];
 
-        while ($current) {
-            $path[] = $current;
-
-            if ($current instanceof Box) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
+        while ($current instanceof Box) {
+            if ($sample[$current->column()] < $current->value()) {
+                $current = $current->left();
+            } else {
+                $current = $current->right();
             }
 
-            break 1;
+            if ($current) {
+                $path[] = $current;
+            }
         }
 
         return $path;

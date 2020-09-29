@@ -7,7 +7,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 /**
  * Comparison
  *
- * A split node that compares the values in a single feature column with the value on the node (i.e. the split value).
+ * A split node that compares the values in a single feature column with the value on the
+ * node (i.e. the split value).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -18,14 +19,14 @@ class Comparison implements Decision
     use HasBinaryChildren;
 
     /**
-     * The feature column (index) of the split value.
+     * The feature column offset.
      *
      * @var int
      */
     protected $column;
 
     /**
-     * The value that the node splits on.
+     * The value to split on.
      *
      * @var int|float|string
      */
@@ -57,15 +58,16 @@ class Comparison implements Decision
      * @param string|int|float $value
      * @param \Rubix\ML\Datasets\Labeled[] $groups
      * @param float $impurity
+     * @param int $n
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $groups, float $impurity)
+    public function __construct(int $column, $value, array $groups, float $impurity, int $n)
     {
         $this->column = $column;
         $this->value = $value;
         $this->groups = $groups;
         $this->impurity = $impurity;
-        $this->n = (int) array_sum(array_map('count', $groups));
+        $this->n = $n;
     }
 
     /**

@@ -28,6 +28,8 @@ class ComparisonTest extends TestCase
 
     protected const IMPURITY = 400.0;
 
+    protected const N = 4;
+
     /**
      * @var \Rubix\ML\Graph\Nodes\Comparison
      */
@@ -39,11 +41,11 @@ class ComparisonTest extends TestCase
     protected function setUp() : void
     {
         $groups = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(self::SAMPLES, self::LABELS),
         ];
 
-        $this->node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
+        $this->node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY, self::N);
     }
 
     /**
@@ -79,8 +81,8 @@ class ComparisonTest extends TestCase
     public function groups() : void
     {
         $expected = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(self::SAMPLES, self::LABELS),
         ];
 
         $this->assertEquals($expected, $this->node->groups());
@@ -97,8 +99,19 @@ class ComparisonTest extends TestCase
     /**
      * @test
      */
+    public function purityIncrease() : void
+    {
+        $this->node->attachLeft(new Comparison(2, 0.0, [], 50.0, 1));
+        $this->node->attachRight(new Comparison(4, -12.0, [], 200.0, 3));
+
+        $this->assertSame(237.5, $this->node->purityIncrease());
+    }
+
+    /**
+     * @test
+     */
     public function n() : void
     {
-        $this->assertSame(2, $this->node->n());
+        $this->assertSame(self::N, $this->node->n());
     }
 }
