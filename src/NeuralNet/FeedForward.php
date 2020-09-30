@@ -207,7 +207,7 @@ class FeedForward implements Network
     /**
      * Backpropagate the gradient produced by the cost function and return the loss.
      *
-     * @param (string|int|float)[] $labels
+     * @param list<string|int|float> $labels
      * @return float
      */
     public function backpropagate(array $labels) : float

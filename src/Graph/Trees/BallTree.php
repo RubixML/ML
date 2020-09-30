@@ -166,10 +166,10 @@ class BallTree implements BinaryTree, Spatial, Stringable
     /**
      * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function nearest(array $sample, int $k = 1) : array
     {
@@ -237,11 +237,11 @@ class BallTree implements BinaryTree, Spatial, Stringable
     /**
      * Return all samples, labels, and distances within a given radius of a sample.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param float $radius
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function range(array $sample, float $radius) : array
     {
@@ -299,8 +299,8 @@ class BallTree implements BinaryTree, Spatial, Stringable
     /**
      * Return the path of a sample taken from the root node to a leaf node in an array.
      *
-     * @param (string|int|float)[] $sample
-     * @return \Rubix\ML\Graph\Nodes\Hypersphere[]
+     * @param list<string|int|float> $sample
+     * @return list<\Rubix\ML\Graph\Nodes\Hypersphere>
      */
     protected function path(array $sample) : array
     {

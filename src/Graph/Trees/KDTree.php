@@ -175,10 +175,10 @@ class KDTree implements BinaryTree, Spatial, Stringable
     /**
      * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function nearest(array $sample, int $k = 1) : array
     {
@@ -249,10 +249,10 @@ class KDTree implements BinaryTree, Spatial, Stringable
      * Run a range search over every cluster within radius and return
      * the labels and distances in a 2-tuple.
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @param float $radius
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function range(array $sample, float $radius) : array
     {
@@ -315,8 +315,8 @@ class KDTree implements BinaryTree, Spatial, Stringable
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param (int|float)[] $sample
-     * @return mixed[]
+     * @param list<int|float> $sample
+     * @return list<\Rubix\ML\Graph\Nodes\BinaryNode|null>
      */
     protected function path(array $sample) : array
     {

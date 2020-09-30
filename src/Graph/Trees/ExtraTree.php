@@ -49,9 +49,9 @@ abstract class ExtraTree extends CART
 
                 $value = rand($min, $max) / PHI;
             } else {
-                $values = array_unique($values);
+                $offset = array_rand(array_unique($values));
 
-                $value = $values[array_rand($values)];
+                $value = $values[$offset];
             }
 
             $groups = $dataset->partitionByColumn($column, $value);

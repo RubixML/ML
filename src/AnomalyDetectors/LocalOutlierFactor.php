@@ -214,7 +214,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
             $iHat[] = $indices;
             $dHat[] = $distances;
 
-            $this->kdistances[] = end($distances);
+            $this->kdistances[] = end($distances) ?: INF;
         }
 
         $this->lrds = array_map([$this, 'localReachabilityDensity'], $iHat, $dHat);
@@ -300,7 +300,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * Calculate the local reachability density of a sample given its
      * distances to its k nearest neighbors.
      *
-     * @param list<int> $indices
+     * @param list<string|int|float> $indices
      * @param list<float> $distances
      * @return float
      */

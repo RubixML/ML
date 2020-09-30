@@ -26,9 +26,9 @@ interface Spatial extends Tree
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param int $k
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function nearest(array $sample, int $k) : array;
 
@@ -36,9 +36,9 @@ interface Spatial extends Tree
      * Return all samples, labels, and distances within a given radius of a
      * sample.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param float $radius
-     * @return array[]
+     * @return array{array[],(string|int|float)[],float[]}
      */
     public function range(array $sample, float $radius) : array;
 

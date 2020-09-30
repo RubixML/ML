@@ -43,8 +43,8 @@ class Isolator implements BinaryNode
     protected $groups;
 
     /**
-     * Factory method to build a isolator node from a dataset
-     * using a random split of the dataset.
+     * Factory method to build a isolator node from a dataset using a random split
+     * of the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return self
@@ -61,7 +61,9 @@ class Isolator implements BinaryNode
 
             $value = rand($min, $max) / PHI;
         } else {
-            $value = $values[array_rand(array_unique($values))];
+            $offset = array_rand(array_unique($values));
+
+            $value = $values[$offset];
         }
 
         $groups = $dataset->partitionByColumn($column, $value);
