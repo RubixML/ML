@@ -19,7 +19,7 @@ use const JSON_ERROR_INF_OR_NAN;
 /**
  * JSON
  *
- * A helper class providing functions relating to json.
+ * A helper class providing functions relating to JSON (Javascript Object Notation).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -27,8 +27,16 @@ use const JSON_ERROR_INF_OR_NAN;
  */
 class JSON
 {
+    /**
+     * The default maximum stack depth.
+     *
+     * @var int
+     */
     protected const DEFAULT_DEPTH = 512;
 
+    /**
+     * @var int
+     */
     protected const DEFAULT_OPTIONS = 0;
 
     /**
@@ -37,41 +45,51 @@ class JSON
      * @param string $json
      * @param int $options
      * @param int $depth
-     *
      * @throws \RuntimeException
-     *
      * @return array<mixed>
      */
     public static function decode(string $json, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : array
     {
         $value = json_decode($json, true, $depth, $options);
+
         $error = json_last_error();
 
         switch ($error) {
             case JSON_ERROR_NONE:
                 return $value;
+
             case JSON_ERROR_SYNTAX:
-                throw new RuntimeException('Malformed JSON Provided: Syntax Error.');
+                throw new RuntimeException('Syntax error.');
+
             case JSON_ERROR_DEPTH:
-                throw new RuntimeException('Maximum stack depth exceeded. (max-depth: ' . $depth . ')');
+                throw new RuntimeException("Maximum stack depth of $depth exceeded.");
+
             case JSON_ERROR_STATE_MISMATCH:
-                throw new RuntimeException('Invalid or malformed JSON: state mismatch.');
+                throw new RuntimeException('Invalid or malformed JSON.');
+
             case JSON_ERROR_CTRL_CHAR:
                 throw new RuntimeException('Unexpected control character found.');
+
             case JSON_ERROR_RECURSION:
-                throw new RuntimeException('Recursion detected.');
+                throw new RuntimeException('Recursive references detected.');
+
             case JSON_ERROR_UTF8:
-                throw new RuntimeException('Malformed UTF-8 characters, possibly incorrectly encoded.');
+                throw new RuntimeException('Malformed UTF-8 characters, check encoding.');
+
             case JSON_ERROR_UTF16:
-                throw new RuntimeException('Malformed UTF-16 characters, possibly incorrectly encoded.');
+                throw new RuntimeException('Malformed UTF-16 characters, check encoding.');
+
             case JSON_ERROR_UNSUPPORTED_TYPE:
                 throw new RuntimeException('Unsupported type encountered.');
+
             case JSON_ERROR_INVALID_PROPERTY_NAME:
                 throw new RuntimeException('Invalid property name encountered.');
+
             case JSON_ERROR_INF_OR_NAN:
                 throw new RuntimeException('INF or NAN values values cannot be encoded.');
+
             default:
-                throw new RuntimeException('Unknown JSON error. (code: ' . $error . ')');
+                throw new RuntimeException("Unknown JSON error. (code: $error')");
         }
     }
 
@@ -89,8 +107,9 @@ class JSON
     public static function encode($value, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : string
     {
         $data = json_encode($value, $options, $depth);
+
         if ($data === false) {
-            throw new RuntimeException('Could not json_encode provided data');
+            throw new RuntimeException('Could not json_encode provided data.');
         }
 
         return $data;

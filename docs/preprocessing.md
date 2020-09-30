@@ -207,7 +207,7 @@ When it is undesirable for a dataset to contain duplicate records, you can remov
 $dataset->deduplicate();
 ```
 
-> **Note:** De-duplication of large datasets may take a significant amount of processing time.
+> **Note:** The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
 If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.
