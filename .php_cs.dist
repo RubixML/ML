@@ -14,6 +14,12 @@ return Config::create()->setRules([
     'binary_operator_spaces' => true,
     'blank_line_after_namespace' => true,
     'blank_line_after_opening_tag' => true,
+    'blank_line_before_statement' => [
+        'statements' => [
+            'break', 'case', 'continue', 'declare', 'do', 'for', 'foreach', 'return',
+            'switch', 'try', 'while',
+        ],
+    ],
     'braces' => [
         'allow_single_line_closure' => false,
         'position_after_control_structures' => 'same',
