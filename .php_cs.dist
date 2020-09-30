@@ -16,8 +16,8 @@ return Config::create()->setRules([
     'blank_line_after_opening_tag' => true,
     'blank_line_before_statement' => [
         'statements' => [
-            'break', 'case', 'continue', 'declare', 'do', 'for', 'foreach', 'return',
-            'switch', 'try', 'while',
+            'break', 'case', 'continue', 'declare', 'default', 'do', 'for',
+            'foreach', 'return', 'switch', 'try', 'while',
         ],
     ],
     'braces' => [
