@@ -111,6 +111,7 @@ class DataType implements Stringable
                 }
 
                 return new self(self::OTHER);
+
             default:
                 return new self(self::OTHER);
         }
