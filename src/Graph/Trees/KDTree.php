@@ -178,7 +178,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
      * @param list<int|float> $sample
      * @param int $k
      * @throws \InvalidArgumentException
-     * @return array{array[],(string|int|float)[],float[]}
+     * @return array{array[],mixed[],float[]}
      */
     public function nearest(array $sample, int $k = 1) : array
     {
@@ -252,7 +252,7 @@ class KDTree implements BinaryTree, Spatial, Stringable
      * @param list<int|float> $sample
      * @param float $radius
      * @throws \InvalidArgumentException
-     * @return array{array[],(string|int|float)[],float[]}
+     * @return array{array[],mixed[],float[]}
      */
     public function range(array $sample, float $radius) : array
     {

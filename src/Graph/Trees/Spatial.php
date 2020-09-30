@@ -28,7 +28,7 @@ interface Spatial extends Tree
      *
      * @param list<string|int|float> $sample
      * @param int $k
-     * @return array{array[],(string|int|float)[],float[]}
+     * @return array{array[],mixed[],float[]}
      */
     public function nearest(array $sample, int $k) : array;
 
@@ -38,7 +38,7 @@ interface Spatial extends Tree
      *
      * @param list<string|int|float> $sample
      * @param float $radius
-     * @return array{array[],(string|int|float)[],float[]}
+     * @return array{array[],mixed[],float[]}
      */
     public function range(array $sample, float $radius) : array;
 
