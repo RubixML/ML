@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -32,7 +32,7 @@ class ELU implements ActivationFunction, Stringable
 
     /**
      * @param float $alpha
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0)
     {

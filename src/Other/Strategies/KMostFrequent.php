@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function array_slice;
@@ -38,7 +38,7 @@ class KMostFrequent implements Categorical, Stringable
 
     /**
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 1)
     {
@@ -54,7 +54,7 @@ class KMostFrequent implements Categorical, Stringable
      * Fit the guessing strategy to a set of values.
      *
      * @param (string|int|float)[] $values
-     * @throws \InvalidArgumentException;
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException;
      */
     public function fit(array $values) : void
     {
@@ -75,7 +75,7 @@ class KMostFrequent implements Categorical, Stringable
     /**
      * Make a guess.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */
     public function guess() : string

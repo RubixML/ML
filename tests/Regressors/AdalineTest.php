@@ -18,8 +18,8 @@ use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Regressors

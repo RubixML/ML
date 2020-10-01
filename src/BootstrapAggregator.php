@@ -14,8 +14,8 @@ use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function in_array;
@@ -91,7 +91,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * @param \Rubix\ML\Learner $base
      * @param int $estimators
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
@@ -166,7 +166,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * training set.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -201,7 +201,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

@@ -72,7 +72,7 @@ class MCC implements Metric, Stringable
      *
      * @param list<string|int> $predictions
      * @param list<string|int> $labels
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float

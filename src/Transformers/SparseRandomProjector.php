@@ -5,7 +5,7 @@ namespace Rubix\ML\Transformers;
 use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 use function is_null;
@@ -44,7 +44,7 @@ class SparseRandomProjector extends GaussianRandomProjector
     /**
      * @param int $dimensions
      * @param float|null $sparsity
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
@@ -62,7 +62,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {

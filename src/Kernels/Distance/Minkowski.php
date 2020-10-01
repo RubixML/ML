@@ -3,7 +3,7 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -37,7 +37,7 @@ class Minkowski implements Distance, Stringable
 
     /**
      * @param float $lambda
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $lambda = 3.0)
     {

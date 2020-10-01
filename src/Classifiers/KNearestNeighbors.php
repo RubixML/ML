@@ -20,8 +20,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\argmax;
@@ -95,7 +95,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
@@ -157,7 +157,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -182,7 +182,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -205,7 +205,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -241,7 +241,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array

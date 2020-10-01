@@ -5,7 +5,7 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use __PHP_Incomplete_Class;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function is_null;
@@ -24,7 +24,7 @@ use function is_object;
 class Igbinary implements Serializer, Stringable
 {
     /**
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct()
     {

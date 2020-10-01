@@ -7,8 +7,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -34,7 +34,7 @@ class HoldOut implements Validator, Stringable
 
     /**
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $ratio = 0.2)
     {
@@ -52,7 +52,7 @@ class HoldOut implements Validator, Stringable
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float

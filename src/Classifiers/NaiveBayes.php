@@ -19,8 +19,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\logsumexp;
@@ -100,7 +100,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * @param float $smoothing
      * @param (int|float)[]|null $priors
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $smoothing = 1.0, ?array $priors = null)
     {
@@ -215,7 +215,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -286,7 +286,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -306,7 +306,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

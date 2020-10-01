@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 use svm;
 
@@ -18,7 +18,7 @@ use svm;
 class Linear implements Kernel, Stringable
 {
     /**
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct()
     {

@@ -5,7 +5,7 @@ namespace Rubix\ML\Graph\Trees;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Nodes\Isolator;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * I-Tree
@@ -45,7 +45,7 @@ class ITree implements BinaryTree
 
     /**
      * @param int $maxHeight
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $maxHeight = PHP_INT_MAX)
     {

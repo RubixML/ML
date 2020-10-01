@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 use Generator;
 
@@ -67,7 +67,7 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Return the width of the layer.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public function width() : int
@@ -128,7 +128,7 @@ class PReLU implements Hidden, Parametric, Stringable
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
@@ -173,7 +173,7 @@ class PReLU implements Hidden, Parametric, Stringable
      * Compute the leaky ReLU activation function and return a matrix.
      *
      * @param \Tensor\Matrix $z
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
@@ -207,7 +207,7 @@ class PReLU implements Hidden, Parametric, Stringable
      * Calculate the derivative of the activation function at a given output.
      *
      * @param \Tensor\Matrix $z
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $z) : Matrix
@@ -238,7 +238,7 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Return the parameters of the layer.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator

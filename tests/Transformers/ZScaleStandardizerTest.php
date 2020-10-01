@@ -8,7 +8,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Transformers

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function gettype;
@@ -91,7 +91,7 @@ class RegexFilter implements Transformer, Stringable
 
     /**
      * @param string[] $patterns
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $patterns)
     {

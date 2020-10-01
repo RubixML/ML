@@ -21,8 +21,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -50,7 +50,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
@@ -113,7 +113,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -135,7 +135,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      * Make a prediction based on the value of a terminal node in the tree.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

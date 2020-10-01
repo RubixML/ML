@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -62,7 +62,7 @@ class SkipGram implements Tokenizer, Stringable
      * @param int $n
      * @param int $skip
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $n = 2, int $skip = 2, ?Word $wordTokenizer = null)
     {

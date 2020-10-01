@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\RecursiveFeatureEliminator;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 class RecursiveFeatureEliminatorTest extends TestCase
 {

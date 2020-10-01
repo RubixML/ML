@@ -20,8 +20,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\warn_deprecated;
@@ -128,7 +128,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      * @param int $estimators
      * @param float|null $ratio
      * @param float|null $contamination
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
     {
@@ -259,7 +259,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -45,7 +45,7 @@ class KMC2 implements Seeder, Stringable
     /**
      * @param int $m
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $m = 50, ?Distance $kernel = null)
     {

@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -53,7 +53,7 @@ class StepDecay implements Optimizer, Stringable
      * @param float $rate
      * @param int $steps
      * @param float $decay
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $rate = 0.01, int $steps = 100, float $decay = 1e-3)
     {

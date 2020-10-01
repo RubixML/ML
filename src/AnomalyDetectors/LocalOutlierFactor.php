@@ -20,8 +20,8 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\warn_deprecated;
@@ -113,7 +113,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * @param int $k
      * @param float|null $contamination
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
@@ -245,7 +245,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

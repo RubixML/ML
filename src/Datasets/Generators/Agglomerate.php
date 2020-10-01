@@ -3,7 +3,7 @@
 namespace Rubix\ML\Datasets\Generators;
 
 use Rubix\ML\Datasets\Labeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -46,7 +46,7 @@ class Agglomerate implements Generator
     /**
      * @param \Rubix\ML\Datasets\Generators\Generator[] $generators
      * @param (int|float)[]|null $weights
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $generators = [], ?array $weights = null)
     {

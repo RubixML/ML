@@ -51,7 +51,7 @@ class MedianAbsoluteError implements Metric, Stringable
      *
      * @param list<int|float> $predictions
      * @param list<int|float> $labels
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float

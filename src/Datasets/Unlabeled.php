@@ -5,7 +5,7 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
 
 use function Rubix\ML\warn_deprecated;
@@ -65,7 +65,7 @@ class Unlabeled extends Dataset
      * dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset[] $datasets
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public static function stack(array $datasets) : self
@@ -96,7 +96,7 @@ class Unlabeled extends Dataset
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function head(int $n = 10) : self
@@ -113,7 +113,7 @@ class Unlabeled extends Dataset
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function tail(int $n = 10) : self
@@ -130,7 +130,7 @@ class Unlabeled extends Dataset
      * Take n samples from this dataset and return them in a new dataset.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function take(int $n = 1) : self
@@ -147,7 +147,7 @@ class Unlabeled extends Dataset
      * Leave n samples on this dataset and return the rest in a new dataset.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function leave(int $n = 1) : self
@@ -189,7 +189,7 @@ class Unlabeled extends Dataset
      * Merge another dataset with this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function merge(Dataset $dataset) : self
@@ -209,7 +209,7 @@ class Unlabeled extends Dataset
      * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function join(Dataset $dataset) : self
@@ -259,7 +259,7 @@ class Unlabeled extends Dataset
      * Drop the rows at the given indices.
      *
      * @param int[] $offsets
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function dropRows(array $offsets) : self
@@ -326,7 +326,7 @@ class Unlabeled extends Dataset
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function split(float $ratio = 0.5) : array
@@ -348,7 +348,7 @@ class Unlabeled extends Dataset
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return list<self>
      */
     public function fold(int $k = 3) : array
@@ -390,7 +390,7 @@ class Unlabeled extends Dataset
      *
      * @param int $column
      * @param string|int|float $value
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function partitionByColumn(int $column, $value) : array
@@ -425,7 +425,7 @@ class Unlabeled extends Dataset
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
     public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null)
@@ -464,7 +464,7 @@ class Unlabeled extends Dataset
      * Generate a random subset without replacement.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomSubset(int $n) : self
@@ -496,7 +496,7 @@ class Unlabeled extends Dataset
      * Generate a random subset with replacement.
      *
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomSubsetWithReplacement(int $n) : self
@@ -522,7 +522,7 @@ class Unlabeled extends Dataset
      *
      * @param int $n
      * @param (int|float)[] $weights
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
@@ -602,7 +602,7 @@ class Unlabeled extends Dataset
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array[]
      */
     public function offsetGet($offset) : array

@@ -2,15 +2,15 @@
 
 namespace Rubix\ML;
 
-use InvalidArgumentException;
+use ArrayAccess;
+use Countable;
+use Generator;
 use IteratorAggregate;
 use JsonSerializable;
-use Rubix\ML\Other\Helpers\JSON;
-use RuntimeException;
-use ArrayAccess;
 use Stringable;
-use Generator;
-use Countable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Other\Helpers\JSON;
 
 /**
  * Report
@@ -65,7 +65,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     /**
      * @param string|int $key
      * @param mixed[] $values
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function offsetSet($key, $values) : void
     {
@@ -87,7 +87,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
      * Return an attribute from the report with the given key.
      *
      * @param string|int $key
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
     public function offsetGet($key)
@@ -101,7 +101,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
 
     /**
      * @param string|int $key
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function offsetUnset($key) : void
     {

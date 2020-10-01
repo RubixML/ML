@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -60,7 +60,7 @@ class Activation implements Hidden, Stringable
     /**
      * Return the width of the layer.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public function width() : int
@@ -119,7 +119,7 @@ class Activation implements Hidden, Stringable
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred

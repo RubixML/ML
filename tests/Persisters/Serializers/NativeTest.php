@@ -8,7 +8,7 @@ use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use stdClass;
 
 use function serialize;

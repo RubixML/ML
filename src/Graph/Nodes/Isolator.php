@@ -75,7 +75,7 @@ class Isolator implements BinaryNode
      * @param int $column
      * @param string|int|float $value
      * @param array{Dataset,Dataset} $groups
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $column, $value, array $groups)
     {

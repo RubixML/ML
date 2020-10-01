@@ -22,8 +22,8 @@ use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\logsumexp;
@@ -125,7 +125,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $k,
@@ -359,7 +359,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -379,7 +379,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

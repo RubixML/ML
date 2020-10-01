@@ -18,8 +18,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -79,7 +79,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      * @param float $radius
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
     {
@@ -151,7 +151,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -175,7 +175,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
      * Make a prediction based on the nearest neighbors.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

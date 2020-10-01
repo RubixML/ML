@@ -19,8 +19,8 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function Rubix\ML\argmax;
@@ -82,7 +82,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
     {
@@ -154,7 +154,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -180,7 +180,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -216,7 +216,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable, Str
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

@@ -14,8 +14,8 @@ use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 use svmmodel;
 use svm;
@@ -68,8 +68,8 @@ class OneClassSVM implements Estimator, Learner, Stringable
      * @param bool $shrinking
      * @param float $tolerance
      * @param float $cacheSize
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $nu = 0.5,
@@ -171,7 +171,7 @@ class OneClassSVM implements Estimator, Learner, Stringable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -187,7 +187,7 @@ class OneClassSVM implements Estimator, Learner, Stringable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -209,7 +209,7 @@ class OneClassSVM implements Estimator, Learner, Stringable
      * Save the model data to the filesystem.
      *
      * @param string $path
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function save(string $path) : void
     {

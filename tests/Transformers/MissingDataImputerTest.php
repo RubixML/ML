@@ -9,7 +9,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Transformers

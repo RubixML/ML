@@ -15,8 +15,8 @@ use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -87,7 +87,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * @param \Rubix\ML\Learner[] $experts
      * @param (int|float)[]|null $influences
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $experts, ?array $influences = null)
     {
@@ -224,7 +224,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * Train all the experts with the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -280,7 +280,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * The callback that executes after the training task.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function afterTrain(Learner $estimator) : void
     {

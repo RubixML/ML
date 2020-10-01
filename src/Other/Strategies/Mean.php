@@ -3,8 +3,8 @@
 namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Other\Helpers\Stats;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 /**
@@ -29,7 +29,7 @@ class Mean implements Continuous, Stringable
      * Fit the guessing strategy to a set of values.
      *
      * @param (string|int|float)[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -44,7 +44,7 @@ class Mean implements Continuous, Stringable
     /**
      * Make a continuous guess.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float
      */
     public function guess() : float

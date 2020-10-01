@@ -29,8 +29,8 @@ use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function is_nan;
@@ -128,7 +128,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $batchSize = 128,
@@ -247,7 +247,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * Train the estimator with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -272,7 +272,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function partial(Dataset $dataset) : void
     {
@@ -360,7 +360,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -377,7 +377,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

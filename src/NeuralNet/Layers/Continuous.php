@@ -7,8 +7,8 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Continuous
@@ -58,7 +58,7 @@ class Continuous implements Output
      * the fan out for this layer.
      *
      * @param int $fanIn
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -100,7 +100,7 @@ class Continuous implements Output
      *
      * @param (int|float)[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array

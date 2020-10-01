@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function count;
@@ -30,7 +30,7 @@ class Params
      * @param int $min
      * @param int $max
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return int[]
      */
     public static function ints(int $min, int $max, int $n = 10) : array
@@ -69,7 +69,7 @@ class Params
      * @param float $min
      * @param float $max
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float[]
      */
     public static function floats(float $min, float $max, int $n = 10) : array
@@ -102,7 +102,7 @@ class Params
      * @param float $min
      * @param float $max
      * @param int $n
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float[]
      */
     public static function grid(float $min, float $max, int $n = 10) : array

@@ -10,8 +10,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Classifiers\ClassificationTree;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function is_null;
@@ -146,7 +146,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
      * Fit the transformer to the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -243,7 +243,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

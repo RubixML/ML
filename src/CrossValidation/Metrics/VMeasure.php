@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use const Rubix\ML\EPSILON;
@@ -35,7 +35,7 @@ class VMeasure implements Metric, Stringable
 
     /**
      * @param float $beta
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $beta = 1.0)
     {

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Other\Helpers;
 
 use Rubix\ML\Specifications\Specification;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 class Verifier
 {

@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function is_file;
@@ -69,7 +69,7 @@ class Filesystem implements Persister, Stringable
      * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function save(Persistable $persistable) : void
     {
@@ -113,7 +113,7 @@ class Filesystem implements Persister, Stringable
     /**
      * Load the last saved persistable instance.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable
