@@ -177,9 +177,12 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             $this->logger->info("$this initialized");
         }
 
+        $n = $dataset->numColumns();
+
         $subset = clone $dataset;
 
-        $selected = range(0, $dataset->numColumns() - 1);
+        $importances = array_fill(0, $n, 1.0 / $n);
+        $selected = range(0, $n - 1);
         $epoch = 0;
 
         while (count($selected) > $this->minFeatures) {
@@ -195,14 +198,15 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             $total = 0.0;
 
             foreach ($importances as $column => $importance) {
-                if ($importance >= $this->maxDroppedImportance - $total) {
+                $total += $importance;
+
+                if ($total >= $this->maxDroppedImportance) {
                     break 1;
                 }
 
                 $dropped[] = (int) $column;
-                unset($selected[$column]);
 
-                $total += $importance;
+                unset($selected[$column], $importances[$column]);
 
                 if (count($dropped) >= $this->maxDroppedFeatures) {
                     break 1;
@@ -213,9 +217,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 }
             }
 
-            $subset->dropColumns($dropped);
-
             $selected = array_values($selected);
+
+            $subset->dropColumns($dropped);
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Dropped "
@@ -228,11 +232,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             }
         }
 
-        $this->estimator->train($subset);
-
-        $importances = $this->estimator->featureImportances();
-
-        $this->importances = array_combine($selected, $importances) ?: [];
+        $this->importances = array_combine($selected, array_values($importances)) ?: [];
 
         if ($this->logger) {
             $this->logger->info('Fitting complete');
