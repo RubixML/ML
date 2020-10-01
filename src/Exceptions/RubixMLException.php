@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Exceptions;
 
-interface RubixMLException extends \Throwable
+use Throwable;
+
+interface RubixMLException extends Throwable
 {
+    //
 }

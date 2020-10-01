@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Exceptions;
 
-class InvalidArgumentException extends \InvalidArgumentException implements RubixMLException
+use InvalidArgumentException as SplInvalidArgumentException;
+
+class InvalidArgumentException extends SplInvalidArgumentException implements RubixMLException
 {
+    //
 }

@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Exceptions;
 
-class RuntimeException extends \RuntimeException implements RubixMLException
+use RuntimeException as SplRuntimeException;
+
+class RuntimeException extends SplRuntimeException implements RubixMLException
 {
+    //
 }
