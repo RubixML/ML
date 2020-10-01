@@ -10,9 +10,11 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  * @Groups({"Datasets"})
  * @BeforeMethods({"setUp"})
  */
-class RandomSubsetsBench
+class LabeledBench
 {
     protected const DATASET_SIZE = 25000;
+
+    protected const SUBSAMPLE_SIZE = 10000;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled;
@@ -42,9 +44,9 @@ class RandomSubsetsBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function withoutReplacement() : void
+    public function randomSubset() : void
     {
-        $this->dataset->randomSubset(10000);
+        $this->dataset->randomSubset(self::SUBSAMPLE_SIZE);
     }
 
     /**
@@ -52,9 +54,9 @@ class RandomSubsetsBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function withReplacement() : void
+    public function randomSubsetWithReplacement() : void
     {
-        $this->dataset->randomSubsetWithReplacement(10000);
+        $this->dataset->randomSubsetWithReplacement(self::SUBSAMPLE_SIZE);
     }
 
     /**
@@ -62,8 +64,28 @@ class RandomSubsetsBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function weightedWithReplacement() : void
+    public function randomWeightedSubsetWithReplacement() : void
     {
-        $this->dataset->randomWeightedSubsetWithReplacement(10000, $this->weights);
+        $this->dataset->randomWeightedSubsetWithReplacement(self::SUBSAMPLE_SIZE, $this->weights);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function partitionByColumn() : void
+    {
+        $this->dataset->partitionByColumn(2, 3.0);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function dropColumns() : void
+    {
+        $this->dataset->dropColumns([1, 2]);
     }
 }
