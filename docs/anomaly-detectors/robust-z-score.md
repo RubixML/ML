@@ -5,7 +5,7 @@ A statistical anomaly detector that uses modified Z-Scores that are robust to pr
 
 > **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score, whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Scoring](../scoring.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

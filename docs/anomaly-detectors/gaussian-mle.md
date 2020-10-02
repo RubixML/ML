@@ -3,7 +3,7 @@
 # Gaussian MLE
 The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing a probability density function (PDF) over the features assuming they are independently and normally (Gaussian) distributed. Samples that are assigned low probability density are more likely to be outliers.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Scoring](../scoring.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

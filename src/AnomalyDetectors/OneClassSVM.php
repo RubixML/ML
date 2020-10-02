@@ -31,7 +31,8 @@ use svm;
  * under the hood.
  *
  * References:
- * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+ * [1] C. Chang et al. (2011). LIBSVM: A library for support vector
+ * machines.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
