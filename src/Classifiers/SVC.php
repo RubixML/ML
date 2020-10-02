@@ -18,7 +18,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 use svmmodel;
 use svm;
 
@@ -39,7 +38,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SVC implements Estimator, Learner, Stringable
+class SVC implements Estimator, Learner
 {
     use PredictsSingle;
 

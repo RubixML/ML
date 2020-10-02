@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * Constant
@@ -15,7 +14,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Constant implements Initializer, Stringable
+class Constant implements Initializer
 {
     /**
      * The value to initialize the parameter to.

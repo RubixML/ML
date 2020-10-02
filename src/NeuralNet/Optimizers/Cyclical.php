@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * Cyclical
@@ -23,7 +22,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cyclical implements Optimizer, Stringable
+class Cyclical implements Optimizer
 {
     /**
      * The lower bound on the learning rate.

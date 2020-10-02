@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 use function get_class;
 
@@ -28,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adam implements Optimizer, Adaptive, Stringable
+class Adam implements Optimizer, Adaptive
 {
     /**
      * The number of initial steps to perform bias correction.

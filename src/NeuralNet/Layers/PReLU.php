@@ -9,7 +9,6 @@ use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 use Generator;
 
 /**
@@ -26,7 +25,7 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PReLU implements Hidden, Parametric, Stringable
+class PReLU implements Hidden, Parametric
 {
     /**
      * The initializer of the alpha (leakage) parameter.

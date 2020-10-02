@@ -1,6 +1,7 @@
 - 0.3.0
+    - Added K Best feature selector
     - Added Sentence tokenizer
-    - Can now silence Verbose learners with silence() method
+    - Now can silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
     

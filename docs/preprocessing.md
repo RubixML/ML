@@ -90,6 +90,7 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
+| [K Best Selector](transformers/k-best-selector.md) | ● | ● | |
 | [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
 | [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 

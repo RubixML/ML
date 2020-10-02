@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Activation
@@ -19,7 +18,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Activation implements Hidden, Stringable
+class Activation implements Hidden
 {
     /**
      * The function that computes the output of the layer.

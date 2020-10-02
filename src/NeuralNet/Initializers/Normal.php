@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * Normal
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Normal implements Initializer, Stringable
+class Normal implements Initializer
 {
     /**
      * The standard deviation of the distribution to sample from.

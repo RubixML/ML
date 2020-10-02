@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
-use Stringable;
 
 /**
  * Xavier 1
@@ -21,7 +20,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Xavier2 implements Initializer, Stringable
+class Xavier2 implements Initializer
 {
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.

@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * Huber Loss
@@ -18,7 +17,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HuberLoss implements RegressionLoss, Stringable
+class HuberLoss implements RegressionLoss
 {
     /**
      * The alpha quantile i.e the pivot point at which numbers larger will be

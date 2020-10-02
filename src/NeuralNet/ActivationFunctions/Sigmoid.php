@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use Stringable;
 
 /**
  * Sigmoid
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Sigmoid implements ActivationFunction, Stringable
+class Sigmoid implements ActivationFunction
 {
     /**
      * Compute the output value.

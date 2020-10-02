@@ -117,6 +117,7 @@ nav:
     - One Hot Encoder: transformers/one-hot-encoder.md
     - Numeric String Converter: transformers/numeric-string-converter.md
   - Feature Selection:
+    - K Best Selector: transformers/k-best-selector.md
     - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
     - Variance Threshold Filter: transformers/variance-threshold-filter.md
   - Image Transformers:
@@ -261,6 +262,7 @@ nav:
     - Wild Guess: other/strategies/wild-guess.md
   - Tokenizers:
     - N-Gram: other/tokenizers/n-gram.md
+    - Sentence: other/tokenizers/sentence.md
     - Skip Gram: other/tokenizers/skip-gram.md
     - Whitespace: other/tokenizers/whitespace.md
     - Word: other/tokenizers/word.md
