@@ -2,7 +2,9 @@
 
 namespace Rubix\ML;
 
-interface RanksFeatures extends Learner
+use Stringable;
+
+interface RanksFeatures extends Stringable
 {
     /**
      * Return the normalized importance scores of each feature column of the training set.

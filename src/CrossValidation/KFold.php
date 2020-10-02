@@ -14,7 +14,6 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * K Fold
@@ -29,7 +28,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KFold implements Validator, Parallel, Stringable
+class KFold implements Validator, Parallel
 {
     use Multiprocessing;
 

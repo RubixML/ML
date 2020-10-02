@@ -7,7 +7,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 use function count;
 
@@ -25,7 +24,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FBeta implements Metric, Stringable
+class FBeta implements Metric
 {
     /**
      * The ratio of weight given precision over recall.

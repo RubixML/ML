@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -21,7 +20,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RSquared implements Metric, Stringable
+class RSquared implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.

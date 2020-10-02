@@ -14,7 +14,6 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 /**
  * Leave P Out
@@ -27,7 +26,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeavePOut implements Validator, Parallel, Stringable
+class LeavePOut implements Validator, Parallel
 {
     use Multiprocessing;
 

@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -24,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Informedness implements Metric, Stringable
+class Informedness implements Metric
 {
     /**
      * Compute the class Informedness score.

@@ -4,9 +4,8 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use __PHP_Incomplete_Class;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
+use __PHP_Incomplete_Class;
 
 use function is_object;
 
@@ -19,7 +18,7 @@ use function is_object;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Native implements Serializer, Stringable
+class Native implements Serializer
 {
     /**
      * Serialize a persistable object and return the data.

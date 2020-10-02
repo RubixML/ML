@@ -16,7 +16,6 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function in_array;
 
@@ -35,7 +34,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, Stringable
+class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
     use Multiprocessing, PredictsSingle;
 

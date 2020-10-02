@@ -3,7 +3,6 @@
 namespace Rubix\ML\Other\Tokenizers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 use function count;
 
@@ -18,7 +17,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NGram implements Tokenizer, Stringable
+class NGram implements Tokenizer
 {
     /**
      * The separator between words in the n-gram.

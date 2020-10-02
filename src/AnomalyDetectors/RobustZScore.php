@@ -20,7 +20,6 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -45,7 +44,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable, Stringable
+class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
 {
     use PredictsSingle, ScoresSingle;
 

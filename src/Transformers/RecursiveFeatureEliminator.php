@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\RanksFeatures;
@@ -188,7 +189,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
         while (count($selected) > $this->minFeatures) {
             ++$epoch;
 
-            $this->estimator->train($subset);
+            if ($this->estimator instanceof Learner) {
+                $this->estimator->train($subset);
+            }
 
             $importances = $this->estimator->featureImportances();
 

@@ -15,7 +15,6 @@ use Rubix\ML\Backends\Tasks\TrainAndValidate;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Monte Carlo
@@ -31,7 +30,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MonteCarlo implements Validator, Parallel, Stringable
+class MonteCarlo implements Validator, Parallel
 {
     use Multiprocessing;
 

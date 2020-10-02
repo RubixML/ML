@@ -22,7 +22,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function Rubix\ML\logsumexp;
 
@@ -46,7 +45,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
+class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
 
@@ -74,7 +73,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed means of each feature column of the training set.
+     * The means of each feature of the training set conditioned on a class basis.
      *
      * @var array[]
      */
@@ -83,7 +82,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed variances of each feature column of the training set.
+     * The variances of each feature of the training set conditioned by class.
      *
      * @var array[]
      */

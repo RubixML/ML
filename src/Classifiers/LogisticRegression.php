@@ -33,7 +33,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function is_nan;
 use function count;
@@ -50,7 +49,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable, Stringable
+class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

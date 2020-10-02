@@ -14,7 +14,6 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Psr\Log\LoggerInterface;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Pipeline
@@ -34,7 +33,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable, Stringable
+class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
 

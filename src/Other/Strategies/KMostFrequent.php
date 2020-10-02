@@ -4,7 +4,6 @@ namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function array_slice;
 
@@ -18,7 +17,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMostFrequent implements Categorical, Stringable
+class KMostFrequent implements Categorical
 {
     /**
      * The number of most frequent classes to consider.

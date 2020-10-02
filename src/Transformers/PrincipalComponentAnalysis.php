@@ -8,7 +8,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function array_slice;
 
@@ -31,7 +30,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
+class PrincipalComponentAnalysis implements Transformer, Stateful
 {
     /**
      * The target number of dimensions to project onto.

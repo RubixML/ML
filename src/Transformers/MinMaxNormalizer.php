@@ -7,7 +7,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -21,7 +20,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer, Stateful, Elastic, Stringable
+class MinMaxNormalizer implements Transformer, Stateful, Elastic
 {
     /**
      * The minimum value of the transformed features.

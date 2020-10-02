@@ -6,7 +6,6 @@ use Tensor\Matrix;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
-use Stringable;
 
 use function count;
 use function Rubix\ML\comb;
@@ -25,7 +24,7 @@ use function Rubix\ML\comb;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandIndex implements Metric, Stringable
+class RandIndex implements Metric
 {
     /**
      * Compute n choose 2.

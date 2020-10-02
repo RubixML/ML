@@ -8,7 +8,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function is_null;
 
@@ -26,7 +25,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustStandardizer implements Transformer, Stateful, Stringable
+class RobustStandardizer implements Transformer, Stateful
 {
     /**
      * Should we center the data at 0?

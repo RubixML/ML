@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -25,7 +24,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cosine implements Distance, Stringable
+class Cosine implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.

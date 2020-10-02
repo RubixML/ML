@@ -9,7 +9,6 @@ use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use Amp\Parallel\Worker\Task as AmpTask;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 use Generator;
 
 use function Amp\call;
@@ -26,7 +25,7 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Amp implements Backend, Stringable
+class Amp implements Backend
 {
     /**
      * The worker pool.

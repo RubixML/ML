@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 use function count;
 use function is_float;
@@ -24,7 +23,7 @@ use function is_nan;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SafeEuclidean implements Distance, NaNSafe, Stringable
+class SafeEuclidean implements Distance, NaNSafe
 {
     /**
      * Return the data types that this kernel is compatible with.

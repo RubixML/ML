@@ -14,7 +14,6 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function Rubix\ML\argmax;
 use function in_array;
@@ -37,7 +36,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNImputer implements Transformer, Stateful, Stringable
+class KNNImputer implements Transformer, Stateful
 {
     /**
      * The number of neighbors to consider when imputing a value.

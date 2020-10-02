@@ -3,8 +3,9 @@
 namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
+use Stringable;
 
-interface Backend
+interface Backend extends Stringable
 {
     /**
      * Queue up a task for backend processing.
@@ -25,11 +26,4 @@ interface Backend
      * Flush the queue.
      */
     public function flush() : void;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Other\Tokenizers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 use function count;
 
@@ -21,7 +20,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SkipGram implements Tokenizer, Stringable
+class SkipGram implements Tokenizer
 {
     /**
      * The separator between words in the n-gram.

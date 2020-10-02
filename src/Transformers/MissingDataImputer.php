@@ -11,7 +11,6 @@ use Rubix\ML\Other\Strategies\KMostFrequent;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function is_null;
 
@@ -25,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MissingDataImputer implements Transformer, Stateful, Stringable
+class MissingDataImputer implements Transformer, Stateful
 {
     /**
      * The guessing strategy to use when imputing continuous values.

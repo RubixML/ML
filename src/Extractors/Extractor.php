@@ -5,7 +5,7 @@ namespace Rubix\ML\Extractors;
 use IteratorAggregate;
 
 /**
- * @extends IteratorAggregate<int,array>
+ * @extends IteratorAggregate<string|int,mixed[]>
  */
 interface Extractor extends IteratorAggregate
 {

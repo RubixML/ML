@@ -21,7 +21,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function count;
 use function is_nan;
@@ -48,7 +47,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable, Stringable
+class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 

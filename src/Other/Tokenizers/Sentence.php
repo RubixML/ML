@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use Stringable;
-
 /**
  * Sentence
  *
@@ -13,7 +11,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Sentence implements Tokenizer, Stringable
+class Sentence implements Tokenizer
 {
     /**
      * The regular expression to match sentences in a blob of text.

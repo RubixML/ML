@@ -4,8 +4,9 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
+use Stringable;
 
-interface Serializer
+interface Serializer extends Stringable
 {
     /**
      * Serialize a persistable object and return the data.
@@ -23,11 +24,4 @@ interface Serializer
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(Encoding $encoding) : Persistable;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

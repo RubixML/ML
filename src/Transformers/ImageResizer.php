@@ -5,7 +5,6 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Image Resizer
@@ -18,7 +17,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ImageResizer implements Transformer, Stringable
+class ImageResizer implements Transformer
 {
     /**
      * The width to fit the image to.

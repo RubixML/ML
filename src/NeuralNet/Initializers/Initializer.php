@@ -3,8 +3,9 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use Stringable;
 
-interface Initializer
+interface Initializer extends Stringable
 {
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
@@ -14,11 +15,4 @@ interface Initializer
      * @return \Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

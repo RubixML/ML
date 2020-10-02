@@ -4,8 +4,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Stringable;
 
-interface Hidden extends Layer
+interface Hidden extends Layer, Stringable
 {
     /**
      * Calculate the gradient and update the parameters of the layer.
@@ -15,11 +16,4 @@ interface Hidden extends Layer
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

@@ -5,7 +5,6 @@ namespace Rubix\ML\Other\Strategies;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Mean
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Mean implements Continuous, Stringable
+class Mean implements Continuous
 {
     /**
      * The mean of the fitted values.

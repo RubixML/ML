@@ -21,7 +21,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function array_slice;
 
@@ -40,7 +39,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNRegressor implements Estimator, Learner, Online, Persistable, Stringable
+class KNNRegressor implements Estimator, Learner, Online, Persistable
 {
     use PredictsSingle;
 

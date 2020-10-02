@@ -8,7 +8,6 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function is_file;
 
@@ -23,7 +22,7 @@ use function is_file;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Filesystem implements Persister, Stringable
+class Filesystem implements Persister
 {
     /**
      * The extension to give files created as part of a persistable's save history.

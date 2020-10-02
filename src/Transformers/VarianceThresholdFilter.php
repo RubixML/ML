@@ -8,7 +8,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function is_null;
 
@@ -21,7 +20,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer, Stateful, Stringable
+class VarianceThresholdFilter implements Transformer, Stateful
 {
     /**
      * The minimum number of features to select from the dataset.

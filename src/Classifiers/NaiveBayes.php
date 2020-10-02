@@ -21,7 +21,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function Rubix\ML\logsumexp;
 use function count;
@@ -43,7 +42,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
+class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
 

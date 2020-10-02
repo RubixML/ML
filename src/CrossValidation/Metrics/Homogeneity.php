@@ -5,7 +5,6 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
-use Stringable;
 
 use function count;
 
@@ -26,7 +25,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Homogeneity implements Metric, Stringable
+class Homogeneity implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.

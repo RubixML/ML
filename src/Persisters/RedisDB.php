@@ -8,7 +8,6 @@ use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 use Redis;
 
 /**
@@ -24,7 +23,7 @@ use Redis;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RedisDB implements Persister, Stringable
+class RedisDB implements Persister
 {
     /**
      * The key of the model in storage.

@@ -6,7 +6,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -20,7 +19,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Stringable
+class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
 {
     /**
      * The maximum absolute values for each fitted feature column.

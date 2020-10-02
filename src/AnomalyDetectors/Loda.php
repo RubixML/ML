@@ -23,7 +23,6 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -45,7 +44,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable, Stringable
+class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
 {
     use PredictsSingle, ScoresSingle;
 

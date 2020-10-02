@@ -3,7 +3,6 @@
 namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
-use Stringable;
 
 /**
  * Serial
@@ -20,7 +19,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Serial implements Backend, Stringable
+class Serial implements Backend
 {
     /**
      * A 2-tuple of deferred computations and their optional callbacks.

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Numeric String Converter
@@ -18,7 +17,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NumericStringConverter implements Transformer, Stringable
+class NumericStringConverter implements Transformer
 {
     /**
      * The numeric string representation of NaN.

@@ -4,7 +4,6 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Stringable;
 
 use function gettype;
 use function is_string;
@@ -22,7 +21,7 @@ use function is_string;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegexFilter implements Transformer, Stringable
+class RegexFilter implements Transformer
 {
     /**
      * The default URL matching pattern.

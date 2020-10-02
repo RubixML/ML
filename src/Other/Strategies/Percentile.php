@@ -5,7 +5,6 @@ namespace Rubix\ML\Other\Strategies;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 /**
  * Percentile
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Percentile implements Continuous, Stringable
+class Percentile implements Continuous
 {
     /**
      * The percentile of the fitted data to use as a guess.

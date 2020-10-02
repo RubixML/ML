@@ -25,7 +25,6 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Stringable;
 
 use function count;
 use function is_nan;
@@ -55,7 +54,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable, Stringable
+class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 

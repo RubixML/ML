@@ -3,7 +3,6 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Text Normalizer
@@ -14,7 +13,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TextNormalizer implements Transformer, Stringable
+class TextNormalizer implements Transformer
 {
     /**
      * Return the data types that this transformer is compatible with.

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Hamming
@@ -18,7 +17,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Hamming implements Distance, Stringable
+class Hamming implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.

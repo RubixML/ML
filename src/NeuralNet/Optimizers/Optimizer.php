@@ -4,8 +4,9 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
+use Stringable;
 
-interface Optimizer
+interface Optimizer extends Stringable
 {
     /**
      * Take a step of gradient descent for a given parameter.
@@ -15,11 +16,4 @@ interface Optimizer
      * @return \Tensor\Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Manhattan
@@ -15,7 +14,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Manhattan implements Distance, Stringable
+class Manhattan implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.
