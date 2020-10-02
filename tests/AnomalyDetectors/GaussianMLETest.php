@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
-use Rubix\ML\Scoring;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;

@@ -6,7 +6,6 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
-use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;

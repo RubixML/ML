@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Scoring;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Learner;
 use Rubix\ML\Wrapper;
 use Rubix\ML\DataType;

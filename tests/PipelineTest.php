@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Online;
 use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
-use Rubix\ML\Scoring;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Pipeline;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;

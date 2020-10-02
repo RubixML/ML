@@ -1,4 +1,5 @@
 - 0.3.0
+    - Now throws Rubix\ML namespaced exceptions
     - Added K Best feature selector
     - Added Sentence tokenizer
     - Now can silence Verbose learners with silence() method

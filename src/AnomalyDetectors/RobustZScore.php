@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;

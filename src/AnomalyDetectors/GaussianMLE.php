@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
