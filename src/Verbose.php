@@ -13,9 +13,4 @@ interface Verbose extends LoggerAwareInterface
      * @return \Psr\Log\LoggerInterface|null
      */
     public function logger() : ?LoggerInterface;
-
-    /**
-     * Remove the logger and silence logging output.
-     */
-    public function silence() : void;
 }
