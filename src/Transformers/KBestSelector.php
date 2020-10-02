@@ -131,9 +131,7 @@ class KBestSelector implements Transformer, Stateful
             }
         }
 
-        if ($this->scorer instanceof Learner) {
-            $this->scorer->train($dataset);
-        }
+        $this->scorer->train($dataset);
 
         $importances = $this->scorer->featureImportances();
 

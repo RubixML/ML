@@ -5,6 +5,7 @@
     - Now can silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
+    - Add generic Trainable interface
     
 - 0.2.2
     - Optimized CART quantile-based node splitting
