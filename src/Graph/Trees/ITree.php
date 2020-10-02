@@ -109,6 +109,15 @@ class ITree implements BinaryTree
 
             ++$depth;
 
+            if ($left->empty() or $right->empty()) {
+                $node = Depth::terminate($left->merge($right), $depth);
+
+                $current->attachLeft($node);
+                $current->attachRight($node);
+
+                continue 1;
+            }
+
             if ($depth >= $this->maxHeight) {
                 $current->attachLeft(Depth::terminate($left, $depth));
                 $current->attachRight(Depth::terminate($right, $depth));
