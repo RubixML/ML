@@ -34,7 +34,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable, Stringable
+class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
 {
     use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
 

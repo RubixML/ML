@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -43,7 +42,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persistable, Stringable
+class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, Stringable
 {
     use PredictsSingle, ScoresSingle;
 
