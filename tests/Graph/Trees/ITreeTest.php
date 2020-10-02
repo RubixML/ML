@@ -17,8 +17,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ITreeTest extends TestCase
 {
-    protected const DATASET_SIZE = 100;
-
     protected const RANDOM_SEED = 0;
 
     /**
@@ -61,7 +59,7 @@ class ITreeTest extends TestCase
      */
     public function growSearch() : void
     {
-        $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
+        $this->tree->grow($this->generator->generate(50));
 
         $this->assertGreaterThan(5, $this->tree->height());
 
@@ -71,22 +69,6 @@ class ITreeTest extends TestCase
 
         $this->assertInstanceOf(Depth::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
-    }
-
-    /**
-     * @test
-     */
-    public function growWithSameSamples() : void
-    {
-        $generator = new Agglomerate([
-            'east' => new Blob([5, -2, 10], 0.0),
-        ]);
-
-        $dataset = $generator->generate(self::DATASET_SIZE);
-
-        $this->tree->grow($dataset);
-
-        $this->assertEquals(2, $this->tree->height());
     }
 
     protected function assertPreConditions() : void

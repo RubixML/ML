@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Scoring;
 use Rubix\ML\Ranking;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
@@ -43,7 +44,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, Stringable
+class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persistable, Stringable
 {
     use PredictsSingle, ScoresSingle;
 

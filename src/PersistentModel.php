@@ -22,7 +22,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Stringable
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Scoring, Ranking, Stringable
 {
     use PredictsSingle, ProbaSingle, ScoresSingle;
 
