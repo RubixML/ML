@@ -39,10 +39,10 @@ class WordTest extends TestCase
      */
     public function tokenize() : void
     {
-        $text = "I'd like to die on Mars, just not on-impact. The end.";
+        $text = 'I\'d like to die on Mars, just not on-impact. The end.';
 
         $expected = [
-            "I'd", 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on-impact',
+            'I\'d', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on-impact',
             'The', 'end',
         ];
 

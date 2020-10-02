@@ -24,6 +24,13 @@ use function count;
 class SkipGram implements Tokenizer, Stringable
 {
     /**
+     * The regular expression to match sentences in a blob of text.
+     *
+     * @var string
+     */
+    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+
+    /**
      * The separator between words in the n-gram.
      *
      * @var string
@@ -52,13 +59,6 @@ class SkipGram implements Tokenizer, Stringable
     protected $wordTokenizer;
 
     /**
-     * The sentence tokenizer.
-     *
-     * @var \Rubix\ML\Other\Tokenizers\Sentence
-     */
-    protected $sentenceTokenizer;
-
-    /**
      * @param int $n
      * @param int $skip
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
@@ -79,20 +79,19 @@ class SkipGram implements Tokenizer, Stringable
         $this->n = $n;
         $this->skip = $skip;
         $this->wordTokenizer = $wordTokenizer ?? new Word();
-        $this->sentenceTokenizer = new Sentence();
     }
 
     /**
      * Tokenize a blob of text.
      *
-     * @param string $text
+     * @param string $string
      * @return list<string>
      */
-    public function tokenize(string $text) : array
+    public function tokenize(string $string) : array
     {
-        $sentences = $this->sentenceTokenizer->tokenize($text);
+        $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
 
-        $skipGrams = [];
+        $tokens = [];
 
         foreach ($sentences as $sentence) {
             $words = $this->wordTokenizer->tokenize($sentence);
@@ -109,12 +108,12 @@ class SkipGram implements Tokenizer, Stringable
                         $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
                     }
 
-                    $skipGrams[] = $skipGram;
+                    $tokens[] = $skipGram;
                 }
             }
         }
 
-        return $skipGrams;
+        return $tokens;
     }
 
     /**

@@ -25,14 +25,14 @@ class Word implements Tokenizer, Stringable
     /**
      * Tokenize a blob of text.
      *
-     * @param string $text
+     * @param string $string
      * @return list<string>
      */
-    public function tokenize(string $text) : array
+    public function tokenize(string $string) : array
     {
         $tokens = [];
 
-        preg_match_all(self::WORD_REGEX, $text, $tokens);
+        preg_match_all(self::WORD_REGEX, $string, $tokens);
 
         return $tokens[0];
     }

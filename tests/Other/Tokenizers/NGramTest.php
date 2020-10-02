@@ -39,10 +39,10 @@ class NGramTest extends TestCase
      */
     public function tokenize() : void
     {
-        $text = "I'd like to die on Mars, just not on impact. The end.";
+        $text = 'I\'d like to die on Mars, just not on impact. The end.';
 
         $expected = [
-            "I'd", "I'd like", 'like', 'like to', 'to', 'to die', 'die',
+            'I\'d', 'I\'d like', 'like', 'like to', 'to', 'to die', 'die',
             'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
             'on', 'on impact', 'impact', 'The', 'The end', 'end',
         ];

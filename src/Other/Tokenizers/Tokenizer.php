@@ -7,10 +7,10 @@ interface Tokenizer
     /**
      * Tokenize a blob of text.
      *
-     * @param string $text
+     * @param string $string
      * @return list<string>
      */
-    public function tokenize(string $text) : array;
+    public function tokenize(string $string) : array;
 
     /**
      * Return the string representation of the object.
