@@ -88,7 +88,7 @@ class BallTreeTest extends TestCase
     /**
      * @test
      */
-    public function growWithRepetitions() : void
+    public function growWithSameSamples() : void
     {
         $generator = new Agglomerate([
             'east' => new Blob([5, -2, 10], 0.0),
@@ -99,17 +99,6 @@ class BallTreeTest extends TestCase
         $this->tree->grow($dataset);
 
         $this->assertEquals(2, $this->tree->height());
-
-        $sample = $dataset->sample(0);
-
-        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
-
-        $this->assertCount(5, $samples);
-        $this->assertCount(5, $labels);
-        $this->assertCount(5, $distances);
-
-        $this->assertCount(1, array_unique($samples, SORT_REGULAR));
-        $this->assertCount(1, array_unique($distances));
     }
 
     protected function assertPreConditions() : void

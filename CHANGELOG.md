@@ -10,6 +10,7 @@
 - 0.2.2
     - Optimized CART quantile-based node splitting
     - Fixed CART and Extra Tree min purity increase post pruning
+    - Fix ITree infinite loop splitting same samples
 
 - 0.2.1
     - Optimized Stop Word Filter
