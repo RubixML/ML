@@ -9,7 +9,7 @@ Here are a few things to check off before sending in a pull request ...
 - Your changes are consistent with our [coding style](#coding-style)
 - Do your changes require updates to the documentation?
 - Does an entry to the CHANGELOG need to be added?
-- Have you read and agreed to our [CLA](CLA.md)?
+- Have you read and agreed to our [CLA](#contributor-license-agreement)?
 
 > New to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
 
@@ -17,7 +17,7 @@ Here are a few things to check off before sending in a pull request ...
 We use pull requests as an opportunity to communicate with our contributors. Oftentimes, we can improve code readability, find bugs, and make optimizations during the code review process. Every pull request must have the approval from at least one core engineer before merging into the main codebase.
 
 ### Contributor License Agreement
-To ensure that project maintainers are allowed to licence and distribute your code contributions, we ask that every contributor sign our contributor license agreement (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement with your first pull request.
+To ensure that project maintainers are allowed to licence and distribute your code contributions, we ask that every contributor sign our [contributor license agreement](CLA.md) (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement with your first pull request.
 
 ## Static Analysis
 Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
@@ -65,7 +65,7 @@ Use accurate, descriptive, consistent, and concise nomenclature. A variable name
 #### Domain-driven Design
 We employ the Domain Driven Design (DDD) methodology in our naming and design. Our goal is to allow contributors and domain experts to be able to use the same language when referring to concepts. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within. For example, Bayesian probability-based learners might use terms like 'likelihood', 'density', and 'PDF.'
 
-### Mutability
+### Object Mutability
 Objects implemented in Rubix ML have a mutability policy of *generally* immutable which means properties are private or protected and state must be mutated only through a well-defined public API.
 
 ### Comments
