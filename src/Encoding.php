@@ -3,6 +3,10 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Storage\Exceptions\StorageException;
+use Rubix\ML\Storage\LocalFilesystem;
+use Rubix\ML\Storage\WriteProxy;
+use Rubix\ML\Storage\Writer;
 use Stringable;
 
 class Encoding implements Stringable
@@ -46,22 +50,21 @@ class Encoding implements Stringable
      * Write the encoding to a file at the path specified.
      *
      * @param string $path
+     * @param ?Writer $storage
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function write(string $path) : void
+    public function write(string $path, ?Writer $storage = null) : void
     {
-        if (!is_file($path) and !is_writable(dirname($path))) {
-            throw new RuntimeException('Folder does not exist or is not writable');
+        if (!$storage) {
+            $storage = new LocalFilesystem();
         }
 
-        if (is_file($path) and !is_writable($path)) {
-            throw new RuntimeException("File $path is not writable.");
-        }
+        $storage = new WriteProxy($storage);
 
-        $success = file_put_contents($path, $this->data, LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException('Failed to write to the filesystem.');
+        try {
+            $storage->write($path, $this->data);
+        } catch (StorageException $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
