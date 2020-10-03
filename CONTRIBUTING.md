@@ -9,6 +9,7 @@ Here are a few things to check off before sending in a pull request ...
 - Your changes are consistent with our [coding style](#coding-style)
 - Do your changes require updates to the documentation?
 - Does an entry to the CHANGELOG need to be added?
+- Have you read and agreed to our Contributor License Agreement?
 
 > New to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
 
