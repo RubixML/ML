@@ -2,10 +2,14 @@
 
 namespace Rubix\ML\Extractors;
 
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
 use Rubix\ML\Other\Helpers\JSON;
+use Rubix\ML\Storage\Exceptions\StorageException;
+use Rubix\ML\Storage\LocalFilesystem;
+use Rubix\ML\Storage\Reader;
+use Rubix\ML\Storage\ReadProxy;
+use Rubix\ML\Storage\Streams\Stream;
+use Generator;
 
 /**
  * NDJSON
@@ -23,60 +27,59 @@ use Rubix\ML\Other\Helpers\JSON;
 class NDJSON implements Extractor
 {
     /**
-     * The file handle.
-     *
-     * @var resource
+     * @var \Rubix\ML\Storage\Streams\Stream
      */
-    protected $handle;
+    protected $stream;
 
     /**
-     * @param string $path
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param string $location
+     * @param ?Reader $storage
+     *
+     * @throws \Rubix\ML\Storage\Exceptions\StorageException
      */
-    public function __construct(string $path)
+    public function __construct(string $location, ?Reader $storage = null)
     {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if (!$storage) {
+            $storage = new LocalFilesystem();
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
-        }
+        $storage = new ReadProxy($storage);
 
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
-        $this->handle = $handle;
+        $this->stream = $storage->read($location, Stream::READ_ONLY);
     }
 
     /**
-     * Clean up the file pointer.
+     * Clean up the any open file handles.
      */
     public function __destruct()
     {
-        fclose($this->handle);
+        try {
+            if ($this->stream and $this->stream->open()) {
+                $this->stream->close();
+            }
+        } catch (StorageException $e) {
+            //
+        }
     }
 
     /**
      * Return an iterator for the records in the data table.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Generator<mixed[]>
+     * @throws \Rubix\ML\Storage\Exceptions\StorageException
+     * @return \Generator<list<mixed>>
      */
     public function getIterator() : Generator
     {
-        rewind($this->handle);
+        if ($this->stream->seekable()) {
+            $this->stream->rewind();
+        }
 
-        $line = 0;
+        $num = 0;
 
-        while (!feof($this->handle)) {
-            $data = rtrim(fgets($this->handle) ?: '');
-
-            ++$line;
+        foreach ($this->stream as $line) {
+            $data = rtrim($line);
+            ++$num;
 
             if (empty($data)) {
                 continue 1;
@@ -86,7 +89,7 @@ class NDJSON implements Extractor
                 yield JSON::decode($data);
             } catch (RuntimeException $e) {
                 throw new RuntimeException(
-                    "JSON Error on line: $line. (" . $e->getMessage() . ')',
+                    "JSON Error on line: $num. (" . $e->getMessage() . ')',
                     $e->getCode(),
                     $e
                 );

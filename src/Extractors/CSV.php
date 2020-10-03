@@ -4,6 +4,11 @@ namespace Rubix\ML\Extractors;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Storage\Exceptions\StorageException;
+use Rubix\ML\Storage\LocalFilesystem;
+use Rubix\ML\Storage\Reader;
+use Rubix\ML\Storage\ReadProxy;
+use Rubix\ML\Storage\Streams\Stream;
 use Generator;
 
 use function strlen;
@@ -29,11 +34,11 @@ use function strlen;
 class CSV implements Extractor
 {
     /**
-     * The file handle.
+     * A readable stream object pointing to the underlying CSV data
      *
-     * @var resource
+     * @var \Rubix\ML\Storage\Streams\Stream
      */
-    protected $handle;
+    protected $stream;
 
     /**
      * Does the CSV document have a header as the first row?
@@ -57,25 +62,29 @@ class CSV implements Extractor
     protected $enclosure;
 
     /**
-     * @param string $path
+     * @param string $location
      * @param bool $header
      * @param string $delimiter
      * @param string $enclosure
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param ?Reader $storage
+     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Storage\Exceptions\StorageException
      */
     public function __construct(
-        string $path,
+        string $location,
         bool $header = false,
         string $delimiter = ',',
-        string $enclosure = '"'
+        string $enclosure = '"',
+        ?Reader $storage = null
     ) {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if (!$storage) {
+            $storage = new LocalFilesystem();
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        $storage = new ReadProxy($storage);
+
+        if (!$storage->exists($location)) {
+            throw new InvalidArgumentException("Location $location does not exist.");
         }
 
         if (strlen($delimiter) !== 1) {
@@ -88,56 +97,59 @@ class CSV implements Extractor
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
-        $this->handle = $handle;
+        $this->stream = $storage->read($location, Stream::READ_ONLY);
         $this->header = $header;
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
     }
 
     /**
-     * Clean up the file pointer.
+     * Clean up the any open file handles.
      */
     public function __destruct()
     {
-        fclose($this->handle);
+        try {
+            if ($this->stream and $this->stream->open()) {
+                $this->stream->close();
+            }
+        } catch (StorageException $e) {
+            //
+        }
     }
 
     /**
      * Return an iterator for the records in the data table.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws \Rubix\ML\Storage\Exceptions\StorageException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {
-        rewind($this->handle);
+        if ($this->stream->seekable()) {
+            $this->stream->rewind();
+        }
 
         $line = 0;
 
         if ($this->header) {
-            $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
+            $row = $this->stream->line();
 
-            if (!$header) {
+            if (empty(trim($row))) {
                 throw new RuntimeException('Header not found on the first line.');
             }
 
+            $header = str_getcsv($row, $this->delimiter, $this->enclosure);
             ++$line;
         }
 
-        while (!feof($this->handle)) {
-            $record = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
-
-            ++$line;
-
-            if (empty($record)) {
+        foreach ($this->stream as $row) {
+            if (empty($row)) {
                 continue 1;
             }
+
+            $record = str_getcsv($row, $this->delimiter, $this->enclosure);
+            ++$line;
 
             if (isset($header)) {
                 $record = array_combine($header, $record);

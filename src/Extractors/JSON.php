@@ -4,8 +4,13 @@ namespace Rubix\ML\Extractors;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
 use Rubix\ML\Other\Helpers\JSON as JSONHelper;
+use Rubix\ML\Storage\Exceptions\StorageException;
+use Rubix\ML\Storage\LocalFilesystem;
+use Rubix\ML\Storage\Reader;
+use Rubix\ML\Storage\ReadProxy;
+use Rubix\ML\Storage\Streams\Stream;
+use Generator;
 
 /**
  * JSON
@@ -24,27 +29,43 @@ use Rubix\ML\Other\Helpers\JSON as JSONHelper;
 class JSON implements Extractor
 {
     /**
-     * The path to the JSON file.
-     *
-     * @var string
+     * @var \Rubix\ML\Storage\Streams\Stream
      */
-    protected $path;
+    protected $stream;
 
     /**
-     * @param string $path
+     * @param string $location
+     * @param \Rubix\ML\Storage\Reader|null $storage
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Storage\Exceptions\StorageException
      */
-    public function __construct(string $path)
+    public function __construct(string $location, ?Reader $storage = null)
     {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if (!$storage) {
+            $storage = new LocalFilesystem();
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        $storage = new ReadProxy($storage);
+
+        if (!$storage->exists($location)) {
+            throw new InvalidArgumentException("Location $location does not exist.");
         }
 
-        $this->path = $path;
+        $this->stream = $storage->read($location, Stream::READ_ONLY);
+    }
+
+    /**
+     * Clean up the any open file handles.
+     */
+    public function __destruct()
+    {
+        try {
+            if ($this->stream and $this->stream->open()) {
+                $this->stream->close();
+            }
+        } catch (StorageException $e) {
+            //
+        }
     }
 
     /**
@@ -55,10 +76,10 @@ class JSON implements Extractor
      */
     public function getIterator() : Generator
     {
-        $data = file_get_contents($this->path);
-
-        if (!$data) {
-            throw new RuntimeException("Could not open $this->path.");
+        try {
+            $data = $this->stream->contents();
+        } catch (StorageException $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
         yield from JSONHelper::decode($data);
