@@ -1,12 +1,14 @@
 # Contributor License Agreement
-This Contribution License Agreement (“Agreement”) is agreed to by the party signing below (“You”), and conveys certain license rights to Rubix ML Corporation and its affiliates (“Rubix ML”) for Your contributions to Rubix ML open source projects.
+This Contribution License Agreement (“Agreement”) is agreed to by the party signing (“You”), and conveys certain license rights to Rubix ML and its affiliates (“Rubix ML”) for Your contributions to Rubix ML open source projects.
 
 ## 1. Definitions
 1. “Code” means the computer software code, whether in human-readable or machine-executable form, that is delivered by You to Rubix ML under this Agreement.
 
-2. “Project” means any of the projects owned or managed by Rubix ML in which software is offered under a license approved by the Open Source Initiative (OSI) (www.opensource.org) and documentation offered under an OSI or a Creative Commons license (https://creativecommons.org/licenses). “Submit” is the act of uploading, submitting, transmitting, or distributing code or other content to any Project, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Project for the purpose of discussing and improving that Project, but excluding communication that is conspicuously marked or otherwise designated in writing by You as “Not a Submission.”
+2. “Project” means any of the projects owned or managed by Rubix ML in which software is offered under a license approved by the Open Source Initiative (OSI) (www.opensource.org) and documentation offered under an OSI or a Creative Commons license (https://creativecommons.org/licenses).
 
-3. “Submission” means the Code and any other copyrightable material Submitted by You, including any associated comments and documentation.
+3. “Submit” is the act of uploading, submitting, transmitting, or distributing code or other content to any Project, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Project for the purpose of discussing and improving that Project, but excluding communication that is conspicuously marked or otherwise designated in writing by You as “Not a Submission.”
+
+4. “Submission” means the Code and any other copyrightable material Submitted by You, including any associated comments and documentation.
 
 ## 2. Your Submission
 You must agree to the terms of this Agreement before making a Submission to any Project. This Agreement covers any and all Submissions that You, now or in the future (except as described in Section 4 below), Submit to any Project.
