@@ -8,7 +8,6 @@
     - Allow list of empty regex patterns in Regex Filter
     - Handle missing class definitions in Native and Igbinary
     - Fixed infinite loop in Ball Tree & KD Tree grow method
-    - Added Sentence tokenizer
 
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
