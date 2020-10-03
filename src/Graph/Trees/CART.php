@@ -10,6 +10,7 @@ use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use IteratorAggregate;
 use Generator;
 
 use function array_slice;
@@ -28,8 +29,10 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @implements IteratorAggregate<int,\Rubix\ML\Graph\Nodes\Decision>
  */
-abstract class CART
+abstract class CART implements IteratorAggregate
 {
     /**
      * The glyph that denotes a branch of the tree.
@@ -106,7 +109,7 @@ abstract class CART
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         int $maxHeight,
@@ -178,7 +181,7 @@ abstract class CART
      * condition is met.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -298,7 +301,7 @@ abstract class CART
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws \RuntimeException
      * @return float[]
      */
     public function featureImportances() : array
@@ -309,7 +312,7 @@ abstract class CART
 
         $importances = array_fill(0, $this->featureCount, 0.0);
 
-        foreach ($this->dump() as $node) {
+        foreach ($this as $node) {
             if ($node instanceof Comparison) {
                 $importances[$node->column()] += exp($node->purityIncrease());
             }
@@ -328,7 +331,7 @@ abstract class CART
      * Print a human readable text representation of the decision tree.
      *
      * @param string[] $header
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return string
      */
     public function rules(?array $header = null) : string
@@ -349,6 +352,25 @@ abstract class CART
         $this->_rules($carry, $this->root, $header);
 
         return $carry;
+    }
+
+    /**
+     * Return a generator for all the nodes in the tree starting at the root and traversing
+     * depth first.
+     *
+     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
+     */
+    public function getIterator() : Generator
+    {
+        $stack = [$this->root];
+
+        while ($current = array_pop($stack)) {
+            yield $current;
+
+            foreach ($current->children() as $child) {
+                $stack[] = $child;
+            }
+        }
     }
 
     /**
@@ -468,45 +490,34 @@ abstract class CART
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
         if ($node instanceof Comparison) {
+            $left = $node->left();
+            $right = $node->right();
+
             $identifier = $header ? $header[$node->column()] : "Feature {$node->column()}";
 
-            if ($node->left() !== null) {
-                $operator = is_string($node->value()) ? '==' : '<';
+            if ($left) {
+                $value = $node->value();
 
-                $carry .= $prefix . "$identifier $operator {$node->value()}" . PHP_EOL;
+                $operator = is_string($value) ? '==' : '<';
 
-                $this->_rules($carry, $node->left(), $header, $depth);
+                $carry .= "$prefix $identifier $operator $value" . PHP_EOL;
+
+                $this->_rules($carry, $left, $header, $depth);
             }
 
-            if ($node->right() !== null) {
-                $operator = is_string($node->value()) ? '!=' : '>=';
+            if ($right) {
+                $value = $node->value();
 
-                $carry .= $prefix . "$identifier $operator {$node->value()}" . PHP_EOL;
+                $operator = is_string($value) ? '!=' : '>=';
 
-                $this->_rules($carry, $node->right(), $header, $depth);
+                $carry .= "$prefix $identifier $operator $value" . PHP_EOL;
+
+                $this->_rules($carry, $right, $header, $depth);
             }
         }
 
         if ($node instanceof Outcome) {
             $carry .= $prefix . $node . PHP_EOL;
-        }
-    }
-
-    /**
-     * Return a generator for all the nodes in the tree starting at the root.
-     *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
-     */
-    protected function dump() : Generator
-    {
-        $stack = [$this->root];
-
-        while ($current = array_pop($stack)) {
-            yield $current;
-
-            foreach ($current->children() as $child) {
-                $stack[] = $child;
-            }
         }
     }
 }

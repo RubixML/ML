@@ -4,20 +4,20 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
-use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\GaussianMLE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group AnomalyDetectors

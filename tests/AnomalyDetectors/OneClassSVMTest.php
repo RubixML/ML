@@ -13,9 +13,9 @@ use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group AnomalyDetectors

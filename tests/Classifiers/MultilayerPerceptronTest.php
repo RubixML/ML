@@ -24,9 +24,9 @@ use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Classifiers

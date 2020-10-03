@@ -6,6 +6,7 @@
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
     - Add generic Trainable interface
+    - Decision Trees are now iterable
     
 - 0.2.2
     - Optimized CART quantile-based node splitting
