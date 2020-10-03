@@ -18,7 +18,7 @@ jobs:
           PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with: 
           path-to-document: 'https://github.com/RubixML/RubixML/blob/master/CLA.md'
-          path-to-signatures: 'signatures/v1/cla.json'
+          path-to-signatures: 'signatures/cla-v1.json'
           branch: 'master'
           allowlist: bot*
           use-dco-flag: false

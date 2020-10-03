@@ -9,12 +9,15 @@ Here are a few things to check off before sending in a pull request ...
 - Your changes are consistent with our [coding style](#coding-style)
 - Do your changes require updates to the documentation?
 - Does an entry to the CHANGELOG need to be added?
-- Have you read and agreed to our Contributor License Agreement?
+- Have you read and agreed to our [CLA](CLA.md)?
 
 > New to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
 
 ### Code Review
 We use pull requests as an opportunity to communicate with our contributors. Oftentimes, we can improve code readability, find bugs, and make optimizations during the code review process. Every pull request must have the approval from at least one core engineer before merging into the main codebase.
+
+### Contributor License Agreement
+To ensure that project maintainers are allowed to licence and distribute your code contributions, we ask that every contributor sign our contributor license agreement (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement with your first pull request.
 
 ## Static Analysis
 Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
