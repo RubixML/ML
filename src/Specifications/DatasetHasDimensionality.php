@@ -4,6 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\IncorrectDatasetDimensionality;
 
 class DatasetHasDimensionality extends Specification
 {
@@ -52,16 +53,12 @@ class DatasetHasDimensionality extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\IncorrectDatasetDimensionality
      */
     public function check() : void
     {
         if ($this->dataset->numColumns() !== $this->dimensions) {
-            throw new InvalidArgumentException(
-                'Dataset must contain'
-                . " samples with exactly {$this->dimensions}"
-                . " dimensions, {$this->dataset->numColumns()} given."
-            );
+            throw new IncorrectDatasetDimensionality($this->dataset, $this->dimensions);
         }
     }
 }
