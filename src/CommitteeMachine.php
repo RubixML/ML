@@ -7,13 +7,15 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -227,17 +229,20 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      */
     public function train(Dataset $dataset) : void
     {
+        $specifications = [
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ];
+
         if ($this->type()->isSupervised()) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Learner requires a'
-                    . ' Labeled training set.');
+            $specifications[] = new DatasetIsLabeled($dataset);
+
+            if ($dataset instanceof Labeled) {
+                $specifications[] = new LabelsAreCompatibleWithLearner($dataset, $this);
             }
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with($specifications)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");

@@ -170,16 +170,6 @@ class RegressionTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
-    }
-
-    /**
-     * @test
-     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
