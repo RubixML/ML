@@ -4,7 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\LabelsRequired;
 
 class DatasetIsLabeled extends Specification
 {
@@ -42,7 +42,7 @@ class DatasetIsLabeled extends Specification
     public function check() : void
     {
         if (!$this->dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Dataset must be labeled.');
+            throw new LabelsRequired();
         }
     }
 }

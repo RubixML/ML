@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -18,12 +17,13 @@ class DatasetHasDimensionalityTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\DatasetHasDimensionality $specification
      * @param bool $expected
+     * @param DatasetHasDimensionality $specification
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(DatasetHasDimensionality $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**

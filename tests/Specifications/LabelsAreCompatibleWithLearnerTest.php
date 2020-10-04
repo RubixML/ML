@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Specifications;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -20,12 +19,12 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\LabelsAreCompatibleWithLearner $specification
      * @param bool $expected
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(LabelsAreCompatibleWithLearner $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**
