@@ -12,7 +12,8 @@ use function count;
  *
  * Skip-grams are a technique similar to n-grams, whereby n-grams are formed but
  * in addition to allowing adjacent sequences of words, the next *k* words will
- * be skipped forming n-grams of the new forward looking sequences.
+ * be skipped forming n-grams of the new forward looking sequences. The Skip-gram tokenizer
+ * outputs tokens ranging from *min* to *max* number of words per token.
  *
  * References:
  * [1] D. Guthrie et al. A Closer Look at Skip-gram Modelling.
@@ -38,11 +39,18 @@ class SkipGram implements Tokenizer, Stringable
     protected const SEPARATOR = ' ';
 
     /**
-     * The number of contiguous words to a single token.
+     * The minimum number of words in a single token.
      *
      * @var int
      */
-    protected $n;
+    protected $min;
+
+    /**
+     * The maximum number of words in a single token.
+     *
+     * @var int
+     */
+    protected $max;
 
     /**
      * The number of words to skip over to form new sequences.
@@ -59,16 +67,20 @@ class SkipGram implements Tokenizer, Stringable
     protected $wordTokenizer;
 
     /**
-     * @param int $n
+     * @param int $min
+     * @param int $max
      * @param int $skip
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $n = 2, int $skip = 2, ?Word $wordTokenizer = null)
+    public function __construct(int $min = 2, int $max = 2, int $skip = 2, ?Word $wordTokenizer = null)
     {
-        if ($n < 2) {
-            throw new InvalidArgumentException('Number of words per'
-                . " token must be greater than 1, $n given.");
+        if ($min < 1) {
+            throw new InvalidArgumentException('Minimum cannot be less than 1.');
+        }
+
+        if ($max < $min) {
+            throw new InvalidArgumentException('Maximum cannot be less than minimum.');
         }
 
         if ($skip < 0) {
@@ -76,7 +88,8 @@ class SkipGram implements Tokenizer, Stringable
                 . " greater than 1, $skip given.");
         }
 
-        $this->n = $n;
+        $this->min = $min;
+        $this->max = $max;
         $this->skip = $skip;
         $this->wordTokenizer = $wordTokenizer ?? new Word();
     }
@@ -99,16 +112,18 @@ class SkipGram implements Tokenizer, Stringable
             $n = count($words);
 
             foreach ($words as $i => $word) {
-                $p = min($n - ($i + $this->n), $this->skip);
+                for ($j = $this->min; $j <= $this->max; ++$j) {
+                    $p = min($n - ($i + $j), $this->skip);
 
-                for ($j = 0; $j <= $p; ++$j) {
-                    $skipGram = $word;
+                    for ($k = 0; $k <= $p; ++$k) {
+                        $skipGram = $word;
 
-                    for ($k = 1; $k < $this->n; ++$k) {
-                        $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
+                        for ($l = 1; $l < $j; ++$l) {
+                            $skipGram .= self::SEPARATOR . $words[$i + $k + $l];
+                        }
+
+                        $tokens[] = $skipGram;
                     }
-
-                    $tokens[] = $skipGram;
                 }
             }
         }
@@ -123,6 +138,6 @@ class SkipGram implements Tokenizer, Stringable
      */
     public function __toString() : string
     {
-        return "Skip Gram (n: {$this->n}, skip: {$this->skip}, word_tokenizer: {$this->wordTokenizer})";
+        return "Skip Gram (min: {$this->min}, max: {$this->max}, word_tokenizer: {$this->wordTokenizer})";
     }
 }

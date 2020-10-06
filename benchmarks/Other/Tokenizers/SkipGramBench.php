@@ -19,7 +19,7 @@ class SkipGramBench
 
     public function setUp() : void
     {
-        $this->tokenizer = new SkipGram(2, 2);
+        $this->tokenizer = new SkipGram(2, 3);
     }
 
     /**
