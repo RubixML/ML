@@ -37,7 +37,7 @@ class DatasetIsLabeled extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\LabelsRequired
      */
     public function check() : void
     {

@@ -201,7 +201,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
