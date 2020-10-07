@@ -36,7 +36,7 @@ You agree to notify Rubix ML in writing of any facts or circumstances of which Y
 You agree that contributions to Projects and information about contributions may be maintained indefinitely and disclosed publicly, including Your name and other information that You submit with Your Submission.
 
 ## 9. Governing Law/Jurisdiction
-This Agreement is governed by the laws of the State of Washington, and the parties consent to exclusive jurisdiction and venue in the federal courts sitting in King County, Washington, unless no federal subject matter jurisdiction exists, in which case the parties consent to exclusive jurisdiction and venue in the Superior Court of King County, Washington. The parties waive all defenses of lack of personal jurisdiction and forum non-conveniens.
+This Agreement is governed by the laws of the State of Illinois, and the parties consent to exclusive jurisdiction and venue in the federal courts sitting in Cook County, Illinois, unless no federal subject matter jurisdiction exists, in which case the parties consent to exclusive jurisdiction and venue in the Superior Court of Cook County, Illinois. The parties waive all defenses of lack of personal jurisdiction and forum non-conveniens.
 
 ## 10. Entire Agreement/Assignment
 This Agreement is the entire agreement between the parties, and supersedes any and all prior agreements, understandings or communications, written or oral, between the parties relating to the subject matter hereof. This Agreement may be assigned by Rubix ML.
