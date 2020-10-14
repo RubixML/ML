@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use InvalidArgumentException;
 use Stringable;
+use GdImage;
 
 use function gettype;
 use function in_array;
@@ -103,6 +104,13 @@ class DataType implements Stringable
 
             case 'string':
                 return new self(self::CATEGORICAL);
+
+            case 'object':
+                if (class_exists(GdImage::class) and $value instanceof GdImage) {
+                    return new self(self::IMAGE);
+                }
+
+                return new self(self::OTHER);
 
             case 'resource':
                 switch (get_resource_type($value)) {
