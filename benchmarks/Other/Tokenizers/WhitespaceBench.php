@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\Benchmarks\Other\Tokenizers;
 
 use Rubix\ML\Other\Tokenizers\Whitespace;
 
