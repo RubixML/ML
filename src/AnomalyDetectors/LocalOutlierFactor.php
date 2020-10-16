@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
@@ -111,17 +111,17 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      * @param int $k
      * @param float|null $contamination
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor'
+            throw new BadHyperparameter('At least 1 neighbor'
                 . " is required to form a local region, $k given.");
         }
 
         if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
-            throw new InvalidArgumentException('Contamination must be'
+            throw new BadHyperparameter('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 

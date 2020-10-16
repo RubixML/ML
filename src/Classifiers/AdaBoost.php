@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
@@ -147,7 +147,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param int $estimators
      * @param float $minChange
      * @param int $window
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         ?Learner $base = null,
@@ -158,32 +158,32 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         int $window = 5
     ) {
         if ($base and !$base->type()->isClassifier()) {
-            throw new InvalidArgumentException('Base Estimator must be'
+            throw new BadHyperparameter('Base Estimator must be'
                 . " a classifier, {$base->type()} given.");
         }
 
         if ($rate < 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
+            throw new BadHyperparameter('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
-            throw new InvalidArgumentException('Ratio must be'
+            throw new BadHyperparameter('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Number of estimators'
+            throw new BadHyperparameter('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
+            throw new BadHyperparameter('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
+            throw new BadHyperparameter('Window must be'
                 . " greater than 0, $window given.");
         }
 
