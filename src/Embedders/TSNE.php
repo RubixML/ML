@@ -12,7 +12,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 
 use const Rubix\ML\EPSILON;
 
@@ -212,7 +212,7 @@ class TSNE implements Embedder, Verbose
      * @param float $minGradient
      * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         int $dimensions = 2,
@@ -225,37 +225,37 @@ class TSNE implements Embedder, Verbose
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Dimensions must be'
+            throw new BadHyperparameter('Dimensions must be'
                 . " greater than 0, $dimensions given.");
         }
 
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
+            throw new BadHyperparameter('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
         if ($perplexity < 1) {
-            throw new InvalidArgumentException('Perplexity must be'
+            throw new BadHyperparameter('Perplexity must be'
                 . " greater than 0, $perplexity given.");
         }
 
         if ($exaggeration < 1.0) {
-            throw new InvalidArgumentException('Exaggeration must be'
+            throw new BadHyperparameter('Exaggeration must be'
              . " greater than 1, $exaggeration given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minGradient < 0.0) {
-            throw new InvalidArgumentException('Minimum gradient must be'
+            throw new BadHyperparameter('Minimum gradient must be'
                 . " greater than 0, $minGradient given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
+            throw new BadHyperparameter('Window must be'
                 . " greater than 0, $window given.");
         }
 

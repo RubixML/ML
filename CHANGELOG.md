@@ -8,6 +8,9 @@
     - Add generic Trainable interface
     - Decision Trees are now iterable
     
+-0.2.3
+    - Now compatible with PHP 8 GD Image types
+
 - 0.2.2
     - Optimized CART quantile-based node splitting
     - Fixed CART and Extra Tree min purity increase post pruning

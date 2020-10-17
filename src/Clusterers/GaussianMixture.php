@@ -22,7 +22,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\logsumexp;
@@ -124,7 +124,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         int $k,
@@ -133,17 +133,17 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
-            throw new InvalidArgumentException('K must be greater'
+            throw new BadHyperparameter('K must be greater'
                 . " than 0, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
+            throw new BadHyperparameter('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 

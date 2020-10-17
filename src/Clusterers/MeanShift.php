@@ -27,6 +27,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\array_transpose;
@@ -175,7 +176,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param float $minShift
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         float $radius,
@@ -186,22 +187,22 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         ?Seeder $seeder = null
     ) {
         if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Radius must be'
+            throw new BadHyperparameter('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
-            throw new InvalidArgumentException('Ratio must be'
+            throw new BadHyperparameter('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minShift < 0.0) {
-            throw new InvalidArgumentException('Minimum shift must be'
+            throw new BadHyperparameter('Minimum shift must be'
                 . " greater than 0, $minShift given.");
         }
 

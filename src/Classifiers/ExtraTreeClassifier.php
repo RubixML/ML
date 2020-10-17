@@ -60,7 +60,6 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
      * @param float $minPurityIncrease
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,

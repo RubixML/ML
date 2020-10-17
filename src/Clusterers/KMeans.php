@@ -25,7 +25,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
@@ -138,7 +138,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         int $k,
@@ -150,27 +150,27 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
-            throw new InvalidArgumentException('K must be greater'
+            throw new BadHyperparameter('K must be greater'
                 . " than 0, $k given.");
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size must be'
+            throw new BadHyperparameter('Batch size must be'
                 . " greater than 0, $batchSize given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
+            throw new BadHyperparameter('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
+            throw new BadHyperparameter('Window must be'
                 . " greater than 0, $window given.");
         }
 

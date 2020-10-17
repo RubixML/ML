@@ -104,7 +104,6 @@ class DummyClassifier implements Estimator, Learner, Persistable
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {

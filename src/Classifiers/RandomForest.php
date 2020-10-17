@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
@@ -122,7 +122,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      * @param int $estimators
      * @param float $ratio
      * @param bool $balanced
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         ?Learner $base = null,
@@ -131,17 +131,17 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         bool $balanced = false
     ) {
         if ($base and !in_array(get_class($base), self::COMPATIBLE_LEARNERS)) {
-            throw new InvalidArgumentException('Base Learner must be'
+            throw new BadHyperparameter('Base Learner must be'
                 . ' compatible with ensemble.');
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Number of estimators'
+            throw new BadHyperparameter('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.5) {
-            throw new InvalidArgumentException('Ratio must be between'
+            throw new BadHyperparameter('Ratio must be between'
                 . " 0 and 1.5, $ratio given.");
         }
 
@@ -201,7 +201,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
