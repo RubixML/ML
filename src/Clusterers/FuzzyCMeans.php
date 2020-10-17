@@ -22,7 +22,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
@@ -122,7 +122,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * @param float $minChange
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         int $c,
@@ -133,22 +133,22 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         ?Seeder $seeder = null
     ) {
         if ($c < 1) {
-            throw new InvalidArgumentException('C must be greater'
+            throw new BadHyperparameter('C must be greater'
                 . " than 0, $c given.");
         }
 
         if ($fuzz <= 1.0) {
-            throw new InvalidArgumentException('Fuzz factor must be'
+            throw new BadHyperparameter('Fuzz factor must be'
                 . " greater than 1, $fuzz given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
+            throw new BadHyperparameter('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 

@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
@@ -81,12 +81,12 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor'
+            throw new BadHyperparameter('At least 1 neighbor'
                 . " is required to make a prediction, $k given.");
         }
 

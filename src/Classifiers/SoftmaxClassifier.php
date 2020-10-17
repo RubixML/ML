@@ -30,7 +30,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_nan;
@@ -131,7 +131,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(
         int $batchSize = 128,
@@ -143,27 +143,27 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         ?ClassificationLoss $costFn = null
     ) {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size must be'
+            throw new BadHyperparameter('Batch size must be'
                 . " greater than 0, $batchSize given.");
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
+            throw new BadHyperparameter('Alpha must be'
                 . " greater than 0, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
+            throw new BadHyperparameter('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new InvalidArgumentException('Minimum change must be'
+            throw new BadHyperparameter('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
+            throw new BadHyperparameter('Window must be'
                 . " greater than 0, $window given.");
         }
 

@@ -17,7 +17,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\BadHyperparameter;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
@@ -89,17 +89,17 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
     /**
      * @param float $threshold
      * @param float $alpha
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\BadHyperparameter
      */
     public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
         if ($threshold <= 0.0) {
-            throw new InvalidArgumentException('Threshold must be'
+            throw new BadHyperparameter('Threshold must be'
                 . " greater than 0, $threshold given.");
         }
 
         if ($alpha < 0.0 or $alpha > 1.0) {
-            throw new InvalidArgumentException('Alpha must be'
+            throw new BadHyperparameter('Alpha must be'
                 . " between 0 and 1, $alpha given.");
         }
 
@@ -198,8 +198,6 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
