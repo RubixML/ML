@@ -19,7 +19,7 @@ use function count;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Andrew DalPino
+ * @author      Oksana Yudenko
  */
 class KSkipNGram implements Tokenizer
 {
@@ -138,6 +138,6 @@ class KSkipNGram implements Tokenizer
      */
     public function __toString() : string
     {
-        return "Skip Gram (min: {$this->min}, max: {$this->max}, word_tokenizer: {$this->wordTokenizer})";
+        return "K-Skip-N-Gram (min: {$this->min}, max: {$this->max}, skip: {$this->skip}, word tokenizer: {$this->wordTokenizer})";
     }
 }

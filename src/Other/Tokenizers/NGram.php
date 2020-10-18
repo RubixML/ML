@@ -118,6 +118,6 @@ class NGram implements Tokenizer
      */
     public function __toString() : string
     {
-        return "N-Gram (min: {$this->min}, max: {$this->max}, word_tokenizer: {$this->wordTokenizer})";
+        return "N-Gram (min: {$this->min}, max: {$this->max}, word tokenizer: {$this->wordTokenizer})";
     }
 }

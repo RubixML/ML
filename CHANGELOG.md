@@ -7,6 +7,7 @@
     - Deprecated the Ranking interface
     - Add generic Trainable interface
     - Decision Trees are now iterable
+    - Added K-Skip-N-Gram tokenizer and deprecated Skip Gram
     
 -0.2.3
     - Now compatible with PHP 8 GD Image types
