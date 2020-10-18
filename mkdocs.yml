@@ -261,6 +261,7 @@ nav:
     - Prior: other/strategies/prior.md
     - Wild Guess: other/strategies/wild-guess.md
   - Tokenizers:
+    - K-Skip-N-Gram: other/tokenizers/k-skip-n-gram.md
     - N-Gram: other/tokenizers/n-gram.md
     - Sentence: other/tokenizers/sentence.md
     - Skip Gram: other/tokenizers/skip-gram.md
