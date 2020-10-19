@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
@@ -28,7 +29,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Transformer, Stateful, Elastic
+class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 {
     /**
      * Should we center the data at 0?

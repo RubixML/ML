@@ -5,7 +5,7 @@ Recursive Feature Eliminator (RFE) is a supervised feature selector that uses th
 
 > **Note:** The default feature ranking base learner is a fully-grown decision tree.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Verbose](../verbose.md)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on the base learner
 

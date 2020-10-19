@@ -159,7 +159,7 @@ $predictions = $estimator->predict($dataset); // Dataset transformed automatical
 ```
 
 ## Advanced Preprocessing
-In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into a another using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method after to combine them into one dataset. We can even apply another set of transformation to the dataset after that.
+In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformation to the dataset after that.
 
 ```php
 use Rubix\ML\Dataset\Labeled;
@@ -190,6 +190,32 @@ $dataset2 = Unlabeled::fromIterator($extractor2)
 
 $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
+```
+
+## Persisting Fitted Transformers
+The persistence subsystem can be used to save and load Stateful and Elastic transformers that implement the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
+
+```php
+use Rubix\ML\Transformers\KBestSelector;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new KBestSelector(10);
+
+$transformer->fit($dataset);
+
+$persister = new Filesystem('k-best.transformer');
+
+$persister->save($transformer);
+```
+
+Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
+
+```php
+$persister = new Filesystem('k-best.transformer');
+
+$transformer = $persister->load();
+
+$dataset->apply($transformer);
 ```
 
 ## Filtering Records

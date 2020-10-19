@@ -3,7 +3,7 @@
 # Interval Discretizer
 Converts each continuous feature to a category using equi-width histograms with a user-specified number of bins for discretization.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

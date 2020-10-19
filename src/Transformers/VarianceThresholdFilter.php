@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
@@ -20,7 +21,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer, Stateful
+class VarianceThresholdFilter implements Transformer, Stateful, Persistable
 {
     /**
      * The minimum number of features to select from the dataset.

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -25,7 +26,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneHotEncoder implements Transformer, Stateful
+class OneHotEncoder implements Transformer, Stateful, Persistable
 {
     /**
      * The set of unique possible categories per feature column of the training set.

@@ -3,7 +3,7 @@
 # Variance Threshold Filter
 A type of feature selector that selects the top *k* features with the greatest variance.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

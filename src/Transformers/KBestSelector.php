@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -23,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KBestSelector implements Transformer, Stateful
+class KBestSelector implements Transformer, Stateful, Persistable
 {
     /**
      * The maximum number of features to select from the dataset.

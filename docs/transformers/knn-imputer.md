@@ -5,7 +5,7 @@ An unsupervised imputer that replaces missing values in a dataset with the dista
 
 **Note:** Requires NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), for continuous features.
 
-**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 

@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -30,7 +31,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Transformer, Stateful
+class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 {
     /**
      * The target number of dimensions to project onto.

@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Vector;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -23,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IntervalDiscretizer implements Transformer, Stateful
+class IntervalDiscretizer implements Transformer, Stateful, Persistable
 {
     /**
      * The value of the starting category for each feature column.

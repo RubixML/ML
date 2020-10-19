@@ -3,7 +3,7 @@
 # Sparse Random Projector
 A *database-friendly* random projector that samples its random projection matrix from a sparse probabilistic approximation of the Gaussian distribution. The term *database-friendly* refers to the fact that the number of non-zero operations required to transform the input matrix is reduced by the sparsity factor.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous only
 

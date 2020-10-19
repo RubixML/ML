@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
@@ -24,7 +25,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MissingDataImputer implements Transformer, Stateful
+class MissingDataImputer implements Transformer, Stateful, Persistable
 {
     /**
      * The guessing strategy to use when imputing continuous values.

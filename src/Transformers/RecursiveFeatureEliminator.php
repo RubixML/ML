@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -32,7 +33,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
+class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Persistable
 {
     use LoggerAware;
 

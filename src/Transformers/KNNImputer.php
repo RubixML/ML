@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
@@ -36,7 +37,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNImputer implements Transformer, Stateful
+class KNNImputer implements Transformer, Stateful, Persistable
 {
     /**
      * The number of neighbors to consider when imputing a value.

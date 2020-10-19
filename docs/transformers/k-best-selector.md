@@ -5,7 +5,7 @@ A supervised feature selector that picks the top K ranked features returned by a
 
 > **Note:** The default feature ranking base learner is a fully-grown decision tree.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on the base learner
 

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
@@ -26,7 +27,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WordCountVectorizer implements Transformer, Stateful
+class WordCountVectorizer implements Transformer, Stateful, Persistable
 {
     /**
      * The maximum size of the vocabulary.

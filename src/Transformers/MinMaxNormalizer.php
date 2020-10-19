@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -20,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer, Stateful, Elastic
+class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
 {
     /**
      * The minimum value of the transformed features.

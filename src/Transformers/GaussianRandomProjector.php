@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -23,7 +24,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianRandomProjector implements Transformer, Stateful
+class GaussianRandomProjector implements Transformer, Stateful, Persistable
 {
     /**
      * The target number of dimensions.
