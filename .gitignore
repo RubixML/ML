@@ -1,9 +1,11 @@
+test.model
 /vendor
 composer.lock
-*.model
 .phpunit.result.cache
+/phpunit.xml
 .php_cs.cache
+Thumbs.db
 .DS_Store
-.idea
-.vscode
-.vs
+/.idea
+/.vscode
+/.vs
