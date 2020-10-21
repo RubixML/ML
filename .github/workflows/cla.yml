@@ -15,7 +15,7 @@ jobs:
         uses: cla-assistant/github-action@v2.0.2-alpha
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN : ${{ secrets.CLA_BOT_TOKEN }}
         with: 
           remote-organization-name: 'RubixML'
           remote-repository-name: 'Signatures'
