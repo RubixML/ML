@@ -16,9 +16,9 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [AdaBoost](classifiers/adaboost.md) | High | ● | | Depends on base learner |
 | [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Categorical, Continuous |
 | [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Categorical, Continuous |
-| [Gaussian Naive Bayes](classifiers/gaussian-nb.md) | Moderate | ● | ● | Continuous |
-| [K-d Neighbors](classifiers/k-d-neighbors.md) | Moderate | ● | | Depends on distance kernel |
-| [K Nearest Neighbors](classifiers/k-nearest-neighbors) | Moderate | ● | ● | Depends on distance kernel |
+| [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) | Moderate | ● | ● | Continuous |
+| [K-d Neighbors](classifiers/kd-neighbors.md) | Moderate | ● | | Depends on distance kernel |
+| [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) | Moderate | ● | ● | Depends on distance kernel |
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Continuous |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Continuous |
 | [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Categorical |
