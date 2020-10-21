@@ -3,7 +3,7 @@
 # Random Forest
 Random Forest (RF) is a classifier that trains an ensemble of Decision Trees ([Classification Trees](classification-tree.md) or [Extra Trees](extra-tree-classifier.md)) on random subsets (*bootstrap* set) of the training data. Predictions are based on the probability scores returned from each tree in the ensemble, averaged and weighted equally. In addition to reliable predictions, Random Forest also returns reliable feature importance scores making it suitable for feature selection.
 
-> **Note:** The default base tree learner is a fully grown [Classification Tree](classifiers/classification-tree.md).
+> **Note:** The default base tree learner is a fully grown [Classification Tree](classification-tree.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
