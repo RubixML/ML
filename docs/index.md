@@ -5,7 +5,7 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Developer-friendly** API is delightful to use
 - **40+** supervised and unsupervised learning algorithms
 - **Support** for ETL, preprocessing, and cross-validation
-- **Open source** and free to use commercially
+- **Open Source** and free to use commercially
 
 ## Installation
 Install Rubix ML into your project using [Composer](https://getcomposer.org/):
