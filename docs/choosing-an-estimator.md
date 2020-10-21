@@ -14,15 +14,15 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | Classifier | Flexibility | Proba | Online | Data Compatibility |
 |---|---|---|---|---|
 | [AdaBoost](classifiers/adaboost.md) | High | ● | | Depends on base learner |
-| [Classification Tree](classifiers/classification-tree.md) | Moderate | ● | | Categorical, Continuous |
-| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Moderate | ● | | Categorical, Continuous |
-| [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) | Moderate | ● | ● | Continuous |
-| [K-d Neighbors](classifiers/kd-neighbors.md) | Moderate | ● | | Depends on distance kernel |
-| [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) | Moderate | ● | ● | Depends on distance kernel |
+| [Classification Tree](classifiers/classification-tree.md) | Medium | ● | | Categorical, Continuous |
+| [Extra Tree Classifier](classifiers/extra-tree-classifier.md) | Medium | ● | | Categorical, Continuous |
+| [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) | Medium | ● | ● | Continuous |
+| [K-d Neighbors](classifiers/kd-neighbors.md) | Medium | ● | | Depends on distance kernel |
+| [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) | Medium | ● | ● | Depends on distance kernel |
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | Continuous |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | Continuous |
-| [Naive Bayes](classifiers/naive-bayes.md) | Moderate | ● | ● | Categorical |
-| [Radius Neighbors](classifiers/radius-neighbors.md) | Moderate | ● | | Depends on distance kernel |
+| [Naive Bayes](classifiers/naive-bayes.md) | Medium | ● | ● | Categorical |
+| [Radius Neighbors](classifiers/radius-neighbors.md) | Medium | ● | | Depends on distance kernel |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | Categorical, Continuous |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | Continuous |
 | [SVC](classifiers/svc.md) | High | | | Continuous |
@@ -33,13 +33,13 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | Regressor | Flexibility | Online | Verbose | Data Compatibility |
 |---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | ● | Continuous |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Moderate | | | Categorical, Continuous |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | | Categorical, Continuous |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | Categorical, Continuous |
-| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Moderate | | | Depends on distance kernel |
-| [KNN Regressor](regressors/knn-regresor.md) | Moderate | ● | | Depends on distance kernel |
+| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Medium | | | Depends on distance kernel |
+| [KNN Regressor](regressors/knn-regressor.md) | Medium | ● | | Depends on distance kernel |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Continuous |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Moderate | | | Depends on distance kernerl |
-| [Regression Tree](regressors/regression-tree.md) | Moderate | | | Categorical, Continuous |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Medium | | | Depends on distance kernerl |
+| [Regression Tree](regressors/regression-tree.md) | Medium | | | Categorical, Continuous |
 | [Ridge](regressors/ridge.md) | Low | | | Continuous |
 | [SVR](regressors/svr.md) | High | | | Continuous |
 
@@ -50,9 +50,9 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 |---|---|---|---|---|
 | [DBSCAN](clusterers/dbscan.md) | High | | | Depends on distance kernel |
 | [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | Continuous |
-| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Moderate | ● | | Continuous |
+| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Medium | ● | | Continuous |
 | [K Means](clusterers/k-means.md) | Low | ● | ● | Continuous |
-| [Mean Shift](clusterers/mean-shift.md) | Moderate | ● | | Continuous |
+| [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | Continuous |
 
 ## Anomaly Detectors
 Anomaly Detectors are unsupervised learners that predict a boolean-valued outcome encoded as `1` for an outlier or `0` for a regular sample. They are specialized to perform *one class* classification on unbalanced datasets without the need for labeled data. In addition, anomaly detectors that implement the [Ranking](ranking.md) interface can output an anomaly score for each sample in a dataset which can be used to rank the samples from highest to lowest likelihood of being an outlier.

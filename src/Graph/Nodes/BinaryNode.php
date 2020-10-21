@@ -23,7 +23,6 @@ interface BinaryNode extends Node
     /**
      * Return the right child node.
      *
-     *
      * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function right() : ?BinaryNode;
