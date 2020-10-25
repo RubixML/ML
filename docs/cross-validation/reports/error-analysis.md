@@ -1,6 +1,6 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ErrorAnalysis.php">[source]</a></span>
 
-# Residual Analysis
+# Error Analysis
 The Error Analysis report measures the differences between the predicted and target values of a regression problem using multiple error measurements (MAE, MSE, RMSE, MAPE, etc.) as well as statistics regarding the distribution of errors.
 
 **Estimator Compatibility:** Regressor
