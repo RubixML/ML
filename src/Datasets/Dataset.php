@@ -19,6 +19,7 @@ use Countable;
 
 use function Rubix\ML\array_transpose;
 use function count;
+use function is_array;
 
 use const Rubix\ML\EPSILON;
 
@@ -69,7 +70,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public static function stack(array $datasets);
 
     /**
-     * @param array[] $samples
+     * @param mixed[] $samples
      * @param bool $verify
      * @throws \InvalidArgumentException
      */
@@ -78,27 +79,29 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
         if ($samples and $verify) {
             $samples = array_values($samples);
 
-            $prototype = isset($samples[0]) ? array_values($samples[0]) : [];
+            $prototype = array_values((array) current($samples));
 
             $n = count($prototype);
 
             $types = array_map([DataType::class, 'detect'], $prototype);
 
             foreach ($samples as $row => &$sample) {
-                $sample = array_values($sample);
+                $sample = is_array($sample) ? array_values($sample) : [$sample];
 
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('Number of columns'
-                        . " must be equal for all samples, $n expected but"
-                        . ' ' . count($sample) . " given at row $row.");
+                        . " must be equal for all samples, $n expected but "
+                        . count($sample) . " given at row offset $row.");
                 }
 
                 foreach ($sample as $column => $value) {
-                    if (DataType::detect($value) != $types[$column]) {
-                        throw new InvalidArgumentException("Column $column must"
-                            . ' contain values of the same data type,'
-                            . " $types[$column] expected but "
-                            . DataType::detect($value) . " given at row $row.");
+                    $type = DataType::detect($value);
+
+                    if ($type != $types[$column]) {
+                        throw new InvalidArgumentException("Column $column"
+                            . ' must contain values of the same data type,'
+                            . " $types[$column] expected but $type given at"
+                            . " row offset $row.");
                     }
                 }
             }
