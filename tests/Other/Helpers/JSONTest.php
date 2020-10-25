@@ -2,8 +2,9 @@
 
 namespace Rubix\ML\Tests\Other\Helpers;
 
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Other\Helpers\JSON;
+use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Helpers
@@ -14,12 +15,13 @@ class JSONTest extends TestCase
     /**
      * @test
      */
-    public function decodeSuccess() : void
+    public function decode() : void
     {
         $data = (string) file_get_contents('tests/test.json');
+
         $actual = JSON::decode($data);
 
-        $expect = [
+        $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
             ['attitude' => 'mean', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
             ['nice', 'rough', 'friendly', 2.6, 'not monster'],
@@ -28,17 +30,7 @@ class JSONTest extends TestCase
             ['nice', 'furry', 'loner', -5, 'not monster'],
         ];
 
-        $this->assertSame($expect, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function decodeFail() : void
-    {
-        $this->expectException(\RuntimeException::class);
-        $invalid = '[{"package":...}]';
-        JSON::decode($invalid);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -47,7 +39,19 @@ class JSONTest extends TestCase
     public function encode() : void
     {
         $actual = JSON::encode(['package' => 'rubix/ml']);
-        $expect = '{"package":"rubix\/ml"}';
-        $this->assertSame($expect, $actual);
+
+        $expected = '{"package":"rubix\/ml"}';
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function decodeBadData() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        JSON::decode('[{"package":...}]');
     }
 }

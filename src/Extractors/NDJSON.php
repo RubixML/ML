@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\Extractors;
 
+use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
-use Rubix\ML\Other\Helpers\JSON;
 
 /**
  * NDJSON
@@ -86,7 +86,7 @@ class NDJSON implements Extractor
                 yield JSON::decode($data);
             } catch (RuntimeException $e) {
                 throw new RuntimeException(
-                    "JSON Error on line: $line. (" . $e->getMessage() . ')',
+                    "JSON Error on line $line: {$e->getMessage()}",
                     $e->getCode(),
                     $e
                 );
