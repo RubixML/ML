@@ -20,6 +20,8 @@ class LeastSquares implements RegressionLoss, Stringable
     /**
      * Compute the loss score.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
      * @return float
@@ -31,6 +33,8 @@ class LeastSquares implements RegressionLoss, Stringable
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target

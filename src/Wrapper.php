@@ -2,6 +2,13 @@
 
 namespace Rubix\ML;
 
+/**
+ * Wrapper
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Wrapper extends Estimator
 {
     /**

@@ -19,6 +19,8 @@ use function count;
  * This Binary layer consists of a single sigmoid neuron capable of distinguishing between
  * two discrete classes.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

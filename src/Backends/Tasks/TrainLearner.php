@@ -5,6 +5,17 @@ namespace Rubix\ML\Backends\Tasks;
 use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Train Learer
+ *
+ * A routine to train a learner and then return it.
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class TrainLearner extends Task
 {
     /**

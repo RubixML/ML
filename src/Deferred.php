@@ -7,8 +7,10 @@ use function call_user_func_array;
 /**
  * Deferred
  *
- * A deferred computation i.e. an object that represents the result of a
- * computation performed sometime in the future.
+ * A deferred computation i.e. an object that represents the result of a computation
+ * performed sometime in the future.
+ *
+ * @internal
  *
  * @category    Machine Learning
  * @package     Rubix/ML

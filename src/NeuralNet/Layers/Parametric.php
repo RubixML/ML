@@ -4,6 +4,15 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Generator;
 
+/**
+ * Parametric
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Parametric
 {
     /**

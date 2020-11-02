@@ -61,6 +61,8 @@ class AdaGrad implements Optimizer, Adaptive, Stringable
     /**
      * Warm the parameter cache.
      *
+     * @internal
+     *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
     public function warm(Parameter $param) : void
@@ -70,6 +72,8 @@ class AdaGrad implements Optimizer, Adaptive, Stringable
 
     /**
      * Take a step of gradient descent for a given parameter.
+     *
+     * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient

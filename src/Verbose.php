@@ -5,6 +5,13 @@ namespace Rubix\ML;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 
+/**
+ * Verbose
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Verbose extends LoggerAwareInterface
 {
     /**

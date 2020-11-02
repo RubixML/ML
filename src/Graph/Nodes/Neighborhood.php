@@ -12,6 +12,8 @@ use Traversable;
  * Neighborhoods are hypercubes that contain samples that are close to each other in distance but
  * not *necessarily* the closest.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

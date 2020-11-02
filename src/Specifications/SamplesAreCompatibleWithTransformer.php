@@ -8,6 +8,9 @@ use InvalidArgumentException;
 
 use function count;
 
+/**
+ * @internal
+ */
 class SamplesAreCompatibleWithTransformer extends Specification
 {
     /**

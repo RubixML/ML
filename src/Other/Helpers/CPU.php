@@ -6,6 +6,15 @@ use RuntimeException;
 
 use function count;
 
+/**
+ * CPU
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class CPU
 {
     /**

@@ -4,6 +4,13 @@ namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
 
+/**
+ * Persister
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Persister
 {
     /**

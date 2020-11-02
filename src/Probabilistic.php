@@ -4,6 +4,13 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Probabilistic
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Probabilistic extends Estimator
 {
     /**

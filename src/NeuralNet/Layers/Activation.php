@@ -60,6 +60,8 @@ class Activation implements Hidden, Stringable
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @throws \RuntimeException
      * @return int
      */
@@ -76,6 +78,8 @@ class Activation implements Hidden, Stringable
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
+     * @internal
+     *
      * @param int $fanIn
      * @return int
      */
@@ -90,6 +94,8 @@ class Activation implements Hidden, Stringable
 
     /**
      * Compute a forward pass through the layer.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
@@ -106,6 +112,8 @@ class Activation implements Hidden, Stringable
     /**
      * Compute an inferential pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -116,6 +124,8 @@ class Activation implements Hidden, Stringable
 
     /**
      * Calculate the gradient and update the parameters of the layer.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
@@ -142,6 +152,8 @@ class Activation implements Hidden, Stringable
 
     /**
      * Calculate the gradient for the previous layer.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @param \Tensor\Matrix $computed

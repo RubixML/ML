@@ -33,6 +33,8 @@ class Constant implements Continuous, Stringable
     /**
      * Fit the guessing strategy to a set of values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      */
     public function fit(array $values) : void
@@ -42,6 +44,8 @@ class Constant implements Continuous, Stringable
 
     /**
      * Make a guess.
+     *
+     * @internal
      *
      * @return int|float
      */

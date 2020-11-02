@@ -11,6 +11,8 @@ use InvalidArgumentException;
  * The Placeholder 1D input layer represents the *future* input values of a mini
  * batch (matrix) of single dimensional tensors (vectors) to the neural network.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

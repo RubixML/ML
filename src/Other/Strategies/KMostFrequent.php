@@ -53,7 +53,9 @@ class KMostFrequent implements Categorical, Stringable
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param (string|int|float)[] $values
+     * @internal
+     *
+     * @param (string|int)[] $values
      * @throws \InvalidArgumentException;
      */
     public function fit(array $values) : void
@@ -74,6 +76,8 @@ class KMostFrequent implements Categorical, Stringable
 
     /**
      * Make a guess.
+     *
+     * @internal
      *
      * @throws \RuntimeException
      * @return string

@@ -19,6 +19,8 @@ class Random implements Seeder, Stringable
     /**
      * Seed k cluster centroids from a dataset.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
      * @return list<list<string|int|float>>

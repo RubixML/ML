@@ -57,6 +57,8 @@ class Noise implements Hidden, Stringable
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @throws \RuntimeException
      * @return int
      */
@@ -73,6 +75,8 @@ class Noise implements Hidden, Stringable
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
+     * @internal
+     *
      * @param int $fanIn
      * @return int
      */
@@ -88,6 +92,8 @@ class Noise implements Hidden, Stringable
     /**
      * Compute a forward pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -102,6 +108,8 @@ class Noise implements Hidden, Stringable
     /**
      * Compute an inferential pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -112,6 +120,8 @@ class Noise implements Hidden, Stringable
 
     /**
      * Calculate the gradients of the layer and update the parameters.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer

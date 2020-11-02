@@ -4,6 +4,13 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Learner
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Learner extends Estimator
 {
     /**

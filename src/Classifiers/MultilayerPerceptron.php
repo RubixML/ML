@@ -248,6 +248,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
@@ -257,6 +259,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
     /**
      * Return the data types that the estimator is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\DataType>
      */
@@ -269,6 +273,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */

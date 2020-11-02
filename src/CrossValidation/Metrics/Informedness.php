@@ -29,6 +29,8 @@ class Informedness implements Metric, Stringable
     /**
      * Compute the class Informedness score.
      *
+     * @internal
+     *
      * @param int $tp
      * @param int $tn
      * @param int $fp
@@ -52,6 +54,8 @@ class Informedness implements Metric, Stringable
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

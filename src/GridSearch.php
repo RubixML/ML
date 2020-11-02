@@ -100,6 +100,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     /**
      * Cross validate a learner with a given dataset and return the score.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\CrossValidation\Validator $validator

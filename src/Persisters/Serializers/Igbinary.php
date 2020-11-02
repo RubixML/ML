@@ -37,6 +37,8 @@ class Igbinary implements Serializer, Stringable
     /**
      * Serialize a persistable object and return the data.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Persistable $persistable
      * @return \Rubix\ML\Encoding
      */
@@ -47,6 +49,8 @@ class Igbinary implements Serializer, Stringable
 
     /**
      * Unserialize a persistable object and return it.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Encoding $encoding
      * @return \Rubix\ML\Persistable

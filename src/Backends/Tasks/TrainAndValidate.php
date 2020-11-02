@@ -7,6 +7,18 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 
+/**
+ * Train and Validate
+ *
+ * A routine to train using a training set and subsequently cross-validate the model using a
+ * testing set and scoring metric.
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class TrainAndValidate extends Task
 {
     /**

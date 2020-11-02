@@ -14,6 +14,8 @@ use function in_array;
  *
  * A high-level data type value object.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -21,6 +21,8 @@ use Traversable;
  * A feed forward neural network implementation consisting of an input and
  * output layer and any number of intermediate hidden layers.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

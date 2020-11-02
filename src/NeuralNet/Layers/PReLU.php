@@ -67,6 +67,8 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @throws \RuntimeException
      * @return int
      */
@@ -82,6 +84,8 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
+     *
+     * @internal
      *
      * @param int $fanIn
      * @return int
@@ -102,6 +106,8 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Compute a forward pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -115,6 +121,8 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Compute an inferential pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -125,6 +133,8 @@ class PReLU implements Hidden, Parametric, Stringable
 
     /**
      * Calculate the gradient and update the parameters of the layer.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
@@ -160,6 +170,8 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Calculate the gradient for the previous layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @param \Tensor\Matrix $dOut
      * @return \Tensor\Matrix
@@ -170,13 +182,44 @@ class PReLU implements Hidden, Parametric, Stringable
     }
 
     /**
+     * Return the parameters of the layer.
+     *
+     * @internal
+     *
+     * @throws \RuntimeException
+     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
+     */
+    public function parameters() : Generator
+    {
+        if (!$this->alpha) {
+            throw new RuntimeException('Layer has not been initialized.');
+        }
+
+        yield 'alpha' => $this->alpha;
+    }
+
+    /**
+     * Restore the parameters in the layer from an associative array.
+     *
+     * @internal
+     *
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
+     */
+    public function restore(array $parameters) : void
+    {
+        $this->alpha = $parameters['alpha'];
+    }
+
+    /**
      * Compute the leaky ReLU activation function and return a matrix.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $z
      * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    protected function compute(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -206,11 +249,13 @@ class PReLU implements Hidden, Parametric, Stringable
     /**
      * Calculate the derivative of the activation function at a given output.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @throws \RuntimeException
      * @return \Tensor\Matrix
      */
-    public function differentiate(Matrix $z) : Matrix
+    protected function differentiate(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -233,31 +278,6 @@ class PReLU implements Hidden, Parametric, Stringable
         }
 
         return Matrix::quick($gradient);
-    }
-
-    /**
-     * Return the parameters of the layer.
-     *
-     * @throws \RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
-     */
-    public function parameters() : Generator
-    {
-        if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
-
-        yield 'alpha' => $this->alpha;
-    }
-
-    /**
-     * Restore the parameters in the layer from an associative array.
-     *
-     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
-     */
-    public function restore(array $parameters) : void
-    {
-        $this->alpha = $parameters['alpha'];
     }
 
     /**

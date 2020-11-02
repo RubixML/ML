@@ -2,6 +2,15 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+/**
+ * Tree
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Tree
 {
     /**

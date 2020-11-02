@@ -4,6 +4,15 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Traversable;
 
+/**
+ * Hypercube
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Hypercube extends Node
 {
     /**

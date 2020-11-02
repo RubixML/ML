@@ -5,6 +5,17 @@ namespace Rubix\ML\Backends\Tasks;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Predict
+ *
+ * Routine to return the predictions made by an estimator on a dataset.
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Predict extends Task
 {
     /**

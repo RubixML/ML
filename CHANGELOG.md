@@ -1,3 +1,6 @@
+- 0.2.4
+    - Categorized and annotated internal API
+
 - 0.2.3
     - Now compatible with PHP 8 GD Image types
     - Dataset cast sample to array upon validation

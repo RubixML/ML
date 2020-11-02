@@ -4,6 +4,13 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Ranking
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Ranking extends Estimator
 {
     /**

@@ -4,6 +4,15 @@ namespace Rubix\ML\Specifications;
 
 use Exception;
 
+/**
+ * Specification
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 abstract class Specification
 {
     /**

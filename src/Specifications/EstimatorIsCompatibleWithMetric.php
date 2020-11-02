@@ -8,6 +8,9 @@ use InvalidArgumentException;
 
 use function in_array;
 
+/**
+ * @internal
+ */
 class EstimatorIsCompatibleWithMetric extends Specification
 {
     /**

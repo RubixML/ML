@@ -82,6 +82,8 @@ class Amp implements Backend, Stringable
     /**
      * Queue up a deferred task for backend processing.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable(mixed):void|null $after
      */
@@ -96,6 +98,8 @@ class Amp implements Backend, Stringable
 
     /**
      * The coroutine for a particular task and callback.
+     *
+     * @internal
      *
      * @param \Amp\Parallel\Worker\Task $task
      * @param callable(mixed):void|null $after
@@ -115,6 +119,8 @@ class Amp implements Backend, Stringable
     /**
      * Process the queue and return the results.
      *
+     * @internal
+     *
      * @return mixed[]
      */
     public function process() : array
@@ -129,6 +135,8 @@ class Amp implements Backend, Stringable
     /**
      * Gather and memorize the results from the worker pool.
      *
+     * @internal
+     *
      * @return \Generator<\Amp\Promise>
      */
     public function gather() : Generator
@@ -138,6 +146,8 @@ class Amp implements Backend, Stringable
 
     /**
      * Flush the queue and clear the memorized results.
+     *
+     * @internal
      */
     public function flush() : void
     {

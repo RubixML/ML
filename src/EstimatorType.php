@@ -12,6 +12,8 @@ use function in_array;
  *
  * Estimator type enum.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -5,10 +5,21 @@ namespace Rubix\ML\Graph\Trees;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
 
+/**
+ * Spatial
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Spatial extends Tree
 {
     /**
      * Return the distance kernel used to compute distances.
+     *
+     * @internal
      *
      * @return \Rubix\ML\Kernels\Distance\Distance
      */
@@ -33,8 +44,7 @@ interface Spatial extends Tree
     public function nearest(array $sample, int $k) : array;
 
     /**
-     * Return all samples, labels, and distances within a given radius of a
-     * sample.
+     * Return all samples, labels, and distances within a given radius of a sample.
      *
      * @param list<string|int|float> $sample
      * @param float $radius

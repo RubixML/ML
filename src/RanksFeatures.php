@@ -2,6 +2,13 @@
 
 namespace Rubix\ML;
 
+/**
+ * Ranks Features
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface RanksFeatures extends Learner
 {
     /**

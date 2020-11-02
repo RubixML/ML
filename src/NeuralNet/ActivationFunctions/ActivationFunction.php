@@ -4,10 +4,19 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
+/**
+ * Activation Function
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface ActivationFunction
 {
     /**
      * Compute the output value.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $z
      * @return \Tensor\Matrix
@@ -16,6 +25,8 @@ interface ActivationFunction
 
     /**
      * Calculate the derivative of the activation function at a given output.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $z
      * @param \Tensor\Matrix $computed

@@ -2,6 +2,15 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+/**
+ * Binary Tree
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface BinaryTree extends Tree
 {
     /**

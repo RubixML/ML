@@ -14,6 +14,8 @@ use function Rubix\ML\argmax;
  *
  * A node that contains points that fall within a uniform hypersphere a.k.a. *ball*.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

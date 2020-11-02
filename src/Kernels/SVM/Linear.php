@@ -31,6 +31,8 @@ class Linear implements Kernel, Stringable
     /**
      * Return the options for the libsvm runtime.
      *
+     * @internal
+     *
      * @return mixed[]
      */
     public function options() : array

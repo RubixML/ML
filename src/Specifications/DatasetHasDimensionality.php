@@ -5,6 +5,9 @@ namespace Rubix\ML\Specifications;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
+/**
+ * @internal
+ */
 class DatasetHasDimensionality extends Specification
 {
     /**

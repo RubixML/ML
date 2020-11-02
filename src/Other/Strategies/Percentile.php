@@ -49,7 +49,9 @@ class Percentile implements Continuous, Stringable
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param (string|int|float)[] $values
+     * @internal
+     *
+     * @param (int|float)[] $values
      * @throws \InvalidArgumentException
      */
     public function fit(array $values) : void
@@ -64,6 +66,8 @@ class Percentile implements Continuous, Stringable
 
     /**
      * Make a guess.
+     *
+     * @internal
      *
      * @throws \RuntimeException
      * @return float

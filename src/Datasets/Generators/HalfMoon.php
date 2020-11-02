@@ -87,6 +87,8 @@ class HalfMoon implements Generator
     /**
      * Return the dimensionality of the data this generates.
      *
+     * @internal
+     *
      * @return int
      */
     public function dimensions() : int

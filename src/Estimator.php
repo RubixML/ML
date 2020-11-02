@@ -4,10 +4,19 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Estimator
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Estimator
 {
     /**
      * Return the estimator type.
+     *
+     * @internal
      *
      * @return \Rubix\ML\EstimatorType
      */
@@ -16,12 +25,16 @@ interface Estimator
     /**
      * Return the data types that the estimator is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array;
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */

@@ -246,8 +246,8 @@ class KDTree implements BinaryTree, Spatial, Stringable
     }
 
     /**
-     * Run a range search over every cluster within radius and return
-     * the labels and distances in a 2-tuple.
+     * Run a range search over every cluster within radius and return the samples,
+     * labels and distances in a 3-tuple.
      *
      * @param list<int|float> $sample
      * @param float $radius

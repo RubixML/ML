@@ -5,10 +5,19 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 
+/**
+ * Serializer
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Serializer
 {
     /**
      * Serialize a persistable object and return the data.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Persistable $persistable
      * @return \Rubix\ML\Encoding
@@ -17,6 +26,8 @@ interface Serializer
 
     /**
      * Unserialize a persistable object and return it.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Encoding $encoding
      * @throws \RuntimeException

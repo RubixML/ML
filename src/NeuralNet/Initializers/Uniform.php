@@ -42,6 +42,8 @@ class Uniform implements Initializer, Stringable
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
+     * @internal
+     *
      * @param int $fanIn
      * @param int $fanOut
      * @return \Tensor\Matrix

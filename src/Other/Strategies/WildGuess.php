@@ -37,6 +37,8 @@ class WildGuess implements Continuous, Stringable
     /**
      * Fit the guessing strategy to a set of values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @throws \InvalidArgumentException
      */
@@ -53,6 +55,8 @@ class WildGuess implements Continuous, Stringable
 
     /**
      * Make a continuous guess.
+     *
+     * @internal
      *
      * @throws \RuntimeException
      * @return float

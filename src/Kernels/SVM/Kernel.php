@@ -2,10 +2,19 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
+/**
+ * Kernel
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Kernel
 {
     /**
      * Return the options for the libsvm runtime.
+     *
+     * @internal
      *
      * @return mixed[]
      */

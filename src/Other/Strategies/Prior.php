@@ -35,6 +35,7 @@ class Prior implements Categorical, Stringable
 
     /**
      * Fit the guessing strategy to a set of values.
+     * @internal
      *
      * @param string[] $values
      * @throws \InvalidArgumentException
@@ -52,6 +53,8 @@ class Prior implements Categorical, Stringable
 
     /**
      * Make a categorical guess.
+     *
+     * @internal
      *
      * @throws \RuntimeException
      * @return string

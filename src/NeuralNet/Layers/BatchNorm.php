@@ -129,6 +129,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @throws \RuntimeException
      * @return int
      */
@@ -144,6 +146,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
+     *
+     * @internal
      *
      * @param int $fanIn
      * @return int
@@ -165,6 +169,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
 
     /**
      * Compute a forward pass through the layer.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @throws \RuntimeException
@@ -203,6 +209,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
     /**
      * Compute an inferential pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @throws \RuntimeException
      * @return \Tensor\Matrix
@@ -222,6 +230,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
 
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
@@ -263,6 +273,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
     /**
      * Calculate the gradient for the previous layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $dOut
      * @param \Tensor\ColumnVector $gamma
      * @param \Tensor\ColumnVector $stdInv
@@ -286,6 +298,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
     /**
      * Return the parameters of the layer.
      *
+     * @internal
+     *
      * @throws \RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
@@ -301,6 +315,8 @@ class BatchNorm implements Hidden, Parametric, Stringable
 
     /**
      * Restore the parameters in the layer from an associative array.
+     *
+     * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */

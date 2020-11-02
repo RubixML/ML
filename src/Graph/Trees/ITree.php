@@ -16,6 +16,8 @@ use InvalidArgumentException;
  * [1] F. T. Liu et al. (2008). Isolation Forest.
  * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

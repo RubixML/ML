@@ -24,6 +24,8 @@ class Native implements Serializer, Stringable
     /**
      * Serialize a persistable object and return the data.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Persistable $persistable
      * @return \Rubix\ML\Encoding
      */
@@ -34,6 +36,8 @@ class Native implements Serializer, Stringable
 
     /**
      * Unserialize a persistable object and return it.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Encoding $encoding
      * @throws RuntimeException

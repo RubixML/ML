@@ -24,6 +24,8 @@ class ReLU implements ActivationFunction, Stringable
     /**
      * Compute the output value.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @return \Tensor\Matrix
      */
@@ -35,6 +37,8 @@ class ReLU implements ActivationFunction, Stringable
     /**
      * Calculate the derivative of the activation function at a given output.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @param \Tensor\Matrix $computed
      * @return \Tensor\Matrix
@@ -45,6 +49,8 @@ class ReLU implements ActivationFunction, Stringable
     }
 
     /**
+     * @internal
+     *
      * @param float $z
      * @return float
      */

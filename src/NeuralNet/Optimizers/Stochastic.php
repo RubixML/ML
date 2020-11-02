@@ -42,6 +42,8 @@ class Stochastic implements Optimizer, Stringable
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * @internal
+     *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
