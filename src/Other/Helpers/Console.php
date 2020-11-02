@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+/**
+ * @internal
+ */
 class Console
 {
     /**

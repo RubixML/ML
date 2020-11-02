@@ -14,6 +14,8 @@ use function Rubix\ML\argmax;
  *
  * A leaf node that contains all of the points that fall within radius of the node's center.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -6,6 +6,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\IncorrectDatasetDimensionality;
 
+/**
+ * @internal
+ */
 class DatasetHasDimensionality extends Specification
 {
     /**

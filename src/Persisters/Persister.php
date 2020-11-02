@@ -5,6 +5,13 @@ namespace Rubix\ML\Persisters;
 use Rubix\ML\Persistable;
 use Stringable;
 
+/**
+ * Persister
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Persister extends Stringable
 {
     /**

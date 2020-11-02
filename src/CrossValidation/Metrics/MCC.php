@@ -32,6 +32,8 @@ class MCC implements Metric
     /**
      * Compute the MCC score from a confusion matrix.
      *
+     * @internal
+     *
      * @param int $tp
      * @param int $tn
      * @param int $fp
@@ -55,6 +57,8 @@ class MCC implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

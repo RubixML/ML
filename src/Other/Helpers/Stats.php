@@ -14,6 +14,8 @@ use const Rubix\ML\EPSILON;
  *
  * A helper class providing statistical functions.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

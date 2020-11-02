@@ -8,6 +8,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
+/**
+ * @internal
+ */
 class SamplesAreCompatibleWithEstimator extends Specification
 {
     /**

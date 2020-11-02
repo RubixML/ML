@@ -36,6 +36,8 @@ class FBeta implements Metric
     /**
      * Compute the class precision.
      *
+     * @internal
+     *
      * @param int $tp
      * @param int $fp
      * @return float
@@ -47,6 +49,8 @@ class FBeta implements Metric
 
     /**
      * Compute the class recall.
+     *
+     * @internal
      *
      * @param int $tp
      * @param int $fn
@@ -83,6 +87,8 @@ class FBeta implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

@@ -10,21 +10,7 @@ public generate(int $n) : Dataset
 ```php
 use Rubix\ML\Datasets\Generators\HalfMoon;
 
-$generator = new HalfMoon();
+$generator = new HalfMoon(0.0, 0.0);
 
 $dataset = $generator->generate(1000);
-```
-
-### Dimensionality
-Return the dimensionality of the samples produced by the generator:
-```php
-public dimensions() : int
-```
-
-```php
-var_dump($generator->dimensions());
-```
-
-```sh
-int(2)
 ```

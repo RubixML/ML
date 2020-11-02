@@ -23,6 +23,8 @@ class ContingencyTable implements ReportGenerator
     /**
      * The estimator types that this report is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array

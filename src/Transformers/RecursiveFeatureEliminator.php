@@ -116,6 +116,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
     /**
      * Return the data types that this transformer is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array

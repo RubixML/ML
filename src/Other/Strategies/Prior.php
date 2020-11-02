@@ -35,6 +35,8 @@ class Prior implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
+     * @internal
+     *
      * @param string[] $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
@@ -51,6 +53,8 @@ class Prior implements Categorical
 
     /**
      * Make a categorical guess.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string

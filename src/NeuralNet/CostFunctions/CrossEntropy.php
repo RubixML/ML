@@ -25,6 +25,8 @@ class CrossEntropy implements ClassificationLoss
     /**
      * Compute the loss score.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
      * @return float
@@ -38,6 +40,8 @@ class CrossEntropy implements ClassificationLoss
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target

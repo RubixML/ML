@@ -238,7 +238,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * @param string[] $votes
      * @return string
      */
-    public function decideDiscrete(array $votes) : string
+    protected function decideDiscrete(array $votes) : string
     {
         return argmax(array_count_values($votes));
     }

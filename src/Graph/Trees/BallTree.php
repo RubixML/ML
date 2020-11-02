@@ -75,6 +75,8 @@ class BallTree implements BinaryTree, Spatial
     /**
      * Return the height of the tree i.e. the number of levels.
      *
+     * @internal
+     *
      * @return int
      */
     public function height() : int
@@ -87,6 +89,8 @@ class BallTree implements BinaryTree, Spatial
      * a factor of 0 whereas an imbalanced tree will either be positive
      * or negative indicating the direction and degree of the imbalance.
      *
+     * @internal
+     *
      * @return int
      */
     public function balance() : int
@@ -96,6 +100,8 @@ class BallTree implements BinaryTree, Spatial
 
     /**
      * Is the tree bare?
+     *
+     * @internal
      *
      * @return bool
      */
@@ -107,6 +113,8 @@ class BallTree implements BinaryTree, Spatial
     /**
      * Return the distance kernel used to compute distances.
      *
+     * @internal
+     *
      * @return \Rubix\ML\Kernels\Distance\Distance
      */
     public function kernel() : Distance
@@ -117,6 +125,8 @@ class BallTree implements BinaryTree, Spatial
     /**
      * Insert a root node and recursively split the dataset until a terminating
      * condition is met.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -164,6 +174,8 @@ class BallTree implements BinaryTree, Spatial
 
     /**
      * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
+     *
+     * @internal
      *
      * @param list<string|int|float> $sample
      * @param int $k
@@ -236,6 +248,8 @@ class BallTree implements BinaryTree, Spatial
     /**
      * Return all samples, labels, and distances within a given radius of a sample.
      *
+     * @internal
+     *
      * @param list<string|int|float> $sample
      * @param float $radius
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -289,6 +303,8 @@ class BallTree implements BinaryTree, Spatial
 
     /**
      * Destroy the tree.
+     *
+     * @internal
      */
     public function destroy() : void
     {

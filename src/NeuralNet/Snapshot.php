@@ -10,6 +10,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  *
  * A snapshot represents the state of a neural network at a moment in time.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

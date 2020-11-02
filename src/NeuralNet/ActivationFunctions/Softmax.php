@@ -21,6 +21,8 @@ class Softmax extends Sigmoid
     /**
      * Compute the output value.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @return \Tensor\Matrix
      */

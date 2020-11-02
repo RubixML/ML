@@ -36,6 +36,8 @@ class WildGuess implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
@@ -52,6 +54,8 @@ class WildGuess implements Continuous
 
     /**
      * Make a continuous guess.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float

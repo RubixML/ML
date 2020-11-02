@@ -123,6 +123,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
@@ -132,6 +134,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * Return the data types that the estimator is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\DataType>
      */
@@ -144,6 +148,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */

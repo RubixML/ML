@@ -48,7 +48,9 @@ class Percentile implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param (string|int|float)[] $values
+     * @internal
+     *
+     * @param (int|float)[] $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
@@ -63,6 +65,8 @@ class Percentile implements Continuous
 
     /**
      * Make a guess.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float

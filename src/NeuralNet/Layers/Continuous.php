@@ -15,6 +15,8 @@ use Rubix\ML\Exceptions\RuntimeException;
  *
  * The Continuous output layer consists of a single linear neuron that outputs a scalar value.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

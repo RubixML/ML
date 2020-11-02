@@ -29,6 +29,8 @@ class RandIndex implements Metric
     /**
      * Compute n choose 2.
      *
+     * @internal
+     *
      * @param int $n
      * @return int
      */
@@ -49,6 +51,8 @@ class RandIndex implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

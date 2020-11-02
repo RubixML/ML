@@ -106,6 +106,8 @@ abstract class CART implements IteratorAggregate
     protected $columns = [];
 
     /**
+     * @internal
+     *
      * @param int $maxHeight
      * @param int $maxLeafSize
      * @param int|null $maxFeatures
@@ -170,6 +172,8 @@ abstract class CART implements IteratorAggregate
     /**
      * Is the tree bare?
      *
+     * @internal
+     *
      * @return bool
      */
     public function bare() : bool
@@ -178,8 +182,9 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Insert a root node and recursively split the dataset a terminating
-     * condition is met.
+     * Insert a root node and recursively split the dataset a terminating condition is met.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \InvalidArgumentException
@@ -262,6 +267,8 @@ abstract class CART implements IteratorAggregate
 
     /**
      * Search the decision tree for a leaf node and return it.
+     *
+     * @internal
      *
      * @param list<string|int|float> $sample
      * @return \Rubix\ML\Graph\Nodes\Outcome|null

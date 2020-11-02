@@ -4,7 +4,14 @@ namespace Rubix\ML;
 
 use Stringable;
 
-interface RanksFeatures extends Trainable, Stringable
+/**
+ * Ranks Features
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
+interface RanksFeatures extends Learner, Stringable
 {
     /**
      * Return the normalized importance scores of each feature column of the training set.

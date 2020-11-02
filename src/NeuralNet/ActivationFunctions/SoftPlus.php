@@ -22,6 +22,8 @@ class SoftPlus implements ActivationFunction
     /**
      * Compute the output value.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @return \Tensor\Matrix
      */
@@ -33,6 +35,8 @@ class SoftPlus implements ActivationFunction
     /**
      * Calculate the derivative of the activation function at a given output.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $z
      * @param \Tensor\Matrix $computed
      * @return \Tensor\Matrix
@@ -43,6 +47,8 @@ class SoftPlus implements ActivationFunction
     }
 
     /**
+     * @internal
+     *
      * @param float $z
      * @return float
      */
@@ -52,6 +58,8 @@ class SoftPlus implements ActivationFunction
     }
 
     /**
+     * @internal
+     *
      * @param float $computed
      * @return float
      */

@@ -9,6 +9,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  *
  * A decision node whose outcome is the average of all the labels it is responsible for.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

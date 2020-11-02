@@ -2,6 +2,15 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+/**
+ * Hypersphere
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Hypersphere extends Node
 {
     /**

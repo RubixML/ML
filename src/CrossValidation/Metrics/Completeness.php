@@ -30,7 +30,7 @@ class Completeness implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array{float,float}F
+     * @return array{float,float}
      */
     public function range() : array
     {
@@ -39,6 +39,8 @@ class Completeness implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

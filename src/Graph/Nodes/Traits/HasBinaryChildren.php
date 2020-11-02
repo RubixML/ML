@@ -11,6 +11,8 @@ use Traversable;
  * A node of a binary tree i.e a tree whose nodes have a maximum of two immediate children
  * and one parent.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

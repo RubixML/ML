@@ -4,6 +4,13 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Elastic
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Elastic extends Stateful
 {
     /**

@@ -4,6 +4,15 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
+/**
+ * Output
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Output extends Layer
 {
     /**

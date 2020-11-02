@@ -14,6 +14,8 @@ use function Rubix\ML\argmax;
  * A 1-dimensional split node with bounding box containing samples in both left and right
  * subtrees.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

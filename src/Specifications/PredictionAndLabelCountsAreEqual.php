@@ -4,6 +4,9 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+/**
+ * @internal
+ */
 class PredictionAndLabelCountsAreEqual
 {
     /**

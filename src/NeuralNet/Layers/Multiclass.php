@@ -19,6 +19,8 @@ use function count;
  * The Multiclass output layer gives a joint probability estimate of a multiclass classification
  * problem using the Softmax activation function.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

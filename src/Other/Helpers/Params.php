@@ -123,8 +123,10 @@ class Params
     }
 
     /**
-     * Return a string representation of the constructor arguments from
-     * an associative constructor array.
+     * Return a string representation of the constructor arguments from an associative
+     * constructor array.
+     *
+     * @internal
      *
      * @param mixed[] $params
      * @param string $separator
@@ -143,6 +145,8 @@ class Params
 
     /**
      * Convert the value of an argument to its string representation.
+     *
+     * @internal
      *
      * @param mixed $value
      * @return string
@@ -183,6 +187,8 @@ class Params
 
     /**
      * Return the short class name from a fully qualified class name.
+     *
+     * @internal
      *
      * @param class-string $class
      * @return string

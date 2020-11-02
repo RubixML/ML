@@ -128,6 +128,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
@@ -143,6 +145,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
+     *
+     * @internal
      *
      * @param int $fanIn
      * @return int
@@ -164,6 +168,8 @@ class BatchNorm implements Hidden, Parametric
 
     /**
      * Compute a forward pass through the layer.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
@@ -202,6 +208,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Compute an inferential pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
@@ -221,6 +229,8 @@ class BatchNorm implements Hidden, Parametric
 
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
@@ -262,6 +272,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $dOut
      * @param \Tensor\ColumnVector $gamma
      * @param \Tensor\ColumnVector $stdInv
@@ -285,6 +297,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Return the parameters of the layer.
      *
+     * @internal
+     *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
@@ -300,6 +314,8 @@ class BatchNorm implements Hidden, Parametric
 
     /**
      * Restore the parameters in the layer from an associative array.
+     *
+     * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */

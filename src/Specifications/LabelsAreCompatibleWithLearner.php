@@ -8,6 +8,9 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+/**
+ * @internal
+ */
 class LabelsAreCompatibleWithLearner extends Specification
 {
     /**

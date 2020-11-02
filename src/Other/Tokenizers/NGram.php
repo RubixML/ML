@@ -79,6 +79,8 @@ class NGram implements Tokenizer
     /**
      * Tokenize a blob of text.
      *
+     * @internal
+     *
      * @param string $text
      * @return list<string>
      */

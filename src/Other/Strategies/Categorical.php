@@ -2,17 +2,19 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+/**
+ * Categorical
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Categorical extends Strategy
 {
     /**
-     * Fit the guessing strategy to a set of values.
-     *
-     * @param string[] $values
-     */
-    public function fit(array $values) : void;
-
-    /**
      * Make a guess.
+     *
+     * @internal
      *
      * @return string
      */

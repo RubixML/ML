@@ -52,8 +52,10 @@ class KMostFrequent implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param (string|int|float)[] $values
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException;
+     * @internal
+     *
+     * @param (string|int)[] $values
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -73,6 +75,8 @@ class KMostFrequent implements Categorical
 
     /**
      * Make a guess.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string

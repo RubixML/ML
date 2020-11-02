@@ -28,6 +28,8 @@ class Informedness implements Metric
     /**
      * Compute the class Informedness score.
      *
+     * @internal
+     *
      * @param int $tp
      * @param int $tn
      * @param int $fp
@@ -51,6 +53,8 @@ class Informedness implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\EstimatorType>
      */

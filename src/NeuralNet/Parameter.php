@@ -4,6 +4,15 @@ namespace Rubix\ML\NeuralNet;
 
 use Tensor\Tensor;
 
+/**
+ * Parameter
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Parameter
 {
     /**

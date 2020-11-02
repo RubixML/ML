@@ -5,6 +5,9 @@ namespace Rubix\ML\Specifications;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Exceptions\EmptyDataset;
 
+/**
+ * @internal
+ */
 class DatasetIsNotEmpty extends Specification
 {
     /**

@@ -283,6 +283,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * The callback that executes after the training task.
      *
+     * @internal
+     *
      * @param \Rubix\ML\Learner $estimator
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
@@ -333,7 +335,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * @param (int|string)[] $votes
      * @return string
      */
-    public function decideDiscrete(array $votes)
+    protected function decideDiscrete(array $votes)
     {
         $scores = $this->classes;
 
@@ -350,7 +352,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * @param (int|float)[] $votes
      * @return float
      */
-    public function decideContinuous(array $votes) : float
+    protected function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
     }

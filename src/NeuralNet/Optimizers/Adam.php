@@ -120,6 +120,8 @@ class Adam implements Optimizer, Adaptive
     /**
      * Warm the parameter cache.
      *
+     * @internal
+     *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
     public function warm(Parameter $param) : void
@@ -131,6 +133,8 @@ class Adam implements Optimizer, Adaptive
 
     /**
      * Calculate a gradient descent step for a given parameter.
+     *
+     * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient

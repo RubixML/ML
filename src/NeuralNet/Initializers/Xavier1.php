@@ -25,6 +25,8 @@ class Xavier1 implements Initializer
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
+     * @internal
+     *
      * @param int $fanIn
      * @param int $fanOut
      * @return \Tensor\Matrix

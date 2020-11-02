@@ -21,6 +21,8 @@ class RelativeEntropy implements ClassificationLoss
     /**
      * Compute the loss.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
      * @return float
@@ -38,6 +40,8 @@ class RelativeEntropy implements ClassificationLoss
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target

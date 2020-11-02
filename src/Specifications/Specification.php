@@ -4,6 +4,15 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+/**
+ * Specification
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 abstract class Specification
 {
     /**

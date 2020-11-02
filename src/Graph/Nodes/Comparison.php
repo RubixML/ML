@@ -10,6 +10,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * A split node that compares the values in a single feature column with the value on the
  * node (i.e. the split value).
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

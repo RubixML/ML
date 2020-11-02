@@ -6,10 +6,21 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
 use Stringable;
 
+/**
+ * Spatial
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface Spatial extends Tree, Stringable
 {
     /**
      * Return the distance kernel used to compute distances.
+     *
+     * @internal
      *
      * @return \Rubix\ML\Kernels\Distance\Distance
      */
@@ -34,8 +45,7 @@ interface Spatial extends Tree, Stringable
     public function nearest(array $sample, int $k) : array;
 
     /**
-     * Return all samples, labels, and distances within a given radius of a
-     * sample.
+     * Return all samples, labels, and distances within a given radius of a sample.
      *
      * @param list<string|int|float> $sample
      * @param float $radius

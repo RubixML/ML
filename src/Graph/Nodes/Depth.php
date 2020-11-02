@@ -13,6 +13,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * point of termination plus an approximation based on the number of samples that are left to
  * isolate.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

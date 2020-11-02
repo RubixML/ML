@@ -32,6 +32,8 @@ class WhitespaceTrimmer implements Transformer
     /**
      * Return the data types that this transformer is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array

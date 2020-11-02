@@ -278,6 +278,8 @@ class TSNE implements Embedder, Verbose
     /**
      * Return the data types that this transformer is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
@@ -287,6 +289,8 @@ class TSNE implements Embedder, Verbose
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */
@@ -305,8 +309,7 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
-     * Return the magnitudes of the gradient at each epoch from the last
-     * embedding.
+     * Return the magnitudes of the gradient at each epoch from the last embedding.
      *
      * @return float[]|null
      */

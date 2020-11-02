@@ -9,6 +9,8 @@ interface Layer
     /**
      * The width of the layer. i.e. the number of neurons or computation nodes.
      *
+     * @internal
+     *
      * @return int
      */
     public function width() : int;
@@ -16,6 +18,8 @@ interface Layer
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
+     *
+     * @internal
      *
      * @param int $fanIn
      * @return int
@@ -25,6 +29,8 @@ interface Layer
     /**
      * Feed the input forward to the next layer in the network.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
@@ -32,6 +38,8 @@ interface Layer
 
     /**
      * Forward pass during inference.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix

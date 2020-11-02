@@ -4,6 +4,15 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Traversable;
 
+/**
+ * Binary Node
+ *
+ * @internal
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 interface BinaryNode extends Node
 {
     /**

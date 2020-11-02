@@ -42,6 +42,8 @@ class SMAPE implements Metric
     /**
      * The estimator types that this metric is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\EstimatorType>
      */
     public function compatibility() : array

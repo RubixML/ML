@@ -119,6 +119,8 @@ class Dense implements Hidden, Parametric
     /**
      * Return the width of the layer.
      *
+     * @internal
+     *
      * @return int
      */
     public function width() : int
@@ -128,6 +130,8 @@ class Dense implements Hidden, Parametric
 
     /**
      * Return the weight matrix.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
@@ -144,6 +148,8 @@ class Dense implements Hidden, Parametric
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
+     *
+     * @internal
      *
      * @param int $fanIn
      * @return int
@@ -167,6 +173,8 @@ class Dense implements Hidden, Parametric
 
     /**
      * Compute a forward pass through the layer.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
@@ -192,6 +200,8 @@ class Dense implements Hidden, Parametric
     /**
      * Compute an inference pass through the layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
@@ -213,6 +223,8 @@ class Dense implements Hidden, Parametric
 
     /**
      * Calculate the gradient and update the parameters of the layer.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
@@ -256,6 +268,8 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradient for the previous layer.
      *
+     * @internal
+     *
      * @param \Tensor\Matrix $weights
      * @param \Tensor\Matrix $dOut
      * @return \Tensor\Matrix
@@ -267,6 +281,8 @@ class Dense implements Hidden, Parametric
 
     /**
      * Return the parameters of the layer.
+     *
+     * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
@@ -286,6 +302,8 @@ class Dense implements Hidden, Parametric
 
     /**
      * Restore the parameters in the layer from an associative array.
+     *
+     * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */

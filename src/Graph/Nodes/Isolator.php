@@ -13,6 +13,8 @@ use const Rubix\ML\PHI;
  * Isolator nodes represent splits in a tree designed to isolate groups into cells by randomly
  * dividing them.
  *
+ * @internal
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

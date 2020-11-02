@@ -28,6 +28,8 @@ class SafeEuclidean implements Distance, NaNSafe
     /**
      * Return the data types that this kernel is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
@@ -39,6 +41,8 @@ class SafeEuclidean implements Distance, NaNSafe
 
     /**
      * Compute the distance between two vectors.
+     *
+     * @internal
      *
      * @param list<int|float> $a
      * @param list<int|float> $b
