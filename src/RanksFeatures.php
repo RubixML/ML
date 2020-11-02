@@ -11,7 +11,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface RanksFeatures extends Learner, Stringable
+interface RanksFeatures extends Trainable, Stringable
 {
     /**
      * Return the normalized importance scores of each feature column of the training set.
