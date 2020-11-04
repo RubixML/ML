@@ -28,33 +28,8 @@ $estimator = new Pipeline([
 	new MissingDataImputer(),
 	new OneHotEncoder(), 
 	new PrincipalComponentAnalysis(20),
-], new SoftmaxClassifier());
+], new SoftmaxClassifier(128), true);
 ```
 
 ## Additional Methods
-Fit the transformer pipeline to a dataset:
-```php
-public fit(Dataset $dataset) : void
-```
-
-```php
-$estimator->fit($dataset);
-```
-
-Update the fittings of elastic transformers:
-```php
-public update(Dataset $dataset) : void
-```
-
-```php
-$estimator->update($dataset);
-```
-
-Apply the transformer stack to a dataset:
-```php
-public preprocess(Dataset $dataset) : void
-```
-
-```php
-$estimator->preprocess($dataset);
-```
+This meta-estimator does not have any additional methods.

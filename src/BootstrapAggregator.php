@@ -120,6 +120,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
@@ -130,6 +132,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
     /**
      * Return the data types that the estimator is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
@@ -139,6 +143,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */

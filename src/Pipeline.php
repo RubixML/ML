@@ -98,6 +98,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
@@ -108,6 +110,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
     /**
      * Return the data types that the estimator is compatible with.
      *
+     * @internal
+     *
      * @return list<\Rubix\ML\DataType>
      */
     public function compatibility() : array
@@ -117,6 +121,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */
@@ -297,7 +303,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
-    public function preprocess(Dataset $dataset) : void
+    protected function preprocess(Dataset $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);
