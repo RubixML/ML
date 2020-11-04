@@ -184,6 +184,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
@@ -193,6 +195,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
     /**
      * Return the data types that the estimator is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\DataType>
      */
@@ -205,6 +209,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */
@@ -327,12 +333,42 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     }
 
     /**
-     * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the user-supplied parameter array.
+     * Make a prediction on a given sample dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return mixed[]
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        return $this->estimator->predict($dataset);
+    }
+
+    /**
+     * The callback that executes after the scoring task.
+     *
+     * @internal
+     *
+     * @param mixed[] $result
+     */
+    public function afterScore(array $result) : void
+    {
+        if ($this->logger) {
+            [$score, $params] = $result;
+
+            $this->logger->info(
+                "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
+            );
+        }
+    }
+
+    /**
+     * Return an array of all possible combinations of parameters. i.e the Cartesian product of
+     * the user-supplied parameter array.
      *
      * @return array[]
      */
-    public function combinations() : array
+    protected function combinations() : array
     {
         $combinations = [[]];
 
@@ -350,34 +386,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         }
 
         return $combinations;
-    }
-
-    /**
-     * Make a prediction on a given sample dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return mixed[]
-     */
-    public function predict(Dataset $dataset) : array
-    {
-        return $this->estimator->predict($dataset);
-    }
-
-    /**
-     * The callback that executes after the scoring task.
-     *
-     * @param mixed[] $result
-     */
-    public function afterScore(array $result) : void
-    {
-        if ($this->logger) {
-            [$score, $params] = $result;
-
-            $this->logger->info(
-                "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
-            );
-        }
     }
 
     /**
