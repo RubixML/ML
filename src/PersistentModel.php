@@ -208,7 +208,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }

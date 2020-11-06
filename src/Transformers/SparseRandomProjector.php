@@ -76,8 +76,6 @@ class SparseRandomProjector extends GaussianRandomProjector
             $density = 1.0 - $this->sparsity;
         }
 
-        $max = getrandmax();
-
         $dHat = sqrt(1.0 / $density);
 
         $distribution = [
@@ -85,6 +83,8 @@ class SparseRandomProjector extends GaussianRandomProjector
             [0.0, 1.0 - $density],
             [$dHat, 0.5 * $density],
         ];
+
+        $max = getrandmax();
 
         $r = [];
 

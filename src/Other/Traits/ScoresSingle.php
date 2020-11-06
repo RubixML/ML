@@ -4,6 +4,8 @@ namespace Rubix\ML\Other\Traits;
 
 use Rubix\ML\Datasets\Unlabeled;
 
+use function Rubix\ML\warn_deprecated;
+
 /**
  * Scores Single
  *
@@ -34,7 +36,7 @@ trait ScoresSingle
      */
     public function rankSample(array $sample) : float
     {
-        trigger_error('Deprecated, use scoreSample() instead.', E_USER_DEPRECATED);
+        warn_deprecated('RankSample() is deprecated, use scoreSample() instead.');
 
         return $this->scoreSample($sample);
     }

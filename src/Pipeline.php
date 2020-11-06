@@ -182,16 +182,16 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
-
-                if ($this->logger) {
-                    $this->logger->info("Fitted $transformer");
-                }
             }
 
             $dataset->apply($transformer);
 
             if ($this->logger) {
-                $this->logger->info("Applied $transformer");
+                if ($transformer instanceof Stateful) {
+                    $this->logger->info("Fitted and applied $transformer");
+                } else {
+                    $this->logger->info("Applied $transformer");
+                }
             }
         }
 
@@ -211,16 +211,16 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
             foreach ($this->transformers as $transformer) {
                 if ($transformer instanceof Elastic) {
                     $transformer->update($dataset);
-
-                    if ($this->logger) {
-                        $this->logger->info("Updated $transformer");
-                    }
                 }
 
                 $dataset->apply($transformer);
 
                 if ($this->logger) {
-                    $this->logger->info("Applied $transformer");
+                    if ($transformer instanceof Stateful) {
+                        $this->logger->info("Updated and applied $transformer");
+                    } else {
+                        $this->logger->info("Applied $transformer");
+                    }
                 }
             }
         } else {
@@ -293,7 +293,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }
