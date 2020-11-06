@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) 2020 The Rubix ML Community
+
 Copyright (c) 2020 Andrew DalPino
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -182,17 +182,13 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
+
+                if ($this->logger) {
+                    $this->logger->info("Fitted $transformer");
+                }
             }
 
             $dataset->apply($transformer);
-
-            if ($this->logger) {
-                if ($transformer instanceof Stateful) {
-                    $this->logger->info("Fitted and applied $transformer");
-                } else {
-                    $this->logger->info("Applied $transformer");
-                }
-            }
         }
 
         if ($this->base instanceof Learner) {
@@ -211,17 +207,13 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
             foreach ($this->transformers as $transformer) {
                 if ($transformer instanceof Elastic) {
                     $transformer->update($dataset);
+
+                    if ($this->logger) {
+                        $this->logger->info("Updated $transformer");
+                    }
                 }
 
                 $dataset->apply($transformer);
-
-                if ($this->logger) {
-                    if ($transformer instanceof Stateful) {
-                        $this->logger->info("Updated and applied $transformer");
-                    } else {
-                        $this->logger->info("Applied $transformer");
-                    }
-                }
             }
         } else {
             $this->preprocess($dataset);
