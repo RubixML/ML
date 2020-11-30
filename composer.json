@@ -38,6 +38,7 @@
         "psr/log": "^1.1",
         "rubix/tensor": "^2.0",
         "symfony/polyfill-mbstring": "^1.0",
+        "symfony/polyfill-php73": "^1.20",
         "symfony/polyfill-php80": "^1.17"
     },
     "require-dev": {

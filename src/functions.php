@@ -62,7 +62,7 @@ namespace Rubix\ML
             case 1:
                 $columns = [];
 
-                foreach (current($table) as $row) {
+                foreach (current($table) ?: [] as $row) {
                     $columns[] = [$row];
                 }
 

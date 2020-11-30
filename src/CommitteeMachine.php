@@ -166,7 +166,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      */
     public function type() : EstimatorType
     {
-        return current($this->experts)->type();
+        return $this->experts[array_key_first($this->experts)]->type();
     }
 
     /**
