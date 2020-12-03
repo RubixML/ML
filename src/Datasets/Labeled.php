@@ -101,7 +101,7 @@ class Labeled extends Dataset
      */
     public static function stack(array $datasets) : self
     {
-        $n = current($datasets)->numColumns();
+        $n = $datasets[array_key_first($datasets)]->numColumns();
 
         $samples = $labels = [];
 

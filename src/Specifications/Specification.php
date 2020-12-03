@@ -33,7 +33,7 @@ abstract class Specification
             $this->check();
 
             return true;
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $exception) {
             return false;
         }
     }
