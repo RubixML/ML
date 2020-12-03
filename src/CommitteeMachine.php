@@ -160,15 +160,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * Return the estimator type.
      *
+     * @internal
+     *
      * @return \Rubix\ML\EstimatorType
      */
     public function type() : EstimatorType
     {
-        return current($this->experts)->type();
+        return $this->experts[array_key_first($this->experts)]->type();
     }
 
     /**
      * Return the data types that the estimator is compatible with.
+     *
+     * @internal
      *
      * @return list<\Rubix\ML\DataType>
      */
@@ -179,6 +183,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
 
     /**
      * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @internal
      *
      * @return mixed[]
      */
