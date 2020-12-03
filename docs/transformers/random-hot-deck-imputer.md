@@ -23,7 +23,7 @@ use Rubix\ML\Transformers\RandomHotDeckImputer;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$transformer = new KNNImputer(20, true, '?', new BallTree(50, new SafeEuclidean()));
+$transformer = new RandomHotDeckImputer(20, true, '?', new BallTree(50, new SafeEuclidean()));
 ```
 
 ## Additional Methods
