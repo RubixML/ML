@@ -165,14 +165,14 @@ echo $score;
 0.9175
 ```
 
-## Common Issues
-Poor generalization performance can be explained by one or more of these common issues.
+## Common Problems
+Poor generalization performance can be explained by one or more of these common problems.
 
 ### Underfitting
-A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. The result is a model with high bias error. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features can help, however if the problem is too severe, a more flexible learner can be chosen for the task instead.
+A poorly performing model can sometimes be explained as *underfitting* the training data - a condition in which the learner is unable to capture the underlying pattern or trend given the model constraints. The result of an underfit model is an estimator with high bias error. Underfitting usually occurs when a simple model is chosen to represent data that is complex and non-linear. Adding more features to the dataset can help, however if the problem is too severe, a more flexible learning algorithm can be chosen for the task instead.
 
 ### Overfitting
-When a model performs well on training data but poorly during cross-validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. These models tend to have high variance error. Flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, or and tree pruning to control overfitting. Adding more training samples can also help.
+When a model performs well on training data but poorly during cross-validation it could be that the model has *overfit* the training data. Overfitting occurs when the model conforms too closely to the training data and therefore fails to generalize well to new data or make predictions reliably. Flexible models are more prone to overfitting due to their ability to *memorize* individual samples. Most learners employ strategies such as regularization, early stopping, and/or tree pruning to control overfitting, however if overfitting is still a problem, adding more samples to the dataset can also help.
 
 ### Selection Bias
-When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs with mostly (90%) images of cats, it will likely have difficulty in the real world where cats and dogs are more equally represented. To correct selection bias, you can either add more samples of the underrepresented class or up-sample the class as a preprocessing step.
+When a model performs well on certain samples but poorly on others it could be that the learner was trained with a dataset that exhibits selection bias. Selection bias is the bias introduced when a population is disproportionally represented in a dataset. For example, if a learner is trained to classify pictures of cats and dogs but mostly (say 90%) cats are represented in the dataset, the model will likely have difficulty making real-world predictions where cats and dogs are more equally represented. To correct selection bias, either obtain more training samples or up-sample the class of the underrepresented type.
