@@ -8,7 +8,7 @@ This tokenizer does not have any parameters.
 
 ## Example
 ```php
-use Rubix\ML\Extractors\Tokenizers\Word;
+use Rubix\ML\Other\Tokenizers\Word;
 
 $tokenizer = new Word();
 ```
