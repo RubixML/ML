@@ -28,7 +28,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [SVC](classifiers/svc.md) | High | | | Continuous |
 
 ## Regressors
-Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, regressors' range is unbounded. Thus, the number of possible continuous-valued predictions a regressor *could* make is infinite.
+Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position in units of degrees. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, a regressor's range is unbounded - meaning, the number of possible values a regressor *could* predict is infinite.
 
 | Regressor | Flexibility | Online | Verbose | Data Compatibility |
 |---|---|---|---|---|
@@ -44,7 +44,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [SVR](regressors/svr.md) | High | | | Continuous |
 
 ## Clusterers
-Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however, since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers focus on differentiating and grouping samples using only the patterns discovered in the sample's features. Clusterers that implement the [Probabilistic](probabilistic.md) interface can also output the probabilities that a sample belongs to a particular cluster.
+Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset. Clusterers that implement the [Probabilistic](probabilistic.md) interface can also output the probabilities that a sample belongs to a particular cluster.
 
 | Clusterer | Flexibility | Proba | Online | Data Compatibility |
 |---|---|---|---|---|
@@ -55,7 +55,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | Continuous |
 
 ## Anomaly Detectors
-Anomaly Detectors are unsupervised learners that predict a boolean-valued outcome encoded as `1` for an outlier or `0` for a regular sample. They are specialized to perform *one class* classification on unbalanced datasets without the need for labeled data. In addition, anomaly detectors that implement the [Ranking](ranking.md) interface can output an anomaly score for each sample in a dataset which can be used to rank the samples from highest to lowest likelihood of being an outlier.
+Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Ranking](ranking.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
 
 | Anomaly Detector | Scope | Ranking | Online | Data Compatibility |
 |---|---|---|---|---|
@@ -66,14 +66,14 @@ Anomaly Detectors are unsupervised learners that predict a boolean-valued outcom
 | [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | Continuous |
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | Continuous  |
 
-## Model Flexibility
-A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest estimator for your project that does not underfit the training data.
+## Model Flexibility Tradeoff
+A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model for your project that does not underfit the training data.
 
 ## Meta-estimator Ensembles
-Ensemble learning is when multiple estimators are used to make the final prediction on a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They are *polymorphic* in the sense that they take on the type of the base estimators they wrap. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
+Ensemble learning is when multiple estimators are used together to make the final prediction on a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
 
 ### Bootstrap Aggregator
-Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the average prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) meta-estimator to form a *forest* of 1000 trees.
+Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) to form a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
@@ -83,7 +83,7 @@ $estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
 ```
 
 ### Committee Machine
-[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influence* weights that can be trained in [Parallel](parallel.md). 
+[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influence* scores that are trained on the same dataset. The final prediction is based on the contribution of each expert weighted by their influence.
 
 ```php
 use Rubix\ML\CommitteeMachine;
@@ -103,4 +103,4 @@ $estimator = new CommitteeMachine([
 ```
 
 ## No Free Lunch Theorem
-At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the [No Free Lunch Theorem](https://en.wikipedia.org/wiki/No_free_lunch_theorem) which states that, when averaged over the space of *all* possible problems, no learner performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.
+At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the [No Free Lunch Theorem](https://en.wikipedia.org/wiki/No_free_lunch_theorem) which states that, when averaged over the space of *all* possible problems, no algorithm performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.
