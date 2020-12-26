@@ -169,7 +169,7 @@ class Params
                     return self::shortName($value);
                 }
 
-                break 1;
+                break;
 
             case 'integer':
             case 'double':

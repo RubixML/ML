@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -44,12 +44,12 @@ class KMC2 implements Seeder
     /**
      * @param int $m
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $m = 50, ?Distance $kernel = null)
     {
         if ($m < 1) {
-            throw new BadHyperparameter('M must be greater'
+            throw new InvalidArgumentException('M must be greater'
                 . " than 0, $m given.");
         }
 

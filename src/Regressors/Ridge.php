@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
@@ -62,12 +62,12 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
     /**
      * @param float $alpha
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0)
     {
         if ($alpha < 0.0) {
-            throw new BadHyperparameter('Alpha must be'
+            throw new InvalidArgumentException('Alpha must be'
                 . " greater than 0, $alpha given.");
         }
 

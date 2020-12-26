@@ -18,7 +18,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
@@ -88,12 +88,12 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
 
     /**
      * @param float $contamination
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $contamination = 0.1)
     {
         if ($contamination < 0.0 or $contamination > 0.5) {
-            throw new BadHyperparameter('Contamination must be'
+            throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 

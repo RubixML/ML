@@ -117,14 +117,14 @@ class ITree implements BinaryTree
                 $current->attachLeft($node);
                 $current->attachRight($node);
 
-                continue 1;
+                continue;
             }
 
             if ($depth >= $this->maxHeight) {
                 $current->attachLeft(Depth::terminate($left, $depth));
                 $current->attachRight(Depth::terminate($right, $depth));
 
-                continue 1;
+                continue;
             }
 
             if ($left->numRows() > self::MAX_LEAF_SIZE) {
@@ -177,7 +177,7 @@ class ITree implements BinaryTree
                     }
                 }
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Depth) {

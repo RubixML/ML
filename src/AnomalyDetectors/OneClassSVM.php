@@ -14,7 +14,7 @@ use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use svmmodel;
 use svm;
@@ -68,7 +68,7 @@ class OneClassSVM implements Estimator, Learner
      * @param float $tolerance
      * @param float $cacheSize
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $nu = 0.5,
@@ -83,19 +83,19 @@ class OneClassSVM implements Estimator, Learner
         }
 
         if ($nu < 0.0 or $nu > 1.0) {
-            throw new BadHyperparameter('Nu must be between'
+            throw new InvalidArgumentException('Nu must be between'
                 . "0 and 1, $nu given.");
         }
 
         $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.0) {
-            throw new BadHyperparameter('Tolerance must be,'
+            throw new InvalidArgumentException('Tolerance must be,'
                 . " greater than 0, $tolerance given.");
         }
 
         if ($cacheSize <= 0.0) {
-            throw new BadHyperparameter('Cache size must be'
+            throw new InvalidArgumentException('Cache size must be'
                 . " greater than 0M, {$cacheSize}M given.");
         }
 

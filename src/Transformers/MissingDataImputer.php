@@ -121,13 +121,13 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
 
                     foreach ($dataset->column($column) as $value) {
                         if (is_float($value) and is_nan($value)) {
-                            continue 1;
+                            continue;
                         }
 
                         $donors[] = $value;
                     }
 
-                    break 1;
+                    break;
 
                 case DataType::CATEGORICAL:
                     $strategy = clone $this->categorical;
@@ -138,11 +138,11 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
                         }
                     }
 
-                    break 1;
+                    break;
             }
 
             if (!isset($strategy)) {
-                continue 1;
+                continue;
             }
 
             if (empty($donors)) {
@@ -179,14 +179,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
                             $value = $this->strategies[$column]->guess();
                         }
 
-                        break 1;
+                        break;
 
                     case DataType::CATEGORICAL:
                         if ($value === $this->categoricalPlaceholder) {
                             $value = $this->strategies[$column]->guess();
                         }
 
-                        break 1;
+                        break;
                 }
             }
         }

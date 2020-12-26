@@ -55,7 +55,7 @@ class RandomHotDeckImputer extends KNNImputer
                 if ($delta <= 0.0) {
                     $value = $values[$offset];
 
-                    break 1;
+                    break;
                 }
             }
 

@@ -66,7 +66,7 @@ abstract class ExtraTree extends CART
             }
 
             if ($impurity === 0.0) {
-                break 1;
+                break;
             }
         }
 

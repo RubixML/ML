@@ -216,7 +216,7 @@ class KDTree implements BinaryTree, Spatial
 
                 $visited->attach($current);
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Neighborhood) {
@@ -281,7 +281,7 @@ class KDTree implements BinaryTree, Spatial
                     }
                 }
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Neighborhood) {

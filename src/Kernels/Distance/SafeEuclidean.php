@@ -59,13 +59,13 @@ class SafeEuclidean implements Distance, NaNSafe
             if (is_float($valueA) and is_nan($valueA)) {
                 ++$nn;
 
-                continue 1;
+                continue;
             }
 
             if (is_float($valueB) and is_nan($valueB)) {
                 ++$nn;
 
-                continue 1;
+                continue;
             }
 
             $distance += ($valueA - $valueB) ** 2;

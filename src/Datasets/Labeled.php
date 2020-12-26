@@ -903,7 +903,7 @@ class Labeled extends Dataset
                 if ($delta - $levelTotal > 0) {
                     $delta -= $levelTotal;
 
-                    continue 1;
+                    continue;
                 }
 
                 foreach ($level as $offset => $weight) {
@@ -986,7 +986,7 @@ class Labeled extends Dataset
                     'max' => $quartiles[4],
                 ];
 
-                break 1;
+                break;
 
             case DataType::categorical():
                 $counts = array_count_values($this->labels);
@@ -1006,7 +1006,7 @@ class Labeled extends Dataset
                     'probabilities' => $probabilities,
                 ];
 
-                break 1;
+                break;
         }
 
         return new Report($desc);

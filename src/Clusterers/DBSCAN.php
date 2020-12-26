@@ -13,7 +13,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -76,17 +76,17 @@ class DBSCAN implements Estimator
      * @param float $radius
      * @param int $minDensity
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
-            throw new BadHyperparameter('Radius must be'
+            throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
         if ($minDensity <= 0) {
-            throw new BadHyperparameter('Minimum density must be'
+            throw new InvalidArgumentException('Minimum density must be'
                 . " greater than 0, $minDensity given.");
         }
 
@@ -154,7 +154,7 @@ class DBSCAN implements Estimator
 
         foreach ($dataset->samples() as $i => $sample) {
             if (isset($predictions[$i])) {
-                continue 1;
+                continue;
             }
 
             [$samples, $indices, $distances] = $this->tree->range($sample, $this->radius);
@@ -162,7 +162,7 @@ class DBSCAN implements Estimator
             if (count($samples) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
 
-                continue 1;
+                continue;
             }
 
             $predictions[$i] = $cluster;
@@ -175,7 +175,7 @@ class DBSCAN implements Estimator
                         $predictions[$index] = $cluster;
                     }
 
-                    continue 1;
+                    continue;
                 }
 
                 $predictions[$index] = $cluster;

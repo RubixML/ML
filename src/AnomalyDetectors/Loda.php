@@ -20,7 +20,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
@@ -135,22 +135,22 @@ class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
      * @param int $estimators
      * @param int|null $bins
      * @param float $contamination
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $estimators = 100, ?int $bins = null, float $contamination = 0.1)
     {
         if ($estimators < 1) {
-            throw new BadHyperparameter('Number of estimators'
+            throw new InvalidArgumentException('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
 
         if (isset($bins) and $bins < self::MIN_BINS) {
-            throw new BadHyperparameter('Bins must be greater'
+            throw new InvalidArgumentException('Bins must be greater'
                 . ' than ' . self::MIN_BINS . ", $bins given.");
         }
 
         if ($contamination < 0.0 or $contamination > 0.5) {
-            throw new BadHyperparameter('Contamination must be'
+            throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 
@@ -391,7 +391,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
                             ? -log($count / $this->n)
                             : -LOG_EPSILON;
 
-                        break 1;
+                        break;
                     }
                 }
             }

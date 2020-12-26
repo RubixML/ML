@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
@@ -89,7 +89,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param bool $weighted
      * @param string $outlierClass
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $radius = 1.0,
@@ -98,12 +98,12 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         ?Spatial $tree = null
     ) {
         if ($radius <= 0.0) {
-            throw new BadHyperparameter('Radius must be'
+            throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
         if (empty($outlierClass)) {
-            throw new BadHyperparameter('Anomaly class'
+            throw new InvalidArgumentException('Anomaly class'
                 . ' cannot be an empty string.');
         }
 
@@ -228,7 +228,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             if (empty($labels)) {
                 $predictions[] = $this->outlierClass;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {
@@ -274,7 +274,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
                 $probabilities[] = $dist;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {

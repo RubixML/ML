@@ -144,7 +144,7 @@ class Agglomerate implements Generator
             $p = (int) round($this->weights[$label] * $n);
 
             if ($p < 1) {
-                continue 1;
+                continue;
             }
 
             $samples[] = $generator->generate($p)->samples();

@@ -29,7 +29,7 @@ use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_nan;
@@ -127,7 +127,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $batchSize = 128,
@@ -139,27 +139,27 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         ?RegressionLoss $costFn = null
     ) {
         if ($batchSize < 1) {
-            throw new BadHyperparameter('Batch size must be'
+            throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
         }
 
         if ($alpha < 0.0) {
-            throw new BadHyperparameter('Alpha must be'
+            throw new InvalidArgumentException('Alpha must be'
                 . " greater than 0, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new BadHyperparameter('Number of epochs'
+            throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new BadHyperparameter('Minimum change must be'
+            throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new BadHyperparameter('Window must be'
+            throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
 
@@ -311,7 +311,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                     $this->logger->info('Numerical under/overflow detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= count($batches);
@@ -323,11 +323,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             if ($loss < $bestLoss) {
@@ -339,7 +339,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($delta >= $this->window) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

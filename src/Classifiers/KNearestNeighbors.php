@@ -20,7 +20,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
@@ -94,12 +94,12 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new BadHyperparameter('At least 1 neighbor'
+            throw new InvalidArgumentException('At least 1 neighbor'
                 . " is required to make a prediction, $k given.");
         }
 

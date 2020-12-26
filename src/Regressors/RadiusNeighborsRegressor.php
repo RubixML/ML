@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 /**
@@ -79,12 +79,12 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @param float $radius
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
-            throw new BadHyperparameter('Radius must be'
+            throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
@@ -195,7 +195,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER_VALUE;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {

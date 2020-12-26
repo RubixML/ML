@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\logsumexp;
@@ -99,12 +99,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * @param float $smoothing
      * @param (int|float)[]|null $priors
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $smoothing = 1.0, ?array $priors = null)
     {
         if ($smoothing <= 0.0) {
-            throw new BadHyperparameter('Smoothing must be'
+            throw new InvalidArgumentException('Smoothing must be'
                 . " greater than 0, $smoothing given.");
         }
 
@@ -114,13 +114,13 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             $total = array_sum($priors);
 
             if ($total == 0) {
-                throw new BadHyperparameter('Total class prior'
+                throw new InvalidArgumentException('Total class prior'
                     . ' probability cannot be equal to 0.');
             }
 
             foreach ($priors as $class => $prior) {
                 if ($prior < 0) {
-                    throw new BadHyperparameter('Prior probability'
+                    throw new InvalidArgumentException('Prior probability'
                         . " must be greater than 0, $prior given.");
                 }
 

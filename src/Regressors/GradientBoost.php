@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
@@ -183,7 +183,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\Learner|null $base
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         ?Learner $booster = null,
@@ -197,37 +197,37 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         ?Learner $base = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
-            throw new BadHyperparameter('Booster is not compatible'
+            throw new InvalidArgumentException('Booster is not compatible'
                 . ' with the ensemble.');
         }
 
         if ($rate <= 0.0 or $rate > 1.0) {
-            throw new BadHyperparameter('Learning rate must be'
+            throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
-            throw new BadHyperparameter('Ratio must be'
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
         if ($estimators < 1) {
-            throw new BadHyperparameter('Number of estimators'
+            throw new InvalidArgumentException('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
 
         if ($minChange < 0.0) {
-            throw new BadHyperparameter('Minimum change must be'
+            throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new BadHyperparameter('Window must be'
+            throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
 
         if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new BadHyperparameter('Hold out ratio must be'
+            throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
         }
 
@@ -236,7 +236,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         if ($base and $base->type() != EstimatorType::regressor()) {
-            throw new BadHyperparameter('Base Estimator must be a'
+            throw new InvalidArgumentException('Base Estimator must be a'
                 . " regressor, {$base->type()} given.");
         }
 
@@ -411,7 +411,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $this->steps[] = $loss;
@@ -436,7 +436,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             if (isset($pred)) {
                 if ($score >= $max) {
-                    break 1;
+                    break;
                 }
 
                 if ($score > $bestScore) {
@@ -449,18 +449,18 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 }
 
                 if ($delta >= $this->window) {
-                    break 1;
+                    break;
                 }
 
                 $prevPred = $pred;
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevOut = $out;

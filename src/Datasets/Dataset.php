@@ -489,7 +489,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                         'max' => $quartiles[4],
                     ];
 
-                    break 1;
+                    break;
 
                 case DataType::CATEGORICAL:
                     $values = $this->column($offset);
@@ -511,7 +511,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                         'probabilities' => $probabilities,
                     ];
 
-                    break 1;
+                    break;
             }
 
             $stats[] = $desc;

@@ -19,7 +19,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
@@ -126,22 +126,22 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      * @param int $estimators
      * @param float|null $ratio
      * @param float|null $contamination
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
     {
         if ($estimators < 1) {
-            throw new BadHyperparameter('Number of estimators'
+            throw new InvalidArgumentException('Number of estimators'
                 . " must be greater than 0, $estimators given.");
         }
 
         if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {
-            throw new BadHyperparameter('Ratio must be'
+            throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");
         }
 
         if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
-            throw new BadHyperparameter('Contamination must be'
+            throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 

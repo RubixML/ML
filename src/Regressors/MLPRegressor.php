@@ -33,7 +33,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Exceptions\BadHyperparameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_nan;
@@ -168,7 +168,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @throws \Rubix\ML\Exceptions\BadHyperparameter
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         array $hiddenLayers = [],
@@ -184,38 +184,38 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     ) {
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
-                throw new BadHyperparameter('Hidden layer'
+                throw new InvalidArgumentException('Hidden layer'
                     . ' must implement the Hidden interface.');
             }
         }
 
         if ($batchSize < 1) {
-            throw new BadHyperparameter('Batch size must be'
+            throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
         }
 
         if ($alpha < 0.0) {
-            throw new BadHyperparameter('Alpha must be'
+            throw new InvalidArgumentException('Alpha must be'
                 . " greater than 0, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new BadHyperparameter('Number of epochs'
+            throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
-            throw new BadHyperparameter('Minimum change must be'
+            throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
         }
 
         if ($window < 1) {
-            throw new BadHyperparameter('Window must be'
+            throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
 
         if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new BadHyperparameter('Hold out ratio must be'
+            throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
         }
 
@@ -399,7 +399,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= count($batches);
@@ -421,7 +421,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             if (isset($score)) {
                 if ($score >= $max) {
-                    break 1;
+                    break;
                 }
 
                 if ($score > $bestScore) {
@@ -436,16 +436,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 }
 
                 if ($delta >= $this->window) {
-                    break 1;
+                    break;
                 }
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

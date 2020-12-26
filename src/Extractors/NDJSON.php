@@ -79,7 +79,7 @@ class NDJSON implements Extractor
             ++$line;
 
             if (empty($data)) {
-                continue 1;
+                continue;
             }
 
             try {

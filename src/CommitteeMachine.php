@@ -273,12 +273,12 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
                     $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
                 }
 
-                break 1;
+                break;
 
             case EstimatorType::anomalyDetector():
                 $this->classes = [0 => 0.0, 1 => 0.0];
 
-                break 1;
+                break;
         }
 
         if ($this->logger) {
