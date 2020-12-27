@@ -26,19 +26,3 @@ var_dump($estimator->trained());
 ```sh
 bool(true)
 ```
-
-### Predict a Single Sample
-Pass a single sample through the model and return the prediction:
-```php
-public predictSample(array $sample) : mixed
-```
-
-```php
-$prediction = $estimator->predictSample([4, 'furry', 'loner', 8.65]);
-
-var_dump($prediction);
-```
-
-```sh
-string(3) "cat"
-```

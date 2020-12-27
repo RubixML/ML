@@ -20,12 +20,4 @@ interface Probabilistic extends Estimator
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array;
-
-    /**
-     * Predict the probabilities of a single sample and return the joint distribution.
-     *
-     * @param list<string|int|float> $sample
-     * @return float[]
-     */
-    public function probaSample(array $sample) : array;
 }

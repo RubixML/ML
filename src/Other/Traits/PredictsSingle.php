@@ -16,6 +16,8 @@ trait PredictsSingle
     /**
      * Predict a single sample and return the result.
      *
+     * @internal
+     *
      * @param (string|int|float)[] $sample
      * @return mixed
      */

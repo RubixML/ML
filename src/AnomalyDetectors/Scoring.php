@@ -14,12 +14,4 @@ interface Scoring extends Estimator
      * @return float[]
      */
     public function score(Dataset $dataset) : array;
-
-    /**
-     * Return the anomaly score given to a single sample.
-     *
-     * @param list<string|int|float> $sample
-     * @return float
-     */
-    public function scoreSample(array $sample) : float;
 }

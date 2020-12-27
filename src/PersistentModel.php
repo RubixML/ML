@@ -7,7 +7,7 @@ use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\AnomalyDetectors\Scoring;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -24,7 +24,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Scoring, Ranking
 {
-    use PredictsSingle, ProbaSingle, ScoresSingle;
+    use PredictsSingle, ProbaSingle, RanksSingle;
 
     /**
      * The persistable base learner.

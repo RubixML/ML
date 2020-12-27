@@ -16,6 +16,8 @@ trait ProbaSingle
     /**
      * Predict the probabilities of a single sample and return the joint distribution.
      *
+     * @internal
+     *
      * @param (string|int|float)[] $sample
      * @return float[]
      */

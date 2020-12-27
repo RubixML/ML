@@ -1,14 +1,15 @@
 - 0.3.0
-    - Now throws Rubix\ML namespaced exceptions
-    - Stateful Transformers are now Persistable
+    - Library now throws Rubix\ML namespaced exceptions
     - Added K Best feature selector
     - Added Sentence tokenizer
+    - Stateful and Elastic Transformers are now Persistable
     - Now can silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
     - Add generic Trainable interface
     - Decision Trees are now iterable
     - Added K-Skip-N-Gram tokenizer and deprecated Skip Gram
+    - Single sample inference methods are now marked internal
     
 - 0.2.4
     - Categorized and annotated internal API

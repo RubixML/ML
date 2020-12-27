@@ -13,7 +13,7 @@ use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -47,7 +47,7 @@ use const Rubix\ML\EPSILON;
  */
 class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.

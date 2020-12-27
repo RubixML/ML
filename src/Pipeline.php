@@ -10,7 +10,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\AnomalyDetectors\Scoring;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
 
     /**
      * A list of transformers to be applied in order.

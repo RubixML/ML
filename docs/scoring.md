@@ -20,19 +20,3 @@ array(3) {
   [2]=> float(1.68163357834096)
 }
 ```
-
-## Score a Single Sample
-Return the anomaly score of a single sample:
-```php
-public scoreSample(array $sample) : float
-```
-
-```php
-$score = $estimator->scoreSample([0.001, 6.99, 'chicago', 20000]);
-
-var_dump($score);
-```
-
-```sh
-float(0.39431742584649)
-```
