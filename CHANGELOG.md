@@ -1,7 +1,8 @@
 - 0.3.0
-    - Library now throws Rubix\ML namespaced exceptions
     - Added K Best feature selector
+    - Added Gzip serializer for Persistable objects
     - Added Sentence tokenizer
+    - Library now throws Rubix\ML namespaced exceptions
     - Stateful and Elastic Transformers are now Persistable
     - Now can silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
