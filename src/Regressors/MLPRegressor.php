@@ -410,7 +410,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= count($batches);
@@ -432,7 +432,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
 
             if (isset($score)) {
                 if ($score >= $max) {
-                    break 1;
+                    break;
                 }
 
                 if ($score > $bestScore) {
@@ -447,16 +447,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable, 
                 }
 
                 if ($delta >= $this->window) {
-                    break 1;
+                    break;
                 }
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

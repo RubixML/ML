@@ -386,7 +386,7 @@ class TSNE implements Embedder, Verbose, Stringable
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $this->steps[] = $loss;
@@ -396,7 +396,7 @@ class TSNE implements Embedder, Verbose, Stringable
             }
 
             if ($loss < $this->minGradient) {
-                break 1;
+                break;
             }
 
             if ($loss < $bestLoss) {
@@ -408,7 +408,7 @@ class TSNE implements Embedder, Verbose, Stringable
             }
 
             if ($delta >= $this->window) {
-                break 1;
+                break;
             }
 
             if ($epoch === $this->early) {
@@ -499,7 +499,7 @@ class TSNE implements Embedder, Verbose, Stringable
                 $diff = $this->entropy - $entropy;
 
                 if (abs($diff) < self::PERPLEXITY_TOLERANCE) {
-                    break 1;
+                    break;
                 }
 
                 if ($diff < 0.0) {

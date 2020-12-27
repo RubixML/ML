@@ -80,7 +80,7 @@ class NDJSON implements Extractor
             ++$line;
 
             if (empty($data)) {
-                continue 1;
+                continue;
             }
 
             $record = json_decode($data, true);

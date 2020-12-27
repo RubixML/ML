@@ -65,7 +65,7 @@ class LabelsAreCompatibleWithLearner extends Specification
                     );
                 }
 
-                break 1;
+                break;
 
             case EstimatorType::regressor():
                 if ($this->dataset->labelType() != DataType::continuous()) {
@@ -75,7 +75,7 @@ class LabelsAreCompatibleWithLearner extends Specification
                     );
                 }
 
-                break 1;
+                break;
         }
     }
 }

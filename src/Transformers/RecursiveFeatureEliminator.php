@@ -162,12 +162,12 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 case DataType::categorical():
                     $this->estimator = new ClassificationTree();
 
-                    break 1;
+                    break;
 
                 case DataType::continuous():
                     $this->estimator = new RegressionTree();
 
-                    break 1;
+                    break;
 
                 default:
                     throw new InvalidArgumentException('No compatible base'
@@ -203,7 +203,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 $total += $importance;
 
                 if ($total >= $this->maxDroppedImportance) {
-                    break 1;
+                    break;
                 }
 
                 $dropped[] = (int) $column;
@@ -211,11 +211,11 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
                 unset($selected[$column], $importances[$column]);
 
                 if (count($dropped) >= $this->maxDroppedFeatures) {
-                    break 1;
+                    break;
                 }
 
                 if (count($selected) <= $this->minFeatures) {
-                    break 1;
+                    break;
                 }
             }
 
@@ -230,7 +230,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose
             }
 
             if (empty($dropped)) {
-                break 1;
+                break;
             }
         }
 

@@ -155,7 +155,7 @@ class DBSCAN implements Estimator, Stringable
 
         foreach ($dataset->samples() as $i => $sample) {
             if (isset($predictions[$i])) {
-                continue 1;
+                continue;
             }
 
             [$samples, $indices, $distances] = $this->tree->range($sample, $this->radius);
@@ -163,7 +163,7 @@ class DBSCAN implements Estimator, Stringable
             if (count($samples) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
 
-                continue 1;
+                continue;
             }
 
             $predictions[$i] = $cluster;
@@ -176,7 +176,7 @@ class DBSCAN implements Estimator, Stringable
                         $predictions[$index] = $cluster;
                     }
 
-                    continue 1;
+                    continue;
                 }
 
                 $predictions[$index] = $cluster;

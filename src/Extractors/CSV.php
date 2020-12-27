@@ -136,7 +136,7 @@ class CSV implements Extractor
             ++$line;
 
             if (empty($record)) {
-                continue 1;
+                continue;
             }
 
             if (isset($header)) {

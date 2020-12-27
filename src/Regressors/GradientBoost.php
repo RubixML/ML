@@ -417,7 +417,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $this->steps[] = $loss;
@@ -442,7 +442,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             if (isset($pred)) {
                 if ($score >= $max) {
-                    break 1;
+                    break;
                 }
 
                 if ($score > $bestScore) {
@@ -455,18 +455,18 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 }
 
                 if ($delta >= $this->window) {
-                    break 1;
+                    break;
                 }
 
                 $prevPred = $pred;
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevOut = $out;

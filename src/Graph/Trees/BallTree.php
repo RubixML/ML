@@ -208,7 +208,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                             if ($distance - $child->radius() < $radius) {
                                 $stack[] = $child;
 
-                                continue 1;
+                                continue;
                             }
                         }
 
@@ -218,7 +218,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
 
                 $visited->attach($current);
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Clique) {
@@ -281,7 +281,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
                     }
                 }
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Clique) {
@@ -341,23 +341,23 @@ class BallTree implements BinaryTree, Spatial, Stringable
                         $current = $right;
                     }
 
-                    continue 1;
+                    continue;
                 }
 
                 if ($left instanceof Hypersphere) {
                     $current = $left;
 
-                    continue 1;
+                    continue;
                 }
 
                 if ($right instanceof Hypersphere) {
                     $current = $right;
 
-                    continue 1;
+                    continue;
                 }
             }
 
-            break 1;
+            break;
         }
 
         return $path;

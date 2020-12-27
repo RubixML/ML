@@ -348,7 +348,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= $n;
@@ -360,7 +360,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             }
 
             if ($loss < $this->minShift) {
-                break 1;
+                break;
             }
 
             $previous = $centroids;

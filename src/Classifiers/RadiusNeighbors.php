@@ -234,7 +234,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
             if (empty($labels)) {
                 $predictions[] = $this->outlierClass;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {
@@ -280,7 +280,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable,
 
                 $probabilities[] = $dist;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {

@@ -392,7 +392,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
                             ? -log($count / $this->n)
                             : -LOG_EPSILON;
 
-                        break 1;
+                        break;
                     }
                 }
             }

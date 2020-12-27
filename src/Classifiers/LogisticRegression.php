@@ -337,7 +337,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= count($batches);
@@ -349,11 +349,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             if ($loss < $bestLoss) {
@@ -365,7 +365,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             }
 
             if ($delta >= $this->window) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

@@ -265,7 +265,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= $dataset->numRows();
@@ -296,11 +296,11 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

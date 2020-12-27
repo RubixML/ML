@@ -295,7 +295,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                     $this->logger->info('Numerical instability detected');
                 }
 
-                break 1;
+                break;
             }
 
             $loss /= $n;
@@ -340,11 +340,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($loss - $prevLoss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             $prevLoss = $loss;

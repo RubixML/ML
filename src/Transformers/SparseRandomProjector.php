@@ -100,7 +100,7 @@ class SparseRandomProjector extends GaussianRandomProjector
                     if ($delta <= 0.0) {
                         $row[] = $value;
 
-                        break 1;
+                        break;
                     }
                 }
             }

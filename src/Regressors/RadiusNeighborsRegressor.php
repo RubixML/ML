@@ -200,7 +200,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable, Strin
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER_VALUE;
 
-                continue 1;
+                continue;
             }
 
             if ($this->weighted) {

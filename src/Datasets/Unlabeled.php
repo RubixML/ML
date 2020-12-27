@@ -558,7 +558,7 @@ class Unlabeled extends Dataset
                 if ($delta - $levelTotal > 0) {
                     $delta -= $levelTotal;
 
-                    continue 1;
+                    continue;
                 }
 
                 foreach ($level as $offset => $weight) {
@@ -567,7 +567,7 @@ class Unlabeled extends Dataset
                     if ($delta <= 0.0) {
                         $samples[] = $this->samples[$offset];
 
-                        break 1;
+                        break;
                     }
                 }
             }

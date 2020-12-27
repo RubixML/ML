@@ -150,22 +150,22 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
                 case EstimatorType::classifier():
                     $metric = new FBeta();
 
-                    break 1;
+                    break;
 
                 case EstimatorType::regressor():
                     $metric = new RMSE();
 
-                    break 1;
+                    break;
 
                 case EstimatorType::clusterer():
                     $metric = new VMeasure();
 
-                    break 1;
+                    break;
 
                 case EstimatorType::anomalyDetector():
                     $metric = new FBeta();
 
-                    break 1;
+                    break;
 
                 default:
                     $metric = new Accuracy();

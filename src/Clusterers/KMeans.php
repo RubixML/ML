@@ -348,7 +348,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                         $this->logger->info('Numerical instability detected');
                     }
 
-                    break 1;
+                    break;
                 }
 
                 foreach ($batch->stratify() as $cluster => $stratum) {
@@ -373,11 +373,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             }
 
             if ($loss <= 0.0) {
-                break 1;
+                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
+                break;
             }
 
             if ($loss < $bestLoss) {
@@ -389,7 +389,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             }
 
             if ($delta >= $this->window) {
-                break 1;
+                break;
             }
 
             $dataset = Labeled::stack($batches);

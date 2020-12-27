@@ -54,7 +54,7 @@ class NumericStringConverter implements Transformer, Stringable
                             ? (int) $value
                             : (float) $value;
 
-                        continue 1;
+                        continue;
                     }
 
                     if ($value === self::NAN_PLACEHOLDER) {

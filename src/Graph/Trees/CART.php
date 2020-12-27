@@ -215,14 +215,14 @@ abstract class CART
                 $current->attachLeft($node);
                 $current->attachRight($node);
 
-                continue 1;
+                continue;
             }
 
             if ($depth >= $this->maxHeight) {
                 $current->attachLeft($this->terminate($left));
                 $current->attachRight($this->terminate($right));
 
-                continue 1;
+                continue;
             }
 
             if ($left->numRows() > $this->maxLeafSize) {
@@ -292,7 +292,7 @@ abstract class CART
                     }
                 }
 
-                continue 1;
+                continue;
             }
 
             if ($current instanceof Outcome) {
@@ -451,7 +451,7 @@ abstract class CART
             $nHat = $dataset->numRows();
 
             if ($nHat <= 1) {
-                continue 1;
+                continue;
             }
 
             $impurity += ($nHat / $n) * $this->impurity($dataset);

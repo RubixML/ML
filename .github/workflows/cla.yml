@@ -19,7 +19,7 @@ jobs:
         with: 
           remote-organization-name: 'RubixML'
           remote-repository-name: 'Signatures'
-          path-to-cla-document: 'https://github.com/RubixML/Signatures/blob/master/CLA.md'
+          path-to-document: 'https://github.com/RubixML/Signatures/blob/master/CLA.md'
           path-to-signatures: 'cla-v1.json'
           branch: 'master'
           allowlist: bot*
