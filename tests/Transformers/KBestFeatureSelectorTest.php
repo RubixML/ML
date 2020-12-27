@@ -5,12 +5,12 @@ namespace Rubix\ML\Tests\Transformers;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Transformers\KBestSelector;
+use Rubix\ML\Transformers\KBestFeatureSelector;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class KBestSelectorTest extends TestCase
+class KBestFeatureSelectorTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Generators\Agglomerate
@@ -18,7 +18,7 @@ class KBestSelectorTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\KBestSelector
+     * @var \Rubix\ML\Transformers\KBestFeatureSelector
      */
     protected $transformer;
 
@@ -32,7 +32,7 @@ class KBestSelectorTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
         ], [0.45, 0.55]);
 
-        $this->transformer = new KBestSelector(1);
+        $this->transformer = new KBestFeatureSelector(1);
     }
 
     /**
@@ -40,7 +40,7 @@ class KBestSelectorTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(KBestSelector::class, $this->transformer);
+        $this->assertInstanceOf(KBestFeatureSelector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }

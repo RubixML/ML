@@ -3,14 +3,14 @@
 namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Transformers\KBestSelector;
+use Rubix\ML\Transformers\KBestFeatureSelector;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
  * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
-class KBestSelectorBench
+class KBestFeatureSelectorBench
 {
     protected const DATASET_SIZE = 10000;
 
@@ -20,7 +20,7 @@ class KBestSelectorBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\KBestSelector
+     * @var \Rubix\ML\Transformers\KBestFeatureSelector
      */
     protected $transformer;
 
@@ -34,7 +34,7 @@ class KBestSelectorBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->transformer = new KBestSelector(2);
+        $this->transformer = new KBestFeatureSelector(2);
     }
 
     /**

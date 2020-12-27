@@ -16,7 +16,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function is_null;
 
 /**
- * K Best Selector
+ * K Best Feature Selector
  *
  * A supervised feature selector that picks the top K ranked features.
  *
@@ -24,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KBestSelector implements Transformer, Stateful, Persistable
+class KBestFeatureSelector implements Transformer, Stateful, Persistable
 {
     /**
      * The maximum number of features to select from the dataset.

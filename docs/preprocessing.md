@@ -196,10 +196,10 @@ $dataset = $dataset1->join($dataset2)
 The persistence subsystem can be used to save and load Stateful and Elastic transformers that implement the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
 
 ```php
-use Rubix\ML\Transformers\KBestSelector;
+use Rubix\ML\Transformers\KBestFeatureSelector;
 use Rubix\ML\Persisters\Filesystem;
 
-$transformer = new KBestSelector(10);
+$transformer = new KBestFeatureSelector(10);
 
 $transformer->fit($dataset);
 
