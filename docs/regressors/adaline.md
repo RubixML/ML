@@ -24,7 +24,7 @@ use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$estimator = new Adaline(256, new Adam(0.001), 500, 1e-6, 5, new HuberLoss(2.5));
+$estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 5, new HuberLoss(2.5));
 ```
 
 ## Additional Methods
