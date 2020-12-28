@@ -35,7 +35,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [Adaline](regressors/adaline.md) | Low | ● | ● | Continuous |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | | Categorical, Continuous |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | Categorical, Continuous |
-| [K-d Neighbors Regressor](regressors/k-d-neighbors-regressor.md) | Medium | | | Depends on distance kernel |
+| [K-d Neighbors Regressor](regressors/kd-neighbors-regressor.md) | Medium | | | Depends on distance kernel |
 | [KNN Regressor](regressors/knn-regressor.md) | Medium | ● | | Depends on distance kernel |
 | [MLP Regressor](regressors/mlp-regressor.md) | High | ● | ● | Continuous |
 | [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Medium | | | Depends on distance kernerl |
