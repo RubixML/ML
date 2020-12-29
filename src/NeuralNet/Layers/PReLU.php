@@ -212,8 +212,6 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @internal
-     *
      * @param \Tensor\Matrix $z
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
@@ -247,8 +245,6 @@ class PReLU implements Hidden, Parametric
 
     /**
      * Calculate the derivative of the activation function at a given output.
-     *
-     * @internal
      *
      * @param \Tensor\Matrix $z
      * @throws \Rubix\ML\Exceptions\RuntimeException
