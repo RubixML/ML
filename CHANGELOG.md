@@ -5,7 +5,6 @@
     - Added Gzip serializer for Persistable objects
     - Added Sentence tokenizer
     - Library now throws Rubix\ML namespaced exceptions
-    - Now can silence Verbose learners with silence() method
     - Added Scoring interface for estimators that score samples
     - Deprecated the Ranking interface
     - Add generic Trainable interface

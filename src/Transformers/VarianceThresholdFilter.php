@@ -17,7 +17,7 @@ use function is_null;
  * Variance Threshold Filter
  *
  * A type of feature selector that selects features with the greatest variance.
- * 
+ *
  * @deprecated
  *
  * @category    Machine Learning

@@ -41,12 +41,4 @@ trait LoggerAware
     {
         return $this->logger;
     }
-
-    /**
-     * Remove the logger and silence logging output.
-     */
-    public function silence() : void
-    {
-        $this->logger = null;
-    }
 }
