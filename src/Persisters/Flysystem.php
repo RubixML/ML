@@ -11,7 +11,6 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\FilesystemException;
 use RuntimeException;
-use Stringable;
 
 /**
  * Flysystem
@@ -28,7 +27,7 @@ use Stringable;
  * @author      Chris Simpson
  * @author      Andrew DalPino
  */
-class Flysystem implements Persister, Stringable
+class Flysystem implements Persister
 {
     /**
      * The extension to give files created as part of a persistable's save history.

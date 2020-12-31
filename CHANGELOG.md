@@ -1,5 +1,6 @@
 - 0.3.0
     - Added K Best feature selector
+    - Added Flysystem 2.0 Persister
     - Added Gzip serializer for Persistable objects
     - Added Sentence tokenizer
     - Library now throws Rubix\ML namespaced exceptions
