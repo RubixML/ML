@@ -118,7 +118,6 @@ nav:
   - Feature Selection:
     - K Best Feature Selector: transformers/k-best-feature-selector.md
     - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
-    - Variance Threshold Filter: transformers/variance-threshold-filter.md
   - Image Transformers:
     - Image Resizer: transformers/image-resizer.md
     - Image Vectorizer: transformers/image-vectorizer.md
@@ -240,8 +239,10 @@ nav:
 - Persisters:
   - API Reference: persisters/api.md
   - Filesystem: persisters/filesystem.md
+  - Flysystem: persisters/flysystem.md
   - Redis DB: persisters/redis-db.md
   - Serializers:
+    - Gzip: persisters/serializers/gzip.md
     - Igbinary: persisters/serializers/igbinary.md
     - Native: persisters/serializers/native.md
 - Backends:

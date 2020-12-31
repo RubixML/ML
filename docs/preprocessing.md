@@ -90,9 +90,8 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
-| [K Best Selector](transformers/k-best-selector.md) | ● | ● | |
+| [K Best Feature Selector](transformers/k-best-feature-selector.md) | ● | ● | |
 | [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
-| [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 
 ## Imputation
 A technique for handling missing values in your dataset is a preprocessing step called *imputation*. Imputation is the process of replacing missing values with a pretty good guess.
