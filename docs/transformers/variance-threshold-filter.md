@@ -3,6 +3,8 @@
 # Variance Threshold Filter
 A type of feature selector that selects the top *k* features with the greatest variance.
 
+> **Note:** Variance Threshold Filter has been deprecated, use [K Best Feature Selector](k-best-feature-selector.md) instead.
+
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
