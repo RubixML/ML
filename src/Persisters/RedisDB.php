@@ -13,11 +13,9 @@ use Redis;
 /**
  * Redis DB
  *
- * Redis is a high performance in-memory key value store that can be used to
- * persist models over a network.
+ * Redis is a high performance in-memory key value store that can be used to persist models over a network.
  *
- * > **Note**: Requires the PHP Redis extension and a properly configured
- * Redis server.
+ * > **Note**: Requires the PHP Redis extension and a properly configured Redis server.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

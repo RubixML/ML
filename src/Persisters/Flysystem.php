@@ -25,7 +25,6 @@ use RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Chris Simpson
- * @author      Andrew DalPino
  */
 class Flysystem implements Persister
 {
@@ -91,7 +90,7 @@ class Flysystem implements Persister
     public function save(Persistable $persistable) : void
     {
         if ($this->history and $this->filesystem->fileExists($this->path)) {
-            $timestamp = (string) time();
+            $timestamp = time();
 
             $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
 
