@@ -1,4 +1,4 @@
-<h1><span><img src="https://github.com/RubixML/RubixML/blob/master/docs/img/rubix-ml-logo.png?raw=true" width="45" height="45" alt="Rubix ML logo" /></span> <span>Rubix ML: Machine Learning for PHP</span></h1>
+<h1><span><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/img/rubix-ml-logo.png" width="50" height="50" alt="Rubix ML logo" /></span> <span>Rubix ML: Machine Learning for PHP</span></h1>
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Build](https://github.com/RubixML/RubixML/workflows/Build/badge.svg)](https://github.com/RubixML/RubixML/actions) [![Documentation Status](https://img.shields.io/readthedocs/rubix-ml.svg?style=flat&colorB=blue)](https://rubix-ml.readthedocs.io/?badge=latest) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)
 
@@ -68,4 +68,4 @@ Rubix ML is funded by donations from the community. You can become a sponsor by 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
-The code is licensed [MIT](LICENSE.md) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+The code is licensed [MIT](LICENSE) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
