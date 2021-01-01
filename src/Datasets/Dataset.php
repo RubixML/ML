@@ -54,23 +54,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     protected $samples;
 
     /**
-     * Build a dataset with the rows from an iterable data table.
-     *
-     * @param iterable<array> $iterator
-     * @return self
-     */
-    abstract public static function fromIterator(iterable $iterator);
-
-    /**
-     * Stack a number of datasets on top of each other to form a single
-     * dataset.
-     *
-     * @param \Rubix\ML\Datasets\Dataset[] $datasets
-     * @return self
-     */
-    abstract public static function stack(array $datasets);
-
-    /**
      * @param mixed[] $samples
      * @param bool $verify
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -110,6 +93,23 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
         $this->samples = $samples;
     }
+
+    /**
+     * Build a dataset with the rows from an iterable data table.
+     *
+     * @param iterable<array> $iterator
+     * @return self
+     */
+    abstract public static function fromIterator(iterable $iterator);
+
+    /**
+     * Stack a number of datasets on top of each other to form a single
+     * dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset[] $datasets
+     * @return self
+     */
+    abstract public static function stack(array $datasets);
 
     /**
      * Return the sample matrix.
