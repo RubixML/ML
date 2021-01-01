@@ -48,7 +48,7 @@ class CPU
     {
         switch (true) {
             case stripos(strtolower(PHP_OS), 'win') === 0:
-                $results = explode("\n", shell_exec(self::WIN_CORES) ?? '');
+                $results = explode("\n", shell_exec(self::WIN_CORES) ?: '');
 
                 return (int) preg_replace('/[^0-9]/', '', $results[1]);
 
