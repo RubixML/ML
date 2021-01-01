@@ -10,19 +10,18 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\logsumexp;
 
@@ -46,7 +45,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
+class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
 
@@ -74,7 +73,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed means of each feature column of the training set.
+     * The means of each feature of the training set conditioned on a class basis.
      *
      * @var array[]
      */
@@ -83,7 +82,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed variances of each feature column of the training set.
+     * The variances of each feature of the training set conditioned by class.
      *
      * @var array[]
      */
@@ -93,7 +92,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
     /**
      * @param (int|float)[]|null $priors
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(?array $priors = null)
     {
@@ -204,8 +203,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -217,21 +215,16 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+        ])->check();
 
         foreach ($dataset->stratify() as $class => $stratum) {
             if (isset($this->means[$class])) {
@@ -292,7 +285,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * choose the class with the highest likelihood as the prediction.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -312,7 +305,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

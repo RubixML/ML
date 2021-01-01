@@ -3,10 +3,10 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use const Rubix\ML\EPSILON;
 
@@ -20,7 +20,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Stringable
+class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
 {
     /**
      * The maximum absolute values for each fitted feature column.
@@ -109,7 +109,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

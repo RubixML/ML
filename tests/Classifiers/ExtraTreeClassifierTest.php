@@ -14,9 +14,9 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Classifiers
@@ -172,16 +172,6 @@ class ExtraTreeClassifierTest extends TestCase
         $rules = $this->estimator->rules(['r', 'g', 'b']);
 
         $this->assertIsString($rules);
-    }
-
-    /**
-     * @test
-     */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
     }
 
     /**

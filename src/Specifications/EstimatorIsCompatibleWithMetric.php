@@ -4,7 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\EstimatorIncompatibleWithMetric;
 
 use function in_array;
 
@@ -52,14 +52,12 @@ class EstimatorIsCompatibleWithMetric extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {
         if (!in_array($this->estimator->type(), $this->metric->compatibility())) {
-            throw new InvalidArgumentException(
-                "{$this->metric} is not compatible with {$this->estimator->type()}s."
-            );
+            throw new EstimatorIncompatibleWithMetric($this->estimator, $this->metric);
         }
     }
 }

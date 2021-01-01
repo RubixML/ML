@@ -4,6 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
+use Stringable;
 
 /**
  * Spatial
@@ -14,7 +15,7 @@ use Rubix\ML\Kernels\Distance\Distance;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Spatial extends Tree
+interface Spatial extends Tree, Stringable
 {
     /**
      * Return the distance kernel used to compute distances.
@@ -56,11 +57,4 @@ interface Spatial extends Tree
      * Remove the root node and its descendants from the tree.
      */
     public function destroy() : void;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

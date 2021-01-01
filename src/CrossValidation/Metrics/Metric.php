@@ -2,7 +2,9 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-interface Metric
+use Stringable;
+
+interface Metric extends Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -28,11 +30,4 @@ interface Metric
      * @return float
      */
     public function score(array $predictions, array $labels) : float;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

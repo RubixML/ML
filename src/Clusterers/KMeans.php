@@ -14,7 +14,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -23,11 +22,11 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function is_nan;
@@ -50,7 +49,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable, Stringable
+class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 
@@ -139,7 +138,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $k,
@@ -271,10 +270,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
@@ -299,11 +298,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             return;
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            DatasetHasDimensionality::with($dataset, count(current($this->centroids))),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new DatasetHasDimensionality($dataset, count(current($this->centroids))),
+        ])->check();
 
         if ($this->logger) {
             $this->logger->info("$this initialized");
@@ -406,7 +405,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -424,7 +423,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

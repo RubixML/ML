@@ -2,11 +2,10 @@
 
 namespace Rubix\ML\Extractors;
 
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Other\Helpers\JSON;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
-
-use function is_null;
 
 /**
  * NDJSON
@@ -32,8 +31,8 @@ class NDJSON implements Extractor
 
     /**
      * @param string $path
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(string $path)
     {
@@ -65,7 +64,7 @@ class NDJSON implements Extractor
     /**
      * Return an iterator for the records in the data table.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
@@ -83,13 +82,15 @@ class NDJSON implements Extractor
                 continue;
             }
 
-            $record = json_decode($data, true);
-
-            if (is_null($record)) {
-                throw new RuntimeException("Malformed JSON on line $line.");
+            try {
+                yield JSON::decode($data);
+            } catch (RuntimeException $e) {
+                throw new RuntimeException(
+                    "JSON Error on line $line: {$e->getMessage()}",
+                    $e->getCode(),
+                    $e
+                );
             }
-
-            yield $record;
         }
     }
 }

@@ -29,22 +29,3 @@ array(2) {
 	}
 }
 ```
-
-## Probabilities of a Single Sample
-Predict the probabilities of a single sample and return the joint distribution:
-```php
-public probaSample(array $sample) : array
-```
-
-```php
-$probabilities = $estimator->probaSample(['mean', 'furry', 'loner', -0.25]);
-
-var_dump($probabilities);
-```
-
-```sh
-array(2) {
-	['monster'] => 0.6,
-	['not monster'] => 0.4,
-}
-```

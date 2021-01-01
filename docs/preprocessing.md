@@ -90,8 +90,8 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 
 | Transformer | Supervised | Stateful | Elastic |
 |---|---|---|---|
+| [K Best Feature Selector](transformers/k-best-feature-selector.md) | ● | ● | |
 | [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
-| [Variance Threshold Filter](transformers/variance-threshold-filter.md) | | ● | |
 
 ## Imputation
 A technique for handling missing values in your dataset is a preprocessing step called *imputation*. Imputation is the process of replacing missing values with a pretty good guess.
@@ -158,7 +158,7 @@ $predictions = $estimator->predict($dataset); // Dataset transformed automatical
 ```
 
 ## Advanced Preprocessing
-In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into a another using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method after to combine them into one dataset. We can even apply another set of transformation to the dataset after that.
+In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformation to the dataset after that.
 
 ```php
 use Rubix\ML\Dataset\Labeled;
@@ -191,6 +191,32 @@ $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
 ```
 
+## Persisting Fitted Transformers
+The persistence subsystem can be used to save and load Stateful and Elastic transformers that implement the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
+
+```php
+use Rubix\ML\Transformers\KBestFeatureSelector;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new KBestFeatureSelector(10);
+
+$transformer->fit($dataset);
+
+$persister = new Filesystem('k-best.transformer');
+
+$persister->save($transformer);
+```
+
+Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
+
+```php
+$persister = new Filesystem('k-best.transformer');
+
+$transformer = $persister->load();
+
+$dataset->apply($transformer);
+```
+
 ## Filtering Records
 In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The `filterByColumn()` method on the dataset object uses a callback function to determine whether or not to return a row in the new dataset by the value of the feature at a given column offset.
 
@@ -207,7 +233,7 @@ When it is undesirable for a dataset to contain duplicate records, you can remov
 $dataset->deduplicate();
 ```
 
-> **Note:** De-duplication of large datasets may take a significant amount of processing time.
+> **Note:** The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
 If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.

@@ -7,7 +7,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * @group Transformers
@@ -31,8 +31,6 @@ class VarianceThresholdFilterTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Blob([0.0, 0.0, 0.0], [1.0, 5.0, 0.001]);
-
-        $this->transformer = new VarianceThresholdFilter(2);
     }
 
     /**
@@ -40,6 +38,10 @@ class VarianceThresholdFilterTest extends TestCase
      */
     public function build() : void
     {
+        $this->expectDeprecation();
+
+        $this->transformer = new VarianceThresholdFilter(2);
+
         $this->assertInstanceOf(VarianceThresholdFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
@@ -50,6 +52,10 @@ class VarianceThresholdFilterTest extends TestCase
      */
     public function fitTransform() : void
     {
+        $this->expectDeprecation();
+
+        $this->transformer = new VarianceThresholdFilter(2);
+
         $this->transformer->fit($this->generator->generate(30));
 
         $this->assertTrue($this->transformer->fitted());
@@ -70,6 +76,10 @@ class VarianceThresholdFilterTest extends TestCase
      */
     public function transformUnfitted() : void
     {
+        $this->expectDeprecation();
+
+        $this->transformer = new VarianceThresholdFilter(2);
+
         $this->expectException(RuntimeException::class);
 
         $samples = $this->generator->generate(1)->samples();

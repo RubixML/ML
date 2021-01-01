@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use Stringable;
+
 /**
  * Distance
  *
@@ -9,7 +11,7 @@ namespace Rubix\ML\Kernels\Distance;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Distance
+interface Distance extends Stringable
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -30,11 +32,4 @@ interface Distance
      * @return float
      */
     public function compute(array $a, array $b) : float;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function in_array;
@@ -131,7 +131,7 @@ class EstimatorType implements Stringable
 
     /**
      * @param int $code
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $code)
     {

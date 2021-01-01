@@ -13,25 +13,16 @@ use PHPUnit\Framework\TestCase;
 class SkipGramTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Other\Tokenizers\SkipGram
-     */
-    protected $tokenizer;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new SkipGram(2, 2);
-    }
-
-    /**
      * @test
      */
     public function build() : void
     {
-        $this->assertInstanceOf(SkipGram::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+        $this->expectDeprecation();
+
+        $tokenizer = new SkipGram(2, 2);
+
+        $this->assertInstanceOf(SkipGram::class, $tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $tokenizer);
     }
 
     /**
@@ -39,6 +30,10 @@ class SkipGramTest extends TestCase
      */
     public function tokenize() : void
     {
+        $this->expectDeprecation();
+
+        $tokenizer = new SkipGram(2, 2);
+
         $text = 'I would like to die on Mars, just not on impact. The end.';
 
         $expected = [
@@ -48,7 +43,7 @@ class SkipGramTest extends TestCase
             'just not', 'just on', 'just impact', 'not on', 'not impact', 'on impact', 'The end',
         ];
 
-        $tokens = $this->tokenizer->tokenize($text);
+        $tokens = $tokenizer->tokenize($text);
 
         $this->assertEquals($expected, $tokens);
         $this->assertCount(28, $tokens);

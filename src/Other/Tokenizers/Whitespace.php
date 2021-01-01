@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Whitespace
@@ -14,7 +13,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Whitespace implements Tokenizer, Stringable
+class Whitespace implements Tokenizer
 {
     /**
      * The whitespace character that delimits each token.
@@ -25,7 +24,7 @@ class Whitespace implements Tokenizer, Stringable
 
     /**
      * @param string $delimiter
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(string $delimiter = ' ')
     {
@@ -42,12 +41,12 @@ class Whitespace implements Tokenizer, Stringable
      *
      * @internal
      *
-     * @param string $string
+     * @param string $text
      * @return list<string>
      */
-    public function tokenize(string $string) : array
+    public function tokenize(string $text) : array
     {
-        return explode($this->delimiter, $string) ?: [];
+        return explode($this->delimiter, $text) ?: [];
     }
 
     /**

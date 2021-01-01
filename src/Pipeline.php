@@ -6,15 +6,15 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\AnomalyDetectors\Scoring;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Psr\Log\LoggerInterface;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
 
 /**
  * Pipeline
@@ -34,9 +34,9 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Persistable, Stringable
+class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, ScoresSingle, LoggerAware;
+    use PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
 
     /**
      * A list of transformers to be applied in order.
@@ -79,7 +79,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
      * @param \Rubix\ML\Estimator $base
      * @param bool $elastic
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $transformers, Estimator $base, bool $elastic = true)
     {
@@ -189,10 +189,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
             }
 
             $dataset->apply($transformer);
-
-            if ($this->logger) {
-                $this->logger->info("Applied $transformer");
-            }
         }
 
         if ($this->base instanceof Learner) {
@@ -218,10 +214,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
                 }
 
                 $dataset->apply($transformer);
-
-                if ($this->logger) {
-                    $this->logger->info("Applied $transformer");
-                }
             }
         } else {
             $this->preprocess($dataset);
@@ -249,7 +241,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -268,14 +260,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array
     {
         $this->preprocess($dataset);
 
-        if (!$this->base instanceof Ranking) {
+        if (!$this->base instanceof Scoring) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
@@ -293,7 +285,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Ranking, Verbose, Pers
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }

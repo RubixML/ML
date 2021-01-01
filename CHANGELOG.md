@@ -1,3 +1,18 @@
+- 0.3.0
+    - Added K Best feature selector
+    - Added Flysystem 2.0 Persister
+    - Stateful and Elastic Transformers are now Persistable
+    - Added Gzip serializer for Persistable objects
+    - Added Sentence tokenizer
+    - Library now throws Rubix\ML namespaced exceptions
+    - Added Scoring interface for estimators that score samples
+    - Deprecated the Ranking interface
+    - Add generic Trainable interface
+    - Decision Trees are now iterable
+    - Added K-Skip-N-Gram tokenizer and deprecated Skip Gram
+    - Single sample inference methods are now marked internal
+    - Deprecated Variance Threshold Filter
+    
 - 0.2.4
     - Categorized and annotated internal API
     - Fix context of preprocess() and combinations() methods

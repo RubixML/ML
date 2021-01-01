@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
+use Stringable;
+
 /**
  * Tokenizer
  *
@@ -9,22 +11,15 @@ namespace Rubix\ML\Other\Tokenizers;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Tokenizer
+interface Tokenizer extends Stringable
 {
     /**
      * Tokenize a blob of text.
      *
      * @internal
      *
-     * @param string $string
+     * @param string $text
      * @return list<string>
      */
-    public function tokenize(string $string) : array;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
+    public function tokenize(string $text) : array;
 }

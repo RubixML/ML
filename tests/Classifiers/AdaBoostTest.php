@@ -16,9 +16,9 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Classifiers
@@ -177,16 +177,6 @@ class AdaBoostTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    /**
-     * @test
-     */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
     }
 
     /**

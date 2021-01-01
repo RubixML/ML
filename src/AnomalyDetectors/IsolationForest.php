@@ -13,15 +13,14 @@ use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 use function count;
@@ -46,9 +45,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Ranking, Persistable, Stringable
+class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -127,7 +126,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      * @param int $estimators
      * @param float|null $ratio
      * @param float|null $contamination
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
     {
@@ -211,10 +210,10 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $n = $dataset->numRows();
 
@@ -264,7 +263,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable, Strin
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

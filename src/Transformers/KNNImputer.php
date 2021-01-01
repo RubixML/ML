@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
@@ -12,9 +13,8 @@ use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function in_array;
@@ -37,7 +37,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNImputer implements Transformer, Stateful, Stringable
+class KNNImputer implements Transformer, Stateful, Persistable
 {
     /**
      * The number of neighbors to consider when imputing a value.
@@ -79,7 +79,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * @param bool $weighted
      * @param string $categoricalPlaceholder
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $k = 5,
@@ -133,7 +133,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -172,7 +172,7 @@ class KNNImputer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

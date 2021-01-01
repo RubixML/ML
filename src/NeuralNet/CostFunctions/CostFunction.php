@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Cost Function
@@ -11,7 +12,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface CostFunction
+interface CostFunction extends Stringable
 {
     /**
      * Compute the loss score.
@@ -34,11 +35,4 @@ interface CostFunction
      * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

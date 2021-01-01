@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Stringable;
+
 /**
  * Transformer
  *
@@ -9,7 +11,7 @@ namespace Rubix\ML\Transformers;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Transformer
+interface Transformer extends Stringable
 {
     /**
      * Return the data types that this transformer is compatible with.
@@ -26,11 +28,4 @@ interface Transformer
      * @param array[] $samples
      */
     public function transform(array &$samples) : void;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

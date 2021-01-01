@@ -10,18 +10,17 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\logsumexp;
 use function count;
@@ -43,7 +42,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
+class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
 
@@ -100,7 +99,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * @param float $smoothing
      * @param (int|float)[]|null $priors
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $smoothing = 1.0, ?array $priors = null)
     {
@@ -208,7 +207,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -220,21 +219,16 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+        ])->check();
 
         foreach ($dataset->stratify() as $class => $stratum) {
             if (isset($this->counts[$class])) {
@@ -292,7 +286,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -312,7 +306,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

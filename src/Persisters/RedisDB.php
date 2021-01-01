@@ -6,25 +6,22 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Redis;
 
 /**
  * Redis DB
  *
- * Redis is a high performance in-memory key value store that can be used to
- * persist models over a network.
+ * Redis is a high performance in-memory key value store that can be used to persist models over a network.
  *
- * > **Note**: Requires the PHP Redis extension and a properly configured
- * Redis server.
+ * > **Note**: Requires the PHP Redis extension and a properly configured Redis server.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RedisDB implements Persister, Stringable
+class RedisDB implements Persister
 {
     /**
      * The key of the model in storage.
@@ -55,8 +52,8 @@ class RedisDB implements Persister, Stringable
      * @param string|null $password
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @param float $timeout
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(
         string $key,
@@ -107,7 +104,7 @@ class RedisDB implements Persister, Stringable
      * Save the persistable object.
      *
      * @param \Rubix\ML\Persistable $persistable
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function save(Persistable $persistable) : void
     {
@@ -124,7 +121,7 @@ class RedisDB implements Persister, Stringable
     /**
      * Load the last saved persistable instance.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable

@@ -9,9 +9,8 @@ use Rubix\ML\Graph\Nodes\Clique;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplObjectStorage;
-use Stringable;
 
 use function count;
 use function array_slice;
@@ -34,7 +33,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BallTree implements BinaryTree, Spatial, Stringable
+class BallTree implements BinaryTree, Spatial
 {
     /**
      * The maximum number of unique samples that each leaf node can contain.
@@ -60,7 +59,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
     /**
      * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)
     {
@@ -130,7 +129,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
      * @internal
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -180,7 +179,7 @@ class BallTree implements BinaryTree, Spatial, Stringable
      *
      * @param list<string|int|float> $sample
      * @param int $k
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{array[],mixed[],float[]}
      */
     public function nearest(array $sample, int $k = 1) : array
@@ -253,8 +252,8 @@ class BallTree implements BinaryTree, Spatial, Stringable
      *
      * @param list<string|int|float> $sample
      * @param float $radius
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array{array[],mixed[],float[]}
      */
     public function range(array $sample, float $radius) : array

@@ -8,18 +8,16 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 
@@ -34,7 +32,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DummyRegressor implements Estimator, Learner, Persistable, Stringable
+class DummyRegressor implements Estimator, Learner, Persistable
 {
     use PredictsSingle;
 
@@ -111,20 +109,15 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
     /**
      * Fit the training set to the given guessing strategy.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+        ])->check();
 
         $this->strategy->fit($dataset->labels());
 
@@ -135,7 +128,7 @@ class DummyRegressor implements Estimator, Learner, Persistable, Stringable
      * Make a prediction of a given sample dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

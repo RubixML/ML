@@ -11,17 +11,16 @@ use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
 
@@ -36,7 +35,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringable
+class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use PredictsSingle;
 
@@ -63,7 +62,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
 
     /**
      * @param float $alpha
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0)
     {
@@ -148,21 +147,16 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+        ])->check();
 
         $biases = Matrix::ones($dataset->numRows(), 1);
 
@@ -191,7 +185,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
      * Make a prediction based on the line calculated from the training data.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -211,7 +205,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable, Stringabl
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

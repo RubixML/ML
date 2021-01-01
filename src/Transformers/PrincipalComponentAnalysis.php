@@ -4,11 +4,11 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_slice;
 
@@ -31,7 +31,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
+class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 {
     /**
      * The target number of dimensions to project onto.
@@ -77,7 +77,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
 
     /**
      * @param int $dimensions
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $dimensions)
     {
@@ -148,7 +148,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -187,7 +187,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

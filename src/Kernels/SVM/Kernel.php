@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
+use Stringable;
+
 /**
  * Kernel
  *
@@ -9,7 +11,7 @@ namespace Rubix\ML\Kernels\SVM;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Kernel
+interface Kernel extends Stringable
 {
     /**
      * Return the options for the libsvm runtime.
@@ -19,11 +21,4 @@ interface Kernel
      * @return mixed[]
      */
     public function options() : array;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

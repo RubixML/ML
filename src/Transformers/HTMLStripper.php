@@ -3,7 +3,6 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 use function is_string;
 
@@ -16,7 +15,7 @@ use function is_string;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HTMLStripper implements Transformer, Stringable
+class HTMLStripper implements Transformer
 {
     /**
      * A list of html tags that should not be stripped ex. ['p', 'br']. Note this is converted

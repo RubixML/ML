@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Diagonal
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Diagonal implements Distance, Stringable
+class Diagonal implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.

@@ -20,7 +20,7 @@ interface Output extends Layer
      *
      * @param (string|int|float)[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
     public function back(array $labels, Optimizer $optimizer) : array;

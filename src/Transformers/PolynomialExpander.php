@@ -3,8 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Polynomial Expander
@@ -18,7 +17,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PolynomialExpander implements Transformer, Stringable
+class PolynomialExpander implements Transformer
 {
     /**
      * The degree of the polynomials to generate. Higher order polynomials are
@@ -31,7 +30,7 @@ class PolynomialExpander implements Transformer, Stringable
 
     /**
      * @param int $degree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $degree = 2)
     {

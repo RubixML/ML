@@ -3,6 +3,7 @@
 namespace Rubix\ML\Clusterers\Seeders;
 
 use Rubix\ML\Datasets\Dataset;
+use Stringable;
 
 /**
  * Seeder
@@ -11,7 +12,7 @@ use Rubix\ML\Datasets\Dataset;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Seeder
+interface Seeder extends Stringable
 {
     /**
      * Seed k cluster centroids from a dataset.
@@ -23,11 +24,4 @@ interface Seeder
      * @return list<list<string|int|float>>
      */
     public function seed(Dataset $dataset, int $k) : array;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

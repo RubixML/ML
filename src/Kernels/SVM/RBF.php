@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\RuntimeException;
 use svm;
 
 /**
@@ -15,7 +14,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RBF implements Kernel, Stringable
+class RBF implements Kernel
 {
     /**
      * The kernel coefficient.
@@ -26,7 +25,7 @@ class RBF implements Kernel, Stringable
 
     /**
      * @param float|null $gamma
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(?float $gamma = null)
     {

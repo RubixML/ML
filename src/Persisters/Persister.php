@@ -3,6 +3,7 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
+use Stringable;
 
 /**
  * Persister
@@ -11,7 +12,7 @@ use Rubix\ML\Persistable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Persister
+interface Persister extends Stringable
 {
     /**
      * Save the persistable object.
@@ -26,11 +27,4 @@ interface Persister
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

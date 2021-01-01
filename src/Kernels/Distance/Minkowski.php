@@ -3,8 +3,7 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Minkowski
@@ -17,7 +16,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Minkowski implements Distance, Stringable
+class Minkowski implements Distance
 {
     /**
      * This parameter controls the *roundedness* of the metric. There are
@@ -37,7 +36,7 @@ class Minkowski implements Distance, Stringable
 
     /**
      * @param float $lambda
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $lambda = 3.0)
     {

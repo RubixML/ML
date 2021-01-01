@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Stringable;
+
 /**
  * Strategy
  *
@@ -9,7 +11,7 @@ namespace Rubix\ML\Other\Strategies;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Strategy
+interface Strategy extends Stringable
 {
     /**
      * Fit the guessing strategy to a set of values.
@@ -19,11 +21,4 @@ interface Strategy
      * @param (string|int|float)[] $values
      */
     public function fit(array $values) : void;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

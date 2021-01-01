@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
-use Stringable;
 
 /**
  * Euclidean
@@ -15,7 +14,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Euclidean implements Distance, Stringable
+class Euclidean implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.

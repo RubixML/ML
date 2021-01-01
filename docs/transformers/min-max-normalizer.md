@@ -3,7 +3,7 @@
 # Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

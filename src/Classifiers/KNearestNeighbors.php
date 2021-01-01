@@ -9,20 +9,19 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function array_slice;
@@ -41,7 +40,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable, Stringable
+class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use PredictsSingle, ProbaSingle;
 
@@ -95,7 +94,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
@@ -162,23 +161,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
-
-        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
-
         $this->samples = $this->labels = [];
 
         $this->partial($dataset);
@@ -187,21 +173,22 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+        ])->check();
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        foreach ($dataset->possibleOutcomes() as $class) {
+            if (!isset($this->classes[$class])) {
+                $this->classes[$class] = 0.0;
+            }
+        }
 
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
@@ -211,7 +198,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -247,7 +234,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\EmptyDataset;
 
 /**
  * @internal
@@ -39,12 +39,12 @@ class DatasetIsNotEmpty extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\EmptyDataset
      */
     public function check() : void
     {
         if ($this->dataset->empty()) {
-            throw new InvalidArgumentException('Dataset must contain at least one record.');
+            throw new EmptyDataset();
         }
     }
 }

@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Stringable;
 
 use const Rubix\ML\EPSILON;
 
@@ -28,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MCC implements Metric, Stringable
+class MCC implements Metric
 {
     /**
      * Compute the MCC score from a confusion matrix.
@@ -76,7 +75,7 @@ class MCC implements Metric, Stringable
      *
      * @param list<string|int> $predictions
      * @param list<string|int> $labels
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float

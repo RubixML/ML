@@ -3,8 +3,7 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Constant
@@ -15,7 +14,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Constant implements Initializer, Stringable
+class Constant implements Initializer
 {
     /**
      * The value to initialize the parameter to.
@@ -26,7 +25,7 @@ class Constant implements Initializer, Stringable
 
     /**
      * @param float $value
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $value = 0.0)
     {

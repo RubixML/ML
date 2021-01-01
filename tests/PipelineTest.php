@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Online;
 use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
-use Rubix\ML\Ranking;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Pipeline;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -20,8 +20,8 @@ use Rubix\ML\Transformers\PolynomialExpander;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * @group MetaEstimators
@@ -82,7 +82,7 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Wrapper::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Ranking::class, $this->estimator);
+        $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

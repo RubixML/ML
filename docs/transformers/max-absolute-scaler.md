@@ -3,7 +3,7 @@
 # Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature value is between -1 and 1.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

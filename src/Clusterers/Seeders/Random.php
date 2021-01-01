@@ -3,7 +3,6 @@
 namespace Rubix\ML\Clusterers\Seeders;
 
 use Rubix\ML\Datasets\Dataset;
-use Stringable;
 
 /**
  * Random
@@ -14,7 +13,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Random implements Seeder, Stringable
+class Random implements Seeder
 {
     /**
      * Seed k cluster centroids from a dataset.

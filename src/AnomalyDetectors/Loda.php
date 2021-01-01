@@ -14,15 +14,14 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -44,9 +43,9 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringable
+class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The minimum number of histogram bins.
@@ -136,7 +135,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      * @param int $estimators
      * @param int|null $bins
      * @param float $contamination
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $estimators = 100, ?int $bins = null, float $contamination = 0.1)
     {
@@ -220,10 +219,10 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         [$m, $n] = $dataset->shape();
 
@@ -282,11 +281,11 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
             return;
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            DatasetHasDimensionality::with($dataset, $this->r->m()),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new DatasetHasDimensionality($dataset, $this->r->m()),
+        ])->check();
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
@@ -336,7 +335,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable, Stringab
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

@@ -6,7 +6,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Clusterers\GaussianMixture;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -21,12 +20,12 @@ class SamplesAreCompatibleWithEstimatorTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator $specification
      * @param bool $expected
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(SamplesAreCompatibleWithEstimator $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**

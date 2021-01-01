@@ -13,8 +13,8 @@ use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * @group MetaEstimators

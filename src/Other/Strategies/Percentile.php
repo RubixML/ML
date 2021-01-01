@@ -3,9 +3,8 @@
 namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Other\Helpers\Stats;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Percentile
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Percentile implements Continuous, Stringable
+class Percentile implements Continuous
 {
     /**
      * The percentile of the fitted data to use as a guess.
@@ -34,7 +33,7 @@ class Percentile implements Continuous, Stringable
 
     /**
      * @param float $p
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $p = 50.0)
     {
@@ -52,7 +51,7 @@ class Percentile implements Continuous, Stringable
      * @internal
      *
      * @param (int|float)[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -69,7 +68,7 @@ class Percentile implements Continuous, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float
      */
     public function guess() : float

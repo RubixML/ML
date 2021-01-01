@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 use GdImage;
 
@@ -179,7 +179,7 @@ class DataType implements Stringable
 
     /**
      * @param int $code
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $code)
     {

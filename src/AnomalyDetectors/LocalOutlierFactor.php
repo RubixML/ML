@@ -13,15 +13,14 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -42,9 +41,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, Stringable
+class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -112,7 +111,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      * @param int $k
      * @param float|null $contamination
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
@@ -198,10 +197,10 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $labels = range(0, $dataset->numRows() - 1);
 
@@ -250,7 +249,7 @@ class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable, St
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

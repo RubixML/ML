@@ -4,8 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Stochastic
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Stochastic implements Optimizer, Stringable
+class Stochastic implements Optimizer
 {
     /**
      * The learning rate that controls the global step size.
@@ -27,7 +26,7 @@ class Stochastic implements Optimizer, Stringable
 
     /**
      * @param float $rate
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $rate = 0.01)
     {

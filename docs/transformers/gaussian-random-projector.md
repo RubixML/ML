@@ -3,7 +3,7 @@
 # Gaussian Random Projector
 Random Projection is a dimensionality reduction technique based on the Johnson-Lindenstrauss lemma. It uses random matrices to project feature vectors onto a target number of dimensions. The Gaussian Random Projector utilizes a random matrix sampled from a smooth Gaussian distribution which projects samples onto a spherically random hyperplane through the origin.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous only
 

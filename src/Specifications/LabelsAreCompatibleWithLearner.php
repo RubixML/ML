@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * @internal
@@ -52,7 +52,7 @@ class LabelsAreCompatibleWithLearner extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {

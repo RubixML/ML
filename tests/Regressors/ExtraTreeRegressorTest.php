@@ -12,9 +12,9 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Regressors
@@ -165,16 +165,6 @@ class ExtraTreeRegressorTest extends TestCase
         $rules = $this->estimator->rules();
 
         $this->assertIsString($rules);
-    }
-
-    /**
-     * @test
-     */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
     }
 
     /**

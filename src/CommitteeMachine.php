@@ -7,17 +7,18 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function in_array;
@@ -39,7 +40,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable, Stringable
+class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
 {
     use Multiprocessing, PredictsSingle, LoggerAware;
 
@@ -87,7 +88,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * @param \Rubix\ML\Learner[] $experts
      * @param (int|float)[]|null $influences
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $experts, ?array $influences = null)
     {
@@ -230,21 +231,24 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * Train all the experts with the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        $specifications = [
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ];
+
         if ($this->type()->isSupervised()) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Learner requires a'
-                    . ' Labeled training set.');
+            $specifications[] = new DatasetIsLabeled($dataset);
+
+            if ($dataset instanceof Labeled) {
+                $specifications[] = new LabelsAreCompatibleWithLearner($dataset, $this);
             }
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with($specifications)->check();
 
         if ($this->logger) {
             $this->logger->info("Learner init $this");
@@ -288,7 +292,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * @internal
      *
      * @param \Rubix\ML\Learner $estimator
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function afterTrain(Learner $estimator) : void
     {

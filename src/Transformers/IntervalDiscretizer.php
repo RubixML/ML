@@ -4,11 +4,11 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Vector;
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function chr;
 use function ord;
@@ -24,7 +24,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IntervalDiscretizer implements Transformer, Stateful, Stringable
+class IntervalDiscretizer implements Transformer, Stateful, Persistable
 {
     /**
      * The value of the starting category for each feature column.
@@ -56,7 +56,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
 
     /**
      * @param int $bins
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $bins = 5)
     {
@@ -119,7 +119,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -144,7 +144,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

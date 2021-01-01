@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Ranking;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -11,13 +10,14 @@ use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\Loda;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group AnomalyDetectors
@@ -93,7 +93,7 @@ class LodaTest extends TestCase
         $this->assertInstanceOf(Loda::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Ranking::class, $this->estimator);
+        $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

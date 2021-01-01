@@ -15,7 +15,6 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -24,11 +23,11 @@ use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\array_transpose;
 use function is_nan;
@@ -52,7 +51,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable, Stringable
+class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use PredictsSingle, ProbaSingle, LoggerAware;
 
@@ -139,7 +138,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param float $percentile
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function estimateRadius(
@@ -176,7 +175,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param float $minShift
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $radius,
@@ -291,10 +290,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         if ($this->logger) {
             $this->logger->info("$this initialized");
@@ -379,7 +378,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -397,7 +396,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

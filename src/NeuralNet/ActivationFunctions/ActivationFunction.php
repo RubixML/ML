@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Stringable;
 
 /**
  * Activation Function
@@ -11,7 +12,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface ActivationFunction
+interface ActivationFunction extends Stringable
 {
     /**
      * Compute the output value.
@@ -33,11 +34,4 @@ interface ActivationFunction
      * @return \Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

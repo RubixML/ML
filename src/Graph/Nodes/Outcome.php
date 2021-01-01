@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Stringable;
+
 /**
  * Outcome
  *
@@ -11,7 +13,7 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Outcome extends Decision
+interface Outcome extends Decision, Stringable
 {
     /**
      * Return the outcome of a decision.
@@ -19,11 +21,4 @@ interface Outcome extends Decision
      * @return int|float|string
      */
     public function outcome();
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

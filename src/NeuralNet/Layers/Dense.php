@@ -10,9 +10,8 @@ use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 /**
@@ -27,7 +26,7 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dense implements Hidden, Parametric, Stringable
+class Dense implements Hidden, Parametric
 {
     /**
      * The number of nodes in the layer.
@@ -91,7 +90,7 @@ class Dense implements Hidden, Parametric, Stringable
      * @param bool $bias
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $neurons,
@@ -134,7 +133,7 @@ class Dense implements Hidden, Parametric, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function weights() : Matrix
@@ -178,7 +177,7 @@ class Dense implements Hidden, Parametric, Stringable
      * @internal
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -204,7 +203,7 @@ class Dense implements Hidden, Parametric, Stringable
      * @internal
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -229,7 +228,7 @@ class Dense implements Hidden, Parametric, Stringable
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
@@ -285,7 +284,7 @@ class Dense implements Hidden, Parametric, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator

@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet;
 
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Snapshot
@@ -58,7 +58,7 @@ class Snapshot
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Parametric[] $layers
      * @param array[] $parameters
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $layers, array $parameters)
     {

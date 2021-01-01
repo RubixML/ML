@@ -3,7 +3,7 @@
 # Word Count Vectorizer
 The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length sparse feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given document.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical
 

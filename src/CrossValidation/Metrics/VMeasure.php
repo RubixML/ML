@@ -4,8 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use const Rubix\ML\EPSILON;
 
@@ -24,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VMeasure implements Metric, Stringable
+class VMeasure implements Metric
 {
     /**
      * The ratio of weight given to homogeneity over completeness.
@@ -35,7 +34,7 @@ class VMeasure implements Metric, Stringable
 
     /**
      * @param float $beta
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $beta = 1.0)
     {

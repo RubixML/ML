@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
+use Stringable;
 
 /**
  * Estimator
@@ -11,7 +12,7 @@ use Rubix\ML\Datasets\Dataset;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Estimator
+interface Estimator extends Stringable
 {
     /**
      * Return the estimator type.
@@ -47,11 +48,4 @@ interface Estimator
      * @return list<string|int|float>
      */
     public function predict(Dataset $dataset) : array;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

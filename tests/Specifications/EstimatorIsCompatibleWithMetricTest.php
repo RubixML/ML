@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -23,12 +22,12 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric $specification
      * @param bool $expected
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(EstimatorIsCompatibleWithMetric $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**

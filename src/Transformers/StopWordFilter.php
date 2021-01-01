@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function gettype;
 
@@ -20,7 +20,7 @@ class StopWordFilter extends RegexFilter
 {
     /**
      * @param string[] $stopWords
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $stopWords = [])
     {

@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Specifications;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\L1Normalizer;
 use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
@@ -21,12 +20,12 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer $specification
      * @param bool $expected
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**

@@ -1,5 +1,7 @@
 # Inference
-Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of unknown samples containing values of the features used to train it.
+Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of samples.
+
+> **Note**: As of 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset containing a single sample.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are *polymorphic* in the sense that they take on the type of the base estimator they wrap.
@@ -33,21 +35,8 @@ array(3) {
 }
 ```
 
-## Single Predictions
-Sometimes, you'll just want to make a prediction on a single sample instead of an entire dataset. To return a single prediction from the model, pass the raw sample to the `predictSample()` method available on the [Learner](learner.md) interface.
-
-```php
-$prediction = $estimator->predictSample([0.25, 3, 'furry']);
-
-var_dump($prediction);
-```
-
-```sh
-string(3) "cat"
-```
-
 ## Estimation of Probabilities
-Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](https://docs.rubixml.com/en/latest/probabilistic.html) interface have the `proba()` method that computes the joint probability estimates for each class or cluster number as shown in the example below.
+Sometimes, you may want to know how *certain* the model is about a particular outcome. Classifiers and clusterers that implement the [Probabilistic](probabilistic.md) interface have the `proba()` method that computes the joint probability estimates for each class or cluster number as shown in the example below.
 
 ```php
 $probabilities = $estimator->proba($dataset);  
@@ -69,7 +58,7 @@ array(2) {
 ```
 
 ## Anomaly Scores
-Anomaly detectors that implement the [Ranking](https://docs.rubixml.com/en/latest/ranking.html) interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.
+Anomaly detectors that implement the [Scoring](scoring.md) interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.
 
 ```php
 $scores = $estimator->score($dataset);

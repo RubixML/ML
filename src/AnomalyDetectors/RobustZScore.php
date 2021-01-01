@@ -11,15 +11,14 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -44,9 +43,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringable
+class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The expected value of the MAD as n goes to ∞.
@@ -90,7 +89,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
     /**
      * @param float $threshold
      * @param float $alpha
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
@@ -183,14 +182,13 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $this->medians = $this->mads = [];
 
@@ -206,8 +204,6 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -219,7 +215,7 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable, Stringab
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

@@ -3,7 +3,7 @@
 # Z Scale Standardizer
 A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z-Score. Although Z-Scores are technically unbounded, in practice they mostly fall between -3 and 3 - that is, they are no more than 3 standard deviations away from the mean.
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

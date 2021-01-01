@@ -4,8 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function get_class;
 
@@ -24,7 +23,7 @@ use function get_class;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Momentum implements Optimizer, Adaptive, Stringable
+class Momentum implements Optimizer, Adaptive
 {
     /**
      * The learning rate that controls the global step size.
@@ -52,7 +51,7 @@ class Momentum implements Optimizer, Adaptive, Stringable
     /**
      * @param float $rate
      * @param float $decay
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $rate = 0.001, float $decay = 0.1)
     {

@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use Stringable;
-
 /**
  * Word
  *
@@ -13,7 +11,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Word implements Tokenizer, Stringable
+class Word implements Tokenizer
 {
     /**
      * The regular expression to match words in a sentence.
@@ -27,14 +25,14 @@ class Word implements Tokenizer, Stringable
      *
      * @internal
      *
-     * @param string $string
+     * @param string $text
      * @return list<string>
      */
-    public function tokenize(string $string) : array
+    public function tokenize(string $text) : array
     {
         $tokens = [];
 
-        preg_match_all(self::WORD_REGEX, $string, $tokens);
+        preg_match_all(self::WORD_REGEX, $text, $tokens);
 
         return $tokens[0];
     }

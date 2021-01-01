@@ -3,13 +3,14 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\warn_deprecated;
 use function is_null;
 
 /**
@@ -17,11 +18,13 @@ use function is_null;
  *
  * A type of feature selector that selects features with the greatest variance.
  *
+ * @deprecated
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer, Stateful, Stringable
+class VarianceThresholdFilter implements Transformer, Stateful, Persistable
 {
     /**
      * The minimum number of features to select from the dataset.
@@ -39,10 +42,12 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
 
     /**
      * @param int $minFeatures
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $minFeatures)
     {
+        warn_deprecated('Variance Threshold Filter is deprecated, use K Best Feature Selector instead.');
+
         if ($minFeatures < 1) {
             throw new InvalidArgumentException('Min features must be'
                 . " greater than 0, $minFeatures given.");
@@ -111,7 +116,7 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {
@@ -131,6 +136,6 @@ class VarianceThresholdFilter implements Transformer, Stateful, Stringable
      */
     public function __toString() : string
     {
-        return "Variance Threshold Filter (max_features: {$this->minFeatures})";
+        return "Variance Threshold Filter (min_features: {$this->minFeatures})";
     }
 }

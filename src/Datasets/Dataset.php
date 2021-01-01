@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
@@ -9,10 +10,10 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use ArrayAccess;
 use Stringable;
 use Countable;
@@ -72,7 +73,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * @param mixed[] $samples
      * @param bool $verify
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $samples = [], bool $verify = true)
     {
@@ -201,8 +202,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Get the datatype for a feature column at the given offset.
      *
      * @param int $offset
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\DataType
      */
     public function columnType(int $offset) : DataType
@@ -276,7 +277,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      *
      * @param int $offset
      * @param callable $callback
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function transformColumn(int $offset, callable $callback) : self
@@ -311,7 +312,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * Drop the columns at the given offsets.
      *
      * @param int[] $offsets
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public function dropColumns(array $offsets) : self
@@ -358,7 +359,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      */
     public function toJSON(bool $pretty = false) : Encoding
     {
-        return new Encoding(json_encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
+        return new Encoding(JSON::encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
     }
 
     /**
@@ -386,7 +387,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
                 $row = array_combine($header, $row);
             }
 
-            $ndjson .= json_encode($row) . PHP_EOL;
+            $ndjson .= JSON::encode($row) . PHP_EOL;
         }
 
         return new Encoding($ndjson);
@@ -398,7 +399,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @param string[]|null $header
      * @param string $delimiter
      * @param string $enclosure
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return \Rubix\ML\Encoding
      */
     public function toCSV(?array $header = null, string $delimiter = ',', string $enclosure = '"') : Encoding
@@ -755,7 +756,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * @param int $offset
      * @param mixed[] $values
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function offsetSet($offset, $values) : void
     {
@@ -775,7 +776,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
 
     /**
      * @param int $offset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function offsetUnset($offset) : void
     {

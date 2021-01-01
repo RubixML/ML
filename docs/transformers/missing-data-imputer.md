@@ -3,7 +3,7 @@
 # Missing Data Imputer
 Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categorical values (denoted by special placeholder category such as `'?'`) with a guess based on user-defined Strategy.
 
-**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful)
+**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical and Continuous
 

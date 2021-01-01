@@ -8,8 +8,8 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
-use InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 
@@ -67,7 +67,7 @@ class Binary implements Output
     /**
      * @param string[] $classes
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $classes, ?ClassificationLoss $costFn = null)
     {
@@ -98,7 +98,7 @@ class Binary implements Output
      * the fan out for this layer.
      *
      * @param int $fanIn
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -142,7 +142,7 @@ class Binary implements Output
      *
      * @param string[] $labels
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array

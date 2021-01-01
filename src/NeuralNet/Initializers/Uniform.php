@@ -3,8 +3,7 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Uniform
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Uniform implements Initializer, Stringable
+class Uniform implements Initializer
 {
     /**
      * The upper and lower bound of the distribution.
@@ -27,7 +26,7 @@ class Uniform implements Initializer, Stringable
 
     /**
      * @param float $beta
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $beta = 0.5)
     {

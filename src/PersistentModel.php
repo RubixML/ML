@@ -5,12 +5,12 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ScoresSingle;
 use Rubix\ML\Other\Traits\ProbaSingle;
+use Rubix\ML\AnomalyDetectors\Scoring;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Persistent Model
@@ -22,9 +22,9 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ranking, Stringable
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Scoring, Ranking
 {
-    use PredictsSingle, ProbaSingle, ScoresSingle;
+    use PredictsSingle, ProbaSingle, RanksSingle;
 
     /**
      * The persistable base learner.
@@ -61,7 +61,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
     /**
      * @param \Rubix\ML\Learner $base
      * @param \Rubix\ML\Persisters\Persister $persister
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(Learner $base, Persister $persister)
     {
@@ -168,7 +168,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array[]
      */
     public function proba(Dataset $dataset) : array
@@ -185,12 +185,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array
     {
-        if (!$this->base instanceof Ranking) {
+        if (!$this->base instanceof Scoring) {
             throw new RuntimeException('Base Estimator must'
                 . ' implement the Ranking interface.');
         }
@@ -208,7 +208,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ran
      */
     public function rank(Dataset $dataset) : array
     {
-        trigger_error('Deprecated, use score() instead.', E_USER_DEPRECATED);
+        warn_deprecated('Rank() is deprecated, use score() instead.');
 
         return $this->score($dataset);
     }

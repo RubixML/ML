@@ -5,9 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Noise
@@ -24,7 +23,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Noise implements Hidden, Stringable
+class Noise implements Hidden
 {
     /**
      * The amount (standard deviation) of the gaussian noise to add to the inputs.
@@ -42,7 +41,7 @@ class Noise implements Hidden, Stringable
 
     /**
      * @param float $stdDev
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $stdDev)
     {
@@ -59,7 +58,7 @@ class Noise implements Hidden, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public function width() : int

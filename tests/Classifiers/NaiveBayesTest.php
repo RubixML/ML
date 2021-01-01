@@ -9,15 +9,16 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Classifiers
@@ -174,21 +175,11 @@ class NaiveBayesTest extends TestCase
     /**
      * @test
      */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
-    }
-
-    /**
-     * @test
-     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([[1.0]]));
+        $this->estimator->train(Labeled::quick([[1.0]], ['green']));
     }
 
     /**

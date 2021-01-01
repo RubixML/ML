@@ -7,16 +7,17 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function in_array;
 
@@ -35,7 +36,7 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, Stringable
+class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
     use Multiprocessing, PredictsSingle;
 
@@ -91,7 +92,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * @param \Rubix\ML\Learner $base
      * @param int $estimators
      * @param float $ratio
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
@@ -172,21 +173,24 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * training set.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
+        $specifications = [
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ];
+
         if ($this->type()->isSupervised()) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Learner requires a'
-                    . ' Labeled training set.');
+            $specifications[] = new DatasetIsLabeled($dataset);
+
+            if ($dataset instanceof Labeled) {
+                $specifications[] = new LabelsAreCompatibleWithLearner($dataset, $this);
             }
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with($specifications)->check();
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numRows()));
 
@@ -207,7 +211,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable, 
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 
@@ -41,7 +41,7 @@ class CPU
     /**
      * Return the number of cpu cores or 0 if unable to detect.
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public static function cores() : int

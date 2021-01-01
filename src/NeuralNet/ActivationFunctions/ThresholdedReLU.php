@@ -3,8 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Thresholded ReLU
@@ -20,7 +19,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ThresholdedReLU implements ActivationFunction, Stringable
+class ThresholdedReLU implements ActivationFunction
 {
     /**
      * The input value necessary to trigger an activation.
@@ -31,7 +30,7 @@ class ThresholdedReLU implements ActivationFunction, Stringable
 
     /**
      * @param float $threshold
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $threshold = 1.)
     {

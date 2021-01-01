@@ -4,9 +4,8 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
+use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
-use RuntimeException;
-use Stringable;
 
 use function is_null;
 use function is_object;
@@ -21,10 +20,10 @@ use function is_object;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Igbinary implements Serializer, Stringable
+class Igbinary implements Serializer
 {
     /**
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct()
     {

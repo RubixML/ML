@@ -2,9 +2,8 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use svm;
 
 /**
@@ -16,7 +15,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Polynomial implements Kernel, Stringable
+class Polynomial implements Kernel
 {
     /**
      * The degree of the polynomial.
@@ -43,8 +42,8 @@ class Polynomial implements Kernel, Stringable
      * @param int $degree
      * @param float $gamma
      * @param float $coef0
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(int $degree = 3, ?float $gamma = null, float $coef0 = 0.0)
     {

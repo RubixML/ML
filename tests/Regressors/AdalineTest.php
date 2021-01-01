@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -17,9 +18,9 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Regressors
@@ -182,23 +183,11 @@ class AdalineTest extends TestCase
     /**
      * @test
      */
-    public function trainUnlabeled() : void
-    {
-        $dataset = new Unlabeled([['bad']]);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train($dataset);
-    }
-
-    /**
-     * @test
-     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([['bad']]));
+        $this->estimator->train(Labeled::quick([['bad']], [2]));
     }
 
     /**

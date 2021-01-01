@@ -5,8 +5,9 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Stringable;
 
-interface Validator
+interface Validator extends Stringable
 {
     /**
      * Test the estimator with the supplied dataset and return a validation score.
@@ -17,11 +18,4 @@ interface Validator
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float;
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
-     */
-    public function __toString() : string;
 }

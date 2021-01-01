@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use const Rubix\ML\TWO_PI;
 
@@ -47,7 +47,7 @@ class Circle implements Generator
      * @param float $y
      * @param float $scale
      * @param float $noise
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $x = 0.0,

@@ -9,9 +9,8 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use const Rubix\ML\EPSILON;
@@ -32,7 +31,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BatchNorm implements Hidden, Parametric, Stringable
+class BatchNorm implements Hidden, Parametric
 {
     /**
      * The decay rate of the previous running averages of the global mean
@@ -109,7 +108,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      * @param float $decay
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $betaInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $gammaInitializer
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $decay = 0.1,
@@ -131,7 +130,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public function width() : int
@@ -173,7 +172,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      * @internal
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -212,7 +211,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      * @internal
      *
      * @param \Tensor\Matrix $input
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -235,7 +234,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
@@ -300,7 +299,7 @@ class BatchNorm implements Hidden, Parametric, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator

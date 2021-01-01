@@ -17,9 +17,9 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Regressors
@@ -194,26 +194,6 @@ class GradientBoostTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    /**
-     * @test
-     */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
-    }
-
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
     /**

@@ -6,8 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
 
@@ -24,7 +23,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ImageVectorizer implements Transformer, Stateful, Stringable
+class ImageVectorizer implements Transformer, Stateful
 {
     /**
      * Encode the images as grayscale?
@@ -42,8 +41,8 @@ class ImageVectorizer implements Transformer, Stateful, Stringable
 
     /**
      * @param bool $grayscale
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(bool $grayscale = false)
     {
@@ -81,7 +80,7 @@ class ImageVectorizer implements Transformer, Stateful, Stringable
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -107,7 +106,7 @@ class ImageVectorizer implements Transformer, Stateful, Stringable
      * Transform the dataset in place.
      *
      * @param array[] $samples
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
     {

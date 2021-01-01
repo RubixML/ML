@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function array_slice;
 use function count;
@@ -87,7 +87,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function variance(array $values, ?float $mean = null) : float
@@ -111,7 +111,7 @@ class Stats
      * Calculate the median of a set of values.
      *
      * @param mixed[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function median(array $values) : float
@@ -140,7 +140,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float $q
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function quantile(array $values, float $q) : float
@@ -153,7 +153,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float[] $qs
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return (int|float)[]
      */
     public static function quantiles(array $values, array $qs) : array
@@ -193,7 +193,7 @@ class Stats
      * Compute the interquartile range of a set of values.
      *
      * @param mixed[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function iqr(array $values) : float
@@ -225,7 +225,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $median
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function mad(array $values, ?float $median = null) : float
@@ -252,7 +252,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function skewness(array $values, ?float $mean = null) : float
@@ -274,7 +274,7 @@ class Stats
      *
      * @param mixed[] $values
      * @param float|null $mean
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function kurtosis(array $values, ?float $mean = null) : float
@@ -297,7 +297,7 @@ class Stats
      * @param mixed[] $values
      * @param int $moment
      * @param float|null $mean
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function centralMoment(array $values, int $moment, ?float $mean = null) : float
@@ -326,7 +326,7 @@ class Stats
      * of a set of values.
      *
      * @param mixed[] $values
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public static function range(array $values) : float

@@ -11,10 +11,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -23,15 +21,16 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
+use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_nan;
 use function count;
@@ -50,7 +49,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable, Stringable
+class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
     use PredictsSingle, LoggerAware;
 
@@ -128,7 +127,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         int $batchSize = 128,
@@ -252,16 +251,10 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
         DatasetIsNotEmpty::with($dataset)->check();
 
         $this->network = new FeedForward(
@@ -277,8 +270,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -288,17 +280,13 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             return;
         }
 
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Learner requires a'
-                . ' Labeled training set.');
-        }
-
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            DatasetHasDimensionality::with($dataset, $this->network->input()->width()),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-            LabelsAreCompatibleWithLearner::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsLabeled($dataset),
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new LabelsAreCompatibleWithLearner($dataset, $this),
+            new DatasetHasDimensionality($dataset, $this->network->input()->width()),
+        ])->check();
 
         if ($this->logger) {
             $this->logger->info("$this initialized");
@@ -366,7 +354,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -383,7 +371,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the normalized importance scores of each feature column of the training set.
      *
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use Stringable;
 
 /**
  * SELU
@@ -20,7 +19,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SELU implements ActivationFunction, Stringable
+class SELU implements ActivationFunction
 {
     /**
      * The value at which leakage starts to saturate.

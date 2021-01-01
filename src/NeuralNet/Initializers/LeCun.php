@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
-use Stringable;
 
 /**
  * Le Cun
@@ -20,7 +19,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeCun implements Initializer, Stringable
+class LeCun implements Initializer
 {
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.

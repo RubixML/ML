@@ -5,7 +5,7 @@ namespace Rubix\ML\Datasets\Generators;
 use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Unlabeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -40,7 +40,7 @@ class Blob implements Generator
     /**
      * @param (int|float)[] $center
      * @param int|float|(int|float)[] $stdDev
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $center = [0, 0], $stdDev = 1.0)
     {

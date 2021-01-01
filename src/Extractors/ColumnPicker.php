@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Extractors;
 
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 /**

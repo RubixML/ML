@@ -14,14 +14,14 @@ namespace Rubix\ML
      *
      * @var string
      */
-    const MINOR_VERSION = '2';
+    const MINOR_VERSION = '3';
 
     /**
      * Bugfix versions contain fixes as well as refactorings.
      *
      * @var string
      */
-    const BUGFIX_VERSION = '4';
+    const BUGFIX_VERSION = '0';
 
     /**
      * The full version number.

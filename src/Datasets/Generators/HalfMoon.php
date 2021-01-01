@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Half Moon
@@ -54,7 +54,7 @@ class HalfMoon implements Generator
      * @param float $scale
      * @param float $rotation
      * @param float $noise
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         float $x = 0.0,

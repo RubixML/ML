@@ -2,10 +2,7 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use InvalidArgumentException;
-use Stringable;
-
-use function count;
+use function Rubix\ML\warn_deprecated;
 
 /**
  * Skip Gram
@@ -20,102 +17,21 @@ use function count;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ *
+ * @deprecated
  */
-class SkipGram implements Tokenizer, Stringable
+class SkipGram extends KSkipNGram
 {
-    /**
-     * The regular expression to match sentences in a blob of text.
-     *
-     * @var string
-     */
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
-
-    /**
-     * The separator between words in the n-gram.
-     *
-     * @var string
-     */
-    protected const SEPARATOR = ' ';
-
-    /**
-     * The number of contiguous words to a single token.
-     *
-     * @var int
-     */
-    protected $n;
-
-    /**
-     * The number of words to skip over to form new sequences.
-     *
-     * @var int
-     */
-    protected $skip;
-
-    /**
-     * The word tokenizer.
-     *
-     * @var \Rubix\ML\Other\Tokenizers\Word
-     */
-    protected $wordTokenizer;
-
     /**
      * @param int $n
      * @param int $skip
      * @param \Rubix\ML\Other\Tokenizers\Word|null $wordTokenizer
-     * @throws \InvalidArgumentException
      */
     public function __construct(int $n = 2, int $skip = 2, ?Word $wordTokenizer = null)
     {
-        if ($n < 2) {
-            throw new InvalidArgumentException('Number of words per'
-                . " token must be greater than 1, $n given.");
-        }
+        warn_deprecated('Skip Gram is deprecated. Use K-Skip-N-Gram with min and max set to n instead.');
 
-        if ($skip < 0) {
-            throw new InvalidArgumentException('Skip words must be'
-                . " greater than 1, $skip given.");
-        }
-
-        $this->n = $n;
-        $this->skip = $skip;
-        $this->wordTokenizer = $wordTokenizer ?? new Word();
-    }
-
-    /**
-     * Tokenize a blob of text.
-     *
-     * @internal
-     *
-     * @param string $string
-     * @return list<string>
-     */
-    public function tokenize(string $string) : array
-    {
-        $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
-
-        $tokens = [];
-
-        foreach ($sentences as $sentence) {
-            $words = $this->wordTokenizer->tokenize($sentence);
-
-            $n = count($words);
-
-            foreach ($words as $i => $word) {
-                $p = min($n - ($i + $this->n), $this->skip);
-
-                for ($j = 0; $j <= $p; ++$j) {
-                    $skipGram = $word;
-
-                    for ($k = 1; $k < $this->n; ++$k) {
-                        $skipGram .= self::SEPARATOR . $words[$i + $j + $k];
-                    }
-
-                    $tokens[] = $skipGram;
-                }
-            }
-        }
-
-        return $tokens;
+        parent::__construct($n, $n, $skip, $wordTokenizer);
     }
 
     /**
@@ -125,6 +41,6 @@ class SkipGram implements Tokenizer, Stringable
      */
     public function __toString() : string
     {
-        return "Skip Gram (n: {$this->n}, skip: {$this->skip}, word_tokenizer: {$this->wordTokenizer})";
+        return "Skip Gram (n: {$this->min}, skip: {$this->skip}, word tokenizer: {$this->wordTokenizer})";
     }
 }

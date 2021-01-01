@@ -4,7 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -52,7 +52,7 @@ class SamplesAreCompatibleWithDistance extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {

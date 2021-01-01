@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Stringable;
 
 /**
  * Median Absolute Error
@@ -22,7 +21,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MedianAbsoluteError implements Metric, Stringable
+class MedianAbsoluteError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -53,7 +52,7 @@ class MedianAbsoluteError implements Metric, Stringable
      *
      * @param list<int|float> $predictions
      * @param list<int|float> $labels
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float

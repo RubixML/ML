@@ -9,12 +9,11 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 
@@ -35,7 +34,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Estimator, Stringable
+class DBSCAN implements Estimator
 {
     /**
      * The starting cluster number.
@@ -77,7 +76,7 @@ class DBSCAN implements Estimator, Stringable
      * @param float $radius
      * @param int $minDensity
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {
@@ -138,10 +137,10 @@ class DBSCAN implements Estimator, Stringable
      */
     public function predict(Dataset $dataset) : array
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $labels = range(0, $dataset->numRows() - 1);
 

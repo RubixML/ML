@@ -8,8 +8,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 /**
@@ -26,7 +25,7 @@ use Generator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PReLU implements Hidden, Parametric, Stringable
+class PReLU implements Hidden, Parametric
 {
     /**
      * The initializer of the alpha (leakage) parameter.
@@ -69,7 +68,7 @@ class PReLU implements Hidden, Parametric, Stringable
      *
      * @internal
      *
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
     public function width() : int
@@ -138,7 +137,7 @@ class PReLU implements Hidden, Parametric, Stringable
      *
      * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
@@ -214,7 +213,7 @@ class PReLU implements Hidden, Parametric, Stringable
      * Compute the leaky ReLU activation function and return a matrix.
      *
      * @param \Tensor\Matrix $z
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     protected function compute(Matrix $z) : Matrix
@@ -248,7 +247,7 @@ class PReLU implements Hidden, Parametric, Stringable
      * Calculate the derivative of the activation function at a given output.
      *
      * @param \Tensor\Matrix $z
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
     protected function differentiate(Matrix $z) : Matrix

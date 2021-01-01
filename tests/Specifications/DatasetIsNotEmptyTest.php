@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Specifications\Specification;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -18,12 +17,12 @@ class DatasetIsNotEmptyTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\Specification $spec
+     * @param \Rubix\ML\Specifications\DatasetIsNotEmpty $specification
      * @param bool $expected
      */
-    public function passes(Specification $spec, bool $expected) : void
+    public function passes(DatasetIsNotEmpty $specification, bool $expected) : void
     {
-        $this->assertSame($expected, $spec->passes());
+        $this->assertSame($expected, $specification->passes());
     }
 
     /**

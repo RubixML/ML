@@ -3,7 +3,7 @@
 # Isolation Forest
 An ensemble of Isolation Trees that each specialize on a unique subset of the training set. Isolation Trees are a type of randomized decision tree that assign anomaly scores based on the depth a sample reaches when traversing the tree. Based on the premise that anomalies are isolated into their own nodes sooner, samples that receive high anomaly scores achieve the shallowest depth during traversal.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Scoring](../scoring.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 

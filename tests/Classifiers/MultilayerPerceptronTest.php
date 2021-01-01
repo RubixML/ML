@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -24,9 +25,9 @@ use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @group Classifiers
@@ -213,21 +214,11 @@ class MultilayerPerceptronTest extends TestCase
     /**
      * @test
      */
-    public function trainUnlabeled() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick());
-    }
-
-    /**
-     * @test
-     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([['bad']]));
+        $this->estimator->train(Labeled::quick([['bad']], ['green']));
     }
 
     /**

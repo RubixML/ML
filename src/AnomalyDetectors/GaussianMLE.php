@@ -12,15 +12,14 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Helpers\Verifier;
-use Rubix\ML\Other\Traits\ScoresSingle;
+use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use InvalidArgumentException;
-use RuntimeException;
-use Stringable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 
@@ -43,9 +42,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, Stringable
+class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, ScoresSingle;
+    use PredictsSingle, RanksSingle;
 
     /**
      * The proportion of outliers that are assumed to be present in the
@@ -89,7 +88,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
 
     /**
      * @param float $contamination
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(float $contamination = 0.1)
     {
@@ -178,10 +177,10 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      */
     public function train(Dataset $dataset) : void
     {
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
 
         $this->means = $this->variances = [];
 
@@ -212,11 +211,11 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
             return;
         }
 
-        Verifier::check([
-            DatasetIsNotEmpty::with($dataset),
-            DatasetHasDimensionality::with($dataset, count($this->means)),
-            SamplesAreCompatibleWithEstimator::with($dataset, $this),
-        ]);
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new DatasetHasDimensionality($dataset, count($this->means)),
+        ])->check();
 
         $n = $dataset->numRows();
 
@@ -264,7 +263,7 @@ class GaussianMLE implements Estimator, Learner, Online, Ranking, Persistable, S
      * Return the anomaly scores assigned to the samples in a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array
