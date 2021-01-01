@@ -3,13 +3,6 @@
 namespace Rubix\ML
 {
     /**
-     * The full version number.
-     *
-     * @var string
-     */
-    const VERSION = MAJOR_VERSION . '.' . MINOR_VERSION . '.' . BUGFIX_VERSION;
-
-    /**
      * Major versions include architectural updates and backwards compatibility breaks.
      *
      * @var string
@@ -29,6 +22,13 @@ namespace Rubix\ML
      * @var string
      */
     const BUGFIX_VERSION = '0';
+
+    /**
+     * The full version number.
+     *
+     * @var string
+     */
+    const VERSION = MAJOR_VERSION . '.' . MINOR_VERSION . '.' . BUGFIX_VERSION;
 
     /**
      * A small number used in substitution of 0.
