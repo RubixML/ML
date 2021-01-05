@@ -73,11 +73,11 @@ class Console
      * Return the string representation of a 2-dimensional data table.
      *
      * @param array[] $table
-     * @param float $columnSize
+     * @param int $columnSize
      *
      * @return string
      */
-    public static function table(array $table, float $columnSize) : string
+    public static function table(array $table, int $columnSize) : string
     {
         $implodeRowCallback = static function (string $carry, array $row) use ($columnSize) {
             $border = str_repeat(str_repeat('-', $columnSize - 1), count($row)) . '-';
