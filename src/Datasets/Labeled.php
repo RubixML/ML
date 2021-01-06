@@ -1106,8 +1106,8 @@ class Labeled extends Dataset
         }
 
         array_unshift($table, $header);
-        $columnSize = (int) floor($tCols) / count($table[0]);
+        $columnWidth = (int) floor($tCols) / count($table[0]);
 
-        return Console::table($table, $columnSize);
+        return Console::table($table, $columnWidth);
     }
 }

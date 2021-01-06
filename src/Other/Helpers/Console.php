@@ -73,26 +73,27 @@ class Console
      * Return the string representation of a 2-dimensional data table.
      *
      * @param array[] $table
-     * @param int $columnSize
+     * @param int $columnWidth
      *
      * @return string
      */
-    public static function table(array $table, int $columnSize) : string
+    public static function table(array $table, int $columnWidth) : string
     {
-        $implodeRowCallback = static function (string $carry, array $row) use ($columnSize) {
-            $border = str_repeat(str_repeat('-', $columnSize - 1), count($row)) . '-';
+        $output = '';
 
-            $formatCellCallback = static function (string $carry, string $value) use ($columnSize) {
-                $value = str_pad(substr($value, 0, $columnSize - 4), $columnSize - 4);
+        foreach ($table as $row) {
+            $border = str_repeat(str_repeat('-', $columnWidth - 1), count($row)) . '-';
 
-                return $carry . self::TABLE_CELL_PREFIX . $value . self::TABLE_CELL_SUFFIX;
-            };
+            $lineString = '';
 
-            $temp = array_reduce(array_map('strval', $row), $formatCellCallback, '');
+            foreach (array_map('strval', $row) as $value) {
+                $value = str_pad(substr($value, 0, $columnWidth - 4), $columnWidth - 4);
 
-            return $carry . PHP_EOL . $temp . '|' . PHP_EOL . $border;
-        };
+                $lineString .= self::TABLE_CELL_PREFIX . $value . self::TABLE_CELL_SUFFIX;
+            }
+            $output .= PHP_EOL . $lineString . '|' . PHP_EOL . $border;
+        }
 
-        return array_reduce($table, $implodeRowCallback, '') . PHP_EOL;
+        return $output . PHP_EOL;
     }
 }
