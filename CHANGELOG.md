@@ -1,3 +1,6 @@
+- 0.3.1
+    - Fix CART feature importances with purity decrease
+
 - 0.3.0
     - Added K Best feature selector
     - Added Flysystem 2.0 Persister

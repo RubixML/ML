@@ -322,7 +322,7 @@ abstract class CART implements IteratorAggregate
 
         foreach ($this as $node) {
             if ($node instanceof Comparison) {
-                $importances[$node->column()] += exp($node->purityIncrease());
+                $importances[$node->column()] += $node->purityIncrease();
             }
         }
 
