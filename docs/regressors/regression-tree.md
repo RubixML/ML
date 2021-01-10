@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/RegressionTree.php">[source]</a></span>
 
 # Regression Tree
 A decision tree based on the CART (*Classification and Regression Tree*) learning algorithm that performs greedy splitting by minimizing the variance of the labels at each node split. Regression Trees can be used on their own or as the booster in algorithms such as [Gradient Boost](gradient-boost.md).

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/FuzzyCMeans.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Clusterers/FuzzyCMeans.php">[source]</a></span>
 
 # Fuzzy C Means
 A distance-based soft-clustering algorithm that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the fuzz hyper-parameter. Like [K Means](k-means.md), Fuzzy C Means minimizes the inertia cost function, however, unlike K Means, FCM uses a batch solver that requires the entire training set to compute the update to the cluster centroids at each step.

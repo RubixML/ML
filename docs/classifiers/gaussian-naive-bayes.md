@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/GaussianNB.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/GaussianNB.php">[source]</a></span>
 
 # Gaussian Naive Bayes
 Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifier for continuous features. It places a probability density function (PDF) over the features conditioned on a class basis and uses Bayes' Theorem to derive the final probabilities. In addition to the naive feature independence assumption, Gaussian Naive Bayes also assumes that all features are normally (Gaussian) distributed.

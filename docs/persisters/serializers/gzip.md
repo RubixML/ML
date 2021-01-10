@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Gzip.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Serializers/Gzip.php">[source]</a></span>
 
 # Gzip
 A compression format based on the DEFLATE algorithm with a header and CRC32 checksum, the Gzip serializer outputs smaller model files at the cost of a bit more processing during serialization and deserialization. In addition, the Gzip serializer can be applied to any other non-compressed serialization format by changing the base serializer.

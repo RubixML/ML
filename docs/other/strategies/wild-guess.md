@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/WildGuess.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Other/Strategies/WildGuess.php">[source]</a></span>
 
 # Wild Guess
 Guess a random number somewhere between the minimum and maximum computed by fitting a collection of values.

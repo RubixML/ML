@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RadiusNeighbors.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/RadiusNeighbors.php">[source]</a></span>
 
 # Radius Neighbors
 Radius Neighbors is a classifier that takes the distance-weighted vote of each neighbor within a cluster of a fixed user-defined radius to make a prediction. Since the radius of the search can be constrained, Radius Neighbors is more robust to outliers than [K Nearest Neighbors](k-nearest-neighbors.md). In addition, Radius Neighbors acts as a quasi-anomaly detector by flagging samples that have 0 neighbors within the search radius.

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/KNearestNeighbors.php">[source]</a></span>
 
 # K Nearest Neighbors
 A brute-force distance-based learning algorithm that locates the *k* nearest samples from the training set and predicts the class label that is most common. K Nearest Neighbors (KNN) is considered a *lazy* learner because it performs most of its computation at inference time.

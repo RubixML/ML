@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/WhitespaceTrimmer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/WhitespaceTrimmer.php">[source]</a></span>
 
 # Whitespace Trimmer
 Trims extra whitespace from all strings in the dataset.

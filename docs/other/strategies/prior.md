@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Prior.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Other/Strategies/Prior.php">[source]</a></span>
 
 # Prior
 A strategy where the probability of guessing a class is equal to the class's prior probability.

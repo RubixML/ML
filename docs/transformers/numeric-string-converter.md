@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/NumericStringConverter.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/NumericStringConverter.php">[source]</a></span>
 
 # Numeric String Converter
 Convert all numeric strings to their equivalent integer and floating point types. Useful for when extracting from a source that only recognizes data as string types such as CSV.

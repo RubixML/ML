@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/Blob.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Blob.php">[source]</a></span>
 
 # Blob
 A normally distributed (Gaussian) n-dimensional blob of samples centered at a given vector. The standard deviation can be set for the whole blob or for each feature column independently. When a global standard deviation is used, the resulting blob will be isotropic and will converge asymptotically to a sphere.

@@ -28,7 +28,7 @@
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/RubixML/RubixML/graphs/contributors"
+            "homepage": "https://github.com/RubixML/ML/graphs/contributors"
         }
     ],
     "require": {
@@ -106,8 +106,8 @@
     ],
     "support": {
         "docs": "https://docs.rubixml.com/en/latest",
-        "issues": "https://github.com/RubixML/RubixML/issues",
-        "source": "https://github.com/RubixML/RubixML",
+        "issues": "https://github.com/RubixML/ML/issues",
+        "source": "https://github.com/RubixML/ML",
         "chat": "https://t.me/RubixML",
         "email": "support@rubixml.com"
     }

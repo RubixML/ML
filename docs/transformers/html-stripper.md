@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/HTMLStripper.php">[source]</a></span>
 
 # HTML Stripper
 Removes any HTML or PHP tags from the text of a feature column.

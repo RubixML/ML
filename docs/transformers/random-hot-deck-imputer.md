@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/RandomHotDeckImputer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RandomHotDeckImputer.php">[source]</a></span>
 
 # Random Hot Deck Imputer
 A *hot deck* is a set of complete donor samples that may be referenced when imputing a value for a missing feature value. Random Hot Deck Imputer first finds the k nearest donors to a sample that contains a missing value and then chooses a value at random from the neighborhood.

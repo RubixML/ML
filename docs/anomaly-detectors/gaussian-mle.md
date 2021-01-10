@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/GaussianMLE.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/AnomalyDetectors/GaussianMLE.php">[source]</a></span>
 
 # Gaussian MLE
 The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing a probability density function (PDF) over the features assuming they are independently and normally (Gaussian) distributed. Samples that are assigned low probability density are more likely to be outliers.

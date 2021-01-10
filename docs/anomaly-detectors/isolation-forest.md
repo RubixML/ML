@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/IsolationForest.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/AnomalyDetectors/IsolationForest.php">[source]</a></span>
 
 # Isolation Forest
 An ensemble of Isolation Trees that each specialize on a unique subset of the training set. Isolation Trees are a type of randomized decision tree that assign anomaly scores based on the depth a sample reaches when traversing the tree. Based on the premise that anomalies are isolated into their own nodes sooner, samples that receive high anomaly scores achieve the shallowest depth during traversal.

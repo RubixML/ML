@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/NaiveBayes.php">[source]</a></span>
 
 # Naive Bayes
 Categorical Naive Bayes is a probability-based classifier that uses counting and Bayes' Theorem to derive the probabilities of a class given a sample of categorical features. The term *naive* refers to the fact that Naive Bayes treats each feature as if it was independent of the others even though this is usually not the case in real life.

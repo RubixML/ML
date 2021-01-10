@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/HalfMoon.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/HalfMoon.php">[source]</a></span>
 
 # Half Moon
 Generates a dataset consisting of 2-d samples that form the shape of a half moon when plotted on a scatter plot chart.

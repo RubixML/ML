@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/StopWordFilter.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/StopWordFilter.php">[source]</a></span>
 
 # Stop Word Filter
 Removes user-specified words from any categorical feature columns including blobs of text.

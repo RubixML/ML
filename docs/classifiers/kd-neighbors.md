@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KDNeighbors.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/KDNeighbors.php">[source]</a></span>
 
 # K-d Neighbors
 A fast K Nearest Neighbors algorithm that uses a binary search tree (BST) to divide the training set into *neighborhoods* that contain samples that are close together spatially. K-d Neighbors then does a binary search to locate the nearest neighborhood of an unknown sample and prunes all neighborhoods whose bounding box is further than the *k*'th nearest neighbor found so far. The main advantage of K-d Neighbors over brute force [KNN](k-nearest-neighbors.md) is that it is much more efficient, however it cannot be partially trained.

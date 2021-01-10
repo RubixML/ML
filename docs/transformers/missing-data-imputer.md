@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MissingDataImputer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/MissingDataImputer.php">[source]</a></span>
 
 # Missing Data Imputer
 Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categorical values (denoted by special placeholder category such as `'?'`) with a guess based on user-defined Strategy.

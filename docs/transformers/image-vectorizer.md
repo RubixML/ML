@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/ImageVectorizer.php">[source]</a></span>
 
 # Image Vectorizer
 Image Vectorizer takes images of the same size and converts them into flat feature vectors of raw color channel intensities. Intensities range from 0 to 255 and can either be read from 1 channel (grayscale) or 3 channels (RGB color) per pixel.

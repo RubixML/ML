@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Filesystem.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Filesystem.php">[source]</a></span>
 
 # Filesystem
 Filesystems are local or remote storage drives that are organized by files and folders. The Filesystem persister saves models to a file at a given path and can automatically keep a history of past saved models.

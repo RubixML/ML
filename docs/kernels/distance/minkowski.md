@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Minkowski.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Kernels/Distance/Minkowski.php">[source]</a></span>
 
 # Minkowski
 The Minkowski distance can be considered as a generalization of both the [Euclidean](euclidean.md) and [Manhattan](manhattan.md) distances. When the lambda parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/SoftPlus.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/SoftPlus.php">[source]</a></span>
 
 # Soft Plus
 A smooth approximation of the piecewise linear [ReLU](relu.md) activation function.

@@ -2,7 +2,7 @@ site_name: 'Rubix ML: Machine Learning for PHP'
 
 theme: readthedocs
 
-repo_url: https://github.com/RubixML/RubixML
+repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
 site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 

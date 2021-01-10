@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/LinearDiscriminantAnalysis.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/LinearDiscriminantAnalysis.php">[source]</a></span>
 
 # Linear Discriminant Analysis
 Linear Discriminant Analysis (LDA) is a supervised dimensionality reduction technique that selects the most informative features using information in the class labels. More formally, LDA finds a linear combination of features that characterizes or best *discriminates* two or more classes.

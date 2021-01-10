@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RandomForest.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/RandomForest.php">[source]</a></span>
 
 # Random Forest
 Random Forest (RF) is a classifier that trains an ensemble of Decision Trees ([Classification Trees](classification-tree.md) or [Extra Trees](extra-tree-classifier.md)) on random subsets (*bootstrap* set) of the training data. Predictions are based on the probability scores returned from each tree in the ensemble, averaged and weighted equally. In addition to reliable predictions, Random Forest also returns reliable feature importance scores making it suitable for feature selection.

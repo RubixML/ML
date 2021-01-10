@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/VarianceThresholdFilter.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/VarianceThresholdFilter.php">[source]</a></span>
 
 # Variance Threshold Filter
 A type of feature selector that selects the top *k* features with the greatest variance.

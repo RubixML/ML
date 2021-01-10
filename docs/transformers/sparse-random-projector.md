@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/SparseRandomProjector.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/SparseRandomProjector.php">[source]</a></span>
 
 # Sparse Random Projector
 A *database-friendly* random projector that samples its random projection matrix from a sparse probabilistic approximation of the Gaussian distribution. The term *database-friendly* refers to the fact that the number of non-zero operations required to transform the input matrix is reduced by the sparsity factor.

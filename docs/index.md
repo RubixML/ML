@@ -62,7 +62,7 @@ Rubix ML is funded by donations from the community. You can become a sponsor by 
 - [Github Sponsors](https://github.com/sponsors/RubixML)
 
 ## Contributing
-See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](https://github.com/RubixML/ML/blob/master/CONTRIBUTING.md) for guidelines.
 
 ## License
-The code is licensed [MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+The code is licensed [MIT](https://github.com/RubixML/ML/blob/master/LICENSE.md) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

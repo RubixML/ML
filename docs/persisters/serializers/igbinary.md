@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Igbinary.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Serializers/Igbinary.php">[source]</a></span>
 
 # Igbinary
 Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP serializer.

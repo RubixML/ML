@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
 
 # Gradient Boost
 Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set. GBM also utilizes progress monitoring via an internal validation set for snapshotting and early stopping.

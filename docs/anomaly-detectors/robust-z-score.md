@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/AnomalyDetectors/RobustZScore.php">[source]</a></span>
 
 # Robust Z-Score
 A statistical anomaly detector that uses modified Z-Scores that are robust to preexisting outliers in the training set. The modified Z-Score is defined as the feature value minus the median over the median absolute deviation (MAD). Anomalies are flagged if their final weighted Z-Score exceeds a user-defined threshold.

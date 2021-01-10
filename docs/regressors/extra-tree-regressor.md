@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/ExtraTreeRegressor.php">[source]</a></span>
 
 # Extra Tree Regressor
 *Extremely Randomized* Regression Trees differ from standard [Regression Trees](regression-tree.md) in that they choose candidate splits at random rather than searching the entire feature column for the best value to split on. Extra Trees are also faster to build and their predictions have higher variance than a regular decision tree regressor.

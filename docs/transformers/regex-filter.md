@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/RegexFilter.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RegexFilter.php">[source]</a></span>
 
 # Regex Filter
 Filters the text columns of a dataset by matching a list of regular expressions.

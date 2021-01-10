@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Graph/Trees/KDTree.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Graph/Trees/KDTree.php">[source]</a></span>
 
 # K-d Tree
 A multi-dimensional binary spatial tree for fast nearest neighbor queries. The K-d tree construction algorithm separates data points into bounded hypercubes or *boxes* that are used to determine which branches to prune off during nearest neighbor and range searches enabling them to complete in sub-linear time.

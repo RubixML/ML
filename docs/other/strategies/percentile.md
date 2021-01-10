@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Percentile.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Other/Strategies/Percentile.php">[source]</a></span>
 
 # Blurry Percentile
 A strategy that always guesses the p-th percentile of the fitted data.

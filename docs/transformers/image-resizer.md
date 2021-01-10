@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/ImageResizer.php">[source]</a></span>
 
 # Image Resizer
 Image Resizer fits (scales and crops) images to a user-specified width and height that preserves aspect ratio.

@@ -155,4 +155,4 @@ Now we can write the dataset to a CSV file and import it into our favorite plott
 $dataset->toCSV(['x', 'y', 'label'])->write('half-moon.csv');
 ```
 
-![Half Moon Dataset Scatterplot](https://github.com/RubixML/RubixML/blob/master/docs/img/half-moon-scatterplot.png?raw=true)
+![Half Moon Dataset Scatterplot](https://github.com/RubixML/ML/blob/master/docs/img/half-moon-scatterplot.png?raw=true)

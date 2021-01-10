@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Sigmoidal.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Kernels/SVM/Sigmoidal.php">[source]</a></span>
 
 # Sigmoidal
 S shaped nonliearity kernel with output values ranging from -1 to 1.

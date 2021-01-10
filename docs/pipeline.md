@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Pipeline.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Pipeline.php">[source]</a></span>
 
 # Pipeline
 Pipeline is a meta-estimator capable of transforming an input dataset by applying a series of [Transformer](transformers/api.md) *middleware*. Under the hood, Pipeline will automatically fit the training set and transform any [Dataset](datasets/api.md) object supplied as an argument to one of the base estimator's methods before reaching the method context. With *elastic* mode enabled, Pipeline will update the fitting of [Elastic](transformers/api.md#elastic) transformers during partial training.

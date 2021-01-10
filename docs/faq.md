@@ -53,7 +53,7 @@ Not currently, but we may in the future.
 Yes and no. Currently, the library treats time series data like any other continuous feature. In the future, we may add algorithms that work specifically with a separate time component.
 
 ## How can I contribute to the project?
-Anyone is welcome to contribute to Rubix ML. See the [CONTRIBUTING](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) guide in the project root for more info.
+Anyone is welcome to contribute to Rubix ML. See the [CONTRIBUTING](https://github.com/RubixML/ML/blob/master/CONTRIBUTING.md) guide in the project root for more info.
 
 ## How can I become a sponsor?
 Check out our funding sources [here](index.md#funding) and consider donating to the cause.

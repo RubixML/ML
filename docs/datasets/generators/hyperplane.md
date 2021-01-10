@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/Hyperplane.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Hyperplane.php">[source]</a></span>
 
 # Hyperplane
 Generates a labeled dataset whose samples form a hyperplane in n-dimensional vector space and whose labels are continuous values drawn from a uniform random distribution between -1 and 1. When the number of coefficients is either 1, 2 or 3, the samples form points, lines, and planes respectively. Due to its linearity, Hyperplane is especially useful for testing linear regression models.

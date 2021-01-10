@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/KNNImputer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/KNNImputer.php">[source]</a></span>
 
 # KNN Imputer
 An unsupervised imputer that replaces missing values in a dataset with the distance-weighted average of the samples' *k* nearest neighbors' values. The average for a continuous feature column is defined as the mean of the values of each donor. Similarly, average is defined as the *most frequent* value for categorical features.

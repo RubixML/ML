@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Extractors/ColumnPicker.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Extractors/ColumnPicker.php">[source]</a></span>
 
 # Column Picker
 An extractor that wraps another iterator and selects and reorders the columns of the data table according to the keys specified by the user. The key of a column may either be a string or a column number (integer) depending on the way the columns are indexed in the base iterator.

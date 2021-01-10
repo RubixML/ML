@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/DenseRandomProjector.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/DenseRandomProjector.php">[source]</a></span>
 
 # Dense Random Projector
 A *database-friendly* random projector with projection matrix sampled from a dense uniform distribution ([-1, 1]).
