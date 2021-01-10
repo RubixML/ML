@@ -419,8 +419,9 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Partition the dataset into left and right subsets based on the samples' distances
-     * from two centroids.
+     * Partition the dataset into left and right subsets based on the samples' distances from two centroids.
+     *
+     * @internal
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
