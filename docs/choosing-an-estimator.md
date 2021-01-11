@@ -31,7 +31,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position in units of degrees. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, a regressor's range is unbounded - meaning, the number of possible values a regressor *could* predict is infinite.
 
 | Regressor | Flexibility | Online | RF | Verbose | Data Compatibility |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | ● | ● | Continuous |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | ● | | Categorical, Continuous |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | ● | Categorical, Continuous |
