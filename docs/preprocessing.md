@@ -48,28 +48,36 @@ $transformer->update($dataset);
 ```
 
 ## Transform a Single Column
-Sometimes, we might just want to transform a single column of the dataset. In the example below we use the `transformColumn()` method on the dataset to log transform a specified column.
+Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it a callback function to apply to each value in the column.
 
 ```php
 $dataset->transformColumn(6, 'log1p');
 ```
 
+In the next example, we'll convert the `null` values of another column to a special placeholder class `?`.
+
+```php
+$dataset->transformColumn(9, function ($value) {
+    return $value === null ? '?' : $value;
+});
+```
+
 ## Standardization and Normalization
 Oftentimes, the continuous features of a dataset will be on different scales because they were measured by different methods. For example, age (0 - 100) and income (0 - 9,999,999) are on two widely different scales. Standardization is the processes of transforming a dataset such that the features are all on one common scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns or the rows of the dataset.
 
-| Transformer | Operates On | Range | Stateful | Elastic |
+| Transformer | Operates | Output Range | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|---|
-| [L1 Normalizer](transformers/l1-normalizer.md) | Rows | [0, 1] | | |
-| [L2 Normalizer](transformers/l2-normalizer.md) | Rows | [0, 1] | | |
-| [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Columns | [-1, 1] | ● | ● |
-| [Min Max Normalizer](transformers/min-max-normalizer.md) | Columns | [min, max] | ● | ● |
-| [Robust Standardizer](transformers/robust-standardizer.md) | Columns | [-∞, ∞] | ● | |
-| [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Columns | [-∞, ∞] | ● | ● |
+| [L1 Normalizer](transformers/l1-normalizer.md) | Row-wise | [0, 1] | | |
+| [L2 Normalizer](transformers/l2-normalizer.md) | Row-wise | [0, 1] | | |
+| [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Column-wise | [-1, 1] | ● | ● |
+| [Min Max Normalizer](transformers/min-max-normalizer.md) | Column-wise | [min, max] | ● | ● |
+| [Robust Standardizer](transformers/robust-standardizer.md) | Column-wise | [-∞, ∞] | ● | |
+| [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Column-wise | [-∞, ∞] | ● | ● |
 
 ## Feature Conversion
 Feature converters are transformers that convert feature columns of one data type to another by changing their representation.
 
-| Transformer | From | To | Stateful | Elastic |
+| Transformer | From | To | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|---|
 | [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
@@ -78,7 +86,7 @@ Feature converters are transformers that convert feature columns of one data typ
 ## Dimensionality Reduction
 Dimensionality reduction is a preprocessing technique for embedding a dataset into a lower dimensional vector space. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
 
-| Transformer | Supervised | Stateful | Elastic |
+| Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
 | [Gaussian Random Projector](transformers/gaussian-random-projector.md) | | ● | |
 | [Linear Discriminant Analysis](transformers/linear-discriminant-analysis.md) | ● | ● | |
@@ -88,7 +96,7 @@ Dimensionality reduction is a preprocessing technique for embedding a dataset in
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
 
-| Transformer | Supervised | Stateful | Elastic |
+| Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
 | [K Best Feature Selector](transformers/k-best-feature-selector.md) | ● | ● | |
 | [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
@@ -96,16 +104,16 @@ Similarly to dimensionality reduction, feature selection aims to reduce the numb
 ## Imputation
 A technique for handling missing values in your dataset is a preprocessing step called *imputation*. Imputation is the process of replacing missing values with a pretty good guess.
 
-| Transformer | Continuous | Categorical | Stateful | Elastic |
-|---|---|---|---|---|
-| [KNN Imputer](transformers/knn-imputer.md) | ● | ● | ● | |
-| [Missing Data Imputer](transformers/missing-data-imputer.md) | ● | ● | ● | |
-| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | ● | ● | ● | |
+| Transformer | Data Compatibility | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+|---|---|---|---|
+| [KNN Imputer](transformers/knn-imputer.md) | Depends on distance kernel | ● | |
+| [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | ● | |
+| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | Depends on distance kernel | ● | |
 
 ## Text Transformers
-The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) such as those for text cleaning, normalization, and feature extraction from raw text blobs.
+The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) tasks such as those for text cleaning, normalization, and feature extraction from raw text blobs.
 
-| Transformer | Stateful | Elastic |
+| Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|
 | [HTML Stripper](transformers/html-stripper.md) | | |
 | [Regex Filter](transformers/regex-filter.md) | | |
@@ -117,15 +125,15 @@ The library provides a number of transformers for natural language processing (N
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | ● | |
 
 ## Image Transformers
-Since image have their own high-level data type, they can be preprocessed in a dataset by applying any number of image transformers.
+These transformers operate on the high-level image data type.
 
-| Transformer | Stateful | Elastic |
+| Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
 ## Transformer Pipelines
-[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, it will automatically be fitted and/or transformed before it arrives in the learner's context.
+[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations applied to the input dataset of an estimator. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load the transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, depending on the operation, it will automatically be fitted and/or transformed before it arrives in the estimator's context.
 
 Let's apply the same 3 transformers as in the example above by passing the transformer instances in the order we want them applied along with a base estimator to the constructor of Pipeline like in the example below.
 

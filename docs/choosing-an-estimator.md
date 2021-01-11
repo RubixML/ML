@@ -44,7 +44,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [SVR](regressors/svr.md) | High | | | | Continuous |
 
 ## Clusterers
-Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset. Clusterers that implement the [Probabilistic](probabilistic.md) interface can also output the probabilities that a sample belongs to a particular cluster.
+Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset.
 
 | Clusterer | Flexibility | [Proba](probabilistic.md) | [Online](online.md) | [Verbose](verbose.md) | Data Compatibility |
 |---|---|---|---|---|---|
@@ -67,7 +67,7 @@ Anomaly Detectors are unsupervised learners that predict whether a sample should
 | [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | | Continuous  |
 
 ## Model Flexibility Tradeoff
-A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, inflexible models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model for your project that does not underfit the training data.
+A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, low flexibility models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model that does not underfit the training data for your project.
 
 ## Meta-estimator Ensembles
 Ensemble learning is when multiple estimators are used together to make the final prediction on a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
