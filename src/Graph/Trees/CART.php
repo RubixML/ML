@@ -380,7 +380,7 @@ abstract class CART implements IteratorAggregate
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Outcome
      */
-    abstract protected function terminate(Labeled $dataset) : Outcome;
+    abstract protected function terminate(Labeled $dataset);
 
     /**
      * Compute the impurity of a labeled dataset.
