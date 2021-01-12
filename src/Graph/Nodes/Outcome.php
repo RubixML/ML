@@ -13,7 +13,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Outcome extends Decision, BinaryNode, Stringable
+interface Outcome extends Decision, Stringable
 {
     //
 }
