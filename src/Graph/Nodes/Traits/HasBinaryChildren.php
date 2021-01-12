@@ -8,8 +8,7 @@ use Traversable;
 /**
  * Binary Children
  *
- * A node of a binary tree i.e a tree whose nodes have a maximum of two immediate children
- * and one parent.
+ * A node of a binary tree i.e a tree whose nodes have a maximum of two immediate children.
  *
  * @internal
  *

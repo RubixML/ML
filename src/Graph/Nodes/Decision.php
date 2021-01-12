@@ -14,14 +14,14 @@ namespace Rubix\ML\Graph\Nodes;
 interface Decision extends BinaryNode
 {
     /**
-     * Return the impurity score as a result of the decision.
+     * Return the impurity of the labels as a result of the decision.
      *
      * @return float
      */
     public function impurity() : float;
 
     /**
-     * Return the number of samples from the training set that this node represents.
+     * Return the number of samples that are represented in the subtree stemming from this node.
      *
      * @return int
      */

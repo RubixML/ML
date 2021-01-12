@@ -40,7 +40,7 @@ class Isolator implements BinaryNode
     /**
      * The left and right splits of the training data.
      *
-     * @var array{Dataset,Dataset}
+     * @var array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
     protected $groups;
 
@@ -109,7 +109,7 @@ class Isolator implements BinaryNode
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array{Dataset,Dataset}
+     * @return array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
     public function groups() : array
     {

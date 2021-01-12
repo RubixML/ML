@@ -20,7 +20,7 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Clique implements BinaryNode, Hypersphere, Leaf
+class Clique implements BinaryNode, Hypersphere
 {
     use HasBinaryChildren;
 

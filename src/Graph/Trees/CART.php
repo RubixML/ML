@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -16,6 +16,7 @@ use Generator;
 
 use function array_slice;
 use function is_string;
+use function is_int;
 use function is_null;
 
 use const Rubix\ML\EPSILON;
@@ -45,7 +46,7 @@ abstract class CART implements IteratorAggregate
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Comparison|null
+     * @var \Rubix\ML\Graph\Nodes\Split|null
      */
     protected $root;
 
@@ -97,13 +98,6 @@ abstract class CART implements IteratorAggregate
      * @var \Rubix\ML\DataType[]
      */
     protected $types = [];
-
-    /**
-     * The memorized column offsets of the dataset.
-     *
-     * @var int[]
-     */
-    protected $columns = [];
 
     /**
      * @internal
@@ -199,8 +193,6 @@ abstract class CART implements IteratorAggregate
 
         $this->types = $dataset->columnTypes();
 
-        $this->columns = array_keys($this->types);
-
         $this->root = $this->split($dataset);
 
         $stack = [[$this->root, 1]];
@@ -244,25 +236,25 @@ abstract class CART implements IteratorAggregate
             $current->attachRight($rightNode);
 
             if ($current->purityIncrease() >= $this->minPurityIncrease) {
-                if ($leftNode instanceof Comparison) {
+                if ($leftNode instanceof Split) {
                     $stack[] = [$leftNode, $depth];
                 }
 
-                if ($rightNode instanceof Comparison) {
+                if ($rightNode instanceof Split) {
                     $stack[] = [$rightNode, $depth];
                 }
             } else {
-                if ($leftNode instanceof Comparison) {
+                if ($leftNode instanceof Split) {
                     $current->attachLeft($this->terminate($left));
                 }
 
-                if ($rightNode instanceof Comparison) {
+                if ($rightNode instanceof Split) {
                     $current->attachRight($this->terminate($right));
                 }
             }
         }
 
-        $this->types = $this->columns = [];
+        unset($this->types);
     }
 
     /**
@@ -278,7 +270,7 @@ abstract class CART implements IteratorAggregate
         $current = $this->root;
 
         while ($current) {
-            if ($current instanceof Comparison) {
+            if ($current instanceof Split) {
                 $value = $current->value();
 
                 if (is_string($value)) {
@@ -321,7 +313,7 @@ abstract class CART implements IteratorAggregate
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this as $node) {
-            if ($node instanceof Comparison) {
+            if ($node instanceof Split) {
                 $importances[$node->column()] += $node->purityIncrease();
             }
         }
@@ -363,8 +355,7 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Return a generator for all the nodes in the tree starting at the root and traversing
-     * depth first.
+     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
      *
      * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
      */
@@ -384,12 +375,12 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Terminate a branch with a leaf node.
+     * Terminate a branch with an outcome node.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Outcome
      */
-    abstract protected function terminate(Labeled $dataset) : Outcome;
+    abstract protected function terminate(Labeled $dataset);
 
     /**
      * Compute the impurity of a labeled dataset.
@@ -403,25 +394,27 @@ abstract class CART implements IteratorAggregate
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Split
      */
-    protected function split(Labeled $dataset) : Comparison
+    protected function split(Labeled $dataset) : Split
     {
+        $columns = array_keys($this->types ?? []);
+
+        shuffle($columns);
+
+        $columns = array_slice($columns, 0, $this->maxFeatures);
+
         $n = $dataset->numRows();
 
-        shuffle($this->columns);
-
-        $columns = array_slice($this->columns, 0, $this->maxFeatures);
-
+        $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
-        $bestColumn = 0;
-        $bestValue = null;
-        $bestGroups = [];
 
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($this->types[$column]->isContinuous()) {
+            $type = $this->types[$column];
+
+            if ($type->isContinuous()) {
                 if (!isset($q)) {
                     $step = 1.0 / max(2.0, sqrt($n));
 
@@ -445,13 +438,17 @@ abstract class CART implements IteratorAggregate
                     $bestImpurity = $impurity;
                 }
 
-                if ($impurity === 0.0) {
+                if ($impurity <= 0.0) {
                     break 2;
                 }
             }
         }
 
-        return new Comparison(
+        if (!is_int($bestColumn) or $bestValue === null or $bestGroups === null) {
+            throw new RuntimeException('Could not split dataset.');
+        }
+
+        return new Split(
             $bestColumn,
             $bestValue,
             $bestGroups,
@@ -463,7 +460,7 @@ abstract class CART implements IteratorAggregate
     /**
      * Calculate the impurity of a given split.
      *
-     * @param \Rubix\ML\Datasets\Labeled[] $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
      * @param int $n
      * @return float
      */
@@ -485,8 +482,7 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
+     * Recursive function to print out the decision rule at each node using preorder traversal.
      *
      * @param string $carry
      * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
@@ -499,7 +495,7 @@ abstract class CART implements IteratorAggregate
 
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
-        if ($node instanceof Comparison) {
+        if ($node instanceof Split) {
             $left = $node->left();
             $right = $node->right();
 

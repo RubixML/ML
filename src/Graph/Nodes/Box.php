@@ -41,7 +41,7 @@ class Box implements BinaryNode, Hypercube
     /**
      * The left and right splits of the training data.
      *
-     * @var array{Labeled,Labeled}
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     protected $groups;
 
@@ -125,7 +125,7 @@ class Box implements BinaryNode, Hypercube
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array{Labeled,Labeled}
+     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     public function groups() : array
     {

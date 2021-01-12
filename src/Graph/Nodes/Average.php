@@ -15,7 +15,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Average implements Outcome, Leaf
+class Average implements Outcome
 {
     use HasBinaryChildren;
 

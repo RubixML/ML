@@ -18,7 +18,7 @@ use Traversable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood implements BinaryNode, Hypercube, Leaf
+class Neighborhood implements BinaryNode, Hypercube
 {
     use HasBinaryChildren;
 

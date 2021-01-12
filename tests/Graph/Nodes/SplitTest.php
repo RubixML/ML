@@ -5,15 +5,15 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Comparison
+ * @covers \Rubix\ML\Graph\Nodes\Split
  */
-class ComparisonTest extends TestCase
+class SplitTest extends TestCase
 {
     protected const COLUMN = 1;
 
@@ -31,7 +31,7 @@ class ComparisonTest extends TestCase
     protected const N = 4;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Comparison
+     * @var \Rubix\ML\Graph\Nodes\Split
      */
     protected $node;
 
@@ -45,7 +45,7 @@ class ComparisonTest extends TestCase
             Labeled::quick(self::SAMPLES, self::LABELS),
         ];
 
-        $this->node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY, self::N);
+        $this->node = new Split(self::COLUMN, self::VALUE, $groups, self::IMPURITY, self::N);
     }
 
     /**
@@ -53,7 +53,7 @@ class ComparisonTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Comparison::class, $this->node);
+        $this->assertInstanceOf(Split::class, $this->node);
         $this->assertInstanceOf(Decision::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
@@ -101,8 +101,8 @@ class ComparisonTest extends TestCase
      */
     public function purityIncrease() : void
     {
-        $this->node->attachLeft(new Comparison(2, 0.0, [], 50.0, 1));
-        $this->node->attachRight(new Comparison(4, -12.0, [], 200.0, 3));
+        $this->node->attachLeft(new Split(2, 0.0, [Labeled::quick(), Labeled::quick()], 50.0, 1));
+        $this->node->attachRight(new Split(4, -12.0, [Labeled::quick(), Labeled::quick()], 200.0, 3));
 
         $this->assertSame(237.5, $this->node->purityIncrease());
     }

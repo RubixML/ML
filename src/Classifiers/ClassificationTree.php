@@ -13,7 +13,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
@@ -161,11 +160,10 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Best $node */
             $node = $this->search($sample);
 
-            $predictions[] = $node instanceof Best
-                ? $node->outcome()
-                : '?';
+            $predictions[] = $node->outcome();
         }
 
         return $predictions;
@@ -189,11 +187,10 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $probabilities = [];
 
         foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Best $node */
             $node = $this->search($sample);
 
-            $probabilities[] = $node instanceof Best
-                ? array_replace($this->classes, $node->probabilities()) ?? []
-                : [];
+            $probabilities[] = array_replace($this->classes, $node->probabilities()) ?? [];
         }
 
         return $probabilities;
@@ -204,9 +201,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * probability.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Outcome
+     * @return \Rubix\ML\Graph\Nodes\Best
      */
-    protected function terminate(Labeled $dataset) : Outcome
+    protected function terminate(Labeled $dataset) : Best
     {
         $n = $dataset->numRows();
 

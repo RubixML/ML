@@ -19,7 +19,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Depth implements BinaryNode, Leaf
+class Depth implements BinaryNode
 {
     use HasBinaryChildren;
 
