@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -16,6 +16,7 @@ use Generator;
 
 use function array_slice;
 use function is_string;
+use function is_int;
 use function is_null;
 
 use const Rubix\ML\EPSILON;
@@ -397,13 +398,13 @@ abstract class CART implements IteratorAggregate
      */
     protected function split(Labeled $dataset) : Split
     {
-        $n = $dataset->numRows();
-
         $columns = array_keys($this->types);
 
         shuffle($columns);
 
         $columns = array_slice($columns, 0, $this->maxFeatures);
+
+        $n = $dataset->numRows();
 
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
@@ -416,7 +417,7 @@ abstract class CART implements IteratorAggregate
             if ($type->isContinuous()) {
                 if (!isset($q)) {
                     $step = 1.0 / max(2.0, sqrt($n));
-            
+
                     $q = array_slice(range(0.0, 1.0, $step), 1, -1);
                 }
 
@@ -431,7 +432,10 @@ abstract class CART implements IteratorAggregate
                 $impurity = $this->splitImpurity($groups, $n);
 
                 if ($impurity < $bestImpurity) {
-                    $node = new Split($column, $value, $groups, $impurity, $n);
+                    $bestColumn = $column;
+                    $bestValue = $value;
+                    $bestGroups = $groups;
+                    $bestImpurity = $impurity;
                 }
 
                 if ($impurity <= 0.0) {
@@ -440,17 +444,23 @@ abstract class CART implements IteratorAggregate
             }
         }
 
-        if (!isset($node)) {
-            throw new RuntimeException('Unable to split dataset.');
+        if (!is_int($bestColumn) or $bestValue === null or $bestGroups === null) {
+            throw new RuntimeException('Could not split dataset.');
         }
 
-        return $node;
+        return new Split(
+            $bestColumn,
+            $bestValue,
+            $bestGroups,
+            $bestImpurity,
+            $n
+        );
     }
 
     /**
      * Calculate the impurity of a given split.
      *
-     * @param \Rubix\ML\Datasets\Labeled[] $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
      * @param int $n
      * @return float
      */
@@ -472,8 +482,7 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
+     * Recursive function to print out the decision rule at each node using preorder traversal.
      *
      * @param string $carry
      * @param \Rubix\ML\Graph\Nodes\BinaryNode $node

@@ -7,6 +7,7 @@ use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_slice;
+use function is_int;
 
 use const Rubix\ML\PHI;
 
@@ -30,14 +31,15 @@ abstract class ExtraTree extends CART
      */
     protected function split(Labeled $dataset) : Split
     {
-        $n = $dataset->numRows();
-
         $columns = array_keys($this->types);
 
         shuffle($columns);
 
         $columns = array_slice($columns, 0, $this->maxFeatures);
 
+        $n = $dataset->numRows();
+
+        $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
 
         foreach ($columns as $column) {
@@ -61,7 +63,10 @@ abstract class ExtraTree extends CART
             $impurity = $this->splitImpurity($groups, $n);
 
             if ($impurity < $bestImpurity) {
-                $node = new Split($column, $value, $groups, $impurity, $n);
+                $bestColumn = $column;
+                $bestValue = $value;
+                $bestGroups = $groups;
+                $bestImpurity = $impurity;
             }
 
             if ($impurity <= 0.0) {
@@ -69,10 +74,16 @@ abstract class ExtraTree extends CART
             }
         }
 
-        if (!isset($node)) {
-            throw new RuntimeException('Unable to split dataset.');
+        if (!is_int($bestColumn) or $bestValue === null or $bestGroups === null) {
+            throw new RuntimeException('Could not split dataset.');
         }
 
-        return $node;
+        return new Split(
+            $bestColumn,
+            $bestValue,
+            $bestGroups,
+            $bestImpurity,
+            $n
+        );
     }
 }

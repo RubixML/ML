@@ -94,7 +94,7 @@ class Split implements Decision
     /**
      * Return the left and right splits of the training data.
      *
-     * @return \Rubix\ML\Datasets\Labeled[]
+     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     public function groups() : array
     {

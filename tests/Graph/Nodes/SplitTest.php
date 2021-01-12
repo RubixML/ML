@@ -101,8 +101,8 @@ class SplitTest extends TestCase
      */
     public function purityIncrease() : void
     {
-        $this->node->attachLeft(new Split(2, 0.0, [], 50.0, 1));
-        $this->node->attachRight(new Split(4, -12.0, [], 200.0, 3));
+        $this->node->attachLeft(new Split(2, 0.0, [Labeled::quick(), Labeled::quick()], 50.0, 1));
+        $this->node->attachRight(new Split(4, -12.0, [Labeled::quick(), Labeled::quick()], 200.0, 3));
 
         $this->assertSame(237.5, $this->node->purityIncrease());
     }
