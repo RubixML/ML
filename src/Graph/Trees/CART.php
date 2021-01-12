@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
@@ -271,9 +271,9 @@ abstract class CART implements IteratorAggregate
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return \Rubix\ML\Graph\Nodes\Outcome|null
+     * @return \Rubix\ML\Graph\Nodes\Leaf|null
      */
-    public function search(array $sample) : ?Outcome
+    public function search(array $sample) : ?Leaf
     {
         $current = $this->root;
 
@@ -298,7 +298,7 @@ abstract class CART implements IteratorAggregate
                 continue;
             }
 
-            if ($current instanceof Outcome) {
+            if ($current instanceof Leaf) {
                 return $current;
             }
         }
@@ -387,9 +387,9 @@ abstract class CART implements IteratorAggregate
      * Terminate a branch with a leaf node.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Outcome
+     * @return \Rubix\ML\Graph\Nodes\Leaf
      */
-    abstract protected function terminate(Labeled $dataset) : Outcome;
+    abstract protected function terminate(Labeled $dataset) : Leaf;
 
     /**
      * Compute the impurity of a labeled dataset.
@@ -526,7 +526,7 @@ abstract class CART implements IteratorAggregate
             }
         }
 
-        if ($node instanceof Outcome) {
+        if ($node instanceof Leaf) {
             $carry .= $prefix . $node . PHP_EOL;
         }
     }

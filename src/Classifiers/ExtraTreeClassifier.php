@@ -12,7 +12,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Traits\ProbaSingle;
@@ -161,11 +160,10 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Best $node */
             $node = $this->search($sample);
 
-            $predictions[] = $node instanceof Best
-                ? $node->outcome()
-                : '?';
+            $predictions[] = $node->outcome();
         }
 
         return $predictions;
@@ -189,11 +187,10 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         $probabilities = [];
 
         foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Best $node */
             $node = $this->search($sample);
 
-            $probabilities[] = $node instanceof Best
-                ? array_replace($this->classes, $node->probabilities()) ?? []
-                : [];
+            $probabilities[] = array_replace($this->classes, $node->probabilities()) ?? [];
         }
 
         return $probabilities;
@@ -204,9 +201,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      * probability.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Outcome
+     * @return \Rubix\ML\Graph\Nodes\Best
      */
-    protected function terminate(Labeled $dataset) : Outcome
+    protected function terminate(Labeled $dataset) : Best
     {
         $n = $dataset->numRows();
 

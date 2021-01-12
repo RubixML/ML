@@ -11,7 +11,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Average;
-use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
@@ -148,23 +147,22 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Average $node */
             $node = $this->search($sample);
 
-            $predictions[] = $node instanceof Average
-                ? $node->outcome()
-                : NAN;
+            $predictions[] = $node->outcome();
         }
 
         return $predictions;
     }
 
     /**
-     * Terminate the branch with the most likely outcome.
+     * Terminate the branch with the most likely Average.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Outcome
+     * @return \Rubix\ML\Graph\Nodes\Average
      */
-    protected function terminate(Labeled $dataset) : Outcome
+    protected function terminate(Labeled $dataset) : Average
     {
         [$mean, $variance] = Stats::meanVar($dataset->labels());
 

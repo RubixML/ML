@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
+use Stringable;
 
 /**
  * Best
@@ -15,7 +16,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Best implements Outcome, Leaf
+class Best implements Decision, Leaf, Stringable
 {
     use HasBinaryChildren;
 
