@@ -254,7 +254,7 @@ abstract class CART implements IteratorAggregate
             }
         }
 
-        $this->types = [];
+        unset($this->types);
     }
 
     /**
@@ -398,7 +398,7 @@ abstract class CART implements IteratorAggregate
      */
     protected function split(Labeled $dataset) : Split
     {
-        $columns = array_keys($this->types);
+        $columns = array_keys($this->types ?? []);
 
         shuffle($columns);
 
