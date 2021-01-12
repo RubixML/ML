@@ -5,10 +5,9 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 
 /**
- * Comparison
+ * Split
  *
- * A split node that compares the values in a single feature column with the value on the
- * node (i.e. the split value).
+ * A split node that compares the values in a single feature column with the value on the node (i.e. the split value).
  *
  * @internal
  *
@@ -16,7 +15,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Comparison implements Decision
+class Split implements Decision
 {
     use HasBinaryChildren;
 
@@ -37,7 +36,7 @@ class Comparison implements Decision
     /**
      * The left and right splits of the training data.
      *
-     * @var \Rubix\ML\Datasets\Labeled[]
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     protected $groups;
 
@@ -58,7 +57,7 @@ class Comparison implements Decision
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param \Rubix\ML\Datasets\Labeled[] $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
      * @param float $impurity
      * @param int $n
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException

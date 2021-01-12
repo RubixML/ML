@@ -4,10 +4,10 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Leaf;
+use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -45,7 +45,7 @@ abstract class CART implements IteratorAggregate
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Comparison|null
+     * @var \Rubix\ML\Graph\Nodes\Split|null
      */
     protected $root;
 
@@ -97,13 +97,6 @@ abstract class CART implements IteratorAggregate
      * @var \Rubix\ML\DataType[]
      */
     protected $types = [];
-
-    /**
-     * The memorized column offsets of the dataset.
-     *
-     * @var int[]
-     */
-    protected $columns = [];
 
     /**
      * @internal
@@ -199,8 +192,6 @@ abstract class CART implements IteratorAggregate
 
         $this->types = $dataset->columnTypes();
 
-        $this->columns = array_keys($this->types);
-
         $this->root = $this->split($dataset);
 
         $stack = [[$this->root, 1]];
@@ -244,25 +235,25 @@ abstract class CART implements IteratorAggregate
             $current->attachRight($rightNode);
 
             if ($current->purityIncrease() >= $this->minPurityIncrease) {
-                if ($leftNode instanceof Comparison) {
+                if ($leftNode instanceof Split) {
                     $stack[] = [$leftNode, $depth];
                 }
 
-                if ($rightNode instanceof Comparison) {
+                if ($rightNode instanceof Split) {
                     $stack[] = [$rightNode, $depth];
                 }
             } else {
-                if ($leftNode instanceof Comparison) {
+                if ($leftNode instanceof Split) {
                     $current->attachLeft($this->terminate($left));
                 }
 
-                if ($rightNode instanceof Comparison) {
+                if ($rightNode instanceof Split) {
                     $current->attachRight($this->terminate($right));
                 }
             }
         }
 
-        $this->types = $this->columns = [];
+        $this->types = [];
     }
 
     /**
@@ -271,14 +262,14 @@ abstract class CART implements IteratorAggregate
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return \Rubix\ML\Graph\Nodes\Leaf|null
+     * @return \Rubix\ML\Graph\Nodes\Outcome|null
      */
-    public function search(array $sample) : ?Leaf
+    public function search(array $sample) : ?Outcome
     {
         $current = $this->root;
 
         while ($current) {
-            if ($current instanceof Comparison) {
+            if ($current instanceof Split) {
                 $value = $current->value();
 
                 if (is_string($value)) {
@@ -298,7 +289,7 @@ abstract class CART implements IteratorAggregate
                 continue;
             }
 
-            if ($current instanceof Leaf) {
+            if ($current instanceof Outcome) {
                 return $current;
             }
         }
@@ -321,7 +312,7 @@ abstract class CART implements IteratorAggregate
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this as $node) {
-            if ($node instanceof Comparison) {
+            if ($node instanceof Split) {
                 $importances[$node->column()] += $node->purityIncrease();
             }
         }
@@ -363,8 +354,7 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Return a generator for all the nodes in the tree starting at the root and traversing
-     * depth first.
+     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
      *
      * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
      */
@@ -384,12 +374,12 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Terminate a branch with a leaf node.
+     * Terminate a branch with an outcome node.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Leaf
+     * @return \Rubix\ML\Graph\Nodes\Outcome
      */
-    abstract protected function terminate(Labeled $dataset) : Leaf;
+    abstract protected function terminate(Labeled $dataset) : Outcome;
 
     /**
      * Compute the impurity of a labeled dataset.
@@ -403,28 +393,30 @@ abstract class CART implements IteratorAggregate
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Split
      */
-    protected function split(Labeled $dataset) : Comparison
+    protected function split(Labeled $dataset) : Split
     {
         $n = $dataset->numRows();
 
-        shuffle($this->columns);
+        $columns = array_keys($this->types);
 
-        $columns = array_slice($this->columns, 0, $this->maxFeatures);
+        shuffle($columns);
 
+        $columns = array_slice($columns, 0, $this->maxFeatures);
+
+        $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
-        $bestColumn = 0;
-        $bestValue = null;
-        $bestGroups = [];
 
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($this->types[$column]->isContinuous()) {
+            $type = $this->types[$column];
+
+            if ($type->isContinuous()) {
                 if (!isset($q)) {
                     $step = 1.0 / max(2.0, sqrt($n));
-
+            
                     $q = array_slice(range(0.0, 1.0, $step), 1, -1);
                 }
 
@@ -439,25 +431,20 @@ abstract class CART implements IteratorAggregate
                 $impurity = $this->splitImpurity($groups, $n);
 
                 if ($impurity < $bestImpurity) {
-                    $bestColumn = $column;
-                    $bestValue = $value;
-                    $bestGroups = $groups;
-                    $bestImpurity = $impurity;
+                    $node = new Split($column, $value, $groups, $impurity, $n);
                 }
 
-                if ($impurity === 0.0) {
+                if ($impurity <= 0.0) {
                     break 2;
                 }
             }
         }
 
-        return new Comparison(
-            $bestColumn,
-            $bestValue,
-            $bestGroups,
-            $bestImpurity,
-            $n
-        );
+        if (!isset($node)) {
+            throw new RuntimeException('Unable to split dataset.');
+        }
+
+        return $node;
     }
 
     /**
@@ -499,7 +486,7 @@ abstract class CART implements IteratorAggregate
 
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
-        if ($node instanceof Comparison) {
+        if ($node instanceof Split) {
             $left = $node->left();
             $right = $node->right();
 
@@ -526,7 +513,7 @@ abstract class CART implements IteratorAggregate
             }
         }
 
-        if ($node instanceof Leaf) {
+        if ($node instanceof Outcome) {
             $carry .= $prefix . $node . PHP_EOL;
         }
     }

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-use Stringable;
 
 /**
  * Average
@@ -16,7 +15,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Average implements Decision, Leaf, Stringable
+class Average implements Outcome
 {
     use HasBinaryChildren;
 

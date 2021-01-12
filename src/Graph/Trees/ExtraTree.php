@@ -3,7 +3,8 @@
 namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_slice;
 
@@ -25,25 +26,26 @@ abstract class ExtraTree extends CART
      * among a random selection of features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Split
      */
-    protected function split(Labeled $dataset) : Comparison
+    protected function split(Labeled $dataset) : Split
     {
         $n = $dataset->numRows();
 
-        shuffle($this->columns);
+        $columns = array_keys($this->types);
 
-        $columns = array_slice($this->columns, 0, $this->maxFeatures);
+        shuffle($columns);
+
+        $columns = array_slice($columns, 0, $this->maxFeatures);
 
         $bestImpurity = INF;
-        $bestColumn = 0;
-        $bestValue = null;
-        $bestGroups = [];
 
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            if ($this->types[$column]->isContinuous()) {
+            $type = $this->types[$column];
+
+            if ($type->isContinuous()) {
                 $min = (int) floor(min($values) * PHI);
                 $max = (int) ceil(max($values) * PHI);
 
@@ -59,23 +61,18 @@ abstract class ExtraTree extends CART
             $impurity = $this->splitImpurity($groups, $n);
 
             if ($impurity < $bestImpurity) {
-                $bestColumn = $column;
-                $bestValue = $value;
-                $bestGroups = $groups;
-                $bestImpurity = $impurity;
+                $node = new Split($column, $value, $groups, $impurity, $n);
             }
 
-            if ($impurity === 0.0) {
+            if ($impurity <= 0.0) {
                 break;
             }
         }
 
-        return new Comparison(
-            $bestColumn,
-            $bestValue,
-            $bestGroups,
-            $bestImpurity,
-            $n
-        );
+        if (!isset($node)) {
+            throw new RuntimeException('Unable to split dataset.');
+        }
+
+        return $node;
     }
 }

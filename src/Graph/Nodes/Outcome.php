@@ -2,8 +2,10 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Stringable;
+
 /**
- * Leaf
+ * Outcome
  *
  * @internal
  *
@@ -11,7 +13,7 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Leaf extends Node
+interface Outcome extends Decision, BinaryNode, Stringable
 {
     //
 }
