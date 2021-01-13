@@ -53,8 +53,7 @@ class Average implements Outcome
     }
 
     /**
-     * Return the outcome of the decision i.e the average of the
-     * labels.
+     * Return the outcome of the decision i.e the average of the labels.
      *
      * @return int|float
      */

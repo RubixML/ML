@@ -14,8 +14,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -45,14 +43,14 @@ use function Rubix\ML\argmax;
  */
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
-    use PredictsSingle, ProbaSingle;
-
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var float[]|null
+     * @var float[]
      */
-    protected $classes;
+    protected $classes = [
+        //
+    ];
 
     /**
      * @param int $maxHeight
@@ -157,16 +155,23 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            /** @var \Rubix\ML\Graph\Nodes\Best $node */
-            $node = $this->search($sample);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return string
+     */
+    public function predictSample(array $sample) : string
+    {
+        /** @var \Rubix\ML\Graph\Nodes\Best $node */
+        $node = $this->search($sample);
 
-            $predictions[] = $node->outcome();
-        }
-
-        return $predictions;
+        return $node->outcome();
     }
 
     /**
@@ -184,16 +189,23 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            /** @var \Rubix\ML\Graph\Nodes\Best $node */
-            $node = $this->search($sample);
+    /**
+     * Predict the probabilities of a single sample and return the joint distribution.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        /** @var \Rubix\ML\Graph\Nodes\Best $node */
+        $node = $this->search($sample);
 
-            $probabilities[] = array_replace($this->classes, $node->probabilities()) ?? [];
-        }
-
-        return $probabilities;
+        return array_replace($this->classes, $node->probabilities()) ?? [];
     }
 
     /**

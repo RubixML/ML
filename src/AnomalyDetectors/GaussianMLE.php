@@ -13,7 +13,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -44,7 +43,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, RanksSingle;
+    use RanksSingle;
 
     /**
      * The proportion of outliers that are assumed to be present in the
@@ -256,7 +255,26 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->score($dataset));
+        if (!$this->means or !$this->variances or !$this->threshold) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count($this->means))->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return $this->logLikelihood($sample) > $this->threshold ? 1 : 0;
     }
 
     /**
@@ -313,17 +331,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
         }
 
         return $likelihood;
-    }
-
-    /**
-     * The decision function.
-     *
-     * @param float $score
-     * @return int
-     */
-    protected function decide(float $score) : int
-    {
-        return $score > $this->threshold ? 1 : 0;
     }
 
     /**
