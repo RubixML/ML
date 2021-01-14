@@ -10,10 +10,8 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -42,8 +40,6 @@ use function array_slice;
  */
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use PredictsSingle, ProbaSingle;
-
     /**
      * The number of neighbors to consider when making a prediction.
      *
@@ -68,9 +64,11 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var float[]|null
+     * @var float[]
      */
-    protected $classes;
+    protected $classes = [
+        //
+    ];
 
     /**
      * The training samples that make up the neighborhood of the problem space.
@@ -209,25 +207,32 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$labels, $distances] = $this->nearest($sample);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return string
+     */
+    public function predictSample(array $sample) : string
+    {
+        [$labels, $distances] = $this->nearest($sample);
 
-            if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.0);
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
 
-                foreach ($distances as $i => $distance) {
-                    $weights[$labels[$i]] += 1.0 / (1.0 + $distance);
-                }
-            } else {
-                $weights = array_count_values($labels);
+            foreach ($distances as $i => $distance) {
+                $weights[$labels[$i]] += 1.0 / (1.0 + $distance);
             }
-
-            $predictions[] = argmax($weights);
+        } else {
+            $weights = array_count_values($labels);
         }
 
-        return $predictions;
+        return argmax($weights);
     }
 
     /**
@@ -245,33 +250,40 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$labels, $distances] = $this->nearest($sample);
+    /**
+     * Predict the probabilities of a single sample and return the joint distribution.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        [$labels, $distances] = $this->nearest($sample);
 
-            if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.0);
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
 
-                foreach ($labels as $i => $label) {
-                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
-                }
-            } else {
-                $weights = array_count_values($labels);
+            foreach ($labels as $i => $label) {
+                $weights[$label] += 1.0 / (1.0 + $distances[$i]);
             }
-
-            $total = array_sum($weights);
-
-            $dist = $this->classes;
-
-            foreach ($weights as $class => $weight) {
-                $dist[$class] = $weight / $total;
-            }
-
-            $probabilities[] = $dist;
+        } else {
+            $weights = array_count_values($labels);
         }
 
-        return $probabilities;
+        $total = array_sum($weights);
+
+        $dist = $this->classes;
+
+        foreach ($weights as $class => $weight) {
+            $dist[$class] = $weight / $total;
+        }
+
+        return $dist;
     }
 
     /**

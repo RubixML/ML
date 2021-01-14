@@ -11,8 +11,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -22,6 +20,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function count;
 
@@ -44,8 +43,6 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use PredictsSingle, ProbaSingle;
-
     /**
      * The amount of (Laplace) smoothing added to the probabilities.
      *
@@ -297,9 +294,20 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetHasDimensionality::with($dataset, count(current($this->probs)))->check();
 
-        $jll = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        return array_map('Rubix\ML\argmax', $jll);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param string[] $sample
+     * @return string
+     */
+    public function predictSample(array $sample) : string
+    {
+        return argmax($this->jointLogLikelihood($sample));
     }
 
     /**
@@ -317,23 +325,30 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetHasDimensionality::with($dataset, count(current($this->probs)))->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
+    /**
+     * Predict the probabilities of a single sample and return the joint distribution.
+     *
+     * @internal
+     *
+     * @param string[] $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        $jll = $this->jointLogLikelihood($sample);
 
-            $total = logsumexp($jll);
+        $total = logsumexp($jll);
 
-            $dist = [];
+        $dist = [];
 
-            foreach ($jll as $class => $likelihood) {
-                $dist[$class] = exp($likelihood - $total);
-            }
-
-            $probabilities[] = $dist;
+        foreach ($jll as $class => $likelihood) {
+            $dist[$class] = exp($likelihood - $total);
         }
 
-        return $probabilities;
+        return $dist;
     }
 
     /**

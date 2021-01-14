@@ -160,7 +160,7 @@ class SVCTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']], ['green']));
+        $this->estimator->train(Labeled::quick([['bad']]));
     }
 
     /**
@@ -170,7 +170,7 @@ class SVCTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick());
+        $this->estimator->predict(Unlabeled::quick([[1.5]]));
     }
 
     protected function assertPreConditions() : void

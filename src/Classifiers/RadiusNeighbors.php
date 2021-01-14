@@ -11,8 +11,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,8 +38,6 @@ use function in_array;
  */
 class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
-    use PredictsSingle, ProbaSingle;
-
     /**
      * The radius within which points are considered neighbors.
      *
@@ -73,9 +69,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var float[]|null
+     * @var float[]
      */
-    protected $classes;
+    protected $classes = [
+        //
+    ];
 
     /**
      * The dimensionality of the training set.
@@ -220,31 +218,36 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return string
+     */
+    public function predictSample(array $sample) : string
+    {
+        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
-            if (empty($labels)) {
-                $predictions[] = $this->outlierClass;
-
-                continue;
-            }
-
-            if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.0);
-
-                foreach ($labels as $i => $label) {
-                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
-                }
-            } else {
-                $weights = array_count_values($labels);
-            }
-
-            $predictions[] = argmax($weights);
+        if (empty($labels)) {
+            return $this->outlierClass;
         }
 
-        return $predictions;
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
+
+            foreach ($labels as $i => $label) {
+                $weights[$label] += 1.0 / (1.0 + $distances[$i]);
+            }
+        } else {
+            $weights = array_count_values($labels);
+        }
+
+        return argmax($weights);
     }
 
     /**
@@ -262,41 +265,46 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
+    /**
+     * Predict the probabilities of a single sample and return the joint distribution.
+     *
+     * @internal
+     *
+     * @param (string|int|float)[] $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
-            $dist = $this->classes;
+        $dist = $this->classes;
 
-            if (empty($labels)) {
-                $dist[$this->outlierClass] = 1.0;
+        if (empty($labels)) {
+            $dist[$this->outlierClass] = 1.0;
 
-                $probabilities[] = $dist;
-
-                continue;
-            }
-
-            if ($this->weighted) {
-                $weights = array_fill_keys($labels, 0.0);
-
-                foreach ($labels as $i => $label) {
-                    $weights[$label] += 1.0 / (1.0 + $distances[$i]);
-                }
-            } else {
-                $weights = array_count_values($labels);
-            }
-
-            $total = array_sum($weights);
-
-            foreach ($weights as $class => $weight) {
-                $dist[$class] = $weight / $total;
-            }
-
-            $probabilities[] = $dist;
+            return $dist;
         }
 
-        return $probabilities;
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
+
+            foreach ($labels as $i => $label) {
+                $weights[$label] += 1.0 / (1.0 + $distances[$i]);
+            }
+        } else {
+            $weights = array_count_values($labels);
+        }
+
+        $total = array_sum($weights);
+
+        foreach ($weights as $class => $weight) {
+            $dist[$class] = $weight / $total;
+        }
+
+        return $dist;
     }
 
     /**

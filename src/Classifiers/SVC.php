@@ -10,7 +10,6 @@ use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,8 +39,6 @@ use svm;
  */
 class SVC implements Estimator, Learner
 {
-    use PredictsSingle;
-
     /**
      * The support vector machine instance.
      *
@@ -216,22 +213,31 @@ class SVC implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
+    {
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return string
+     */
+    public function predictSample(array $sample) : string
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $predictions = [];
+        $index = $this->model->predict($sample);
 
-        foreach ($dataset->samples() as $sample) {
-            $predictions[] = $this->classes[$this->model->predict($sample)];
-        }
-
-        return $predictions;
+        return $this->classes[$index];
     }
 
     /**
@@ -243,8 +249,7 @@ class SVC implements Estimator, Learner
     public function save(string $path) : void
     {
         if (!$this->model) {
-            throw new RuntimeException('Learner must be'
-                . ' trained before saving.');
+            throw new RuntimeException('Learner must be trained before saving.');
         }
 
         $this->model->save($path);
