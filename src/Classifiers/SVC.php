@@ -225,7 +225,7 @@ class SVC implements Estimator, Learner
      *
      * @internal
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */

@@ -215,7 +215,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @internal
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return string
      */
     public function predictSample(array $sample) : string
@@ -258,7 +258,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @internal
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return float[]
      */
     public function probaSample(array $sample) : array
@@ -290,7 +290,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return array[]
      */
     protected function nearest(array $sample) : array

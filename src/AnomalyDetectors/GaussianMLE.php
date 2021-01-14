@@ -269,7 +269,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Ranking, Persi
      *
      * @internal
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return int
      */
     public function predictSample(array $sample) : int

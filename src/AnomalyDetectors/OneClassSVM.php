@@ -200,7 +200,7 @@ class OneClassSVM implements Estimator, Learner
      *
      * @internal
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int
      */
@@ -222,8 +222,7 @@ class OneClassSVM implements Estimator, Learner
     public function save(string $path) : void
     {
         if (!$this->model) {
-            throw new RuntimeException('Learner must be'
-                . ' trained before saving.');
+            throw new RuntimeException('Learner must be trained before saving.');
         }
 
         $this->model->save($path);

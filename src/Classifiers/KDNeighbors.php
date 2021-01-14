@@ -197,7 +197,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @internal
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return string
      */
     public function predictSample(array $sample) : string
@@ -240,7 +240,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @internal
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return float[]
      */
     public function probaSample(array $sample) : array

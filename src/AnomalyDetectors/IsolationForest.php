@@ -270,7 +270,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
      *
      * @internal
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return int
      */
     public function predictSample(array $sample) : int

@@ -255,7 +255,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      *
      * @internal
      *
-     * @param (int|float)[] $sample
+     * @param list<int|float> $sample
      * @return int
      */
     public function predictSample(array $sample) : int

@@ -302,7 +302,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @param string[] $sample
+     * @param list<string> $sample
      * @return string
      */
     public function predictSample(array $sample) : string
@@ -333,7 +333,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @param string[] $sample
+     * @param list<string> $sample
      * @return float[]
      */
     public function probaSample(array $sample) : array
