@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -17,7 +18,7 @@ use function array_slice;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMostFrequent implements Categorical
+class KMostFrequent implements Strategy
 {
     /**
      * The number of most frequent classes to consider.
@@ -29,7 +30,7 @@ class KMostFrequent implements Categorical
     /**
      * The k most frequent classes.
      *
-     * @var string[]
+     * @var list<string>
      */
     protected $classes = [
         //
@@ -50,18 +51,40 @@ class KMostFrequent implements Categorical
     }
 
     /**
+     * Return the data type the strategy handles.
+     *
+     * @return \Rubix\ML\DataType
+     */
+    public function type() : DataType
+    {
+        return DataType::categorical();
+    }
+
+    /**
+     * Has the strategy been fitted?
+     *
+     * @internal
+     *
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return !empty($this->classes);
+    }
+
+    /**
      * Fit the guessing strategy to a set of values.
      *
      * @internal
      *
-     * @param (string|int)[] $values
+     * @param list<string> $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy must be fitted'
-                . ' to at least 1 value.');
+            throw new InvalidArgumentException('Strategy must be'
+                . ' fitted to at least 1 value.');
         }
 
         $classes = array_count_values($values);
@@ -87,7 +110,9 @@ class KMostFrequent implements Categorical
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->classes[rand(0, $this->k - 1)];
+        $offset = array_rand($this->classes);
+
+        return $this->classes[$offset];
     }
 
     /**

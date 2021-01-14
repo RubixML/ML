@@ -10,9 +10,9 @@ Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categoric
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | continuous strategy | Mean | Continuous | The guessing strategy to employ for continuous feature columns. |
-| 2 | categorical strategy | K Most Frequent | Categorical | The guessing strategy to employ for categorical feature columns. |
-| 3 | categorical placeholder | '?' | string | The placeholder category that denotes missing values. |
+| 1 | continuous | Mean | Strategy | The guessing strategy to employ for continuous feature columns. |
+| 2 | categorical | K Most Frequent | Strategy | The guessing strategy to employ for categorical feature columns. |
+| 3 | categorical placeholder | '?' | string | The special placeholder category that denotes missing values. |
 
 ## Example
 ```php

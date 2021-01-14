@@ -10,16 +10,13 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Strategies\Continuous;
+use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function count;
 
 /**
  * Dummy Regressor
@@ -34,27 +31,24 @@ use function count;
  */
 class DummyRegressor implements Estimator, Learner, Persistable
 {
-    use PredictsSingle;
-
     /**
      * The guessing strategy that the dummy employs.
      *
-     * @var \Rubix\ML\Other\Strategies\Continuous
+     * @var \Rubix\ML\Other\Strategies\Strategy
      */
     protected $strategy;
 
     /**
-     * The dimensionality of the training set.
-     *
-     * @var int|null
+     * @param \Rubix\ML\Other\Strategies\Strategy|null $strategy
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    protected $featureCount;
-
-    /**
-     * @param \Rubix\ML\Other\Strategies\Continuous|null $strategy
-     */
-    public function __construct(?Continuous $strategy = null)
+    public function __construct(?Strategy $strategy = null)
     {
+        if ($strategy and !$strategy->type()->isContinuous()) {
+            throw new InvalidArgumentException('Continuous strategy must'
+                . ' be compatible with continuous data types.');
+        }
+
         $this->strategy = $strategy ?? new Mean();
     }
 
@@ -103,7 +97,7 @@ class DummyRegressor implements Estimator, Learner, Persistable
      */
     public function trained() : bool
     {
-        return isset($this->featureCount);
+        return $this->strategy->fitted();
     }
 
     /**
@@ -120,8 +114,6 @@ class DummyRegressor implements Estimator, Learner, Persistable
         ])->check();
 
         $this->strategy->fit($dataset->labels());
-
-        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -133,21 +125,27 @@ class DummyRegressor implements Estimator, Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->featureCount) {
+        if (!$this->strategy->fitted()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        $n = $dataset->numRows();
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int|float
+     */
+    public function predictSample(array $sample)
+    {
+        /** @var int|float $prediction */
+        $prediction = $this->strategy->guess();
 
-        $predictions = [];
-
-        while (count($predictions) < $n) {
-            $predictions[] = $this->strategy->guess();
-        }
-
-        return $predictions;
+        return $prediction;
     }
 
     /**

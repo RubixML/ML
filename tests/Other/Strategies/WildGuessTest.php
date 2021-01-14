@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\WildGuess;
-use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,8 +32,15 @@ class WildGuessTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(WildGuess::class, $this->strategy);
-        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
+    }
+
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
     /**
@@ -42,6 +49,8 @@ class WildGuessTest extends TestCase
     public function fitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
+
+        $this->assertTrue($this->strategy->fitted());
 
         $guess = $this->strategy->guess();
 
@@ -52,5 +61,10 @@ class WildGuessTest extends TestCase
                 $this->lessThanOrEqual(5)
             )
         );
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
     }
 }

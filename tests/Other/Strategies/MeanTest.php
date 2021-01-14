@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,8 +32,15 @@ class MeanTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Mean::class, $this->strategy);
-        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
+    }
+
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
     /**
@@ -43,8 +50,15 @@ class MeanTest extends TestCase
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 
+        $this->assertTrue($this->strategy->fitted());
+
         $guess = $this->strategy->guess();
 
         $this->assertEquals(3.0, $guess);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
     }
 }

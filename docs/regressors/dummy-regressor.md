@@ -10,14 +10,14 @@ Regressor that guesses output values based on a user-defined guessing [Strategy]
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | strategy | Mean | Continuous | The guessing strategy to employ when making predictions. |
+| 1 | strategy | Mean | Strategy | The guessing strategy to employ when making predictions. |
 
 ## Example
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\Percentile;
 
-$estimator = new DummyRegressor(new Percentile(56.5, 0.1));
+$estimator = new DummyRegressor(new Percentile(56.5));
 ```
 
 ## Additional Methods
