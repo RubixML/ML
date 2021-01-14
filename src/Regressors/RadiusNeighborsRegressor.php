@@ -12,7 +12,6 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -38,8 +37,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
-    use PredictsSingle;
-
     /**
      * The value to assign to outliers when making a prediction.
      *
@@ -48,7 +45,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     public const OUTLIER_VALUE = NAN;
 
     /**
-     * The radius within which points are considered neighboors.
+     * The radius within which points are considered neighbors.
      *
      * @var float
      */
@@ -187,31 +184,36 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int|float
+     */
+    public function predictSample(array $sample)
+    {
+        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
-            if (empty($labels)) {
-                $predictions[] = self::OUTLIER_VALUE;
-
-                continue;
-            }
-
-            if ($this->weighted) {
-                $weights = [];
-
-                foreach ($distances as $distance) {
-                    $weights[] = 1.0 / (1.0 + $distance);
-                }
-
-                $predictions[] = Stats::weightedMean($labels, $weights);
-            } else {
-                $predictions[] = Stats::mean($labels);
-            }
+        if (empty($labels)) {
+            return self::OUTLIER_VALUE;
         }
 
-        return $predictions;
+        if ($this->weighted) {
+            $weights = [];
+
+            foreach ($distances as $distance) {
+                $weights[] = 1.0 / (1.0 + $distance);
+            }
+
+            return Stats::weightedMean($labels, $weights);
+        }
+
+        return Stats::mean($labels);
     }
 
     /**
