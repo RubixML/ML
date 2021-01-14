@@ -12,8 +12,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -23,6 +21,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 
 use const Rubix\ML\TWO_PI;
@@ -38,8 +37,8 @@ use const Rubix\ML\LOG_EPSILON;
  * additional assumption that all features are normally (Gaussian) distributed.
  *
  * References:
- * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
- * Computing Sample Variances.
+ * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample
+ * Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -47,8 +46,6 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use PredictsSingle, ProbaSingle;
-
     /**
      * The class prior log probabilities.
      *
@@ -296,9 +293,20 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
-        $jll = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        return array_map('Rubix\ML\argmax', $jll);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @return string
+     */
+    public function predictSample(array $sample) : string
+    {
+        return argmax($this->jointLogLikelihood($sample));
     }
 
     /**
@@ -316,23 +324,30 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetHasDimensionality::with($dataset, count(current($this->means)))->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
+    /**
+     * Predict the probabilities of a single sample and return the joint distribution.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        $jll = $this->jointLogLikelihood($sample);
 
-            $total = logsumexp($jll);
+        $total = logsumexp($jll);
 
-            $dist = [];
+        $dist = [];
 
-            foreach ($jll as $class => $likelihood) {
-                $dist[$class] = exp($likelihood - $total);
-            }
-
-            $probabilities[] = $dist;
+        foreach ($jll as $class => $likelihood) {
+            $dist[$class] = exp($likelihood - $total);
         }
 
-        return $probabilities;
+        return $dist;
     }
 
     /**

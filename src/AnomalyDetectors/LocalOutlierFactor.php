@@ -14,7 +14,6 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -43,7 +42,7 @@ use const Rubix\ML\EPSILON;
  */
 class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, RanksSingle;
+    use RanksSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -242,7 +241,26 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->score($dataset));
+        if ($this->tree->bare() or !$this->featureCount) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<int|float> $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return $this->localOutlierFactor($sample) > $this->threshold ? 1 : 0;
     }
 
     /**
@@ -319,17 +337,6 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
         $rds = array_map('max', $distances, $kdistances);
 
         return 1.0 / (Stats::mean($rds) ?: EPSILON);
-    }
-
-    /**
-     * The decision function.
-     *
-     * @param float $score
-     * @return int
-     */
-    protected function decide(float $score) : int
-    {
-        return $score > $this->threshold ? 1 : 0;
     }
 
     /**

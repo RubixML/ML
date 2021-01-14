@@ -14,7 +14,6 @@ use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,8 +39,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
 {
-    use PredictsSingle;
-
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize
@@ -144,16 +141,23 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            /** @var \Rubix\ML\Graph\Nodes\Average $node */
-            $node = $this->search($sample);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int|float
+     */
+    public function predictSample(array $sample)
+    {
+        /** @var \Rubix\ML\Graph\Nodes\Average $node */
+        $node = $this->search($sample);
 
-            $predictions[] = $node->outcome();
-        }
-
-        return $predictions;
+        return $node->outcome();
     }
 
     /**

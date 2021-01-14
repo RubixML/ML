@@ -12,7 +12,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -41,8 +40,6 @@ use function array_slice;
  */
 class KNNRegressor implements Estimator, Learner, Online, Persistable
 {
-    use PredictsSingle;
-
     /**
      * The number of neighbors to consider when making a prediction.
      *
@@ -195,27 +192,32 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $predictions = [];
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            [$labels, $distances] = $this->nearest($sample);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int|float
+     */
+    public function predictSample(array $sample)
+    {
+        [$labels, $distances] = $this->nearest($sample);
 
-            if ($this->weighted) {
-                $weights = [];
+        if ($this->weighted) {
+            $weights = [];
 
-                foreach ($distances as $distance) {
-                    $weights[] = 1. / (1. + $distance);
-                }
-
-                $outcome = Stats::weightedMean(array_values($labels), $weights);
-            } else {
-                $outcome = Stats::mean($labels);
+            foreach ($distances as $distance) {
+                $weights[] = 1.0 / (1.0 + $distance);
             }
 
-            $predictions[] = $outcome;
+            return Stats::weightedMean(array_values($labels), $weights);
         }
 
-        return $predictions;
+        return Stats::mean($labels);
     }
 
     /**

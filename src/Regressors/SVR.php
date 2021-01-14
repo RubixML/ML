@@ -10,7 +10,6 @@ use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -44,8 +43,6 @@ use svm;
  */
 class SVR implements Estimator, Learner
 {
-    use PredictsSingle;
-
     /**
      * The support vector machine instance.
      *
@@ -216,16 +213,29 @@ class SVR implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
+    {
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<int|float> $sample
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return int|float
+     */
+    public function predictSample(array $sample)
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([$this->model, 'predict'], $dataset->samples());
+        return $this->model->predict($sample);
     }
 
     /**

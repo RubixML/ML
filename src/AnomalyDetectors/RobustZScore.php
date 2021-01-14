@@ -12,7 +12,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -45,7 +44,7 @@ use const Rubix\ML\EPSILON;
  */
 class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, RanksSingle;
+    use RanksSingle;
 
     /**
      * The expected value of the MAD as n goes to ∞.
@@ -204,11 +203,29 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->score($dataset));
+        if (!$this->medians or !$this->mads) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<int|float> $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return $this->z($sample) > $this->threshold ? 1 : 0;
     }
 
     /**
@@ -263,17 +280,6 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
 
         return (1.0 - $this->alpha) * Stats::mean($z)
             + $this->alpha * max($z);
-    }
-
-    /**
-     * The decision function.
-     *
-     * @param float $score
-     * @return int
-     */
-    protected function decide(float $score) : int
-    {
-        return $score > $this->threshold ? 1 : 0;
     }
 
     /**

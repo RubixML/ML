@@ -15,11 +15,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -51,7 +49,7 @@ use const Rubix\ML\EPSILON;
  */
 class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use LoggerAware;
 
     /**
      * The target number of clusters.
@@ -323,7 +321,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $loss = 0.0;
 
             foreach ($batches as $i => &$batch) {
-                $assignments = array_map([$this, 'assign'], $batch->samples());
+                $assignments = array_map([$this, 'predictSample'], $batch->samples());
 
                 $labels = $batch->labels();
 
@@ -416,34 +414,18 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
         DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
-        return array_map([$this, 'assign'], $dataset->samples());
-    }
-
-    /**
-     * Estimate the joint probabilities for each possible outcome.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
-     */
-    public function proba(Dataset $dataset) : array
-    {
-        if (!$this->centroids) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
-        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
-
-        return array_map([$this, 'membership'], $dataset->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
     }
 
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
+     * @internal
+     *
      * @param list<int|float> $sample
      * @return int
      */
-    protected function assign(array $sample) : int
+    public function predictSample(array $sample) : int
     {
         $bestDistance = INF;
         $bestCluster = -1;
@@ -461,14 +443,34 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     }
 
     /**
+     * Estimate the joint probabilities for each possible outcome.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return list<float[]>
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if (!$this->centroids) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
+
+    /**
      * Return the membership of a sample to each of the k centroids.
+     *
+     * @internal
      *
      * @param list<int|float> $sample
      * @return float[]
      */
-    protected function membership(array $sample) : array
+    public function probaSample(array $sample) : array
     {
-        $membership = $distances = [];
+        $distances = $dist = [];
 
         foreach ($this->centroids as $centroid) {
             $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
@@ -481,10 +483,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 $sigma += $distanceA / $distanceB;
             }
 
-            $membership[] = 1.0 / $sigma;
+            $dist[] = 1.0 / $sigma;
         }
 
-        return $membership;
+        return $dist;
     }
 
     /**
