@@ -16,12 +16,10 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -37,15 +35,13 @@ use const Rubix\ML\EPSILON;
 /**
  * Mean Shift
  *
- * A hierarchical clustering algorithm that uses peak finding to locate the candidate
- * centroids of a training set given a radius constraint. Near-duplicate candidates
- * are merged together in a final post-processing step.
+ * A hierarchical clustering algorithm that uses peak finding to locate the candidate centroids of a
+ * training set given a radius constraint. Near-duplicate candidates are merged together in a final
+ * post-processing step.
  *
  * References:
- * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms
- * for Clustering.
- * [2] D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature
- * Space Analysis.
+ * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
+ * [2] D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -53,7 +49,7 @@ use const Rubix\ML\EPSILON;
  */
 class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use LoggerAware;
 
     /**
      * The minimum number of initial centroids.
@@ -389,34 +385,18 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
-        return array_map([$this, 'assign'], $dataset->samples());
-    }
-
-    /**
-     * Estimate the joint probabilities for each possible outcome.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
-     */
-    public function proba(Dataset $dataset) : array
-    {
-        if (empty($this->centroids)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
-        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
-
-        return array_map([$this, 'membership'], $dataset->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
     }
 
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
+     * @internal
+     *
      * @param list<int|float> $sample
      * @return int
      */
-    protected function assign(array $sample) : int
+    public function predictSample(array $sample) : int
     {
         $bestDistance = INF;
         $bestCluster = -1;
@@ -434,14 +414,32 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
+     * Estimate the joint probabilities for each possible outcome.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return list<float[]>
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
+
+    /**
      * Return the membership of a sample to each of the centroids.
      *
      * @param list<int|float> $sample
      * @return float[]
      */
-    protected function membership(array $sample) : array
+    public function probaSample(array $sample) : array
     {
-        $membership = $distances = [];
+        $distances = $dist = [];
 
         foreach ($this->centroids as $centroid) {
             $distances[] = $this->tree->kernel()->compute($sample, $centroid) ?: EPSILON;
@@ -454,10 +452,10 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 $sigma += $distanceA / $distanceB;
             }
 
-            $membership[] = 1.0 / $sigma;
+            $dist[] = 1.0 / $sigma;
         }
 
-        return $membership;
+        return $dist;
     }
 
     /**

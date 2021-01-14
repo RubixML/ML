@@ -12,11 +12,9 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -25,6 +23,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\argmax;
 use function count;
 use function is_nan;
 
@@ -48,7 +47,7 @@ use const Rubix\ML\EPSILON;
  */
 class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use LoggerAware;
 
     /**
      * The target number of clusters.
@@ -255,7 +254,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $memberships = array_map([$this, 'membership'], $dataset->samples());
+            $memberships = array_map([$this, 'probaSample'], $dataset->samples());
 
             $loss = $this->inertia($dataset->samples(), $memberships);
 
@@ -314,11 +313,31 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('Rubix\ML\argmax', $this->proba($dataset));
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return argmax($this->probaSample($sample));
     }
 
     /**
@@ -336,7 +355,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
 
-        return array_map([$this, 'membership'], $dataset->samples());
+        return array_map([$this, 'probaSample'], $dataset->samples());
     }
 
     /**
@@ -345,9 +364,9 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * @param list<int|float> $sample
      * @return float[]
      */
-    protected function membership(array $sample) : array
+    protected function probaSample(array $sample) : array
     {
-        $membership = $distances = [];
+        $distances = $dist = [];
 
         foreach ($this->centroids as $centroid) {
             $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
@@ -360,10 +379,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 $sigma += ($distanceA / $distanceB) ** $this->rho;
             }
 
-            $membership[] = 1.0 / $sigma;
+            $dist[] = 1.0 / $sigma;
         }
 
-        return $membership;
+        return $dist;
     }
 
     /**

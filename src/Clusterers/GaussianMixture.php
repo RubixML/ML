@@ -13,10 +13,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -25,6 +23,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\array_transpose;
 use function is_nan;
@@ -54,7 +53,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use LoggerAware;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the
@@ -369,9 +368,20 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         DatasetHasDimensionality::with($dataset, count(current($this->means) ?: []))->check();
 
-        $jlls = array_map([$this, 'jointLogLikelihood'], $dataset->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
 
-        return array_map('Rubix\ML\argmax', $jlls);
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return argmax($this->jointLogLikelihood($sample));
     }
 
     /**
@@ -389,23 +399,28 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         DatasetHasDimensionality::with($dataset, count(current($this->means) ?: []))->check();
 
-        $probabilities = [];
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
 
-        foreach ($dataset->samples() as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
+    /**
+     * Return the membership of a sample to each of the c centroids.
+     *
+     * @param list<int|float> $sample
+     * @return float[]
+     */
+    protected function probaSample(array $sample) : array
+    {
+        $jll = $this->jointLogLikelihood($sample);
 
-            $total = logsumexp($jll);
+        $total = logsumexp($jll);
 
-            $dist = [];
+        $dist = [];
 
-            foreach ($jll as $cluster => $likelihood) {
-                $dist[$cluster] = exp($likelihood - $total);
-            }
-
-            $probabilities[] = $dist;
+        foreach ($jll as $cluster => $likelihood) {
+            $dist[$cluster] = exp($likelihood - $total);
         }
 
-        return $probabilities;
+        return $dist;
     }
 
     /**
