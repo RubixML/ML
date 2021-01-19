@@ -2,6 +2,10 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Rubix\ML\DataType;
+
+use function is_string;
+
 /**
  * Constant
  *
@@ -11,17 +15,17 @@ namespace Rubix\ML\Other\Strategies;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Constant implements Continuous
+class Constant implements Strategy
 {
     /**
-     * The value to constantly guess.
+     * The constant value to guess.
      *
-     * @var int|float
+     * @var string|int|float
      */
     protected $value;
 
     /**
-     * @param int|float $value
+     * @param string|int|float $value
      */
     public function __construct($value = 0)
     {
@@ -29,11 +33,35 @@ class Constant implements Continuous
     }
 
     /**
+     * Return the data type the strategy handles.
+     *
+     * @return \Rubix\ML\DataType
+     */
+    public function type() : DataType
+    {
+        return is_string($this->value)
+            ? DataType::categorical()
+            : DataType::continuous();
+    }
+
+    /**
+     * Has the strategy been fitted?
+     *
+     * @internal
+     *
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return true;
+    }
+
+    /**
      * Fit the guessing strategy to a set of values.
      *
      * @internal
      *
-     * @param (int|float)[] $values
+     * @param list<string|int|float> $values
      */
     public function fit(array $values) : void
     {
@@ -45,7 +73,7 @@ class Constant implements Continuous
      *
      * @internal
      *
-     * @return int|float
+     * @return string|int|float
      */
     public function guess()
     {

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -10,14 +11,14 @@ use const Rubix\ML\PHI;
 /**
  * Wild Guess
  *
- * Guess a random number somewhere between the minimum and maximum computed by fitting a
- * collection of values.
+ * Guess a random number somewhere between the minimum and maximum computed by fitting a collection
+ * of values.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WildGuess implements Continuous
+class WildGuess implements Strategy
 {
     /**
      * The minimum value of the fitted data.
@@ -32,6 +33,28 @@ class WildGuess implements Continuous
      * @var int|null
      */
     protected $max;
+
+    /**
+     * Return the data type the strategy handles.
+     *
+     * @return \Rubix\ML\DataType
+     */
+    public function type() : DataType
+    {
+        return DataType::continuous();
+    }
+
+    /**
+     * Has the strategy been fitted?
+     *
+     * @internal
+     *
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return $this->min and $this->max;
+    }
 
     /**
      * Fit the guessing strategy to a set of values.

@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Other\Strategies\Constant;
 use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,7 +23,7 @@ class ConstantTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->strategy = new Constant(17.0);
+        $this->strategy = new Constant(42);
     }
 
     /**
@@ -32,8 +32,15 @@ class ConstantTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Constant::class, $this->strategy);
-        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
+    }
+
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
     /**
@@ -43,8 +50,15 @@ class ConstantTest extends TestCase
     {
         $this->strategy->fit([]);
 
+        $this->assertTrue($this->strategy->fitted());
+
         $guess = $this->strategy->guess();
 
-        $this->assertEquals(17.0, $guess);
+        $this->assertEquals(42, $guess);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertTrue($this->strategy->fitted());
     }
 }

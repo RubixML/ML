@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -15,7 +16,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Percentile implements Continuous
+class Percentile implements Strategy
 {
     /**
      * The percentile of the fitted data to use as a guess.
@@ -38,11 +39,33 @@ class Percentile implements Continuous
     public function __construct(float $p = 50.0)
     {
         if ($p < 0.0 or $p > 100.0) {
-            throw new InvalidArgumentException('Percentile must be between'
-                . " 0 and 100, $p given.");
+            throw new InvalidArgumentException('Percentile must be'
+                . " between 0 and 100, $p given.");
         }
 
         $this->p = $p;
+    }
+
+    /**
+     * Return the data type the strategy handles.
+     *
+     * @return \Rubix\ML\DataType
+     */
+    public function type() : DataType
+    {
+        return DataType::continuous();
+    }
+
+    /**
+     * Has the strategy been fitted?
+     *
+     * @internal
+     *
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->percentile);
     }
 
     /**
@@ -50,7 +73,7 @@ class Percentile implements Continuous
      *
      * @internal
      *
-     * @param (int|float)[] $values
+     * @param list<int|float> $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void
@@ -60,7 +83,9 @@ class Percentile implements Continuous
                 . ' to at least 1 value.');
         }
 
-        $this->percentile = Stats::quantile($values, $this->p / 100.0);
+        $q = $this->p / 100.0;
+
+        $this->percentile = Stats::quantile($values, $q);
     }
 
     /**

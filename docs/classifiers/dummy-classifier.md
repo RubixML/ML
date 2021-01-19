@@ -10,7 +10,7 @@ A classifier that uses a user-defined guessing [Strategy](../other/strategies/ap
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | strategy | Prior | Categorical | The guessing strategy to employ when making predictions. |
+| 1 | strategy | Prior | Strategy | The guessing strategy to employ when making predictions. |
 
 ## Example
 ```php

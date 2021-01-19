@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Percentile;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +31,6 @@ class PercentileTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Percentile::class, $this->strategy);
-        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 

@@ -6,8 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Strategies\Continuous;
-use Rubix\ML\Other\Strategies\Categorical;
+use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\KMostFrequent;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -30,14 +29,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The guessing strategy to use when imputing continuous values.
      *
-     * @var \Rubix\ML\Other\Strategies\Continuous
+     * @var \Rubix\ML\Other\Strategies\Strategy
      */
     protected $continuous;
 
     /**
      * The guessing strategy to use when imputing categorical values.
      *
-     * @var \Rubix\ML\Other\Strategies\Categorical
+     * @var \Rubix\ML\Other\Strategies\Strategy
      */
     protected $categorical;
 
@@ -51,28 +50,38 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The fitted guessing strategy for each feature column.
      *
-     * @var mixed[]|null
+     * @var list<\Rubix\ML\Other\Strategies\Strategy>|null
      */
     protected $strategies;
 
     /**
      * The data types of the fitted feature columns.
      *
-     * @var \Rubix\ML\DataType[]|null
+     * @var list<\Rubix\ML\DataType>|null
      */
     protected $types;
 
     /**
-     * @param \Rubix\ML\Other\Strategies\Continuous|null $continuous
-     * @param \Rubix\ML\Other\Strategies\Categorical|null $categorical
+     * @param \Rubix\ML\Other\Strategies\Strategy|null $continuous
+     * @param \Rubix\ML\Other\Strategies\Strategy|null $categorical
      * @param string $categoricalPlaceholder
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
-        ?Continuous $continuous = null,
-        ?Categorical $categorical = null,
+        ?Strategy $continuous = null,
+        ?Strategy $categorical = null,
         string $categoricalPlaceholder = '?'
     ) {
+        if ($continuous and !$continuous->type()->isContinuous()) {
+            throw new InvalidArgumentException('Continuous strategy must'
+                . ' be compatible with continuous data types.');
+        }
+
+        if ($categorical and !$categorical->type()->isCategorical()) {
+            throw new InvalidArgumentException('Categorical strategy must'
+                . ' be compatible with categorical data types.');
+        }
+
         $this->continuous = $continuous ?? new Mean();
         $this->categorical = $categorical ?? new KMostFrequent(1);
         $this->categoricalPlaceholder = $categoricalPlaceholder;
