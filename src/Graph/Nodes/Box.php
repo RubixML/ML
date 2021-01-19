@@ -81,7 +81,7 @@ class Box implements BinaryNode, Hypercube
 
         $value = 0.5 * ($mins[$column] + $maxs[$column]);
 
-        $groups = $dataset->partitionByColumn($column, $value);
+        $groups = $dataset->splitByColumn($column, $value);
 
         return new self($column, $value, $groups, $mins, $maxs);
     }

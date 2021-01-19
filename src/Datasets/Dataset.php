@@ -676,25 +676,27 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function batch(int $n = 50) : array;
 
     /**
-     * Partition the dataset into left and right subsets using the values of a single
-     * feature column for comparison.
+     * Partition the dataset into left and right subsets using the values of a single feature column for comparison.
+     *
+     * @internal
      *
      * @param int $offset
      * @param mixed $value
      * @return array{self,self}
      */
-    abstract public function partitionByColumn(int $offset, $value) : array;
+    abstract public function splitByColumn(int $offset, $value) : array;
 
     /**
-     * Partition the dataset into left and right subsets based on the samples' distances
-     * from two centroids.
+     * Partition the dataset into left and right subsets based on the samples' distances from two centroids.
+     *
+     * @internal
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return array{self,self}
      */
-    abstract public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null);
+    abstract public function spatialSplit(array $leftCentroid, array $rightCentroid, Distance $kernel);
 
     /**
      * Generate a random subset without replacement.

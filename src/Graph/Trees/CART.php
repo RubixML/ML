@@ -427,7 +427,7 @@ abstract class CART implements IteratorAggregate
             }
 
             foreach ($values as $value) {
-                $groups = $dataset->partitionByColumn($column, $value);
+                $groups = $dataset->splitByColumn($column, $value);
 
                 $impurity = $this->splitImpurity($groups, $n);
 

@@ -7,7 +7,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use ErrorException;
@@ -714,15 +713,16 @@ class Labeled extends Dataset
     }
 
     /**
-     * Partition the dataset into left and right subsets using the values of a single
-     * feature column for comparison.
+     * Split the dataset into left and right subsets using the values of a single feature column for comparison.
+     *
+     * @internal
      *
      * @param int $column
      * @param string|int|float $value
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
-    public function partitionByColumn(int $column, $value) : array
+    public function splitByColumn(int $column, $value) : array
     {
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
@@ -761,26 +761,11 @@ class Labeled extends Dataset
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return array{self,self}
      */
-    public function spatialPartition(array $leftCentroid, array $rightCentroid, ?Distance $kernel = null)
+    public function spatialSplit(array $leftCentroid, array $rightCentroid, Distance $kernel)
     {
-        if (count($leftCentroid) !== $this->numColumns()) {
-            throw new InvalidArgumentException('Dimensionality of centroid'
-                . " must equal dimensionality of dataset, {$this->numColumns()}"
-                . ' expected but ' . count($leftCentroid) . ' given.');
-        }
-
-        if (count($leftCentroid) !== count($rightCentroid)) {
-            throw new InvalidArgumentException('Dimensionality of centroids'
-                . ' must be equal, ' . count($leftCentroid) . ' expected but '
-                . count($rightCentroid) . ' given.');
-        }
-
-        $kernel = $kernel ?? new Euclidean();
-
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         foreach ($this->samples as $i => $sample) {

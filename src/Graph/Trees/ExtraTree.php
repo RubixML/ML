@@ -58,7 +58,7 @@ abstract class ExtraTree extends CART
                 $value = $values[$offset];
             }
 
-            $groups = $dataset->partitionByColumn($column, $value);
+            $groups = $dataset->splitByColumn($column, $value);
 
             $impurity = $this->splitImpurity($groups, $n);
 

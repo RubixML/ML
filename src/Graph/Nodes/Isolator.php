@@ -68,7 +68,7 @@ class Isolator implements BinaryNode
             $value = $values[$offset];
         }
 
-        $groups = $dataset->partitionByColumn($column, $value);
+        $groups = $dataset->splitByColumn($column, $value);
 
         return new self($column, $value, $groups);
     }

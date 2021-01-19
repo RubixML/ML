@@ -74,9 +74,9 @@ class LabeledBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function partitionByColumn() : void
+    public function splitByColumn() : void
     {
-        $this->dataset->partitionByColumn(2, 3.0);
+        $this->dataset->splitByColumn(2, 3.0);
     }
 
     /**

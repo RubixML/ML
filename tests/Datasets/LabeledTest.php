@@ -550,7 +550,7 @@ class LabeledTest extends TestCase
      */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->partitionByColumn(1, 'rough');
+        [$left, $right] = $this->dataset->splitByColumn(1, 'rough');
 
         $this->assertInstanceOf(Labeled::class, $left);
         $this->assertInstanceOf(Labeled::class, $right);
