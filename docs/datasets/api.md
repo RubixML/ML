@@ -113,7 +113,7 @@ categorical
 ```
 
 ## Applying Transformations
-You can apply a [Transformer](#transformers) directly to the samples in a Dataset object by passing it as an arguent to the `apply()` method on the dataset object.
+You can apply a [Transformer](#transformers) directly to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object.
 ```php
 public apply(Transformer $transformer) : self
 ```
