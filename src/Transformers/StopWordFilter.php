@@ -29,7 +29,7 @@ class StopWordFilter extends RegexFilter
         foreach ($stopWords as &$word) {
             if (!is_string($word) or empty($word)) {
                 throw new InvalidArgumentException('Stop word must be a'
-                    . 'non-empty string, ' . gettype($word) . ' found.');
+                    . ' non-empty string, ' . gettype($word) . ' found.');
             }
 
             $word = preg_quote($word, '/');
