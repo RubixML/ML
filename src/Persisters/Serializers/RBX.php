@@ -45,7 +45,7 @@ class RBX implements Serializer
      *
      * @var mixed[]
      */
-    protected const HEADER = [
+    protected const DEFAULT_HEADERS = [
         'version' => self::VERSION,
         'data' => [
             'format' => 'native',
@@ -84,7 +84,7 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $header = self::HEADER + [
+        $header = self::DEFAULT_HEADERS + [
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),

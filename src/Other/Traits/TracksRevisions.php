@@ -17,7 +17,7 @@ use function sort;
 trait TracksRevisions
 {
     /**
-     * The revision number of the class.
+     * Return the revision number of the class.
      *
      * @return string
      */
