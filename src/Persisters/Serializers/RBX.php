@@ -8,7 +8,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
-use function strlen;
+use function time;
 use function is_object;
 use function get_class;
 use function hash;
@@ -18,6 +18,8 @@ use function serialize;
 use function unserialize;
 use function gzdeflate;
 use function gzinflate;
+use function array_pad;
+use function explode;
 
 /**
  * RBX
@@ -97,7 +99,6 @@ class RBX implements Serializer
 
         $header = json_encode([
             'version' => self::VERSION,
-            'createdAt' => time(),
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
@@ -106,8 +107,8 @@ class RBX implements Serializer
                 'format' => 'native',
                 'compression' => 'deflate',
                 'checksum' => hash(self::HASHING_FUNCTION, $body),
-                'length' => strlen($body),
             ],
+            'createdAt' => time(),
         ]) ?: '';
 
         $checksum = hash(self::HASHING_FUNCTION, $header);
@@ -146,10 +147,6 @@ class RBX implements Serializer
         }
 
         $header = json_decode($header);
-
-        if (strlen($body) !== $header->data->length) {
-            throw new RuntimeException('Data has been corrupted.');
-        }
 
         if (hash(self::HASHING_FUNCTION, $body) !== $header->data->checksum) {
             throw new RuntimeException('Body checksum does not match.');
@@ -211,6 +208,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return 'RBX';
+        return "RBX (level: {$this->level})";
     }
 }
