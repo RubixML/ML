@@ -4,9 +4,11 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
+use function strlen;
 use function is_object;
 use function get_class;
 use function hash;
@@ -14,8 +16,8 @@ use function json_encode;
 use function json_decode;
 use function serialize;
 use function unserialize;
-use function gzencode;
-use function gzdecode;
+use function gzdeflate;
+use function gzinflate;
 
 /**
  * RBX
@@ -41,19 +43,6 @@ class RBX implements Serializer
     protected const VERSION = 1;
 
     /**
-     * The default file headers.
-     *
-     * @var mixed[]
-     */
-    protected const DEFAULT_HEADERS = [
-        'version' => self::VERSION,
-        'data' => [
-            'format' => 'native',
-            'compression' => 'gzip',
-        ],
-    ];
-
-    /**
      * The function used to generate checksums.
      *
      * @var string
@@ -61,18 +50,32 @@ class RBX implements Serializer
     protected const HASHING_FUNCTION = 'crc32b';
 
     /**
-     * The level of compression applied to the data.
-     *
-     * @var int
-     */
-    protected const COMPRESSION_LEVEL = 9;
-
-    /**
      * The end of line character.
      *
      * @var string
      */
     protected const EOL = "\n";
+
+    /**
+     * The compression level between 0 and 9, 0 meaning no compression.
+     *
+     * @var int
+     */
+    protected $level;
+
+    /**
+     * @param int $level
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     */
+    public function __construct(int $level = 9)
+    {
+        if ($level < 0 or $level > 9) {
+            throw new InvalidArgumentException('Compression level must'
+                . " be between 0 and 9, $level given.");
+        }
+
+        $this->level = $level;
+    }
 
     /**
      * Serialize a persistable object and return the data.
@@ -84,22 +87,35 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $header = self::DEFAULT_HEADERS + [
+        $body = serialize($persistable);
+
+        $body = gzdeflate($body, $this->level);
+
+        if ($body === false) {
+            throw new RuntimeException('Error compressing the data.');
+        }
+
+        $header = json_encode([
+            'version' => self::VERSION,
+            'createdAt' => time(),
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
             ],
-        ];
+            'data' => [
+                'format' => 'native',
+                'compression' => 'deflate',
+                'checksum' => hash(self::HASHING_FUNCTION, $body),
+                'length' => strlen($body),
+            ],
+        ]) ?: '';
 
-        $header = json_encode($header) ?: '';
+        $checksum = hash(self::HASHING_FUNCTION, $header);
 
         $data = self::IDENTIFIER_STRING . self::EOL;
-
+        $data .= $checksum . self::EOL;
         $data .= $header . self::EOL;
-
-        $data .= hash(self::HASHING_FUNCTION, $header) . self::EOL;
-
-        $data .= gzencode(serialize($persistable), self::COMPRESSION_LEVEL) . self::EOL;
+        $data .= $body;
 
         return new Encoding($data);
     }
@@ -115,13 +131,13 @@ class RBX implements Serializer
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        [$id, $header, $checksum, $data] = array_pad(explode(self::EOL, $encoding, 4), 4, null);
+        [$id, $checksum, $header, $body] = array_pad(explode(self::EOL, $encoding, 4), 4, null);
 
         if ($id !== self::IDENTIFIER_STRING) {
             throw new RuntimeException('Unrecognized file format.');
         }
 
-        if (!$header or !$checksum or !$data) {
+        if (!$checksum or !$header or !$body) {
             throw new RuntimeException('Invalid file format.');
         }
 
@@ -131,27 +147,40 @@ class RBX implements Serializer
 
         $header = json_decode($header);
 
+        if (strlen($body) !== $header->data->length) {
+            throw new RuntimeException('Data has been corrupted.');
+        }
+
+        if (hash(self::HASHING_FUNCTION, $body) !== $header->data->checksum) {
+            throw new RuntimeException('Body checksum does not match.');
+        }
+
         switch ($header->data->compression) {
-            case 'gzip':
-                $data = gzdecode($data);
+            case 'deflate':
+                $body = gzinflate($body);
+
+                if ($body === false) {
+                    throw new RuntimeException('Error decompressing the data.');
+                }
 
                 break;
+
+            default:
+                throw new RuntimeException('Invalid compression method.');
         }
 
         switch ($header->data->format) {
             case 'native':
-            default:
-                $persistable = unserialize($data);
-        }
+                $persistable = unserialize($body);
 
-        if ($persistable === false) {
-            throw new RuntimeException('Cannot read encoding, wrong'
-                . ' format or corrupted data.');
+                break;
+
+            default:
+                throw new RuntimeException('Invalid data format.');
         }
 
         if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized encoding must'
-                . ' be an object.');
+            throw new RuntimeException('Unserialized data must be an object.');
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {

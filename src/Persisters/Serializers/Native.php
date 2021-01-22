@@ -44,21 +44,14 @@ class Native implements Serializer
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        $persistable = unserialize((string) $encoding);
-
-        if ($persistable === false) {
-            throw new RuntimeException('Cannot read encoding, wrong'
-                . ' format or corrupted data.');
-        }
+        $persistable = unserialize($encoding);
 
         if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized encoding must'
-                . ' be an object.');
+            throw new RuntimeException('Unserialized data must be an object.');
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
-            throw new RuntimeException('Missing class definition'
-                . ' for unserialized object.');
+            throw new RuntimeException('Missing class definition for unserialized object.');
         }
 
         if (!$persistable instanceof Persistable) {

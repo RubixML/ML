@@ -7,7 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
-use function is_null;
 use function is_object;
 
 /**
@@ -58,14 +57,8 @@ class Igbinary implements Serializer
     {
         $persistable = igbinary_unserialize((string) $encoding);
 
-        if (is_null($persistable)) {
-            throw new RuntimeException('Cannot read encoding, wrong'
-                . ' format or corrupted data.');
-        }
-
         if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized encoding must'
-                . ' be an object.');
+            throw new RuntimeException('Unserialized data must be an object.');
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
