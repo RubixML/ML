@@ -7,8 +7,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
+use function is_object;
 use function get_class;
-use function crc32;
+use function hash;
 use function json_encode;
 use function json_decode;
 use function serialize;
@@ -53,6 +54,13 @@ class RBX implements Serializer
     ];
 
     /**
+     * The function used to generate checksums.
+     *
+     * @var string
+     */
+    protected const HASHING_FUNCTION = 'crc32b';
+
+    /**
      * The level of compression applied to the data.
      *
      * @var int
@@ -76,8 +84,6 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $data = self::IDENTIFIER_STRING . self::EOL;
-
         $header = self::HEADER + [
             'class' => [
                 'name' => get_class($persistable),
@@ -87,9 +93,11 @@ class RBX implements Serializer
 
         $header = json_encode($header) ?: '';
 
+        $data = self::IDENTIFIER_STRING . self::EOL;
+
         $data .= $header . self::EOL;
 
-        $data .= crc32($header) . self::EOL;
+        $data .= hash(self::HASHING_FUNCTION, $header) . self::EOL;
 
         $data .= gzencode(serialize($persistable), self::COMPRESSION_LEVEL) . self::EOL;
 
@@ -117,7 +125,7 @@ class RBX implements Serializer
             throw new RuntimeException('Incomplete file.');
         }
 
-        if (crc32($header) != $checksum) {
+        if (hash(self::HASHING_FUNCTION, $header) !== $checksum) {
             throw new RuntimeException('Header checksum does not match.');
         }
 

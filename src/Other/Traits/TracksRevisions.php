@@ -2,8 +2,10 @@
 
 namespace Rubix\ML\Other\Traits;
 
-use function sha1;
+use function hash;
 use function get_object_vars;
+use function implode;
+use function sort;
 
 /**
  * Tracks Revisions
@@ -25,6 +27,6 @@ trait TracksRevisions
 
         sort($properties);
 
-        return sha1(implode(':', $properties));
+        return hash('crc32b', implode(':', $properties));
     }
 }
