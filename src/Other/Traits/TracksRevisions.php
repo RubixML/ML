@@ -11,7 +11,7 @@ use function sort;
 
 /**
  * Tracks Revisions
- * 
+ *
  * Automatically update class revision numbers by tracking changes in the object-property definition tree stemming from this instance.
  *
  * @category    Machine Learning
