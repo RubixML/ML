@@ -11,6 +11,8 @@ use function sort;
 
 /**
  * Tracks Revisions
+ * 
+ * Automatically update class revision numbers by tracking changes in the object-property definition tree stemming from this instance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -32,13 +34,15 @@ trait TracksRevisions
         while ($current = array_pop($stack)) {
             $reflector = new ReflectionClass($current);
 
-            foreach ($reflector->getProperties() as $property) {
+            $properties = $reflector->getProperties();
+
+            foreach ($properties as $property) {
                 $tokens[] = $property->getName();
-    
+
                 $property->setAccessible(true);
-    
+
                 $value = $property->getValue($current);
-    
+
                 if (is_object($value)) {
                     $stack[] = $value;
                 }

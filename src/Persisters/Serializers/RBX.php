@@ -122,7 +122,7 @@ class RBX implements Serializer
         }
 
         if (!$header or !$checksum or !$data) {
-            throw new RuntimeException('Incomplete file.');
+            throw new RuntimeException('Invalid file format.');
         }
 
         if (hash(self::HASHING_FUNCTION, $header) !== $checksum) {
@@ -162,6 +162,10 @@ class RBX implements Serializer
         if (!$persistable instanceof Persistable) {
             throw new RuntimeException('Unserialized object must'
                 . ' implement the Persistable interface.');
+        }
+
+        if (get_class($persistable) !== $header->class->name) {
+            throw new RuntimeException('Header and data classes do not match.');
         }
 
         if ($persistable->revision() !== $header->class->revision) {
