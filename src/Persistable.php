@@ -12,7 +12,7 @@ namespace Rubix\ML;
 interface Persistable
 {
     /**
-     * The revision number of the class.
+     * Return the revision number of the class.
      *
      * @return string
      */

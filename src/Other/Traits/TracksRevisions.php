@@ -2,8 +2,10 @@
 
 namespace Rubix\ML\Other\Traits;
 
+use ReflectionClass;
+
+use function is_object;
 use function hash;
-use function get_object_vars;
 use function implode;
 use function sort;
 
@@ -23,10 +25,28 @@ trait TracksRevisions
      */
     public function revision() : string
     {
-        $properties = array_keys(get_object_vars($this));
+        $stack = [$this];
 
-        sort($properties);
+        $tokens = [];
 
-        return hash('crc32b', implode(':', $properties));
+        while ($current = array_pop($stack)) {
+            $reflector = new ReflectionClass($current);
+
+            foreach ($reflector->getProperties() as $property) {
+                $tokens[] = $property->getName();
+    
+                $property->setAccessible(true);
+    
+                $value = $property->getValue($current);
+    
+                if (is_object($value)) {
+                    $stack[] = $value;
+                }
+            }
+        }
+
+        sort($tokens);
+
+        return hash('crc32b', implode($tokens));
     }
 }
