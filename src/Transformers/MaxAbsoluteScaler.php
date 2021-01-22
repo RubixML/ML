@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -22,6 +23,8 @@ use const Rubix\ML\EPSILON;
  */
 class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * The maximum absolute values for each fitted feature column.
      *

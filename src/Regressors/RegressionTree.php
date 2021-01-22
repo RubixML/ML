@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,6 +41,8 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize

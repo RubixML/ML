@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,6 +41,8 @@ use function array_slice;
  */
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * The number of neighbors to consider when making a prediction.
      *

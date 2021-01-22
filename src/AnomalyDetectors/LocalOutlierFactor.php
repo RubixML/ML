@@ -14,6 +14,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -42,7 +43,7 @@ use const Rubix\ML\EPSILON;
  */
 class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persistable
 {
-    use RanksSingle;
+    use TracksRevisions, RanksSingle;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.

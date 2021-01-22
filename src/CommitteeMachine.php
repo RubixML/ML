@@ -12,6 +12,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -42,7 +43,7 @@ use function in_array;
  */
 class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
 {
-    use Multiprocessing, PredictsSingle, LoggerAware;
+    use TracksRevisions, Multiprocessing, PredictsSingle, LoggerAware;
 
     /**
      * The integer-encoded estimator types this ensemble is compatible with.

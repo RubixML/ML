@@ -16,6 +16,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -45,7 +46,7 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
 {
-    use PredictsSingle, RanksSingle;
+    use TracksRevisions, PredictsSingle, RanksSingle;
 
     /**
      * The minimum number of histogram bins.

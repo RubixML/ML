@@ -20,6 +20,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
@@ -51,7 +52,7 @@ use function count;
  */
 class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use TracksRevisions, PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
      * The number of training samples to process at a time.

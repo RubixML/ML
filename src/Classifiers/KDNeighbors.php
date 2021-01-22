@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -38,6 +39,8 @@ use function Rubix\ML\argmax;
  */
 class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * The number of neighbors to consider when making a prediction.
      *

@@ -9,6 +9,7 @@ use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -26,6 +27,8 @@ use function is_null;
  */
 class KBestFeatureSelector implements Transformer, Stateful, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * The maximum number of features to select from the dataset.
      *

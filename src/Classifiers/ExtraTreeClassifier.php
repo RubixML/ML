@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -43,6 +44,8 @@ use function Rubix\ML\argmax;
  */
 class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
+    use TracksRevisions;
+    
     /**
      * The zero vector for the possible class outcomes.
      *

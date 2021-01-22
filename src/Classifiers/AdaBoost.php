@@ -13,6 +13,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -49,7 +50,7 @@ use const Rubix\ML\EPSILON;
  */
 class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use PredictsSingle, ProbaSingle, LoggerAware;
+    use TracksRevisions, PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
      * The minimum size of each training subset.
