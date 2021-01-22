@@ -27,21 +27,21 @@ class RBX implements Serializer
 {
     /**
      * The identifier or "magic number" of the file format.
-     * 
+     *
      * @var string
      */
     protected const IDENTIFIER_STRING = "∃RBX\032";
 
     /**
      * The current version of the file format.
-     * 
+     *
      * @var int
      */
     protected const VERSION = 1;
 
     /**
      * The default file headers.
-     * 
+     *
      * @var mixed[]
      */
     protected const HEADER = [
@@ -54,14 +54,14 @@ class RBX implements Serializer
 
     /**
      * The level of compression applied to the data.
-     * 
+     *
      * @var int
      */
     protected const COMPRESSION_LEVEL = 9;
 
     /**
      * The end of line character.
-     * 
+     *
      * @var string
      */
     protected const EOL = "\n";
@@ -78,12 +78,14 @@ class RBX implements Serializer
     {
         $data = self::IDENTIFIER_STRING . self::EOL;
 
-        $header = json_encode(self::HEADER + [
+        $header = self::HEADER + [
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
             ],
-        ]);
+        ];
+
+        $header = json_encode($header) ?: '';
 
         $data .= $header . self::EOL;
 

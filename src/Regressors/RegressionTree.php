@@ -42,7 +42,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize

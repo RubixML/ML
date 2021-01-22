@@ -24,7 +24,7 @@ use const Rubix\ML\EPSILON;
 class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The maximum absolute values for each fitted feature column.
      *

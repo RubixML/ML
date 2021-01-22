@@ -41,7 +41,7 @@ use function is_null;
 class KNNImputer implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The number of neighbors to consider when imputing a value.
      *

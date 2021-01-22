@@ -34,7 +34,7 @@ use function is_null;
 class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The amount of additive (Laplace) smoothing to add to the inverse document
      * frequencies (IDFs).

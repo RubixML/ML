@@ -31,7 +31,7 @@ use function is_null;
 class WordCountVectorizer implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The maximum size of the vocabulary.
      *

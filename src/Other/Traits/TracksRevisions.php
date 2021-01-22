@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Traits;
 
-use Psr\Log\LoggerInterface;
-
 use function sha1;
 use function get_object_vars;
 
@@ -18,7 +16,7 @@ trait TracksRevisions
 {
     /**
      * The revision number of the class.
-     * 
+     *
      * @return string
      */
     public function revision() : string

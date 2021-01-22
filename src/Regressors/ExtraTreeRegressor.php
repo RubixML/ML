@@ -41,7 +41,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize

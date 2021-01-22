@@ -44,7 +44,7 @@ use function Rubix\ML\argmax;
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The zero vector for the possible class outcomes.
      *

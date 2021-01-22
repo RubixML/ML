@@ -48,7 +48,7 @@ use const Rubix\ML\LOG_EPSILON;
 class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The class prior log probabilities.
      *

@@ -45,7 +45,7 @@ use function Rubix\ML\argmax;
 class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The zero vector for the possible class outcomes.
      *

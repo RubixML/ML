@@ -30,7 +30,7 @@ use function is_null;
 class OneHotEncoder implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The set of unique possible categories per feature column of the training set.
      *

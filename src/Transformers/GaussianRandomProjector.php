@@ -28,7 +28,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class GaussianRandomProjector implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The target number of dimensions.
      *

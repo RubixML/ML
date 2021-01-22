@@ -42,7 +42,7 @@ use function array_slice;
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

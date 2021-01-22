@@ -40,7 +40,7 @@ use function in_array;
 class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The radius within which points are considered neighbors.
      *

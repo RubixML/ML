@@ -33,7 +33,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class DummyRegressor implements Estimator, Learner, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The guessing strategy that the dummy employs.
      *

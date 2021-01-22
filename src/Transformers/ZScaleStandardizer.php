@@ -33,7 +33,7 @@ use const Rubix\ML\EPSILON;
 class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * Should we center the data at 0?
      *

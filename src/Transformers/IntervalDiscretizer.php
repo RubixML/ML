@@ -28,7 +28,7 @@ use function is_null;
 class IntervalDiscretizer implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The value of the starting category for each feature column.
      *

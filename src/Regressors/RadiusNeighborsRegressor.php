@@ -39,7 +39,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The value to assign to outliers when making a prediction.
      *

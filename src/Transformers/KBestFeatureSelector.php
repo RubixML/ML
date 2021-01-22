@@ -28,7 +28,7 @@ use function is_null;
 class KBestFeatureSelector implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The maximum number of features to select from the dataset.
      *

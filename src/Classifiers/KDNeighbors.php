@@ -40,7 +40,7 @@ use function Rubix\ML\argmax;
 class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

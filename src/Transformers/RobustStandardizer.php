@@ -30,7 +30,7 @@ use const Rubix\ML\EPSILON;
 class RobustStandardizer implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * Should we center the data at 0?
      *

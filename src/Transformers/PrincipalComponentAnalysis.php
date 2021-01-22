@@ -35,7 +35,7 @@ use const Rubix\ML\EPSILON;
 class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The target number of dimensions to project onto.
      *

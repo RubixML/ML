@@ -38,7 +38,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 class KDNeighborsRegressor implements Estimator, Learner, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

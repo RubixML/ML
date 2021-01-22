@@ -42,7 +42,7 @@ use function array_slice;
 class KNNRegressor implements Estimator, Learner, Online, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

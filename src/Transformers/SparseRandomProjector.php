@@ -29,7 +29,7 @@ use function is_null;
 class SparseRandomProjector extends GaussianRandomProjector
 {
     use TracksRevisions;
-    
+
     /**
      * The decimal representation of the fraction two thirds.
      *

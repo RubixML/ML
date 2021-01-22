@@ -25,7 +25,7 @@ use const Rubix\ML\EPSILON;
 class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The minimum value of the transformed features.
      *

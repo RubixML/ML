@@ -28,7 +28,7 @@ use function is_null;
 class VarianceThresholdFilter implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The minimum number of features to select from the dataset.
      *

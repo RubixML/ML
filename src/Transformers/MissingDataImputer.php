@@ -28,7 +28,7 @@ use function is_null;
 class MissingDataImputer implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
-    
+
     /**
      * The guessing strategy to use when imputing continuous values.
      *
