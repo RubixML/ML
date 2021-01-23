@@ -23,7 +23,7 @@ use function explode;
  * RBX
  *
  * Rubix Object File format (RBX) is a format designed to securely and reliably store and share serialized PHP objects.
- * Based on PHP's native serialization format, RBX adds additional layers of compression, tamper protection, and class
+ * Based on PHP's native serialization format, RBX adds additional layers of tamper protection, compression, and class
  * definition compatibility detection all in one robust format.
  *
  * @category    Machine Learning
@@ -179,7 +179,7 @@ class RBX implements Serializer
                 break;
 
             default:
-                throw new RuntimeException('Invalid HMAC type.');
+                throw new RuntimeException('Invalid HMAC hash type.');
         }
 
         if ($hash !== $header->data->hmac->hash) {
