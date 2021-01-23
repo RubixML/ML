@@ -6,7 +6,7 @@ A report generator that aggregates the output of multiple reports.
 **Estimator Compatibility:** Depends on base reports
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | reports | | array | An array of report generators to aggregate keyed by a user-specified name. |
 

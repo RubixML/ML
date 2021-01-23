@@ -10,7 +10,7 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |

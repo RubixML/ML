@@ -10,13 +10,13 @@ An unsupervised Support Vector Machine (SVM) used for anomaly detection. The One
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | nu | 0.1 | float | An upper bound on the percentage of margin errors and a lower bound on the percentage of support vectors. |
 | 2 | kernel | RBF | Kernel | The kernel function used to express non-linear data in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
+| 5 | cacheSize | 100.0 | float | The size of the kernel cache in MB. |
 
 ## Example
 ```php

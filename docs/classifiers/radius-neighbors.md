@@ -8,11 +8,11 @@ Radius Neighbors is a classifier that takes the distance-weighted vote of each n
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
-| 3 | outlier class | '?' | string | The class label for any samples that have 0 neighbors within the specified radius. |
+| 3 | outlierClass | '?' | string | The class label for any samples that have 0 neighbors within the specified radius. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Example

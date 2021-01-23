@@ -8,7 +8,7 @@ The Persistent Model meta-estimator wraps a [Persistable](persistable.md) learne
 **Data Type Compatibility:** Depends on base learner
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | Persistable | The persistable base learner. |
 | 2 | persister | | Persister | The persister used to interface with the storage medium. |

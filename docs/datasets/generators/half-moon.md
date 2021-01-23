@@ -8,7 +8,7 @@ Generates a dataset consisting of 2-d samples that form the shape of a half moon
 **Label Type:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the half moon. |
 | 2 | y | 0.0 | float | The *y* coordinate of the center of the half moon. |

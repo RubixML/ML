@@ -8,7 +8,7 @@
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
 | 2 | bins | null | int | The number of equi-width bins for each histogram. If null then will estimate bin count. |

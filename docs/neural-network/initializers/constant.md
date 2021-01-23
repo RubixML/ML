@@ -4,7 +4,7 @@
 Initialize the parameter to a user-specified constant value.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0.0 | float | The value to initialize the parameter to. |
 

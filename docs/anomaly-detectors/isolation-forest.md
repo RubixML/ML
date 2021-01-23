@@ -8,7 +8,7 @@ An ensemble of Isolation Trees that each specialize on a unique subset of the tr
 **Data Type Compatibility:** Categorical, Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | estimators | 100 | int | The number of isolation trees to train in the ensemble. |
 | 2 | ratio | null | float | The ratio of samples to train each estimator with. If null, the subsample size will be set to 256. |

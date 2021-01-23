@@ -10,7 +10,7 @@
 **Data Type Compatibility:** Continuous only
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to add to the inverse document frequencies (IDFs). |
 

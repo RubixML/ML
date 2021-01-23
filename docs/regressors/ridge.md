@@ -8,7 +8,7 @@ L2 regularized linear regression solved using a closed-form solution. The additi
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The strength of the L2 regularization penalty. |
 

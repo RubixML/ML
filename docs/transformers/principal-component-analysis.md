@@ -8,7 +8,7 @@ Principal Component Analysis (PCA) is a dimensionality reduction technique that 
 **Data Type Compatibility:** Continuous only
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 

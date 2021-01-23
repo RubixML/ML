@@ -8,7 +8,7 @@ Converts each continuous feature to a category using equi-width histograms with 
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | bins | 5 | int | The number of bins (discrete categories) per continuous feature column. |
 

@@ -10,7 +10,7 @@ The Support Vector Machine Regressor (SVR) is a maximum margin algorithm for the
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
 | 2 | epsilon | 0.1 | float | Specifies the margin within which no penalty is associated in the training loss. |

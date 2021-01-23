@@ -10,7 +10,7 @@ A statistical anomaly detector that uses modified Z-Scores that are robust to pr
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 3.5 | float | The minimum Z-Score to be flagged as an anomaly. |
 | 2 | alpha | 0.5 | float | The weight of the maximum per-sample Z-Score in the overall anomaly score. |

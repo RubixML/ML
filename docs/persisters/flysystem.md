@@ -6,7 +6,7 @@
 > **Note:** The Flysystem persister is designed to work with Flysystem version 2.0.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path | | string | The path to the persistable object file on the filesystem. |
 | 2 | filesystem |  | FilesystemOperator | The Flysystem filesystem operator responsible for read and write operations. |

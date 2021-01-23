@@ -10,7 +10,7 @@ Pipeline is a meta-estimator capable of transforming an input dataset by applyin
 **Data Type Compatibility:** Depends on base learner and transformers
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | transformers |  | array | A list of transformers to be applied in order. |
 | 2 | estimator |  | Estimator | An instance of a base estimator to receive the transformed data. |

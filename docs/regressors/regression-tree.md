@@ -8,12 +8,12 @@ A decision tree based on the CART (*Classification and Regression Tree*) learnin
 **Data Type Compatibility:** Categorical, Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max height | PHP_INT_MAX | int | The maximum height of the tree. |
-| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | max features | Auto | int | The max number of feature columns to consider when determining a best split. |
-| 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
+| 1 | maxHeight | PHP_INT_MAX | int | The maximum height of the tree. |
+| 2 | maxLeafSize | 3 | int | The max number of samples that a leaf node can contain. |
+| 3 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
+| 4 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
 
 ## Example
 ```php

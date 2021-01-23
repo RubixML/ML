@@ -8,12 +8,12 @@ A distance-based soft-clustering algorithm that allows samples to belong to mult
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 4 | min change | 10. | float | The minimum change in the inertia for the algorithm to continue training. |
+| 4 | minChange | 1e-4 | float | The minimum change in the inertia for the algorithm to continue training. |
 | 5 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 | 6 | seeder | PlusPlus | Seeder | The seeder used to initialize the cluster centroids. |
 

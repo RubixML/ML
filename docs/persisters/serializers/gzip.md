@@ -4,7 +4,7 @@
 A compression format based on the DEFLATE algorithm with a header and CRC32 checksum, the Gzip serializer outputs smaller model files at the cost of a bit more processing during serialization and deserialization. In addition, the Gzip serializer can be applied to any other non-compressed serialization format by changing the base serializer.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | level | 1 | int | The compression level between 0 and 9, 0 meaning no compression. |
 | 2 | serializer | Native | Serializer | The base serializer. |

@@ -10,7 +10,7 @@ A *database-friendly* random projector with projection matrix sampled from a den
 **Data Type Compatibility:** Continuous only
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 

@@ -4,7 +4,7 @@
 Tokens are delimited by a user-specified whitespace character.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 

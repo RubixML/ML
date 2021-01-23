@@ -8,7 +8,7 @@ Regressor that guesses output values based on a user-defined guessing [Strategy]
 **Data Type Compatibility:** Categorical, Continuous, Resource
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | strategy | Mean | Strategy | The guessing strategy to employ when making predictions. |
 

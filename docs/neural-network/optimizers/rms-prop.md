@@ -4,7 +4,7 @@
 An adaptive gradient technique that divides the current gradient over a rolling window of the magnitudes of recent gradients. Unlike [AdaGrad](adagrad.md), RMS Prop does not suffer from an infinitely decaying step size.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the rms property. |

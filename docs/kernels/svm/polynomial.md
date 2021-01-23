@@ -4,7 +4,7 @@
 This kernel projects a sample vector using polynomials of the p'th degree.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | degree | 3 | int | The degree of the polynomial. |
 | 2 | gamma | null | float | The kernel coefficient. |

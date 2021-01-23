@@ -8,7 +8,7 @@ Creates a dataset of points forming a circle in 2 dimensions. The label of each 
 **Label Type:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the circle. |
 | 2 | y | 0.0 | float | The *y* coordinate of the center of the circle. |

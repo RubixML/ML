@@ -8,7 +8,7 @@ A weighted harmonic mean of precision and recall, F-Beta is a both a versatile a
 **Output Range:** 0 to 1
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | beta | 1.0 | float | The ratio of weight given to precision over recall. |
 

@@ -25,16 +25,16 @@ class Screen extends Logger
      *
      * @var string
      */
-    protected $format;
+    protected $timestampFormat;
 
     /**
      * @param string $channel
-     * @param string $format
+     * @param string $timestampFormat
      */
-    public function __construct(string $channel = '', string $format = 'Y-m-d H:i:s')
+    public function __construct(string $channel = '', string $timestampFormat = 'Y-m-d H:i:s')
     {
         $this->channel = trim($channel);
-        $this->format = $format;
+        $this->timestampFormat = $timestampFormat;
     }
 
     /**
@@ -48,8 +48,8 @@ class Screen extends Logger
     {
         $prefix = '';
 
-        if ($this->format) {
-            $prefix .= '[' . date($this->format) . '] ';
+        if ($this->timestampFormat) {
+            $prefix .= '[' . date($this->timestampFormat) . '] ';
         }
 
         if ($this->channel) {

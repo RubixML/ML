@@ -10,7 +10,7 @@ Random Forest (RF) is a classifier that trains an ensemble of Decision Trees ([C
 **Data Type Compatibility:** Categorical, Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | Learner | The base learner. |
 | 2 | estimators | 100 | int | The number of learners to train in the ensemble. |

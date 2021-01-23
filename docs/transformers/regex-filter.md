@@ -8,7 +8,7 @@ Filters the text columns of a dataset by matching a list of regular expressions.
 **Data Type Compatibility:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | patterns | | array | A list of regular expression patterns used to filter the text columns of the dataset. |
 

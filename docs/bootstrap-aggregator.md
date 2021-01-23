@@ -8,7 +8,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 **Data Type Compatibility:** Depends on base learner
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | Learner | The base learner. |
 | 2 | estimators | 10 | int | The number of base learners to train in the ensemble. |

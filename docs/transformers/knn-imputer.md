@@ -10,11 +10,11 @@ An unsupervised imputer that replaces missing values in a dataset with the dista
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbor donors to consider when imputing a value. |
 | 2 | weighted | true | bool | Should we use distances as weights when selecting a donor sample? |
-| 3 | placeholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
+| 3 | categoricalPlaceholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
 ## Example
