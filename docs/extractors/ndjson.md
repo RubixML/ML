@@ -6,7 +6,7 @@
 > **Note:** Empty lines are ignored by the parser.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the NDJSON file. |
 

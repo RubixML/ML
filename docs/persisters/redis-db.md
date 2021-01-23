@@ -6,7 +6,7 @@ Redis is a high performance in-memory key value store that can be used to persis
 > **Note:** Requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | key | | string | The key of the object in the database. |
 | 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |

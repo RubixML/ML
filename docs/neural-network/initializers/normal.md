@@ -4,7 +4,7 @@
 Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
 

@@ -8,7 +8,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 **Data Type Compatibility:** Depends on base learner
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | string | The class name of the base learner. |
 | 2 | params | | array | An array of [n-tuples](faq.md#what-is-a-tuple) containing the possible values for each of the base learner's constructor parameters. |

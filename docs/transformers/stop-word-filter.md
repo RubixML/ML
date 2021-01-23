@@ -8,9 +8,9 @@ Removes user-specified words from any categorical feature columns including blob
 **Data Type Compatibility:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | stop words | | array | A list of stop words to filter out of each text feature. |
+| 1 | stopWords | | array | A list of stop words to filter out of each text feature. |
 
 ## Example
 ```php

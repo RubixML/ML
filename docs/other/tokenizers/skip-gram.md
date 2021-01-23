@@ -4,7 +4,7 @@
 Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be *skipped* forming n-grams of the new forward looking sequences.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | n | 2 | int | The number of contiguous words to a single token. |
 | 2 | skip | 2 | int | The number of words to skip over to form new n-gram sequences. |

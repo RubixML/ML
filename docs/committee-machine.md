@@ -10,7 +10,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 **Data Type Compatibility:** Depends on the base learners
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | null | array | The influence values for each expert in the committee. If null, each expert will be weighted equally. |

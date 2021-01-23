@@ -4,7 +4,7 @@
 Dropout is a regularization technique to reduce overfitting in neural networks by preventing complex co-adaptations on training data. It works by temporarily disabling output nodes during each training pass. It also acts as an efficient way of performing model averaging with the parameters of neural networks.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | ratio | 0.5 | float | The ratio of nodes that are dropped during each training pass. |
 

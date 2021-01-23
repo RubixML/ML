@@ -8,7 +8,7 @@ This standardizer transforms continuous features by centering them around the me
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description | 
+| # | Name | Default | Type | Description | 
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the data at 0? |
 

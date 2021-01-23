@@ -8,7 +8,7 @@ Linear Discriminant Analysis (LDA) is a supervised dimensionality reduction tech
 **Data Type Compatibility:** Continuous only
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 

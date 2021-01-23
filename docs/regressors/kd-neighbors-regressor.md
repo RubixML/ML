@@ -8,7 +8,7 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
 | 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |

@@ -6,7 +6,7 @@ This Strategy outputs one of k most frequently occurring classes at random with 
 **Data Type:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 1 | int | The number of most frequent classes to consider. |
 

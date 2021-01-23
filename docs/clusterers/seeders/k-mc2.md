@@ -4,7 +4,7 @@
 A fast [Plus Plus](plus-plus.md) approximator that replaces the brute force method with a substantially faster Markov Chain Monte Carlo (MCMC) sampling procedure with comparable results.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | m | 50 | int | The number of candidate nodes in the Markov Chain. |
 | 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between samples. |

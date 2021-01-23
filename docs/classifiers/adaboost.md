@@ -10,13 +10,13 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 **Data Type Compatibility:** Depends on base learner
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | Learner | The base *weak* classifier to be boosted. |
 | 2 | rate | 1.0 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.8 | float | The ratio of samples to subsample from the training set to train each *weak* learner. |
 | 4 | estimators | 100 | int | The maximum number of *weak* learners to train in the ensemble. |
-| 5 | min change | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
+| 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 
 ## Example

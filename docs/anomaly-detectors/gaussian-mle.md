@@ -8,7 +8,7 @@ The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by comp
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
 

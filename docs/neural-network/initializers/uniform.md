@@ -4,7 +4,7 @@
 Generates a random uniform distribution centered at 0 and bounded at both ends by the parameter beta.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | beta | 0.05 | float | The upper and lower bound of the distribution. |
 

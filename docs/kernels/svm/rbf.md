@@ -4,7 +4,7 @@
 Non linear radial basis function (RBF) computes the distance from a centroid or origin.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | gamma | null | float | The kernel coefficient. |
 

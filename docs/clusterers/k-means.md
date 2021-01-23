@@ -8,7 +8,7 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
 | 2 | batch size | 128 | int | The size of each mini batch in samples. |

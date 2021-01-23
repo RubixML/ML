@@ -8,7 +8,7 @@ An Agglomerate is a collection of generators with each of them given a user-defi
 **Label Type:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | generators | | array | A collection of generators indexed by their given label. |
 | 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's proportion of the overall agglomeration. If no weights are given, each generator is assigned equal weight. |

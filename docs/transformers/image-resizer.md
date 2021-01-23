@@ -10,7 +10,7 @@ Image Resizer fits (scales and crops) images to a user-specified width and heigh
 **Data Type Compatibility:** Image
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | width | 32 | int | The width of the resized image. |
 | 2 | heights | 32 | int | The height of the resized image. |

@@ -8,7 +8,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of an unknown
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | null | float | The proportion of outliers that are assumed to be present in the training set. |

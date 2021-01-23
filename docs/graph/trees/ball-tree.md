@@ -8,9 +8,9 @@ A binary spatial tree that partitions a dataset into successively smaller and ti
 **Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max leaf size | 30 | int | The maximum number of samples that each leaf node can contain. |
+| 1 | maxLeafSize | 30 | int | The maximum number of samples that each leaf node can contain. |
 | 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Example

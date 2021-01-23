@@ -10,9 +10,9 @@ Removes any HTML or PHP tags from the text of a feature column.
 **Data Type Compatibility:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | allowed tags | | array | A list of html tags that should not be stripped ex. ['p', 'br']. |
+| 1 | allowedTags | | array | A list of html tags that should not be stripped ex. ['p', 'br']. |
 
 ## Example
 ```php

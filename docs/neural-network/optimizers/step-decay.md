@@ -4,7 +4,7 @@
 A learning rate decay optimizer that reduces the global learning rate by a factor whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* hyper-parameter.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.01 | float | The learning rate that controls the global step size. |
 | 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |

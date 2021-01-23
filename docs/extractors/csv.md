@@ -6,7 +6,7 @@ A plain-text format that use newlines to delineate rows and a user-specified del
 > **Note:** This implementation of CSV is based on the definition in [RFC 4180](https://tools.ietf.org/html/rfc4180).
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path |  | string | The path to the CSV file. |
 | 2 | header | false | bool | Does the CSV document have a header as the first row? |

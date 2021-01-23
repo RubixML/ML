@@ -8,7 +8,7 @@ A method of centering and scaling a dataset such that it has 0 mean and unit var
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the data at 0? |
 

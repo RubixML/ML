@@ -8,7 +8,7 @@ V Measure is an entropy-based clustering metric that balances [Homogeneity](homo
 **Output Range:** 0 to 1
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | beta | 1.0 | float | The ratio of weight given to homogeneity over completeness. |
 

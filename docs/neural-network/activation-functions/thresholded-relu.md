@@ -4,7 +4,7 @@
 A version of the [ReLU](relu.md) function that activates only if the input is above some user-specified threshold level.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 1.0 | float | The threshold at which the neuron is activated. |
 

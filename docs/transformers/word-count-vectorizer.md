@@ -8,11 +8,11 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 **Data Type Compatibility:** Categorical
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
-| 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
-| 3 | max document frequency | PHP_INT_MAX | int | The maximum number of documents a word can appear in to be added to the vocabulary. |
+| 1 | maxVocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
+| 2 | minDocumentFrequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
+| 3 | maxDocumentFrequency | PHP_INT_MAX | int | The maximum number of documents a word can appear in to be added to the vocabulary. |
 | 4 | tokenizer | Word | Tokenizer | The tokenizer used to extract tokens from blobs of text. |
 
 ## Example

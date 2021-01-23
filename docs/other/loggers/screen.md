@@ -2,10 +2,10 @@
 A logger that displays log messages to the standard output.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | channel | '' | string | The channel name that appears on each line. |
-| 2 | format | 'Y-m-d H:i:s' | string | The format of the timestamp. |
+| 2 | timestampFormat | 'Y-m-d H:i:s' | string | The format of the timestamp. |
 
 ## Example
 ```php

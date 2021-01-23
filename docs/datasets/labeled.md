@@ -6,7 +6,7 @@ A Labeled dataset is used to train supervised learners and for testing a model b
 **Note:** Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class name such as `'class 1'`, `'#1'`, or `'first'`.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |

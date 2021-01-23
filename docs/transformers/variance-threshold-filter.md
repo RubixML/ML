@@ -10,7 +10,7 @@ A type of feature selector that selects the top *k* features with the greatest v
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | minFeatures | | int | The minimum number of features to select from the dataset. |
 

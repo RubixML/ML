@@ -8,7 +8,7 @@ The *Min Max* Normalizer scales the input features to a value between a user-spe
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | min | 0.0 | float | The minimum value of the transformed features. |
 | 2 | max | 1.0 | float | The maximum value of the transformed features. |

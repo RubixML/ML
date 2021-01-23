@@ -8,12 +8,12 @@ A hierarchical clustering algorithm that uses peak (maxima) finding to locate th
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
 | 2 | ratio | 0.1 | float | The ratio of samples from the training set to use as initial centroids. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
-| 4 | min shift | 1e-4 | float | The minimum shift in the position of the centroids necessary to continue training. |
+| 4 | minShift | 1e-4 | float | The minimum shift in the position of the centroids necessary to continue training. |
 | 5 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 | 6 | seeder | Random | Seeder | The seeder used to initialize the cluster centroids. |
 

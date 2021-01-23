@@ -10,7 +10,7 @@ A supervised feature selector that picks the top K ranked features returned by a
 **Data Type Compatibility:** Depends on the base learner
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The maximum number of features to select from the dataset. |
 | 2 | scorer | Auto | RanksFeatures | The base feature scorer. |

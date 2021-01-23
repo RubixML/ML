@@ -4,7 +4,7 @@
 An extractor that wraps another iterator and selects and reorders the columns of the data table according to the keys specified by the user. The key of a column may either be a string or a column number (integer) depending on the way the columns are indexed in the base iterator.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | iterator | | Traversable | The base iterator. |
 | 2 | keys | | array | The string and/or integer keys of the columns to extract and reorder. |

@@ -4,11 +4,11 @@
 A version of the [Adam](adam.md) optimizer that replaces the RMS property with the infinity norm of the past gradients. As such, AdaMax is generally more suitable for sparse parameter updates and noisy gradients.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
-| 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
-| 3 | norm decay | 0.001 | float | The decay rate of the infinity norm. |
+| 2 | momentumDecay | 0.1 | float | The decay rate of the accumulated velocity. |
+| 3 | normDecay | 0.001 | float | The decay rate of the infinity norm. |
 
 ## Example
 ```php

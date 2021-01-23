@@ -6,7 +6,7 @@
 > **Note:** The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | workers | Auto | int | The maximum number of workers in the worker pool. If null then tries to autodetect CPU core count. |
 

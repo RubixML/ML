@@ -6,7 +6,7 @@ K Fold is a cross validation technique that splits the training set into *k* ind
 **Interfaces:** [Validator](api.md#validator), [Parallel](#parallel)
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of folds to split the dataset into. |
 

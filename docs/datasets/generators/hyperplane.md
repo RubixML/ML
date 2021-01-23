@@ -8,7 +8,7 @@ Generates a labeled dataset whose samples form a hyperplane in n-dimensional vec
 **Label Type:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | coefficients | [1, -1] | array | The *n* coefficients of the hyperplane where n is the dimensionality. |
 | 2 | intercept | 0.0 | float | The y intercept term. |

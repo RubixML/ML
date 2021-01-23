@@ -4,7 +4,7 @@
 Momentum accelerates each update step by accumulating velocity from past updates and adding a factor of the previous velocity to the current step. Momentum can help speed up training and escape bad local minima when compared with [Stochastic](stochastic.md) Gradient Descent.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the accumulated velocity. |

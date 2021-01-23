@@ -4,7 +4,7 @@
 A constant learning rate optimizer based on vanilla Stochastic Gradient Descent.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | rate | 0.01 | float | The learning rate that controls the global step size. |
 

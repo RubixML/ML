@@ -4,7 +4,7 @@
 Filesystems are local or remote storage drives that are organized by files and folders. The Filesystem persister saves models to a file at a given path and can automatically keep a history of past saved models.
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | path | | string | The path to the model file on the filesystem. |
 | 2 | history | false | bool | Should we keep a history of past saves? |

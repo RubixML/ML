@@ -6,7 +6,7 @@ Always guess the same value.
 **Data Type:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0.0 | float | The value to constantly guess. |
 

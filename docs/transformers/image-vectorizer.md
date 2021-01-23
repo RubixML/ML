@@ -10,7 +10,7 @@ Image Vectorizer takes images of the same size and converts them into flat featu
 **Data Type Compatibility:** Image
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | grayscale | false | bool | Should we encode the image in grayscale instead of color? |
 

@@ -6,7 +6,7 @@ A Confusion Matrix is a square matrix (table) that visualizes the true positives
 **Estimator Compatibility:** Classifier, Anomaly Detector
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | classes| | array | The classes to include in the report. If null then all classes will be included. |
 

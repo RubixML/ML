@@ -8,7 +8,7 @@ This transformer will generate polynomials up to and including the specified *de
 **Data Type Compatibility:** Continuous only
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 

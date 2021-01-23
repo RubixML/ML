@@ -8,7 +8,7 @@ Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifie
 **Data Type Compatibility:** Continuous
 
 ## Parameters
-| # | Param | Default | Type | Description |
+| # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training data. |
 
