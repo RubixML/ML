@@ -8,7 +8,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
-use function time;
+use function strlen;
 use function is_object;
 use function get_class;
 use function hash;
@@ -23,6 +23,9 @@ use function explode;
 
 /**
  * RBX
+ *
+ * Rubix Object File Format (RBX) is a format designed to reliably store serialized PHP objects. Based on PHP's native serialization
+ * format, RBX includes additional features such as compression, tamper protection, and class definition compatibility detection.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -107,8 +110,8 @@ class RBX implements Serializer
                 'format' => 'native',
                 'compression' => 'deflate',
                 'checksum' => hash(self::HASHING_FUNCTION, $body),
+                'length' => strlen($body),
             ],
-            'createdAt' => time(),
         ]) ?: '';
 
         $checksum = hash(self::HASHING_FUNCTION, $header);
@@ -148,8 +151,12 @@ class RBX implements Serializer
 
         $header = json_decode($header);
 
+        if (strlen($body) !== $header->data->length) {
+            throw new RuntimeException('Data has been corrupted.');
+        }
+
         if (hash(self::HASHING_FUNCTION, $body) !== $header->data->checksum) {
-            throw new RuntimeException('Body checksum does not match.');
+            throw new RuntimeException('Data checksum does not match.');
         }
 
         switch ($header->data->compression) {
