@@ -62,8 +62,7 @@ class Igbinary implements Serializer
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
-            throw new RuntimeException('Missing class definition'
-                . ' for unserialized object.');
+            throw new RuntimeException('Missing class for object data.');
         }
 
         if (!$persistable instanceof Persistable) {
