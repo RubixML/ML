@@ -22,8 +22,9 @@ use function explode;
 /**
  * RBX
  *
- * Rubix Object File Format (RBX) is a format designed to reliably store serialized PHP objects. Based on PHP's native serialization
- * format, RBX includes additional features such as compression, tamper protection, and class definition compatibility detection.
+ * Rubix Object File format (RBX) is a format designed to securely and reliably store and share serialized PHP objects.
+ * Based on PHP's native serialization format, RBX adds additional layers of compression, tamper protection, and class
+ * definition compatibility detection all in one robust format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -32,7 +33,7 @@ use function explode;
 class RBX implements Serializer
 {
     /**
-     * The identifier or "magic number" of the file format.
+     * The identifier or "magic number" of the format.
      *
      * @var string
      */
@@ -153,13 +154,15 @@ class RBX implements Serializer
 
         $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
 
-        [$hash, $header, $body] = array_pad(explode(self::EOL, $data, 3), 3, null);
+        [$hmac, $header, $body] = array_pad(explode(self::EOL, $data, 3), 3, null);
 
-        if (!$hash or !$header or !$body) {
+        if (!$hmac or !$header or !$body) {
             throw new RuntimeException('Invalid message structure.');
         }
 
-        if (hash_hmac(self::HASHING_FUNCTION, $header, $this->password) !== $hash) {
+        $hash = hash_hmac(self::HASHING_FUNCTION, $header, $this->password);
+
+        if ($hash !== $hmac) {
             throw new RuntimeException('Header authenticity could not be verified.');
         }
 
@@ -169,7 +172,17 @@ class RBX implements Serializer
             throw new RuntimeException('Data has been corrupted.');
         }
 
-        if (hash_hmac($header->data->hmac->type, $body, $this->password) !== $header->data->hmac->hash) {
+        switch ($header->data->hmac->type) {
+            case 'sha512':
+                $hash = hash_hmac('sha512', $body, $this->password);
+
+                break;
+
+            default:
+                throw new RuntimeException('Invalid HMAC type.');
+        }
+
+        if ($hash !== $header->data->hmac->hash) {
             throw new RuntimeException('Data authenticity could not be verified.');
         }
 
@@ -202,8 +215,7 @@ class RBX implements Serializer
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
-            throw new RuntimeException('Missing class definition'
-                . ' for unserialized object.');
+            throw new RuntimeException('Missing class definition for unserialized object.');
         }
 
         if (!$persistable instanceof Persistable) {

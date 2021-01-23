@@ -39,7 +39,7 @@ class FilesystemTest extends TestCase
 
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem($this->path, true, new RBX());
+        $this->persister = new Filesystem($this->path, true, new RBX('secret', 1));
     }
 
     /**
