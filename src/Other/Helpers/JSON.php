@@ -4,6 +4,10 @@ namespace Rubix\ML\Other\Helpers;
 
 use Rubix\ML\Exceptions\JSONException;
 
+use function json_encode;
+use function json_decode;
+use function json_last_error;
+
 use const JSON_ERROR_NONE;
 
 /**
@@ -40,12 +44,10 @@ class JSON
      */
     public static function encode($value, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : string
     {
-        $data = json_encode($value, $options, $depth) ?: '';
+        $data = json_encode($value, $options, $depth);
 
-        $code = json_last_error();
-
-        if ($code !== JSON_ERROR_NONE) {
-            throw new JSONException($code);
+        if ($data === false) {
+            throw new JSONException(json_last_error());
         }
 
         return $data;

@@ -7,11 +7,11 @@ Rubix Object File format (RBX) is a format designed to securely and reliably sto
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | password | '' | string | The secret key used to sign and verify HMACs. |
-| 2 | compressionLevel | 9 | int | The compression level between 0 and 9, 0 meaning no compression. |
+| 2 | base | Gzip | Serializer | The base serializer. Default is Gzipped native PHP serialization format. |
 
 ## Example
 ```php
 use Rubix\ML\Persisters\Serializers\RBX;
 
-$serializer = new RBX(1);
+$serializer = new RBX('secret', new Gzip(1, new Native()));
 ```
