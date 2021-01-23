@@ -7,6 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function Rubix\ML\warn_deprecated;
+
 /**
  * Gzip
  *
@@ -15,6 +17,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * References:
  * [1] P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification
  * version.
+ *
+ * @deprecated
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -43,6 +47,8 @@ class Gzip implements Serializer
      */
     public function __construct(int $level = 1, ?Serializer $serializer = null)
     {
+        warn_deprecated('Gzip serializer is deprecated, use RBX serializer instead.');
+
         if ($level < 0 or $level > 9) {
             throw new InvalidArgumentException('Level must be'
                 . " between 0 and 9, $level given.");

@@ -6,16 +6,17 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use __PHP_Incomplete_Class;
 
 use function strlen;
-use function is_object;
 use function get_class;
 use function hash_hmac;
+use function hash_equals;
 use function json_encode;
 use function json_decode;
 use function serialize;
 use function unserialize;
+use function gzencode;
+use function gzdecode;
 use function array_pad;
 use function explode;
 
@@ -23,8 +24,8 @@ use function explode;
  * RBX
  *
  * Rubix Object File format (RBX) is a format designed to securely and reliably store and share serialized PHP objects.
- * Based on PHP's native serialization format, RBX adds additional layers of tamper protection, compression, and class
- * definition compatibility detection all in one robust format.
+ * Based on PHP's native serialization format, RBX adds additional layers of compression, tamper protection, and class
+ * compatibility detection all in one robust format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -51,7 +52,7 @@ class RBX implements Serializer
      *
      * @var string
      */
-    protected const HASHING_FUNCTION = 'sha512';
+    protected const HASHING_FUNCTION = 'sha256';
 
     /**
      * The end of line character.
@@ -75,11 +76,18 @@ class RBX implements Serializer
     protected $level;
 
     /**
+     * The base native serializer.
+     *
+     * @var \Rubix\ML\Persisters\Serializers\Native
+     */
+    protected $base;
+
+    /**
      * @param string $password
      * @param int $level
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(string $password = '', int $level = 5)
+    public function __construct(string $password = '', int $level = 9)
     {
         if ($level < 0 or $level > 9) {
             throw new InvalidArgumentException('Compression level must'
@@ -88,6 +96,7 @@ class RBX implements Serializer
 
         $this->password = $password;
         $this->level = $level;
+        $this->base = new Native();
     }
 
     /**
@@ -100,15 +109,15 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $body = serialize($persistable);
+        $encoding = $this->base->serialize($persistable);
 
-        $body = gzencode($body, $this->level);
+        $payload = gzencode($encoding, $this->level);
 
-        if ($body === false) {
+        if ($payload === false) {
             throw new RuntimeException('Error compressing the data.');
         }
 
-        $hash = hash_hmac(self::HASHING_FUNCTION, $body, $this->password);
+        $hash = hash_hmac(self::HASHING_FUNCTION, $payload, $this->password);
 
         $header = json_encode([
             'version' => self::VERSION,
@@ -117,22 +126,24 @@ class RBX implements Serializer
                 'revision' => $persistable->revision(),
             ],
             'data' => [
-                'format' => 'native',
-                'compression' => 'gzip',
                 'hmac' => [
                     'type' => self::HASHING_FUNCTION,
                     'hash' => $hash,
                 ],
-                'length' => strlen($body),
+                'length' => strlen($payload),
             ],
-        ]) ?: '';
+        ]);
+
+        if ($header === false) {
+            throw new RuntimeException('Error encoding header.');
+        }
 
         $hash = hash_hmac(self::HASHING_FUNCTION, $header, $this->password);
 
         $data = self::IDENTIFIER_STRING;
-        $data .= $hash . self::EOL;
+        $data .= self::HASHING_FUNCTION . ':' . $hash . self::EOL;
         $data .= $header . self::EOL;
-        $data .= $body;
+        $data .= $payload;
 
         return new Encoding($data);
     }
@@ -154,27 +165,29 @@ class RBX implements Serializer
 
         $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
 
-        [$hmac, $header, $body] = array_pad(explode(self::EOL, $data, 3), 3, null);
+        [$hmac, $header, $payload] = array_pad(explode(self::EOL, $data, 3), 3, null);
 
-        if (!$hmac or !$header or !$body) {
+        if (!$hmac or !$header or $payload === null) {
             throw new RuntimeException('Invalid message structure.');
         }
 
-        $hash = hash_hmac(self::HASHING_FUNCTION, $header, $this->password);
+        [$type, $token] = explode(':', $hmac);
 
-        if ($hash !== $hmac) {
-            throw new RuntimeException('Header authenticity could not be verified.');
+        $hash = hash_hmac($type, $header, $this->password);
+
+        if (!hash_equals($hash, $token)) {
+            throw new RuntimeException('Header authenticity failed verification.');
         }
 
         $header = json_decode($header);
 
-        if (strlen($body) !== $header->data->length) {
+        if (strlen($payload) !== $header->data->length) {
             throw new RuntimeException('Data has been corrupted.');
         }
 
         switch ($header->data->hmac->type) {
-            case 'sha512':
-                $hash = hash_hmac('sha512', $body, $this->password);
+            case 'sha256':
+                $hash = hash_hmac('sha256', $payload, $this->password);
 
                 break;
 
@@ -182,53 +195,24 @@ class RBX implements Serializer
                 throw new RuntimeException('Invalid HMAC hash type.');
         }
 
-        if ($hash !== $header->data->hmac->hash) {
-            throw new RuntimeException('Data authenticity could not be verified.');
+        if (!hash_equals($hash, $header->data->hmac->hash)) {
+            throw new RuntimeException('Data authenticity failed verification.');
         }
 
-        switch ($header->data->compression) {
-            case 'gzip':
-                $body = gzdecode($body);
+        $payload = gzdecode($payload);
 
-                if ($body === false) {
-                    throw new RuntimeException('Error decompressing the data.');
-                }
-
-                break;
-
-            default:
-                throw new RuntimeException('Invalid compression method.');
+        if ($payload === false) {
+            throw new RuntimeException('Error decompressing the data.');
         }
 
-        switch ($header->data->format) {
-            case 'native':
-                $persistable = unserialize($body);
-
-                break;
-
-            default:
-                throw new RuntimeException('Invalid data format.');
-        }
-
-        if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized data must be an object.');
-        }
-
-        if ($persistable instanceof __PHP_Incomplete_Class) {
-            throw new RuntimeException('Missing class definition for unserialized object.');
-        }
-
-        if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Unserialized object must'
-                . ' implement the Persistable interface.');
-        }
+        $persistable = $this->base->unserialize(new Encoding($payload));
 
         if (get_class($persistable) !== $header->class->name) {
-            throw new RuntimeException('Header and data classes do not match.');
+            throw new RuntimeException('Class mismatch.');
         }
 
         if ($persistable->revision() !== $header->class->revision) {
-            throw new RuntimeException('Class revision numbers do not match.');
+            throw new RuntimeException('Class revision number mismatch.');
         }
 
         return $persistable;

@@ -1,3 +1,7 @@
+- 0.4.0
+    - Added Rubix Object File format (RBX) serializer
+    - Deprecated Gzip serializer
+
 - 0.3.1
     - Fix CART feature importances purity increase overflow
 
