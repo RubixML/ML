@@ -21,8 +21,11 @@ use function explode;
  *
  * Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
  * serialization format, RBX adds additional layers of compression, tamper protection, and class compatibility detection all in
- * one robust format. Unlike the encrypted [RBXE](./rbxe.md) however, file data can still be read even if the authenticity of it
- * cannot be verified with the password.
+ * one robust format. Unlike the encrypted RBXE however, file data can still be read even if the authenticity of it cannot be
+ * verified with the password.
+ *
+ * References:
+ * [1] H. Krawczyk et al. (1997). HMAC: Keyed-Hashing for Message Authentication.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -43,6 +46,27 @@ class RBX implements Serializer
      * @var int
      */
     protected const VERSION = 1;
+
+    /**
+     * The length of the password digest in bytes.
+     *
+     * @var int
+     */
+    protected const DIGEST_LENGTH = 32;
+
+    /**
+     * The hashing function used to generate the password digest.
+     *
+     * @var string
+     */
+    protected const DIGEST_HASH_TYPE = PASSWORD_BCRYPT;
+
+    /**
+     * The work factor of the password hashing algorithm.
+     *
+     * @var int
+     */
+    protected const DIGEST_WORK_FACTOR = 10;
 
     /**
      * The hashing function used to generate the header HMAC.
@@ -66,11 +90,11 @@ class RBX implements Serializer
     protected const EOL = "\n";
 
     /**
-     * The secret key used to sign and verify HMACs.
+     * The hash of the given password.
      *
      * @var string
      */
-    protected $password;
+    protected $digest;
 
     /**
      * The base serializer.
@@ -85,7 +109,17 @@ class RBX implements Serializer
      */
     public function __construct(string $password = '', ?Serializer $base = null)
     {
-        $this->password = $password;
+        $digest = password_hash($password, self::DIGEST_HASH_TYPE, [
+            'cost' => self::DIGEST_WORK_FACTOR,
+        ]);
+
+        if ($digest === false) {
+            throw new RuntimeException('Could not create digest from password.');
+        }
+
+        $digest = substr($digest, 0, self::DIGEST_LENGTH);
+
+        $this->digest = $digest;
         $this->base = $base ?? new Gzip(9, new Native());
     }
 
@@ -101,7 +135,7 @@ class RBX implements Serializer
     {
         $encoding = $this->base->serialize($persistable);
 
-        $hash = hash_hmac(self::PAYLOAD_HASH_TYPE, $encoding, $this->password);
+        $hash = hash_hmac(self::PAYLOAD_HASH_TYPE, $encoding, $this->digest);
 
         $header = JSON::encode([
             'version' => self::VERSION,
@@ -118,7 +152,7 @@ class RBX implements Serializer
             ],
         ]);
 
-        $hash = hash_hmac(self::HEADER_HASH_TYPE, $header, $this->password);
+        $hash = hash_hmac(self::HEADER_HASH_TYPE, $header, $this->digest);
 
         $hmac = self::HEADER_HASH_TYPE . ':' . $hash;
 
@@ -155,7 +189,7 @@ class RBX implements Serializer
 
         [$type, $token] = array_pad(explode(':', $hmac, 2), 2, null);
 
-        $hash = hash_hmac($type, $header, $this->password);
+        $hash = hash_hmac($type, $header, $this->digest);
 
         if (!hash_equals($hash, $token)) {
             throw new RuntimeException('Header verification failed.');
@@ -163,9 +197,13 @@ class RBX implements Serializer
 
         $header = JSON::decode($header);
 
+        if (strlen($payload) !== $header['data']['length']) {
+            throw new RuntimeException('Data is corrupted.');
+        }
+
         switch ($header['data']['hmac']['type']) {
             case 'sha512':
-                $hash = hash_hmac('sha512', $payload, $this->password);
+                $hash = hash_hmac('sha512', $payload, $this->digest);
 
                 break;
 
@@ -177,13 +215,7 @@ class RBX implements Serializer
             throw new RuntimeException('Data verification failed.');
         }
 
-        $encoding = new Encoding($payload);
-
-        if ($encoding->bytes() !== $header['data']['length']) {
-            throw new RuntimeException('Data is corrupted.');
-        }
-
-        $persistable = $this->base->unserialize($encoding);
+        $persistable = $this->base->unserialize(new Encoding($payload));
 
         if (get_class($persistable) !== $header['class']['name']) {
             throw new RuntimeException('Class name mismatch.');

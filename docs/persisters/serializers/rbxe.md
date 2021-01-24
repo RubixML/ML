@@ -19,3 +19,6 @@ use Rubix\ML\Persisters\Serializers\Native;
 
 $serializer = new RBXE('secret', new Gzip(9, new Native()));
 ```
+
+### References
+>- H. Krawczyk et al. (1997). HMAC: Keyed-Hashing for Message Authentication.
