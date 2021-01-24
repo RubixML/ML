@@ -97,7 +97,7 @@ class RBXE implements Serializer
     public function __construct(string $password = '', ?Serializer $base = null)
     {
         $this->password = $password;
-        $this->digest = openssl_digest($password, self::HASHING_FUNCTION);
+        $this->digest = openssl_digest($password, self::HASHING_FUNCTION) ?: '';
         $this->base = $base ?? new Gzip(9, new Native());
     }
 
