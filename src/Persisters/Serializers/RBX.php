@@ -113,10 +113,6 @@ class RBX implements Serializer
             'cost' => self::DIGEST_WORK_FACTOR,
         ]);
 
-        if ($digest === false) {
-            throw new RuntimeException('Could not create digest from password.');
-        }
-
         $digest = substr($digest, 0, self::DIGEST_LENGTH);
 
         $this->digest = $digest;
@@ -176,7 +172,7 @@ class RBX implements Serializer
     public function unserialize(Encoding $encoding) : Persistable
     {
         if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
-            throw new RuntimeException('Unrecognized format.');
+            throw new RuntimeException('Unrecognized message format.');
         }
 
         $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
@@ -184,7 +180,7 @@ class RBX implements Serializer
         [$hmac, $header, $payload] = array_pad(explode(self::EOL, $data, 3), 3, null);
 
         if (!$hmac or !$header or !$payload) {
-            throw new RuntimeException('Invalid format.');
+            throw new RuntimeException('Invalid message format.');
         }
 
         [$type, $token] = array_pad(explode(':', $hmac, 2), 2, null);

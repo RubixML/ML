@@ -132,10 +132,6 @@ class RBXE implements Serializer
             'cost' => self::DIGEST_WORK_FACTOR,
         ]);
 
-        if ($digest === false) {
-            throw new RuntimeException('Could not create digest from password.');
-        }
-
         $digest = substr($digest, 0, self::DIGEST_LENGTH);
 
         $this->digest = $digest;
