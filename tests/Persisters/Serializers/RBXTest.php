@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\RBXP;
+use Rubix\ML\Persisters\Serializers\RBX;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -15,9 +15,9 @@ use function serialize;
 
 /**
  * @group Serializers
- * @covers \Rubix\ML\Persisters\Serializers\RBXP
+ * @covers \Rubix\ML\Persisters\Serializers\RBX
  */
-class RBXPTest extends TestCase
+class RBXTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Persistable
@@ -25,7 +25,7 @@ class RBXPTest extends TestCase
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\RBXP
+     * @var \Rubix\ML\Persisters\Serializers\RBX
      */
     protected $serializer;
 
@@ -34,7 +34,7 @@ class RBXPTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->serializer = new RBXP('secret');
+        $this->serializer = new RBX('secret');
 
         $this->persistable = new DummyClassifier();
     }
@@ -44,7 +44,7 @@ class RBXPTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(RBXP::class, $this->serializer);
+        $this->assertInstanceOf(RBX::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 

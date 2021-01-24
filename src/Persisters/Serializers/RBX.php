@@ -13,30 +13,29 @@ use function substr;
 use function get_class;
 use function hash_hmac;
 use function hash_equals;
-use function serialize;
-use function unserialize;
 use function array_pad;
 use function explode;
 
 /**
- * RBXP
+ * RBX
  *
- * Portable Rubix Object File format (RBXP) is a format designed to reliably store and share serialized PHP objects.
- * Based on PHP's native serialization format, RBXP adds additional layers of compression, tamper protection, and class
- * compatibility detection all in one robust format.
+ * Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
+ * serialization format, RBX adds additional layers of compression, tamper protection, and class compatibility detection all in
+ * one robust format. Unlike the encrypted [RBXE](./rbxe.md) however, file data can still be read even if the authenticity of it
+ * cannot be verified with the password.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RBXP implements Serializer
+class RBX implements Serializer
 {
     /**
      * The identifier or "magic number" of the format.
      *
      * @var string
      */
-    protected const IDENTIFIER_STRING = "\241RBXP\r\n\032\n";
+    protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
      * The current version of the file format.
@@ -204,6 +203,6 @@ class RBXP implements Serializer
      */
     public function __toString() : string
     {
-        return 'RBXP';
+        return 'RBX';
     }
 }

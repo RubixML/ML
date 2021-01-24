@@ -7,19 +7,30 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function extension_loaded;
 use function strlen;
 use function strpos;
 use function substr;
 use function get_class;
 use function hash_hmac;
 use function hash_equals;
-use function serialize;
-use function unserialize;
+use function openssl_digest;
+use function openssl_encrypt;
+use function openssl_decrypt;
+use function base64_encode;
+use function base64_decode;
+use function random_bytes;
 use function array_pad;
 use function explode;
 
 /**
  * RBXE
+ *
+ * Encrypted Rubix Object File format (RBXE) is a format to securely store and share serialized PHP objects. In addition to
+ * providing verifiability like the standard [RBX](./rbxp.md) format, RBXE encrypts the file data so that it cannot be read
+ * without the password.
+ *
+ * > **Note:** Requires the PHP Open SSL extension to be installed.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -84,7 +95,7 @@ class RBXE implements Serializer
     protected $password;
 
     /**
-     * The hash digest of the password.
+     * The hash digest of the password used for encryption.
      *
      * @var string
      */
@@ -103,9 +114,19 @@ class RBXE implements Serializer
      */
     public function __construct(string $password = '', ?Serializer $base = null)
     {
+        if (!extension_loaded('openssl')) {
+            throw new RuntimeException('Open SSL extension is not loaded, check PHP configuration.');
+        }
+
+        $digest = openssl_digest($password, self::DIGEST_HASH_TYPE);
+
+        if ($digest === false) {
+            throw new RuntimeException('Could not create digest from password.');
+        }
+
         $this->password = $password;
-        $this->digest = openssl_digest($password, self::DIGEST_HASH_TYPE);
-        $this->base = $base ?? new Native();
+        $this->digest = $digest;
+        $this->base = $base ?? new Gzip(9, new Native());
     }
 
     /**
@@ -122,7 +143,7 @@ class RBXE implements Serializer
 
         $iv = random_bytes(self::INITIALIZATION_BYTES);
 
-        $data = openssl_encrypt(trim($encoding), self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
+        $data = openssl_encrypt($encoding, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
 
         if ($data === false) {
             throw new RuntimeException('Data could not be encrypted.');
@@ -194,16 +215,16 @@ class RBXE implements Serializer
 
         switch ($header['data']['encryption']['method']) {
             case 'aes256':
-                $data = openssl_decrypt($payload, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-
-                if ($data === false) {
-                    throw new RuntimeException('Data could not be decrypted.');
-                }
+                $data = openssl_decrypt($payload, 'aes256', $this->digest, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
 
                 break;
 
             default:
                 throw new RuntimeException('Invalid encryption method.');
+        }
+
+        if ($data === false) {
+            throw new RuntimeException('Data could not be decrypted.');
         }
 
         $encoding = new Encoding($data);

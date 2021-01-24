@@ -242,9 +242,11 @@ nav:
   - Flysystem: persisters/flysystem.md
   - Redis DB: persisters/redis-db.md
   - Serializers:
+    - Gzip: persisters/serializers/gzip.md
     - Igbinary: persisters/serializers/igbinary.md
     - Native: persisters/serializers/native.md
-    - RBXP: persisters/serializers/rbx.md
+    - RBX: persisters/serializers/rbx.md
+    - RBX Encrypted: persisters/serializers/rbxe.md
 - Backends:
   - Amp: backends/amp.md
   - Serial: backends/serial.md
