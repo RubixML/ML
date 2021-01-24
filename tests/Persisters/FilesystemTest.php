@@ -6,7 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Persisters\Serializers\RBXE;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,7 +39,7 @@ class FilesystemTest extends TestCase
 
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem($this->path, true, new RBX('secret'));
+        $this->persister = new Filesystem($this->path, true, new RBXE('secret'));
     }
 
     /**
@@ -47,13 +47,13 @@ class FilesystemTest extends TestCase
      */
     protected function tearDown() : void
     {
-        if (file_exists($this->path)) {
-            unlink($this->path);
-        }
+        // if (file_exists($this->path)) {
+        //     unlink($this->path);
+        // }
 
-        foreach (glob("$this->path.*.old") ?: [] as $filename) {
-            unlink($filename);
-        }
+        // foreach (glob("$this->path.*.old") ?: [] as $filename) {
+        //     unlink($filename);
+        // }
     }
 
     /**
@@ -80,8 +80,8 @@ class FilesystemTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $model);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFileNotExists($this->path);
-    }
+    // protected function assertPreConditions() : void
+    // {
+    //     $this->assertFileNotExists($this->path);
+    // }
 }

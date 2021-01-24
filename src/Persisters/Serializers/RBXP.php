@@ -19,24 +19,24 @@ use function array_pad;
 use function explode;
 
 /**
- * RBX
+ * RBXP
  *
- * Rubix Object File format (RBX) is a format designed to securely and reliably store and share serialized PHP objects.
- * Based on PHP's native serialization format, RBX adds additional layers of compression, tamper protection, and class
+ * Portable Rubix Object File format (RBXP) is a format designed to reliably store and share serialized PHP objects.
+ * Based on PHP's native serialization format, RBXP adds additional layers of compression, tamper protection, and class
  * compatibility detection all in one robust format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RBX implements Serializer
+class RBXP implements Serializer
 {
     /**
      * The identifier or "magic number" of the format.
      *
      * @var string
      */
-    protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
+    protected const IDENTIFIER_STRING = "\241RBXP\r\n\032\n";
 
     /**
      * The current version of the file format.
@@ -152,16 +152,14 @@ class RBX implements Serializer
         $hash = hash_hmac($type, $header, $this->password);
 
         if (!hash_equals($hash, $token)) {
-            throw new RuntimeException('Header failed verification.');
+            throw new RuntimeException('Header verification failed.');
         }
 
         $header = JSON::decode($header);
 
-        $encoding = new Encoding($payload);
-
         switch ($header['data']['hmac']['type']) {
             case 'sha256':
-                $hash = hash_hmac('sha256', $encoding, $this->password);
+                $hash = hash_hmac('sha256', $payload, $this->password);
 
                 break;
 
@@ -170,8 +168,10 @@ class RBX implements Serializer
         }
 
         if (!hash_equals($hash, $header['data']['hmac']['token'])) {
-            throw new RuntimeException('Data failed verification.');
+            throw new RuntimeException('Data verification failed.');
         }
+
+        $encoding = new Encoding($payload);
 
         if ($encoding->bytes() !== $header['data']['length']) {
             throw new RuntimeException('Data is corrupted.');
@@ -197,6 +197,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return 'RBX';
+        return 'RBXP';
     }
 }

@@ -1,5 +1,5 @@
 - 0.4.0
-    - Added Rubix Object File format (RBX) serializer
+    - Added Rubix Object File format (RBXP) serializer
     - Deprecated Gzip serializer
 
 - 0.3.1
