@@ -47,13 +47,13 @@ class FilesystemTest extends TestCase
      */
     protected function tearDown() : void
     {
-        // if (file_exists($this->path)) {
-        //     unlink($this->path);
-        // }
+        if (file_exists($this->path)) {
+            unlink($this->path);
+        }
 
-        // foreach (glob("$this->path.*.old") ?: [] as $filename) {
-        //     unlink($filename);
-        // }
+        foreach (glob("$this->path.*.old") ?: [] as $filename) {
+            unlink($filename);
+        }
     }
 
     /**
@@ -80,8 +80,8 @@ class FilesystemTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $model);
     }
 
-    // protected function assertPreConditions() : void
-    // {
-    //     $this->assertFileNotExists($this->path);
-    // }
+    protected function assertPreConditions() : void
+    {
+        $this->assertFileNotExists($this->path);
+    }
 }

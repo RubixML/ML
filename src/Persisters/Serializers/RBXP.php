@@ -46,11 +46,18 @@ class RBXP implements Serializer
     protected const VERSION = 1;
 
     /**
-     * The hashing function used to generate HMACs.
+     * The hashing function used to generate the header HMAC.
      *
      * @var string
      */
-    protected const HASHING_FUNCTION = 'sha256';
+    protected const HEADER_HASH_TYPE = 'sha256';
+
+    /**
+     * The hashing function used to generate the payload HMAC.
+     *
+     * @var string
+     */
+    protected const PAYLOAD_HASH_TYPE = 'sha512';
 
     /**
      * The end of line character.
@@ -95,7 +102,7 @@ class RBXP implements Serializer
     {
         $encoding = $this->base->serialize($persistable);
 
-        $hash = hash_hmac(self::HASHING_FUNCTION, $encoding, $this->password);
+        $hash = hash_hmac(self::PAYLOAD_HASH_TYPE, $encoding, $this->password);
 
         $header = JSON::encode([
             'version' => self::VERSION,
@@ -105,16 +112,16 @@ class RBXP implements Serializer
             ],
             'data' => [
                 'hmac' => [
-                    'type' => self::HASHING_FUNCTION,
+                    'type' => self::PAYLOAD_HASH_TYPE,
                     'token' => $hash,
                 ],
                 'length' => $encoding->bytes(),
             ],
         ]);
 
-        $hash = hash_hmac(self::HASHING_FUNCTION, $header, $this->password);
+        $hash = hash_hmac(self::HEADER_HASH_TYPE, $header, $this->password);
 
-        $hmac = self::HASHING_FUNCTION . ':' . $hash;
+        $hmac = self::HEADER_HASH_TYPE . ':' . $hash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= $hmac . self::EOL;
@@ -158,8 +165,8 @@ class RBXP implements Serializer
         $header = JSON::decode($header);
 
         switch ($header['data']['hmac']['type']) {
-            case 'sha256':
-                $hash = hash_hmac('sha256', $payload, $this->password);
+            case 'sha512':
+                $hash = hash_hmac('sha512', $payload, $this->password);
 
                 break;
 

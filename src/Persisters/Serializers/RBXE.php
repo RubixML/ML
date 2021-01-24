@@ -42,11 +42,18 @@ class RBXE implements Serializer
     protected const VERSION = 1;
 
     /**
-     * The hashing function used to generate HMACs.
+     * The hashing function used to generate the header HMAC.
      *
      * @var string
      */
-    protected const HASHING_FUNCTION = 'sha256';
+    protected const HEADER_HASH_TYPE = 'sha256';
+
+    /**
+     * The hashing function used to generate the digest hash.
+     *
+     * @var string
+     */
+    protected const DIGEST_HASH_TYPE = 'sha256';
 
     /**
      * The method used to encrypt the data.
@@ -97,8 +104,8 @@ class RBXE implements Serializer
     public function __construct(string $password = '', ?Serializer $base = null)
     {
         $this->password = $password;
-        $this->digest = openssl_digest($password, self::HASHING_FUNCTION);
-        $this->base = $base ?? new Gzip(9, new Native());
+        $this->digest = openssl_digest($password, self::DIGEST_HASH_TYPE);
+        $this->base = $base ?? new Native();
     }
 
     /**
@@ -115,7 +122,7 @@ class RBXE implements Serializer
 
         $iv = random_bytes(self::INITIALIZATION_BYTES);
 
-        $data = openssl_encrypt($encoding, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
+        $data = openssl_encrypt(trim($encoding), self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
 
         if ($data === false) {
             throw new RuntimeException('Data could not be encrypted.');
@@ -138,9 +145,9 @@ class RBXE implements Serializer
             ],
         ]);
 
-        $hash = hash_hmac(self::HASHING_FUNCTION, $header, $this->password);
+        $hash = hash_hmac(self::HEADER_HASH_TYPE, $header, $this->password);
 
-        $hmac = self::HASHING_FUNCTION . ':' . $hash;
+        $hmac = self::HEADER_HASH_TYPE . ':' . $hash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= $hmac . self::EOL;
@@ -187,7 +194,7 @@ class RBXE implements Serializer
 
         switch ($header['data']['encryption']['method']) {
             case 'aes256':
-                $data = openssl_decrypt($payload, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
+                $data = openssl_decrypt($payload, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
 
                 if ($data === false) {
                     throw new RuntimeException('Data could not be decrypted.');
@@ -201,9 +208,9 @@ class RBXE implements Serializer
 
         $encoding = new Encoding($data);
 
-        // if ($encoding->bytes() !== $header['data']['length']) {
-        //     throw new RuntimeException('Data is corrupted.');
-        // }
+        if ($encoding->bytes() !== $header['data']['length']) {
+            throw new RuntimeException('Data is corrupted.');
+        }
 
         $persistable = $this->base->unserialize($encoding);
 
