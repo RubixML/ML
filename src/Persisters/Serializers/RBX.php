@@ -42,7 +42,7 @@ class RBX implements Serializer
     protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
-     * The current version of the file format.
+     * The current version of the format.
      *
      * @var int
      */
@@ -56,7 +56,7 @@ class RBX implements Serializer
     protected const DIGEST_HASH_TYPE = PASSWORD_BCRYPT;
 
     /**
-     * The work factor of the password hashing algorithm.
+     * The work factor of the bcrypt password hashing algorithm.
      *
      * @var int
      */
@@ -107,12 +107,12 @@ class RBX implements Serializer
             'cost' => self::DIGEST_WORK_FACTOR,
         ]);
 
-        if ($digest == false) {
+        if (!$digest) {
             throw new RuntimeException('Could not create digest from password.');
         }
 
         $this->digest = $digest;
-        $this->base = $base ?? new Gzip(9, new Native());
+        $this->base = $base ?? new Gzip(9);
     }
 
     /**
@@ -227,6 +227,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return 'RBX';
+        return "RBX (base: {$this->base})";
     }
 }

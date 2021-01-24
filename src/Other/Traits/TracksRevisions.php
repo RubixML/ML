@@ -37,8 +37,6 @@ trait TracksRevisions
             $properties = $reflector->getProperties();
 
             foreach ($properties as $property) {
-                $tokens[] = $property->getName();
-
                 $property->setAccessible(true);
 
                 $value = $property->getValue($current);
@@ -46,6 +44,8 @@ trait TracksRevisions
                 if (is_object($value)) {
                     $stack[] = $value;
                 }
+
+                $tokens[] = $property->getName();
             }
         }
 

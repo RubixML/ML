@@ -8,6 +8,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
 use function is_object;
+use function serialize;
+use function unserialize;
 
 /**
  * Native

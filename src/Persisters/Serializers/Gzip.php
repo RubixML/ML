@@ -66,7 +66,7 @@ class Gzip implements Serializer
     {
         $encoding = $this->base->serialize($persistable);
 
-        $data = gzencode((string) $encoding, $this->level);
+        $data = gzencode($encoding, $this->level);
 
         if ($data === false) {
             throw new RuntimeException('Failed to compress data.');
@@ -84,7 +84,7 @@ class Gzip implements Serializer
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        $data = gzdecode((string) $encoding);
+        $data = gzdecode($encoding);
 
         if ($data === false) {
             throw new RuntimeException('Failed to decompress data.');
