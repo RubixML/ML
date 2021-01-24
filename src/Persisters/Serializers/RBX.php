@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function password_hash;
 use function strlen;
 use function strpos;
 use function substr;
@@ -46,13 +47,6 @@ class RBX implements Serializer
      * @var int
      */
     protected const VERSION = 1;
-
-    /**
-     * The length of the password digest in bytes.
-     *
-     * @var int
-     */
-    protected const DIGEST_LENGTH = 32;
 
     /**
      * The hashing function used to generate the password digest.
@@ -116,8 +110,6 @@ class RBX implements Serializer
         if ($digest == false) {
             throw new RuntimeException('Could not create digest from password.');
         }
-
-        $digest = substr($digest, 0, self::DIGEST_LENGTH);
 
         $this->digest = $digest;
         $this->base = $base ?? new Gzip(9, new Native());
