@@ -1,5 +1,5 @@
 # Extractors
-Extractors are data table iterators that help you import data from various source formats such as CSV, JSON, and NDJSON in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and can be used to instantiate a new [Dataset](datasets/api.md) object by passing it to the `fromIterator()` method.
+Extractors are data table iterators that help you import data from various source formats such as CSV, JSON, and NDJSON in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and can be used to instantiate a new [Dataset](../datasets/api.md) object by passing it to the `fromIterator()` method.
 
 > **Note:** Extractors are read-only, they will never overwrite the source dataset.
 

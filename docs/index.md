@@ -1,4 +1,4 @@
-<h1><span><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/img/rubix-ml-logo.png" width="50" height="50" alt="Rubix ML logo" /></span> <span>Rubix ML: Machine Learning for PHP</span></h1>
+# Rubix: Machine Learning for PHP
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
