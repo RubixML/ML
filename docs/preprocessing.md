@@ -25,7 +25,7 @@ $dataset->apply(new RandomHotDeckImputer(5))
     ->apply(new MinMaxNormalizer());
 ```
 
-> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) dataset instance.
+> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/datasets/labeled.html#transform-labels) dataset instance.
 
 ### Manually Fitting
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
