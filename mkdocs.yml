@@ -7,14 +7,6 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
-google_analytics:
-  - UA-136137674-1
-  - auto
-
-repo_url: https://github.com/RubixML/ML
-site_url: https://rubixml.com
-site_description: 'A high-level machine learning and deep learning library for the PHP language.'
-
 nav:
 - Welcome: index.md
 - What is Machine Learning?: what-is-machine-learning.md
@@ -277,8 +269,29 @@ nav:
     - Whitespace: other/tokenizers/whitespace.md
     - Word: other/tokenizers/word.md
 
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/RubixML
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/RubixML
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/RubixML
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/groups/8952251/
+
 use_directory_urls: false
 
 markdown_extensions:
     - toc:
         permalink: "#"
+      
+google_analytics:
+  - UA-136137674-1
+  - auto
+
+repo_url: https://github.com/RubixML/ML
+site_url: https://rubixml.com
+site_description: 'A high-level machine learning and deep learning library for the PHP language.'
+
+copyright: "&copy; 2021 Rubix ML"
