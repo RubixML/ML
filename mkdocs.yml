@@ -2,13 +2,12 @@ site_name: 'Rubix ML: Machine Learning for PHP'
 
 theme:
   name: material
-  logo: img/app-icon-medium.png
-  favicon: img/app-icon.small.png
+  logo: images/app-icon-medium.png
+  favicon: images/app-icon.small.png
   icon:
     repo: fontawesome/brands/github
   google_analytics:
     - UA-136137674-1
-    - auto
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
