@@ -135,7 +135,7 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 echo $score;
 ```
 
-```sh
+```
 0.88
 ```
 

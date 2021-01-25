@@ -283,8 +283,19 @@ extra:
 use_directory_urls: false
 
 markdown_extensions:
-    - toc:
-        permalink: "#"
+  - attr_list
+  - abbr
+  - admonition
+  - pymdownx.highlight:
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - toc:
+      permalink: "#"
       
 google_analytics:
   - UA-136137674-1
