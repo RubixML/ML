@@ -1,9 +1,9 @@
-site_name: 'Rubix ML: Machine Learning for PHP'
+site_name: 'Rubix: Machine Learning for PHP'
 
 theme:
   name: material
   logo: images/app-icon-medium.png
-  favicon: images/app-icon.small.png
+  favicon: images/app-icon-small.png
   icon:
     repo: fontawesome/brands/github
 
