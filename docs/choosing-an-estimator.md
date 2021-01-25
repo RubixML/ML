@@ -55,7 +55,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | Continuous |
 
 ## Anomaly Detectors
-Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Ranking](ranking.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
+Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Scoring](scoring.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
 
 | Anomaly Detector | Scope | [Scoring](scoring.md) | [Online](online.md) | [Verbose](verbose.md) | Data Compatibility |
 |---|---|---|---|---|---|
