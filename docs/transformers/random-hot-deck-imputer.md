@@ -30,4 +30,4 @@ $transformer = new RandomHotDeckImputer(20, true, '?', new BallTree(50, new Safe
 This transformer does not have any additional methods.
 
 ### References
->- C. Hasler et al. (2015). Balanced k-Nearest Neighbor Imputation.
+[^1]: C. Hasler et al. (2015). Balanced k-Nearest Neighbor Imputation.

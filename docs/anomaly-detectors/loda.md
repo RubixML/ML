@@ -28,5 +28,5 @@ public static estimateBins(int $n) : int
 ```
 
 ### References
->- T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
->- L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
+[^1]: T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
+[^2]: L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.

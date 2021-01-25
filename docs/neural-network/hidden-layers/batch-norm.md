@@ -20,4 +20,4 @@ $layer = new BatchNorm(0.7, new Constant(0.), new Normal(1.));
 ```
 
 ### References
->- S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.
+[^1]: S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.

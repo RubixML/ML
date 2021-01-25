@@ -3,7 +3,8 @@
 # Image Resizer
 Image Resizer fits (scales and crops) images to a user-specified width and height that preserves aspect ratio.
 
-> **Note:** The [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+!!! note
+    The [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
 **Interfaces:** [Transformer](api.md#transformer)
 

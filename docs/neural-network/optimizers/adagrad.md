@@ -16,4 +16,4 @@ $optimizer = new AdaGrad(0.125);
 ```
 
 ### References
->- J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.
+[^1]: J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.

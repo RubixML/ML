@@ -18,4 +18,4 @@ $metric = new RandIndex();
 ```
 
 ### References
->- W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.
+[^1]: W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.

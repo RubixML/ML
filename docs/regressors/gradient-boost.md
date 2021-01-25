@@ -3,9 +3,11 @@
 # Gradient Boost
 Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training  boosters (Decision Trees) to correct the error residuals of a series of *weak* base learners. Stochastic gradient boosting is achieved by varying the ratio of samples to subsample uniformly at random from the training set. GBM also utilizes progress monitoring via an internal validation set for snapshotting and early stopping.
 
-> **Note:** The default base regressor is a [Dummy Regressor](dummy-regressor.md) using the [Mean](../other/strategies/mean.md) strategy and the default booster is a [Regression Tree](regression-tree.md) with a max height of 3.
+!!! note
+    The default base regressor is a [Dummy Regressor](dummy-regressor.md) using the [Mean](../other/strategies/mean.md) strategy and the default booster is a [Regression Tree](regression-tree.md) with a max height of 3.
 
-> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
+!!! note
+    If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
@@ -47,6 +49,6 @@ public steps() : float[]|null
 ```
 
 ### References
->- J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
->- J. H. Friedman. (1999). Stochastic Gradient Boosting.
->- Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.
+[^1]: J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
+[^2]: J. H. Friedman. (1999). Stochastic Gradient Boosting.
+[^3]: Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.

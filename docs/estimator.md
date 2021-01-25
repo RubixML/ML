@@ -24,4 +24,5 @@ array(3) {
 }
 ```
 
-> **Note:** The return value of `predict()` is an array containing the predictions in the same order that they were indexed in the dataset.
+!!! note
+    The return value of `predict()` is an array containing the predictions in the same order that they were indexed in the dataset.

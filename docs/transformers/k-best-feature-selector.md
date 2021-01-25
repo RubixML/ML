@@ -3,7 +3,8 @@
 # K Best Feature Selector
 A supervised feature selector that picks the top K ranked features returned by a learner implementing the [RanksFeatures](../ranks-features.md) interface.
 
-> **Note:** The default feature ranking base learner is a fully-grown decision tree.
+!!! note
+    The default feature ranking base learner is a fully-grown decision tree.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 

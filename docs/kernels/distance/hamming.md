@@ -16,4 +16,4 @@ $kernel = new Hamming();
 ```
 
 ### References
->- R. W. Hamming. (1950). Error detecting and error correcting codes.
+[^1]: R. W. Hamming. (1950). Error detecting and error correcting codes.

@@ -3,7 +3,8 @@
 # Redis DB
 Redis is a high performance in-memory key value store that can be used to persist your trained models locally or over a network.
 
-> **Note:** Requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
+!!! note
+    Requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
 
 ## Parameters
 | # | Name | Default | Type | Description |

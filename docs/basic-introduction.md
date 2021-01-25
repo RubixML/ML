@@ -75,7 +75,8 @@ For our small training set, the training process should only take a matter of mi
 ## Making Predictions
 Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on our newly trained estimator. This process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
-> **Note:** If you attempt to make predictions using an untrained learner, it will throw an exception.
+!!! note
+    If you attempt to make predictions using an untrained learner, it will throw an exception.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -112,7 +113,8 @@ Let's imagine we went out and collected enough data from our married and divorce
 
 For the purposes of the introduction, we'll use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
-> **Note:** 20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
+!!! note
+    20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;

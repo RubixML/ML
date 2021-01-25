@@ -17,4 +17,4 @@ $layer = new PReLU(new Normal(0.5));
 ```
 
 ### References
->- K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.
+[^1]: K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.

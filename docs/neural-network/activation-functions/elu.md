@@ -16,4 +16,4 @@ $activationFunction = new ELU(2.5);
 ```
 
 ### References
->- D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.
+[^1]: D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.

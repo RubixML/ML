@@ -20,4 +20,4 @@ $metric = new VMeasure(1.0);
 ```
 
 ### References
->- A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.
+[^1]: A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.

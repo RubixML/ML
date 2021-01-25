@@ -3,7 +3,8 @@
 # One Class SVM
 An unsupervised Support Vector Machine (SVM) used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with [SVC](../classifiers/svc.md).
 
-> **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
+!!! note
+    This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md)
 
@@ -38,4 +39,4 @@ public load(string $path) : void
 ```
 
 ### References
->- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+[^1]: C. Chang et al. (2011). LIBSVM: A library for support vector machines.

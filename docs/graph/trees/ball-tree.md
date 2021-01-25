@@ -25,5 +25,5 @@ $tree = new BallTree(40, new Euclidean());
 This tree does not have any additional methods.
 
 ### References
->- S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
->- M. Dolatshah et al. (2015). Ball*-tree: Efficient spatial indexing for constrained nearest-neighbor search in metric spaces.
+[^1]: S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
+[^2]: M. Dolatshah et al. (2015). Ball*-tree: Efficient spatial indexing for constrained nearest-neighbor search in metric spaces.

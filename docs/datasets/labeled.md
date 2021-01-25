@@ -104,7 +104,8 @@ Transform the labels in the dataset using a callback function and return self fo
 public transformLabels(callable $fn) : self
 ```
 
-> **Note:** The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
+!!! note
+    The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
 
 ```php
 $dataset->transformLabels('intval');
@@ -138,7 +139,8 @@ Filter the dataset by label:
 public filterByLabel(callable $fn) : self
 ```
 
-> **Note:** The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
+!!! note
+    The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
 
 ```php
 $filtered = $dataset->filterByLabel(function ($label)) {

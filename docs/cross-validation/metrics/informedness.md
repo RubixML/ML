@@ -18,4 +18,4 @@ $metric = new Informedness();
 ```
 
 ### References
->- W. J. Youden. (1950). Index for Rating Diagnostic Tests.
+[^1]: W. J. Youden. (1950). Index for Rating Diagnostic Tests.

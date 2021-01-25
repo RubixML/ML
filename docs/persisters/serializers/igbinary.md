@@ -3,7 +3,8 @@
 # Igbinary
 Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP serializer.
 
-> **Note:** The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
+!!! note
+    The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
 
 ## Parameters
 This serializer does not have any parameters.

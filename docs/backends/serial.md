@@ -3,7 +3,8 @@
 ### Serial
 The Serial backend executes tasks sequentially inside of a single process. The advantage of the Serial backend is that it has zero overhead, thus it may be faster than a parallel backend for small datasets.
 
-> **Note:** The Serial backend is the default for most objects that are capable of parallel processing.
+!!! note
+    The Serial backend is the default for most objects that are capable of parallel processing.
 
 ## Parameters
 This backend does not have any additional parameters.

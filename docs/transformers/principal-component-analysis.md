@@ -36,4 +36,4 @@ public lossiness() : ?float
 ```
 
 ### References
->- H. Abdi et al. (2010). Principal Component Analysis.
+[^1]: H. Abdi et al. (2010). Principal Component Analysis.

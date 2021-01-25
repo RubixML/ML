@@ -39,4 +39,4 @@ public network() : Network|null
 ```
 
 ### References
->- B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".
+[^1]: B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".
