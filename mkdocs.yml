@@ -11,6 +11,7 @@ theme:
     - navigation.instant
 
 nav:
+- Home: https://rubixml.com
 - Getting Started:
   - Welcome: index.md
   - What is Machine Learning?: what-is-machine-learning.md
