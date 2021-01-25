@@ -3,7 +3,8 @@
 # Naive Bayes
 Categorical Naive Bayes is a probability-based classifier that uses counting and Bayes' Theorem to derive the probabilities of a class given a sample of categorical features. The term *naive* refers to the fact that Naive Bayes treats each feature as if it was independent of the others even though this is usually not the case in real life.
 
-> **Note:** Each partial train has the overhead of recomputing the probability mass function for each feature per class. As such, it is better to train with fewer but larger training sets.
+!!! note
+    Each partial train has the overhead of recomputing the probability mass function for each feature per class. As such, it is better to train with fewer but larger training sets.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

@@ -3,7 +3,8 @@
 # Image Vectorizer
 Image Vectorizer takes images of the same size and converts them into flat feature vectors of raw color channel intensities. Intensities range from 0 to 255 and can either be read from 1 channel (grayscale) or 3 channels (RGB color) per pixel.
 
-> **Note:** Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+!!! note
+    Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 

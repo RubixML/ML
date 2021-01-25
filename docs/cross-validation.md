@@ -27,7 +27,8 @@ If we have a [Labeled](datasets/labeled.md) dataset containing class labels, we 
 ## Metrics
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an [Estimator](estimator.md) with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below.
 
-> **Note:** All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](https://docs.rubixml.com/cross-validation/metrics/mean-squared-error.html) and [RMSE](https://docs.rubixml.com/cross-validation/metrics/rmse.html) are given as their *negative* to conform to this schema.
+!!! note
+    All metrics follow the schema that higher scores are better - thus, common *loss functions* such as [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) and [RMSE](cross-validation/metrics/rmse.md) are given as their *negative* to conform to this schema.
 
 ### Classification and Anomaly Detection
 | Metric | Range | Notes |

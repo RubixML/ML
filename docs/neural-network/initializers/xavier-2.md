@@ -14,4 +14,4 @@ $initializer = new Xavier2();
 ```
 
 ### References
->- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
+[^1]: X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.

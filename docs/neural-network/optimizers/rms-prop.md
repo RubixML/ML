@@ -17,4 +17,4 @@ $optimizer = new RMSProp(0.01, 0.1);
 ```
 
 ### References
->- T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the gradient by a running average of its recent magnitude.
+[^1]: T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the gradient by a running average of its recent magnitude.

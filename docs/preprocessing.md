@@ -25,7 +25,8 @@ $dataset->apply(new RandomHotDeckImputer(5))
     ->apply(new MinMaxNormalizer());
 ```
 
-> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/datasets/labeled.html#transform-labels) dataset instance.
+!!! note
+    Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance.
 
 ### Manually Fitting
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
@@ -241,7 +242,8 @@ When it is undesirable for a dataset to contain duplicate records, you can remov
 $dataset->deduplicate();
 ```
 
-> **Note:** The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
+!!! note
+    The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
 If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.

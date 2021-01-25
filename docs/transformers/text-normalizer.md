@@ -7,7 +7,8 @@ This transformer converts the characters in all strings to lowercase.
 
 **Data Type Compatibility:** Categorical
 
-> **Note:** ⚠️ This transformer cannot handle multibyte strings such as emjois properly. For multibyte support, use the [MultibyteTextNormalizer](multibyte-text-normalizer.md).
+!!! note
+    ⚠️ This transformer cannot handle multibyte strings such as emjois properly. For multibyte support, use the [MultibyteTextNormalizer](multibyte-text-normalizer.md).
 
 ## Parameters
 This transformer does not have any parameters.

@@ -18,4 +18,4 @@ $metric = new MCC();
 ```
 
 ### References
->- B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary Structure of T4 Phage Lysozyme.
+[^1]: B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary Structure of T4 Phage Lysozyme.

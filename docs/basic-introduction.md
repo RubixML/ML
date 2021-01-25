@@ -17,7 +17,8 @@ $samples = [
 $labels = ['married', 'divorced', 'married', 'divorced'];
 ```
 
-> **Hint:** See the [Representing your Data](representing-your-data.md) section for an in-depth description of how the library treats various forms of data.
+!!! note
+    See the [Representing your Data](representing-your-data.md) section for an in-depth description of how the library treats various forms of data.
 
 ## The Dataset Object
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, splitting, randomizing, and sorting of the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions.
@@ -30,7 +31,8 @@ use Rubix\ML\Datasets\Labeled;
 $dataset = new Labeled($samples, $labels);
 ```
 
-> **Hint:** See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different formats and storage mediums.
+!!! note
+    See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different formats and storage mediums.
 
 ## Choosing an Estimator
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
@@ -47,7 +49,8 @@ use Rubix\ML\Classifiers\KNearestNeighbors;
 $estimator = new KNearestNeighbors(3);
 ```
 
-> **Hint:** See the [Choosing an Estimator](choosing-an-estimator.md) section for an in-depth look at the estimators available to you in the library.
+!!! note
+    See the [Choosing an Estimator](choosing-an-estimator.md) section for an in-depth look at the estimators available to you in the library.
 
 ## Training
 Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction.
@@ -70,12 +73,14 @@ bool(true)
 
 For our small training set, the training process should only take a matter of microseconds, but larger datasets with more features can take longer. Now that the learner is trained, in the next section we'll show how we can feed in unknown samples to generate predictions.
 
-> **Hint:** See the [Training](training.md) section of the docs for a closer look at training a learner.
+!!! note
+    See the [Training](training.md) section of the docs for a closer look at training a learner.
 
 ## Making Predictions
 Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on our newly trained estimator. This process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
-> **Note:** If you attempt to make predictions using an untrained learner, it will throw an exception.
+!!! note
+    If you attempt to make predictions using an untrained learner, it will throw an exception.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
@@ -105,14 +110,16 @@ array(4) {
 
 The output of the estimator are the predicted class labels of the unknown samples. We could either trust these predictions as-is or we could proceed to further evaluate the model. In the next section, we'll learn how to test its accuracy using a process called cross validation.
 
-> **Hint:** Check out the section on [Inference](inference.md) for more info on making predictions.
+!!! note
+    Check out the section on [Inference](inference.md) for more info on making predictions.
 
 ## Model Evaluation
 Let's imagine we went out and collected enough data from our married and divorced friends to build a  dataset consisting of 50 samples with their corresponding labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. By setting some data aside we are able to test the model on data it has never seen before. This technique is referred to as cross validation and its goal is to test an estimator's ability to generalize its training.
 
 For the purposes of the introduction, we'll use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
-> **Note:** 20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
+!!! note
+    20% is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
@@ -120,7 +127,7 @@ use Rubix\ML\CrossValidation\HoldOut;
 $validator = new HoldOut(0.2);
 ```
 
-The `test()` method on the validator requires a compatible validation [Metric](https://docs.rubixml.com/cross-validation/metrics/api.html) to be chosen as the scoring function. One classification metric we could use is the [Accuracy](cross-validation/metrics/accuracy.md) metric which is defined as the number of true positives over the total number of predictions. For example, if the estimator returned 10 out of 10 correct predictions then its accuracy would be 1.
+The `test()` method on the validator requires a compatible validation [Metric](cross-validation/metrics/api.md) to be chosen as the scoring function. One classification metric we could use is the [Accuracy](cross-validation/metrics/accuracy.md) metric which is defined as the number of true positives over the total number of predictions. For example, if the estimator returned 10 out of 10 correct predictions then its accuracy would be 1.
 
 To return a score from the Hold Out validator using the Accuracy metric, pass an estimator instance along with the samples and their ground-truth labels in a dataset object to the validator like in the example below.
 
@@ -141,7 +148,8 @@ echo $score;
 
 The return value is the accuracy score which can be interpreted as the degree to which the learner is able to correctly generalize its training to unseen data. According to the example above, our model is 88% accurate. Nice work!
 
-> **Hint:** More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
+!!! note
+    More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 
 ## Next Steps
 Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier and a real dataset, check out the [Divorce Predictor](https://github.com/RubixML/Divorce) tutorial and example project. Have fun!

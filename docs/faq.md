@@ -14,7 +14,8 @@ To run a PHP script using the command line interface (CLI), open a terminal wind
 $ php example.php
 ```
 
-> **Note:** The PHP interpreter must be installed and in your default PATH for the above syntax to work correctly.
+!!! note
+    The PHP interpreter must be installed and in your default PATH for the above syntax to work correctly.
 
 ## I'm getting out of memory errors.
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to `-1` (no limit) or slightly below your device's memory supply for best results.
@@ -25,7 +26,8 @@ You can temporarily set the `memory_limit` in your script by using the `ini_set(
 ini_set('memory_limit', '-1');
 ```
 
-> **Note:** Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the Online Learning section of the [Training](training.md) docs for more information.
+!!! note
+    Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the Online Learning section of the [Training](training.md) docs for more information.
 
 ## Training is slower than usual.
 Training time depends on a number of factors including size of the dataset and complexity of the model. If you believe that training is taking unusually long then check the following factors.

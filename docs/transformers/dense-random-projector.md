@@ -3,7 +3,8 @@
 # Dense Random Projector
 A *database-friendly* random projector with projection matrix sampled from a dense uniform distribution ([-1, 1]).
 
-> **Note:** Dense Random Projector has been deprecated, use [Sparse Random Projector](sparse-random-projector.md) with sparsity set to 0 instead.
+!!! note
+    Dense Random Projector has been deprecated, use [Sparse Random Projector](sparse-random-projector.md) with sparsity set to 0 instead.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
@@ -34,4 +35,4 @@ $dimensions = DenseRandomProjector::minDimensions(1000, 0.3);
 ```
 
 ### References
->- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
+[^1]: D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.

@@ -26,4 +26,4 @@ $estimator = new BootstrapAggregator(new RegressionTree(10), 300, 0.2);
 This meta estimator does not have any additional methods.
 
 ### References
->- L. Breiman. (1996). Bagging Predictors.
+[^1]: L. Breiman. (1996). Bagging Predictors.

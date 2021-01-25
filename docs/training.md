@@ -28,7 +28,8 @@ $estimator->partial($dataset2);
 $estimator->partial($dataset3);
 ```
 
-> **Note:** After the initial training, the learner will expect subsequent datasets to contain the same number and order of features.
+!!! note
+    After the initial training, the learner will expect subsequent datasets to contain the same number and order of features.
 
 ## Monitoring Progress
 Since training is often an iterative process, it is useful to obtain feedback as to how the learner is progressing in real-time. For example, you may want to monitor the training loss to make sure that it isn't increasing instead of decreasing with training. Such early feedback saves you time by allowing you to abort training early if things aren't going well. Learners that implement the [Verbose](verbose.md) interface accept a [PSR-3](https://www.php-fig.org/psr/psr-3/) logger instance that can be used to output training information at each time step (or *epoch*). The library comes built-in with the [Screen Logger](other/loggers/screen.md) that does the job for most cases.

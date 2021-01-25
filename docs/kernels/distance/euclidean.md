@@ -16,4 +16,4 @@ $kernel = new Euclidean();
 ```
 
 ### References
->- J. K. Dixon. (1978). Pattern Recognition with Partly Missing Data.
+[^1]: J. K. Dixon. (1978). Pattern Recognition with Partly Missing Data.

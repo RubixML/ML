@@ -16,4 +16,4 @@ $layer = new Noise(1e-3);
 ```
 
 ### References
->- C. Gulcehre et al. (2016). Noisy Activation Functions.
+[^1]: C. Gulcehre et al. (2016). Noisy Activation Functions.

@@ -3,7 +3,8 @@
 # Robust Z-Score
 A statistical anomaly detector that uses modified Z-Scores that are robust to preexisting outliers in the training set. The modified Z-Score is defined as the feature value minus the median over the median absolute deviation (MAD). Anomalies are flagged if their final weighted Z-Score exceeds a user-defined threshold.
 
-> **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score, whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
+!!! note
+    An alpha value of 1 means the estimator only considers the maximum absolute Z-Score, whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Scoring](../scoring.md), [Persistable](../persistable.md)
 
@@ -34,4 +35,4 @@ public mads() : float[]|null
 ```
 
 ### References
->- B. Iglewicz et al. (1993). How to Detect and Handle Outliers.
+[^1]: B. Iglewicz et al. (1993). How to Detect and Handle Outliers.

@@ -17,4 +17,5 @@ $estimator->partial($folds[1]);
 $estimator->partial($folds[2]);
 ```
 
-> **Note:** Learner will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained learner will reset it back to baseline first.
+!!! note
+    Learner will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained learner will reset it back to baseline first.

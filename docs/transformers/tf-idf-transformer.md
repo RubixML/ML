@@ -3,7 +3,8 @@
 # TF-IDF Transformer
 *Term Frequency - Inverse Document Frequency* is a measurement of how important a word is to a document. The TF-IDF value increases proportionally (linearly) with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
 
-> **Note:** TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
+!!! note
+    TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
@@ -28,4 +29,4 @@ public dfs() : ?array
 ```
 
 ### References
->- S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.
+[^1]: S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.

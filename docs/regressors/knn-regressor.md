@@ -3,7 +3,8 @@
 # KNN Regressor
 K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates the k nearest training samples from the training set and averages their labels to make a prediction. K Nearest Neighbors (KNN) is considered a *lazy* learner because it performs most of its computation at inference time.
 
-> **Note:** For a faster spatial tree-accelerated version of KNN, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
+!!! note
+    For a faster spatial tree-accelerated version of KNN, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Persistable](../persistable.md)
 

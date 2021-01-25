@@ -16,7 +16,8 @@ There are 4 base estimator types to consider in Rubix ML and each type outputs a
 ## Making Predictions
 All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array.
 
-> **Note:** The inference samples must contain the same number and order of feature columns as the samples used to train the learner.
+!!! note
+    The inference samples must contain the same number and order of feature columns as the samples used to train the learner.
 
 ```php
 $predictions = $estimator->predict($dataset);

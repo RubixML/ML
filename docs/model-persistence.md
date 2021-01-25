@@ -26,7 +26,8 @@ use Rubix\ML\Persisters\Serializers\Igbinary;
 $persister = new Filesystem('example.model', true, new Igbinary());
 ```
 
-> **Note:** Due to a limitation in PHP, anonymous classes and functions (*closures*) are not able to be deserialized. Avoid adding anonymous classes or functions to an object that you wish to persist. Instead, use a named function or class.
+!!! note
+    Due to a limitation in PHP, anonymous classes and functions (*closures*) are not able to be deserialized. Avoid adding anonymous classes or functions to an object that you wish to persist. Instead, use a named function or class.
 
 ## Persistent Model Meta-estimator
 The [Persistent Model](persistent-model.md) meta-estimator is a wrapper that uses the persistence subsystem under the hood. It provides the `save()` and `load()` methods that give the estimator the ability to save and load itself.
