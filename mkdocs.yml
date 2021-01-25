@@ -1,7 +1,7 @@
 site_name: 'Rubix ML: Machine Learning for PHP'
 
 theme:
-  name: mkdocs
+  name: readthedocs
   highlightjs: true
   hljs_languages:
       - php
