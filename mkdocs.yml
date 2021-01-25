@@ -1,6 +1,10 @@
 site_name: 'Rubix ML: Machine Learning for PHP'
 
-theme: readthedocs
+theme:
+  name: mkdocs
+  highlightjs: true
+  hljs_languages:
+      - php
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
