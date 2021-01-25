@@ -6,9 +6,6 @@ theme:
   favicon: img/app-icon.small.png
   icon:
     repo: fontawesome/brands/github
-  highlightjs: true
-  hljs_languages:
-      - php
   google_analytics:
     - UA-136137674-1
     - auto
