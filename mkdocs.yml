@@ -6,8 +6,10 @@ theme:
   favicon: images/app-icon.small.png
   icon:
     repo: fontawesome/brands/github
-  google_analytics:
-    - UA-136137674-1
+
+google_analytics:
+  - UA-136137674-1
+  - auto
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
