@@ -1,4 +1,4 @@
-<h1><span><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/img/rubix-ml-logo.png" width="50" height="50" alt="Rubix ML logo" /></span> <span>Rubix ML: Machine Learning for PHP</span></h1>
+# Rubix: Machine Learning for PHP
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
@@ -6,29 +6,6 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **40+** supervised and unsupervised learning algorithms
 - **Support** for ETL, preprocessing, and cross-validation
 - **Open Source** and free to use commercially
-
-## Installation
-Install Rubix ML into your project using [Composer](https://getcomposer.org/):
-
-```sh
-$ composer require rubix/ml
-```
-
-### Requirements
-- [PHP](https://php.net/manual/en/install.php) 7.2 or above
-
-**Recommended**
-
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
-
-**Optional**
-
-- [Extras Package](https://github.com/RubixML/Extras) for experimental features
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
-- [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
-- [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
-- [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## What is Rubix ML?
 Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
@@ -55,6 +32,7 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Join Our Telegram Channel](https://t.me/RubixML)
 - [Receive Our Newsletter](https://rubixml.com/#get-notified)
 - [Meet In The LinkedIn Group](https://www.linkedin.com/groups/8952251/)
+- [Interact on Twitter](https://twitter.com/RubixML)
 
 ## Funding
 Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.

@@ -1,6 +1,6 @@
 # Rubix ML
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Build](https://github.com/RubixML/ML/workflows/Build/badge.svg)](https://github.com/RubixML/ML/actions) [![Documentation Status](https://img.shields.io/readthedocs/rubix-ml.svg?style=flat&colorB=blue)](https://rubix-ml.readthedocs.io/?badge=latest) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Build](https://github.com/RubixML/ML/workflows/Build/badge.svg)](https://github.com/RubixML/ML/actions) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
@@ -37,7 +37,7 @@ Read the latest docs [here](https://docs.rubixml.com).
 Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
 
 ## Getting Started
-If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://docs.rubixml.com/en/latest/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/en/latest/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://docs.rubixml.com/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
 Check out these example projects using the Rubix ML library. Many come with instructions and a pre-cleaned dataset.
@@ -58,6 +58,7 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Join Our Telegram Channel](https://t.me/RubixML)
 - [Receive Our Newsletter](https://rubixml.com/#get-notified)
 - [Meet In The LinkedIn Group](https://www.linkedin.com/groups/8952251/)
+- [Interact on Twitter](https://twitter.com/RubixML)
 
 ## Funding
 Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.
