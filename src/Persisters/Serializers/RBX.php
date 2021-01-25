@@ -74,7 +74,7 @@ class RBX implements Serializer
      *
      * @var string
      */
-    protected const PAYLOAD_HASH_TYPE = 'sha512';
+    protected const PAYLOAD_HASH_TYPE = 'sha256';
 
     /**
      * The end of line character.
