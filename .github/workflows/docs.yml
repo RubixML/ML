@@ -13,6 +13,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
+          fetch-depth: 0
       - run: pip install mike
       - run: pip install mkdocs-material
       - run: pip install mkdocs-git-revision-date-plugin
