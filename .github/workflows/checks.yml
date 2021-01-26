@@ -3,7 +3,7 @@ name: "Code Checks"
 on: [push, pull_request]
 
 jobs:
-  build:
+  Build:
     name: PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
     strategy:

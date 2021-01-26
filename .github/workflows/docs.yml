@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
-          fetch-depth: 0
 
       - name: Install Dependencies
         run: pip install mike mkdocs-material mkdocs-git-revision-date-plugin
