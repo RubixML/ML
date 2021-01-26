@@ -9,16 +9,23 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
           python-version: 3.x
           fetch-depth: 0
-      - run: pip install mike
-      - run: pip install mkdocs-material
-      - run: pip install mkdocs-git-revision-date-plugin
-      - run: git config --global user.name "Documentation Bot"
-      - run: git config --global user.email support@rubixml.com
-      - run: mike deploy --push --update-aliases --force 0.x latest
-      - run: mike set-default --push latest 
+
+      - name: Install Dependencies
+        run: pip install mike mkdocs-material mkdocs-git-revision-date-plugin
+
+      - name: Setup Doc Bot
+        run: |
+          git config --global user.name "Doc Bot"
+          git config --global user.email support@rubixml.com
+
+      - name: Build Docs Site    
+        run: mike deploy --push --update-aliases --force 0.x latest
       

@@ -32,8 +32,8 @@ jobs:
       - name: Static Analysis
         run: composer analyze
 
-      - name: Run Unit Tests
+      - name: Unit Tests
         run: composer test
 
-      - name: Check Coding Style
+      - name: Coding Style
         run: composer check
