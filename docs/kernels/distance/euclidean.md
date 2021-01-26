@@ -1,7 +1,11 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Kernels/Distance/Euclidean.php">[source]</a></span>
 
 # Euclidean
-Standard straight line (*bee* line) distance between two points. The Euclidean distance has the nice property of being invariant under any rotation.
+The straight line (*bee* line) distance between two points. Euclidean distance has the nice property of being invariant under any rotation.
+
+$$
+Euclidean\left(a,b\right) = \sqrt {\sum _{i=1}^{n}  \left( a_{i}-b_{i}\right)^2} 
+$$
 
 **Data Type Compatibility:** Continuous
 

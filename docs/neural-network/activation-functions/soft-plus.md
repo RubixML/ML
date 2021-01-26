@@ -4,7 +4,7 @@
 A smooth approximation of the piecewise linear [ReLU](relu.md) activation function.
 
 $$
-{\displaystyle \log \left(1+e^{x}\right)}
+{\displaystyle Soft-Plus = \log \left(1+e^{x}\right)}
 $$
 
 ## Parameters

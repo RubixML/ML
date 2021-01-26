@@ -3,6 +3,10 @@
 # Minkowski
 The Minkowski distance can be considered as a generalization of both the [Euclidean](euclidean.md) and [Manhattan](manhattan.md) distances. When the lambda parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
 
+$$
+{\displaystyle Minkowski\left(a,b\right)=\left(\sum _{i=1}^{n}|a_{i}-b_{i}|^{p}\right)^{\frac {1}{p}}}
+$$
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

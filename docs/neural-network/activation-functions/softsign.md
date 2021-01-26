@@ -4,7 +4,7 @@
 A smooth sigmoid-shaped function that squashes the input between -1 and 1.
 
 $$
-{\displaystyle {\frac {x}{1+|x|}}}
+{\displaystyle Softsign = {\frac {x}{1+|x|}}}
 $$
 
 ## Parameters

@@ -3,6 +3,14 @@
 # Huber Loss
 The pseudo Huber Loss function transitions between L1 and L2 loss at a given pivot point (defined by *delta*) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 losses make Huber more robust to outliers while maintaining smoothness near the minimum.
 
+$$
+L_{\delta}=
+    \left\{\begin{matrix}
+        \frac{1}{2}(y - \hat{y})^{2} & if \left | (y - \hat{y})  \right | < \delta\\
+        \delta ((y - \hat{y}) - \frac1 2 \delta) & otherwise
+    \end{matrix}\right.
+$$
+
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|

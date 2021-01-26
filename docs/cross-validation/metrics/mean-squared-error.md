@@ -4,7 +4,7 @@
 A scale-dependent regression metric that gives greater weight to error scores the worse they are. Formally, Mean Squared Error (MSE) is the average of the squared differences between a set of predictions and their target labels.
 
 $$
-{\displaystyle \operatorname {MSE} ={\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}.}
+{\displaystyle \operatorname {MSE} ={\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}
 $$
 
 !!! note

@@ -3,6 +3,10 @@
 # Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example of a board game that uses this type of movement is Checkers.
 
+$$
+Manhattan(\mathbf {a} ,\mathbf {b})=\|\mathbf {a} -\mathbf {b} \|_{1}=\sum _{i=1}^{n}|a_{i}-b_{i}|
+$$
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

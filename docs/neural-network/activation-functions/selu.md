@@ -4,7 +4,7 @@
 Scaled Exponential Linear Units (SELU) are a self-normalizing activation function based on the [ELU](#elu) activation function. Neuronal activations of SELU networks automatically converge toward zero mean and unit variance, unlike explicitly normalized networks such as those with [Batch Norm](#batch-norm) hidden layers.
 
 $$
-{\displaystyle 1.0507 {\begin{cases}1.67326 (e^{x}-1)&{\text{if }}x<0\\x&{\text{if }}x\geq 0\end{cases}}}
+{\displaystyle SELU = 1.0507 {\begin{cases}1.67326 (e^{x}-1)&{\text{if }}x<0\\x&{\text{if }}x\geq 0\end{cases}}}
 $$
 
 ## Parameters
