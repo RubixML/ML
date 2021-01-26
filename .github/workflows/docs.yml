@@ -13,11 +13,11 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
-          fetch-depth: 0
       - run: pip install mike
       - run: pip install mkdocs-material
       - run: pip install mkdocs-git-revision-date-plugin
       - run: git config --global user.name "Documentation Bot"
       - run: git config --global user.email support@rubixml.com
-      - run: mike deploy --push --update-aliases -f 0.x latest
+      - run: mike deploy --push --update-aliases 0.x latest
+      - run: mike set-default --push latest 
       
