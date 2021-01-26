@@ -26,5 +26,5 @@ jobs:
           git config --global user.email support@rubixml.com
 
       - name: Build Docs Site    
-        run: mike deploy --push --update-aliases --force 0.x latest
+        run: mike deploy --push --update-aliases 0.x latest
       
