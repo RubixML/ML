@@ -3,6 +3,10 @@
 # Soft Plus
 A smooth approximation of the piecewise linear [ReLU](relu.md) activation function.
 
+$$
+{\displaystyle \log \left(1+e^{x}\right)}
+$$
+
 ## Parameters
 This activation function does not have any parameters.
 

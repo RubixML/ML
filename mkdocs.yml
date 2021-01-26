@@ -218,23 +218,20 @@ nav:
     - Monte Carlo: cross-validation/monte-carlo.md
     - Metrics:
       - API Reference: cross-validation/metrics/api.md
-      - Classification and Anomaly Detection:
-        - Accuracy: cross-validation/metrics/accuracy.md
-        - F Beta: cross-validation/metrics/f-beta.md
-        - Informedness: cross-validation/metrics/informedness.md
-        - MCC: cross-validation/metrics/mcc.md
-      - Regression:
-        - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
-        - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
-        - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
-        - RMSE: cross-validation/metrics/rmse.md
-        - R Squared: cross-validation/metrics/r-squared.md
-        - SMAPE: cross-validation/metrics/smape.md
-      - Clustering:
-        - Completeness: cross-validation/metrics/completeness.md
-        - Homogeneity: cross-validation/metrics/homogeneity.md
-        - Rand Index: cross-validation/metrics/rand-index.md
-        - V Measure: cross-validation/metrics/v-measure.md
+      - Accuracy: cross-validation/metrics/accuracy.md
+      - F Beta: cross-validation/metrics/f-beta.md
+      - Informedness: cross-validation/metrics/informedness.md
+      - MCC: cross-validation/metrics/mcc.md
+      - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
+      - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
+      - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
+      - RMSE: cross-validation/metrics/rmse.md
+      - R Squared: cross-validation/metrics/r-squared.md
+      - SMAPE: cross-validation/metrics/smape.md
+      - Completeness: cross-validation/metrics/completeness.md
+      - Homogeneity: cross-validation/metrics/homogeneity.md
+      - Rand Index: cross-validation/metrics/rand-index.md
+      - V Measure: cross-validation/metrics/v-measure.md
     - Reports:
       - API Reference: cross-validation/reports/api.md
       - Aggregate Report: cross-validation/reports/aggregate-report.md
@@ -299,6 +296,8 @@ markdown_extensions:
           options:
             startinline: true
   - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
   - toc:
       permalink: "#"
   - footnotes
@@ -306,6 +305,11 @@ markdown_extensions:
 google_analytics:
   - UA-136137674-1
   - auto
+
+extra_javascript:
+  - js/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com

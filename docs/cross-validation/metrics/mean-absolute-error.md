@@ -3,7 +3,12 @@
 # Mean Absolute Error
 A scale-dependent metric that measures the average absolute error between a set of predictions and their ground-truth labels. One of the nice properties of MAE is that it has the same units of measurement as the labels being estimated.
 
-> **Note:** In order to maintain the convention of *maximizing* validation scores, this metric outputs the negative of the original score.
+$$
+{\displaystyle \mathrm {MAE} ={\frac {\sum _{i=1}^{n}\left|y_{i}-x_{i}\right|}{n}}={\frac {\sum _{i=1}^{n}\left|e_{i}\right|}{n}}.}
+$$
+
+!!! note
+    In order to maintain the convention of *maximizing* validation scores, this metric outputs the negative of the original score.
 
 **Estimator Compatibility:** Regressor
 
