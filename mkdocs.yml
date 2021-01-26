@@ -322,7 +322,6 @@ extra_css:
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
-site_description: 'A high-level machine learning and deep learning library for the
-    PHP language.'
+site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 
 copyright: '&copy; 2021 Rubix ML'

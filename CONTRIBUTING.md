@@ -81,3 +81,18 @@ To run the benchmarking suite:
 ```sh
 $ composer benchmark
 ```
+
+## Compiling Docs
+We use [Mkdocs](https://www.mkdocs.org) and [Mike](https://github.com/jimporter/mike) to compile the markdown documents in the `docs` folder to a versioned static document site.
+
+Make sure to have the following Python dependencies installed.
+
+```sh
+$ pip install mike mkdocs mkdocs-material mkdocs-git-revision-date-plugin
+```
+
+To serve the documentation site locally for development you can run the following command from the terminal. Then, you'll be able to view the docs by navigating to `http://127.0.0.1:8000` in your browser.
+
+```sh
+$ mike serve
+```
