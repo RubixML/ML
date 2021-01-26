@@ -16,6 +16,5 @@ jobs:
       - run: pip install mike
       - run: pip install mkdocs-material
       - run: pip install mkdocs-git-revision-date-plugin
-      - run: mike set-default latest
       - run: mike deploy --push --update-aliases 0.x latest
       
