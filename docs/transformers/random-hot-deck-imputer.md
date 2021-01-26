@@ -3,7 +3,8 @@
 # Random Hot Deck Imputer
 A *hot deck* is a set of complete donor samples that may be referenced when imputing a value for a missing feature value. Random Hot Deck Imputer first finds the k nearest donors to a sample that contains a missing value and then chooses a value at random from the neighborhood.
 
-**Note:** Requires NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), for continuous features.
+!!! note
+    Requires a NaN safe distance kernel such as [Safe Euclidean](../kernels/distance/safe-euclidean.md) for continuous features.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 

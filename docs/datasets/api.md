@@ -20,7 +20,8 @@ Build a dataset with the rows from a 2-dimensional iterable data table:
 public static fromIterator(Traversable $iterator) : self
 ```
 
-**Note:** When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
+!!! note
+    When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
 
 ```php
 use Rubix\ML\Datasets\Labeled;

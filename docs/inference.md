@@ -1,7 +1,8 @@
 # Inference
 Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of samples.
 
-> **Note**: As of 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset containing a single sample.
+!!! note
+    As of version 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset object containing a single sample.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are *polymorphic* in the sense that they take on the type of the base estimator they wrap.

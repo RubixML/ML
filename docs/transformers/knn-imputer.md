@@ -3,7 +3,8 @@
 # KNN Imputer
 An unsupervised imputer that replaces missing values in a dataset with the distance-weighted average of the samples' *k* nearest neighbors' values. The average for a continuous feature column is defined as the mean of the values of each donor. Similarly, average is defined as the *most frequent* value for categorical features.
 
-**Note:** Requires NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), for continuous features.
+!!! note
+    Requires a NaN safe distance kernel such as [Safe Euclidean](../kernels/distance/safe-euclidean.md) for continuous features.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
