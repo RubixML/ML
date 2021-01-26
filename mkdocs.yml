@@ -8,7 +8,6 @@ theme:
         repo: fontawesome/brands/github
     features:
       - navigation.tabs
-      - navigation.instant
 
 nav:
   - Home: https://rubixml.com
@@ -321,7 +320,6 @@ extra_javascript:
 
 extra_css:
   - css\version-select.css
-
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
