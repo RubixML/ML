@@ -25,4 +25,4 @@ $metric = new SMAPE();
 ```
 
 ### References
->- V. Kreinovich. et al. (2014). How to Estimate Forecasting Quality: A System Motivated Derivation of Symmetric Mean Absolute Percentage Error (SMAPE) and Other Similar Characteristics.
+[^1]: V. Kreinovich. et al. (2014). How to Estimate Forecasting Quality: A System Motivated Derivation of Symmetric Mean Absolute Percentage Error (SMAPE) and Other Similar Characteristics.

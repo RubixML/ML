@@ -59,5 +59,5 @@ public balance() : int
 ```
 
 ### References:
->- W. Y. Loh. (2011). Classification and Regression Trees.
->- K. Alsabti. et al. (1998). CLOUDS: A Decision Tree Classifier for Large Datasets.
+[^1]: W. Y. Loh. (2011). Classification and Regression Trees.
+[^2]: K. Alsabti. et al. (1998). CLOUDS: A Decision Tree Classifier for Large Datasets.

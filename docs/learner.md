@@ -11,7 +11,8 @@ public train(Dataset $training) : void
 $estimator->train($dataset);
 ```
 
-> **Note:** Calling the `train()` method on an already trained learner will erase its previous training. If you would like to train a model incrementally, you can do so with learners implementing the [Online](online.md) interface.
+!!! note
+    Calling the `train()` method on an already trained learner will erase its previous training. If you would like to train a model incrementally, you can do so with learners implementing the [Online](online.md) interface.
 
 ### Is the Learner Trained?
 Return whether or not the learner has been trained:

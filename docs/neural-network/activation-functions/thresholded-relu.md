@@ -20,4 +20,4 @@ $activationFunction = new ThresholdedReLU(0.5);
 ```
 
 ### References
->- K. Konda et al. (2015). Zero-bias autoencoders and the benefits of co-adapting features.
+[^1]: K. Konda et al. (2015). Zero-bias autoencoders and the benefits of co-adapting features.

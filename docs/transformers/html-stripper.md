@@ -3,7 +3,8 @@
 # HTML Stripper
 Removes any HTML or PHP tags from the text of a feature column.
 
-> **Note:** Since the HTML is not actually validated during transformation, broken tags may result in unexpectedly removing non-HTML text.
+!!! note
+    Since the HTML is not actually validated during transformation, broken tags may result in unexpectedly removing non-HTML text.
 
 **Interfaces:** [Transformer](api.md#transformer)
 

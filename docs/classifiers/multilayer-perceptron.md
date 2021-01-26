@@ -3,7 +3,8 @@
 # Multilayer Perceptron
 A multiclass feed-forward neural network classifier with user-defined hidden layers. The Multilayer Perceptron is a deep learning model capable of forming higher-order feature representations through layers of computation. In addition, the MLP features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
-> **Note:** If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
+!!! note
+    If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -64,5 +65,5 @@ public network() : Network|null
 ```
 
 ### References
->- G. E. Hinton. (1989). Connectionist learning procedures.
->- L. Prechelt. (1997). Early Stopping - but when?
+[^1]: G. E. Hinton. (1989). Connectionist learning procedures.
+[^2]: L. Prechelt. (1997). Early Stopping - but when?

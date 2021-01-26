@@ -44,4 +44,4 @@ public steps() : float[]|null
 ```
 
 ### References
->- D. Sculley. (2010). Web-Scale K-Means Clustering.
+[^1]: D. Sculley. (2010). Web-Scale K-Means Clustering.

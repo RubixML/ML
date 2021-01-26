@@ -3,7 +3,8 @@
 # Committee Machine
 A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence scheme to weight the final predictions.
 
-> **Note:** Influence values can be on any arbitrary scale as they are automatically normalized upon instantiation.
+!!! note
+    Influence values can be on any arbitrary scale as they are automatically normalized upon instantiation.
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
 
@@ -46,4 +47,4 @@ public influences() : array
 ```
 
 ### References
->- [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
+[^1]: H. Drucker. (1997). Fast Committee Machines for Regression and Classification.

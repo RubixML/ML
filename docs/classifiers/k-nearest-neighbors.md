@@ -3,7 +3,8 @@
 # K Nearest Neighbors
 A brute-force distance-based learning algorithm that locates the *k* nearest samples from the training set and predicts the class label that is most common. K Nearest Neighbors (KNN) is considered a *lazy* learner because it performs most of its computation at inference time.
 
-> **Note:** For a faster spatial tree-accelerated version of KNN, see [KD Neighbors](kd-neighbors.md).
+!!! note
+    For a faster spatial tree-accelerated version of KNN, see [KD Neighbors](kd-neighbors.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

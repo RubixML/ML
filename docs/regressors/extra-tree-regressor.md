@@ -39,4 +39,4 @@ public balance() : int
 ```
 
 ### References
->- P. Geurts et al. (2005). Extremely Randomized Trees.
+[^1]: P. Geurts et al. (2005). Extremely Randomized Trees.

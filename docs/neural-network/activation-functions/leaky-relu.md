@@ -20,4 +20,4 @@ $activationFunction = new LeakyReLU(0.3);
 ```
 
 ### References
->- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
+[^1]: A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.

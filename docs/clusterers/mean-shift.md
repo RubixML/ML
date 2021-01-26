@@ -32,7 +32,8 @@ Estimate the radius of a cluster that encompasses a certain percentage of the to
 public static estimateRadius(Dataset $dataset, float $percentile = 30.0, ?Distance $kernel = null) : float
 ```
 
-> **Note:** Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a smaller subset of the training data.
+!!! note
+    Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a smaller subset of the training data.
 
 Return the centroids computed from the training set:
 ```php
@@ -45,5 +46,5 @@ public steps() : float[]|null
 ```
 
 ### References
->- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
->- D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.
+[^1]: M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
+[^2]: D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.

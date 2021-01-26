@@ -3,7 +3,8 @@
 # CSV
 A plain-text format that use newlines to delineate rows and a user-specified delimiter (usually a comma) to separate the values of each column in a data table. Comma-Separated Values (CSV) format is a common format but suffers from not being able to retain type information - thus, all data is imported as categorical data (strings) by default.
 
-> **Note:** This implementation of CSV is based on the definition in [RFC 4180](https://tools.ietf.org/html/rfc4180).
+!!! note
+    This implementation of CSV is based on the definition in [RFC 4180](https://tools.ietf.org/html/rfc4180).
 
 ## Parameters
 | # | Name | Default | Type | Description |
@@ -24,4 +25,4 @@ $extractor = new CSV('example.csv', true, ',', '"');
 This extractor does not have any additional methods.
 
 ### References
->- T. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.
+[^1]: T. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.

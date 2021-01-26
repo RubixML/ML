@@ -3,7 +3,8 @@
 # Amp
 [Amp Parallel](https://amphp.org/parallel/) is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
 
-> **Note:** The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
+!!! note
+    The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
 ## Parameters
 | # | Name | Default | Type | Description |

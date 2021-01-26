@@ -18,4 +18,4 @@ $activationFunction = new SELU();
 ```
 
 ### References
->- G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
+[^1]: G. Klambauer et al. (2017). Self-Normalizing Neural Networks.

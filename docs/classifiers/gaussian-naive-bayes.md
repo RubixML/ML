@@ -39,4 +39,4 @@ public variances() : array[]|null
 ```
 
 ### References
->- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
+[^1]: T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.

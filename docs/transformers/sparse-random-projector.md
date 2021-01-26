@@ -33,5 +33,5 @@ $dimensions = SparseRandomProjector::minDimensions(10000, 0.5);
 ```
 
 ### References
->- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
->- P. Li at al. (2006). Very Sparse Random Projections.
+[^1]: D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
+[^2]: P. Li at al. (2006). Very Sparse Random Projections.

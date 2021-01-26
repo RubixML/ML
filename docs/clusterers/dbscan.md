@@ -3,7 +3,8 @@
 # DBSCAN
 *Density-Based Spatial Clustering of Applications with Noise* (DBSCAN) is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters given a radius and density constraint. In addition, DBSCAN can flag outliers (noise samples) and thus be used as a quasi-anomaly detector.
 
-> **Note:** Noise samples are assigned the cluster number -1.
+!!! note
+    Noise samples are assigned the cluster number -1.
 
 **Interfaces:** [Estimator](../estimator.md)
 
@@ -29,4 +30,4 @@ $estimator = new DBSCAN(4.0, 5, new BallTree(20, new Diagonal()));
 This estimator does not have any additional methods.
 
 ### References
->- M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.
+[^1]: M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.

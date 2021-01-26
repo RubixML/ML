@@ -23,7 +23,8 @@ var_dump($score);
 float(-0.99846070553066)
 ```
 
-> **Note:** Regression metrics output the negative of their value to maintain the notion that cross validation scores should be *maximized* instead of *minimized* such as the case with loss functions.
+!!! note
+    Regression metrics output the negative of their value to maintain the notion that cross validation scores should be *maximized* instead of *minimized* such as the case with loss functions.
 
 ### Output Range
 Output the range of values the validation score can take on in a [2-tuple](../../faq.md#what-is-a-tuple):

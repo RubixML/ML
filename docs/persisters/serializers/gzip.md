@@ -18,4 +18,4 @@ $serializer = new Gzip(1, new Native());
 ```
 
 ### References
->- P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification version.
+[^1]: P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification version.

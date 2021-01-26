@@ -3,7 +3,8 @@
 # SVC
 The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high-dimensional feature space using the *kernel trick*.
 
-> **Note:** This learner requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
+!!! note
+    This learner requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the libsvm engine under the hood.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md)
 
@@ -38,4 +39,4 @@ public load(string $path) : void
 ```
 
 ### References
->- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+[^1]: C. Chang et al. (2011). LIBSVM: A library for support vector machines.
