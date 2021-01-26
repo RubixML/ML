@@ -283,7 +283,6 @@ extra:
         link: https://twitter.com/RubixML
       - icon: fontawesome/brands/linkedin
         link: https://www.linkedin.com/groups/8952251/
-    manifest: manifest.json
 
 use_directory_urls: false
 
