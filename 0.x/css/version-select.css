@@ -1,5 +1,3 @@
-@media only screen and (max-width:76.1875em) {
-    #version-selector {
-      display: none;
-    }
+#version-selector {
+  display: none;
 }
