@@ -4297,9 +4297,12 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/Homogeneity.php">[source]</a></span></p>
 <h1 id="homogeneity">Homogeneity<a class="headerlink" href="#homogeneity" title="Permanent link">#</a></h1>
 <p>A ground-truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be <em>homogeneous</em> when the entire cluster is comprised of a single class of samples.</p>
+<div class="arithmatex">\[
+{\displaystyle Homogeneity = 1-\frac{H(C, K)}{H(C)}}
+\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since homogeneity monotonically improves as the number of target clusters increases, it should not be used as a metric for hyper-parameter tuning.</p>
+<p>Since this metric monotonically improves as the number of target clusters increases, it should not be used as a metric to guide hyper-parameter tuning.</p>
 </div>
 <p><strong>Estimator Compatibility:</strong> Clusterer</p>
 <p><strong>Output Range:</strong> 0 to 1</p>
@@ -4318,7 +4321,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4447,8 +4450,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

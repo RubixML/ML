@@ -4323,6 +4323,9 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/VMeasure.php">[source]</a></span></p>
 <h1 id="v-measure">V Measure<a class="headerlink" href="#v-measure" title="Permanent link">#</a></h1>
 <p>V Measure is an entropy-based clustering metric that balances <a href="homogeneity.html">Homogeneity</a> and <a href="completeness.html">Completeness</a>. It has the additional property of being symmetric in that the predictions and ground-truth can be swapped without changing the score.</p>
+<div class="arithmatex">\[
+{\displaystyle V_{\beta} = \frac{(1+\beta)hc}{\beta h + c}}
+\]</div>
 <p><strong>Estimator Compatibility:</strong> Clusterer</p>
 <p><strong>Output Range:</strong> 0 to 1</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4368,7 +4371,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4497,8 +4500,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

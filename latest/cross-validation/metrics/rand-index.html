@@ -4323,6 +4323,9 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/RandIndex.php">[source]</a></span></p>
 <h1 id="rand-index">Rand Index<a class="headerlink" href="#rand-index" title="Permanent link">#</a></h1>
 <p>The Adjusted Rand Index is a measure of similarity between a clustering and some ground-truth that is adjusted for chance. It considers all pairs of samples that are assigned in the same or different clusters in the predicted and empirical clusterings.</p>
+<div class="arithmatex">\[
+{\displaystyle ARI = {\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}}
+\]</div>
 <p><strong>Estimator Compatibility:</strong> Regressor</p>
 <p><strong>Output Range:</strong> -1 to 1</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4349,7 +4352,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4478,8 +4481,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

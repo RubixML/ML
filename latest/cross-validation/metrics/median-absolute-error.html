@@ -4297,6 +4297,9 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/MedianAbsoluteError.php">[source]</a></span></p>
 <h1 id="median-absolute-error">Median Absolute Error<a class="headerlink" href="#median-absolute-error" title="Permanent link">#</a></h1>
 <p>Median Absolute Error (MAD) is a robust measure of error, similar to <a href="mean-absolute-error.html">MAE</a>, that ignores highly erroneous predictions. Since MAD is a robust statistic, it works well even when used to measure non-normal distributions.</p>
+<div class="arithmatex">\[
+{\displaystyle \operatorname {MAD} = \operatorname {median} (|Y_{i}-{\tilde {Y}}|)}
+\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In order to maintain the convention of <em>maximizing</em> validation scores, this metric outputs the negative of the original score.</p>
@@ -4318,7 +4321,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4447,8 +4450,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

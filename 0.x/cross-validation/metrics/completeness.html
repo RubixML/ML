@@ -4297,9 +4297,12 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/Completeness.php">[source]</a></span></p>
 <h1 id="completeness">Completeness<a class="headerlink" href="#completeness" title="Permanent link">#</a></h1>
 <p>A ground-truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be <em>complete</em> when all the samples in a class are contained in a cluster.</p>
+<div class="arithmatex">\[
+{\displaystyle Completeness = 1-\frac{H(K, C)}{H(K)}}
+\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since completeness monotonically improves as the number of target clusters decreases, it should not be used as a metric for hyper-parameter tuning.</p>
+<p>Since this metric monotonically improves as the number of target clusters decreases, it should not be used as a metric to guide hyper-parameter tuning.</p>
 </div>
 <p><strong>Estimator Compatibility:</strong> Clusterer</p>
 <p><strong>Output Range:</strong> 0 to 1</p>
@@ -4318,7 +4321,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4447,8 +4450,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

@@ -4298,7 +4298,7 @@
 <h1 id="accuracy">Accuracy<a class="headerlink" href="#accuracy" title="Permanent link">#</a></h1>
 <p>A quick and simple classification and anomaly detection metric defined as the number of true positives over the number of samples in the testing set. Since Accuracy gives equal weight to false positives and false negatives, it is <em>not</em> a good metric for datasets with a highly imbalanced distribution of labels.</p>
 <div class="arithmatex">\[
-Accuracy = \frac{TP}{Total}
+{\displaystyle Accuracy = \frac{TP}{TP + FP}}
 \]</div>
 <p><strong>Estimator Compatibility:</strong> Classifier, Anomaly Detector</p>
 <p><strong>Output Range:</strong> 0 to 1</p>
@@ -4317,7 +4317,7 @@ Accuracy = \frac{TP}{Total}
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4446,8 +4446,6 @@ Accuracy = \frac{TP}{Total}
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

@@ -4323,6 +4323,9 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/Informedness.php">[source]</a></span></p>
 <h1 id="informedness">Informedness<a class="headerlink" href="#informedness" title="Permanent link">#</a></h1>
 <p>Informedness a multiclass generalization of Youden's J Statistic and can be interpreted as the probability that an estimator will make an informed prediction. Its value ranges from -1 through 1 and has a value of 0 when the test yields no useful information.</p>
+<div class="arithmatex">\[
+{\displaystyle Informedness = {\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1}
+\]</div>
 <p><strong>Estimator Compatibility:</strong> Classifier, Anomaly Detector</p>
 <p><strong>Output Range:</strong> -1 to 1</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4349,7 +4352,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4478,8 +4481,6 @@
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

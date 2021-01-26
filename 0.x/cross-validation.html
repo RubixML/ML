@@ -4564,118 +4564,7 @@
 <div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nv">$training</span><span class="p">,</span> <span class="nv">$testing</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">stratifiedSplit</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">#</a></h2>
-<p>Cross validation <a href="cross-validation/metrics/api.html">Metrics</a> are used to score the predictions made by an <a href="estimator.html">Estimator</a> with respect to their known ground-truth labels. There are different metrics for different types of problems as shown in the table below.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>All metrics follow the schema that higher scores are better - thus, common <em>loss functions</em> such as <a href="cross-validation/metrics/mean-squared-error.html">Mean Squared Error</a> and <a href="cross-validation/metrics/rmse.html">RMSE</a> are given as their <em>negative</em> to conform to this schema.</p>
-</div>
-<h3 id="classification-and-anomaly-detection">Classification and Anomaly Detection<a class="headerlink" href="#classification-and-anomaly-detection" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Range</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="cross-validation/metrics/accuracy.html">Accuracy</a></td>
-<td>[0, 1]</td>
-<td>Not suitable for imbalanced datasets</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/f-beta.html">F Beta</a></td>
-<td>[0, 1]</td>
-<td>Balances precision and recall</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/informedness.html">Informedness</a></td>
-<td>[-1, 1]</td>
-<td>Multiclass Youden's J statistic</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/mcc.html">MCC</a></td>
-<td>[-1, 1]</td>
-<td>Balanced metric</td>
-</tr>
-</tbody>
-</table>
-<h3 id="regression">Regression<a class="headerlink" href="#regression" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Range</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="cross-validation/metrics/mean-absolute-error.html">Mean Absolute Error</a></td>
-<td>[-∞, 0]</td>
-<td>Error in same units as prediction</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/mean-squared-error.html">Mean Squared Error</a></td>
-<td>[-∞, 0]</td>
-<td>Sensitive to outliers</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/median-absolute-error.html">Median Absolute Error</a></td>
-<td>[-∞, 0]</td>
-<td>Robust to outliers</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/r-squared.html">R Squared</a></td>
-<td>[-∞, 1]</td>
-<td>Proportion of explained variance</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/rmse.html">RMSE</a></td>
-<td>[-∞, 0]</td>
-<td>Error in same units as prediction</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/smape.html">SMAPE</a></td>
-<td>[-100, 0]</td>
-<td>Error as a percentage</td>
-</tr>
-</tbody>
-</table>
-<h3 id="clustering">Clustering<a class="headerlink" href="#clustering" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Range</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="cross-validation/metrics/completeness.html">Completeness</a></td>
-<td>[0, 1]</td>
-<td>Not suitable for hyper-parameter tuning</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/homogeneity.html">Homogeneity</a></td>
-<td>[0, 1]</td>
-<td>Not suitable for hyper-parameter tuning</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/rand-index.html">Rand Index</a></td>
-<td>[-1, 1]</td>
-<td>Adjusted for chance</td>
-</tr>
-<tr>
-<td><a href="cross-validation/metrics/v-measure.html">V Measure</a></td>
-<td>[0, 1]</td>
-<td>Balances homogeneity and completeness</td>
-</tr>
-</tbody>
-</table>
-<p>To return a validation score from a Metric pass the predictions and labels to the <code>score()</code> method like in the example below.</p>
+<p>Cross validation <a href="cross-validation/metrics/api.html">Metrics</a> are used to score the predictions made by an <a href="estimator.html">Estimator</a> with respect to their known ground-truth labels. There are different metrics for different types of problems. To return a validation score from a Metric pass the predictions and labels to the <code>score()</code> method like in the example below.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\Accuracy</span><span class="p">;</span>
 
 <span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$testing</span><span class="p">);</span>
@@ -4688,6 +4577,119 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="m">0</span>.85
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All metrics follow the schema that higher scores are better - thus, common <em>loss functions</em> such as <a href="cross-validation/metrics/mean-squared-error.html">Mean Squared Error</a> and <a href="cross-validation/metrics/rmse.html">RMSE</a> are given as their <em>negative</em> to conform to this schema.</p>
+</div>
+<h3 id="classification-and-anomaly-detection">Classification and Anomaly Detection<a class="headerlink" href="#classification-and-anomaly-detection" title="Permanent link">#</a></h3>
+<p>Metrics for classification and anomaly detection (a special case of binary classification) compare class predictions to other categorical labels. Their scores are calculated from the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) counts derived from the confusion matrix between the set of predictions and their ground-truth labels.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Range</th>
+<th>Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="cross-validation/metrics/accuracy.html">Accuracy</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(\frac{TP}{TP + FP}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/f-beta.html">F Beta</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\((1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/informedness.html">Informedness</a></td>
+<td>[-1, 1]</td>
+<td><span class="arithmatex">\({\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/mcc.html">MCC</a></td>
+<td>[-1, 1]</td>
+<td><span class="arithmatex">\({\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="regression">Regression<a class="headerlink" href="#regression" title="Permanent link">#</a></h3>
+<p>Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Range</th>
+<th>Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="cross-validation/metrics/mean-absolute-error.html">Mean Absolute Error</a></td>
+<td>[-∞, 0]</td>
+<td><span class="arithmatex">\({\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/mean-squared-error.html">Mean Squared Error</a></td>
+<td>[-∞, 0]</td>
+<td><span class="arithmatex">\({\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/median-absolute-error.html">Median Absolute Error</a></td>
+<td>[-∞, 0]</td>
+<td><span class="arithmatex">\({\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/r-squared.html">R Squared</a></td>
+<td>[-∞, 1]</td>
+<td><span class="arithmatex">\(1-{SS_{\rm {res}} \over SS_{\rm {tot}}}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/rmse.html">RMSE</a></td>
+<td>[-∞, 0]</td>
+<td><span class="arithmatex">\({\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/smape.html">SMAPE</a></td>
+<td>[-100, 0]</td>
+<td><span class="arithmatex">\({\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="clustering">Clustering<a class="headerlink" href="#clustering" title="Permanent link">#</a></h3>
+<p>Clustering metrics derive their scores from a contingency table which can be thought of as a confusion matrix where the class names of the predictions are unknown.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Range</th>
+<th>Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="cross-validation/metrics/completeness.html">Completeness</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(1-\frac{H(K, C)}{H(K)}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/homogeneity.html">Homogeneity</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(1-\frac{H(C, K)}{H(C)}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/rand-index.html">Rand Index</a></td>
+<td>[-1, 1]</td>
+<td><span class="arithmatex">\({\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}\)</span></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/v-measure.html">V Measure</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(\frac{(1+\beta)hc}{\beta h + c}\)</span></td>
+</tr>
+</tbody>
+</table>
 <h2 id="reports">Reports<a class="headerlink" href="#reports" title="Permanent link">#</a></h2>
 <p>Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The <code>generate()</code> method on the <a href="cross-validation/reports/api.html#report-generators">Report Generator</a> interface takes a set of predictions and their corresponding ground-truth labels and returns a <a href="cross-validation/reports/api.html#report-objects">Report</a> object filled with useful statistics that can be printed directly to the terminal or saved to a file.</p>
 <table>
@@ -4818,7 +4820,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4947,8 +4949,6 @@
       </script>
       
         <script src="js/config.js"></script>
-      
-        <script src="js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

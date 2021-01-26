@@ -4298,7 +4298,7 @@
 <h1 id="f-beta">F-Beta<a class="headerlink" href="#f-beta" title="Permanent link">#</a></h1>
 <p>A weighted harmonic mean of precision and recall, F-Beta is a both a versatile and balanced metric. The beta parameter controls the weight of precision in the combined score. As beta goes to infinity the score only considers recall, whereas when it goes to 0 it only considers precision. When beta is equal to 1, this metric is called an F1 score.</p>
 <div class="arithmatex">\[
-F_\beta = (1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}
+{\displaystyle F_\beta = (1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}}
 \]</div>
 <p><strong>Estimator Compatibility:</strong> Classifier, Anomaly Detector</p>
 <p><strong>Output Range:</strong> 0 to 1</p>
@@ -4336,7 +4336,7 @@ F_\beta = (1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-01-26
     
   </small>
 </div>
@@ -4465,8 +4465,6 @@ F_\beta = (1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\
       </script>
       
         <script src="../../js/config.js"></script>
-      
-        <script src="../../js/version-select.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
