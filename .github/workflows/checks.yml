@@ -1,4 +1,4 @@
-name: Build
+name: "Code Checks"
 
 on: [push, pull_request]
 
