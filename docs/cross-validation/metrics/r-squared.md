@@ -4,7 +4,7 @@
 The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the target labels that is explainable from the predictions. It gives an indication as to how well the predictions approximate the labels.
 
 $$
-{\displaystyle R^{2}=1-{SS_{\rm {res}} \over SS_{\rm {tot}}}\,}
+{\displaystyle R^{2} = 1-{SS_{\rm {res}} \over SS_{\rm {tot}}}}
 $$
 
 **Estimator Compatibility:** Regressor

@@ -3,6 +3,10 @@
 # Median Absolute Error
 Median Absolute Error (MAD) is a robust measure of error, similar to [MAE](mean-absolute-error.md), that ignores highly erroneous predictions. Since MAD is a robust statistic, it works well even when used to measure non-normal distributions.
 
+$$
+{\displaystyle \operatorname {MAD} = \operatorname {median} (|Y_{i}-{\tilde {Y}}|)}
+$$
+
 !!! note
     In order to maintain the convention of *maximizing* validation scores, this metric outputs the negative of the original score.
 

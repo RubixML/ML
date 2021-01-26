@@ -4,7 +4,7 @@
 The Root Mean Squared Error (RMSE) is equivalent to the standard deviation of the error residuals in a regression problem. Since RMSE is just the square root of the [MSE](mean-squared-error.md), RMSE is also sensitive to outliers because larger errors have a disproportionately large effect on the score.
 
 $$
-{\displaystyle \operatorname {RMSE} ={\sqrt {\frac {\sum _{t=1}^{T}({\hat {y}}_{t}-y_{t})^{2}}{T}}}}
+{\displaystyle \operatorname {RMSE} = {\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}}
 $$
 
 !!! note

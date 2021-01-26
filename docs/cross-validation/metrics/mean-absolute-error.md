@@ -4,7 +4,7 @@
 A scale-dependent metric that measures the average absolute error between a set of predictions and their ground-truth labels. One of the nice properties of MAE is that it has the same units of measurement as the labels being estimated.
 
 $$
-{\displaystyle \mathrm {MAE} ={\frac {\sum _{i=1}^{n}\left|y_{i}-x_{i}\right|}{n}}={\frac {\sum _{i=1}^{n}\left|e_{i}\right|}{n}}}
+{\displaystyle \mathrm {MAE} = {\frac {1}{n}}{\sum _{i=1}^{n}\left |Y_{i}-\hat {Y_{i}}\right|}}
 $$
 
 !!! note
