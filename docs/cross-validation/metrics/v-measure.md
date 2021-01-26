@@ -3,6 +3,10 @@
 # V Measure
 V Measure is an entropy-based clustering metric that balances [Homogeneity](homogeneity.md) and [Completeness](completeness.md). It has the additional property of being symmetric in that the predictions and ground-truth can be swapped without changing the score.
 
+$$
+{\displaystyle V_{\beta} = \frac{(1+\beta)hc}{\beta h + c}}
+$$
+
 **Estimator Compatibility:** Clusterer
 
 **Output Range:** 0 to 1
