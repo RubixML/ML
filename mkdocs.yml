@@ -312,12 +312,12 @@ google_analytics:
   - auto
 
 extra_javascript:
-  - js/config.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - js/custom.js
 
 extra_css:
-  - css/version-select.css
+  - css/custom.css
 
 repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
