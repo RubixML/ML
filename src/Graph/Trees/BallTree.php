@@ -133,10 +133,6 @@ class BallTree implements BinaryTree, Spatial
      */
     public function grow(Labeled $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
         $this->root = Ball::split($dataset, $this->kernel);
 
         $stack = [$this->root];
@@ -184,11 +180,6 @@ class BallTree implements BinaryTree, Spatial
      */
     public function nearest(array $sample, int $k = 1) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('K must be'
-                . " greater than 0, $k given.");
-        }
-
         $visited = new SplObjectStorage();
 
         $stack = $this->path($sample);
@@ -258,11 +249,6 @@ class BallTree implements BinaryTree, Spatial
      */
     public function range(array $sample, float $radius) : array
     {
-        if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Radius must be'
-                . " greater than 0, $radius given.");
-        }
-
         /** @var list<Ball|Clique> */
         $stack = [$this->root];
 

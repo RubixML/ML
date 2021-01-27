@@ -79,6 +79,8 @@ class KDTree implements BinaryTree, Spatial
     /**
      * Return the height of the tree i.e. the number of levels.
      *
+     * @internal
+     *
      * @return int
      */
     public function height() : int
@@ -91,6 +93,8 @@ class KDTree implements BinaryTree, Spatial
      * a factor of 0 whereas an imbalanced tree will either be positive
      * or negative indicating the direction and degree of the imbalance.
      *
+     * @internal
+     *
      * @return int
      */
     public function balance() : int
@@ -100,6 +104,8 @@ class KDTree implements BinaryTree, Spatial
 
     /**
      * Is the tree bare?
+     *
+     * @internal
      *
      * @return bool
      */
@@ -111,6 +117,8 @@ class KDTree implements BinaryTree, Spatial
     /**
      * Return the distance kernel used to compute distances.
      *
+     * @internal
+     *
      * @return \Rubix\ML\Kernels\Distance\Distance
      */
     public function kernel() : Distance
@@ -119,21 +127,17 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Insert a root node and recursively split the dataset until a terminating
-     * condition is met.
+     * Insert a root node and recursively split the dataset until a terminating condition is met.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
         if ($dataset->columnType(0) != DataType::continuous() or !$dataset->homogeneous()) {
-            throw new InvalidArgumentException('KD Tree only works with'
-                . ' continuous features.');
+            throw new InvalidArgumentException('KD Tree only works with continuous features.');
         }
 
         $this->root = Box::split($dataset);
@@ -174,6 +178,8 @@ class KDTree implements BinaryTree, Spatial
     /**
      * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
      *
+     * @internal
+     *
      * @param list<int|float> $sample
      * @param int $k
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -181,11 +187,6 @@ class KDTree implements BinaryTree, Spatial
      */
     public function nearest(array $sample, int $k = 1) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('K must be'
-                . " greater than 0, $k given.");
-        }
-
         $visited = new SplObjectStorage();
 
         $samples = $labels = $distances = [];
@@ -245,8 +246,9 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Run a range search over every cluster within radius and return the samples,
-     * labels and distances in a 3-tuple.
+     * Run a range search over every cluster within radius and return the samples, labels and distances in a 3-tuple.
+     *
+     * @internal
      *
      * @param list<int|float> $sample
      * @param float $radius
@@ -255,11 +257,6 @@ class KDTree implements BinaryTree, Spatial
      */
     public function range(array $sample, float $radius) : array
     {
-        if ($radius <= 0.0) {
-            throw new InvalidArgumentException('Radius must be'
-                . " greater than 0, $radius given.");
-        }
-
         $samples = $labels = $distances = [];
 
         /** @var list<Box|Neighborhood> */
@@ -304,6 +301,8 @@ class KDTree implements BinaryTree, Spatial
 
     /**
      * Destroy the tree.
+     *
+     * @internal
      */
     public function destroy() : void
     {
@@ -311,8 +310,7 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the path of a sample taken from the root node to a leaf node
-     * in an array.
+     * Return the path of a sample taken from the root node to a leaf node in an array.
      *
      * @param list<int|float> $sample
      * @return list<\Rubix\ML\Graph\Nodes\BinaryNode|null>

@@ -27,16 +27,18 @@ interface Spatial extends Tree, Stringable
     public function kernel() : Distance;
 
     /**
-     * Insert a root node and recursively split the dataset until a
-     * terminating condition is met.
+     * Insert a root node and recursively split the dataset until a terminating condition is met.
+     *
+     * @internal
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function grow(Labeled $dataset) : void;
 
     /**
-     * Run a k nearest neighbors search and return the samples, labels, and
-     * distances in a 3-tuple.
+     * Run a k nearest neighbors search and return the samples, labels, and distances in a 3-tuple.
+     *
+     * @internal
      *
      * @param list<string|int|float> $sample
      * @param int $k
@@ -47,6 +49,8 @@ interface Spatial extends Tree, Stringable
     /**
      * Return all samples, labels, and distances within a given radius of a sample.
      *
+     * @internal
+     *
      * @param list<string|int|float> $sample
      * @param float $radius
      * @return array{array[],mixed[],float[]}
@@ -55,6 +59,8 @@ interface Spatial extends Tree, Stringable
 
     /**
      * Remove the root node and its descendants from the tree.
+     *
+     * @internal
      */
     public function destroy() : void;
 }
