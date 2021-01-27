@@ -4543,100 +4543,18 @@
 </table>
 <h2 id="regressors">Regressors<a class="headerlink" href="#regressors" title="Permanent link">#</a></h2>
 <p>Regressors are a type of supervised learner that predict a continuous-valued outcome such as <code>1.275</code> or <code>655</code>. They can be used to quantify a sample such as its credit score, age, or steering wheel position in units of degrees. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, a regressor's range is unbounded - meaning, the number of possible values a regressor <em>could</em> predict is infinite.</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Flexibility</th>
-<th><a href="online.html">Online</a></th>
-<th><a href="ranks-features.html">Ranks Features</a></th>
-<th><a href="verbose.html">Verbose</a></th>
-<th>Data Compatibility</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="regressors/adaline.html">Adaline</a></td>
-<td>Low</td>
-<td>●</td>
-<td>●</td>
-<td>●</td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/extra-tree-regressor.html">Extra Tree Regressor</a></td>
-<td>Medium</td>
-<td></td>
-<td>●</td>
-<td></td>
-<td>Categorical, Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/gradient-boost.html">Gradient Boost</a></td>
-<td>High</td>
-<td></td>
-<td>●</td>
-<td>●</td>
-<td>Categorical, Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/kd-neighbors-regressor.html">K-d Neighbors Regressor</a></td>
-<td>Medium</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Depends on distance kernel</td>
-</tr>
-<tr>
-<td><a href="regressors/knn-regressor.html">KNN Regressor</a></td>
-<td>Medium</td>
-<td>●</td>
-<td></td>
-<td></td>
-<td>Depends on distance kernel</td>
-</tr>
-<tr>
-<td><a href="regressors/mlp-regressor.html">MLP Regressor</a></td>
-<td>High</td>
-<td>●</td>
-<td></td>
-<td>●</td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/radius-neighbors-regressor.html">Radius Neighbors Regressor</a></td>
-<td>Medium</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Depends on distance kernerl</td>
-</tr>
-<tr>
-<td><a href="regressors/regression-tree.html">Regression Tree</a></td>
-<td>Medium</td>
-<td></td>
-<td>●</td>
-<td></td>
-<td>Categorical, Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/ridge.html">Ridge</a></td>
-<td>Low</td>
-<td></td>
-<td>●</td>
-<td></td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="regressors/svr.html">SVR</a></td>
-<td>High</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Continuous</td>
-</tr>
-</tbody>
-</table>
+<p>| Name | Flexibility | <a href="online.html">Online</a> | <a href="ranks-features.html">Ranks Features</a> | <a href="verbose.html">Verbose</a> | <a href="persistable.html">Persistable</a> | Data Compatibility |
+|---|---|---|---|---|---|
+| <a href="regressors/adaline.html">Adaline</a> | Low | ● | ● | ● | ● | Continuous |
+| <a href="regressors/extra-tree-regressor.html">Extra Tree Regressor</a> | Medium | | ● | | ● | Categorical, Continuous |
+| <a href="regressors/gradient-boost.html">Gradient Boost</a> | High | | ● | ● | ● | Categorical, Continuous |
+| <a href="regressors/kd-neighbors-regressor.html">K-d Neighbors Regressor</a> | Medium | | | | ● | Depends on distance kernel |
+| <a href="regressors/knn-regressor.html">KNN Regressor</a> | Medium | ● | | | ● | Depends on distance kernel |
+| <a href="regressors/mlp-regressor.html">MLP Regressor</a> | High | ● | | ● | ● | Continuous |
+| <a href="regressors/radius-neighbors-regressor.html">Radius Neighbors Regressor</a> | Medium | | | | ● | Depends on distance kernerl |
+| <a href="regressors/regression-tree.html">Regression Tree</a> | Medium | | ● | | ● | Categorical, Continuous |
+| <a href="regressors/ridge.html">Ridge</a> | Low | | ● | | ● | Continuous |
+| <a href="regressors/svr.html">SVR</a> | High | | | | | Continuous |</p>
 <h2 id="clusterers">Clusterers<a class="headerlink" href="#clusterers" title="Permanent link">#</a></h2>
 <p>Clusterers are unsupervised learners that predict an integer-valued cluster number such as <code>0</code>, <code>1</code>, <code>...</code>, <code>n</code>. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset.</p>
 <table>
@@ -4647,6 +4565,7 @@
 <th><a href="probabilistic.html">Proba</a></th>
 <th><a href="online.html">Online</a></th>
 <th><a href="verbose.html">Verbose</a></th>
+<th><a href="persistable.html">Persistable</a></th>
 <th>Data Compatibility</th>
 </tr>
 </thead>
@@ -4654,6 +4573,7 @@
 <tr>
 <td><a href="clusterers/dbscan.html">DBSCAN</a></td>
 <td>High</td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -4665,6 +4585,7 @@
 <td>●</td>
 <td></td>
 <td>●</td>
+<td>●</td>
 <td>Continuous</td>
 </tr>
 <tr>
@@ -4673,11 +4594,13 @@
 <td>●</td>
 <td></td>
 <td>●</td>
+<td>●</td>
 <td>Continuous</td>
 </tr>
 <tr>
 <td><a href="clusterers/k-means.html">K Means</a></td>
 <td>Low</td>
+<td>●</td>
 <td>●</td>
 <td>●</td>
 <td>●</td>
@@ -4689,74 +4612,21 @@
 <td>●</td>
 <td></td>
 <td>●</td>
+<td>●</td>
 <td>Continuous</td>
 </tr>
 </tbody>
 </table>
 <h2 id="anomaly-detectors">Anomaly Detectors<a class="headerlink" href="#anomaly-detectors" title="Permanent link">#</a></h2>
 <p>Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value <code>1</code> to indicate an outlier and <code>0</code> for a regular sample. Anomaly detectors that implement the <a href="scoring.html">Scoring</a> interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Scope</th>
-<th><a href="scoring.html">Scoring</a></th>
-<th><a href="online.html">Online</a></th>
-<th><a href="verbose.html">Verbose</a></th>
-<th>Data Compatibility</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="anomaly-detectors/gaussian-mle.html">Gaussian MLE</a></td>
-<td>Global</td>
-<td>●</td>
-<td>●</td>
-<td></td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="anomaly-detectors/isolation-forest.html">Isolation Forest</a></td>
-<td>Local (Features)</td>
-<td>●</td>
-<td></td>
-<td></td>
-<td>Categorical, Continuous</td>
-</tr>
-<tr>
-<td><a href="anomaly-detectors/local-outlier-factor.html">Local Outlier Factor</a></td>
-<td>Local (Samples)</td>
-<td>●</td>
-<td></td>
-<td></td>
-<td>Depends on distance kernel</td>
-</tr>
-<tr>
-<td><a href="anomaly-detectors/loda.html">Loda</a></td>
-<td>Local (Features)</td>
-<td>●</td>
-<td>●</td>
-<td></td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="anomaly-detectors/one-class-svm.html">One Class SVM</a></td>
-<td>Global</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Continuous</td>
-</tr>
-<tr>
-<td><a href="anomaly-detectors/robust-z-score.html">Robust Z-Score</a></td>
-<td>Global</td>
-<td>●</td>
-<td></td>
-<td></td>
-<td>Continuous</td>
-</tr>
-</tbody>
-</table>
+<p>| Name | Scope | <a href="scoring.html">Scoring</a> | <a href="online.html">Online</a> | <a href="verbose.html">Verbose</a> | <a href="persistable.html">Persistable</a> | Data Compatibility |
+|---|---|---|---|---|---|
+| <a href="anomaly-detectors/gaussian-mle.html">Gaussian MLE</a> | Global | ● | ● | | ● | Continuous |
+| <a href="anomaly-detectors/isolation-forest.html">Isolation Forest</a> | Local | ● | | | ● | Categorical, Continuous |
+| <a href="anomaly-detectors/local-outlier-factor.html">Local Outlier Factor</a> | Local | ● | | | ● | Depends on distance kernel |
+| <a href="anomaly-detectors/loda.html">Loda</a> | Local | ● | ● | | ● | Continuous |
+| <a href="anomaly-detectors/one-class-svm.html">One Class SVM</a> | Global | | | | ● | Continuous |
+| <a href="anomaly-detectors/robust-z-score.html">Robust Z-Score</a> | Global | ● | | | ● | Continuous  |</p>
 <h2 id="model-flexibility-tradeoff">Model Flexibility Tradeoff<a class="headerlink" href="#model-flexibility-tradeoff" title="Permanent link">#</a></h2>
 <p>A characteristic of most estimator types is the notion of <em>flexibility</em>. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to <a href="cross-validation.html#overfitting">overfitting</a>. In contrast, low flexibility models tend to be easier to interpret and quicker to train but are more prone to <a href="cross-validation.html#underfitting">underfitting</a>. In general, we recommend choosing the simplest model that does not underfit the training data for your project.</p>
 <h2 id="meta-estimator-ensembles">Meta-estimator Ensembles<a class="headerlink" href="#meta-estimator-ensembles" title="Permanent link">#</a></h2>
