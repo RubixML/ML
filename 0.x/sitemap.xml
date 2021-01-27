@@ -116,14 +116,6 @@
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://rubixml.com/datasets/labeled.html</loc>
-     <lastmod>2021-01-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/datasets/unlabeled.html</loc>
-     <lastmod>2021-01-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
      <loc>https://rubixml.com/datasets/generators/api.html</loc>
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
@@ -149,6 +141,14 @@
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/swiss-roll.html</loc>
+     <lastmod>2021-01-27</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/datasets/labeled.html</loc>
+     <lastmod>2021-01-27</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/datasets/unlabeled.html</loc>
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
@@ -252,6 +252,18 @@
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>https://rubixml.com/clusterers/seeders/k-mc2.html</loc>
+     <lastmod>2021-01-27</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/clusterers/seeders/plus-plus.html</loc>
+     <lastmod>2021-01-27</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/clusterers/seeders/random.html</loc>
+     <lastmod>2021-01-27</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>https://rubixml.com/clusterers/dbscan.html</loc>
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
@@ -269,18 +281,6 @@
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/mean-shift.html</loc>
-     <lastmod>2021-01-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/clusterers/seeders/k-mc2.html</loc>
-     <lastmod>2021-01-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/clusterers/seeders/plus-plus.html</loc>
-     <lastmod>2021-01-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/clusterers/seeders/random.html</loc>
      <lastmod>2021-01-27</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
