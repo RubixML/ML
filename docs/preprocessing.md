@@ -167,7 +167,7 @@ $predictions = $estimator->predict($dataset); // Dataset transformed automatical
 ```
 
 ## Advanced Preprocessing
-In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformation to the dataset after that.
+In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformations to the dataset after that.
 
 ```php
 use Rubix\ML\Dataset\Labeled;

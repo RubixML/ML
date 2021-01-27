@@ -49,34 +49,34 @@ echo $score;
 ### Classification and Anomaly Detection
 Metrics for classification and anomaly detection (a special case of binary classification) compare class predictions to other categorical labels. Their scores are calculated from the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) counts derived from the confusion matrix between the set of predictions and their ground-truth labels.
 
-| Name | Range | Equation |
-|---|---|---|
-| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP}{TP + FP}$ |
-| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | $(1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}$ |
-| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ |
-| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ |
+| Name | Range | Equation | Notes |
+|---|---|---|---|
+| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP}{TP + FP}$ | Not suited for imbalanced datasets |
+| [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | $(1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}$ | |
+| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ | |
+| [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ | |
 
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
 
-| Name | Range | Equation |
-|---|---|---|
-| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | ${\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }$ |
-| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | ${\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}$ |
-| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | ${\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}$ |
-| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | $1-{SS_{\rm {res}} \over SS_{\rm {tot}}}$ |
-| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | ${\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}$ |
-| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | ${\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}$ |
+| Name | Range | Equation | Notes |
+|---|---|---|---|
+| [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | ${\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }$ | Output in same units as predictions |
+| [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | ${\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}$ | Sensitive to outliers |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | ${\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}$ | Robust to outliers |
+| [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | $1-{SS_{\rm {res}} \over SS_{\rm {tot}}}$ | |
+| [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | ${\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}$ | Output in same units as predictions |
+| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | ${\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}$ | |
 
 ### Clustering
 Clustering metrics derive their scores from a contingency table which can be thought of as a confusion matrix where the class names of the predictions are unknown.
 
-| Name | Range | Equation |
-|---|---|---|
-| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | $1-\frac{H(K, C)}{H(K)}$ |
-| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ |
-| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ |
-| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ |
+| Name | Range | Equation | Notes |
+|---|---|---|---|
+| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | $1-\frac{H(K, C)}{H(K)}$ | Not suited for hyper-parameter tuning |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ | Not suited for hyper-parameter tuning |
+| [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ | |
+| [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ | |
 
 ## Reports
 Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.

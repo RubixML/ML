@@ -30,41 +30,41 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 ## Regressors
 Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position in units of degrees. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, a regressor's range is unbounded - meaning, the number of possible values a regressor *could* predict is infinite.
 
-| Name | Flexibility | [Online](online.md) | [Ranks Features](ranks-features.md) | [Verbose](verbose.md) | Data Compatibility |
+| Name | Flexibility | [Online](online.md) | [Ranks Features](ranks-features.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
 |---|---|---|---|---|---|
-| [Adaline](regressors/adaline.md) | Low | ● | ● | ● | Continuous |
-| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | ● | | Categorical, Continuous |
-| [Gradient Boost](regressors/gradient-boost.md) | High | | ● | ● | Categorical, Continuous |
-| [K-d Neighbors Regressor](regressors/kd-neighbors-regressor.md) | Medium | | | | Depends on distance kernel |
-| [KNN Regressor](regressors/knn-regressor.md) | Medium | ● | | | Depends on distance kernel |
-| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | | ● | Continuous |
-| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Medium | | | | Depends on distance kernerl |
-| [Regression Tree](regressors/regression-tree.md) | Medium | | ● | | Categorical, Continuous |
-| [Ridge](regressors/ridge.md) | Low | | ● | | Continuous |
-| [SVR](regressors/svr.md) | High | | | | Continuous |
+| [Adaline](regressors/adaline.md) | Low | ● | ● | ● | ● | Continuous |
+| [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | ● | | ● | Categorical, Continuous |
+| [Gradient Boost](regressors/gradient-boost.md) | High | | ● | ● | ● | Categorical, Continuous |
+| [K-d Neighbors Regressor](regressors/kd-neighbors-regressor.md) | Medium | | | | ● | Depends on distance kernel |
+| [KNN Regressor](regressors/knn-regressor.md) | Medium | ● | | | ● | Depends on distance kernel |
+| [MLP Regressor](regressors/mlp-regressor.md) | High | ● | | ● | ● | Continuous |
+| [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) | Medium | | | | ● | Depends on distance kernerl |
+| [Regression Tree](regressors/regression-tree.md) | Medium | | ● | | ● | Categorical, Continuous |
+| [Ridge](regressors/ridge.md) | Low | | ● | | ● | Continuous |
+| [SVR](regressors/svr.md) | High | | | | | Continuous |
 
 ## Clusterers
 Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset.
 
-| Name | Flexibility | [Proba](probabilistic.md) | [Online](online.md) | [Verbose](verbose.md) | Data Compatibility |
-|---|---|---|---|---|---|
-| [DBSCAN](clusterers/dbscan.md) | High | | | | Depends on distance kernel |
-| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | ● | Continuous |
-| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Medium | ● | | ● | Continuous |
-| [K Means](clusterers/k-means.md) | Low | ● | ● | ● | Continuous |
-| [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | Continuous |
+| Name | Flexibility | [Proba](probabilistic.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
+|---|---|---|---|---|---|---|
+| [DBSCAN](clusterers/dbscan.md) | High | | | | | Depends on distance kernel |
+| [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | ● | ● | Continuous |
+| [Gaussian Mixture](clusterers/gaussian-mixture.md) | Medium | ● | | ● | ● | Continuous |
+| [K Means](clusterers/k-means.md) | Low | ● | ● | ● | ● | Continuous |
+| [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | ● | Continuous |
 
 ## Anomaly Detectors
 Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Scoring](scoring.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
 
-| Name | Scope | [Scoring](scoring.md) | [Online](online.md) | [Verbose](verbose.md) | Data Compatibility |
+| Name | Scope | [Scoring](scoring.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
 |---|---|---|---|---|---|
-| [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | | Continuous |
-| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local (Features) | ● | | | Categorical, Continuous |
-| [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local (Samples) | ● | | | Depends on distance kernel |
-| [Loda](anomaly-detectors/loda.md) | Local (Features) | ● | ● | | Continuous |
-| [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | | Continuous |
-| [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | | Continuous  |
+| [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | | ● | Continuous |
+| [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local | ● | | | ● | Categorical, Continuous |
+| [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | | ● | Depends on distance kernel |
+| [Loda](anomaly-detectors/loda.md) | Local | ● | ● | | ● | Continuous |
+| [One Class SVM](anomaly-detectors/one-class-svm.md) | Global | | | | ● | Continuous |
+| [Robust Z-Score](anomaly-detectors/robust-z-score.md) | Global | ● | | | ● | Continuous  |
 
 ## Model Flexibility Tradeoff
 A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, low flexibility models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model that does not underfit the training data for your project.
