@@ -46,8 +46,6 @@ nav:
       - NDJSON: extractors/ndjson.md
     - Dataset Objects:
       - API Reference: datasets/api.md
-      - Labeled: datasets/labeled.md
-      - Unlabeled: datasets/unlabeled.md
       - Generators:
         - API Reference: datasets/generators/api.md
         - Agglomerate: datasets/generators/agglomerate.md
@@ -56,6 +54,8 @@ nav:
         - Half Moon: datasets/generators/half-moon.md
         - Hyperplane: datasets/generators/hyperplane.md
         - Swiss Roll: datasets/generators/swiss-roll.md
+      - Labeled: datasets/labeled.md
+      - Unlabeled: datasets/unlabeled.md
     - Classifiers:
       - AdaBoost: classifiers/adaboost.md
       - Classification Tree: classifiers/classification-tree.md
@@ -84,15 +84,15 @@ nav:
       - Ridge: regressors/ridge.md
       - SVR: regressors/svr.md
     - Clusterers:
+      - Seeders:
+        - K-MC2: clusterers/seeders/k-mc2.md
+        - Plus Plus: clusterers/seeders/plus-plus.md
+        - Random: clusterers/seeders/random.md
       - DBSCAN: clusterers/dbscan.md
       - Fuzzy C Means: clusterers/fuzzy-c-means.md
       - Gaussian Mixture: clusterers/gaussian-mixture.md
       - K Means: clusterers/k-means.md
       - Mean Shift: clusterers/mean-shift.md
-      - Seeders:
-        - K-MC2: clusterers/seeders/k-mc2.md
-        - Plus Plus: clusterers/seeders/plus-plus.md
-        - Random: clusterers/seeders/random.md
     - Anomaly Detectors:
       - Gaussian MLE: anomaly-detectors/gaussian-mle.md
       - Isolation Forest: anomaly-detectors/isolation-forest.md
