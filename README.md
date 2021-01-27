@@ -37,7 +37,7 @@ Read the latest docs [here](https://docs.rubixml.com).
 Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
 
 ## Getting Started
-If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://docs.rubixml.com/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://docs.rubixml.com/latest/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/latest/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
 Check out these example projects using the Rubix ML library. Many come with instructions and a pre-cleaned dataset.
