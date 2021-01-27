@@ -71,23 +71,6 @@ nav:
       - Random Forest: classifiers/random-forest.md
       - Softmax Classifier: classifiers/softmax-classifier.md
       - SVC: classifiers/svc.md
-    - Clusterers:
-      - DBSCAN: clusterers/dbscan.md
-      - Fuzzy C Means: clusterers/fuzzy-c-means.md
-      - Gaussian Mixture: clusterers/gaussian-mixture.md
-      - K Means: clusterers/k-means.md
-      - Mean Shift: clusterers/mean-shift.md
-      - Seeders:
-      - K-MC2: clusterers/seeders/k-mc2.md
-      - Plus Plus: clusterers/seeders/plus-plus.md
-      - Random: clusterers/seeders/random.md
-    - Anomaly Detectors:
-      - Gaussian MLE: anomaly-detectors/gaussian-mle.md
-      - Isolation Forest: anomaly-detectors/isolation-forest.md
-      - Loda: anomaly-detectors/loda.md
-      - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
-      - One Class SVM: anomaly-detectors/one-class-svm.md
-      - Robust Z-Score: anomaly-detectors/robust-z-score.md
     - Regressors:
       - Adaline: regressors/adaline.md
       - Dummy Regressor: regressors/dummy-regressor.md
@@ -100,6 +83,23 @@ nav:
       - Regression Tree: regressors/regression-tree.md
       - Ridge: regressors/ridge.md
       - SVR: regressors/svr.md
+    - Clusterers:
+      - DBSCAN: clusterers/dbscan.md
+      - Fuzzy C Means: clusterers/fuzzy-c-means.md
+      - Gaussian Mixture: clusterers/gaussian-mixture.md
+      - K Means: clusterers/k-means.md
+      - Mean Shift: clusterers/mean-shift.md
+      - Seeders:
+        - K-MC2: clusterers/seeders/k-mc2.md
+        - Plus Plus: clusterers/seeders/plus-plus.md
+        - Random: clusterers/seeders/random.md
+    - Anomaly Detectors:
+      - Gaussian MLE: anomaly-detectors/gaussian-mle.md
+      - Isolation Forest: anomaly-detectors/isolation-forest.md
+      - Loda: anomaly-detectors/loda.md
+      - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
+      - One Class SVM: anomaly-detectors/one-class-svm.md
+      - Robust Z-Score: anomaly-detectors/robust-z-score.md
     - Meta Estimators:
       - Bootstrap Aggregator: bootstrap-aggregator.md
       - Committee Machine: committee-machine.md
@@ -234,7 +234,7 @@ nav:
         - Contingency Table: cross-validation/reports/contingency-table.md
         - Error Analysis: cross-validation/reports/error-analysis.md
         - Multiclass Breakdown: cross-validation/reports/multiclass-breakdown.md
-      Validators:
+      - Validators:
         - API Reference: cross-validation/api.md
         - Hold Out: cross-validation/hold-out.md
         - K Fold: cross-validation/k-fold.md
@@ -249,28 +249,28 @@ nav:
         - Gzip: persisters/serializers/gzip.md
         - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
-      - Backends:
-        - Amp: backends/amp.md
-        - Serial: backends/serial.md
-      - Other:
-        - Helpers:
-          - Params: other/helpers/params.md
-        - Loggers:
-          - Screen: other/loggers/screen.md
-        - Strategies:
-          - Constant: other/strategies/constant.md
-          - K Most Frequent: other/strategies/k-most-frequent.md
-          - Mean: other/strategies/mean.md
-          - Percentile: other/strategies/percentile.md
-          - Prior: other/strategies/prior.md
-          - Wild Guess: other/strategies/wild-guess.md
-        - Tokenizers:
-          - K-Skip-N-Gram: other/tokenizers/k-skip-n-gram.md
-          - N-Gram: other/tokenizers/n-gram.md
-          - Sentence: other/tokenizers/sentence.md
-          - Skip Gram: other/tokenizers/skip-gram.md
-          - Whitespace: other/tokenizers/whitespace.md
-          - Word: other/tokenizers/word.md
+    - Backends:
+      - Amp: backends/amp.md
+      - Serial: backends/serial.md
+    - Other:
+      - Helpers:
+        - Params: other/helpers/params.md
+      - Loggers:
+        - Screen: other/loggers/screen.md
+      - Strategies:
+        - Constant: other/strategies/constant.md
+        - K Most Frequent: other/strategies/k-most-frequent.md
+        - Mean: other/strategies/mean.md
+        - Percentile: other/strategies/percentile.md
+        - Prior: other/strategies/prior.md
+        - Wild Guess: other/strategies/wild-guess.md
+      - Tokenizers:
+        - K-Skip-N-Gram: other/tokenizers/k-skip-n-gram.md
+        - N-Gram: other/tokenizers/n-gram.md
+        - Sentence: other/tokenizers/sentence.md
+        - Skip Gram: other/tokenizers/skip-gram.md
+        - Whitespace: other/tokenizers/whitespace.md
+        - Word: other/tokenizers/word.md
   - FAQ: faq.md
 
 extra:
@@ -299,7 +299,7 @@ markdown_extensions:
         - name: php
           lang: php
           options:
-              startinline: true
+            startinline: true
   - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
