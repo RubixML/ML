@@ -4589,6 +4589,7 @@
 <th>Name</th>
 <th>Range</th>
 <th>Equation</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -4596,21 +4597,25 @@
 <td><a href="cross-validation/metrics/accuracy.html">Accuracy</a></td>
 <td>[0, 1]</td>
 <td><span class="arithmatex">\(\frac{TP}{TP + FP}\)</span></td>
+<td>Not suited for imbalanced datasets</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/f-beta.html">F Beta</a></td>
 <td>[0, 1]</td>
 <td><span class="arithmatex">\((1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}\)</span></td>
+<td></td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/informedness.html">Informedness</a></td>
 <td>[-1, 1]</td>
 <td><span class="arithmatex">\({\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1\)</span></td>
+<td></td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/mcc.html">MCC</a></td>
 <td>[-1, 1]</td>
 <td><span class="arithmatex">\({\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}\)</span></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -4622,6 +4627,7 @@
 <th>Name</th>
 <th>Range</th>
 <th>Equation</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -4629,31 +4635,37 @@
 <td><a href="cross-validation/metrics/mean-absolute-error.html">Mean Absolute Error</a></td>
 <td>[-∞, 0]</td>
 <td><span class="arithmatex">\({\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }\)</span></td>
+<td>Output in same units as predictions</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/mean-squared-error.html">Mean Squared Error</a></td>
 <td>[-∞, 0]</td>
 <td><span class="arithmatex">\({\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}\)</span></td>
+<td>Sensitive to outliers</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/median-absolute-error.html">Median Absolute Error</a></td>
 <td>[-∞, 0]</td>
 <td><span class="arithmatex">\({\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}\)</span></td>
+<td>Robust to outliers</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/r-squared.html">R Squared</a></td>
 <td>[-∞, 1]</td>
 <td><span class="arithmatex">\(1-{SS_{\rm {res}} \over SS_{\rm {tot}}}\)</span></td>
+<td></td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/rmse.html">RMSE</a></td>
 <td>[-∞, 0]</td>
 <td><span class="arithmatex">\({\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}\)</span></td>
+<td>Output in same units as predictions</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/smape.html">SMAPE</a></td>
 <td>[-100, 0]</td>
 <td><span class="arithmatex">\({\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}\)</span></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -4665,6 +4677,7 @@
 <th>Name</th>
 <th>Range</th>
 <th>Equation</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -4672,21 +4685,25 @@
 <td><a href="cross-validation/metrics/completeness.html">Completeness</a></td>
 <td>[0, 1]</td>
 <td><span class="arithmatex">\(1-\frac{H(K, C)}{H(K)}\)</span></td>
+<td>Not suited for hyper-parameter tuning</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/homogeneity.html">Homogeneity</a></td>
 <td>[0, 1]</td>
 <td><span class="arithmatex">\(1-\frac{H(C, K)}{H(C)}\)</span></td>
+<td>Not suited for hyper-parameter tuning</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/rand-index.html">Rand Index</a></td>
 <td>[-1, 1]</td>
 <td><span class="arithmatex">\({\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}\)</span></td>
+<td></td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/v-measure.html">V Measure</a></td>
 <td>[0, 1]</td>
 <td><span class="arithmatex">\(\frac{(1+\beta)hc}{\beta h + c}\)</span></td>
+<td></td>
 </tr>
 </tbody>
 </table>

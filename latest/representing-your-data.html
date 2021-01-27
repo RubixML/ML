@@ -4435,7 +4435,7 @@
 <h2 id="images">Images<a class="headerlink" href="#images" title="Permanent link">#</a></h2>
 <p>Images are represented as either the <a href="https://www.php.net/manual/en/book.image.php">GD</a> resource type or (as of PHP 8) a <code>GdImage</code> object. An image type is a special type that holds a reference to the data stored within the image file. For this reason, images must eventually be converted to a scalar type, such as the RGB color intensity values of each pixel, before they can be the input to a learning algorithm.</p>
 <h2 id="what-about-null">What about NULL?<a class="headerlink" href="#what-about-null" title="Permanent link">#</a></h2>
-<p>Null values are often used to indicate the absence of a value, however since it does not give any information as to the type of variable that is missing, it cannot be used in a dataset. Instead, represent missing values as either the standard PHP math constant <code>NAN</code> for continuous features or use a special category (such as <code>?</code>) to denote missing categorical values.</p>
+<p>Null values are often used to indicate the absence of a value, however since they do not give any information as to the type of variable that is missing, they cannot be used in a dataset. Instead, represent missing values as either the standard PHP math constant <code>NAN</code> for continuous features or use a special category (such as <code>?</code>) to denote missing categorical values.</p>
                 
                   
                     
