@@ -1,6 +1,10 @@
 - 0.4.0
     - Added Rubix Object File (RBX) format serializers
 
+- 0.3.2
+    - Refactor single sample inference methods
+    - Update the docs site
+
 - 0.3.1
     - Fix CART feature importances purity increase overflow
 

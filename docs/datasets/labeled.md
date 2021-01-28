@@ -3,7 +3,8 @@
 # Labeled
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
-**Note:** Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class name such as `'class 1'`, `'#1'`, or `'first'`.
+!!! note
+    Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class name such as `'class 1'`, `'#1'`, or `'first'`.
 
 ## Parameters
 | # | Name | Default | Type | Description |
@@ -104,7 +105,8 @@ Transform the labels in the dataset using a callback function and return self fo
 public transformLabels(callable $fn) : self
 ```
 
-> **Note:** The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
+!!! note
+    The callback function called for each individual label and should return the transformed label as a continuous or categorical value.
 
 ```php
 $dataset->transformLabels('intval');
@@ -138,7 +140,8 @@ Filter the dataset by label:
 public filterByLabel(callable $fn) : self
 ```
 
-> **Note:** The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
+!!! note
+    The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
 
 ```php
 $filtered = $dataset->filterByLabel(function ($label)) {

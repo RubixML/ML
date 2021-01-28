@@ -40,5 +40,5 @@ $transformer = new RegexFilter([
 This transformer does not have any additional methods.
 
 ### References:
->- J. Gruber. (2009). A Liberal, Accurate Regex Pattern for Matching URLs.
->- J. Gruber. (2010). An Improved Liberal, Accurate Regex Pattern for Matching URLs.
+[^1]: J. Gruber. (2009). A Liberal, Accurate Regex Pattern for Matching URLs.
+[^2]: J. Gruber. (2010). An Improved Liberal, Accurate Regex Pattern for Matching URLs.

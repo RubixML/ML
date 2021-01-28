@@ -20,7 +20,8 @@ Build a dataset with the rows from a 2-dimensional iterable data table:
 public static fromIterator(Traversable $iterator) : self
 ```
 
-**Note:** When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
+!!! note
+    When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -147,7 +148,8 @@ Stack any number of dataset objects on top of each other to form a single datase
 public static stack(array $datasets) : self
 ```
 
-> **Note:** Datasets must have the same number of feature columns i.e. dimensionality.
+!!! note
+    Datasets must have the same number of feature columns i.e. dimensionality.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -166,7 +168,8 @@ To merge the rows of this dataset with another dataset:
 public merge(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have the same number of columns.
+!!! note
+    Datasets must have the same number of columns.
 
 ```php
 $dataset = $dataset1->merge($dataset2);
@@ -177,7 +180,8 @@ To join the columns of this dataset with another dataset:
 public join(Dataset $dataset) : self
 ```
 
-> **Note:** Datasets must have the same number of rows.
+!!! note
+    Datasets must have the same number of rows.
 
 ```php
 $dataset = $dataset1->join($dataset2);
@@ -227,7 +231,8 @@ Fold the dataset to form *k* equal size datasets:
 public fold(int $k = 10) : array
 ```
 
-> **Note:** If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
+!!! note
+    If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
 
 ```php
 $folds = $dataset->fold(8);

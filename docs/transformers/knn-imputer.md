@@ -3,7 +3,8 @@
 # KNN Imputer
 An unsupervised imputer that replaces missing values in a dataset with the distance-weighted average of the samples' *k* nearest neighbors' values. The average for a continuous feature column is defined as the mean of the values of each donor. Similarly, average is defined as the *most frequent* value for categorical features.
 
-**Note:** Requires NaN safe distance kernels, such as [Safe Euclidean](../kernels/distance/safe-euclidean.md), for continuous features.
+!!! note
+    Requires a NaN safe distance kernel such as [Safe Euclidean](../kernels/distance/safe-euclidean.md) for continuous features.
 
 **Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
@@ -30,4 +31,4 @@ $transformer = new KNNImputer(10, false, '?', new BallTree(30, new SafeEuclidean
 This transformer does not have any additional methods.
 
 ### References
->- O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.
+[^1]: O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.

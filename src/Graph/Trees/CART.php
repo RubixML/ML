@@ -97,7 +97,9 @@ abstract class CART implements IteratorAggregate
      *
      * @var \Rubix\ML\DataType[]
      */
-    protected $types = [];
+    protected $types = [
+        //
+    ];
 
     /**
      * @internal

@@ -25,7 +25,8 @@ $dataset->apply(new RandomHotDeckImputer(5))
     ->apply(new MinMaxNormalizer());
 ```
 
-> **Note:** Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](https://docs.rubixml.com/en/latest/datasets/labeled.html#transform-labels) dataset instance.
+!!! note
+    Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance.
 
 ### Manually Fitting
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
@@ -166,7 +167,7 @@ $predictions = $estimator->predict($dataset); // Dataset transformed automatical
 ```
 
 ## Advanced Preprocessing
-In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformation to the dataset after that.
+In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformations to the dataset after that.
 
 ```php
 use Rubix\ML\Dataset\Labeled;
@@ -241,7 +242,8 @@ When it is undesirable for a dataset to contain duplicate records, you can remov
 $dataset->deduplicate();
 ```
 
-> **Note:** The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
+!!! note
+    The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
 If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.

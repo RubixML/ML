@@ -38,4 +38,4 @@ public steps() : float[]|null
 ```
 
 ### References
->- J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
+[^1]: J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.

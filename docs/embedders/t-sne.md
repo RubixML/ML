@@ -3,7 +3,8 @@
 # t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on Batch Gradient Descent that seeks to maintain the distances between samples in low-dimensional space. During the first stage (*early stage*) the distances are exaggerated to encourage more pronounced clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
-> **Note:** T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
+!!! note
+    T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
 
 **Interfaces:** [Transformer](../transformers/api.md#transformer), [Verbose](../verbose.md)
 
@@ -36,5 +37,5 @@ public steps() : float[]|null
 ```
 
 ### References
->- L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
->- L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving Local Structure.
+[^1]: L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
+[^2]: L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving Local Structure.

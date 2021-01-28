@@ -3,6 +3,10 @@
 # Canberra
 A weighted version of the [Manhattan](manhattan.md) distance, Canberra examines the sum of a series of fractional differences between two samples. Canberra can be very sensitive when both coordinates are near zero.
 
+$$
+Canberra(\mathbf {a} ,\mathbf {b} )=\sum _{i=1}^{n}{\frac {|a_{i}-b_{i}|}{|a_{i}|+|b_{i}|}}
+$$
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters
@@ -16,4 +20,4 @@ $kernel = new Canberra();
 ```
 
 ### References
->- G. N. Lance et al. (1967). Mixed-data classificatory programs I. Agglomerative Systems.
+[^1]: G. N. Lance et al. (1967). Mixed-data classificatory programs I. Agglomerative Systems.

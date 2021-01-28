@@ -30,4 +30,4 @@ public tree() : Spatial
 ```
 
 ### References
->- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
+[^1]: M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.

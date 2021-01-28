@@ -17,5 +17,5 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $seeder = new KMC2(200, new Euclidean());
 ```
 
-### References
->- O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.
+###
+[^1]: O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.

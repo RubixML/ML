@@ -1,4 +1,5 @@
 test.model
+/site
 /vendor
 composer.lock
 .phpunit.result.cache

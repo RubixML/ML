@@ -3,7 +3,8 @@
 # Multibyte Text Normalizer
 This transformer converts the characters in all [multibyte strings](https://www.php.net/manual/en/intro.mbstring.php) to lowercase. Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of non roman alphabets such as Chinese and Cyrillic.
 
-> **Note:** ⚠️ We recommend you install the [mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for best performance.
+!!! note
+    ⚠️ We recommend you install the [mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for best performance.
  
 **Interfaces:** [Transformer](api.md#transformer)
 

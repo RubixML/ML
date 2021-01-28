@@ -3,7 +3,12 @@
 # Mean Squared Error
 A scale-dependent regression metric that gives greater weight to error scores the worse they are. Formally, Mean Squared Error (MSE) is the average of the squared differences between a set of predictions and their target labels.
 
-> **Note:** In order to maintain the convention of *maximizing* validation scores, this metric outputs the negative of the original score.
+$$
+{\displaystyle \operatorname {MSE} = {\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}
+$$
+
+!!! note
+    In order to maintain the convention of *maximizing* validation scores, this metric outputs the negative of the original score.
 
 **Estimator Compatibility:** Regressor
 

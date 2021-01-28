@@ -3,6 +3,10 @@
 # Softsign
 A smooth sigmoid-shaped function that squashes the input between -1 and 1.
 
+$$
+{\displaystyle Softsign = {\frac {x}{1+|x|}}}
+$$
+
 ## Parameters
 This activation function does not have any parameters.
 
@@ -14,4 +18,4 @@ $activationFunction = new Softsign();
 ```
 
 ### References
->- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
+[^1]: X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.

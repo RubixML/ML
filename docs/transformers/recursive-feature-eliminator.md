@@ -3,7 +3,8 @@
 # Recursive Feature Eliminator
 Recursive Feature Eliminator (RFE) is a supervised feature selector that uses the importance scores returned by a learner implementing the [RanksFeatures](../ranks-features.md) interface to recursively drop feature columns with the lowest importance until a terminating condition is met.
 
-> **Note:** The default feature ranking base learner is a fully-grown decision tree.
+!!! note
+    The default feature ranking base learner is a fully-grown decision tree.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -32,4 +33,4 @@ $transformer = new RecursiveFeatureEliminator(30, 2, 0.05 new RandomForest());
 ```
 
 ### References
->- I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector Machines.
+[^1]: I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector Machines.

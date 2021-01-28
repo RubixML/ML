@@ -16,4 +16,4 @@ $layer = new Dropout(0.2);
 ```
 
 ### References
->- N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting.
+[^1]: N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting.

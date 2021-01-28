@@ -1,22 +1,24 @@
 # Inference
 Inference is the process of making predictions using an [Estimator](estimator.md). You can think of an estimator *inferring* the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of samples.
 
-> **Note**: As of 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset containing a single sample.
+!!! note
+    As of version 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset object containing a single sample.
 
 ## Estimator Types
 There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are *polymorphic* in the sense that they take on the type of the base estimator they wrap.
 
-| Estimator Type | Prediction | PHP Type |
-|---|---|---|
-| Classifier | Class label | String |
-| Regressor | Number | Integer or Floating Point Number |
-| Clusterer | Discrete cluster number | Integer |
-| Anomaly Detector | 1 for an anomaly, 0 otherwise | Integer |
+| Estimator Type | Prediction | Data Type | Example |
+|---|---|---|---|
+| Classifier | Class label | String | 'cat', 'positive' |
+| Regressor | Number | Integer or Float | 42, 1.348957 |
+| Clusterer | Cluster number | Integer | 0, 15 |
+| Anomaly Detector | 1 for an anomaly or 0 otherwise | Integer | 0, 1 |
 
 ## Making Predictions
 All estimators implement the [Estimator](estimator.md) interface which provides the `predict()` method. The `predict()` method takes a dataset of unknown samples and returns their predictions from the model in an array.
 
-> **Note:** The inference samples must contain the same number and order of feature columns as the samples used to train the learner.
+!!! note
+    The inference samples must contain the same number and order of feature columns as the samples used to train the learner.
 
 ```php
 $predictions = $estimator->predict($dataset);

@@ -14,4 +14,4 @@ $initializer = new LeCun();
 ```
 
 ### References
->- Y. Le Cun et al. (1998). Efficient Backprop.
+[^1]: Y. Le Cun et al. (1998). Efficient Backprop.
