@@ -34,7 +34,7 @@ class RBXTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->serializer = new RBX('secret');
+        $this->serializer = new RBX();
 
         $this->persistable = new DummyClassifier();
     }

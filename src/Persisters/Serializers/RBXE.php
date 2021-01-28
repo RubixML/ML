@@ -27,13 +27,15 @@ use function explode;
  * RBXE
  *
  * Encrypted Rubix Object File format (RBXE) is a format to securely store and share serialized PHP objects. In addition to
- * providing verifiability like the standard RBX format, RBXE encrypts the file data so that it cannot be read without the
- * password.
+ * ensuring data integrity like RBX format, RBXE also adds layers of security such as tamper protection and data encryption
+ * while being resilient to brute-force and evasive to timing attacks.
  *
  * > **Note:** Requires the PHP Open SSL extension to be installed.
  *
  * References:
  * [1] H. Krawczyk et al. (1997). HMAC: Keyed-Hashing for Message Authentication.
+ * [2] M. Bellare et al. (2007). Authenticated Encryption: Relations among notions and analysis of the generic composition
+ * paradigm.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -70,11 +72,11 @@ class RBXE implements Serializer
     protected const DIGEST_WORK_FACTOR = 10;
 
     /**
-     * The hashing function used to generate the header HMAC.
+     * The hashing function used to generate HMACs.
      *
      * @var string
      */
-    protected const HEADER_HASH_TYPE = 'sha256';
+    protected const HMAC_HASH_TYPE = 'sha256';
 
     /**
      * The method used to encrypt the data.
@@ -84,7 +86,7 @@ class RBXE implements Serializer
     protected const ENCRYPTION_METHOD = 'aes256';
 
     /**
-     * The number of bytes in the initialization vector.
+     * The number of bytes in the initialization vector (IV).
      *
      * @var int
      */
@@ -131,7 +133,7 @@ class RBXE implements Serializer
         }
 
         $this->digest = $digest;
-        $this->base = $base ?? new Native();
+        $this->base = $base ?? new Gzip(9);
     }
 
     /**
@@ -145,9 +147,9 @@ class RBXE implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $iv = random_bytes(self::INITIALIZATION_BYTES);
-
         $encoding = $this->base->serialize($persistable);
+
+        $iv = random_bytes(self::INITIALIZATION_BYTES);
 
         $encrypted = openssl_encrypt($encoding, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
 
@@ -155,31 +157,35 @@ class RBXE implements Serializer
             throw new RuntimeException('Data could not be encrypted.');
         }
 
-        $encoding = new Encoding($encrypted);
+        $hash = hash_hmac(self::HMAC_HASH_TYPE, $encrypted, $this->digest);
 
         $header = JSON::encode([
-            'version' => self::VERSION,
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
             ],
             'data' => [
+                'hmac' => [
+                    'type' => self::HMAC_HASH_TYPE,
+                    'token' => $hash,
+                ],
                 'encryption' => [
                     'method' => self::ENCRYPTION_METHOD,
                     'iv' => base64_encode($iv),
                 ],
-                'length' => $encoding->bytes(),
+                'length' => strlen($encrypted),
             ],
         ]);
 
-        $hash = hash_hmac(self::HEADER_HASH_TYPE, $header, $this->digest);
+        $hash = hash_hmac(self::HMAC_HASH_TYPE, $header, $this->digest);
 
-        $hmac = self::HEADER_HASH_TYPE . ':' . $hash;
+        $hmac = self::HMAC_HASH_TYPE . ':' . $hash;
 
         $data = self::IDENTIFIER_STRING;
+        $data .= self::VERSION . self::EOL;
         $data .= $hmac . self::EOL;
         $data .= $header . self::EOL;
-        $data .= $encoding;
+        $data .= $encrypted;
 
         return new Encoding($data);
     }
@@ -201,9 +207,9 @@ class RBXE implements Serializer
 
         $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
 
-        [$hmac, $header, $payload] = array_pad(explode(self::EOL, $data, 3), 3, null);
+        [$version, $hmac, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
 
-        if (!$hmac or !$header or !$payload) {
+        if (!$version or !$hmac or !$header or !$payload) {
             throw new RuntimeException('Invalid format.');
         }
 
@@ -212,7 +218,7 @@ class RBXE implements Serializer
         $hash = hash_hmac($type, $header, $this->digest);
 
         if (!hash_equals($hash, $token)) {
-            throw new RuntimeException('Header verification failed.');
+            throw new RuntimeException('Header HMAC verification failed.');
         }
 
         $header = JSON::decode($header);
@@ -221,17 +227,17 @@ class RBXE implements Serializer
             throw new RuntimeException('Data is corrupted.');
         }
 
+        $hash = hash_hmac($header['data']['hmac']['type'], $payload, $this->digest);
+
+        if (!hash_equals($hash, $header['data']['hmac']['token'])) {
+            throw new RuntimeException('Data HMAC verification failed.');
+        }
+
+        $method = $header['data']['encryption']['method'];
+
         $iv = base64_decode($header['data']['encryption']['iv']);
 
-        switch ($header['data']['encryption']['method']) {
-            case 'aes256':
-                $decrypted = openssl_decrypt($payload, 'aes256', $this->digest, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-
-                break;
-
-            default:
-                throw new RuntimeException('Invalid encryption method.');
-        }
+        $decrypted = openssl_decrypt($payload, $method, $this->digest, OPENSSL_RAW_DATA, $iv);
 
         if ($decrypted === false) {
             throw new RuntimeException('Data could not be decrypted.');
