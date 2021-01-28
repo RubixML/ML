@@ -250,6 +250,7 @@ nav:
         - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
         - RBX: persisters/serializers/rbx.md
+        - RBXE: persisters/serializers/rbxe.md
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md

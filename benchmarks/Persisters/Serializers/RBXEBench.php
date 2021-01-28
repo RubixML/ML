@@ -41,7 +41,7 @@ class RBXEBench
 
         $this->persistable = $estimator;
 
-        $this->serializer = new RBXE();
+        $this->serializer = new RBXE('secret');
     }
 
     /**

@@ -118,7 +118,7 @@ class RBXE implements Serializer
      * @param \Rubix\ML\Persisters\Serializers\Serializer $base
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function __construct(string $password = '', ?Serializer $base = null)
+    public function __construct(string $password, ?Serializer $base = null)
     {
         if (!extension_loaded('openssl')) {
             throw new RuntimeException('Open SSL extension is not loaded, check PHP configuration.');
