@@ -74,7 +74,7 @@ class RBX implements Serializer
      *
      * @var string
      */
-    protected const PAYLOAD_HASH_TYPE = 'sha512';
+    protected const PAYLOAD_HASH_TYPE = 'sha256';
 
     /**
      * The end of line character.
@@ -194,8 +194,8 @@ class RBX implements Serializer
         }
 
         switch ($header['data']['hmac']['type']) {
-            case 'sha512':
-                $hash = hash_hmac('sha512', $payload, $this->digest);
+            case 'sha256':
+                $hash = hash_hmac('sha256', $payload, $this->digest);
 
                 break;
 
