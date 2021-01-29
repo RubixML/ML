@@ -83,14 +83,7 @@ class RBXE implements Serializer
      *
      * @var string
      */
-    protected const ENCRYPTION_METHOD = 'aes256';
-
-    /**
-     * The number of bytes in the initialization vector (IV).
-     *
-     * @var int
-     */
-    protected const INITIALIZATION_BYTES = 16;
+    protected const ENCRYPTION_METHOD = 'aes-256-cbc';
 
     /**
      * The end of line character.
@@ -149,7 +142,7 @@ class RBXE implements Serializer
     {
         $encoding = $this->base->serialize($persistable);
 
-        $iv = random_bytes(self::INITIALIZATION_BYTES);
+        $iv = random_bytes(openssl_cipher_iv_length(self::ENCRYPTION_METHOD));
 
         $encrypted = openssl_encrypt($encoding, self::ENCRYPTION_METHOD, $this->digest, OPENSSL_RAW_DATA, $iv);
 
@@ -202,7 +195,7 @@ class RBXE implements Serializer
     public function unserialize(Encoding $encoding) : Persistable
     {
         if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
-            throw new RuntimeException('Unrecognized format.');
+            throw new RuntimeException('Unrecognized message format.');
         }
 
         $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
@@ -210,7 +203,7 @@ class RBXE implements Serializer
         [$version, $hmac, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
 
         if (!$version or !$hmac or !$header or !$payload) {
-            throw new RuntimeException('Invalid format.');
+            throw new RuntimeException('Invalid message format.');
         }
 
         [$type, $token] = array_pad(explode(':', $hmac, 2), 2, null);
