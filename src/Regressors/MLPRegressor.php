@@ -19,6 +19,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -57,7 +58,7 @@ use function count;
  */
 class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use TracksRevisions, PredictsSingle, LoggerAware;
 
     /**
      * An array composing the user-specified hidden layers of the network in order.

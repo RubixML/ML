@@ -5,6 +5,11 @@ namespace Rubix\ML;
 use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
+use function strlen;
+use function dirname;
+use function is_file;
+use function file_put_contents;
+
 class Encoding implements Stringable
 {
     /**

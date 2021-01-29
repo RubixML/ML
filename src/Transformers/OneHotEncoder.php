@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -28,6 +29,8 @@ use function is_null;
  */
 class OneHotEncoder implements Transformer, Stateful, Persistable
 {
+    use TracksRevisions;
+
     /**
      * The set of unique possible categories per feature column of the training set.
      *

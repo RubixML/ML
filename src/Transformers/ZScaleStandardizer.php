@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Traits\TracksRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -31,6 +32,8 @@ use const Rubix\ML\EPSILON;
  */
 class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 {
+    use TracksRevisions;
+
     /**
      * Should we center the data at 0?
      *

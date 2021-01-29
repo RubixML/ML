@@ -1,3 +1,7 @@
+- 0.4.0
+    - Added Rubix Object File (RBX) format serializer
+    - Added class revision() method to the Persistable interface
+    
 - 0.3.2
     - Refactor single sample inference methods
     - Update the docs site

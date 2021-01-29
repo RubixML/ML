@@ -6,6 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Flysystem;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Persisters\Serializers\RBX;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
@@ -51,7 +52,7 @@ class FlysystemTest extends TestCase
 
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Flysystem(self::PATH, $this->filesystem);
+        $this->persister = new Flysystem(self::PATH, $this->filesystem, false, new RBX());
     }
 
     /**

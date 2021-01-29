@@ -14,6 +14,8 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function count;
+
 use const Rubix\ML\EPSILON;
 
 /**

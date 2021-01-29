@@ -249,6 +249,7 @@ nav:
         - Gzip: persisters/serializers/gzip.md
         - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
+        - RBX: persisters/serializers/rbx.md
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md
