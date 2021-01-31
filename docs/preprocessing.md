@@ -83,6 +83,7 @@ Feature converters are transformers that convert feature columns of one data typ
 | [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
 | [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
+| [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
 
 ## Dimensionality Reduction
 Dimensionality reduction is a preprocessing technique for embedding a dataset into a lower dimensional vector space. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.

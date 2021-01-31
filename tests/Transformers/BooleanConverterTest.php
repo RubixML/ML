@@ -33,7 +33,7 @@ class BooleanConverterTest extends TestCase
             [false, 'false', '0', 0],
         ]);
 
-        $this->transformer = new BooleanConverter();
+        $this->transformer = new BooleanConverter('::true::', '::false::');
     }
 
     /**
@@ -53,8 +53,8 @@ class BooleanConverterTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
-            [1, 'true', '1', 1],
-            [0, 'false', '0', 0],
+            ['::true::', 'true', '1', 1],
+            ['::false::', 'false', '0', 0],
         ], $this->dataset->samples());
     }
 }
