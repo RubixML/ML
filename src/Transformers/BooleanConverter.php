@@ -41,12 +41,12 @@ class BooleanConverter implements Transformer
     {
         if (!is_float($trueValue) && !is_int($trueValue) && !is_string($trueValue)) {
             throw new InvalidArgumentException('TrueValue must be'
-                . " a string, float, or int.");
+                . ' a string, float, or int.');
         }
 
         if (!is_float($falseValue) && !is_int($falseValue) && !is_string($falseValue)) {
             throw new InvalidArgumentException('FalseValue must be'
-                . " a string, float, or int.");
+                . ' a string, float, or int.');
         }
 
         $this->trueValue = $trueValue;
