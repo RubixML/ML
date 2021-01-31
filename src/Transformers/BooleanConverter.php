@@ -3,11 +3,12 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Boolean Converter
  *
- * Convert all booleans to their equivalent integer values. true = 1, false = 0
+ * Convert boolean true/false values to continuous or categorical values.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -15,6 +16,43 @@ use Rubix\ML\DataType;
  */
 class BooleanConverter implements Transformer
 {
+    /**
+     * The value used to replace boolean value `true` with. Use a string value to represent the boolean as a categorical
+     * value. Use a float or int to represent the boolean as a continuous value.
+     *
+     * @var string|float|int
+     */
+    protected $trueValue;
+
+    /**
+     * The value used to replace boolean value `false` with. Use a string value to represent the boolean as a categorical
+     * value. Use a float or int to represent the boolean as a continuous value.
+     *
+     * @var string|float|int
+     */
+    protected $falseValue;
+
+    /**
+     * BooleanConverter constructor.
+     * @param string $trueValue
+     * @param string $falseValue
+     */
+    public function __construct($trueValue = 'true', $falseValue = 'false')
+    {
+        if (!is_float($trueValue) && !is_int($trueValue) && !is_string($trueValue)) {
+            throw new InvalidArgumentException('TrueValue must be'
+                . " a string, float, or int.");
+        }
+
+        if (!is_float($falseValue) && !is_int($falseValue) && !is_string($falseValue)) {
+            throw new InvalidArgumentException('FalseValue must be'
+                . " a string, float, or int.");
+        }
+
+        $this->trueValue = $trueValue;
+        $this->falseValue = $falseValue;
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -37,7 +75,9 @@ class BooleanConverter implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$value) {
                 if (is_bool($value)) {
-                    $value = (int) $value;
+                    $value = $value
+                        ? $this->trueValue
+                        : $this->falseValue;
                 }
             }
         }
