@@ -34,8 +34,8 @@ class BooleanConverter implements Transformer
 
     /**
      * BooleanConverter constructor.
-     * @param string $trueValue
-     * @param string $falseValue
+     * @param string|float|int $trueValue
+     * @param string|float|int $falseValue
      */
     public function __construct($trueValue = 'true', $falseValue = 'false')
     {
