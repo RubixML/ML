@@ -15,6 +15,8 @@ use function get_class;
 use function array_pad;
 use function explode;
 
+use const Rubix\ML\VERSION as LIBRARY_VERSION;
+
 /**
  * RBX
  *
@@ -88,6 +90,7 @@ class RBX implements Serializer
         $header = JSON::encode([
             'class' => [
                 'name' => get_class($persistable),
+                'version' => LIBRARY_VERSION,
                 'revision' => $persistable->revision(),
             ],
             'data' => [
@@ -160,7 +163,9 @@ class RBX implements Serializer
         }
 
         if ($persistable->revision() !== $header['class']['revision']) {
-            throw new RuntimeException('Class revision number mismatch.');
+            throw new RuntimeException('Class revision number mismatch, '
+                . ' object created with version ' . $header['class']['version']
+                . ' of the library.');
         }
 
         return $persistable;
