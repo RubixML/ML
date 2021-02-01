@@ -4,16 +4,16 @@ namespace Rubix\ML
 {
     /**
      * The current version of the library.
-     * 
+     *
      * @internal
-     * 
+     *
      * @var string
      */
     const VERSION = '0.4.0';
 
     /**
      * A small number used in substitution of 0.
-     * 
+     *
      * @internal
      *
      * @var float
@@ -22,7 +22,7 @@ namespace Rubix\ML
 
     /**
      * The natural logarithm of the epsilon constant.
-     * 
+     *
      * @internal
      *
      * @var float
@@ -31,7 +31,7 @@ namespace Rubix\ML
 
     /**
      * The number of radians in a full circle.
-     * 
+     *
      * @internal
      *
      * @var float
@@ -40,16 +40,16 @@ namespace Rubix\ML
 
     /**
      * Half of pi.
-     * 
+     *
      * @internal
-     * 
+     *
      * @var float
      */
     const HALF_PI = 0.5 * M_PI;
 
     /**
      * Coefficient that determines floating point precision of random number generation.
-     * 
+     *
      * @internal
      *
      * @var int
