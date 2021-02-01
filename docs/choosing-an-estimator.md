@@ -31,7 +31,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 Regressors are a type of supervised learner that predict a continuous-valued outcome such as `1.275` or `655`. They can be used to quantify a sample such as its credit score, age, or steering wheel position in units of degrees. Unlike classifiers whose range of predictions is bounded by the number of possible classes in the training set, a regressor's range is unbounded - meaning, the number of possible values a regressor *could* predict is infinite.
 
 | Name | Flexibility | [Online](online.md) | [Ranks Features](ranks-features.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | [Adaline](regressors/adaline.md) | Low | ● | ● | ● | ● | Continuous |
 | [Extra Tree Regressor](regressors/extra-tree-regressor.md) | Medium | | ● | | ● | Categorical, Continuous |
 | [Gradient Boost](regressors/gradient-boost.md) | High | | ● | ● | ● | Categorical, Continuous |
@@ -58,7 +58,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Scoring](scoring.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
 
 | Name | Scope | [Scoring](scoring.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | [Gaussian MLE](anomaly-detectors/gaussian-mle.md) | Global | ● | ● | | ● | Continuous |
 | [Isolation Forest](anomaly-detectors/isolation-forest.md) | Local | ● | | | ● | Categorical, Continuous |
 | [Local Outlier Factor](anomaly-detectors/local-outlier-factor.md) | Local | ● | | | ● | Depends on distance kernel |
