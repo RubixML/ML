@@ -5,6 +5,7 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\JSON;
+use Rubix\ML\Exceptions\ClassRevisionMismatch;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function strlen;
@@ -163,9 +164,7 @@ class RBX implements Serializer
         }
 
         if ($persistable->revision() !== $header['class']['revision']) {
-            throw new RuntimeException('Class revision number mismatch, '
-                . ' object created with version ' . $header['class']['version']
-                . ' of the library.');
+            throw new ClassRevisionMismatch($header['class']['version']);
         }
 
         return $persistable;

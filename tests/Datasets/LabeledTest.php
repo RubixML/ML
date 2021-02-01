@@ -981,33 +981,6 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function testToString() : void
-    {
-        self::markTestSkipped('There is no way to specify the exact output due to console size changes.');
-        /*
-        $expected = PHP_EOL
-            . '| Column 0    | Column 1    | Column 2    | Column 3    | Label       |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| nice        | furry       | friendly    | 4           | not monster |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| mean        | furry       | loner       | -1.5        | monster     |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| nice        | rough       | friendly    | 2.6         | not monster |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| mean        | rough       | friendly    | -1          | monster     |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| nice        | rough       | friendly    | 2.9         | not monster |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL
-            . '| nice        | furry       | loner       | -5          | not monster |' . PHP_EOL
-            . '-----------------------------------------------------------------------' . PHP_EOL;
-
-        $this->assertEquals($expected, (string) $this->dataset);
-        */
-    }
-
-    /**
-     * @test
-     */
     public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());
