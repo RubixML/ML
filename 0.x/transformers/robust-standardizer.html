@@ -4323,6 +4323,9 @@
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RobustStandardizer.php">[source]</a></span></p>
 <h1 id="robust-standardizer">Robust Standardizer<a class="headerlink" href="#robust-standardizer" title="Permanent link">#</a></h1>
 <p>This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (MAD). The use of robust statistics make this standardizer more immune to outliers than the <a href="#z-scale-standardizer">Z Scale Standardizer</a> which used mean and variance.</p>
+<div class="arithmatex">\[
+{\displaystyle z\prime = {x - \operatorname {median}(x) \over MAD }}
+\]</div>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
