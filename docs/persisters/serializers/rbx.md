@@ -3,6 +3,9 @@
 # RBX
 Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native serialization format, RBX adds additional layers of compression, data integrity checks, and class compatibility detection all in one robust format.
 
+!!! note
+    We recommend to use the extension `.rbx` when storing RBX-formatted object files.
+
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
