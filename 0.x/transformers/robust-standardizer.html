@@ -3852,18 +3852,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/serializers/rbx.html" class="md-nav__link">
-        RBX
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -4324,7 +4312,7 @@
 <h1 id="robust-standardizer">Robust Standardizer<a class="headerlink" href="#robust-standardizer" title="Permanent link">#</a></h1>
 <p>This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (MAD) referred to as a <em>robust</em>  or <em>modified</em> Z-Score. The use of robust statistics make this standardizer more immune to outliers than <a href="#z-scale-standardizer">Z Scale Standardizer</a>.</p>
 <div class="arithmatex">\[
-{\displaystyle z^\prime = {x - \operatorname {median}(x) \over MAD }}
+{\displaystyle z^\prime = {x - \operatorname {median}(X) \over MAD }}
 \]</div>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous</p>
