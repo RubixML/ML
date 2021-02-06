@@ -19,11 +19,11 @@ continuous value.
 ```php
 use Rubix\ML\Transformers\BooleanConverter;
 
-$transformer = new BooleanConverter($trueValue = 'true', $falseValue = 'false);
+$transformer = new BooleanConverter('true', 'false);
 
-$transformer = new BooleanConverter($trueValue = 'tall', $falseValue = 'not tall');
+$transformer = new BooleanConverter('tall', 'not tall');
 
-$transformer = new BooleanConverter($trueValue = 1, $falseValue = 0);
+$transformer = new BooleanConverter(1, 0);
 ```
 
 ## Additional Methods

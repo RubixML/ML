@@ -4,6 +4,9 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use function is_numeric;
+use function is_string;
+use function is_bool;
 
 /**
  * Boolean Converter
@@ -39,14 +42,14 @@ class BooleanConverter implements Transformer
      */
     public function __construct($trueValue = 'true', $falseValue = 'false')
     {
-        if (!is_float($trueValue) && !is_int($trueValue) && !is_string($trueValue)) {
+        if (!is_numeric($trueValue) && !is_string($trueValue)) {
             throw new InvalidArgumentException('TrueValue must be'
-                . ' a string, float, or int.');
+                . ' a string or numeric.');
         }
 
-        if (!is_float($falseValue) && !is_int($falseValue) && !is_string($falseValue)) {
+        if (!is_numeric($falseValue) && !is_string($falseValue)) {
             throw new InvalidArgumentException('FalseValue must be'
-                . ' a string, float, or int.');
+                . ' a string or numeric.');
         }
 
         $this->trueValue = $trueValue;
@@ -90,6 +93,6 @@ class BooleanConverter implements Transformer
      */
     public function __toString() : string
     {
-        return 'Boolean Converter';
+        return "Boolean Converter (true: {$this->trueValue}, false: {$this->falseValue})";
     }
 }
