@@ -248,7 +248,6 @@ nav:
       - Redis DB: persisters/redis-db.md
       - Serializers:
         - Gzip: persisters/serializers/gzip.md
-        - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
         - RBX: persisters/serializers/rbx.md
     - Backends:

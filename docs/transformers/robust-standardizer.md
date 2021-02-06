@@ -1,7 +1,11 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RobustStandardizer.php">[source]</a></span>
 
 # Robust Standardizer
-This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (MAD). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
+This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (MAD) referred to as a *robust*  or *modified* Z-Score. The use of robust statistics make this standardizer more immune to outliers than [Z Scale Standardizer](#z-scale-standardizer).
+
+$$
+{\displaystyle z^\prime = {x - \operatorname {median}(X) \over MAD }}
+$$
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 

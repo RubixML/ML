@@ -1,6 +1,6 @@
 # Rubix ML
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Build](https://github.com/RubixML/ML/workflows/Build/badge.svg)](https://github.com/RubixML/ML/actions) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
@@ -24,11 +24,10 @@ $ composer require rubix/ml
 #### Optional
 
 - [Extras Package](https://github.com/RubixML/Extras) for experimental features
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
+- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
-- [Igbinary extension](https://github.com/igbinary/igbinary) for binary serialization of persistables
 
 ## Documentation
 Read the latest docs [here](https://docs.rubixml.com).

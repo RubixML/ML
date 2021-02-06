@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
 use __PHP_Incomplete_Class;
 
+use function Rubix\ML\warn_deprecated;
 use function extension_loaded;
 use function is_object;
 
@@ -14,6 +15,8 @@ use function is_object;
  * Igbinary
  *
  * Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP serializer.
+ *
+ * @deprecated
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -26,6 +29,8 @@ class Igbinary implements Serializer
      */
     public function __construct()
     {
+        warn_deprecated('Igbinary is deprecated, will move to Extras package in the next major release.');
+
         if (!extension_loaded('igbinary')) {
             throw new RuntimeException('Igbinary extension is not loaded,'
                 . ' check PHP configuration.');

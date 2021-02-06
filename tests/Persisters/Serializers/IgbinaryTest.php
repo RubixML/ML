@@ -32,8 +32,6 @@ class IgbinaryTest extends TestCase
     protected function setUp() : void
     {
         $this->persistable = new DummyClassifier();
-
-        $this->serializer = new Igbinary();
     }
 
     /**
@@ -41,6 +39,10 @@ class IgbinaryTest extends TestCase
      */
     public function build() : void
     {
+        $this->expectDeprecation();
+
+        $this->serializer = new Igbinary();
+
         $this->assertInstanceOf(Igbinary::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
@@ -50,6 +52,10 @@ class IgbinaryTest extends TestCase
      */
     public function serializeUnserialize() : void
     {
+        $this->expectDeprecation();
+
+        $this->serializer = new Igbinary();
+
         $data = $this->serializer->serialize($this->persistable);
 
         $this->assertInstanceOf(Encoding::class, $data);
