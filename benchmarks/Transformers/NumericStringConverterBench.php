@@ -14,18 +14,18 @@ class NumericStringConverterBench
     protected const DATASET_SIZE = 100000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var \Rubix\ML\Datasets\Dataset
      */
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\L1Normalizer
+     * @var \Rubix\ML\Transformers\NumericStringConverter
      */
     protected $transformer;
 
     public function setUp() : void
     {
-        $generator = new Blob([0.0, 0.0,  0.0, 0.0]);
+        $generator = new Blob([0.0, 0.0, 0.0, 0.0]);
 
         $this->dataset = $generator->generate(self::DATASET_SIZE)
             ->transformColumn(1, 'strval')
