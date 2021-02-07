@@ -182,7 +182,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
     /**
      * Return the base spatial tree instance.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @return \Rubix\ML\Graph\Trees\Spatial
      */
     public function tree() : Spatial
     {

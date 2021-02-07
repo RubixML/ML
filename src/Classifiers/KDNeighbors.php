@@ -146,7 +146,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Return the base spatial tree instance.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @return \Rubix\ML\Graph\Trees\Spatial
      */
     public function tree() : Spatial
     {

@@ -135,7 +135,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Return the base k-d tree instance.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @return \Rubix\ML\Graph\Trees\Spatial
      */
     public function tree() : Spatial
     {
