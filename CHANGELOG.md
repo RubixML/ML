@@ -2,6 +2,7 @@
     - Added Rubix Object File (RBX) format serializer
     - Added class revision() method to the Persistable interface
     - Added custom class revision mismatch exception
+    - Add Boolean Converter transformer
     - Deprecated Igbinary serializer
     
 - 0.3.2
