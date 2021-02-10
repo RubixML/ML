@@ -5,6 +5,7 @@ namespace Rubix\ML\Other\Traits;
 use ReflectionClass;
 
 use function is_object;
+use function array_pop;
 use function hash;
 use function implode;
 use function sort;

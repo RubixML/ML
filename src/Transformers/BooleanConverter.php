@@ -37,6 +37,7 @@ class BooleanConverter implements Transformer
     /**
      * @param mixed $trueValue
      * @param mixed $falseValue
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct($trueValue = 'true', $falseValue = 'false')
     {
@@ -91,6 +92,6 @@ class BooleanConverter implements Transformer
      */
     public function __toString() : string
     {
-        return "Boolean Converter (true: {$this->trueValue}, false: {$this->falseValue})";
+        return "Boolean Converter (true_value: {$this->trueValue}, false_value: {$this->falseValue})";
     }
 }

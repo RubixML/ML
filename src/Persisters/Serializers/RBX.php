@@ -71,7 +71,7 @@ class RBX implements Serializer
      */
     public function __construct(?Serializer $base = null)
     {
-        $this->base = $base ?? new Gzip(9);
+        $this->base = $base ?? new Gzip(9, new Native());
     }
 
     /**
@@ -89,15 +89,17 @@ class RBX implements Serializer
         $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
 
         $header = JSON::encode([
+            'library' => [
+                'version' => LIBRARY_VERSION,
+            ],
             'class' => [
                 'name' => get_class($persistable),
-                'version' => LIBRARY_VERSION,
                 'revision' => $persistable->revision(),
             ],
             'data' => [
                 'checksum' => [
                     'type' => self::CHECKSUM_HASH_TYPE,
-                    'token' => $hash,
+                    'hash' => $hash,
                 ],
                 'length' => $encoding->bytes(),
             ],
@@ -139,9 +141,9 @@ class RBX implements Serializer
             throw new RuntimeException('Invalid message format.');
         }
 
-        [$type, $token] = array_pad(explode(':', $checksum, 2), 2, null);
+        [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
 
-        if ($token !== hash($type, $header)) {
+        if ($hash !== hash($type, $header)) {
             throw new RuntimeException('Header checksum verification failed.');
         }
 
@@ -151,9 +153,9 @@ class RBX implements Serializer
             throw new RuntimeException('Data is corrupted.');
         }
 
-        $hash = $hash = hash($header['data']['checksum']['type'], $payload);
+        $hash = hash($header['data']['checksum']['type'], $payload);
 
-        if ($header['data']['checksum']['token'] !== $hash) {
+        if ($header['data']['checksum']['hash'] !== $hash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
@@ -164,7 +166,7 @@ class RBX implements Serializer
         }
 
         if ($persistable->revision() !== $header['class']['revision']) {
-            throw new ClassRevisionMismatch($header['class']['version']);
+            throw new ClassRevisionMismatch($header['library']['version']);
         }
 
         return $persistable;
