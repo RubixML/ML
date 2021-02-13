@@ -339,7 +339,7 @@ class TSNE implements Embedder, Verbose
 
         $distances = $this->pairwiseDistances($samples);
 
-        $p = Matrix::quick($this->affinities($distances))
+        $p = Matrix::build($this->affinities($distances))
             ->multiply($this->exaggeration);
 
         $y = Matrix::gaussian($m, $this->dimensions)
@@ -357,7 +357,7 @@ class TSNE implements Embedder, Verbose
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $distances = $this->pairwiseDistances($y->asArray());
 
-            $gradient = $this->gradient($p, $y, Matrix::quick($distances));
+            $gradient = $this->gradient($p, $y, Matrix::build($distances));
 
             $directions = $velocity->multiply($gradient)->asArray();
 
@@ -372,6 +372,8 @@ class TSNE implements Embedder, Verbose
                     $gain = max(self::MIN_GAIN, $gain);
                 }
             }
+
+            unset($row, $gain);
 
             $gradient = $gradient->multiply(Matrix::quick($gains));
 
@@ -556,7 +558,7 @@ class TSNE implements Embedder, Verbose
             $gradient[] = $row->matmul($yHat)->row(0);
         }
 
-        return Matrix::quick($gradient)
+        return Matrix::build($gradient)
             ->multiply($this->c);
     }
 
