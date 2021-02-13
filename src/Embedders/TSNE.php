@@ -359,19 +359,15 @@ class TSNE implements Embedder, Verbose
 
             $directions = $velocity->multiply($gradient)->asArray();
 
+            $gamma = [];
+
             foreach ($gains as $i => &$row) {
                 $direction = $directions[$i];
 
-                foreach ($row as $j => &$gain) {
-                    $gain = $direction[$j] < 0.0
-                        ? $gain + self::GAIN_ACCELERATE
-                        : $gain * self::GAIN_BRAKE;
-
-                    $gain = max(self::MIN_GAIN, $gain);
-                }
+                $gamma[] = array_map([$this, 'attenuate'], $row, $direction);
             }
 
-            unset($row, $gain);
+            $gains = $gamma;
 
             $gradient = $gradient->multiply(Matrix::quick($gains));
 
@@ -558,6 +554,22 @@ class TSNE implements Embedder, Verbose
 
         return Matrix::build($gradient)
             ->multiply($this->c);
+    }
+
+    /**
+     * Attenuate the momentum signal.
+     *
+     * @param float $gain
+     * @param float $direction
+     * @return float
+     */
+    protected function attenuate(float $gain, float $direction) : float
+    {
+        $value = $direction < 0.0
+            ? $gain + self::GAIN_ACCELERATE
+            : $gain * self::GAIN_BRAKE;
+
+        return max(self::MIN_GAIN, $value);
     }
 
     /**
