@@ -339,7 +339,7 @@ class TSNE implements Embedder, Verbose
 
         $distances = $this->pairwiseDistances($samples);
 
-        $p = Matrix::build($this->affinities($distances))
+        $p = Matrix::quick($this->affinities($distances))
             ->multiply($this->exaggeration);
 
         $y = Matrix::gaussian($m, $this->dimensions)
@@ -357,19 +357,13 @@ class TSNE implements Embedder, Verbose
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $distances = $this->pairwiseDistances($y->asArray());
 
-            $gradient = $this->gradient($p, $y, Matrix::build($distances));
+            $gradient = $this->gradient($p, $y, Matrix::quick($distances));
 
             $directions = $velocity->multiply($gradient)->asArray();
 
-            $gamma = [];
-
             foreach ($gains as $i => &$row) {
-                $direction = $directions[$i];
-
-                $gamma[] = array_map([$this, 'attenuate'], $row, $direction);
+                $row = array_map([$this, 'attenuate'], $row, $directions[$i]);
             }
-
-            $gains = $gamma;
 
             $gradient = $gradient->multiply(Matrix::quick($gains));
 
@@ -527,8 +521,7 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
-     * Compute the gradient of the KL Divergence cost function with respect to
-     * the embedding.
+     * Compute the gradient of the KL Divergence cost function with respect to the embedding.
      *
      * @param \Tensor\Matrix $p
      * @param \Tensor\Matrix $y
@@ -548,13 +541,13 @@ class TSNE implements Embedder, Verbose
 
         $gradient = [];
 
-        foreach ($pqd->asVectors() as $i => $row) {
+        foreach ($pqd->asVectors() as $i => $vector) {
             $yHat = $y->rowAsVector($i)->subtract($y);
 
-            $gradient[] = $row->matmul($yHat)->row(0);
+            $gradient[] = $vector->matmul($yHat)->row(0);
         }
 
-        return Matrix::build($gradient)
+        return Matrix::quick($gradient)
             ->multiply($this->c);
     }
 
