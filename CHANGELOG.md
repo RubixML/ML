@@ -1,5 +1,6 @@
 - 0.3.2
     - Fix t-SNE momentum gain bus error when using Tensor extension
+    - Optimize t-SNE matrix instantiation
     - Refactor single sample inference methods
     - Update the docs site
 
