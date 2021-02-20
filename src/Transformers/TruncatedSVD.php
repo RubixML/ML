@@ -13,6 +13,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_slice;
+use function array_sum;
 
 use const Rubix\ML\EPSILON;
 
@@ -20,12 +21,11 @@ use const Rubix\ML\EPSILON;
  * Truncated SVD
  *
  * Truncated Singular Value Decomposition (SVD) is a matrix factorization and dimensionality reduction technique that generalizes
- * eigendecomposition to general matrices. When applied to datasets of term frequency vectors, the technique is called Latent Semantic
- * Analysis (LSA) and computes a statistical model of relationships between words. Truncated SVD can also be used to compress document
- * representations for fast information retrieval and is known as Latent Semantic Indexing (LSI) in this context.
+ * eigendecomposition to general matrices. When applied to datasets of document term frequency vectors, the technique is called
+ * Latent Semantic Analysis (LSA) and computes a statistical model of relationships between words.
  *
  * References:
- * [1] P. W. Foltz. (1996) Latent semantic analysis for text-based research.
+ * [1] S. Deerwater et al. (1990). Indexing by Latent Semantic Analysis.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -119,22 +119,20 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $svd = Matrix::build($dataset->samples())->svd();
 
         $singularValues = $svd->singularValues();
-        $vT = $svd->vT()->asArray();
+        $components = $svd->vT()->asArray();
 
         $totalVariance = array_sum($singularValues);
 
-        array_multisort($singularValues, SORT_DESC, $vT);
-
         $singularValues = array_slice($singularValues, 0, $this->dimensions);
-        $vT = array_slice($vT, 0, $this->dimensions);
+        $components = array_slice($components, 0, $this->dimensions);
 
-        $components = Matrix::quick($vT)->transpose();
+        $components = Matrix::quick($components)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($singularValues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->components = $components;
         $this->lossiness = $lossiness;
+        $this->components = $components;
     }
 
     /**

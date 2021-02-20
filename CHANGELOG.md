@@ -1,12 +1,12 @@
 - 0.4.0
-    - Add Truncated SVD transformer
+    - Added Truncated SVD transformer
     - Added Rubix Object File (RBX) format serializer
     - Added class revision() method to the Persistable interface
     - Added custom class revision mismatch exception
     - Add Boolean Converter transformer
-    - Deprecated Igbinary serializer and move to Extras
+    - Deprecated Igbinary serializer and move to Extras package
     - Deprecate explainedVar() and noiseVar() methods on PCA and LDA
-    - Add missing extension specification and exception
+    - Added missing extension specification and exception
     
 - 0.3.2
     - Fix t-SNE momentum gain bus error when using Tensor extension

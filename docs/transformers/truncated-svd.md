@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/TruncatedSVD.php">[source]</a></span>
 
 # Truncated SVD
-Truncated Singular Value Decomposition (SVD) is a matrix factorization and dimensionality reduction technique that generalizes eigendecomposition to general matrices. When applied to datasets of term frequency vectors, the technique is called Latent Semantic Analysis (LSA) and computes a statistical model of relationships between words. Truncated SVD can also be used to compress document representations for fast information retrieval and is known as Latent Semantic Indexing (LSI) in this context.
+Truncated Singular Value Decomposition (SVD) is a matrix factorization and dimensionality reduction technique that generalizes eigendecomposition to general matrices. When applied to datasets of document term frequency vectors, the technique is called Latent Semantic Analysis (LSA) and computes a statistical model of relationships between words.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
@@ -26,4 +26,4 @@ public lossiness() : ?float
 ```
 
 ### References
-[^1]: P. W. Foltz. (1996) Latent semantic analysis for text-based research.
+[^1]: S. Deerwater et al. (1990). Indexing by Latent Semantic Analysis.

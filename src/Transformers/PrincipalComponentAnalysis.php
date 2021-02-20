@@ -13,6 +13,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn_deprecated;
 use function array_slice;
+use function array_multisort;
+use function array_sum;
 
 use const Rubix\ML\EPSILON;
 
@@ -172,7 +174,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = $eig->eigenvalues();
         $eigenvectors = $eig->eigenvectors()->asArray();
 
-        $totalVar = array_sum($eigenvalues);
+        $totalVariance = array_sum($eigenvalues);
 
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 
@@ -181,12 +183,13 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 
         $eigenvectors = Matrix::quick($eigenvectors)->transpose();
 
-        $explainedVar = (float) array_sum($eigenvalues);
-        $noiseVar = $totalVar - $explainedVar;
+        $explainedVariance = array_sum($eigenvalues);
+        $noiseVariance = $totalVariance - $explainedVariance;
+        $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->explainedVar = $explainedVar;
-        $this->noiseVar = $noiseVar;
-        $this->lossiness = $noiseVar / ($totalVar ?: EPSILON);
+        $this->explainedVar = $explainedVariance;
+        $this->noiseVar = $noiseVariance;
+        $this->lossiness = $lossiness;
 
         $this->mean = $xT->mean()->transpose();
 
