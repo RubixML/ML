@@ -175,7 +175,6 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
             ->eig(true);
 
         $eigenvalues = $eig->eigenvalues();
-
         $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVar = array_sum($eigenvalues);

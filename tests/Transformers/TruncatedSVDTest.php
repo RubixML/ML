@@ -5,15 +5,16 @@ namespace Rubix\ML\Tests\Transformers;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Transformers\PrincipalComponentAnalysis;
+use Rubix\ML\Transformers\TruncatedSVD;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @covers \Rubix\ML\Transformers\PrincipalComponentAnalysis
+ * @requires extension tensor
+ * @covers \Rubix\ML\Transformers\TruncatedSVD
  */
-class PrincipalComponentAnalysisTest extends TestCase
+class TruncatedSVDTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Generators\Blob
@@ -21,7 +22,7 @@ class PrincipalComponentAnalysisTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\PrincipalComponentAnalysis
+     * @var \Rubix\ML\Transformers\TruncatedSVD
      */
     protected $transformer;
 
@@ -32,7 +33,7 @@ class PrincipalComponentAnalysisTest extends TestCase
     {
         $this->generator = new Blob([0.0, 3000.0, -6.0, 25], [1.0, 30.0, 0.001, 10.0]);
 
-        $this->transformer = new PrincipalComponentAnalysis(2);
+        $this->transformer = new TruncatedSVD(2);
     }
 
     /**
@@ -40,7 +41,7 @@ class PrincipalComponentAnalysisTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(PrincipalComponentAnalysis::class, $this->transformer);
+        $this->assertInstanceOf(TruncatedSVD::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }

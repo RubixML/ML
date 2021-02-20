@@ -124,6 +124,7 @@ nav:
         - Linear Discriminant Analysis: transformers/linear-discriminant-analysis.md
         - Principal Component Analysis: transformers/principal-component-analysis.md
         - Sparse Random Projector: transformers/sparse-random-projector.md
+        - Truncated SVD: transformers/truncated-svd.md
       - Feature Conversion:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
