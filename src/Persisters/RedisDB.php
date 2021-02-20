@@ -5,6 +5,7 @@ namespace Rubix\ML\Persisters;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -64,10 +65,7 @@ class RedisDB implements Persister
         ?Serializer $serializer = null,
         float $timeout = 2.5
     ) {
-        if (!extension_loaded('redis')) {
-            throw new RuntimeException('Redis extension is not loaded, check'
-                . ' PHP configuration.');
-        }
+        ExtensionIsLoaded::with('redis')->check();
 
         if (empty($key)) {
             throw new InvalidArgumentException('Key cannot be empty.');

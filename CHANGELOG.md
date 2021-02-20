@@ -6,6 +6,7 @@
     - Add Boolean Converter transformer
     - Deprecated Igbinary serializer and move to Extras
     - Deprecate explainedVar() and noiseVar() methods on PCA and LDA
+    - Add missing extension specification and exception
     
 - 0.3.2
     - Fix t-SNE momentum gain bus error when using Tensor extension

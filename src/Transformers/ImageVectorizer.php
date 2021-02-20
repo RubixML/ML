@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -41,15 +42,10 @@ class ImageVectorizer implements Transformer, Stateful
 
     /**
      * @param bool $grayscale
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(bool $grayscale = false)
     {
-        if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension is not loaded'
-                . ', check PHP configuration.');
-        }
+        ExtensionIsLoaded::with('gd')->check();
 
         $this->grayscale = $grayscale;
     }

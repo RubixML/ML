@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
-use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use svm;
 
 /**
@@ -33,14 +33,10 @@ class Sigmoidal implements Kernel
     /**
      * @param float $gamma
      * @param float $coef0
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(?float $gamma = null, float $coef0 = 0.0)
     {
-        if (!extension_loaded('svm')) {
-            throw new RuntimeException('SVM extension is not loaded, check'
-                . ' PHP configuration.');
-        }
+        ExtensionIsLoaded::with('svm')->check();
 
         $this->gamma = $gamma;
         $this->coef0 = $coef0;

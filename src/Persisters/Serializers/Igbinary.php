@@ -5,10 +5,10 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use __PHP_Incomplete_Class;
 
 use function Rubix\ML\warn_deprecated;
-use function extension_loaded;
 use function is_object;
 
 /**
@@ -24,17 +24,11 @@ use function is_object;
  */
 class Igbinary implements Serializer
 {
-    /**
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     */
     public function __construct()
     {
         warn_deprecated('Igbinary is deprecated, will move to Extras package in the next major release.');
 
-        if (!extension_loaded('igbinary')) {
-            throw new RuntimeException('Igbinary extension is not loaded,'
-                . ' check PHP configuration.');
-        }
+        ExtensionIsLoaded::with('igbinary')->check();
     }
 
     /**

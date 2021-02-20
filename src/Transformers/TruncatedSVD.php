@@ -7,6 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -61,9 +62,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
-        if (!extension_loaded('tensor')) {
-            throw new RuntimeException('Tensor extension not installed, check PHP configuration.');
-        }
+        ExtensionIsLoaded::with('tensor')->check();
 
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
