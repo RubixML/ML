@@ -20,17 +20,7 @@ $transformer = new LinearDiscriminantAnalysis(20);
 ```
 
 ## Additional Methods
-Return the amount of variance that has been preserved by the transformation:
-```php
-public explainedVar() : ?float
-```
-
-Return the amount of variance lost by discarding the noise components:
-```php
-public noiseVar() : ?float
-```
-
-Return the percentage of information lost due to the transformation:
+Return the proportion of information lost due to the transformation:
 ```php
 public lossiness() : ?float
 ```

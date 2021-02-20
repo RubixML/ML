@@ -11,6 +11,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\warn_deprecated;
 use function array_slice;
 
 use const Rubix\ML\EPSILON;
@@ -117,23 +118,30 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     }
 
     /**
-     * Return the amount of variance that has been preserved by the
-     * transformation.
+     * Return the amount of variance that has been preserved by the transformation.
+     *
+     * @deprecated
      *
      * @return float|null
      */
     public function explainedVar() : ?float
     {
+        warn_deprecated('ExplainedVar() is deprecated, use lossiness() instead.');
+
         return $this->explainedVar;
     }
 
     /**
      * Return the amount of variance lost by discarding the noise components.
      *
+     * @deprecated
+     *
      * @return float|null
      */
     public function noiseVar() : ?float
     {
+        warn_deprecated('NoiseVar() is deprecated, use lossiness() instead.');
+
         return $this->noiseVar;
     }
 
