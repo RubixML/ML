@@ -16,23 +16,21 @@ use function array_slice;
 use const Rubix\ML\EPSILON;
 
 /**
- * Principal Component Analysis
+ * Truncated SVD
  *
- * Principal Component Analysis or *PCA* is a dimensionality reduction technique that
- * aims to transform the feature space by the *k* principal components that explain
- * the most variance of the data where *k* is the dimensionality of the output
- * specified by the user. PCA is used to compress high dimensional samples down to
- * lower dimensions such that would retain as much of the information within the data
- * as possible.
+ * Truncated Singular Value Decomposition (SVD) is a matrix factorization and dimensionality reduction technique that generalizes
+ * eigendecomposition to general matrices. When applied to datasets of term frequency vectors, the technique is called Latent Semantic
+ * Analysis (LSA) and computes a statistical model of relationships between words. Truncated SVD can also be used to compress document
+ * representations for fast information retrieval and is known as Latent Semantic Indexing (LSI) in this context.
  *
  * References:
- * [1] H. Abdi et al. (2010). Principal Component Analysis.
+ * [1] P. W. Foltz. (1996) Latent semantic analysis for text-based research.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
+class TruncatedSVD implements Transformer, Stateful, Persistable
 {
     use TracksRevisions;
 
@@ -44,25 +42,11 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     protected $dimensions;
 
     /**
-     * The matrix of eigenvectors computed at fitting.
+     * The component vectors of the singular value decomposition.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $eigenvectors;
-
-    /**
-     * The amount of variance that is preserved by the transformation.
-     *
-     * @var float|null
-     */
-    protected $explainedVar;
-
-    /**
-     * The amount of variance lost by discarding the noise components.
-     *
-     * @var float|null
-     */
-    protected $noiseVar;
+    protected $components;
 
     /**
      * The percentage of information lost due to the transformation.
@@ -72,18 +56,15 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     protected $lossiness;
 
     /**
-     * The centers (means) of the input feature columns.
-     *
-     * @var \Tensor\Vector|null
-     */
-    protected $mean;
-
-    /**
      * @param int $dimensions
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $dimensions)
     {
+        if (!extension_loaded('tensor')) {
+            throw new RuntimeException('Tensor extension not installed, check PHP configuration.');
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -113,28 +94,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function fitted() : bool
     {
-        return $this->mean and $this->eigenvectors;
-    }
-
-    /**
-     * Return the amount of variance that has been preserved by the
-     * transformation.
-     *
-     * @return float|null
-     */
-    public function explainedVar() : ?float
-    {
-        return $this->explainedVar;
-    }
-
-    /**
-     * Return the amount of variance lost by discarding the noise components.
-     *
-     * @return float|null
-     */
-    public function noiseVar() : ?float
-    {
-        return $this->noiseVar;
+        return isset($this->components);
     }
 
     /**
@@ -157,32 +117,25 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $xT = Matrix::build($dataset->samples())->transpose();
+        $svd = Matrix::build($dataset->samples())->svd();
 
-        $eig = $xT->covariance()->eig(true);
+        $singularValues = $svd->singularValues();
+        $vT = $svd->vT()->asArray();
 
-        $eigenvalues = $eig->eigenvalues();
-        $eigenvectors = $eig->eigenvectors()->asArray();
+        $totalVariance = array_sum($singularValues);
 
-        $totalVar = array_sum($eigenvalues);
+        array_multisort($singularValues, SORT_DESC, $vT);
 
-        array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
+        $singularValues = array_slice($singularValues, 0, $this->dimensions);
+        $vT = array_slice($vT, 0, $this->dimensions);
 
-        $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
-        $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
+        $components = Matrix::quick($vT)->transpose();
 
-        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+        $noiseVariance = $totalVariance - array_sum($singularValues);
+        $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $explainedVar = (float) array_sum($eigenvalues);
-        $noiseVar = $totalVar - $explainedVar;
-
-        $this->explainedVar = $explainedVar;
-        $this->noiseVar = $noiseVar;
-        $this->lossiness = $noiseVar / ($totalVar ?: EPSILON);
-
-        $this->mean = $xT->mean()->transpose();
-
-        $this->eigenvectors = $eigenvectors;
+        $this->components = $components;
+        $this->lossiness = $lossiness;
     }
 
     /**
@@ -193,13 +146,12 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (!$this->mean or !$this->eigenvectors) {
+        if (!$this->components) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         $samples = Matrix::build($samples)
-            ->subtract($this->mean)
-            ->matmul($this->eigenvectors)
+            ->matmul($this->components)
             ->asArray();
     }
 
@@ -210,6 +162,6 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function __toString() : string
     {
-        return "Principal Component Analysis (dimensions: {$this->dimensions})";
+        return "Truncated SVD (dimensions: {$this->dimensions})";
     }
 }
