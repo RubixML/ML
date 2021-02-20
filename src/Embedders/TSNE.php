@@ -365,6 +365,8 @@ class TSNE implements Embedder, Verbose
                 $row = array_map([$this, 'attenuate'], $row, $directions[$i]);
             }
 
+            unset($row);
+
             $gradient = $gradient->multiply(Matrix::quick($gains));
 
             $velocity = $velocity->multiply($momentum)
