@@ -14,7 +14,7 @@ use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,7 +40,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * @param int $maxHeight

@@ -11,7 +11,7 @@ use function implode;
 use function sort;
 
 /**
- * Tracks Revisions
+ * Autotrack Revisions
  *
  * Automatically update class revision numbers by tracking changes in the object-property definition tree stemming from this instance.
  *
@@ -19,7 +19,7 @@ use function sort;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-trait TracksRevisions
+trait AutotrackRevisions
 {
     /**
      * Return the revision number of the class.

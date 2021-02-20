@@ -21,7 +21,7 @@ use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -62,7 +62,7 @@ use function count;
  */
 class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use TracksRevisions, PredictsSingle, ProbaSingle, LoggerAware;
+    use AutotrackRevisions, PredictsSingle, ProbaSingle, LoggerAware;
 
     /**
      * An array composing the user-specified hidden layers of the network in order.

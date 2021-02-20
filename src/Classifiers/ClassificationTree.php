@@ -14,7 +14,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -43,7 +43,7 @@ use function Rubix\ML\argmax;
  */
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, RanksFeatures, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The zero vector for the possible class outcomes.

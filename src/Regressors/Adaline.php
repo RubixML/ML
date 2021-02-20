@@ -18,7 +18,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
@@ -52,7 +52,7 @@ use function count;
  */
 class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
-    use TracksRevisions, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, PredictsSingle, LoggerAware;
 
     /**
      * The number of training samples to process at a time.

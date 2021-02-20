@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -32,7 +32,7 @@ use const Rubix\ML\EPSILON;
  */
 class RobustStandardizer implements Transformer, Stateful, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * Should we center the data at 0?

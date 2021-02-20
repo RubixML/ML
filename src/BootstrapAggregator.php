@@ -11,7 +11,7 @@ use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -39,7 +39,7 @@ use function in_array;
  */
 class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
-    use TracksRevisions, Multiprocessing, PredictsSingle;
+    use AutotrackRevisions, Multiprocessing, PredictsSingle;
 
     /**
      * The estimator type codes that the ensemble is compatible with.

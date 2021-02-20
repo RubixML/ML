@@ -11,7 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -39,7 +39,7 @@ use function in_array;
  */
 class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The radius within which points are considered neighbors.

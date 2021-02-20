@@ -11,7 +11,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -44,7 +44,7 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The amount of (Laplace) smoothing added to the probabilities.

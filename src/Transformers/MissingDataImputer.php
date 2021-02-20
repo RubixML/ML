@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Other\Strategies\KMostFrequent;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -27,7 +27,7 @@ use function is_null;
  */
 class MissingDataImputer implements Transformer, Stateful, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The guessing strategy to use when imputing continuous values.

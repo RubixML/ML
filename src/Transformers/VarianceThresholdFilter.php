@@ -6,7 +6,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -27,7 +27,7 @@ use function is_null;
  */
 class VarianceThresholdFilter implements Transformer, Stateful, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The minimum number of features to select from the dataset.

@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -35,7 +35,7 @@ use const Rubix\ML\EPSILON;
  */
 class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The target number of dimensions to project onto.

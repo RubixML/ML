@@ -12,7 +12,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\TracksRevisions;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -38,7 +38,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
-    use TracksRevisions;
+    use AutotrackRevisions;
 
     /**
      * The value to assign to outliers when making a prediction.
