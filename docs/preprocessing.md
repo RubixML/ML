@@ -135,10 +135,49 @@ These transformers operate on the high-level image data type.
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-## Transformer Pipelines
-[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations applied to the input dataset of an estimator. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load the transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, depending on the operation, it will automatically be fitted and/or transformed before it arrives in the estimator's context.
+## Transformer Conduits
+Conduits allow you to abstract a series of transformations into a single higher-order transformation. They are helpful in organizing your data pipeline logic and can be fitted, updated, and persisted as a single unit. The Conduit in the example below applies what is called Latent Semantic Analysis (LSA) to the input data using a series of transformations. Notice that we only need to call `apply()` on the parent transformer.
 
-Let's apply the same 3 transformers as in the example above by passing the transformer instances in the order we want them applied along with a base estimator to the constructor of Pipeline like in the example below.
+```php
+use Rubix\ML\Transformers\Conduit;
+use Rubix\ML\Transformers\TextNormalizer;
+use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Transformers\TruncatedSVD;
+
+$transformer = new Conduit([
+    new TextNormalizer(),
+    new WordCountVecorizer(10000),
+    new TruncatedSVD(100),
+]);
+
+$dataset->apply($transformer);
+```
+
+### Persisting Transformers
+The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit the transformer conduit from the example above to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
+
+```php
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer->fit($dataset);
+
+$persister = new Filesystem('lsa.transformer');
+
+$persister->save($transformer);
+```
+
+Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
+
+```php
+$persister = new Filesystem('sa.transformer');
+
+$transformer = $persister->load();
+
+$dataset->apply($transformer);
+```
+
+## Transformer Pipelines
+The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset of an estimator. It is similar to a [Conduit](#transformer-conduits) except that, after the dataset is transformed, it will be handed off to the underlying estimator. In fact, you could use Conduits in your Pipelines if you wanted to. With a Pipeline, any dataset object passed to a learner will automatically be fitted and/or transformed before it arrives in the estimator's context.
 
 ```php
 use Rubix\ML\Pipeline;
@@ -166,6 +205,14 @@ Any time a dataset is passed to the Pipeline it will automatically be transforme
 
 ```php
 $predictions = $estimator->predict($dataset); // Dataset transformed automatically
+```
+
+You can save the transformer fittings alongside the model data by persisting the entire Pipeline object or by wrapping it in a [Persistent Model](persistent-model.md) meta-estimator.
+
+```php
+$persister = new Filesystem('example.model');
+
+$persister->save($estimator);
 ```
 
 ## Advanced Preprocessing
@@ -200,32 +247,6 @@ $dataset2 = Unlabeled::fromIterator($extractor2)
 
 $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
-```
-
-## Persisting Fitted Transformers
-The persistence subsystem can be used to save and load Stateful and Elastic transformers that implement the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
-
-```php
-use Rubix\ML\Transformers\KBestFeatureSelector;
-use Rubix\ML\Persisters\Filesystem;
-
-$transformer = new KBestFeatureSelector(10);
-
-$transformer->fit($dataset);
-
-$persister = new Filesystem('k-best.transformer');
-
-$persister->save($transformer);
-```
-
-Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
-
-```php
-$persister = new Filesystem('k-best.transformer');
-
-$transformer = $persister->load();
-
-$dataset->apply($transformer);
 ```
 
 ## Filtering Records

@@ -174,7 +174,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
