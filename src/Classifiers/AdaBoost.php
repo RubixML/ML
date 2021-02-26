@@ -25,6 +25,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function is_nan;
+use function array_fill_keys;
+use function array_sum;
 
 use const Rubix\ML\EPSILON;
 

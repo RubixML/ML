@@ -9,6 +9,9 @@ use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
+use function array_unique;
+use function array_merge;
+use function array_fill_keys;
 
 use const Rubix\ML\EPSILON;
 
@@ -132,13 +135,9 @@ class FBeta implements Metric
             }
         }
 
-        $precision = Stats::mean(
-            array_map([self::class, 'precision'], $truePos, $falsePos)
-        );
+        $precision = Stats::mean(array_map([self::class, 'precision'], $truePos, $falsePos));
 
-        $recall = Stats::mean(
-            array_map([self::class, 'recall'], $truePos, $falseNeg)
-        );
+        $recall = Stats::mean(array_map([self::class, 'recall'], $truePos, $falseNeg));
 
         return (1.0 + $this->beta ** 2) * $precision * $recall
             / (($this->beta ** 2 * $precision + $recall) ?: EPSILON);

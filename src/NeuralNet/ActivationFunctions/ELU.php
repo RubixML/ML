@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function exp;
+
 /**
  * ELU
  *

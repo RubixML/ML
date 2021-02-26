@@ -21,6 +21,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function in_array;
+use function array_count_values;
 
 /**
  * Bootstrap Aggregator

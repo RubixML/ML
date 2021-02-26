@@ -50,7 +50,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     protected $components;
 
     /**
-     * The percentage of information lost due to the transformation.
+     * The proportion of information lost due to the transformation.
      *
      * @var float|null
      */
@@ -121,15 +121,15 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $singularValues = $svd->singularValues();
         $components = $svd->vT()->asArray();
 
-        $totalVariance = array_sum($singularValues);
+        $totalStdDev = array_sum($singularValues);
 
         $singularValues = array_slice($singularValues, 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
         $components = Matrix::quick($components)->transpose();
 
-        $noiseVariance = $totalVariance - array_sum($singularValues);
-        $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
+        $noiseStdDev = $totalStdDev - array_sum($singularValues);
+        $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
 
         $this->lossiness = $lossiness;
         $this->components = $components;
