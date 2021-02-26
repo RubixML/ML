@@ -1,6 +1,6 @@
 # Rubix ML
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Code Checks](https://github.com/RubixML/ML/actions/workflows/ci.yml/badge.svg)](https://github.com/RubixML/ML/actions/workflows/ci.yml) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
