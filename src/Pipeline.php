@@ -26,11 +26,6 @@ use Psr\Log\LoggerInterface;
  * estimator's methods before hitting the method context. With *elastic* mode enabled,
  * Pipeline will update the fitting of Elastic transformers during partial training.
  *
- * > **Note:** Since transformations are applied to dataset objects in-place (without making a
- * copy of the data), using a dataset in a program after it has been run through Pipeline may
- * have unexpected results. If you need to keep a *clean* dataset in memory then you can clone
- * the dataset object before calling the method on Pipeline that consumes it.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -40,7 +35,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
     use AutotrackRevisions, PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
 
     /**
-     * A list of transformers to be applied in order.
+     * A list of transformers to be applied in series.
      *
      * @var \Rubix\ML\Transformers\Transformer[]
      */

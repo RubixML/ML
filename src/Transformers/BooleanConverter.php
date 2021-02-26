@@ -5,8 +5,8 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function is_numeric;
 use function is_string;
+use function is_int;
 use function is_bool;
 
 /**
@@ -23,14 +23,14 @@ class BooleanConverter implements Transformer
     /**
      * The value used to replace boolean value `true` with.
      *
-     * @var string|float|int
+     * @var string|int
      */
     protected $trueValue;
 
     /**
      * The value used to replace boolean value `false` with.
      *
-     * @var string|float|int
+     * @var string|int
      */
     protected $falseValue;
 
@@ -41,12 +41,12 @@ class BooleanConverter implements Transformer
      */
     public function __construct($trueValue = 'true', $falseValue = 'false')
     {
-        if (!is_numeric($trueValue) && !is_string($trueValue)) {
+        if (!is_string($trueValue) and !is_int($trueValue)) {
             throw new InvalidArgumentException('True value must be'
                 . ' a string or numeric type.');
         }
 
-        if (!is_numeric($falseValue) && !is_string($falseValue)) {
+        if (!is_string($falseValue) and !is_int($falseValue)) {
             throw new InvalidArgumentException('False value must be'
                 . ' a string or numeric type.');
         }
@@ -70,7 +70,7 @@ class BooleanConverter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      */
     public function transform(array &$samples) : void
     {

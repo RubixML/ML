@@ -41,7 +41,7 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
     protected $compatibility;
 
     /**
-     * @param list<\Rubix\ML\Transformers\Transformer> $transformers
+     * @param \Rubix\ML\Transformers\Transformer[] $transformers
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(array $transformers)
@@ -50,7 +50,8 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
 
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
-                throw new InvalidArgumentException('Transformer must implement the transformer interface.');
+                throw new InvalidArgumentException('Transformer must implement'
+                    . ' the transformer interface.');
             }
 
             foreach ($transformer->compatibility() as $type) {
@@ -60,7 +61,7 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
             }
         }
 
-        $this->transformers = $transformers;
+        $this->transformers = array_values($transformers);
         $this->compatibility = $compatibility;
     }
 
@@ -95,6 +96,16 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
+     * Return the list of underlying transformer instances.
+     *
+     * @return list<\Rubix\ML\Transformers\Transformer>
+     */
+    public function transformers() : array
+    {
+        return  $this->transformers;
+    }
+
+    /**
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -106,7 +117,9 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
+            }
 
+            if ($transformer !== end($this->transformers)) {
                 $dataset->apply($transformer);
             }
         }
@@ -124,7 +137,9 @@ class Conduit implements Transformer, Stateful, Elastic, Persistable
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Elastic) {
                 $transformer->update($dataset);
+            }
 
+            if ($transformer !== end($this->transformers)) {
                 $dataset->apply($transformer);
             }
         }

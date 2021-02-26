@@ -3,6 +3,9 @@
 # Conduit
 Conduits allow you to abstract a series of transformations into a single higher-order transformation.
 
+!!! note
+    This transformer modifies the input dataset during fitting. If you need to keep a *clean* dataset in memory, you can clone the dataset object before calling the method that consumes it.
+
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on base transformers
@@ -27,4 +30,11 @@ $transformer = new Conduit([
 ```
 
 ## Additional Methods
-This transformer does not have any additional methods.
+Return the list of underlying transformer instances:
+```php
+public transformers() : array
+```
+
+```php
+[$normalizer, $vectorizer, $svd] = $transformer->transformers();
+```

@@ -49,7 +49,7 @@ $transformer->update($dataset);
 ```
 
 ## Transform a Single Column
-Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it a callback function to apply to each value in the column.
+Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it the `log1p()` callback function to apply to each value in the column.
 
 ```php
 $dataset->transformColumn(6, 'log1p');
@@ -154,14 +154,14 @@ $dataset->apply($transformer);
 ```
 
 ### Persisting Transformers
-The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit the transformer conduit from the example above to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
+The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
 
 ```php
 use Rubix\ML\Persisters\Filesystem;
 
 $transformer->fit($dataset);
 
-$persister = new Filesystem('lsa.transformer');
+$persister = new Filesystem('example.transformer');
 
 $persister->save($transformer);
 ```
@@ -169,7 +169,7 @@ $persister->save($transformer);
 Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
 
 ```php
-$persister = new Filesystem('sa.transformer');
+$persister = new Filesystem('example.transformer');
 
 $transformer = $persister->load();
 
