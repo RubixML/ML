@@ -86,7 +86,7 @@ Feature converters are transformers that convert feature columns of one data typ
 | [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
 
 ## Dimensionality Reduction
-Dimensionality reduction is a preprocessing technique for embedding a dataset into a lower dimensional vector space. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
+Dimensionality reduction is a preprocessing technique for projecting a dataset onto a lower dimensional vector space. It allows a learner to train and infer quicker by producing a training set with fewer but more informative features. Dimensionality reducers can also be used to visualize datasets by outputting low (1 - 3) dimensionality embeddings for use in plotting software.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
@@ -95,6 +95,7 @@ Dimensionality reduction is a preprocessing technique for embedding a dataset in
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
 | [Sparse Random Projector](transformers/sparse-random-projector.md) | | ● | |
 | [Truncated SVD](transformers/truncated-svd.md) | | ● | |
+| [t-SNE](embedders/t-sne.md) | | | |
 
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
