@@ -150,7 +150,6 @@ nav:
         - Whitespace Trimmer: transformers/whitespace-trimmer.md
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
       - Other:
-        - Conduit: transformers/conduit.md
         - Polynomial Expander: transformers/polynomial-expander.md
     - Neural Network:
       - Hidden Layers:

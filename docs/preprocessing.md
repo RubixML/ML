@@ -135,24 +135,6 @@ These transformers operate on the high-level image data type.
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-## Transformer Conduits
-Conduits allow you to abstract a series of transformations into a single higher-order transformation. They are helpful in organizing your data pipeline logic and can be fitted, updated, and persisted as a single unit. The Conduit in the example below applies what is called Latent Semantic Analysis (LSA) to the input data using a series of transformations. Notice that we only need to call `apply()` on the parent transformer.
-
-```php
-use Rubix\ML\Transformers\Conduit;
-use Rubix\ML\Transformers\TextNormalizer;
-use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Transformers\TruncatedSVD;
-
-$transformer = new Conduit([
-    new TextNormalizer(),
-    new WordCountVecorizer(10000),
-    new TruncatedSVD(100),
-]);
-
-$dataset->apply($transformer);
-```
-
 ### Persisting Transformers
 The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
 
@@ -177,7 +159,7 @@ $dataset->apply($transformer);
 ```
 
 ## Transformer Pipelines
-The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset of an estimator. It is similar to a [Conduit](#transformer-conduits) except that, after the dataset is transformed, it will be handed off to the underlying estimator. In fact, you could use Conduits in your Pipelines if you wanted to. With a Pipeline, any dataset object passed to a learner will automatically be fitted and/or transformed before it arrives in the estimator's context.
+The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
 
 ```php
 use Rubix\ML\Pipeline;

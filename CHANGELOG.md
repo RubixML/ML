@@ -1,5 +1,4 @@
 - 0.4.0
-    - Added transformer Conduits
     - Added Truncated SVD transformer
     - Added Rubix Object File (RBX) format serializer
     - Added class revision() method to the Persistable interface
