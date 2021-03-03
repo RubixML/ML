@@ -34,5 +34,5 @@ Return the median absolute deviation (MAD) of each feature column in the trainin
 public mads() : float[]|null
 ```
 
-### References
+## References
 [^1]: B. Iglewicz et al. (1993). How to Detect and Handle Outliers.

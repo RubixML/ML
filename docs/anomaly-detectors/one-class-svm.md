@@ -38,5 +38,5 @@ Load the model data from the filesystem:
 public load(string $path) : void
 ```
 
-### References
+## References
 [^1]: C. Chang et al. (2011). LIBSVM: A library for support vector machines.

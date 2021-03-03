@@ -21,5 +21,5 @@ use Rubix\ML\CrossValidation\Metrics\RandIndex;
 $metric = new RandIndex();
 ```
 
-### References
+## References
 [^1]: W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.

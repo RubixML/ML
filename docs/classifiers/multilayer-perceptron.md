@@ -64,6 +64,6 @@ Returns the underlying neural network instance or `null` if untrained:
 public network() : Network|null
 ```
 
-### References
+## References
 [^1]: G. E. Hinton. (1989). Connectionist learning procedures.
 [^2]: L. Prechelt. (1997). Early Stopping - but when?

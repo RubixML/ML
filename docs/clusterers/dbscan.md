@@ -29,5 +29,5 @@ $estimator = new DBSCAN(4.0, 5, new BallTree(20, new Diagonal()));
 ## Additional Methods
 This estimator does not have any additional methods.
 
-### References
+## References
 [^1]: M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.

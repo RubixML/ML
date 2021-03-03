@@ -21,5 +21,5 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 $metric = new MCC();
 ```
 
-### References
+## References
 [^1]: B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary Structure of T4 Phage Lysozyme.

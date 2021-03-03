@@ -23,5 +23,5 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 $metric = new VMeasure(1.0);
 ```
 
-### References
+## References
 [^1]: A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.

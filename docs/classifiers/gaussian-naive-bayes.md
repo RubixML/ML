@@ -38,5 +38,5 @@ Return the running variance of each feature column for each class:
 public variances() : array[]|null
 ```
 
-### References
+## References
 [^1]: T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.

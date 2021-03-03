@@ -30,5 +30,5 @@ $transformer = new KNNImputer(10, false, '?', new BallTree(30, new SafeEuclidean
 ## Additional Methods
 This transformer does not have any additional methods.
 
-### References
+## References
 [^1]: O. Troyanskaya et al. (2001). Missing value estimation methods for DNA microarrays.

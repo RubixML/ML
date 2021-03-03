@@ -13,5 +13,5 @@ use Rubix\ML\NeuralNet\Initializers\Xavier2;
 $initializer = new Xavier2();
 ```
 
-### References
+## References
 [^1]: X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.

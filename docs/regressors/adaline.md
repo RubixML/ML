@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Adaline.php">[source]</a></span>
 
 # Adaline
-*Adaptive Linear Neuron* is a single layer neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving L2 regularized linear regression ([Ridge](ridge.md)) online using Mini Batch Gradient Descent.
+*Adaptive Linear Neuron* is a single layer feed-forward neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving L2 regularized linear regression ([Ridge](ridge.md)) online using Mini Batch Gradient Descent.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -38,5 +38,5 @@ Return the underlying neural network instance or `null` if untrained:
 public network() : Network|null
 ```
 
-### References
+## References
 [^1]: B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".

@@ -15,5 +15,5 @@ use Rubix\ML\NeuralNet\Layers\Dropout;
 $layer = new Dropout(0.2);
 ```
 
-### References
+## References
 [^1]: N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting.

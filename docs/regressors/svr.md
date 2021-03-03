@@ -39,6 +39,6 @@ use Rubix\ML\Kernels\SVM\RBF;
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.0);
 ```
 
-### References
+## References
 [^1]: C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 [^2]: A. Smola et al. (2003). A Tutorial on Support Vector Regression.

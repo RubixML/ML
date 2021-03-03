@@ -18,5 +18,5 @@ use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 $optimizer = new Cyclical(0.001, 0.005, 1000);
 ```
 
-### References
+## References
 [^1]: L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.

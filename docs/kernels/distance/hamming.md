@@ -15,5 +15,5 @@ use Rubix\ML\Kernels\Distance\Hamming;
 $kernel = new Hamming();
 ```
 
-### References
+## References
 [^1]: R. W. Hamming. (1950). Error detecting and error correcting codes.

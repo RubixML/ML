@@ -46,5 +46,5 @@ Return the normalized influence scores of each expert in the committee:
 public influences() : array
 ```
 
-### References
+## References
 [^1]: H. Drucker. (1997). Fast Committee Machines for Regression and Classification.

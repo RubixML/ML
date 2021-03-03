@@ -18,5 +18,5 @@ $extractor = new JSON('example.json');
 ## Additional Methods
 This extractor does not have any additional methods.
 
-### References
+## References
 [^1]: T. Bray. (2014). The JavaScript Object Notation (JSON) Data Interchange Format.

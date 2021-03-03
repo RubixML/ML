@@ -36,6 +36,6 @@ Return the magnitudes of the gradient at each epoch from the last embedding:
 public steps() : float[]|null
 ```
 
-### References
+## References
 [^1]: L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
 [^2]: L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving Local Structure.

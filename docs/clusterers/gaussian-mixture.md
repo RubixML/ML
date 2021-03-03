@@ -44,6 +44,6 @@ Return the loss at each epoch from the last training session:
 public steps() : float[]|null
 ```
 
-### References
+## References
 [^1]: A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm.
 [^2]: J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm for Gaussian Mixture Models.

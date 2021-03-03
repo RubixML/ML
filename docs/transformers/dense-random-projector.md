@@ -34,5 +34,5 @@ use Rubix\ML\Transformers\DenseRandomProjector;
 $dimensions = DenseRandomProjector::minDimensions(1000, 0.3);
 ```
 
-### References
+## References
 [^1]: D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.

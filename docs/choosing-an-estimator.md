@@ -44,7 +44,7 @@ Regressors are a type of supervised learner that predict a continuous-valued out
 | [SVR](regressors/svr.md) | High | | | | | Continuous |
 
 ## Clusterers
-Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the samples in a dataset.
+Clusterers are unsupervised learners that predict an integer-valued cluster number such as `0`, `1`, `...`, `n`. They are similar to classifiers, however since they lack a supervised training signal, they cannot be used to recognize or describe samples. Instead, clusterers differentiate and group samples using only the information found within the structure of the samples without their labels.
 
 | Name | Flexibility | [Proba](probabilistic.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
 |---|---|---|---|---|---|---|
@@ -55,7 +55,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | ● | Continuous |
 
 ## Anomaly Detectors
-Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample. Anomaly detectors that implement the [Scoring](scoring.md) interface can output a floating point anomaly score that can be used to sort the samples by degree of anomalousness.
+Anomaly Detectors are unsupervised learners that predict whether a sample should be classified as an anomaly or not. We use the value `1` to indicate an outlier and `0` for a regular sample and the predictions can be cast to their boolean equivalent if needed. Anomaly detectors that implement the [Scoring](scoring.md) interface can output an anomaly score that can be used to sort the samples by their degree of anomalousness.
 
 | Name | Scope | [Scoring](scoring.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
 |---|---|---|---|---|---|---|
@@ -70,10 +70,10 @@ Anomaly Detectors are unsupervised learners that predict whether a sample should
 A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, low flexibility models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model that does not underfit the training data for your project.
 
 ## Meta-estimator Ensembles
-Ensemble learning is when multiple estimators are used together to make the final prediction on a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator.
+Ensemble learning is when multiple estimators are used together to make the final prediction of a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator at the cost of training more models.
 
 ### Bootstrap Aggregator
-Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) to form a *forest* of 1000 trees.
+Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains a set of learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) to form a *forest* of 1000 trees.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
@@ -83,7 +83,7 @@ $estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
 ```
 
 ### Committee Machine
-[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influence* scores that are trained on the same dataset. The final prediction is based on the contribution of each expert weighted by their influence.
+[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influences*. Each expert is trained on the same dataset and the final prediction is based on the contribution of each expert weighted by their influence.
 
 ```php
 use Rubix\ML\CommitteeMachine;

@@ -16,6 +16,6 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $seeder = new PlusPlus(new Minkowski(5.0));
 ```
 
-### References
+## References
 [^1]: D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
 [^2]: A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.

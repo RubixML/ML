@@ -43,7 +43,7 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
 ## Does Rubix ML support multiprocessing/multithreading?
-Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend or extension under the hood.
+Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend such as [Amp](https://docs.rubixml.com/latest/backends/amp.html) or extension such as [Tensor](https://github.com/RubixML/Tensor) under the hood.
 
 ## Does Rubix ML support Deep Learning?
 Yes, a number of learners in the library support Deep Learning including the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).

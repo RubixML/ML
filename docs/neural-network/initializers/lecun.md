@@ -13,5 +13,5 @@ use Rubix\ML\NeuralNet\Initializers\LeCun;
 $initializer = new LeCun();
 ```
 
-### References
+## References
 [^1]: Y. Le Cun et al. (1998). Efficient Backprop.
