@@ -13,5 +13,5 @@ use Rubix\ML\NeuralNet\Initializers\He;
 $initializer = new He();
 ```
 
-### References
+## References
 [^1]: K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.

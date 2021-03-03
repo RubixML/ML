@@ -35,5 +35,5 @@ Return the percentage of information lost due to the transformation:
 public lossiness() : ?float
 ```
 
-### References
+## References
 [^1]: H. Abdi et al. (2010). Principal Component Analysis.

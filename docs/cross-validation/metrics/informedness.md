@@ -21,5 +21,5 @@ use Rubix\ML\CrossValidation\Metrics\Informedness;
 $metric = new Informedness();
 ```
 
-### References
+## References
 [^1]: W. J. Youden. (1950). Index for Rating Diagnostic Tests.

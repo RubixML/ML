@@ -39,6 +39,6 @@ Return the influence scores for each classifier in the ensemble:
 public influences() : float[]
 ```
 
-### References
+## References
 [^1]: Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line Learning and an Application to Boosting.
 [^2]: J. Zhu et al. (2006). Multi-class AdaBoost.

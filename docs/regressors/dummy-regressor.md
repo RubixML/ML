@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/DummyRegressor.php">[source]</a></span>
 
 # Dummy Regressor
-Regressor that guesses output values based on a user-defined guessing strategy. Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
+A regressor that makes predictions based on a user-defined guessing strategy using only the information found within the labels of a training set. Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 

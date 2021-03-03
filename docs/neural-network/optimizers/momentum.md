@@ -16,5 +16,5 @@ use Rubix\ML\NeuralNet\Optimizers\Momentum;
 $optimizer = new Momentum(0.001, 0.2);
 ```
 
-### References
+## References
 [^1]: D. E. Rumelhart et al. (1988). Learning representations by back-propagating errors.

@@ -43,5 +43,5 @@ Return the loss at each epoch from the last training session:
 public steps() : float[]|null
 ```
 
-### References
+## References
 [^1]: D. Sculley. (2010). Web-Scale K-Means Clustering.

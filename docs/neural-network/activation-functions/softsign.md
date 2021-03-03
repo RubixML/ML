@@ -17,5 +17,5 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 $activationFunction = new Softsign();
 ```
 
-### References
+## References
 [^1]: X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.

@@ -19,5 +19,5 @@ use Rubix\ML\Kernels\Distance\Canberra;
 $kernel = new Canberra();
 ```
 
-### References
+## References
 [^1]: G. N. Lance et al. (1967). Mixed-data classificatory programs I. Agglomerative Systems.

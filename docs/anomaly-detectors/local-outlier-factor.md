@@ -29,5 +29,5 @@ Return the base spatial tree instance:
 public tree() : Spatial
 ```
 
-### References
+## References
 [^1]: M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.

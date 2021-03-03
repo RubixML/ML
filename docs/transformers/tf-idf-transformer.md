@@ -28,5 +28,5 @@ Return the document frequencies calculated during fitting:
 public dfs() : ?array
 ```
 
-### References
+## References
 [^1]: S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.

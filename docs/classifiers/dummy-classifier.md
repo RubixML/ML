@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/DummyClassifier.php">[source]</a></span>
 
 # Dummy Classifier
-A classifier that uses a user-defined guessing strategy to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
+A classifier that makes predictions using a user-defined guessing strategy that disregards the information contained in the features of each sample. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 

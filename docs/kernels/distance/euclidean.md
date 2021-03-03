@@ -19,5 +19,5 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $kernel = new Euclidean();
 ```
 
-### References
+## References
 [^1]: J. K. Dixon. (1978). Pattern Recognition with Partly Missing Data.

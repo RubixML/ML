@@ -39,5 +39,5 @@ Return the standard deviations calculated during fitting:
 public stdDevs() : array
 ```
 
-### References
+## References
 [^1]: T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.

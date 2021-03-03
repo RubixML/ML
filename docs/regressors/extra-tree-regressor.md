@@ -38,5 +38,5 @@ Return the balance factor of the tree:
 public balance() : int
 ```
 
-### References
+## References
 [^1]: P. Geurts et al. (2005). Extremely Randomized Trees.

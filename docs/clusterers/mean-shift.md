@@ -45,6 +45,6 @@ Returns the amount of centroid shift during each epoch of training:
 public steps() : float[]|null
 ```
 
-### References
+## References
 [^1]: M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
 [^2]: D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.

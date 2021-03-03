@@ -32,5 +32,5 @@ use Rubix\ML\Classifiers\RandomForest;
 $transformer = new RecursiveFeatureEliminator(30, 2, 0.05 new RandomForest());
 ```
 
-### References
+## References
 [^1]: I. Guyon et al. (2002). Gene Selection for Cancer Classification using Support Vector Machines.

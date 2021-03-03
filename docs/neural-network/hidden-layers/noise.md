@@ -15,5 +15,5 @@ use Rubix\ML\NeuralNet\Layers\Noise;
 $layer = new Noise(1e-3);
 ```
 
-### References
+## References
 [^1]: C. Gulcehre et al. (2016). Noisy Activation Functions.

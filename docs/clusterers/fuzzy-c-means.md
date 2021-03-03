@@ -37,5 +37,5 @@ Returns the inertia at each epoch from the last round of training:
 public steps() : float[]|null
 ```
 
-### References
+## References
 [^1]: J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.

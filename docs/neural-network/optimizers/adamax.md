@@ -17,5 +17,5 @@ use Rubix\ML\NeuralNet\Optimizers\AdaMax;
 $optimizer = new AdaMax(0.0001, 0.1, 0.001);
 ```
 
-### References
+## References
 [^1]: D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.

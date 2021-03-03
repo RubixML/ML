@@ -15,5 +15,5 @@ use Rubix\ML\Kernels\Distance\SafeEuclidean;
 $kernel = new SafeEuclidean();
 ```
 
-### References
+## References
 [^1]: J. K. Dixon. (1978). Pattern Recognition with Partly Missing Data.

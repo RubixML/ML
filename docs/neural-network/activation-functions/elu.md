@@ -19,5 +19,5 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 $activationFunction = new ELU(2.5);
 ```
 
-### References
+## References
 [^1]: D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.

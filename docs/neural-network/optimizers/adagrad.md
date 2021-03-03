@@ -15,5 +15,5 @@ use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 $optimizer = new AdaGrad(0.125);
 ```
 
-### References
+## References
 [^1]: J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.
