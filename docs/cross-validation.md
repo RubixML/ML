@@ -49,7 +49,7 @@ echo $score;
 ### Classification and Anomaly Detection
 Metrics for classification and anomaly detection (a special case of binary classification) compare class predictions to other categorical labels. Their scores are calculated from the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) counts derived from the confusion matrix between the set of predictions and their ground-truth labels.
 
-| Name | Range | Equation | Notes |
+| Name | Range | Formula | Notes |
 |---|---|---|---|
 | [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP}{TP + FP}$ | Not suited for imbalanced datasets |
 | [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | $(1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}$ | |
@@ -59,7 +59,7 @@ Metrics for classification and anomaly detection (a special case of binary class
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
 
-| Name | Range | Equation | Notes |
+| Name | Range | Formula | Notes |
 |---|---|---|---|
 | [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | ${\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }$ | Output in same units as predictions |
 | [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | ${\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}$ | Sensitive to outliers |
@@ -71,7 +71,7 @@ Regression metrics output a score based on the error achieved by comparing conti
 ### Clustering
 Clustering metrics derive their scores from a contingency table which can be thought of as a confusion matrix where the class names of the predictions are unknown.
 
-| Name | Range | Equation | Notes |
+| Name | Range | Formula | Notes |
 |---|---|---|---|
 | [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | $1-\frac{H(K, C)}{H(K)}$ | Not suited for hyper-parameter tuning |
 | [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ | Not suited for hyper-parameter tuning |
