@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -47,10 +48,7 @@ class ImageResizer implements Transformer
      */
     public function __construct(int $width = 32, int $height = 32)
     {
-        if (!extension_loaded('gd')) {
-            throw new RuntimeException('GD extension is not loaded'
-                . ', check PHP configuration.');
-        }
+        ExtensionIsLoaded::with('gd')->check();
 
         if ($width < 1 or $height < 1) {
             throw new InvalidArgumentException('Width and height must be'
@@ -77,7 +75,7 @@ class ImageResizer implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void

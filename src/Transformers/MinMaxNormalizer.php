@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -23,6 +24,8 @@ use const Rubix\ML\EPSILON;
  */
 class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The minimum value of the transformed features.
      *
@@ -185,7 +188,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void

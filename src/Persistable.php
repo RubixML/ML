@@ -11,5 +11,10 @@ namespace Rubix\ML;
  */
 interface Persistable
 {
-    //
+    /**
+     * Return the revision number of the class.
+     *
+     * @return string
+     */
+    public function revision() : string;
 }

@@ -19,6 +19,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -49,7 +50,7 @@ use const Rubix\ML\EPSILON;
  */
 class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The target number of clusters.

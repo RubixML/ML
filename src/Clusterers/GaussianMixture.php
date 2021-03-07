@@ -16,6 +16,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -53,7 +54,7 @@ use const Rubix\ML\EPSILON;
  */
 class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the

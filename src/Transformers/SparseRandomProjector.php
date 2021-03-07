@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
@@ -27,6 +28,8 @@ use function is_null;
  */
 class SparseRandomProjector extends GaussianRandomProjector
 {
+    use AutotrackRevisions;
+
     /**
      * The decimal representation of the fraction two thirds.
      *

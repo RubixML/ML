@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -75,7 +76,6 @@ class SVC implements Estimator, Learner
      * @param bool $shrinking
      * @param float $tolerance
      * @param float $cacheSize
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
@@ -85,10 +85,7 @@ class SVC implements Estimator, Learner
         float $tolerance = 1e-3,
         float $cacheSize = 100.0
     ) {
-        if (!extension_loaded('svm')) {
-            throw new RuntimeException('SVM extension not loaded'
-                . ', check PHP configuration.');
-        }
+        ExtensionIsLoaded::with('svm')->check();
 
         if ($c < 0.0) {
             throw new InvalidArgumentException('C must be greater'

@@ -11,6 +11,7 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -44,7 +45,7 @@ use function count;
  */
 class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Persistable
 {
-    use Multiprocessing, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, Multiprocessing, PredictsSingle, LoggerAware;
 
     /**
      * The class name of the base estimator.

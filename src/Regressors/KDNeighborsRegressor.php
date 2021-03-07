@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -36,6 +37,8 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class KDNeighborsRegressor implements Estimator, Learner, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The number of neighbors to consider when making a prediction.
      *

@@ -49,7 +49,7 @@ $transformer->update($dataset);
 ```
 
 ## Transform a Single Column
-Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it a callback function to apply to each value in the column.
+Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it the `log1p()` callback function to apply to each value in the column.
 
 ```php
 $dataset->transformColumn(6, 'log1p');
@@ -83,9 +83,10 @@ Feature converters are transformers that convert feature columns of one data typ
 | [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
 | [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
+| [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
 
 ## Dimensionality Reduction
-Dimensionality reduction is a preprocessing technique for embedding a dataset into a lower dimensional vector space. It allows a learner to train and infer quicker by producing a dataset with fewer but more informative features.
+Dimensionality reduction is a preprocessing technique for projecting a dataset onto a lower dimensional vector space. It allows a learner to train and infer quicker by producing a training set with fewer but more informative features. Dimensionality reducers can also be used to visualize datasets by outputting low (1 - 3) dimensionality embeddings for use in plotting software.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
@@ -93,6 +94,8 @@ Dimensionality reduction is a preprocessing technique for embedding a dataset in
 | [Linear Discriminant Analysis](transformers/linear-discriminant-analysis.md) | ● | ● | |
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
 | [Sparse Random Projector](transformers/sparse-random-projector.md) | | ● | |
+| [Truncated SVD](transformers/truncated-svd.md) | | ● | |
+| [t-SNE](embedders/t-sne.md) | | | |
 
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
@@ -133,10 +136,31 @@ These transformers operate on the high-level image data type.
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-## Transformer Pipelines
-[Pipeline](pipeline.md) meta-estimators help you automate a series of transformations applied to the input dataset of an estimator. In addition, Pipeline objects are [Persistable](persistable.md) allowing you to save and load the transformer fittings between processes. Whenever a dataset object is passed to a learner wrapped in a Pipeline, depending on the operation, it will automatically be fitted and/or transformed before it arrives in the estimator's context.
+### Persisting Transformers
+The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
 
-Let's apply the same 3 transformers as in the example above by passing the transformer instances in the order we want them applied along with a base estimator to the constructor of Pipeline like in the example below.
+```php
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer->fit($dataset);
+
+$persister = new Filesystem('example.transformer');
+
+$persister->save($transformer);
+```
+
+Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
+
+```php
+$persister = new Filesystem('example.transformer');
+
+$transformer = $persister->load();
+
+$dataset->apply($transformer);
+```
+
+## Transformer Pipelines
+The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
 
 ```php
 use Rubix\ML\Pipeline;
@@ -164,6 +188,14 @@ Any time a dataset is passed to the Pipeline it will automatically be transforme
 
 ```php
 $predictions = $estimator->predict($dataset); // Dataset transformed automatically
+```
+
+You can save the transformer fittings alongside the model data by persisting the entire Pipeline object or by wrapping it in a [Persistent Model](persistent-model.md) meta-estimator.
+
+```php
+$persister = new Filesystem('example.model');
+
+$persister->save($estimator);
 ```
 
 ## Advanced Preprocessing
@@ -198,32 +230,6 @@ $dataset2 = Unlabeled::fromIterator($extractor2)
 
 $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
-```
-
-## Persisting Fitted Transformers
-The persistence subsystem can be used to save and load Stateful and Elastic transformers that implement the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
-
-```php
-use Rubix\ML\Transformers\KBestFeatureSelector;
-use Rubix\ML\Persisters\Filesystem;
-
-$transformer = new KBestFeatureSelector(10);
-
-$transformer->fit($dataset);
-
-$persister = new Filesystem('k-best.transformer');
-
-$persister->save($transformer);
-```
-
-Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
-
-```php
-$persister = new Filesystem('k-best.transformer');
-
-$transformer = $persister->load();
-
-$dataset->apply($transformer);
 ```
 
 ## Filtering Records

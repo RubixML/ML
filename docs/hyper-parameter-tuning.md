@@ -2,7 +2,7 @@
 Hyper-parameter tuning is an experimental process that incorporates [cross-validation](cross-validation.md) to guide hyper-parameter selection. When choosing an estimator for your project it often helps to fine-tune its hyper-parameters in order to get the best accuracy and performance from the model.
 
 ## Manual Tuning
-In a manual scenario, a user will train an estimator with one set of hyper-parameters, obtain a validation score, and then use that as a baseline to make future adjustments. The goal at each iteration is to determine whether the adjustments improve accuracy or cause it to decrease. We can consider a model to be *fully* tuned when adjustments to the hyper-parameters can no longer make improvements to the validation score. In the example below, we'll tune the *radius* parameter of [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) by iterating over the following block of code with a different setting each time. At first, we can start by choosing radius from a set of values and then honing in on the best value once we have obtained the settings with the highest [SMAPE](cross-validation/metrics/smape.md) score.
+When actively tuning a model, we will train an estimator with one set of hyper-parameters, obtain a validation score, and then use that as a baseline to make future adjustments. The goal at each iteration is to determine whether the adjustments improve accuracy or cause it to decrease. We can consider a model to be *fully* tuned when adjustments to the hyper-parameters can no longer make improvements to the validation score. With practice, we'll develop an intuition for which parameters need adjusting. Refer to the API documentation for each learner for a description of each hyper-parameter. In the example below, we'll tune the *radius* parameter of [Radius Neighbors Regressor](regressors/radius-neighbors-regressor.md) by iterating over the following block of code with a different setting each time. At first, we can start by choosing radius from a set of values and then honing in on the best value once we have obtained the settings with the highest [SMAPE](cross-validation/metrics/smape.md) score.
 
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
@@ -10,13 +10,13 @@ use Rubix\ML\CrossValidation\Metrics\SMAPE;
 
 [$training, $testing] = $dataset->randomize()->split(0.8);
 
-$metric = new SMAPE();
-
 $estimator = new RadiusNeighborsRegressor(0.5); // 0.1, 0.5, 1.0, 2.0, 5.0
 
 $estimator->train($training);
 
 $predictions = $estimator->predict($testing);
+
+$metric = new SMAPE();
 
 $score = $metric->score($predictions, $testing->labels());
 

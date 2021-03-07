@@ -6,11 +6,15 @@ use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\warn_deprecated;
 use function array_slice;
+use function array_multisort;
+use function array_sum;
 
 use const Rubix\ML\EPSILON;
 
@@ -33,6 +37,8 @@ use const Rubix\ML\EPSILON;
  */
 class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The target number of dimensions to project onto.
      *
@@ -114,23 +120,30 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     }
 
     /**
-     * Return the amount of variance that has been preserved by the
-     * transformation.
+     * Return the amount of variance that has been preserved by the transformation.
+     *
+     * @deprecated
      *
      * @return float|null
      */
     public function explainedVar() : ?float
     {
+        warn_deprecated('ExplainedVar() is deprecated, use lossiness() instead.');
+
         return $this->explainedVar;
     }
 
     /**
      * Return the amount of variance lost by discarding the noise components.
      *
+     * @deprecated
+     *
      * @return float|null
      */
     public function noiseVar() : ?float
     {
+        warn_deprecated('NoiseVar() is deprecated, use lossiness() instead.');
+
         return $this->noiseVar;
     }
 
@@ -159,10 +172,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eig = $xT->covariance()->eig(true);
 
         $eigenvalues = $eig->eigenvalues();
-
         $eigenvectors = $eig->eigenvectors()->asArray();
 
-        $totalVar = array_sum($eigenvalues);
+        $totalVariance = array_sum($eigenvalues);
 
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 
@@ -171,12 +183,13 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
 
         $eigenvectors = Matrix::quick($eigenvectors)->transpose();
 
-        $explainedVar = (float) array_sum($eigenvalues);
-        $noiseVar = $totalVar - $explainedVar;
+        $explainedVariance = array_sum($eigenvalues);
+        $noiseVariance = $totalVariance - $explainedVariance;
+        $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->explainedVar = $explainedVar;
-        $this->noiseVar = $noiseVar;
-        $this->lossiness = $noiseVar / ($totalVar ?: EPSILON);
+        $this->explainedVar = $explainedVariance;
+        $this->noiseVar = $noiseVariance;
+        $this->lossiness = $lossiness;
 
         $this->mean = $xT->mean()->transpose();
 
@@ -186,7 +199,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void

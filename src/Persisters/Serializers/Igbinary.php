@@ -5,16 +5,18 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use __PHP_Incomplete_Class;
 
-use function is_null;
+use function Rubix\ML\warn_deprecated;
 use function is_object;
 
 /**
  * Igbinary
  *
- * Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP
- * serializer.
+ * Igbinary is a compact binary format that serves as a drop-in replacement for the native PHP serializer.
+ *
+ * @deprecated
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,15 +24,11 @@ use function is_object;
  */
 class Igbinary implements Serializer
 {
-    /**
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     */
     public function __construct()
     {
-        if (!extension_loaded('igbinary')) {
-            throw new RuntimeException('Igbinary extension is not loaded,'
-                . ' check PHP configuration.');
-        }
+        warn_deprecated('Igbinary is deprecated, will move to Extras package in the next major release.');
+
+        ExtensionIsLoaded::with('igbinary')->check();
     }
 
     /**
@@ -39,11 +37,18 @@ class Igbinary implements Serializer
      * @internal
      *
      * @param \Rubix\ML\Persistable $persistable
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Encoding
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        return new Encoding(igbinary_serialize($persistable) ?: '');
+        $data = igbinary_serialize($persistable);
+
+        if (!$data) {
+            throw new RuntimeException('Could not serialize data.');
+        }
+
+        return new Encoding($data);
     }
 
     /**
@@ -52,25 +57,19 @@ class Igbinary implements Serializer
      * @internal
      *
      * @param \Rubix\ML\Encoding $encoding
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        $persistable = igbinary_unserialize((string) $encoding);
-
-        if (is_null($persistable)) {
-            throw new RuntimeException('Cannot read encoding, wrong'
-                . ' format or corrupted data.');
-        }
+        $persistable = igbinary_unserialize($encoding);
 
         if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized encoding must'
-                . ' be an object.');
+            throw new RuntimeException('Unserialized data must be an object.');
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
-            throw new RuntimeException('Missing class definition'
-                . ' for unserialized object.');
+            throw new RuntimeException('Missing class for object data.');
         }
 
         if (!$persistable instanceof Persistable) {

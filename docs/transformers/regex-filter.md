@@ -27,9 +27,9 @@ $transformer = new RegexFilter([
 ## Predefined Regex Patterns
 | Class Constant | Description |
 |---|---|
-| URL | An alias for the default URL matching pattern. |
-| GRUBER_1 | The faster original Gruber URL matching pattern. |
-| GRUBER_2 | The more universal improved Gruber URL matching pattern. |
+| URL | An alias for the default URL matching pattern (GRUBER 1). |
+| GRUBER_1 | The original Gruber URL matching pattern. |
+| GRUBER_2 | The improved Gruber URL matching pattern. |
 | EMAIL | A pattern to match any email address. |
 | MENTION | A pattern that matches Twitter-style mentions (@example). |
 | HASHTAG | Matches Twitter-style hashtags (#example). |

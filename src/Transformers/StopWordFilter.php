@@ -9,8 +9,7 @@ use function gettype;
 /**
  * Stop Word Filter
  *
- * Removes user-specified words from any categorical feature columns including blobs
- * of text.
+ * Removes user-specified words from any categorical feature columns including blobs of text.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

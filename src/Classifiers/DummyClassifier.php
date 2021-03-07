@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Prior;
 use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -31,6 +32,8 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class DummyClassifier implements Estimator, Learner, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The guessing strategy that the dummy employs.
      *

@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -35,7 +36,7 @@ use function is_null;
  */
 class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Persistable
 {
-    use LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The minimum number of features to select from the dataset.
@@ -245,7 +246,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void

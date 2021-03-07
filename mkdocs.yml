@@ -124,10 +124,12 @@ nav:
         - Linear Discriminant Analysis: transformers/linear-discriminant-analysis.md
         - Principal Component Analysis: transformers/principal-component-analysis.md
         - Sparse Random Projector: transformers/sparse-random-projector.md
+        - Truncated SVD: transformers/truncated-svd.md
       - Feature Conversion:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
         - Numeric String Converter: transformers/numeric-string-converter.md
+        - Boolean Converter: transformers/boolean-converter.md
       - Feature Selection:
         - K Best Feature Selector: transformers/k-best-feature-selector.md
         - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
@@ -247,8 +249,8 @@ nav:
       - Redis DB: persisters/redis-db.md
       - Serializers:
         - Gzip: persisters/serializers/gzip.md
-        - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
+        - RBX: persisters/serializers/rbx.md
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md

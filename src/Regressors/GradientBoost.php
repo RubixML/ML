@@ -17,6 +17,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -57,7 +58,7 @@ use function in_array;
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
-    use PredictsSingle, LoggerAware;
+    use AutotrackRevisions, PredictsSingle, LoggerAware;
 
     /**
      * The class names of the compatible learners to used as boosters.
@@ -77,8 +78,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected const MIN_SUBSAMPLE = 1;
 
     /**
-     * The regressor that will fix up the error residuals of the *weak* base
-     * learner.
+     * The regressor that will fix up the error residuals of the *weak* base learner.
      *
      * @var \Rubix\ML\Learner
      */
@@ -121,8 +121,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected $window;
 
     /**
-     * The proportion of training samples to use for validation and progress
-     * monitoring.
+     * The proportion of training samples to use for validation and progress monitoring.
      *
      * @var float
      */

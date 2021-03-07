@@ -13,6 +13,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -37,7 +38,7 @@ use function is_null;
  */
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
-    use PredictsSingle;
+    use AutotrackRevisions, PredictsSingle;
 
     /**
      * The strength of the L2 regularization penalty.

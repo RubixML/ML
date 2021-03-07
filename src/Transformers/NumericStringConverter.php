@@ -41,7 +41,7 @@ class NumericStringConverter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param list<array> $samples
      */
     public function transform(array &$samples) : void
     {

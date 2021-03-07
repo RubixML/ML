@@ -16,6 +16,9 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
+use function array_unique;
+use function array_merge;
+use function array_pop;
 
 /**
  * DBSCAN

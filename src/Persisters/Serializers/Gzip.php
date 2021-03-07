@@ -10,11 +10,10 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 /**
  * Gzip
  *
- * A compression format based on the DEFLATE algorithm with a header and checksum.
+ * A compression format based on the DEFLATE algorithm with a header and CRC32 checksum.
  *
  * References:
- * [1] P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification
- * version.
+ * [1] P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification version.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -34,27 +33,27 @@ class Gzip implements Serializer
      *
      * @var \Rubix\ML\Persisters\Serializers\Serializer
      */
-    protected $serializer;
+    protected $base;
 
     /**
      * @param int $level
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
+     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $level = 1, ?Serializer $serializer = null)
+    public function __construct(int $level = 1, ?Serializer $base = null)
     {
         if ($level < 0 or $level > 9) {
             throw new InvalidArgumentException('Level must be'
                 . " between 0 and 9, $level given.");
         }
 
-        if ($serializer instanceof self) {
+        if ($base instanceof self) {
             throw new InvalidArgumentException('Base serializer'
-                . ' must not be an instance of itself.');
+                . ' must not be an instance of Gzip.');
         }
 
         $this->level = $level;
-        $this->serializer = $serializer ?? new Native();
+        $this->base = $base ?? new Native();
     }
 
     /**
@@ -65,9 +64,9 @@ class Gzip implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $encoding = $this->serializer->serialize($persistable);
+        $encoding = $this->base->serialize($persistable);
 
-        $data = gzencode((string) $encoding, $this->level);
+        $data = gzencode($encoding, $this->level);
 
         if ($data === false) {
             throw new RuntimeException('Failed to compress data.');
@@ -85,13 +84,13 @@ class Gzip implements Serializer
      */
     public function unserialize(Encoding $encoding) : Persistable
     {
-        $data = gzdecode((string) $encoding);
+        $data = gzdecode($encoding);
 
         if ($data === false) {
             throw new RuntimeException('Failed to decompress data.');
         }
 
-        return $this->serializer->unserialize(new Encoding($data));
+        return $this->base->unserialize(new Encoding($data));
     }
 
     /**
@@ -101,6 +100,6 @@ class Gzip implements Serializer
      */
     public function __toString() : string
     {
-        return "Gzip (level: {$this->level}, serializer: {$this->serializer})";
+        return "Gzip (level: {$this->level}, base: {$this->base})";
     }
 }

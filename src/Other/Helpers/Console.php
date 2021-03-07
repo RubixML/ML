@@ -73,40 +73,27 @@ class Console
      * Return the string representation of a 2-dimensional data table.
      *
      * @param array[] $table
-     * @return string
-     */
-    public static function table(array $table) : string
-    {
-        return array_reduce($table, [self::class, 'implodeRow'], '') . PHP_EOL;
-    }
-
-    /**
-     * Implode a row of the table and return the output.
+     * @param int $columnWidth
      *
-     * @param string $carry
-     * @param mixed[] $row
      * @return string
      */
-    protected static function implodeRow(string $carry, array $row) : string
+    public static function table(array $table, int $columnWidth) : string
     {
-        $border = str_repeat(str_repeat('-', self::TABLE_CELL_WIDTH + 3), count($row)) . '-';
+        $output = '';
 
-        $temp = array_reduce(array_map('strval', $row), [self::class, 'formatCell'], '') . '|';
+        foreach ($table as $row) {
+            $border = str_repeat(str_repeat('-', $columnWidth - 1), count($row)) . '-';
 
-        return $carry . PHP_EOL . $temp . PHP_EOL . $border;
-    }
+            $lineString = '';
 
-    /**
-     * Format a cell of a table.
-     *
-     * @param string $carry
-     * @param string $value
-     * @return string
-     */
-    protected static function formatCell(string $carry, string $value) : string
-    {
-        $value = str_pad(substr($value, 0, self::TABLE_CELL_WIDTH), self::TABLE_CELL_WIDTH);
+            foreach (array_map('strval', $row) as $value) {
+                $value = str_pad(substr($value, 0, $columnWidth - 4), $columnWidth - 4);
 
-        return $carry . self::TABLE_CELL_PREFIX . $value . self::TABLE_CELL_SUFFIX;
+                $lineString .= self::TABLE_CELL_PREFIX . $value . self::TABLE_CELL_SUFFIX;
+            }
+            $output .= PHP_EOL . $lineString . '|' . PHP_EOL . $border;
+        }
+
+        return $output . PHP_EOL;
     }
 }
