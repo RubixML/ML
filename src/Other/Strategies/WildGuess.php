@@ -11,8 +11,7 @@ use const Rubix\ML\PHI;
 /**
  * Wild Guess
  *
- * Guess a random number somewhere between the minimum and maximum computed by fitting a collection
- * of values.
+ * Guess a random number somewhere between the minimum and maximum computed by fitting a collection of values.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

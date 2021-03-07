@@ -62,16 +62,13 @@ class RBX implements Serializer
     /**
      * The base serializer.
      *
-     * @var \Rubix\ML\Persisters\Serializers\Serializer
+     * @var \Rubix\ML\Persisters\Serializers\Gzip
      */
     protected $base;
 
-    /**
-     * @param \Rubix\ML\Persisters\Serializers\Serializer $base
-     */
-    public function __construct(?Serializer $base = null)
+    public function __construct()
     {
-        $this->base = $base ?? new Gzip(9, new Native());
+        $this->base = new Gzip(9, new Native());
     }
 
     /**
