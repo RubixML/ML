@@ -7,11 +7,8 @@ use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\AnomalyDetectors\Scoring;
-use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -30,9 +27,9 @@ use Psr\Log\LoggerInterface;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verbose, Persistable
+class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, ProbaSingle, RanksSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * A list of transformers to be applied in series.
@@ -265,25 +262,10 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
 
         if (!$this->base instanceof Scoring) {
             throw new RuntimeException('Base Estimator must'
-                . ' implement the Ranking interface.');
+                . ' implement the Scoring interface.');
         }
 
         return $this->base->score($dataset);
-    }
-
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float[]
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
     }
 
     /**

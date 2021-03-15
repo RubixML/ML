@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -13,7 +12,6 @@ use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -22,7 +20,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function Rubix\ML\warn_deprecated;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -38,16 +35,15 @@ use const Rubix\ML\EPSILON;
  * References:
  * [1] F. T. Liu et al. (2008). Isolation Forest.
  * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
- * [3] M. Garchery et al. (2018). On the influence of categorical features in
- * ranking anomalies using mixed data.
+ * [3] M. Garchery et al. (2018). On the influence of categorical features in ranking anomalies using mixed data.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistable
+class IsolationForest implements Estimator, Learner, Scoring, Persistable
 {
-    use AutotrackRevisions, RanksSingle;
+    use AutotrackRevisions;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -295,21 +291,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Ranking, Persistab
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'isolationScore'], $dataset->samples());
-    }
-
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float>
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
     }
 
     /**

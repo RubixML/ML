@@ -598,16 +598,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function join(Dataset $dataset);
 
     /**
-     * Merge the columns of this dataset with another dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    abstract public function augment(Dataset $dataset);
-
-    /**
      * Drop the row at the given offset.
      *
      * @param int $offset

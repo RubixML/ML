@@ -1,3 +1,6 @@
+- 1.0.0-beta
+    - Removed previously deprecated portions of the API
+
 - 0.4.0
     - Added Truncated SVD transformer
     - Added Rubix Object File (RBX) format serializer

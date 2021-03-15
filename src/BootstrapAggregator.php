@@ -8,7 +8,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Predict;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
@@ -40,7 +39,7 @@ use function array_count_values;
  */
 class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, PredictsSingle;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The estimator type codes that the ensemble is compatible with.

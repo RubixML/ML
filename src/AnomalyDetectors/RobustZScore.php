@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -11,7 +10,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -19,8 +17,6 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function Rubix\ML\warn_deprecated;
 
 use const Rubix\ML\EPSILON;
 
@@ -43,9 +39,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
+class RobustZScore implements Estimator, Learner, Scoring, Persistable
 {
-    use AutotrackRevisions, RanksSingle;
+    use AutotrackRevisions;
 
     /**
      * The expected value of the MAD as n goes to ∞.
@@ -245,21 +241,6 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
         DatasetHasDimensionality::with($dataset, count($this->medians))->check();
 
         return array_map([$this, 'z'], $dataset->samples());
-    }
-
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float>
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
     }
 
     /**

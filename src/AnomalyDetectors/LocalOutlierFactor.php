@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
@@ -13,7 +12,6 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -21,8 +19,6 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function Rubix\ML\warn_deprecated;
 
 use const Rubix\ML\EPSILON;
 
@@ -41,9 +37,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persistable
+class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
 {
-    use AutotrackRevisions, RanksSingle;
+    use AutotrackRevisions;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -280,21 +276,6 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Ranking, Persis
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'localOutlierFactor'], $dataset->samples());
-    }
-
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float>
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
     }
 
     /**

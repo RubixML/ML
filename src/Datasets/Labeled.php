@@ -12,7 +12,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use ErrorException;
 use Generator;
 
-use function Rubix\ML\warn_deprecated;
 use function count;
 use function get_class;
 use function gettype;
@@ -395,21 +394,6 @@ class Labeled extends Dataset
         }
 
         return self::quick($samples, $this->labels);
-    }
-
-    /**
-     * Merge the columns of this dataset with another dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return self
-     */
-    public function augment(Dataset $dataset) : self
-    {
-        warn_deprecated('Augment() is deprecated, use join() instead.');
-
-        return $this->join($dataset);
     }
 
     /**

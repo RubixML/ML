@@ -15,9 +15,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
@@ -49,7 +47,7 @@ use function count;
  */
 class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, ProbaSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The number of training samples to process at a time.

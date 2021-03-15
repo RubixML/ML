@@ -131,8 +131,8 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
         $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
 
-        $this->lossiness = $lossiness;
         $this->components = $components;
+        $this->lossiness = $lossiness;
     }
 
     /**

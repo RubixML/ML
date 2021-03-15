@@ -119,7 +119,6 @@ nav:
         - Robust Standardizer: transformers/robust-standardizer.md
         - Z Scale Standardizer: transformers/z-scale-standardizer.md
       - Dimensionality Reduction:
-        - Dense Random Projector: transformers/dense-random-projector.md
         - Gaussian Random Projector: transformers/gaussian-random-projector.md
         - Linear Discriminant Analysis: transformers/linear-discriminant-analysis.md
         - Principal Component Analysis: transformers/principal-component-analysis.md
@@ -249,7 +248,6 @@ nav:
       - Redis DB: persisters/redis-db.md
       - Serializers:
         - Gzip: persisters/serializers/gzip.md
-        - Igbinary: persisters/serializers/igbinary.md
         - Native: persisters/serializers/native.md
         - RBX: persisters/serializers/rbx.md
     - Backends:

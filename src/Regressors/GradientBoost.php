@@ -14,7 +14,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
@@ -58,7 +57,7 @@ use function in_array;
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The class names of the compatible learners to used as boosters.
