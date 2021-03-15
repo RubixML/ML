@@ -1,4 +1,5 @@
 - 1.0.0-beta
+    - Changed Word Count Vectorizer DF constraints to proportions
     - Promoted the Other namespace
     - Persisters use RBX serializer by default
     - Removed previously deprecated portions of the API
