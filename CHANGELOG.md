@@ -5,6 +5,9 @@
     - Removed previously deprecated portions of the API
     - Removed Embedder interface and namespace
 
+- 0.4.1
+    - Fix RBX serializer string representation
+
 - 0.4.0
     - Added Truncated SVD transformer
     - Added Rubix Object File (RBX) format serializer
