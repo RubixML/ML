@@ -5,7 +5,7 @@ namespace Rubix\ML\Persisters;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Persisters\Serializers\RBX;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
@@ -78,7 +78,7 @@ class Flysystem implements Persister
         $this->path = $path;
         $this->filesystem = $filesystem;
         $this->history = $history;
-        $this->serializer = $serializer ?? new Native();
+        $this->serializer = $serializer ?? new RBX();
     }
 
     /**
@@ -102,7 +102,7 @@ class Flysystem implements Persister
 
             try {
                 $this->filesystem->move($this->path, $filename);
-            } catch (FilesystemException $e) {
+            } catch (FilesystemException $exception) {
                 throw new RuntimeException("Failed to create history file '$filename'.");
             }
         }
@@ -111,7 +111,7 @@ class Flysystem implements Persister
 
         try {
             $this->filesystem->write($this->path, $encoding);
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException $exception) {
             throw new RuntimeException('Could not write to filesystem.');
         }
     }
@@ -130,7 +130,7 @@ class Flysystem implements Persister
 
         try {
             $data = $this->filesystem->read($this->path);
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException $exception) {
             throw new RuntimeException("Error reading data from {$this->path}.");
         }
 

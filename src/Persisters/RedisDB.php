@@ -4,7 +4,7 @@ namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Persisters\Serializers\RBX;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -14,9 +14,7 @@ use Redis;
 /**
  * Redis DB
  *
- * Redis is a high performance in-memory key value store that can be used to persist models over a network.
- *
- * > **Note**: Requires the PHP Redis extension and a properly configured Redis server.
+ * Redis is a high performance in-memory key value store that can be used to persist objects over a network.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -95,7 +93,7 @@ class RedisDB implements Persister
 
         $this->key = $key;
         $this->db = $db;
-        $this->serializer = $serializer ?? new Native();
+        $this->serializer = $serializer ?? new RBX();
     }
 
     /**

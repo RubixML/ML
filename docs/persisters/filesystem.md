@@ -8,7 +8,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 |---|---|---|---|---|
 | 1 | path | | string | The path to the model file on the filesystem. |
 | 2 | history | false | bool | Should we keep a history of past saves? |
-| 3 | serializer | Native | Serializer | The serializer used to convert to and from storage format. |
+| 3 | serializer | RBX | Serializer | The serializer used to convert to and from storage format. |
 
 ## Example
 ```php

@@ -12,7 +12,7 @@
 | 1 | path | | string | The path to the persistable object file on the filesystem. |
 | 2 | filesystem |  | FilesystemOperator | The Flysystem filesystem operator responsible for read and write operations. |
 | 3 | history | false | bool | Should we keep a history of past saves? |
-| 4 | serializer | Native | Serializer | The serializer used to convert to and from storage format. |
+| 4 | serializer | RBX | Serializer | The serializer used to convert to and from storage format. |
 
 ## Example
 ```php
