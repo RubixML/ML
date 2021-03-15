@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Benchmarks\Embedders;
 
-use Rubix\ML\Embedders\TSNE;
+use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
 /**
- * @Groups({"Embedders"})
+ * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
 class TSNEBench
@@ -20,7 +20,7 @@ class TSNEBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Embedders\TSNE
+     * @var \Rubix\ML\Transformers\TSNE
      */
     protected $embedder;
 

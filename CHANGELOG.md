@@ -1,5 +1,6 @@
 - 1.0.0-beta
     - Removed previously deprecated portions of the API
+    - Removed Embedder interface and namespace
 
 - 0.4.0
     - Added Truncated SVD transformer

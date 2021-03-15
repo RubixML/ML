@@ -1,13 +1,12 @@
 <?php
 
-namespace Rubix\ML\Embedders;
+namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\Verbose;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -41,7 +40,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder, Verbose
+class TSNE implements Transformer, Verbose
 {
     use LoggerAware;
 

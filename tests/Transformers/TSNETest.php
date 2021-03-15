@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Embedders;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
-use Rubix\ML\Embedders\TSNE;
+use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -13,8 +13,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Embedders
- * @covers \Rubix\ML\Embedders\TSNE
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\TSNE
  */
 class TSNETest extends TestCase
 {
@@ -38,7 +38,7 @@ class TSNETest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Embedders\TSNE
+     * @var \Rubix\ML\Transformers\TSNE
      */
     protected $embedder;
 
@@ -89,25 +89,6 @@ class TSNETest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->embedder->compatibility());
-    }
-
-    /**
-     * @test
-     */
-    public function params() : void
-    {
-        $expected = [
-            'dimensions' => 1,
-            'rate' => 10.0,
-            'perplexity' => 10,
-            'exaggeration' => 12.0,
-            'epochs' => 500,
-            'min_gradient' => 1.0E-7,
-            'window' => 10,
-            'kernel' => new Euclidean(),
-        ];
-
-        $this->assertEquals($expected, $this->embedder->params());
     }
 
     /**

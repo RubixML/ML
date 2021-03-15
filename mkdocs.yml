@@ -106,9 +106,6 @@ nav:
       - Grid Search: grid-search.md
       - Persistent Model: persistent-model.md
       - Pipeline: pipeline.md
-    - Embedders:
-      - API Reference: embedders/api.md
-      - t-SNE: embedders/t-sne.md
     - Transformers:
       - API Reference: transformers/api.md
       - Standardization and Normalization:
@@ -124,6 +121,7 @@ nav:
         - Principal Component Analysis: transformers/principal-component-analysis.md
         - Sparse Random Projector: transformers/sparse-random-projector.md
         - Truncated SVD: transformers/truncated-svd.md
+        - t-SNE: transformers/t-sne.md
       - Feature Conversion:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
