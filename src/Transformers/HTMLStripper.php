@@ -74,6 +74,6 @@ class HTMLStripper implements Transformer
      */
     public function __toString() : string
     {
-        return "HTML Stripper (allowed_tags: {$this->allowedTags})";
+        return "HTML Stripper (allowed tags: {$this->allowedTags})";
     }
 }

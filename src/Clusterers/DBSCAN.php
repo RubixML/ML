@@ -127,7 +127,7 @@ class DBSCAN implements Estimator
     {
         return [
             'radius' => $this->radius,
-            'min_density' => $this->minDensity,
+            'min density' => $this->minDensity,
             'tree' => $this->tree,
         ];
     }

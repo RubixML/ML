@@ -128,10 +128,10 @@ class RegressionTreeTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'max_height' => 10,
-            'max_leaf_size' => 2,
-            'max_features' => 3,
-            'min_purity_increase' => 1.0E-7,
+            'max height' => 10,
+            'max leaf size' => 2,
+            'max features' => 3,
+            'min purity increase' => 1.0E-7,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

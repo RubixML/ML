@@ -194,7 +194,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             'c' => $this->c,
             'fuzz' => $this->fuzz,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'kernel' => $this->kernel,
             'seeder' => $this->seeder,
         ];

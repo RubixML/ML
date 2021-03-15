@@ -267,9 +267,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      */
     public function __toString() : string
     {
-        return "Recursive Feature Eliminator (min_features: {$this->minFeatures},"
-            . " max_dropped_features: {$this->maxDroppedFeatures},"
-            . " max_dropped_importance: {$this->maxDroppedImportance},"
+        return "Recursive Feature Eliminator (min features: {$this->minFeatures},"
+            . " max dropped features: {$this->maxDroppedFeatures},"
+            . " max dropped importance: {$this->maxDroppedImportance},"
             . " scorer: {$this->scorer})";
     }
 }

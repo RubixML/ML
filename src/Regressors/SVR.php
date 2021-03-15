@@ -129,7 +129,7 @@ class SVR implements Estimator, Learner
             'kernel' => $kernel,
             'shrinking' => $shrinking,
             'tolerance' => $tolerance,
-            'cache_size' => $cacheSize,
+            'cache size' => $cacheSize,
         ];
     }
 

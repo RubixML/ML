@@ -271,15 +271,15 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function params() : array
     {
         return [
-            'hidden_layers' => $this->hiddenLayers,
-            'batch_size' => $this->batchSize,
+            'hidden layers' => $this->hiddenLayers,
+            'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
             'alpha' => $this->alpha,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'hold_out' => $this->holdOut,
-            'cost_fn' => $this->costFn,
+            'hold out' => $this->holdOut,
+            'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
     }

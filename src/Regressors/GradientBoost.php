@@ -292,9 +292,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'rate' => $this->rate,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'hold_out' => $this->holdOut,
+            'hold out' => $this->holdOut,
             'metric' => $this->metric,
             'base' => $this->base,
         ];

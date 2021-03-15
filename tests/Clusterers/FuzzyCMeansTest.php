@@ -140,7 +140,7 @@ class FuzzyCMeansTest extends TestCase
             'c' => 3,
             'fuzz' => 2.0,
             'epochs' => 300,
-            'min_change' => 1e-4,
+            'min change' => 1e-4,
             'kernel' => new Euclidean(),
             'seeder' => new Random(),
         ];

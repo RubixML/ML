@@ -185,7 +185,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         return [
             'k' => $this->k,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'seeder' => $this->seeder,
         ];
     }

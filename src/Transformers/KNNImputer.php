@@ -274,7 +274,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
     public function __toString() : string
     {
         return "KNN Imputer (k: {$this->k}, weighted: {$this->weighted},"
-            . " categorical_placeholder: {$this->categoricalPlaceholder},"
+            . " categorical placeholder: {$this->categoricalPlaceholder},"
             . " tree: {$this->tree})";
     }
 }

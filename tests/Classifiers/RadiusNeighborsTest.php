@@ -136,7 +136,7 @@ class RadiusNeighborsTest extends TestCase
         $expected = [
             'radius' => 30.0,
             'weighted' => true,
-            'outlier_class' => '?',
+            'outlier class' => '?',
             'tree' => new BallTree(),
         ];
 

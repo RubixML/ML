@@ -213,9 +213,9 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     {
         return [
             'k' => $this->k,
-            'batch_size' => $this->batchSize,
+            'batch size' => $this->batchSize,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
             'kernel' => $this->kernel,
             'seeder' => $this->seeder,

@@ -135,13 +135,13 @@ class AdalineTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'batch_size' => 1,
+            'batch size' => 1,
             'optimizer' => new Adam(0.01),
             'alpha' => 1e-4,
             'epochs' => 100,
-            'min_change' => 1e-3,
+            'min change' => 1e-3,
             'window' => 5,
-            'cost_fn' => new HuberLoss(1.0),
+            'cost fn' => new HuberLoss(1.0),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

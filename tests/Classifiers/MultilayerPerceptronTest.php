@@ -152,21 +152,21 @@ class MultilayerPerceptronTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'hidden_layers' => [
+            'hidden layers' => [
                 new Dense(10),
                 new Activation(new LeakyReLU()),
                 new Dropout(0.1),
                 new Dense(10),
                 new Activation(new LeakyReLU()),
             ],
-            'batch_size' => 10,
+            'batch size' => 10,
             'optimizer' => new AdaMax(0.01),
             'alpha' => 1e-4,
             'epochs' => 100,
-            'min_change' => 1e-3,
+            'min change' => 1e-3,
             'window' => 3,
-            'hold_out' => 0.1,
-            'cost_fn' => new CrossEntropy(),
+            'hold out' => 0.1,
+            'cost fn' => new CrossEntropy(),
             'metric' => new FBeta(),
         ];
 

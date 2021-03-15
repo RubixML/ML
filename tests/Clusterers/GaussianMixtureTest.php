@@ -138,7 +138,7 @@ class GaussianMixtureTest extends TestCase
         $expected = [
             'k' => 3,
             'epochs' => 100,
-            'min_change' => 1e-3,
+            'min change' => 1e-3,
             'seeder' => new KMC2(50),
         ];
 

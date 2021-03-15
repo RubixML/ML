@@ -234,7 +234,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'rate' => $this->rate,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
         ];
     }

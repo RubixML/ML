@@ -140,7 +140,7 @@ class MeanShiftTest extends TestCase
             'radius' => 66.0,
             'ratio' => 0.1,
             'epochs' => 100,
-            'min_shift' => 1e-4,
+            'min shift' => 1e-4,
             'tree' => new BallTree(),
             'seeder' => new Random(),
         ];

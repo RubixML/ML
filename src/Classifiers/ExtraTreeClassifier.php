@@ -107,10 +107,10 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     public function params() : array
     {
         return [
-            'max_height' => $this->maxHeight,
-            'max_leaf_size' => $this->maxLeafSize,
-            'max_features' => $this->maxFeatures,
-            'min_purity_increase' => $this->minPurityIncrease,
+            'max height' => $this->maxHeight,
+            'max leaf size' => $this->maxLeafSize,
+            'max features' => $this->maxFeatures,
+            'min purity increase' => $this->minPurityIncrease,
         ];
     }
 

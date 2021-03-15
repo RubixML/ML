@@ -289,27 +289,6 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Return the settings of the hyper-parameters in an associative array.
-     *
-     * @internal
-     *
-     * @return mixed[]
-     */
-    public function params() : array
-    {
-        return [
-            'dimensions' => $this->dimensions,
-            'rate' => $this->rate,
-            'perplexity' => $this->perplexity,
-            'exaggeration' => $this->exaggeration,
-            'epochs' => $this->epochs,
-            'min_gradient' => $this->minGradient,
-            'window' => $this->window,
-            'kernel' => $this->kernel,
-        ];
-    }
-
-    /**
      * Return the magnitudes of the gradient at each epoch from the last embedding.
      *
      * @return float[]|null
@@ -575,6 +554,15 @@ class TSNE implements Transformer, Verbose
      */
     public function __toString() : string
     {
-        return 't-SNE (' . Params::stringify($this->params()) . ')';
+        return 't-SNE (' . Params::stringify([
+            'dimensions' => $this->dimensions,
+            'rate' => $this->rate,
+            'perplexity' => $this->perplexity,
+            'exaggeration' => $this->exaggeration,
+            'epochs' => $this->epochs,
+            'min gradient' => $this->minGradient,
+            'window' => $this->window,
+            'kernel' => $this->kernel,
+        ]) . ')';
     }
 }

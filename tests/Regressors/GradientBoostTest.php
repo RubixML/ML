@@ -148,9 +148,9 @@ class GradientBoostTest extends TestCase
             'rate' => 0.3,
             'ratio' => 0.3,
             'estimators' => 300,
-            'min_change' => 0.0001,
+            'min change' => 0.0001,
             'window' => 10,
-            'hold_out' => 0.1,
+            'hold out' => 0.1,
             'metric' => new RMSE(),
             'base' => new DummyRegressor(),
         ];

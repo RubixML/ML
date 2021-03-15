@@ -214,13 +214,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function params() : array
     {
         return [
-            'batch_size' => $this->batchSize,
+            'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
             'alpha' => $this->alpha,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'cost_fn' => $this->costFn,
+            'cost fn' => $this->costFn,
         ];
     }
 

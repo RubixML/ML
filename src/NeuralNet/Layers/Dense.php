@@ -322,7 +322,7 @@ class Dense implements Hidden, Parametric
     {
         return "Dense (neurons: {$this->neurons}, alpha: {$this->alpha},"
             . ' bias: ' . Params::toString($this->bias) . ','
-            . " weight_initializer: {$this->weightInitializer},"
-            . " bias_initializer: {$this->biasInitializer})";
+            . " weight initializer: {$this->weightInitializer},"
+            . " bias initializer: {$this->biasInitializer})";
     }
 }

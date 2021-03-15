@@ -141,7 +141,7 @@ class AdaBoostTest extends TestCase
             'rate' => 1.0,
             'ratio' => 0.8,
             'estimators' => 100,
-            'min_change' => 0.0001,
+            'min change' => 0.0001,
             'window' => 5,
         ];
 

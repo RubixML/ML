@@ -125,7 +125,7 @@ class SVCTest extends TestCase
             'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 1e-3,
-            'cache_size' => 100.0,
+            'cache size' => 100.0,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

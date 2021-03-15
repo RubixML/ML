@@ -172,6 +172,6 @@ class Activation implements Hidden
      */
     public function __toString() : string
     {
-        return "Activation (activation_fn: {$this->activationFn})";
+        return "Activation (activation fn: {$this->activationFn})";
     }
 }

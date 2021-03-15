@@ -150,7 +150,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         return [
             'radius' => $this->radius,
             'weighted' => $this->weighted,
-            'outlier_class' => $this->outlierClass,
+            'outlier class' => $this->outlierClass,
             'tree' => $this->tree,
         ];
     }
