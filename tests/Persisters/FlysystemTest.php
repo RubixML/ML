@@ -7,13 +7,13 @@ use Rubix\ML\Persisters\Flysystem;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Exceptions\RuntimeException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnableToMoveFile;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * @group Persisters

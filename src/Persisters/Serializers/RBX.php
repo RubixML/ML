@@ -176,6 +176,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return "RBX (base: {$this->base})";
+        return 'RBX';
     }
 }

@@ -7,10 +7,10 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\Native;
 use Rubix\ML\Persisters\Serializers\Serializer;
+use Rubix\ML\Exceptions\RuntimeException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\FilesystemException;
-use RuntimeException;
 
 /**
  * Flysystem
