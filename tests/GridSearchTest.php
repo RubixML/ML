@@ -11,7 +11,7 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Other\Loggers\BlackHole;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;

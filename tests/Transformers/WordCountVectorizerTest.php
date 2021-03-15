@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers

@@ -18,7 +18,7 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 ## Example
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Other\Tokenizers\NGram;
+use Rubix\ML\Tokenizers\NGram;
 
 $transformer = new WordCountVectorizer(10000, 3, 500, new NGram(1, 2));
 ```

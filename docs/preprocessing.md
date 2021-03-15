@@ -95,7 +95,7 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
 | [Sparse Random Projector](transformers/sparse-random-projector.md) | | ● | |
 | [Truncated SVD](transformers/truncated-svd.md) | | ● | |
-| [t-SNE](embedders/t-sne.md) | | | |
+| [t-SNE](transformers/t-sne.md) | | | |
 
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.

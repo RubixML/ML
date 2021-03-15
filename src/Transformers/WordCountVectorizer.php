@@ -4,9 +4,9 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Tokenizers\Word;
-use Rubix\ML\Other\Tokenizers\Tokenizer;
+use Rubix\ML\Tokenizers\Tokenizer;
 use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -58,7 +58,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     /**
      * The tokenizer used to extract tokens from blobs of text.
      *
-     * @var \Rubix\ML\Other\Tokenizers\Tokenizer
+     * @var \Rubix\ML\Tokenizers\Tokenizer
      */
     protected $tokenizer;
 
@@ -73,7 +73,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      * @param int $maxVocabulary
      * @param int $minDocumentFrequency
      * @param int $maxDocumentFrequency
-     * @param \Rubix\ML\Other\Tokenizers\Tokenizer|null $tokenizer
+     * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
      */
     public function __construct(
         int $maxVocabulary = PHP_INT_MAX,

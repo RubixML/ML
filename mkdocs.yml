@@ -251,11 +251,17 @@ nav:
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md
+    - Loggers:
+      - Screen: loggers/screen.md
+    - Tokenizers:
+      - K-Skip-N-Gram: tokenizers/k-skip-n-gram.md
+      - N-Gram: tokenizers/n-gram.md
+      - Sentence: tokenizers/sentence.md
+      - Whitespace: tokenizers/whitespace.md
+      - Word: tokenizers/word.md
     - Other:
       - Helpers:
         - Params: other/helpers/params.md
-      - Loggers:
-        - Screen: other/loggers/screen.md
       - Strategies:
         - Constant: other/strategies/constant.md
         - K Most Frequent: other/strategies/k-most-frequent.md
@@ -263,13 +269,6 @@ nav:
         - Percentile: other/strategies/percentile.md
         - Prior: other/strategies/prior.md
         - Wild Guess: other/strategies/wild-guess.md
-      - Tokenizers:
-        - K-Skip-N-Gram: other/tokenizers/k-skip-n-gram.md
-        - N-Gram: other/tokenizers/n-gram.md
-        - Sentence: other/tokenizers/sentence.md
-        - Skip Gram: other/tokenizers/skip-gram.md
-        - Whitespace: other/tokenizers/whitespace.md
-        - Word: other/tokenizers/word.md
   - FAQ: faq.md
 
 extra:
