@@ -4,11 +4,11 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
-use Rubix\ML\Other\Strategies\KMostFrequent;
+use Rubix\ML\Strategies\Strategy;
+use Rubix\ML\Strategies\KMostFrequent;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -32,14 +32,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The guessing strategy to use when imputing continuous values.
      *
-     * @var \Rubix\ML\Other\Strategies\Strategy
+     * @var \Rubix\ML\Strategies\Strategy
      */
     protected $continuous;
 
     /**
      * The guessing strategy to use when imputing categorical values.
      *
-     * @var \Rubix\ML\Other\Strategies\Strategy
+     * @var \Rubix\ML\Strategies\Strategy
      */
     protected $categorical;
 
@@ -53,7 +53,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The fitted guessing strategy for each feature column.
      *
-     * @var list<\Rubix\ML\Other\Strategies\Strategy>|null
+     * @var list<\Rubix\ML\Strategies\Strategy>|null
      */
     protected $strategies;
 
@@ -65,8 +65,8 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     protected $types;
 
     /**
-     * @param \Rubix\ML\Other\Strategies\Strategy|null $continuous
-     * @param \Rubix\ML\Other\Strategies\Strategy|null $categorical
+     * @param \Rubix\ML\Strategies\Strategy|null $continuous
+     * @param \Rubix\ML\Strategies\Strategy|null $categorical
      * @param string $categoricalPlaceholder
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */

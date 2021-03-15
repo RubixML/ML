@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Other\Helpers\Console;
+use Rubix\ML\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;

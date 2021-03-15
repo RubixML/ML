@@ -2,19 +2,19 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Backends\Tasks\Task;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;

@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Other\Strategies\Prior;
+use Rubix\ML\Strategies\Prior;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;

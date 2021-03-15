@@ -1,4 +1,5 @@
 - 1.0.0-beta
+    - Promoted the Other namespace
     - Persisters use RBX serializer by default
     - Removed previously deprecated portions of the API
     - Removed Embedder interface and namespace

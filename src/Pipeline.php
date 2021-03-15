@@ -2,14 +2,14 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Transformers\Elastic;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\AnomalyDetectors\Scoring;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Psr\Log\LoggerInterface;

@@ -2,9 +2,9 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;

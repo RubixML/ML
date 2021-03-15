@@ -259,16 +259,15 @@ nav:
       - Sentence: tokenizers/sentence.md
       - Whitespace: tokenizers/whitespace.md
       - Word: tokenizers/word.md
-    - Other:
-      - Helpers:
-        - Params: other/helpers/params.md
-      - Strategies:
-        - Constant: other/strategies/constant.md
-        - K Most Frequent: other/strategies/k-most-frequent.md
-        - Mean: other/strategies/mean.md
-        - Percentile: other/strategies/percentile.md
-        - Prior: other/strategies/prior.md
-        - Wild Guess: other/strategies/wild-guess.md
+    - Helpers:
+      - Params: helpers/params.md
+    - Strategies:
+      - Constant: strategies/constant.md
+      - K Most Frequent: strategies/k-most-frequent.md
+      - Mean: strategies/mean.md
+      - Percentile: strategies/percentile.md
+      - Prior: strategies/prior.md
+      - Wild Guess: strategies/wild-guess.md
   - FAQ: faq.md
 
 extra:

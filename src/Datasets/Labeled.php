@@ -4,8 +4,8 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Console;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;

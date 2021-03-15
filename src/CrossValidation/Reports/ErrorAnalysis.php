@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Report;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 
 use function count;

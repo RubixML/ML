@@ -4,10 +4,10 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 

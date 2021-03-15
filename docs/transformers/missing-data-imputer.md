@@ -17,8 +17,8 @@ Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categoric
 ## Example
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Other\Strategies\Percentile;
-use Rubix\ML\Other\Strategies\Prior;
+use Rubix\ML\Strategies\Percentile;
+use Rubix\ML\Strategies\Prior;
 
 $transformer = new MissingDataImputer(new Percentile(0.55), new Prior(), '?');
 ```

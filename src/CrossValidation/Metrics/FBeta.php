@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 

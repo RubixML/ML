@@ -3,8 +3,8 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;

@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\Extractors;
 
+use Rubix\ML\Helpers\JSON as JSONHelper;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
-use Rubix\ML\Other\Helpers\JSON as JSONHelper;
 
 /**
  * JSON

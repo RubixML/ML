@@ -4,10 +4,10 @@ namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
 use Rubix\ML\Verbose;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;

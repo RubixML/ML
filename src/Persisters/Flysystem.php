@@ -4,7 +4,7 @@ namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Persisters\Serializers\RBX;
 use Rubix\ML\Persisters\Serializers\Serializer;
 use League\Flysystem\Filesystem;

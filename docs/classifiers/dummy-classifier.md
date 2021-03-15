@@ -15,7 +15,7 @@ A classifier that makes predictions using a user-defined guessing strategy that 
 ## Example
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Other\Strategies\Prior;
+use Rubix\ML\Strategies\Prior;
 
 $estimator = new DummyClassifier(new Prior());
 ```

@@ -4,7 +4,7 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Other\Helpers\JSON;
+use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\ClassRevisionMismatch;
 use Rubix\ML\Exceptions\RuntimeException;
 

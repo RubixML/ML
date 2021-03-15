@@ -4,14 +4,14 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;

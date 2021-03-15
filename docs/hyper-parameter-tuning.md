@@ -60,20 +60,20 @@ array(3) {
 }
 ```
 ### Grid Search vs. Random Search
-When the possible values of the continuous hyper-parameters are selected such that they are evenly spaced out in a grid, we call that *grid search*. You can use the static `grid()` method on the [Params](other/helpers/params.md) helper to generate an array of evenly-spaced values automatically.
+When the possible values of the continuous hyper-parameters are selected such that they are evenly spaced out in a grid, we call that *grid search*. You can use the static `grid()` method on the [Params](helpers/params.md) helper to generate an array of evenly-spaced values automatically.
 
 ```php
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Helpers\Params;
 
 $params = [
     Params::grid(1, 10, 4), [true, false], // ...
 ];
 ```
 
-When the list of possible continuous-valued hyper-parameters is randomly chosen from a distribution, we call that *random search*. In the absence of a good manual strategy, random search has the advantage of being able to search the hyper-parameter space more effectively by testing combinations of parameters that might not have been considered otherwise. To generate a list of random values from a uniform distribution you can use either the `ints()` or `floats()` method on the [Params](other/helpers/params.md) helper.
+When the list of possible continuous-valued hyper-parameters is randomly chosen from a distribution, we call that *random search*. In the absence of a good manual strategy, random search has the advantage of being able to search the hyper-parameter space more effectively by testing combinations of parameters that might not have been considered otherwise. To generate a list of random values from a uniform distribution you can use either the `ints()` or `floats()` method on the [Params](helpers/params.md) helper.
 
 ```php
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Helpers\Params;
 
 $params = [
     Params::ints(1, 10, 4), [true, false], // ...

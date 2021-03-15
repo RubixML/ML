@@ -4,8 +4,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;

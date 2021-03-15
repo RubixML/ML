@@ -2,18 +2,18 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
-use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Helpers\JSON;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use JsonSerializable;
-use Rubix\ML\Exceptions\RuntimeException;
 use ArrayAccess;
 use Stringable;
 use Countable;
