@@ -1,5 +1,6 @@
 - 1.0.0-beta
     - Changed Word Count Vectorizer DF constraints to proportions
+    - Change order of Naive Bayes hyper-parameters
     - Promoted the Other namespace
     - Persisters use RBX serializer by default
     - Removed previously deprecated portions of the API

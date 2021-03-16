@@ -13,8 +13,8 @@ Categorical Naive Bayes is a probability-based classifier that uses counting and
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | smoothing | 1.0 | float | The amount of (Laplace) smoothing added to the probabilities. |
-| 2 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. If null, then the learner will compute these values from the training data. |
+| 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and their prior probabilities as values totalling 1. If null, then priors will automatically be computed from the training data. |
+| 2 | smoothing | 1.0 | float | The amount of (Laplace) smoothing added to the probabilities. |
 
 ## Example
 ```php
