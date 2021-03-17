@@ -1,4 +1,5 @@
 - 1.0.0-beta
+    - Added variance smoothing to Gaussian Naive Bayes
     - Changed Word Count Vectorizer DF constraints to proportions
     - Change order of Naive Bayes hyper-parameters
     - Promoted the Other namespace

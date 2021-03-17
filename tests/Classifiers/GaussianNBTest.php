@@ -79,7 +79,7 @@ class GaussianNBTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new GaussianNB(null);
+        $this->estimator = new GaussianNB(null, 1e-8);
 
         $this->metric = new Accuracy();
 
@@ -126,6 +126,7 @@ class GaussianNBTest extends TestCase
     {
         $expected = [
             'priors' => null,
+            'smoothing' => 1e-8,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
