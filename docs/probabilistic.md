@@ -1,5 +1,5 @@
 # Probabilistic
-Estimators that implement the Probabilistic interface have `proba()` and `probaSample()` methods that return an array of joint probability estimates for every possible class or cluster number. Probabilities are useful for ascertaining the degree to which the estimator is *certain* about a particular outcome. A value of 1 indicates that the estimator is 100% certain about a particular class or cluster number. Conversely, a value of 0 means that the estimator is 100% certain that it's *not* that class or cluster number. When the probabilities are considered together they are called a *joint* distribution and always sum to 1.
+Estimators that implement the Probabilistic interface have the `proba()` method that returns an array of joint probability estimates for every possible class or cluster number. Probabilities are useful for ascertaining the degree to which the estimator is *certain* about a particular outcome. A value of 1 indicates that the estimator is 100% certain about a particular class or cluster number. Conversely, a value of 0 means that the estimator is 100% certain that it's *not* that class or cluster number. When the probabilities are considered together they are called a *joint* distribution and always sum to 1.
 
 ## Predict Probabilities
 Return the joint probability estimates from a dataset:
