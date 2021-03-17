@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Specifications;
 
+/**
+ * @internal
+ */
 class SpecificationChain extends Specification
 {
     /**

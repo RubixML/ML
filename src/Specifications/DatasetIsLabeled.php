@@ -6,6 +6,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\LabelsMissing;
 
+/**
+ * @internal
+ */
 class DatasetIsLabeled extends Specification
 {
     /**

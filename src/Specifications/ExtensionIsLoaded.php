@@ -6,6 +6,9 @@ use Rubix\ML\Exceptions\MissingExtension;
 
 use function extension_loaded;
 
+/**
+ * @internal
+ */
 class ExtensionIsLoaded extends Specification
 {
     /**
