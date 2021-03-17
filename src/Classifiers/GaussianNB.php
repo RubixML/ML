@@ -228,8 +228,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         foreach ($dataset->stratify() as $class => $stratum) {
             if (isset($this->means[$class])) {
-                $means = $oldMeans = $this->means[$class];
-                $variances = $oldVariances = $this->variances[$class];
+                $oldMeans = $this->means[$class];
+                $oldVariances = $this->variances[$class];
                 $oldWeight = $this->weights[$class];
 
                 $n = $stratum->numRows();
