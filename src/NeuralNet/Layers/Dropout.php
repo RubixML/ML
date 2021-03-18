@@ -147,8 +147,7 @@ class Dropout implements Hidden
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->mask) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
         $mask = $this->mask;

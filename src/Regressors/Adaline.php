@@ -264,6 +264,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $this->optimizer
         );
 
+        $this->network->initialize();
+
         $this->partial($dataset);
     }
 
