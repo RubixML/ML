@@ -118,6 +118,8 @@ class FeedForwardTest extends TestCase
      */
     public function roundtrip() : void
     {
+        $this->network->initialize();
+
         $loss = $this->network->roundtrip($this->dataset);
 
         $this->assertIsFloat($loss);

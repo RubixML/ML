@@ -116,8 +116,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected $window;
 
     /**
-     * The proportion of training samples to use for validation and progress
-     * monitoring.
+     * The proportion of training samples to use for validation and progress monitoring.
      *
      * @var float
      */
@@ -359,6 +358,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new Multiclass($classes, $this->costFn),
             $this->optimizer
         );
+
+        $this->network->initialize();
 
         $this->classes = $classes;
 

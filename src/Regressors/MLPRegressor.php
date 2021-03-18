@@ -345,6 +345,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $this->optimizer
         );
 
+        $this->network->initialize();
+
         $this->partial($dataset);
     }
 

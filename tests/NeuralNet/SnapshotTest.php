@@ -42,6 +42,8 @@ class SnapshotTest extends TestCase
             new Dense(1),
         ], new Binary(['yes', 'no'], new CrossEntropy()), new Stochastic());
 
+        $network->initialize();
+
         $snapshot = Snapshot::take($network);
 
         $this->assertInstanceOf(Snapshot::class, $snapshot);

@@ -278,6 +278,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $this->optimizer
         );
 
+        $this->network->initialize();
+
         $this->classes = $classes;
 
         $this->partial($dataset);
