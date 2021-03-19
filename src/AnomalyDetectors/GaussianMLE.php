@@ -43,12 +43,18 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     use AutotrackRevisions;
 
     /**
-     * The proportion of outliers that are assumed to be present in the
-     * training set.
+     * The proportion of outliers that are assumed to be present in the training set.
      *
      * @var float
      */
     protected $contamination;
+
+    /**
+     * The amount of (epsilon) smoothing added to the variance of each feature.
+     *
+     * @var float
+     */
+    protected $smoothing;
 
     /**
      * The precomputed means of each feature column of the training set.
@@ -69,13 +75,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     ];
 
     /**
-     * The minimum log likelihood score necessary to flag an anomaly.
-     *
-     * @var float|null
-     */
-    protected $threshold;
-
-    /**
      * The number of samples that have passed through training so far.
      *
      * @var int
@@ -83,17 +82,38 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     protected $n = 0;
 
     /**
+     * The minimum log likelihood score necessary to flag an anomaly.
+     *
+     * @var float|null
+     */
+    protected $threshold;
+
+    /**
+     * A small portion of variance to add for smoothing.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * @param float $contamination
+     * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $contamination = 0.1)
+    public function __construct(float $contamination = 0.1, float $smoothing = 1e-8)
     {
         if ($contamination < 0.0 or $contamination > 0.5) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
 
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
+        }
+
         $this->contamination = $contamination;
+        $this->smoothing = $smoothing;
     }
 
     /**
@@ -133,6 +153,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     {
         return [
             'contamination' => $this->contamination,
+            'smoothing' => $this->smoothing,
         ];
     }
 
@@ -184,12 +205,20 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             [$mean, $variance] = Stats::meanVar($values);
 
             $this->means[$column] = $mean;
-            $this->variances[$column] = $variance ?: EPSILON;
+            $this->variances[$column] = $variance;
+        }
+
+        $epsilon = $this->smoothing * max(EPSILON, ...$this->variances);
+
+        foreach ($this->variances as &$variance) {
+            $variance += $epsilon;
         }
 
         $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
 
         $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
+
+        $this->epsilon = $epsilon;
 
         $this->n = $dataset->numRows();
     }
@@ -219,19 +248,25 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             [$mean, $variance] = Stats::meanVar($values);
 
             $oldMean = $this->means[$column];
-            $oldVariance = $this->variances[$column];
+            $oldVariance = $this->variances[$column] - $this->epsilon;
 
-            $muHat = (($this->n * $oldMean) + ($n * $mean))
-                / ($this->n + $n);
+            $this->means[$column] = (($this->n * $oldMean)
+                + ($n * $mean)) / ($this->n + $n);
 
-            $vHat = ($this->n * $oldVariance + ($n * $variance)
+            $this->variances[$column] = ($this->n
+                * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($this->n + $n);
-
-            $this->means[$column] = $muHat;
-            $this->variances[$column] = $vHat ?: EPSILON;
         }
+
+        $epsilon = $this->smoothing * max(EPSILON, ...$this->variances);
+
+        foreach ($this->variances as &$variance) {
+            $variance += $epsilon;
+        }
+
+        $this->epsilon = $epsilon;
 
         $this->n += $n;
 

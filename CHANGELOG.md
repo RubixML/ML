@@ -1,11 +1,12 @@
 - 1.0.0-beta
-    - Added variance smoothing to Gaussian Naive Bayes
+    - Added variance smoothing to Gaussian NB and MLE
     - Changed Word Count Vectorizer DF constraints to proportions
     - Change order of Naive Bayes hyper-parameters
     - Promoted the Other namespace
     - Persisters use RBX serializer by default
     - Removed previously deprecated portions of the API
     - Removed Embedder interface and namespace
+    - Change Robust Z Score alpha parameter name to beta
 
 - 0.4.1
     - Fix RBX serializer string representation

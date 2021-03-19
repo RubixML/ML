@@ -29,7 +29,7 @@ use const Rubix\ML\EPSILON;
  * more sensitive to outliers. Anomalies are flagged if their final weighted Z-Score exceeds a
  * user-defined threshold.
  *
- * > **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score,
+ * > **Note:** A beta value of 1 means the estimator only considers the maximum absolute Z-Score,
  * whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
  *
  * References:
@@ -62,7 +62,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      *
      * @var float
      */
-    protected $alpha;
+    protected $beta;
 
     /**
      * The median of each feature column in the training set.
@@ -84,23 +84,23 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
 
     /**
      * @param float $threshold
-     * @param float $alpha
+     * @param float $beta
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $threshold = 3.5, float $alpha = 0.5)
+    public function __construct(float $threshold = 3.5, float $beta = 0.5)
     {
         if ($threshold <= 0.0) {
             throw new InvalidArgumentException('Threshold must be'
                 . " greater than 0, $threshold given.");
         }
 
-        if ($alpha < 0.0 or $alpha > 1.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " between 0 and 1, $alpha given.");
+        if ($beta < 0.0 or $beta > 1.0) {
+            throw new InvalidArgumentException('Beta must be'
+                . " between 0 and 1, $beta given.");
         }
 
         $this->threshold = $threshold;
-        $this->alpha = $alpha;
+        $this->beta = $beta;
     }
 
     /**
@@ -140,7 +140,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     {
         return [
             'threshold' => $this->threshold,
-            'alpha' => $this->alpha,
+            'beta' => $this->beta,
         ];
     }
 
@@ -251,17 +251,19 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      */
     protected function z(array $sample) : float
     {
-        $z = [];
+        $scores = [];
 
         foreach ($sample as $column => $value) {
-            $z[] = abs(
+            $scores[] = abs(
                 (self::ETA * ($value - $this->medians[$column]))
                 / $this->mads[$column]
             );
         }
 
-        return (1.0 - $this->alpha) * Stats::mean($z)
-            + $this->alpha * max($z);
+        $z = (1.0 - $this->beta) * Stats::mean($scores)
+            + $this->beta * max($scores);
+
+        return $z;
     }
 
     /**

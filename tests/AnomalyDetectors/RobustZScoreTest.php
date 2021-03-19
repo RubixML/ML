@@ -143,7 +143,7 @@ class RobustZScoreTest extends TestCase
     {
         $expected = [
             'threshold' => 3.5,
-            'alpha' => 0.5,
+            'beta' => 0.5,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

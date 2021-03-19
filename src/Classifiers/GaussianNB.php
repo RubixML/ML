@@ -302,19 +302,19 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->weights[$class] = $weight;
         }
 
+        $epsilon = $this->smoothing * max($maxVariance, EPSILON);
+
+        foreach ($this->variances as &$variances) {
+            foreach ($variances as &$variance) {
+                $variance += $epsilon;
+            }
+        }
+
         if ($this->fitPriors) {
             $total = array_sum($this->weights);
 
             foreach ($this->weights as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);
-            }
-        }
-
-        $epsilon = $this->smoothing * ($maxVariance ?: EPSILON);
-
-        foreach ($this->variances as &$variances) {
-            foreach ($variances as &$variance) {
-                $variance += $epsilon;
             }
         }
 
