@@ -30,8 +30,7 @@ use function in_array;
  * estimators (called *experts*). The committee uses a user-specified influence-based
  * scheme to weight the final predictions.
  *
- * > **Note**: Influence values can be arbitrary as they are normalized upon
- * instantiation.
+ * > **Note**: Influence values can be arbitrary as they are normalized upon instantiation.
  *
  * References:
  * [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
@@ -65,7 +64,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * The influence values of each expert in the committee.
      *
-     * @var (int|float)[]
+     * @var list<float>
      */
     protected $influences;
 
@@ -93,18 +92,16 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     public function __construct(array $experts, ?array $influences = null)
     {
         if (empty($experts)) {
-            throw new InvalidArgumentException('Committee must contain at'
-                . ' least 1 expert.');
+            throw new InvalidArgumentException('Committee must contain at least 1 expert.');
         }
 
-        $proto = current($experts);
+        $prototype = current($experts);
 
         $compatibilities = [];
 
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Expert must implement'
-                    . ' the Learner interface.');
+                throw new InvalidArgumentException('Expert must implement the Learner interface.');
             }
 
             if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
@@ -113,9 +110,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
                     . " {$expert->type()} given.");
             }
 
-            if ($expert->type() != $proto->type()) {
-                throw new InvalidArgumentException('Experts must all be of'
-                    . " the same type, {$proto->type()} expected but"
+            if ($expert->type() != $prototype->type()) {
+                throw new InvalidArgumentException('Experts must be of'
+                    . " the same type, {$prototype->type()} expected but"
                     . " {$expert->type()} given.");
             }
 
@@ -133,9 +130,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
 
         if ($influences) {
             if (count($influences) !== $k) {
-                throw new InvalidArgumentException('The number of influence'
-                    . " values must equal the number of experts, $k needed"
-                    . ' but ' . count($influences) . ' given.');
+                throw new InvalidArgumentException('Number of influences'
+                    . " must be equal to the number of experts, $k"
+                    . ' expected but ' . count($influences) . ' given.');
             }
 
             $total = array_sum($influences);
@@ -145,14 +142,16 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
                     . " be greater than 0, $total given.");
             }
 
-            foreach ($influences as &$weight) {
-                $weight /= $total;
+            foreach ($influences as &$influence) {
+                $influence /= $total;
             }
+
+            $influences = array_values($influences);
         } else {
             $influences = array_fill(0, $k, 1.0 / $k);
         }
 
-        $this->experts = $experts;
+        $this->experts = array_values($experts);
         $this->influences = $influences;
         $this->compatibility = $compatibility;
         $this->backend = new Serial();
@@ -210,7 +209,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * Return the learner instances of the committee.
      *
-     * @return \Rubix\ML\Learner[]
+     * @return list<\Rubix\ML\Learner>
      */
     public function experts() : array
     {
@@ -218,9 +217,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     }
 
     /**
-     * Return the normalized influence values for each expert in the committee.
+     * Return the normalized influences for each expert in the committee.
      *
-     * @return (int|float)[]
+     * @return list<float>
      */
     public function influences() : array
     {
@@ -251,9 +250,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
         SpecificationChain::with($specifications)->check();
 
         if ($this->logger) {
-            $this->logger->info("Learner init $this");
-
-            $this->logger->info('Training started');
+            $this->logger->info("$this initialized");
         }
 
         $this->backend->flush();
@@ -338,8 +335,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * Decide on a discrete outcome.
      *
-     * @param (int|string)[] $votes
-     * @return string
+     * @param list<int|string> $votes
+     * @return string|int
      */
     protected function decideDiscrete(array $votes)
     {
@@ -355,7 +352,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
     /**
      * Decide on a real-valued outcome.
      *
-     * @param (int|float)[] $votes
+     * @param list<int|float> $votes
      * @return float
      */
     protected function decideContinuous(array $votes) : float

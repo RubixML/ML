@@ -54,8 +54,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     protected $base;
 
     /**
-     * An array of tuples containing the possible values for each of the base learner's
-     * constructor parameters.
+     * An array of tuples containing the possible values for each of the base learner's constructor parameters.
      *
      * @var array[]
      */

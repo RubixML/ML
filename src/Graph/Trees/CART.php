@@ -424,9 +424,9 @@ abstract class CART implements IteratorAggregate
                 }
 
                 $values = Stats::quantiles($values, $q);
-            } else {
-                $values = array_unique($values);
             }
+
+            $values = array_unique($values);
 
             foreach ($values as $value) {
                 $groups = $dataset->splitByColumn($column, $value);
