@@ -91,15 +91,17 @@ class ImageResizer implements Transformer
                     }
 
                     if ($width / $height < $this->ratio) {
-                        $srcW = $width;
-                        $srcH = (int) ceil(($srcW * $this->height) / $this->width);
-                        $srcY = (int) ceil(0.5 * ($height - $srcH));
-                        $srcX = 0;
+                        $w = $width;
+                        $h = (int) ceil(($width * $this->height) / $this->width);
+
+                        $x = 0;
+                        $y = (int) ceil(0.5 * ($height - $h));
                     } else {
-                        $srcH = $height;
-                        $srcW = (int) ceil(($srcH * $this->width) / $this->height);
-                        $srcX = (int) ceil(0.5 * ($width - $srcW));
-                        $srcY = 0;
+                        $w = (int) ceil(($height * $this->width) / $this->height);
+                        $h = $height;
+
+                        $x = (int) ceil(0.5 * ($width - $w));
+                        $y = 0;
                     }
 
                     $resized = imagecreatetruecolor($this->width, $this->height);
@@ -108,18 +110,11 @@ class ImageResizer implements Transformer
                         throw new RuntimeException('Could not create placeholder image.');
                     }
 
-                    imagecopyresampled(
-                        $resized,
-                        $value,
-                        0,
-                        0,
-                        $srcX,
-                        $srcY,
-                        $this->width,
-                        $this->height,
-                        $srcW,
-                        $srcH
-                    );
+                    $success = imagecopyresampled($resized, $value, 0, 0, $x, $y, $this->width, $this->height, $w, $h);
+
+                    if (!$success) {
+                        throw new RuntimeException('Failed to resize image.');
+                    }
 
                     $value = $resized;
                 }
