@@ -7,6 +7,10 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function fopen;
+use function fgets;
+use function fclose;
+
 /**
  * NDJSON
  *

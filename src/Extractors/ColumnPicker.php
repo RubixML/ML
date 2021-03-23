@@ -27,7 +27,7 @@ class ColumnPicker implements Extractor
     protected $iterator;
 
     /**
-     * The string and/or integer keys of the columns to iterate over.
+     * The string and/or integer keys of the columns to pick and reorder from the table.
      *
      * @var (string|int)[]
      */

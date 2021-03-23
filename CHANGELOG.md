@@ -7,6 +7,7 @@
     - Removed previously deprecated portions of the API
     - Removed Embedder interface and namespace
     - Change Robust Z Score alpha parameter name to beta
+    - Hold Out validator does not randomize by default
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

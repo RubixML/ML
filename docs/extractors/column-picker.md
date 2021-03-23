@@ -7,7 +7,7 @@ An extractor that wraps another iterator and selects and reorders the columns of
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | iterator | | Traversable | The base iterator. |
-| 2 | keys | | array | The string and/or integer keys of the columns to extract and reorder. |
+| 2 | keys | | array | The string and/or integer keys of the columns to pick and reorder from the table |
 
 ## Example
 ```php

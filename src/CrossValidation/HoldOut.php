@@ -58,11 +58,9 @@ class HoldOut implements Validator
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        $dataset->randomize();
-
         [$testing, $training] = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedSplit($this->ratio)
-            : $dataset->split($this->ratio);
+            : $dataset->randomize()->split($this->ratio);
 
         if ($testing->empty()) {
             throw new RuntimeException('Dataset does not contain'
@@ -74,7 +72,9 @@ class HoldOut implements Validator
 
         $predictions = $estimator->predict($testing);
 
-        return $metric->score($predictions, $testing->labels());
+        $score = $metric->score($predictions, $testing->labels());
+
+        return $score;
     }
 
     /**

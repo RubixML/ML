@@ -7,6 +7,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function file_get_contents;
+
 /**
  * JSON
  *

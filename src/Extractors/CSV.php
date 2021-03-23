@@ -7,6 +7,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use function strlen;
+use function fopen;
+use function fgetcsv;
+use function fclose;
+use function array_combine;
 
 /**
  * CSV
