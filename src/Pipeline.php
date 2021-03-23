@@ -37,7 +37,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
     /**
      * A list of transformers to be applied in series.
      *
-     * @var \Rubix\ML\Transformers\Transformer[]
+     * @var list<\Rubix\ML\Transformers\Transformer>
      */
     protected $transformers = [
         //
@@ -86,7 +86,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
             }
         }
 
-        $this->transformers = $transformers;
+        $this->transformers = array_values($transformers);
         $this->base = $base;
         $this->elastic = $elastic;
     }

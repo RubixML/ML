@@ -11,11 +11,11 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -55,8 +55,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     protected $base;
 
     /**
-     * An array of tuples containing the possible values for each of the base learner's
-     * constructor parameters.
+     * An array of tuples containing the possible values for each of the base learner's constructor parameters.
      *
      * @var array[]
      */
