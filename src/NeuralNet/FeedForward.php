@@ -121,9 +121,7 @@ class FeedForward implements Network
     {
         yield $this->input;
 
-        foreach ($this->hidden as $hidden) {
-            yield $hidden;
-        }
+        yield from $this->hidden;
 
         yield $this->output;
     }
