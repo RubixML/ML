@@ -48,16 +48,23 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     /**
      * The means of each feature column from the fitted data.
      *
-     * @var (int|float)[]|null
+     * @var float[]|null
      */
     protected $means;
 
     /**
      * The variances of each feature column from the fitted data.
      *
-     * @var (int|float)[]|null
+     * @var float[]|null
      */
     protected $variances;
+
+    /**
+     * The precomputed standard deviations.
+     *
+     * @var float[]|null
+     */
+    protected $stdDevs;
 
     /**
      *  The number of samples that this transformer has fitted.
@@ -65,13 +72,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
      * @var int|null
      */
     protected $n;
-
-    /**
-     * The precomputed standard deviations.
-     *
-     * @var (int|float)[]|null
-     */
-    protected $stdDevs;
 
     /**
      * @param bool $center
@@ -106,7 +106,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     /**
      * Return the means calculated by fitting the training set.
      *
-     * @return (int|float)[]|null
+     * @return float[]|null
      */
     public function means() : ?array
     {
@@ -116,7 +116,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     /**
      * Return the variances calculated by fitting the training set.
      *
-     * @return (int|float)[]|null
+     * @return float[]|null
      */
     public function variances() : ?array
     {
@@ -126,7 +126,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     /**
      * Return the standard deviations calculated during fitting.
      *
-     * @return (int|float)[]|null
+     * @return float[]|null
      */
     public function stdDevs() : ?array
     {
@@ -181,15 +181,14 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 
             [$mean, $variance] = Stats::meanVar($values);
 
-            $muHat = (($this->n * $oldMean) + ($n * $mean))
-                / ($this->n + $n);
+            $this->means[$column] = (($this->n * $oldMean)
+                + ($n * $mean)) / ($this->n + $n);
 
             $vHat = ($this->n * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($this->n + $n);
 
-            $this->means[$column] = $muHat;
             $this->variances[$column] = $vHat;
             $this->stdDevs[$column] = sqrt($vHat ?: EPSILON);
         }
