@@ -21,6 +21,9 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function count;
+use function array_fill;
+
 use const Rubix\ML\LOG_EPSILON;
 
 /**
@@ -115,17 +118,6 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * @var int
      */
     protected $n = 0;
-
-    /**
-     * Estimate the number of bins from the number of samples in a dataset.
-     *
-     * @param int $n
-     * @return int
-     */
-    public static function estimateBins(int $n) : int
-    {
-        return (int) round(log($n, 2)) + 1;
-    }
 
     /**
      * @param int $estimators
@@ -223,7 +215,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
         [$m, $n] = $dataset->shape();
 
         if ($this->fitBins) {
-            $this->bins = max(self::estimateBins($m), self::MIN_BINS);
+            $this->bins = max((int) round(log($m, 2)) + 1, self::MIN_BINS);
         }
 
         $this->r = Matrix::gaussian($n, $this->estimators);

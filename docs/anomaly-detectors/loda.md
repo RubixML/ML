@@ -22,10 +22,7 @@ $estimator = new Loda(250, 8, 0.01);
 ```
 
 ## Additional Methods
-To estimate the number of histogram bins from the number of samples in a dataset:
-```php
-public static estimateBins(int $n) : int
-```
+This estimator does not have any additional methods.
 
 ## References
 [^1]: T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
