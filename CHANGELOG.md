@@ -1,5 +1,6 @@
 - 1.0.0-beta
     - Added variance smoothing to Gaussian NB and MLE
+    - Added SQL Table dataset extractor
     - Changed Word Count Vectorizer DF constraints to proportions
     - Change order of Naive Bayes hyper-parameters
     - Promoted the Other namespace

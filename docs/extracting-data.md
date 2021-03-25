@@ -81,18 +81,36 @@ $dataset = Unlabeled::fromIterator($iterator);
 ```
 
 ## SQL
-Medium to large datasets will often be stored in an RDBMS (relational database management system) such as [MySQL](https://www.mysql.com) or [PostgreSQL](https://www.postgresql.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. The following example uses PDO and the `fetchAll()` method to return the first 1,000 rows of data from the `patients` table. Then, we'll load those samples into an [Unlabeled](datasets/unlabeled.md) dataset object using the standard constructor.
+Medium to large datasets will often be stored in an RDBMS (relational database management system) such as [MySQL](https://www.mysql.com), [PostgreSQL](https://www.postgresql.org)or [Sqlite](https://www.sqlite.org). Relational databases allow you to query large amounts of data on-the-fly and can be very flexible. PHP comes with robust relational database support through its [PDO](https://www.php.net/manual/en/book.pdo.php) interface. To iterate over the rows of an SQL table we provide an [SQL Table](extractors/sql-table.md) extractor uses the PDO interface under the hood. In the example below we'll wrap our SQL Table extractor in a [Column Picker](extractors/column-picker.md) to instantiate a new Unlabeled dataset object from a particular set of columns of the table.
+
+```php
+use Rubix\ML\Extractors\SQLTable;
+use Rubix\ML\Extractors\ColumnPicker;
+use Rubix\ML\Datasets\Unlabeled;
+use PDO;
+
+$connection = new PDO('sqlite:/example.sqlite');
+
+$extractor = new ColumnPicker(new SQLTable($connection, 'patients'), [
+    'age', 'gender', 'height', 'diagnosis',
+]);
+
+$dataset = Unlabeled::fromIterator($extractor);
+```
+
+If you need more control over your data pipeline then we recommend writing your own custom queries. The following example uses the PDO interface to execute a user-defined SQL query and instantiate a dataset object containing the same data as the example above. However, this method may be more efficient because it avoids querying for more data than you need.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
+use PDO;
 
-$pdo = new PDO('mysql:dbname=example;host=127.0.0.1');
+$pdo = new PDO('sqlite:/example.sqlite');
 
-$query = $pdo->prepare('SELECT age, gender, height, diagnosis FROM patients LIMIT 1000');
+$query = $pdo->prepare('SELECT age, gender, height, diagnosis FROM patients');
 
 $query->execute();
 
-$samples = $query->fetchAll();
+$samples = $query->fetchAll(PDO::FETCH_NUM);
 
 $dataset = new Unlabeled($samples);
 ```
