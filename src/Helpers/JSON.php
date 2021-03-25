@@ -47,7 +47,6 @@ class JSON
         $data = json_encode($value, $options, $depth);
 
         if ($data === false) {
-            var_dump($value);
             throw new JSONException(json_last_error());
         }
 
