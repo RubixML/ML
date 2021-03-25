@@ -1,6 +1,7 @@
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
     - Fixed RBX serializer string representation
+    - Prevent overwrites when instantiating Unlabeled from iterator
 
 - 0.4.0
     - Added Truncated SVD transformer

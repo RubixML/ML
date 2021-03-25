@@ -56,7 +56,9 @@ class Unlabeled extends Dataset
      */
     public static function fromIterator(iterable $iterator) : self
     {
-        return self::build(is_array($iterator) ? $iterator : iterator_to_array($iterator));
+        $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator, false);
+
+        return self::build($samples);
     }
 
     /**
