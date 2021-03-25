@@ -56,9 +56,7 @@
         "rubix/extras": "For experimental features",
         "ext-svm": "For Support Vector Machine engine (libsvm)",
         "ext-mbstring": "For fast multibyte string manipulation",
-        "ext-gd": "For image manipulation",
-        "ext-redis": "To persist models to a Redis DB",
-        "ext-igbinary": "For binary serialization of persistables"
+        "ext-gd": "For image manipulation"
     },
     "autoload": {
         "psr-4": {

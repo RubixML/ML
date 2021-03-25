@@ -27,7 +27,7 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
+- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support
 
 ## Documentation
 Read the latest docs [here](https://docs.rubixml.com).

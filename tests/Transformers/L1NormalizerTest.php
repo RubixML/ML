@@ -30,7 +30,7 @@ class L1NormalizerTest extends TestCase
     {
         $this->dataset = new Unlabeled([
             [1, 2, 3, 4],
-            [40, 20, 30, 10],
+            [40, 0, 30, 10],
             [100, 300, 200, 400],
         ]);
 
@@ -55,7 +55,7 @@ class L1NormalizerTest extends TestCase
 
         $this->assertEquals([
             [0.1, 0.2, 0.3, 0.4],
-            [0.4, 0.2, 0.3, 0.1],
+            [0.5, 0.0, 0.375, 0.125],
             [0.1, 0.3, 0.2, 0.4],
         ], $this->dataset->samples());
     }

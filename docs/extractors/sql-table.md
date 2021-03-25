@@ -1,10 +1,13 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Extractors/SQLTable.php">[source]</a></span>
 
 # SQL Table
-Efficiently iterates over the rows of a relational database table such as MySQL, PostgreSQL, and Sqlite.
+The SQL table extractor iterates over the rows of a relational database table. It works with the PHP Data Objects (PDO) interface to connect to a broad selection of databases such MySQL, PostgreSQL, and Sqlite.
 
 !!! note
-    This extractor imports the entire SQL table as-is. We recommend using your own SQL logic for more complex pipelines.
+    This extractor requires the [PDO extension](https://www.php.net/manual/en/book.pdo.php).
+
+!!! note
+    The order in which the rows are iterated over is not guaranteed. Use a custom query with `ORDER BY` statement if ordering is important.
 
 ## Parameters
 | # | Name | Default | Type | Description |

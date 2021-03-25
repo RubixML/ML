@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Extractors;
 
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -9,6 +10,10 @@ use PDO;
 
 /**
  * SQL Table
+ *
+ * The SQL table extractor iterates over the rows of a relational database table. It works with
+ * the PHP Data Objects (PDO) interface to connect to a broad selection of databases such MySQL,
+ * PostgreSQL, and Sqlite.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -45,6 +50,8 @@ class SQLTable implements Extractor
      */
     public function __construct(PDO $connection, string $table, int $batchSize = 200)
     {
+        ExtensionIsLoaded::with('PDO')->check();
+
         if (empty($table)) {
             throw new InvalidArgumentException('Table name cannot be empty.');
         }

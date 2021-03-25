@@ -244,7 +244,6 @@ nav:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
       - Flysystem: persisters/flysystem.md
-      - Redis DB: persisters/redis-db.md
       - Serializers:
         - Gzip: persisters/serializers/gzip.md
         - Native: persisters/serializers/native.md
