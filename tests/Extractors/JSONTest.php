@@ -52,7 +52,7 @@ class JSONTest extends TestCase
             ['nice', 'furry', 'loner', -5, 'not monster'],
         ];
 
-        $records = iterator_to_array($this->extractor);
+        $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
     }

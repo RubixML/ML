@@ -44,6 +44,7 @@ nav:
       - CSV: extractors/csv.md
       - JSON: extractors/json.md
       - NDJSON: extractors/ndjson.md
+      - SQL Table: extractors/sql-table.md
     - Dataset Objects:
       - API Reference: datasets/api.md
       - Generators:

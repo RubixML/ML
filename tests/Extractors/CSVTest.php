@@ -52,7 +52,7 @@ class CSVTest extends TestCase
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
         ];
 
-        $records = iterator_to_array($this->extractor);
+        $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
     }

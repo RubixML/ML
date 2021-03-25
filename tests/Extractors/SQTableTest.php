@@ -26,7 +26,7 @@ class SQLTableTest extends TestCase
      */
     protected function setUp() : void
     {
-        $connection = new PDO('sqlite:./tests/test.sqlite');
+        $connection = new PDO('sqlite:tests/test.sqlite');
 
         $this->extractor = new SQLTable($connection, 'test', 3);
     }
@@ -56,9 +56,7 @@ class SQLTableTest extends TestCase
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -5.0, 'class' => 'not monster'],
         ];
 
-        $records = iterator_to_array($this->extractor);
-
-        var_dump($records);
+        $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
     }
