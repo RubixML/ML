@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Dataset;
 
 /**
- * Train Learer
+ * Train Learner
  *
  * A routine to train a learner and then return it.
  *
