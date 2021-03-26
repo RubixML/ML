@@ -65,14 +65,14 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     protected $n = 0;
 
     /**
-     * Return the square root of a number taking zeros and negatives into consideration.
+     * Return the inverse of the standard deviation while taking zeros and negatives into consideration.
      *
-     * @param float $value
+     * @param float $variance
      * @return float
      */
-    protected static function safeSqrt(float $value) : float
+    protected static function stdInv(float $variance) : float
     {
-        return $value > 0.0 ? sqrt($value) : 1.0;
+        return $variance > 0.0 ? 1.0 / sqrt($variance) : 1.0;
     }
 
     /**
@@ -197,17 +197,17 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $stdDevs = array_map([self::class, 'safeSqrt'], $this->variances);
+        $stdInvs = array_map([self::class, 'stdInv'], $this->variances);
 
         foreach ($samples as &$sample) {
-            foreach ($stdDevs as $column => $stdDev) {
+            foreach ($stdInvs as $column => $stdInv) {
                 $value = &$sample[$column];
 
                 if ($this->center) {
                     $value -= $this->means[$column];
                 }
 
-                $value /= $stdDev;
+                $value *= $stdInv;
             }
         }
     }
