@@ -11,6 +11,7 @@
     - Hold Out validator does not randomize by default
     - Move Redis DB persister to extras package
     - Remove Loda estimate bins static method
+    - Change Grid Search base estimator param name to class
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

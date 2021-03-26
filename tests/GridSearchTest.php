@@ -106,7 +106,7 @@ class GridSearchTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'base' => KNearestNeighbors::class,
+            'class' => KNearestNeighbors::class,
             'params' => [
                 [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
             ],
