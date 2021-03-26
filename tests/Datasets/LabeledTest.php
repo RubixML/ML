@@ -60,6 +60,8 @@ class LabeledTest extends TestCase
      */
     protected function setUp() : void
     {
+        ini_set('precision', '14');
+
         $this->dataset = new Labeled(self::SAMPLES, self::LABELS, false);
 
         srand(self::RANDOM_SEED);

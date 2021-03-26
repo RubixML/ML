@@ -112,7 +112,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(?array $priors = null, float $smoothing = 1e-8)
+    public function __construct(?array $priors = null, float $smoothing = 1e-9)
     {
         $logPriors = [];
 
@@ -259,25 +259,26 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $oldVariances = $this->variances[$class];
                 $oldWeight = $this->weights[$class];
 
-                foreach ($oldVariances as &$oldVariance) {
-                    $oldVariance -= $this->epsilon;
-                }
-
                 $n = $stratum->numRows();
 
                 $means = $variances = [];
 
                 foreach ($stratum->columns() as $column => $values) {
+                    $oldMean = $oldMeans[$column];
+                    $oldVariance = $oldVariances[$column];
+
+                    $oldVariance -= $this->epsilon;
+
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $means[] = (($n * $mean)
-                        + ($oldWeight * $oldMeans[$column]))
+                        + ($oldWeight * $oldMean))
                         / ($oldWeight + $n);
 
                     $variances[] = ($oldWeight
-                        * $oldVariances[$column] + ($n * $variance)
+                        * $oldVariance + ($n * $variance)
                         + ($oldWeight / ($n * ($oldWeight + $n)))
-                        * ($n * $oldMeans[$column] - $n * $mean) ** 2)
+                        * ($n * $oldMean - $n * $mean) ** 2)
                         / ($oldWeight + $n);
                 }
 
@@ -302,7 +303,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->weights[$class] = $weight;
         }
 
-        $epsilon = $this->smoothing * max($maxVariance, EPSILON);
+        $epsilon = $this->smoothing * $maxVariance;
 
         foreach ($this->variances as &$variances) {
             foreach ($variances as &$variance) {

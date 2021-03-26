@@ -13,8 +13,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Robust Standardizer
  *
@@ -124,7 +122,7 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
                 [$median, $mad] = Stats::medianMad($values);
 
                 $this->medians[$column] = $median;
-                $this->mads[$column] = $mad ?: EPSILON;
+                $this->mads[$column] = $mad ?: 1.0;
             }
         }
     }

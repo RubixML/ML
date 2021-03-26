@@ -14,6 +14,14 @@ use Generator;
 class ParamsTest extends TestCase
 {
     /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        ini_set('precision', '14');
+    }
+
+    /**
      * @test
      */
     public function ints() : void

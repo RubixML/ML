@@ -221,10 +221,15 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Verbose, Pers
      * Preprocess the dataset and return predictions from the estimator.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
     {
+        if (!$this->trained()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $this->preprocess($dataset);
 
         return $this->base->predict($dataset);
@@ -239,6 +244,10 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Verbose, Pers
      */
     public function proba(Dataset $dataset) : array
     {
+        if (!$this->trained()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $this->preprocess($dataset);
 
         if (!$this->base instanceof Probabilistic) {

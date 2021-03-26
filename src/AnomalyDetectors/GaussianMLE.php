@@ -75,6 +75,13 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     ];
 
     /**
+     * A small portion of variance to add for smoothing.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * The number of samples that have passed through training so far.
      *
      * @var int
@@ -89,18 +96,11 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     protected $threshold;
 
     /**
-     * A small portion of variance to add for smoothing.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
      * @param float $contamination
      * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $contamination = 0.1, float $smoothing = 1e-8)
+    public function __construct(float $contamination = 0.1, float $smoothing = 1e-9)
     {
         if ($contamination < 0.0 or $contamination > 0.5) {
             throw new InvalidArgumentException('Contamination must be'
@@ -208,7 +208,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $this->variances[$column] = $variance;
         }
 
-        $epsilon = $this->smoothing * max(EPSILON, ...$this->variances);
+        $epsilon = $this->smoothing * max($this->variances);
 
         foreach ($this->variances as &$variance) {
             $variance += $epsilon;
@@ -248,7 +248,9 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             [$mean, $variance] = Stats::meanVar($values);
 
             $oldMean = $this->means[$column];
-            $oldVariance = $this->variances[$column] - $this->epsilon;
+            $oldVariance = $this->variances[$column];
+
+            $oldVariance -= $this->epsilon;
 
             $this->means[$column] = (($this->n * $oldMean)
                 + ($n * $mean)) / ($this->n + $n);
@@ -260,7 +262,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
                 / ($this->n + $n);
         }
 
-        $epsilon = $this->smoothing * max(EPSILON, ...$this->variances);
+        $epsilon = $this->smoothing * max($this->variances);
 
         foreach ($this->variances as &$variance) {
             $variance += $epsilon;

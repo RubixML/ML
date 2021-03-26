@@ -124,7 +124,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $xT = Matrix::build($dataset->samples())->transpose();
+        $xT = Matrix::quick($dataset->samples())->transpose();
 
         $eig = $xT->covariance()->eig(true);
 
