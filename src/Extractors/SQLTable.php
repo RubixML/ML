@@ -81,7 +81,7 @@ class SQLTable implements Extractor
 
         $statement->bindParam(':offset', $offset);
 
-        while (true) {
+        do {
             $success = $statement->execute();
 
             if (!$success) {
@@ -97,6 +97,6 @@ class SQLTable implements Extractor
             yield from $rows;
 
             $offset += $this->batchSize;
-        }
+        } while (count($rows) === $this->batchSize);
     }
 }
