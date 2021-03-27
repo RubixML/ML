@@ -73,7 +73,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
+    public function __construct(int $k = 5, bool $weighted = false, ?Spatial $tree = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

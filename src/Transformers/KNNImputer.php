@@ -86,7 +86,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
      */
     public function __construct(
         int $k = 5,
-        bool $weighted = true,
+        bool $weighted = false,
         string $categoricalPlaceholder = '?',
         ?Spatial $tree = null
     ) {

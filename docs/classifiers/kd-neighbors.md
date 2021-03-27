@@ -11,7 +11,7 @@ A fast K Nearest Neighbors algorithm that uses a binary search tree (BST) to div
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
+| 2 | weighted | false | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
 ## Example
@@ -20,7 +20,7 @@ use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KDNeighbors(3, false, new BallTree(40, new Minkowski()));
+$estimator = new KDNeighbors(10, false, new BallTree(40, new Minkowski()));
 ```
 
 ## Additional Methods

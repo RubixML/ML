@@ -16,6 +16,7 @@
     - Remove Dataset cast to string preview
     - Add Error Analysis error standard deviation, drop midrange
     - Naive Bayes Laplace smoothing no longer effects priors
+    - Nearest Neighbors distance weighting off by default
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

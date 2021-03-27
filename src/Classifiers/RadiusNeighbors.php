@@ -94,7 +94,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      */
     public function __construct(
         float $radius = 1.0,
-        bool $weighted = true,
+        bool $weighted = false,
         string $outlierClass = '?',
         ?Spatial $tree = null
     ) {

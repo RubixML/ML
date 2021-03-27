@@ -81,7 +81,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
+    public function __construct(float $radius = 1.0, bool $weighted = false, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'

@@ -13,7 +13,7 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighbors. |
-| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
+| 2 | weighted | false | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Example
@@ -22,7 +22,7 @@ use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new RadiusNeighborsRegressor(0.5, true, new BallTree(30, new Diagonal()));
+$estimator = new RadiusNeighborsRegressor(0.5, false, new BallTree(30, new Diagonal()));
 ```
 
 ## Additional Methods

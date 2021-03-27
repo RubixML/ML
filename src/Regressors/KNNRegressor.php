@@ -88,7 +88,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
+    public function __construct(int $k = 5, bool $weighted = false, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

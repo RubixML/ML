@@ -14,7 +14,7 @@ K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates t
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
+| 2 | weighted | false | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Example
@@ -22,7 +22,7 @@ K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates t
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$estimator = new KNNRegressor(2, false, new SafeEuclidean());
+$estimator = new KNNRegressor(5, false, new SafeEuclidean());
 ```
 
 ## Additional Methods

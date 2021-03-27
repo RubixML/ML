@@ -102,7 +102,7 @@ class ParamsTest extends TestCase
                 0.8,
             ],
             ', ',
-            '0: K Nearest Neighbors (k: 5, weighted: true, kernel: Euclidean), 1: 1, 2: 0.8',
+            '0: K Nearest Neighbors (k: 5, weighted: false, kernel: Euclidean), 1: 1, 2: 0.8',
         ];
 
         yield [
