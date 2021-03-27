@@ -560,16 +560,6 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Return the dataset object as a data table array.
-     *
-     * @return array[]
-     */
-    public function toArray() : array
-    {
-        return $this->samples;
-    }
-
-    /**
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\NDJSON;
+use Rubix\ML\Extractors\Writer;
 use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
@@ -34,6 +35,7 @@ class NDJSONTest extends TestCase
     {
         $this->assertInstanceOf(NDJSON::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(Writer::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }
@@ -41,19 +43,25 @@ class NDJSONTest extends TestCase
     /**
      * @test
      */
-    public function extract() : void
+    public function extractWrite() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
             ['attitude' => 'mean', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
-            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
-            ['mean', 'rough', 'friendly', -1, 'monster'],
-            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            ['nice', 'furry', 'loner', -5, 'not monster'],
+            ['attitude' => 'nice', 'texture' => 'rough', 'sociability' => 'friendly', 'rating' => 2.6, 'class' => 'not monster'],
+            ['attitude' => 'mean', 'texture' => 'rough', 'sociability' => 'friendly', 'rating' => -1, 'class' => 'monster'],
+            ['attitude' => 'nice', 'texture' => 'rough', 'sociability' => 'friendly', 'rating' => 2.9, 'class' => 'not monster'],
+            ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -5, 'class' => 'not monster'],
         ];
 
         $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, array_values($records));
+
+        $this->extractor->write($records, [
+            'attitude', 'texture', 'sociability', 'rating', 'class',
+        ]);
+
+        $this->assertFileExists('tests/test.ndjson');
     }
 }

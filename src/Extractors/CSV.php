@@ -9,6 +9,7 @@ use Generator;
 use function strlen;
 use function fopen;
 use function fgetcsv;
+use function fputcsv;
 use function fclose;
 use function array_combine;
 
@@ -23,8 +24,7 @@ use function array_combine;
  * > **Note:** This implementation of CSV is based on the definition in RFC 4180.
  *
  * References:
- * [1] Y. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV)
- * Files.
+ * [1] Y. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

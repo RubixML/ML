@@ -9,6 +9,7 @@ use Generator;
 
 use function fopen;
 use function fgets;
+use function fputs;
 use function fclose;
 
 /**
@@ -24,45 +25,64 @@ use function fclose;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor
+class NDJSON implements Extractor, Writer
 {
     /**
-     * The file handle.
+     * The path to the file on disk.
      *
-     * @var resource
+     * @var string
      */
-    protected $handle;
+    protected $path;
 
     /**
      * @param string $path
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(string $path)
     {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if (empty($path)) {
+            throw new InvalidArgumentException('Path cannot be empty.');
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
-        }
-
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
-        $this->handle = $handle;
+        $this->path = $path;
     }
 
     /**
-     * Clean up the file pointer.
+     * Write an iterable data table to disk.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @param string[]|null $header
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function __destruct()
+    public function write(iterable $iterator, ?array $header = null) : void
     {
-        fclose($this->handle);
+        if (!is_writable(dirname($this->path))) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        $handle = fopen($this->path, 'w');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
+
+        $line = 0;
+
+        foreach ($iterator as $row) {
+            if ($header) {
+                $row = array_combine($header, $row);
+            }
+
+            $length = fputs($handle, JSON::encode($row) . PHP_EOL);
+
+            ++$line;
+
+            if (!$length) {
+                throw new RuntimeException("Could not write row on line $line.");
+            }
+        }
+
+        fclose($handle);
     }
 
     /**
@@ -73,12 +93,24 @@ class NDJSON implements Extractor
      */
     public function getIterator() : Generator
     {
-        rewind($this->handle);
+        if (!is_file($this->path)) {
+            throw new InvalidArgumentException("Path {$this->path} is not a file.");
+        }
+
+        if (!is_readable($this->path)) {
+            throw new InvalidArgumentException("Path {$this->path} is not readable.");
+        }
+
+        $handle = fopen($this->path, 'r');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
 
         $line = 0;
 
-        while (!feof($this->handle)) {
-            $data = rtrim(fgets($this->handle) ?: '');
+        while (!feof($handle)) {
+            $data = rtrim(fgets($handle) ?: '');
 
             ++$line;
 
@@ -88,13 +120,15 @@ class NDJSON implements Extractor
 
             try {
                 yield JSON::decode($data);
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException $exception) {
                 throw new RuntimeException(
-                    "JSON Error on line $line: {$e->getMessage()}",
-                    $e->getCode(),
-                    $e
+                    "JSON Error on line $line: {$exception->getMessage()}",
+                    $exception->getCode(),
+                    $exception
                 );
             }
         }
+
+        fclose($handle);
     }
 }
