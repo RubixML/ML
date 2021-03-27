@@ -20,7 +20,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use const Rubix\ML\TWO_PI;
-use const Rubix\ML\EPSILON;
 
 /**
  * Gaussian MLE
@@ -77,7 +76,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * A small portion of variance to add for smoothing.
      *
-     * @var float
+     * @var float|null
      */
     protected $epsilon;
 

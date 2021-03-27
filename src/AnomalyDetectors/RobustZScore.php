@@ -18,7 +18,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function count;
+use function abs;
+use function max;
+use function array_map;
 
 /**
  * Robust Z-Score
@@ -44,7 +47,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     use AutotrackRevisions;
 
     /**
-     * The expected value of the MAD as n goes to ∞.
+     * The expected value of the MAD as n asymptotes.
      *
      * @var float
      */
@@ -63,6 +66,13 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      * @var float
      */
     protected $beta;
+
+    /**
+     * The amount of (epsilon) smoothing added to the median absolute deviation (MAD) of each feature.
+     *
+     * @var float
+     */
+    protected $smoothing;
 
     /**
      * The median of each feature column in the training set.
@@ -85,9 +95,10 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     /**
      * @param float $threshold
      * @param float $beta
+     * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $threshold = 3.5, float $beta = 0.5)
+    public function __construct(float $threshold = 3.5, float $beta = 0.5, float $smoothing = 1e-9)
     {
         if ($threshold <= 0.0) {
             throw new InvalidArgumentException('Threshold must be'
@@ -99,8 +110,14 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
                 . " between 0 and 1, $beta given.");
         }
 
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
+        }
+
         $this->threshold = $threshold;
         $this->beta = $beta;
+        $this->smoothing = $smoothing;
     }
 
     /**
@@ -141,6 +158,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
         return [
             'threshold' => $this->threshold,
             'beta' => $this->beta,
+            'smoothing' => $this->smoothing,
         ];
     }
 
@@ -192,7 +210,13 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
             [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;
-            $this->mads[$column] = $mad ?: EPSILON;
+            $this->mads[$column] = $mad;
+        }
+
+        $epsilon = $this->smoothing * max($this->mads);
+
+        foreach ($this->mads as &$mad) {
+            $mad += $epsilon;
         }
     }
 
@@ -255,15 +279,16 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
 
         foreach ($sample as $column => $value) {
             $scores[] = abs(
-                (self::ETA * ($value - $this->medians[$column]))
+                (self::ETA
+                * ($value - $this->medians[$column]))
                 / $this->mads[$column]
             );
         }
 
-        $z = (1.0 - $this->beta) * Stats::mean($scores)
+        $zHat = (1.0 - $this->beta) * Stats::mean($scores)
             + $this->beta * max($scores);
 
-        return $z;
+        return $zHat;
     }
 
     /**

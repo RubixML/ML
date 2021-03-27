@@ -12,6 +12,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
+use function sqrt;
 
 /**
  * Z Scale Standardizer

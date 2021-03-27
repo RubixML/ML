@@ -29,7 +29,6 @@ use function log;
 use function exp;
 
 use const Rubix\ML\TWO_PI;
-use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
 
 /**

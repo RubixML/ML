@@ -14,13 +14,14 @@ A statistical anomaly detector that uses modified Z-Scores that are robust to pr
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | threshold | 3.5 | float | The minimum Z-Score to be flagged as an anomaly. |
-| 2 | beta | 0.5 | float | The weight of the maximum per-sample Z-Score in the overall anomaly score. |
+| 2 | beta | 0.5 | float | The weight of the maximum Z-Score in the overall anomaly score. |
+| 3 | smoothing | 1e-9 | float | The amount of (epsilon) smoothing added to the MAD of each feature. |
 
 ## Example
 ```php
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 
-$estimator = new RobustZScore(3.5, 0.25);
+$estimator = new RobustZScore(3.5, 0.25, 1e-6);
 ```
 
 ## Additional Methods
