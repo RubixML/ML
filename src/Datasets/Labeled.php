@@ -5,7 +5,6 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -1042,42 +1041,5 @@ class Labeled extends Dataset
         }
 
         return $strata;
-    }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    public function __toString() : string
-    {
-        [$tRows, $tCols] = Console::size();
-
-        $m = (int) floor($tRows / 2) + 2;
-        $n = (int) floor($tCols / (3 + Console::TABLE_CELL_WIDTH)) - 1;
-
-        $m = min($this->numRows(), $m);
-        $n = min($this->numColumns(), $n);
-
-        $header = [];
-
-        for ($column = 0; $column < $n; ++$column) {
-            $header[] = "Column $column";
-        }
-
-        $header[] = 'Label';
-
-        $table = array_slice($this->samples, 0, $m);
-
-        foreach ($table as $i => &$row) {
-            $row = array_slice($row, 0, $n);
-
-            $row[] = $this->labels[$i];
-        }
-
-        array_unshift($table, $header);
-        $columnWidth = (int) floor($tCols) / count($table[0]);
-
-        return Console::table($table, $columnWidth);
     }
 }

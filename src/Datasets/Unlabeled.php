@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
@@ -594,38 +593,5 @@ class Unlabeled extends Dataset
     public function getIterator() : Generator
     {
         yield from $this->samples;
-    }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    public function __toString() : string
-    {
-        [$tRows, $tCols] = Console::size();
-
-        $m = (int) floor($tRows / 2) + 2;
-        $n = (int) floor($tCols / (3 + Console::TABLE_CELL_WIDTH));
-
-        $m = min($this->numRows(), $m);
-        $n = min($this->numColumns(), $n);
-
-        $header = [];
-
-        for ($column = 0; $column < $n; ++$column) {
-            $header[] = "Column $column";
-        }
-
-        $table = array_slice($this->samples, 0, $m);
-
-        foreach ($table as $i => &$row) {
-            $row = array_slice($row, 0, $n);
-        }
-
-        array_unshift($table, $header);
-        $columnWidth = (int) floor($tCols) / count($table[0]);
-
-        return Console::table($table, $columnWidth);
     }
 }

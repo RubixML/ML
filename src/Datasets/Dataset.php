@@ -15,7 +15,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use JsonSerializable;
 use ArrayAccess;
-use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -43,7 +42,7 @@ use const Rubix\ML\EPSILON;
  * @implements ArrayAccess<int, array>
  * @implements IteratorAggregate<int, array>
  */
-abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable, Stringable
+abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
     /**
      * The rows of samples and columns of features that make up the
@@ -774,11 +773,4 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    abstract public function __toString() : string;
 }

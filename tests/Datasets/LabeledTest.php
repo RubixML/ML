@@ -12,7 +12,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use ArrayAccess;
-use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -77,7 +76,6 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(Countable::class, $this->dataset);
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
         $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
-        $this->assertInstanceOf(Stringable::class, $this->dataset);
     }
 
     /**

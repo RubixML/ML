@@ -9,8 +9,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
 use ArrayAccess;
-use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -67,7 +67,7 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Dataset::class, $this->dataset);
         $this->assertInstanceOf(Countable::class, $this->dataset);
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
-        $this->assertInstanceOf(Stringable::class, $this->dataset);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
     }
 
     /**
