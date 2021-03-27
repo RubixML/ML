@@ -23,7 +23,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function array_count_values;
+use function array_sum;
 use function count;
+use function log;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -86,8 +89,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed negative log likelihoods of each feature conditioned on a
-     * particular class label.
+     * The precomputed negative log likelihoods of each feature conditioned on a particular class label.
      *
      * @var array[]
      */
@@ -271,12 +273,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights) + (count($this->weights) * $this->smoothing);
+            $total = array_sum($this->weights);
 
             $this->logPriors = [];
 
             foreach ($this->weights as $class => $weight) {
-                $this->logPriors[$class] = log(($weight + $this->smoothing) / $total);
+                $this->logPriors[$class] = log($weight / $total);
             }
         }
     }
