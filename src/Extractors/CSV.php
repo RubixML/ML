@@ -6,6 +6,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\iterator_first;
 use function strlen;
 use function fopen;
 use function fgetcsv;
@@ -97,10 +98,9 @@ class CSV implements Extractor, Writer
      * Write an iterable data table to disk.
      *
      * @param iterable<mixed[]> $iterator
-     * @param string[]|null $header
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function write(iterable $iterator, ?array $header = null) : void
+    public function write(iterable $iterator) : void
     {
         if (!is_writable(dirname($this->path))) {
             throw new RuntimeException("Path {$this->path} is not writable.");
@@ -114,7 +114,9 @@ class CSV implements Extractor, Writer
 
         $line = 0;
 
-        if ($header) {
+        if ($this->header) {
+            $header = array_keys(iterator_first($iterator));
+
             $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
 
             ++$line;

@@ -74,6 +74,19 @@ namespace Rubix\ML
     }
 
     /**
+     * Return the first element of an iterator.
+     *
+     * @param iterable<mixed> $iterator
+     * @return mixed
+     */
+    function iterator_first(iterable $iterator)
+    {
+        foreach ($iterator as $element) {
+            return $element;
+        }
+    }
+
+    /**
      * Emit a deprecation warning with a message.
      *
      * @param string $message

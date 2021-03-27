@@ -51,10 +51,9 @@ class NDJSON implements Extractor, Writer
      * Write an iterable data table to disk.
      *
      * @param iterable<mixed[]> $iterator
-     * @param string[]|null $header
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function write(iterable $iterator, ?array $header = null) : void
+    public function write(iterable $iterator) : void
     {
         if (!is_writable(dirname($this->path))) {
             throw new RuntimeException("Path {$this->path} is not writable.");
@@ -69,10 +68,6 @@ class NDJSON implements Extractor, Writer
         $line = 0;
 
         foreach ($iterator as $row) {
-            if ($header) {
-                $row = array_combine($header, $row);
-            }
-
             $length = fputs($handle, JSON::encode($row) . PHP_EOL);
 
             ++$line;

@@ -1,8 +1,18 @@
 # Extractors
-Extractors are data table iterators that help you import data from various source formats such as CSV, JSON, and NDJSON in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and can be used to instantiate a new [Dataset](../datasets/api.md) object by passing it to the `fromIterator()` method.
+Extractors are data table iterators that help you import data from various source formats such as CSV, NDJSON, and SQL in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and are compatible anywhere the iterable pseudotype is accepted. Extractors that implement the Writer interface can be used to save other iterators such as dataset objects and other extractors.
 
-!!! note
-    Extractors are read-only, they will never overwrite the source dataset.
+## Iterate
+Calling `foreach` on an extractor object iterates over the rows of the data table. In the example below, we'll use the [CSV](csv.md) extractor to print out the rows of the dataset to the console.
+
+```php
+use Rubix\ML\Extractors\CSV;
+
+foreach (new CSV('example.csv') as $row) {
+    print_r($row);
+}
+```
+
+We can also instantiate a new [Dataset](../datasets/api.md) object by passing an extractor to the `fromIterator()` method.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -11,20 +21,20 @@ use Rubix\ML\Extractors\NDJSON;
 $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
-### Iterate
-Extractors can also be used on their own to loop through the records of a data table. In the example below, we show how to iterate over the records of a CSV file.
+## Write to Storage
+Extractors that implement the Writer interface have an additional `write()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
 
 ```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('example.csv');
-
-foreach ($extractor as $record) {
-    // ...
-}
+public write(iterable $iterator, ?array $header = null) : void
 ```
 
-### Return an Iterator
+```php
+$extractor->write($dataset, [
+    'attitude', 'texture', 'sociability', 'rating', 'class',
+]);
+```
+
+## Return an Iterator
 To return the underlying iterator wrapped by the extractor object:
 ```php
 public getIterator() : Traversable

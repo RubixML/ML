@@ -58,9 +58,7 @@ class NDJSONTest extends TestCase
 
         $this->assertEquals($expected, array_values($records));
 
-        $this->extractor->write($records, [
-            'attitude', 'texture', 'sociability', 'rating', 'class',
-        ]);
+        $this->extractor->write($records);
 
         $this->assertFileExists('tests/test.ndjson');
     }

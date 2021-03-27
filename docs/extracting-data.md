@@ -23,39 +23,6 @@ $dataset = Labeled::fromIterator(new CSV('example.csv', true))
     ->apply(new NumericStringConverter());
 ```
 
-## JSON
-Javascript Object Notation (JSON) is a standardized lightweight plain-text format that is used to represent structured data such as objects and arrays. The records of a dataset can either be represented as a sequential array or an object with keyed properties. Since it is possible to derive the original data type from the JSON format, JSON files have the advantage of importing the data in the proper type. A downside, however, is that the entire document must be read into memory all at once.
-
-**Example**
-
-```json
-[
-    {
-        "attitude": "nice",
-        "texture": "furry",
-        "sociability": "friendly",
-        "rating": 4,
-        "class": "not monster"
-    },
-    [
-        "mean",
-        "furry",
-        "loner",
-        -1.5,
-        "monster"
-    ]
-]
-```
-
-The [JSON](extractors/json.md) extractor handles loading data from JSON files.
-
-```php
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Extractors\JSON;
-
-$dataset = Labeled::fromIterator(new JSON('example.json'));
-```
-
 ## NDJSON
 Another plain-text format called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON) can be considered a hybrid of both CSV and JSON. It contains rows of JSON arrays or objects delineated by a newline character (`\n` or `\r\n`). It has the advantage of retaining type information like JSON and can also be read into memory efficiently like CSV.
 
@@ -145,15 +112,15 @@ $samples = [
 ```
 
 ## Converting Formats
-It may be useful to convert a dataset stored in one format to another format. In the example below we'll use the [CSV](extractors/csv.md) extractor to read the data from a file in CSV format and then convert to NDJSON format using the `toNDJSON()` method on the [Dataset](datasets/api.md#encode-the-dataset) object. Then we'll write the returned encoding to a file on disk by specifying the path as an argument to the `write()` method.
+
 
 ```php
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Extractors\CSV;
 
-Labeled::fromIterator(new CSV('example.csv'))
-    ->toNDJSON()
-    ->write('example.ndjson');
+$extractor = new NDJSON('example.ndjson');
+
+$extractor->write(new CSV('example.csv'));
 ```
 
 ## Synthetic Datasets
