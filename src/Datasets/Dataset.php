@@ -393,62 +393,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Return the dataset as comma-separated values (CSV) string.
-     *
-     * @param string[]|null $header
-     * @param string $delimiter
-     * @param string $enclosure
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return \Rubix\ML\Encoding
-     */
-    public function toCSV(?array $header = null, string $delimiter = ',', string $enclosure = '"') : Encoding
-    {
-        if ($header) {
-            $cols = $this->numColumns()
-                + ($this instanceof Labeled ? 1 : 0);
-
-            if (count($header) !== $cols) {
-                throw new InvalidArgumentException('Header must have'
-                    . " $cols columns, " . count($header) . ' given.');
-            }
-        }
-
-        if (empty($delimiter)) {
-            throw new InvalidArgumentException('Delimiter must be'
-                . ' at least 1 character.');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new InvalidArgumentException('Enclosure must be'
-                . ' a single character.');
-        }
-
-        $csv = '';
-
-        if ($header) {
-            foreach ($header as $title) {
-                if (str_contains($title, $delimiter)) {
-                    $title = $enclosure . $title . $enclosure;
-                }
-            }
-
-            $csv .= implode($delimiter, $header) . PHP_EOL;
-        }
-
-        foreach ($this as $row) {
-            foreach ($row as &$value) {
-                if (str_contains($value, $delimiter)) {
-                    $value = $enclosure . $value . $enclosure;
-                }
-            }
-
-            $csv .= implode($delimiter, $row) . PHP_EOL;
-        }
-
-        return new Encoding($csv);
-    }
-
-    /**
      * Return an array of statistics such as the central tendency, dispersion
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.

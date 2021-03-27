@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
@@ -627,74 +626,6 @@ class UnlabeledTest extends TestCase
         $dataset = $this->dataset->deduplicate();
 
         $this->assertCount(6, $dataset);
-    }
-
-    /**
-     * @test
-     */
-    public function toArray() : void
-    {
-        $expected = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['mean', 'furry', 'loner', -1.5],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-            ['nice', 'furry', 'loner', -5.0],
-        ];
-
-        $this->assertEquals($expected, $this->dataset->toArray());
-    }
-
-    /**
-     * @test
-     */
-    public function toJson() : void
-    {
-        $expected = '[["nice","furry","friendly",4],["mean","furry","loner",-1.5],["nice","rough","friendly",2.6],["mean","rough","friendly",-1],["nice","rough","friendly",2.9],["nice","furry","loner",-5]]';
-
-        $encoding = $this->dataset->toJSON();
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
-    }
-
-    /**
-     * @test
-     */
-    public function toNDJSON() : void
-    {
-        $expected = '{"temperament":"nice","texture":"furry","sociability":"friendly","rating":4}' . PHP_EOL
-        . '{"temperament":"mean","texture":"furry","sociability":"loner","rating":-1.5}' . PHP_EOL
-        . '{"temperament":"nice","texture":"rough","sociability":"friendly","rating":2.6}' . PHP_EOL
-        . '{"temperament":"mean","texture":"rough","sociability":"friendly","rating":-1}' . PHP_EOL
-        . '{"temperament":"nice","texture":"rough","sociability":"friendly","rating":2.9}' . PHP_EOL
-        . '{"temperament":"nice","texture":"furry","sociability":"loner","rating":-5}' . PHP_EOL;
-
-        $encoding = $this->dataset->toNDJSON([
-            'temperament', 'texture', 'sociability', 'rating',
-        ]);
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
-    }
-
-    /**
-     * @test
-     */
-    public function toCsv() : void
-    {
-        $expected = 'nice,furry,friendly,4' . PHP_EOL
-            . 'mean,furry,loner,-1.5' . PHP_EOL
-            . 'nice,rough,friendly,2.6' . PHP_EOL
-            . 'mean,rough,friendly,-1' . PHP_EOL
-            . 'nice,rough,friendly,2.9' . PHP_EOL
-            . 'nice,furry,loner,-5' . PHP_EOL;
-
-        $encoding = $this->dataset->toCSV();
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
     }
 
     /**

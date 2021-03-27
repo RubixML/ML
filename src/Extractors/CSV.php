@@ -30,14 +30,14 @@ use function array_combine;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor
+class CSV implements Extractor, Writer
 {
     /**
-     * The file handle.
+     * The path to the file on disk.
      *
-     * @var resource
+     * @var string
      */
-    protected $handle;
+    protected $path;
 
     /**
      * Does the CSV document have a header as the first row?
@@ -66,7 +66,6 @@ class CSV implements Extractor
      * @param string $delimiter
      * @param string $enclosure
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(
         string $path,
@@ -74,12 +73,8 @@ class CSV implements Extractor
         string $delimiter = ',',
         string $enclosure = '"'
     ) {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
-        }
-
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        if (empty($path)) {
+            throw new InvalidArgumentException('Path cannot be empty.');
         }
 
         if (strlen($delimiter) !== 1) {
@@ -92,24 +87,54 @@ class CSV implements Extractor
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
-        $this->handle = $handle;
+        $this->path = $path;
         $this->header = $header;
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
     }
 
     /**
-     * Clean up the file pointer.
+     * Write an iterable data table to disk.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @param string[]|null $header
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function __destruct()
+    public function write(iterable $iterator, ?array $header = null) : void
     {
-        fclose($this->handle);
+        if (!is_writable(dirname($this->path))) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        $handle = fopen($this->path, 'w');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
+
+        $line = 0;
+
+        if ($header) {
+            $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
+
+            ++$line;
+
+            if (!$length) {
+                throw new RuntimeException("Could not write header on line $line.");
+            }
+        }
+
+        foreach ($iterator as $row) {
+            $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure);
+
+            ++$line;
+
+            if (!$length) {
+                throw new RuntimeException("Could not write row on line $line.");
+            }
+        }
+
+        fclose($handle);
     }
 
     /**
@@ -120,22 +145,34 @@ class CSV implements Extractor
      */
     public function getIterator() : Generator
     {
-        rewind($this->handle);
+        if (!is_file($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not a file.");
+        }
+
+        if (!is_readable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not readable.");
+        }
+
+        $handle = fopen($this->path, 'r');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
 
         $line = 0;
 
         if ($this->header) {
-            $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
-
-            if (!$header) {
-                throw new RuntimeException('Header not found on the first line.');
-            }
+            $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
 
             ++$line;
+
+            if (!$header) {
+                throw new RuntimeException("Header not found on line $line.");
+            }
         }
 
-        while (!feof($this->handle)) {
-            $record = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
+        while (!feof($handle)) {
+            $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
 
             ++$line;
 
@@ -153,5 +190,7 @@ class CSV implements Extractor
 
             yield $record;
         }
+
+        fclose($handle);
     }
 }
