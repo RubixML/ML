@@ -71,17 +71,6 @@ class Stats
     }
 
     /**
-     * Return the midrange of a set of values.
-     *
-     * @param mixed[] $values
-     * @return float
-     */
-    public static function midrange(array $values) : float
-    {
-        return 0.5 * (min($values) + max($values));
-    }
-
-    /**
      * Compute the variance of a set of values given a mean and n degrees of
      * freedom.
      *

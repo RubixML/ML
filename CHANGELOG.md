@@ -13,6 +13,7 @@
     - Remove Loda estimate bins static method
     - Change Grid Search base estimator param name to class
     - Remove Dataset cast to string preview
+    - Add Error Analysis error standard deviation, drop midrange
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
