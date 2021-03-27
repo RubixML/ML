@@ -11,7 +11,7 @@ Gaussian Naive Bayes is a version of the [Naive Bayes](naive-bayes.md) classifie
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | priors | null | array | The class prior probabilities as an associative array with class labels as keys and their prior probabilities as values totalling 1. If null, then priors will automatically be computed from the training data. |
-| 2 | smoothing | 1e-9 | float | The amount of (epsilon) smoothing added to the variance of each feature. |
+| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature. |
 
 ## Example
 ```php

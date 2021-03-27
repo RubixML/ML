@@ -64,7 +64,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     protected $fitPriors;
 
     /**
-     * The amount of (Laplace) smoothing added to the probabilities.
+     * The amount of Laplace smoothing added to the probabilities.
      *
      * @var float
      */

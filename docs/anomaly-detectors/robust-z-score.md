@@ -15,7 +15,7 @@ A statistical anomaly detector that uses modified Z-Scores that are robust to pr
 |---|---|---|---|---|
 | 1 | threshold | 3.5 | float | The minimum Z-Score to be flagged as an anomaly. |
 | 2 | beta | 0.5 | float | The weight of the maximum Z-Score in the overall anomaly score. |
-| 3 | smoothing | 1e-9 | float | The amount of (epsilon) smoothing added to the MAD of each feature. |
+| 3 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the MAD of each feature. |
 
 ## Example
 ```php

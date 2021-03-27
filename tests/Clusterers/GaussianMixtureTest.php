@@ -80,7 +80,7 @@ class GaussianMixtureTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new GaussianMixture(3, 100, 1e-3, new KMC2(50));
+        $this->estimator = new GaussianMixture(3, 1e-9, 100, 1e-3, new KMC2(50));
 
         $this->metric = new VMeasure();
 
@@ -137,6 +137,7 @@ class GaussianMixtureTest extends TestCase
     {
         $expected = [
             'k' => 3,
+            'smoothing' => 1e-9,
             'epochs' => 100,
             'min change' => 1e-3,
             'seeder' => new KMC2(50),

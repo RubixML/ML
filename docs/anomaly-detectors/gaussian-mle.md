@@ -11,7 +11,7 @@ The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by comp
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
-| 2 | smoothing | 1e-9 | float | The amount of (epsilon) smoothing added to the variance of each feature. |
+| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature. |
 
 ## Example
 ```php

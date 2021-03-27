@@ -36,7 +36,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     use AutotrackRevisions;
 
     /**
-     * The amount of additive (Laplace) smoothing to add to the inverse document
+     * The amount of additive Laplace smoothing to add to the inverse document
      * frequencies (IDFs).
      *
      * @var float

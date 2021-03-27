@@ -68,7 +68,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     protected $beta;
 
     /**
-     * The amount of (epsilon) smoothing added to the median absolute deviation (MAD) of each feature.
+     * The amount of epsilon smoothing added to the median absolute deviation (MAD) of each feature.
      *
      * @var float
      */

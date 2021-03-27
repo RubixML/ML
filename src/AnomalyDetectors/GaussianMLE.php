@@ -49,7 +49,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     protected $contamination;
 
     /**
-     * The amount of (epsilon) smoothing added to the variance of each feature.
+     * The amount of epsilon smoothing added to the variance of each feature.
      *
      * @var float
      */

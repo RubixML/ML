@@ -1,5 +1,5 @@
 - 1.0.0-beta
-    - Added variance smoothing to Gaussian NB and MLE
+    - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score
     - Added SQL Table dataset extractor
     - Changed Word Count Vectorizer DF constraints to proportions
@@ -79,7 +79,7 @@
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners
-    - TF-IDF Transformer additive (Laplace) smoothing now variable
+    - TF-IDF Transformer additive Laplace smoothing now variable
     - Added instability detection to gradient-based learners
     - Gradient Boost validation set holdout can now be 0
     - Specifications now extend base class

@@ -66,7 +66,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     protected $fitPriors;
 
     /**
-     * The amount of (epsilon) smoothing added to the variance of each feature.
+     * The amount of epsilon smoothing added to the variance of each feature.
      *
      * @var float
      */
