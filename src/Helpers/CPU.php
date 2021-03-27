@@ -66,4 +66,20 @@ class CPU
                     . ' of processor cores.');
         }
     }
+
+    /**
+     * Return the estimated machine epsilon.
+     *
+     * @return float
+     */
+    public static function epsilon() : float
+    {
+        $epsilon = 1.0;
+
+        while (1.0 + $epsilon !== 1.0) {
+            $epsilon *= 0.5;
+        }
+
+        return $epsilon;
+    }
 }
