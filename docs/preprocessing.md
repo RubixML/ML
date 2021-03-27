@@ -252,10 +252,12 @@ $dataset->deduplicate();
     The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
-If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.
+Since data objects are iterators, to save a dataset object, you can pass it to the `write()` method of a [Writable](extractors/api.md) extractor.
 
 ```php
-use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Extractors\NDJSON;
 
-$dataset->apply(new MissingDataImputer())->toCSV()->write('dataset.csv');
+$extractor = new NDJSON('example.ndjson');
+
+$extractor->write($dataset);
 ```

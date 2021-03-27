@@ -17,17 +17,10 @@ class JSONTest extends TestCase
      */
     public function decode() : void
     {
-        $data = (string) file_get_contents('tests/test.json');
-
-        $actual = JSON::decode($data);
+        $actual = JSON::decode('{"attitude":"nice","texture":"furry","sociability":"friendly","rating":4,"class":"not monster"}');
 
         $expected = [
-            ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],
-            ['attitude' => 'mean', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => -1.5, 'class' => 'monster'],
-            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
-            ['mean', 'rough', 'friendly', -1, 'monster'],
-            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            ['nice', 'furry', 'loner', -5, 'not monster'],
+            'attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster',
         ];
 
         $this->assertSame($expected, $actual);

@@ -3,6 +3,7 @@
 # Column Picker
 An extractor that wraps another iterator and selects and reorders the columns of the data table according to the keys specified by the user. The key of a column may either be a string or a column number (integer) depending on the way the columns are indexed in the base iterator.
 
+**Interfaces:** [Extractor](api.md)
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
