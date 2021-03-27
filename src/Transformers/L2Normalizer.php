@@ -36,7 +36,7 @@ class L2Normalizer implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param list<array> $samples
+     * @param list<list<mixed>> $samples
      */
     public function transform(array &$samples) : void
     {

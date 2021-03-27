@@ -147,7 +147,7 @@ class KBestFeatureSelector implements Transformer, Stateful, Persistable
     /**
      * Transform the dataset in place.
      *
-     * @param list<array> $samples
+     * @param list<list<mixed>> $samples
      * @throws \RuntimeException
      */
     public function transform(array &$samples) : void

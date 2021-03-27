@@ -165,7 +165,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     /**
      * Transform the dataset in place.
      *
-     * @param list<array> $samples
+     * @param list<list<mixed>> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function transform(array &$samples) : void
