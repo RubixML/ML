@@ -25,7 +25,7 @@ interface Transformer extends Stringable
     /**
      * Transform the dataset in place.
      *
-     * @param list<array> $samples
+     * @param list<list<mixed>> $samples
      */
     public function transform(array &$samples) : void;
 }
