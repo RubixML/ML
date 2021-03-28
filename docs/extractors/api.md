@@ -1,5 +1,5 @@
 # Extractors
-Extractors are data table iterators that help you import data from various source formats such as CSV, NDJSON, and SQL in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and are compatible anywhere the iterable pseudotype is accepted. Extractors that implement the Writer interface can be used to save other iterators such as dataset objects and other extractors.
+Extractors are data table iterators that help you import data from various source formats such as CSV, NDJSON, and SQL in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and are compatible anywhere the iterable pseudotype is accepted. Extractors that implement the Writable interface can be used to save other iterators such as dataset objects and other extractors.
 
 ## Iterate
 Calling `foreach` on an extractor object iterates over the rows of the data table. In the example below, we'll use the [CSV](csv.md) extractor to print out the rows of the dataset to the console.
@@ -22,17 +22,18 @@ $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
 ## Write to Storage
-Extractors that implement the Writer interface have an additional `write()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
+Extractors that implement the Writable interface have an additional `write()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
 
 ```php
 public write(iterable $iterator, ?array $header = null) : void
 ```
 
 ```php
-$extractor->write($dataset, [
-    'attitude', 'texture', 'sociability', 'rating', 'class',
-]);
+$extractor->write($dataset);
 ```
+
+!!! note
+    The extractor will overwrite any existing data if the file or database already exists.
 
 ## Return an Iterator
 To return the underlying iterator wrapped by the extractor object:

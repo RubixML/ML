@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\NDJSON;
-use Rubix\ML\Extractors\Writer;
+use Rubix\ML\Extractors\Writable;
 use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
@@ -35,7 +35,7 @@ class NDJSONTest extends TestCase
     {
         $this->assertInstanceOf(NDJSON::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(Writer::class, $this->extractor);
+        $this->assertInstanceOf(Writable::class, $this->extractor);
         $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
         $this->assertInstanceOf(Traversable::class, $this->extractor);
     }

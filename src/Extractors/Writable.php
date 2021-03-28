@@ -3,19 +3,18 @@
 namespace Rubix\ML\Extractors;
 
 /**
- * Writer
+ * Writable
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Writer
+interface Writable
 {
     /**
      * Write an iterable data table to disk.
      *
      * @param iterable<mixed[]> $iterator
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function write(iterable $iterator) : void;
 }

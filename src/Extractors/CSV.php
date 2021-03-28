@@ -31,7 +31,7 @@ use function array_combine;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor, Writer
+class CSV implements Extractor, Writable
 {
     /**
      * The path to the file on disk.
@@ -102,7 +102,11 @@ class CSV implements Extractor, Writer
      */
     public function write(iterable $iterator) : void
     {
-        if (!is_writable(dirname($this->path))) {
+        if (is_file($this->path) and !is_writable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        if (!file_exists($this->path) and !is_writable(dirname($this->path))) {
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
@@ -112,28 +116,28 @@ class CSV implements Extractor, Writer
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 0;
+        $line = 1;
 
         if ($this->header) {
             $header = array_keys(iterator_first($iterator));
 
             $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
 
-            ++$line;
-
             if (!$length) {
                 throw new RuntimeException("Could not write header on line $line.");
             }
+
+            ++$line;
         }
 
         foreach ($iterator as $row) {
             $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure);
 
-            ++$line;
-
             if (!$length) {
                 throw new RuntimeException("Could not write row on line $line.");
             }
+
+            ++$line;
         }
 
         fclose($handle);

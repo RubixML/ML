@@ -6,7 +6,7 @@
 !!! note
     Empty lines are ignored by the parser.
 
-**Interfaces:** [Extractor](api.md), [Writer](api.md)
+**Interfaces:** [Extractor](api.md), [Writable](api.md)
 
 ## Parameters
 | # | Name | Default | Type | Description |

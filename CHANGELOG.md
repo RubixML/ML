@@ -1,10 +1,11 @@
 - 1.0.0-beta
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score
+    - Added Writable extractor interface
+    - NDJSON and CSV extractors are now Writable
     - Added SQL Table dataset extractor
     - Changed Word Count Vectorizer DF constraints to proportions
     - Change order of Naive Bayes hyper-parameters
-    - Promoted the Other namespace
     - Persisters use RBX serializer by default
     - Removed previously deprecated portions of the API
     - Removed Embedder interface and namespace
@@ -17,6 +18,8 @@
     - Add Error Analysis error standard deviation, drop midrange
     - Naive Bayes Laplace smoothing no longer effects priors
     - Nearest Neighbors distance weighting off by default
+    - Promoted the Other namespace
+    - Moved Flysystem persister to the Extras package
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

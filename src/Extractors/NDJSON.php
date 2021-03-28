@@ -25,7 +25,7 @@ use function fclose;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor, Writer
+class NDJSON implements Extractor, Writable
 {
     /**
      * The path to the file on disk.

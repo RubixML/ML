@@ -6,7 +6,7 @@ A plain-text format that use newlines to delineate rows and a user-specified del
 !!! note
     This implementation of CSV is based on the definition in [RFC 4180](https://tools.ietf.org/html/rfc4180).
 
-**Interfaces:** [Extractor](api.md), [Writer](api.md)
+**Interfaces:** [Extractor](api.md), [Writable](api.md)
 
 ## Parameters
 | # | Name | Default | Type | Description |
