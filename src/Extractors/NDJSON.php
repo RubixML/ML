@@ -7,10 +7,15 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function is_dir;
+use function is_file;
+use function is_readable;
+use function is_writable;
 use function fopen;
 use function fgets;
 use function fputs;
 use function fclose;
+use function rtrim;
 
 /**
  * NDJSON
@@ -44,6 +49,10 @@ class NDJSON implements Extractor, Writable
             throw new InvalidArgumentException('Path cannot be empty.');
         }
 
+        if (is_dir($path)) {
+            throw new InvalidArgumentException('Path must be to a file, folder given.');
+        }
+
         $this->path = $path;
     }
 
@@ -55,7 +64,11 @@ class NDJSON implements Extractor, Writable
      */
     public function write(iterable $iterator) : void
     {
-        if (!is_writable(dirname($this->path))) {
+        if (is_file($this->path) and !is_writable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 

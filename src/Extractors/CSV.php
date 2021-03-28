@@ -7,12 +7,16 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use function Rubix\ML\iterator_first;
-use function strlen;
+use function is_dir;
+use function is_file;
+use function is_readable;
+use function is_writable;
 use function fopen;
 use function fgetcsv;
 use function fputcsv;
 use function fclose;
 use function array_combine;
+use function strlen;
 
 /**
  * CSV
@@ -78,6 +82,10 @@ class CSV implements Extractor, Writable
             throw new InvalidArgumentException('Path cannot be empty.');
         }
 
+        if (is_dir($path)) {
+            throw new InvalidArgumentException('Path must be to a file, folder given.');
+        }
+
         if (strlen($delimiter) !== 1) {
             throw new InvalidArgumentException('Delimiter must be'
                 . ' a single character, ' . strlen($delimiter) . ' given.');
@@ -106,7 +114,7 @@ class CSV implements Extractor, Writable
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
-        if (!file_exists($this->path) and !is_writable(dirname($this->path))) {
+        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 

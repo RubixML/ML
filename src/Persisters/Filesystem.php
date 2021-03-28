@@ -10,7 +10,13 @@ use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function is_dir;
 use function is_file;
+use function is_readable;
+use function is_writable;
+use function file_get_contents;
+use function file_put_contents;
+use function time;
 
 /**
  * Filesystem
@@ -65,6 +71,10 @@ class Filesystem implements Persister
             throw new InvalidArgumentException('Path cannot be empty.');
         }
 
+        if (is_dir($path)) {
+            throw new InvalidArgumentException('Path must be to a file, folder given.');
+        }
+
         $this->path = $path;
         $this->history = $history;
         $this->serializer = $serializer ?? new RBX();
@@ -93,7 +103,7 @@ class Filesystem implements Persister
 
             $num = 0;
 
-            while (file_exists($filename)) {
+            while (is_file($filename)) {
                 $filename = "{$this->path}-$timestamp-" . ++$num . '.' . self::HISTORY_EXT;
             }
 
