@@ -9,6 +9,8 @@ The SQL table extractor iterates over the rows of a relational database table. I
 !!! note
     The order in which the rows are iterated over is not guaranteed. Use a custom query with `ORDER BY` statement if ordering is important.
 
+**Interfaces:** [Extractor](api.md)
+
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|

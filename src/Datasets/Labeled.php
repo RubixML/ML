@@ -898,7 +898,7 @@ class Labeled extends Dataset
      */
     public function deduplicate() : self
     {
-        $table = array_unique($this->toArray(), SORT_REGULAR);
+        $table = array_unique(iterator_to_array($this), SORT_REGULAR);
 
         $this->samples = array_values(array_intersect_key($this->samples, $table));
         $this->labels = array_values(array_intersect_key($this->labels, $table));
@@ -979,16 +979,6 @@ class Labeled extends Dataset
         }
 
         return new Report($desc);
-    }
-
-    /**
-     * Return the dataset object as a data table array.
-     *
-     * @return array[]
-     */
-    public function toArray() : array
-    {
-        return iterator_to_array($this->getIterator());
     }
 
     /**

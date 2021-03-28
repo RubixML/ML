@@ -42,7 +42,6 @@ nav:
       - API Reference: extractors/api.md
       - Column Picker: extractors/column-picker.md
       - CSV: extractors/csv.md
-      - JSON: extractors/json.md
       - NDJSON: extractors/ndjson.md
       - SQL Table: extractors/sql-table.md
     - Dataset Objects:
@@ -243,7 +242,6 @@ nav:
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
-      - Flysystem: persisters/flysystem.md
       - Serializers:
         - Gzip: persisters/serializers/gzip.md
         - Native: persisters/serializers/native.md
