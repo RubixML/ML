@@ -95,7 +95,7 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
 | [Sparse Random Projector](transformers/sparse-random-projector.md) | | ● | |
 | [Truncated SVD](transformers/truncated-svd.md) | | ● | |
-| [t-SNE](embedders/t-sne.md) | | | |
+| [t-SNE](transformers/t-sne.md) | | | |
 
 ## Feature Selection
 Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
@@ -252,10 +252,12 @@ $dataset->deduplicate();
     The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
-If you ever want to preprocess a dataset and then save it for later you can do so by calling one of the conversion methods (`toCSV()`, `toNDJSON()`) on the [Dataset](datasets/api.md#encode-the-dataset) object. Then, call the `write()` method on the returned encoding object to save the data to a file at a given path like in the example below.
+Since data objects are iterators, to save a dataset object, you can pass it to the `write()` method of a [Writable](extractors/api.md) extractor.
 
 ```php
-use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Extractors\NDJSON;
 
-$dataset->apply(new MissingDataImputer())->toCSV()->write('dataset.csv');
+$extractor = new NDJSON('example.ndjson');
+
+$extractor->write($dataset);
 ```

@@ -4,15 +4,13 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Console;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use ErrorException;
 use Generator;
 
-use function Rubix\ML\warn_deprecated;
 use function count;
 use function get_class;
 use function gettype;
@@ -395,21 +393,6 @@ class Labeled extends Dataset
         }
 
         return self::quick($samples, $this->labels);
-    }
-
-    /**
-     * Merge the columns of this dataset with another dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return self
-     */
-    public function augment(Dataset $dataset) : self
-    {
-        warn_deprecated('Augment() is deprecated, use join() instead.');
-
-        return $this->join($dataset);
     }
 
     /**
@@ -915,7 +898,7 @@ class Labeled extends Dataset
      */
     public function deduplicate() : self
     {
-        $table = array_unique($this->toArray(), SORT_REGULAR);
+        $table = array_unique(iterator_to_array($this), SORT_REGULAR);
 
         $this->samples = array_values(array_intersect_key($this->samples, $table));
         $this->labels = array_values(array_intersect_key($this->labels, $table));
@@ -999,16 +982,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return the dataset object as a data table array.
-     *
-     * @return array[]
-     */
-    public function toArray() : array
-    {
-        return iterator_to_array($this->getIterator());
-    }
-
-    /**
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
@@ -1058,42 +1031,5 @@ class Labeled extends Dataset
         }
 
         return $strata;
-    }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    public function __toString() : string
-    {
-        [$tRows, $tCols] = Console::size();
-
-        $m = (int) floor($tRows / 2) + 2;
-        $n = (int) floor($tCols / (3 + Console::TABLE_CELL_WIDTH)) - 1;
-
-        $m = min($this->numRows(), $m);
-        $n = min($this->numColumns(), $n);
-
-        $header = [];
-
-        for ($column = 0; $column < $n; ++$column) {
-            $header[] = "Column $column";
-        }
-
-        $header[] = 'Label';
-
-        $table = array_slice($this->samples, 0, $m);
-
-        foreach ($table as $i => &$row) {
-            $row = array_slice($row, 0, $n);
-
-            $row[] = $this->labels[$i];
-        }
-
-        array_unshift($table, $header);
-        $columnWidth = (int) floor($tCols) / count($table[0]);
-
-        return Console::table($table, $columnWidth);
     }
 }

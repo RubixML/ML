@@ -7,12 +7,11 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function Rubix\ML\warn_deprecated;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
@@ -48,20 +47,6 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
      * @var \Tensor\Matrix|null
      */
     protected $eigenvectors;
-
-    /**
-     * The amount of variance that is preserved by the transformation.
-     *
-     * @var float|null
-     */
-    protected $explainedVar;
-
-    /**
-     * The amount of variance lost by discarding the noise components.
-     *
-     * @var float|null
-     */
-    protected $noiseVar;
 
     /**
      * The percentage of information lost due to the transformation.
@@ -109,34 +94,6 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
     }
 
     /**
-     * Return the amount of variance that has been preserved by the transformation.
-     *
-     * @deprecated
-     *
-     * @return float|null
-     */
-    public function explainedVar() : ?float
-    {
-        warn_deprecated('ExplainedVar() is deprecated, use lossiness() instead.');
-
-        return $this->explainedVar;
-    }
-
-    /**
-     * Return the amount of variance lost by discarding the noise components.
-     *
-     * @deprecated
-     *
-     * @return float|null
-     */
-    public function noiseVar() : ?float
-    {
-        warn_deprecated('NoiseVar() is deprecated, use lossiness() instead.');
-
-        return $this->noiseVar;
-    }
-
-    /**
      * Return the percentage of information lost due to the transformation.
      *
      * @return float|null
@@ -171,10 +128,12 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         $sW = Matrix::zeros($n, $n);
 
         foreach ($dataset->stratify() as $stratum) {
-            $sW = Matrix::build($stratum->samples())
+            $prior = $stratum->numRows() / $m;
+
+            $sW = Matrix::quick($stratum->samples())
                 ->transpose()
                 ->covariance()
-                ->multiply($stratum->numRows() / $m)
+                ->multiply($prior)
                 ->add($sW);
         }
 
@@ -196,15 +155,11 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
 
         $eigenvectors = Matrix::quick($eigenvectors)->transpose();
 
-        $explainedVariance = array_sum($eigenvalues);
-        $noiseVariance = $totalVariance - $explainedVariance;
+        $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->explainedVar = $explainedVariance;
-        $this->noiseVar = $noiseVariance;
-        $this->lossiness = $lossiness;
-
         $this->eigenvectors = $eigenvectors;
+        $this->lossiness = $lossiness;
     }
 
     /**

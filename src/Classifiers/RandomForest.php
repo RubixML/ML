@@ -9,16 +9,14 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Backends\Tasks\Predict;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Backends\Tasks\TrainLearner;
-use Rubix\ML\Other\Traits\Multiprocessing;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -50,7 +48,7 @@ use function in_array;
  */
 class RandomForest implements Estimator, Learner, Probabilistic, Parallel, RanksFeatures, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, PredictsSingle, ProbaSingle;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The class names of the learners that are compatible with the ensemble.

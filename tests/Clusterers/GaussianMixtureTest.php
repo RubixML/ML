@@ -9,8 +9,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\GaussianMixture;
@@ -80,7 +80,7 @@ class GaussianMixtureTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new GaussianMixture(3, 100, 1e-3, new KMC2(50));
+        $this->estimator = new GaussianMixture(3, 1e-9, 100, 1e-3, new KMC2(50));
 
         $this->metric = new VMeasure();
 
@@ -137,8 +137,9 @@ class GaussianMixtureTest extends TestCase
     {
         $expected = [
             'k' => 3,
+            'smoothing' => 1e-9,
             'epochs' => 100,
-            'min_change' => 1e-3,
+            'min change' => 1e-3,
             'seeder' => new KMC2(50),
         ];
 

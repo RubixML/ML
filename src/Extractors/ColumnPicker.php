@@ -27,20 +27,20 @@ class ColumnPicker implements Extractor
     protected $iterator;
 
     /**
-     * The string and/or integer keys of the columns to iterate over.
+     * The string and/or integer keys of the columns to pick and reorder from the table.
      *
-     * @var (string|int)[]
+     * @var list<string|int>
      */
-    protected $keys;
+    protected $columns;
 
     /**
      * @param iterable<mixed[]> $iterator
-     * @param (string|int)[] $keys
+     * @param (string|int)[] $columns
      */
-    public function __construct(iterable $iterator, array $keys)
+    public function __construct(iterable $iterator, array $columns)
     {
         $this->iterator = $iterator;
-        $this->keys = $keys;
+        $this->columns = array_values($columns);
     }
 
     /**
@@ -53,13 +53,13 @@ class ColumnPicker implements Extractor
         foreach ($this->iterator as $i => $record) {
             $row = [];
 
-            foreach ($this->keys as $key) {
-                if (!isset($record[$key])) {
-                    throw new RuntimeException("Column '$key' not found"
+            foreach ($this->columns as $column) {
+                if (!isset($record[$column])) {
+                    throw new RuntimeException("Column '$column' not found"
                         . " at row offset $i.");
                 }
 
-                $row[$key] = $record[$key];
+                $row[$column] = $record[$column];
             }
 
             yield $row;

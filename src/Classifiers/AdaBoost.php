@@ -8,12 +8,10 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -52,7 +50,7 @@ use const Rubix\ML\EPSILON;
  */
 class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, ProbaSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The minimum size of each training subset.
@@ -236,7 +234,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'rate' => $this->rate,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
         ];
     }

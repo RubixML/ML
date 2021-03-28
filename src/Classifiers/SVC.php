@@ -6,10 +6,10 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -125,7 +125,7 @@ class SVC implements Estimator, Learner
             'kernel' => $kernel,
             'shrinking' => $shrinking,
             'tolerance' => $tolerance,
-            'cache_size' => $cacheSize,
+            'cache size' => $cacheSize,
         ];
     }
 

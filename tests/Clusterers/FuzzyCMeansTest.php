@@ -9,9 +9,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\FuzzyCMeans;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -140,7 +140,7 @@ class FuzzyCMeansTest extends TestCase
             'c' => 3,
             'fuzz' => 2.0,
             'epochs' => 300,
-            'min_change' => 1e-4,
+            'min change' => 1e-4,
             'kernel' => new Euclidean(),
             'seeder' => new Random(),
         ];

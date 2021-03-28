@@ -6,8 +6,8 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\OneHotEncoder;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers

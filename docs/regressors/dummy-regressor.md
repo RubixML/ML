@@ -15,7 +15,7 @@ A regressor that makes predictions based on a user-defined guessing strategy usi
 ## Example
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Other\Strategies\Percentile;
+use Rubix\ML\Strategies\Percentile;
 
 $estimator = new DummyRegressor(new Percentile(56.5));
 ```

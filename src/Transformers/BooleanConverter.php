@@ -92,6 +92,6 @@ class BooleanConverter implements Transformer
      */
     public function __toString() : string
     {
-        return "Boolean Converter (true_value: {$this->trueValue}, false_value: {$this->falseValue})";
+        return "Boolean Converter (true value: {$this->trueValue}, false value: {$this->falseValue})";
     }
 }

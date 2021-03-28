@@ -4,14 +4,14 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\NaNSafe;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -86,7 +86,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
      */
     public function __construct(
         int $k = 5,
-        bool $weighted = true,
+        bool $weighted = false,
         string $categoricalPlaceholder = '?',
         ?Spatial $tree = null
     ) {
@@ -274,7 +274,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
     public function __toString() : string
     {
         return "KNN Imputer (k: {$this->k}, weighted: {$this->weighted},"
-            . " categorical_placeholder: {$this->categoricalPlaceholder},"
+            . " categorical placeholder: {$this->categoricalPlaceholder},"
             . " tree: {$this->tree})";
     }
 }

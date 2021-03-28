@@ -9,15 +9,14 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -58,7 +57,7 @@ use function in_array;
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The class names of the compatible learners to used as boosters.
@@ -293,9 +292,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'rate' => $this->rate,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'hold_out' => $this->holdOut,
+            'hold out' => $this->holdOut,
             'metric' => $this->metric,
             'base' => $this->base,
         ];

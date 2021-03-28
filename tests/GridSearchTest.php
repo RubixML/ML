@@ -11,7 +11,7 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Other\Loggers\BlackHole;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -106,7 +106,7 @@ class GridSearchTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'base' => KNearestNeighbors::class,
+            'class' => KNearestNeighbors::class,
             'params' => [
                 [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
             ],

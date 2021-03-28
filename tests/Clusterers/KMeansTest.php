@@ -11,8 +11,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
@@ -140,9 +140,9 @@ class KMeansTest extends TestCase
     {
         $expected = [
             'k' => 3,
-            'batch_size' => 100,
+            'batch size' => 100,
             'epochs' => 300,
-            'min_change' => 1e-4,
+            'min change' => 1e-4,
             'window' => 5,
             'kernel' => new Euclidean(),
             'seeder' => new PlusPlus(),

@@ -64,7 +64,7 @@ class AdaMax extends Adam
      */
     public function __toString() : string
     {
-        return "AdaMax (rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
-            . " norm_decay: {$this->normDecay})";
+        return "AdaMax (rate: {$this->rate}, momentum decay: {$this->momentumDecay},"
+            . " norm decay: {$this->normDecay})";
     }
 }

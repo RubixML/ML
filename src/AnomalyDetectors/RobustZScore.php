@@ -3,16 +3,14 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -20,9 +18,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function Rubix\ML\warn_deprecated;
-
-use const Rubix\ML\EPSILON;
+use function count;
+use function abs;
+use function max;
+use function array_map;
 
 /**
  * Robust Z-Score
@@ -33,7 +32,7 @@ use const Rubix\ML\EPSILON;
  * more sensitive to outliers. Anomalies are flagged if their final weighted Z-Score exceeds a
  * user-defined threshold.
  *
- * > **Note:** An alpha value of 1 means the estimator only considers the maximum absolute Z-Score,
+ * > **Note:** A beta value of 1 means the estimator only considers the maximum absolute Z-Score,
  * whereas a setting of 0 indicates that only the average Z-Score factors into the final score.
  *
  * References:
@@ -43,12 +42,12 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
+class RobustZScore implements Estimator, Learner, Scoring, Persistable
 {
-    use AutotrackRevisions, RanksSingle;
+    use AutotrackRevisions;
 
     /**
-     * The expected value of the MAD as n goes to ∞.
+     * The expected value of the MAD as n asymptotes.
      *
      * @var float
      */
@@ -66,7 +65,14 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
      *
      * @var float
      */
-    protected $alpha;
+    protected $beta;
+
+    /**
+     * The amount of epsilon smoothing added to the median absolute deviation (MAD) of each feature.
+     *
+     * @var float
+     */
+    protected $smoothing;
 
     /**
      * The median of each feature column in the training set.
@@ -88,23 +94,30 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
 
     /**
      * @param float $threshold
-     * @param float $alpha
+     * @param float $beta
+     * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $threshold = 3.5, float $alpha = 0.5)
+    public function __construct(float $threshold = 3.5, float $beta = 0.5, float $smoothing = 1e-9)
     {
         if ($threshold <= 0.0) {
             throw new InvalidArgumentException('Threshold must be'
                 . " greater than 0, $threshold given.");
         }
 
-        if ($alpha < 0.0 or $alpha > 1.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " between 0 and 1, $alpha given.");
+        if ($beta < 0.0 or $beta > 1.0) {
+            throw new InvalidArgumentException('Beta must be'
+                . " between 0 and 1, $beta given.");
+        }
+
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
         }
 
         $this->threshold = $threshold;
-        $this->alpha = $alpha;
+        $this->beta = $beta;
+        $this->smoothing = $smoothing;
     }
 
     /**
@@ -144,7 +157,8 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
     {
         return [
             'threshold' => $this->threshold,
-            'alpha' => $this->alpha,
+            'beta' => $this->beta,
+            'smoothing' => $this->smoothing,
         ];
     }
 
@@ -196,7 +210,13 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
             [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;
-            $this->mads[$column] = $mad ?: EPSILON;
+            $this->mads[$column] = $mad;
+        }
+
+        $epsilon = $this->smoothing * max($this->mads);
+
+        foreach ($this->mads as &$mad) {
+            $mad += $epsilon;
         }
     }
 
@@ -248,21 +268,6 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
     }
 
     /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float>
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
-    }
-
-    /**
      * Calculate the modified z score for a given sample.
      *
      * @param list<int|float> $sample
@@ -270,17 +275,20 @@ class RobustZScore implements Estimator, Learner, Scoring, Ranking, Persistable
      */
     protected function z(array $sample) : float
     {
-        $z = [];
+        $scores = [];
 
         foreach ($sample as $column => $value) {
-            $z[] = abs(
-                (self::ETA * ($value - $this->medians[$column]))
+            $scores[] = abs(
+                (self::ETA
+                * ($value - $this->medians[$column]))
                 / $this->mads[$column]
             );
         }
 
-        return (1.0 - $this->alpha) * Stats::mean($z)
-            + $this->alpha * max($z);
+        $zHat = (1.0 - $this->beta) * Stats::mean($scores)
+            + $this->beta * max($scores);
+
+        return $zHat;
     }
 
     /**

@@ -2,15 +2,15 @@
 
 namespace Rubix\ML;
 
-use ArrayAccess;
-use Countable;
-use Generator;
-use IteratorAggregate;
-use JsonSerializable;
-use Stringable;
+use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Other\Helpers\JSON;
+use IteratorAggregate;
+use JsonSerializable;
+use ArrayAccess;
+use Stringable;
+use Countable;
+use Generator;
 
 /**
  * Report

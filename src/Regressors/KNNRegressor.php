@@ -7,12 +7,12 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -88,7 +88,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
+    public function __construct(int $k = 5, bool $weighted = false, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

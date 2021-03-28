@@ -5,7 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -36,7 +36,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     use AutotrackRevisions;
 
     /**
-     * The amount of additive (Laplace) smoothing to add to the inverse document
+     * The amount of additive Laplace smoothing to add to the inverse document
      * frequencies (IDFs).
      *
      * @var float

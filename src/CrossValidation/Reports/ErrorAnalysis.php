@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Report;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 
 use function count;
@@ -75,27 +75,24 @@ class ErrorAnalysis implements ReportGenerator
         [$mean, $variance] = Stats::meanVar($errors);
         [$median, $mad] = Stats::medianMad($errors);
 
-        $min = min($errors);
-        $max = max($errors);
-
         return new Report([
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
+            'mean_squared_log_error' => Stats::mean($sle),
             'mean_absolute_percentage_error' => 100.0 * Stats::mean($are),
             'rms_error' => sqrt($mse),
-            'mean_squared_log_error' => Stats::mean($sle),
             'r_squared' => 1.0 - ($sse / ($sst ?: EPSILON)),
             'error_mean' => $mean,
-            'error_midrange' => ($min + $max) / 2.0,
             'error_median' => $median,
             'error_variance' => $variance,
+            'error_stddev' => sqrt($variance),
             'error_mad' => $mad,
             'error_iqr' => Stats::iqr($errors),
             'error_skewness' => Stats::skewness($errors, $mean),
             'error_kurtosis' => Stats::kurtosis($errors, $mean),
-            'error_min' => $min,
-            'error_max' => $max,
+            'error_min' => min($errors),
+            'error_max' => max($errors),
             'cardinality' => count($predictions),
         ]);
     }

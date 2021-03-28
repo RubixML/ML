@@ -9,10 +9,10 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -140,7 +140,7 @@ class MeanShiftTest extends TestCase
             'radius' => 66.0,
             'ratio' => 0.1,
             'epochs' => 100,
-            'min_shift' => 1e-4,
+            'min shift' => 1e-4,
             'tree' => new BallTree(),
             'seeder' => new Random(),
         ];

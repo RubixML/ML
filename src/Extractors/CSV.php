@@ -6,6 +6,16 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\iterator_first;
+use function is_dir;
+use function is_file;
+use function is_readable;
+use function is_writable;
+use function fopen;
+use function fgetcsv;
+use function fputcsv;
+use function fclose;
+use function array_combine;
 use function strlen;
 
 /**
@@ -19,21 +29,20 @@ use function strlen;
  * > **Note:** This implementation of CSV is based on the definition in RFC 4180.
  *
  * References:
- * [1] Y. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV)
- * Files.
+ * [1] Y. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor
+class CSV implements Extractor, Writable
 {
     /**
-     * The file handle.
+     * The path to the file on disk.
      *
-     * @var resource
+     * @var string
      */
-    protected $handle;
+    protected $path;
 
     /**
      * Does the CSV document have a header as the first row?
@@ -62,7 +71,6 @@ class CSV implements Extractor
      * @param string $delimiter
      * @param string $enclosure
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function __construct(
         string $path,
@@ -70,12 +78,12 @@ class CSV implements Extractor
         string $delimiter = ',',
         string $enclosure = '"'
     ) {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException("Path $path does not exist.");
+        if (empty($path)) {
+            throw new InvalidArgumentException('Path cannot be empty.');
         }
 
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException("Path $path is not readable.");
+        if (is_dir($path)) {
+            throw new InvalidArgumentException('Path must be to a file, folder given.');
         }
 
         if (strlen($delimiter) !== 1) {
@@ -88,24 +96,59 @@ class CSV implements Extractor
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException("Could not open $path.");
-        }
-
-        $this->handle = $handle;
+        $this->path = $path;
         $this->header = $header;
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
     }
 
     /**
-     * Clean up the file pointer.
+     * Write an iterable data table to disk.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function __destruct()
+    public function write(iterable $iterator) : void
     {
-        fclose($this->handle);
+        if (is_file($this->path) and !is_writable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+
+        $handle = fopen($this->path, 'w');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
+
+        $line = 1;
+
+        if ($this->header) {
+            $header = array_keys(iterator_first($iterator));
+
+            $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
+
+            if (!$length) {
+                throw new RuntimeException("Could not write header on line $line.");
+            }
+
+            ++$line;
+        }
+
+        foreach ($iterator as $row) {
+            $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure);
+
+            if (!$length) {
+                throw new RuntimeException("Could not write row on line $line.");
+            }
+
+            ++$line;
+        }
+
+        fclose($handle);
     }
 
     /**
@@ -116,22 +159,34 @@ class CSV implements Extractor
      */
     public function getIterator() : Generator
     {
-        rewind($this->handle);
+        if (!is_file($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not a file.");
+        }
+
+        if (!is_readable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not readable.");
+        }
+
+        $handle = fopen($this->path, 'r');
+
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
 
         $line = 0;
 
         if ($this->header) {
-            $header = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
-
-            if (!$header) {
-                throw new RuntimeException('Header not found on the first line.');
-            }
+            $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
 
             ++$line;
+
+            if (!$header) {
+                throw new RuntimeException("Header not found on line $line.");
+            }
         }
 
-        while (!feof($this->handle)) {
-            $record = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
+        while (!feof($handle)) {
+            $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
 
             ++$line;
 
@@ -149,5 +204,7 @@ class CSV implements Extractor
 
             yield $record;
         }
+
+        fclose($handle);
     }
 }

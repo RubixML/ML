@@ -2,16 +2,15 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Backends\Tasks\Predict;
-use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
-use Rubix\ML\Other\Traits\Multiprocessing;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -40,7 +39,7 @@ use function array_count_values;
  */
 class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, PredictsSingle;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The estimator type codes that the ensemble is compatible with.

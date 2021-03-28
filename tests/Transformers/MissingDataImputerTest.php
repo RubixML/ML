@@ -4,12 +4,12 @@ namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Other\Strategies\KMostFrequent;
+use Rubix\ML\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers

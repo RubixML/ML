@@ -7,11 +7,11 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Strategies\Mean;
-use Rubix\ML\Other\Strategies\Strategy;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Strategies\Strategy;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -37,12 +37,12 @@ class DummyRegressor implements Estimator, Learner, Persistable
     /**
      * The guessing strategy that the dummy employs.
      *
-     * @var \Rubix\ML\Other\Strategies\Strategy
+     * @var \Rubix\ML\Strategies\Strategy
      */
     protected $strategy;
 
     /**
-     * @param \Rubix\ML\Other\Strategies\Strategy|null $strategy
+     * @param \Rubix\ML\Strategies\Strategy|null $strategy
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(?Strategy $strategy = null)

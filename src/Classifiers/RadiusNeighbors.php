@@ -7,11 +7,11 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -94,7 +94,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      */
     public function __construct(
         float $radius = 1.0,
-        bool $weighted = true,
+        bool $weighted = false,
         string $outlierClass = '?',
         ?Spatial $tree = null
     ) {
@@ -150,7 +150,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         return [
             'radius' => $this->radius,
             'weighted' => $this->weighted,
-            'outlier_class' => $this->outlierClass,
+            'outlier class' => $this->outlierClass,
             'tree' => $this->tree,
         ];
     }

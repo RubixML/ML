@@ -40,7 +40,9 @@ class TrainAndValidate extends Task
 
         $predictions = $estimator->predict($testing);
 
-        return $metric->score($predictions, $testing->labels());
+        $score = $metric->score($predictions, $testing->labels());
+
+        return $score;
     }
 
     /**

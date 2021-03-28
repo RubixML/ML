@@ -12,8 +12,8 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\LogisticRegression;
@@ -142,13 +142,13 @@ class LogisticRegressionTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'batch_size' => 100,
+            'batch size' => 100,
             'optimizer' => new Adam(0.01),
             'alpha' => 1e-4,
             'epochs' => 300,
-            'min_change' => 1e-4,
+            'min change' => 1e-4,
             'window' => 5,
-            'cost_fn' => new CrossEntropy(),
+            'cost fn' => new CrossEntropy(),
 
         ];
 

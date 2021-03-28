@@ -1,7 +1,6 @@
 {"attitude":"nice","texture":"furry","sociability":"friendly","rating":4,"class":"not monster"}
 {"attitude":"mean","texture":"furry","sociability":"loner","rating":-1.5,"class":"monster"}
-["nice","rough","friendly", 2.6,"not monster"]
-["mean","rough","friendly",-1,"monster"]
-
-["nice","rough","friendly",2.9,"not monster"]
-["nice","furry","loner",-5,"not monster"]
+{"attitude":"nice","texture":"rough","sociability":"friendly","rating":2.6,"class":"not monster"}
+{"attitude":"mean","texture":"rough","sociability":"friendly","rating":-1,"class":"monster"}
+{"attitude":"nice","texture":"rough","sociability":"friendly","rating":2.9,"class":"not monster"}
+{"attitude":"nice","texture":"furry","sociability":"loner","rating":-5,"class":"not monster"}

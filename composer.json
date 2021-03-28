@@ -39,12 +39,10 @@
         "rubix/tensor": "^2.2",
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/polyfill-php73": "^1.20",
-        "symfony/polyfill-php80": "^1.17",
-        "league/flysystem": "~2.0.2"
+        "symfony/polyfill-php80": "^1.17"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.18.*",
-        "league/flysystem-memory": "^2.0",
         "phpbench/phpbench": "1.0.0-alpha6",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.*",
@@ -56,9 +54,7 @@
         "rubix/extras": "For experimental features",
         "ext-svm": "For Support Vector Machine engine (libsvm)",
         "ext-mbstring": "For fast multibyte string manipulation",
-        "ext-gd": "For image manipulation",
-        "ext-redis": "To persist models to a Redis DB",
-        "ext-igbinary": "For binary serialization of persistables"
+        "ext-gd": "For image manipulation"
     },
     "autoload": {
         "psr-4": {

@@ -6,17 +6,14 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\RanksSingle;
-use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -24,7 +21,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function Rubix\ML\warn_deprecated;
+use function count;
+use function array_fill;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -44,9 +42,9 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
+class Loda implements Estimator, Learner, Online, Scoring, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, RanksSingle;
+    use AutotrackRevisions;
 
     /**
      * The minimum number of histogram bins.
@@ -120,17 +118,6 @@ class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
      * @var int
      */
     protected $n = 0;
-
-    /**
-     * Estimate the number of bins from the number of samples in a dataset.
-     *
-     * @param int $n
-     * @return int
-     */
-    public static function estimateBins(int $n) : int
-    {
-        return (int) round(log($n, 2)) + 1;
-    }
 
     /**
      * @param int $estimators
@@ -228,7 +215,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
         [$m, $n] = $dataset->shape();
 
         if ($this->fitBins) {
-            $this->bins = max(self::estimateBins($m), self::MIN_BINS);
+            $this->bins = max((int) round(log($m, 2)) + 1, self::MIN_BINS);
         }
 
         $this->r = Matrix::gaussian($n, $this->estimators);
@@ -352,21 +339,6 @@ class Loda implements Estimator, Learner, Online, Scoring, Ranking, Persistable
             ->transpose();
 
         return $this->densities($projections);
-    }
-
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float>
-     */
-    public function rank(Dataset $dataset) : array
-    {
-        warn_deprecated('Rank() is deprecated, use score() instead.');
-
-        return $this->score($dataset);
     }
 
     /**

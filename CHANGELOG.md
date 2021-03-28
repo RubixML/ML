@@ -1,3 +1,26 @@
+- 1.0.0-beta
+    - Added variance smoothing to Gaussian NB, Mixture, and MLE
+    - Added MAD smoothing to Robust Z Score
+    - Added Writable extractor interface
+    - NDJSON and CSV extractors are now Writable
+    - Added SQL Table dataset extractor
+    - Changed Word Count Vectorizer DF constraints to proportions
+    - Change order of Naive Bayes hyper-parameters
+    - Persisters use RBX serializer by default
+    - Removed previously deprecated portions of the API
+    - Removed Embedder interface and namespace
+    - Change Robust Z Score alpha parameter name to beta
+    - Hold Out validator does not randomize by default
+    - Move Redis DB persister to extras package
+    - Remove Loda estimate bins static method
+    - Change Grid Search base estimator param name to class
+    - Remove Dataset cast to string preview
+    - Add Error Analysis error standard deviation, drop midrange
+    - Naive Bayes Laplace smoothing no longer effects priors
+    - Nearest Neighbors distance weighting off by default
+    - Promoted the Other namespace
+    - Moved Flysystem persister to the Extras package
+
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
     - Fixed RBX serializer string representation
@@ -60,7 +83,7 @@
 - 0.2.0
     - Add Recursive Feature Eliminator feature selector
     - Can now disable holdout validation in MLP learners
-    - TF-IDF Transformer additive (Laplace) smoothing now variable
+    - TF-IDF Transformer additive Laplace smoothing now variable
     - Added instability detection to gradient-based learners
     - Gradient Boost validation set holdout can now be 0
     - Specifications now extend base class

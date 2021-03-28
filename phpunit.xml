@@ -31,29 +31,38 @@
         <testsuite name="Datasets">
             <directory>tests/Datasets</directory>
         </testsuite>
+        <testsuite name="Extractors">
+            <directory>tests/Extractors</directory>
+        </testsuite>
         <testsuite name="Graph">
             <directory>tests/Graph</directory>
+        </testsuite>
+        <testsuite name="Helpers">
+            <directory>tests/Helpers</directory>
         </testsuite>
         <testsuite name="Kernels">
             <directory>tests/Kernels</directory>
         </testsuite>
-        <testsuite name="Embedders">
-            <directory>tests/Embedders</directory>
-        </testsuite>
-        <testsuite name="Extractors">
-            <directory>tests/Extractors</directory>
+        <testsuite name="Loggers">
+            <directory>tests/Loggers</directory>
         </testsuite>
         <testsuite name="Neural Net">
             <directory>tests/NeuralNet</directory>
-        </testsuite>
-        <testsuite name="Other">
-            <directory>tests/Other</directory>
         </testsuite>
         <testsuite name="Persisters">
             <directory>tests/Persisters</directory>
         </testsuite>
         <testsuite name="Regressors">
             <directory>tests/Regressors</directory>
+        </testsuite>
+        <testsuite name="Specifications">
+            <directory>tests/Specifications</directory>
+        </testsuite>
+        <testsuite name="Strategies">
+            <directory>tests/Strategies</directory>
+        </testsuite>
+        <testsuite name="Tokenizers">
+            <directory>tests/Transformers</directory>
         </testsuite>
         <testsuite name="Transformers">
             <directory>tests/Transformers</directory>

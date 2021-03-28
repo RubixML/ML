@@ -3,7 +3,7 @@
 namespace Rubix\ML\Backends;
 
 use Amp\Loop;
-use Rubix\ML\Other\Helpers\CPU;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Backends\Tasks\Task;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;

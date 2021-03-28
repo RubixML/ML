@@ -14,7 +14,7 @@ A *hot deck* is a set of complete donor samples that may be referenced when impu
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbor donors to consider when imputing a value. |
-| 2 | weighted | true | bool | Should we use distances as weights when selecting a donor sample? |
+| 2 | weighted | false | bool | Should we use distances as weights when selecting a donor sample? |
 | 3 | categoricalPlaceholder | '?' | string | The categorical placeholder denoting the category that contains missing values. |
 | 4 | tree | BallTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
@@ -24,7 +24,7 @@ use Rubix\ML\Transformers\RandomHotDeckImputer;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
-$transformer = new RandomHotDeckImputer(20, true, '?', new BallTree(50, new SafeEuclidean()));
+$transformer = new RandomHotDeckImputer(20, false, '?', new BallTree(50, new SafeEuclidean()));
 ```
 
 ## Additional Methods

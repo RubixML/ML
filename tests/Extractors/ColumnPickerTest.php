@@ -55,7 +55,7 @@ class ColumnPickerTest extends TestCase
             ['attitude' => 'nice', 'texture' => 'furry', 'class' => 'not monster', 'rating' => '-5'],
         ];
 
-        $records = iterator_to_array($this->extractor);
+        $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
     }

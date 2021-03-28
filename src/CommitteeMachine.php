@@ -2,17 +2,16 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Backends\Tasks\Predict;
-use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\PredictsSingle;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
-use Rubix\ML\Other\Traits\Multiprocessing;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -42,7 +41,7 @@ use function in_array;
  */
 class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, Multiprocessing, LoggerAware;
 
     /**
      * The integer-encoded estimator types this ensemble is compatible with.

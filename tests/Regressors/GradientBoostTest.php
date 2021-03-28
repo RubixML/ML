@@ -9,8 +9,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Regressors\DummyRegressor;
@@ -148,9 +148,9 @@ class GradientBoostTest extends TestCase
             'rate' => 0.3,
             'ratio' => 0.3,
             'estimators' => 300,
-            'min_change' => 0.0001,
+            'min change' => 0.0001,
             'window' => 10,
-            'hold_out' => 0.1,
+            'hold out' => 0.1,
             'metric' => new RMSE(),
             'base' => new DummyRegressor(),
         ];

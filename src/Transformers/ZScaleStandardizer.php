@@ -4,16 +4,15 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_null;
-
-use const Rubix\ML\EPSILON;
+use function sqrt;
 
 /**
  * Z Scale Standardizer
@@ -60,18 +59,22 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     protected $variances;
 
     /**
-     * The precomputed standard deviations.
-     *
-     * @var float[]|null
-     */
-    protected $stdDevs;
-
-    /**
      *  The number of samples that this transformer has fitted.
      *
-     * @var int|null
+     * @var int
      */
-    protected $n;
+    protected $n = 0;
+
+    /**
+     * Return the inverse of the standard deviation while taking zeros and negatives into consideration.
+     *
+     * @param float $variance
+     * @return float
+     */
+    protected static function stdInv(float $variance) : float
+    {
+        return $variance > 0.0 ? 1.0 / sqrt($variance) : 1.0;
+    }
 
     /**
      * @param bool $center
@@ -124,16 +127,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
-     * Return the standard deviations calculated during fitting.
-     *
-     * @return float[]|null
-     */
-    public function stdDevs() : ?array
-    {
-        return $this->stdDevs;
-    }
-
-    /**
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -142,7 +135,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $this->means = $this->variances = $this->stdDevs = [];
+        $this->means = $this->variances = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
@@ -152,7 +145,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 
                 $this->means[$column] = $mean;
                 $this->variances[$column] = $variance;
-                $this->stdDevs[$column] = sqrt($variance ?: EPSILON);
             }
         }
 
@@ -184,13 +176,11 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
             $this->means[$column] = (($this->n * $oldMean)
                 + ($n * $mean)) / ($this->n + $n);
 
-            $vHat = ($this->n * $oldVariance + ($n * $variance)
+            $this->variances[$column] = ($this->n
+                * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($this->n + $n);
-
-            $this->variances[$column] = $vHat;
-            $this->stdDevs[$column] = sqrt($vHat ?: EPSILON);
         }
 
         $this->n += $n;
@@ -204,19 +194,21 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->means) or is_null($this->stdDevs)) {
+        if (is_null($this->means) or is_null($this->variances)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
+        $stdInvs = array_map([self::class, 'stdInv'], $this->variances);
+
         foreach ($samples as &$sample) {
-            foreach ($this->stdDevs as $column => $stdDev) {
+            foreach ($stdInvs as $column => $stdInv) {
                 $value = &$sample[$column];
 
                 if ($this->center) {
                     $value -= $this->means[$column];
                 }
 
-                $value /= $stdDev;
+                $value *= $stdInv;
             }
         }
     }

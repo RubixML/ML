@@ -10,6 +10,7 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\comb;
 use function Rubix\ML\array_transpose;
+use function Rubix\ML\iterator_first;
 use function Rubix\ML\warn_deprecated;
 
 /**
@@ -119,6 +120,19 @@ class FunctionsTest extends TestCase
                 [0],
             ],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function iteratorFirst() : void
+    {
+        $element = iterator_first((function () : Generator {
+            yield 'first';
+            yield 'last';
+        })());
+
+        $this->assertEquals('first', $element);
     }
 
     /**

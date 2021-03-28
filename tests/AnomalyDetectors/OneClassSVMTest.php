@@ -124,7 +124,7 @@ class OneClassSVMTest extends TestCase
             'kernel' => new Polynomial(4, 1e-3),
             'shrinking' => true,
             'tolerance' => 0.0001,
-            'cache_size' => 100.0,
+            'cache size' => 100.0,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

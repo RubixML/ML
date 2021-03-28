@@ -121,18 +121,6 @@ class LodaTest extends TestCase
     /**
      * @test
      */
-    public function estimateBins() : void
-    {
-        $this->assertSame(4, Loda::estimateBins(10));
-        $this->assertSame(8, Loda::estimateBins(100));
-        $this->assertSame(11, Loda::estimateBins(1000));
-        $this->assertSame(14, Loda::estimateBins(10000));
-        $this->assertSame(18, Loda::estimateBins(100000));
-    }
-
-    /**
-     * @test
-     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());

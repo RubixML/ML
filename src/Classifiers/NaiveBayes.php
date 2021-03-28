@@ -9,9 +9,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -23,7 +23,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function array_count_values;
+use function array_sum;
 use function count;
+use function log;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -47,13 +50,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     use AutotrackRevisions;
 
     /**
-     * The amount of (Laplace) smoothing added to the probabilities.
-     *
-     * @var float
-     */
-    protected $smoothing;
-
-    /**
      * The class prior log probabilities.
      *
      * @var float[]|null
@@ -68,6 +64,13 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     protected $fitPriors;
 
     /**
+     * The amount of Laplace smoothing added to the probabilities.
+     *
+     * @var float
+     */
+    protected $smoothing;
+
+    /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var float[]
@@ -77,8 +80,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The count of each feature from the training set used for online probability
-     * calculation.
+     * The count of each feature from the training set used for online probability calculation.
      *
      * @var array[]
      */
@@ -87,8 +89,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The precomputed negative log likelihoods of each feature conditioned on a
-     * particular class label.
+     * The precomputed negative log likelihoods of each feature conditioned on a particular class label.
      *
      * @var array[]
      */
@@ -97,17 +98,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
+     * @param float[]|null $priors
      * @param float $smoothing
-     * @param (int|float)[]|null $priors
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $smoothing = 1.0, ?array $priors = null)
+    public function __construct(?array $priors = null, float $smoothing = 1.0)
     {
-        if ($smoothing <= 0.0) {
-            throw new InvalidArgumentException('Smoothing must be'
-                . " greater than 0, $smoothing given.");
-        }
-
         $logPriors = [];
 
         if ($priors) {
@@ -128,9 +124,14 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             }
         }
 
-        $this->smoothing = $smoothing;
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
+        }
+
         $this->logPriors = $logPriors;
         $this->fitPriors = is_null($priors);
+        $this->smoothing = $smoothing;
     }
 
     /**
@@ -169,8 +170,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     public function params() : array
     {
         return [
-            'smoothing' => $this->smoothing,
             'priors' => $this->fitPriors ? null : $this->priors(),
+            'smoothing' => $this->smoothing,
         ];
     }
 
@@ -272,12 +273,12 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights) + (count($this->weights) * $this->smoothing);
+            $total = array_sum($this->weights);
 
             $this->logPriors = [];
 
             foreach ($this->weights as $class => $weight) {
-                $this->logPriors[$class] = log(($weight + $this->smoothing) / $total);
+                $this->logPriors[$class] = log($weight / $total);
             }
         }
     }

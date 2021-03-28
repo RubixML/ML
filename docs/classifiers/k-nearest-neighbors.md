@@ -14,7 +14,7 @@ A brute-force distance-based learning algorithm that locates the *k* nearest sam
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
+| 2 | weighted | false | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Example
@@ -22,7 +22,7 @@ A brute-force distance-based learning algorithm that locates the *k* nearest sam
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new KNearestNeighbors(3, true, new Manhattan());
+$estimator = new KNearestNeighbors(3, false, new Manhattan());
 ```
 
 ## Additional Methods

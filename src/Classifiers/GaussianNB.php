@@ -9,10 +9,10 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -24,9 +24,11 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function is_null;
+use function log;
+use function exp;
 
 use const Rubix\ML\TWO_PI;
-use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
 
 /**
@@ -64,6 +66,13 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     protected $fitPriors;
 
     /**
+     * The amount of epsilon smoothing added to the variance of each feature.
+     *
+     * @var float
+     */
+    protected $smoothing;
+
+    /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var float[]
@@ -91,10 +100,18 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * @param (int|float)[]|null $priors
+     * A small portion of variance to add for smoothing.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
+     * @param float[]|null $priors
+     * @param float $smoothing
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(?array $priors = null)
+    public function __construct(?array $priors = null, float $smoothing = 1e-9)
     {
         $logPriors = [];
 
@@ -116,8 +133,14 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             }
         }
 
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be'
+                . " greater than 0, $smoothing given.");
+        }
+
         $this->logPriors = $logPriors;
         $this->fitPriors = is_null($priors);
+        $this->smoothing = $smoothing;
     }
 
     /**
@@ -157,6 +180,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         return [
             'priors' => $this->fitPriors ? null : $this->priors(),
+            'smoothing' => $this->smoothing,
         ];
     }
 
@@ -226,6 +250,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        $maxVariance = 0.0;
+
         foreach ($dataset->stratify() as $class => $stratum) {
             if (isset($this->means[$class])) {
                 $oldMeans = $this->means[$class];
@@ -237,19 +263,22 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $means = $variances = [];
 
                 foreach ($stratum->columns() as $column => $values) {
+                    $oldMean = $oldMeans[$column];
+                    $oldVariance = $oldVariances[$column];
+
+                    $oldVariance -= $this->epsilon;
+
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $means[] = (($n * $mean)
-                        + ($oldWeight * $oldMeans[$column]))
+                        + ($oldWeight * $oldMean))
                         / ($oldWeight + $n);
 
-                    $vHat = ($oldWeight
-                        * $oldVariances[$column] + ($n * $variance)
+                    $variances[] = ($oldWeight
+                        * $oldVariance + ($n * $variance)
                         + ($oldWeight / ($n * ($oldWeight + $n)))
-                        * ($n * $oldMeans[$column] - $n * $mean) ** 2)
+                        * ($n * $oldMean - $n * $mean) ** 2)
                         / ($oldWeight + $n);
-
-                    $variances[] = $vHat ?: EPSILON;
                 }
 
                 $weight = $oldWeight + $n;
@@ -260,15 +289,25 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $means[] = $mean;
-                    $variances[] = $variance ?: EPSILON;
+                    $variances[] = $variance;
                 }
 
                 $weight = $stratum->numRows();
             }
 
+            $maxVariance = max($maxVariance, ...$variances);
+
             $this->means[$class] = $means;
             $this->variances[$class] = $variances;
             $this->weights[$class] = $weight;
+        }
+
+        $epsilon = $this->smoothing * $maxVariance;
+
+        foreach ($this->variances as &$variances) {
+            foreach ($variances as &$variance) {
+                $variance += $epsilon;
+            }
         }
 
         if ($this->fitPriors) {
@@ -278,11 +317,12 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $this->logPriors[$class] = log($weight / $total);
             }
         }
+
+        $this->epsilon = $epsilon;
     }
 
     /**
-     * Calculate the likelihood of the sample being a member of a class and
-     * choose the class with the highest likelihood as the prediction.
+     * Calculate the likelihood of the sample being a member of a class and choose the class with the highest likelihood as the prediction.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException

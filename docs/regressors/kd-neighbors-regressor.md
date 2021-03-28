@@ -11,7 +11,7 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | weighted | true | bool | Should we consider the distances of our nearest neighbors when making predictions? |
+| 2 | weighted | false | bool | Should we consider the distances of our nearest neighbors when making predictions? |
 | 3 | tree | KDTree | Spatial | The spatial tree used to run nearest neighbor searches. |
 
 ## Example
@@ -19,7 +19,7 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 
-$estimator = new KDNeighborsRegressor(5, true, new BallTree(50));
+$estimator = new KDNeighborsRegressor(20, true, new BallTree(50));
 ```
 
 ## Additional Methods

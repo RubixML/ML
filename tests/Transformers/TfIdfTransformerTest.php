@@ -7,8 +7,8 @@ use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TfIdfTransformer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers

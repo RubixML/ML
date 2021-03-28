@@ -9,22 +9,21 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -58,7 +57,7 @@ use function count;
  */
 class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * An array composing the user-specified hidden layers of the network in order.
@@ -272,15 +271,15 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function params() : array
     {
         return [
-            'hidden_layers' => $this->hiddenLayers,
-            'batch_size' => $this->batchSize,
+            'hidden layers' => $this->hiddenLayers,
+            'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
             'alpha' => $this->alpha,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'hold_out' => $this->holdOut,
-            'cost_fn' => $this->costFn,
+            'hold out' => $this->holdOut,
+            'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
     }

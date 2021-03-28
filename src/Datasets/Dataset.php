@@ -2,20 +2,16 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Other\Helpers\JSON;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
-use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use IteratorAggregate;
-use JsonSerializable;
 use Rubix\ML\Exceptions\RuntimeException;
+use IteratorAggregate;
 use ArrayAccess;
-use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -43,7 +39,7 @@ use const Rubix\ML\EPSILON;
  * @implements ArrayAccess<int, array>
  * @implements IteratorAggregate<int, array>
  */
-abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable, Stringable
+abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * The rows of samples and columns of features that make up the
@@ -352,104 +348,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Return a JSON representation of the dataset.
-     *
-     * @param bool $pretty
-     * @return \Rubix\ML\Encoding
-     */
-    public function toJSON(bool $pretty = false) : Encoding
-    {
-        return new Encoding(JSON::encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
-    }
-
-    /**
-     * Return a newline delimited JSON representation of the dataset.
-     *
-     * @param string[]|null $header
-     * @return \Rubix\ML\Encoding
-     */
-    public function toNDJSON(?array $header = null) : Encoding
-    {
-        if ($header) {
-            $cols = $this->numColumns()
-                + ($this instanceof Labeled ? 1 : 0);
-
-            if (count($header) !== $cols) {
-                throw new InvalidArgumentException('Header must have'
-                    . " $cols columns, " . count($header) . ' given.');
-            }
-        }
-
-        $ndjson = '';
-
-        foreach ($this as $row) {
-            if ($header) {
-                $row = array_combine($header, $row);
-            }
-
-            $ndjson .= JSON::encode($row) . PHP_EOL;
-        }
-
-        return new Encoding($ndjson);
-    }
-
-    /**
-     * Return the dataset as comma-separated values (CSV) string.
-     *
-     * @param string[]|null $header
-     * @param string $delimiter
-     * @param string $enclosure
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return \Rubix\ML\Encoding
-     */
-    public function toCSV(?array $header = null, string $delimiter = ',', string $enclosure = '"') : Encoding
-    {
-        if ($header) {
-            $cols = $this->numColumns()
-                + ($this instanceof Labeled ? 1 : 0);
-
-            if (count($header) !== $cols) {
-                throw new InvalidArgumentException('Header must have'
-                    . " $cols columns, " . count($header) . ' given.');
-            }
-        }
-
-        if (empty($delimiter)) {
-            throw new InvalidArgumentException('Delimiter must be'
-                . ' at least 1 character.');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new InvalidArgumentException('Enclosure must be'
-                . ' a single character.');
-        }
-
-        $csv = '';
-
-        if ($header) {
-            foreach ($header as $title) {
-                if (str_contains($title, $delimiter)) {
-                    $title = $enclosure . $title . $enclosure;
-                }
-            }
-
-            $csv .= implode($delimiter, $header) . PHP_EOL;
-        }
-
-        foreach ($this as $row) {
-            foreach ($row as &$value) {
-                if (str_contains($value, $delimiter)) {
-                    $value = $enclosure . $value . $enclosure;
-                }
-            }
-
-            $csv .= implode($delimiter, $row) . PHP_EOL;
-        }
-
-        return new Encoding($csv);
-    }
-
-    /**
      * Return an array of statistics such as the central tendency, dispersion
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.
@@ -598,16 +496,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function join(Dataset $dataset);
 
     /**
-     * Merge the columns of this dataset with another dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    abstract public function augment(Dataset $dataset);
-
-    /**
      * Drop the row at the given offset.
      *
      * @param int $offset
@@ -731,21 +619,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     abstract public function deduplicate();
 
     /**
-     * Return the dataset object as a data table array.
-     *
-     * @return array[]
-     */
-    abstract public function toArray() : array;
-
-    /**
-     * @return array[]
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
-    }
-
-    /**
      * Return the number of rows in the dataset.
      *
      * @return int
@@ -784,11 +657,4 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    abstract public function __toString() : string;
 }

@@ -421,27 +421,3 @@ sepal length,sepal width,petal length,petal width,class
 4.4,3.2,1.3,0.2,Iris-setosa
 5.0,3.5,1.6,0.6,Iris-setosa
 ```
-
-## Previewing in the Console
-You can echo the dataset object to preview the first few rows and columns in the console.
-
-```php
-echo $dataset;
-```
-
-```sh
-| Column 0    | Column 1    | Column 2    | Column 3    | Label       |
------------------------------------------------------------------------
-| nice        | furry       | friendly    | 4           | not monster |
------------------------------------------------------------------------
-| mean        | furry       | loner       | -1.5        | monster     |
------------------------------------------------------------------------
-| nice        | rough       | friendly    | 2.6         | not monster |
------------------------------------------------------------------------
-| mean        | rough       | friendly    | -1          | monster     |
------------------------------------------------------------------------
-| nice        | rough       | friendly    | 2.9         | not monster |
------------------------------------------------------------------------
-| nice        | furry       | loner       | -5          | not monster |
------------------------------------------------------------------------
-```

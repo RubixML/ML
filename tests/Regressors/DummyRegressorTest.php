@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;

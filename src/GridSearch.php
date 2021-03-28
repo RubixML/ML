@@ -2,20 +2,19 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Backends\Tasks\Task;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Backends\Tasks\CrossValidate;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -45,14 +44,14 @@ use function count;
  */
 class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, PredictsSingle, LoggerAware;
+    use AutotrackRevisions, Multiprocessing, LoggerAware;
 
     /**
      * The class name of the base estimator.
      *
      * @var string
      */
-    protected $base;
+    protected $class;
 
     /**
      * An array of tuples containing the possible values for each of the base learner's constructor parameters.
@@ -92,48 +91,30 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     protected $results;
 
     /**
-     * The instance of the estimator with the best parameters.
+     * The base estimator instance.
      *
      * @var \Rubix\ML\Learner
      */
-    protected $estimator;
+    protected $base;
 
     /**
-     * Cross validate a learner with a given dataset and return the score.
-     *
-     * @internal
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Validator $validator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return mixed[]
-     */
-    public static function score(Learner $estimator, Labeled $dataset, Validator $validator, Metric $metric) : array
-    {
-        $score = $validator->test($estimator, $dataset, $metric);
-
-        return [$score, $estimator->params()];
-    }
-
-    /**
-     * @param class-string $base
+     * @param class-string $class
      * @param array[] $params
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
-        string $base,
+        string $class,
         array $params,
         ?Metric $metric = null,
         ?Validator $validator = null
     ) {
-        if (!class_exists($base)) {
-            throw new InvalidArgumentException("Class $base does not exist.");
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException("Class $class does not exist.");
         }
 
-        $proxy = new $base(...array_map('current', $params));
+        $proxy = new $class(...array_map('current', $params));
 
         if (!$proxy instanceof Learner) {
             throw new InvalidArgumentException('Base class must'
@@ -173,11 +154,11 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
             }
         }
 
-        $this->base = $base;
+        $this->class = $class;
         $this->params = $params;
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(3);
-        $this->estimator = $proxy;
+        $this->base = $proxy;
         $this->backend = new Serial();
     }
 
@@ -190,7 +171,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function type() : EstimatorType
     {
-        return $this->estimator->type();
+        return $this->base->type();
     }
 
     /**
@@ -203,7 +184,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     public function compatibility() : array
     {
         return $this->trained()
-            ? $this->estimator->compatibility()
+            ? $this->base->compatibility()
             : DataType::all();
     }
 
@@ -217,7 +198,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
     public function params() : array
     {
         return [
-            'base' => $this->base,
+            'class' => $this->class,
             'params' => $this->params,
             'metric' => $this->metric,
             'validator' => $this->validator,
@@ -231,7 +212,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function trained() : bool
     {
-        return $this->estimator->trained();
+        return $this->base->trained();
     }
 
     /**
@@ -263,7 +244,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function base() : Estimator
     {
-        return $this->estimator;
+        return $this->base;
     }
 
     /**
@@ -293,17 +274,14 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
         $this->backend->flush();
 
         foreach ($combinations as $params) {
-            $estimator = new $this->base(...$params);
+            $estimator = new $this->class(...$params);
 
             $this->backend->enqueue(
-                new Task(
-                    [self::class, 'score'],
-                    [
-                        $estimator,
-                        $dataset,
-                        $this->validator,
-                        $this->metric,
-                    ]
+                new CrossValidate(
+                    $estimator,
+                    $dataset,
+                    $this->validator,
+                    $this->metric
                 ),
                 [$this, 'afterScore']
             );
@@ -325,7 +303,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
 
         $estimator->train($dataset);
 
-        $this->estimator = $estimator;
+        $this->base = $estimator;
 
         if ($this->logger) {
             $this->logger->info('Training complete');
@@ -341,7 +319,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function predict(Dataset $dataset) : array
     {
-        return $this->estimator->predict($dataset);
+        return $this->base->predict($dataset);
     }
 
     /**
@@ -397,7 +375,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Wrapper, Pers
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->estimator->$name(...$arguments);
+        return $this->base->$name(...$arguments);
     }
 
     /**

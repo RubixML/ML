@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
@@ -12,7 +11,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use ArrayAccess;
-use Stringable;
 use Countable;
 
 use function Rubix\ML\array_transpose;
@@ -60,6 +58,8 @@ class LabeledTest extends TestCase
      */
     protected function setUp() : void
     {
+        ini_set('precision', '14');
+
         $this->dataset = new Labeled(self::SAMPLES, self::LABELS, false);
 
         srand(self::RANDOM_SEED);
@@ -75,7 +75,6 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(Countable::class, $this->dataset);
         $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
         $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
-        $this->assertInstanceOf(Stringable::class, $this->dataset);
     }
 
     /**
@@ -907,75 +906,6 @@ class LabeledTest extends TestCase
         $dataset = $this->dataset->deduplicate();
 
         $this->assertCount(6, $dataset);
-    }
-
-    /**
-     * @test
-     */
-    public function toArray() : void
-    {
-        $expected = [
-            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
-            ['mean', 'furry', 'loner', -1.5, 'monster'],
-            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
-            ['mean', 'rough', 'friendly', -1.0, 'monster'],
-            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
-            ['nice', 'furry', 'loner', -5.0, 'not monster'],
-        ];
-
-        $this->assertEquals($expected, $this->dataset->toArray());
-    }
-
-    /**
-     * @test
-     */
-    public function toJson() : void
-    {
-        $expected = '[["nice","furry","friendly",4,"not monster"],["mean","furry","loner",-1.5,"monster"],["nice","rough","friendly",2.6,"not monster"],["mean","rough","friendly",-1,"monster"],["nice","rough","friendly",2.9,"not monster"],["nice","furry","loner",-5,"not monster"]]';
-
-        $encoding = $this->dataset->toJSON();
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
-    }
-
-    /**
-     * @test
-     */
-    public function toNdjson() : void
-    {
-        $expected = '["nice","furry","friendly",4,"not monster"]' . PHP_EOL
-        . '["mean","furry","loner",-1.5,"monster"]' . PHP_EOL
-        . '["nice","rough","friendly",2.6,"not monster"]' . PHP_EOL
-        . '["mean","rough","friendly",-1,"monster"]' . PHP_EOL
-        . '["nice","rough","friendly",2.9,"not monster"]' . PHP_EOL
-        . '["nice","furry","loner",-5,"not monster"]' . PHP_EOL;
-
-        $encoding = $this->dataset->toNDJSON();
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
-    }
-
-    /**
-     * @test
-     */
-    public function toCSV() : void
-    {
-        $expected = 'temperament,texture,sociability,rating,class' . PHP_EOL
-            . 'nice,furry,friendly,4,not monster' . PHP_EOL
-            . 'mean,furry,loner,-1.5,monster' . PHP_EOL
-            . 'nice,rough,friendly,2.6,not monster' . PHP_EOL
-            . 'mean,rough,friendly,-1,monster' . PHP_EOL
-            . 'nice,rough,friendly,2.9,not monster' . PHP_EOL
-            . 'nice,furry,loner,-5,not monster' . PHP_EOL;
-
-        $encoding = $this->dataset->toCSV([
-            'temperament', 'texture', 'sociability', 'rating', 'class',
-        ]);
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
-        $this->assertEquals($expected, $encoding);
     }
 
     /**

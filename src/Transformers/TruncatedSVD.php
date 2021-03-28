@@ -6,7 +6,7 @@ use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -131,8 +131,8 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
         $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
 
-        $this->lossiness = $lossiness;
         $this->components = $components;
+        $this->lossiness = $lossiness;
     }
 
     /**

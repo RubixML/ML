@@ -2,12 +2,10 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Other\Helpers\Console;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
 
-use function Rubix\ML\warn_deprecated;
 use function count;
 use function array_slice;
 
@@ -228,21 +226,6 @@ class Unlabeled extends Dataset
         }
 
         return self::quick($samples);
-    }
-
-    /**
-     * Merge the columns of this dataset with another dataset.
-     *
-     * @deprecated
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return self
-     */
-    public function augment(Dataset $dataset) : self
-    {
-        warn_deprecated('Augment() is deprecated, use join() instead.');
-
-        return $this->join($dataset);
     }
 
     /**
@@ -577,16 +560,6 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Return the dataset object as a data table array.
-     *
-     * @return array[]
-     */
-    public function toArray() : array
-    {
-        return $this->samples;
-    }
-
-    /**
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
@@ -610,38 +583,5 @@ class Unlabeled extends Dataset
     public function getIterator() : Generator
     {
         yield from $this->samples;
-    }
-
-    /**
-     * Return a string representation of the first few rows of the dataset.
-     *
-     * @return string
-     */
-    public function __toString() : string
-    {
-        [$tRows, $tCols] = Console::size();
-
-        $m = (int) floor($tRows / 2) + 2;
-        $n = (int) floor($tCols / (3 + Console::TABLE_CELL_WIDTH));
-
-        $m = min($this->numRows(), $m);
-        $n = min($this->numColumns(), $n);
-
-        $header = [];
-
-        for ($column = 0; $column < $n; ++$column) {
-            $header[] = "Column $column";
-        }
-
-        $table = array_slice($this->samples, 0, $m);
-
-        foreach ($table as $i => &$row) {
-            $row = array_slice($row, 0, $n);
-        }
-
-        array_unshift($table, $header);
-        $columnWidth = (int) floor($tCols) / count($table[0]);
-
-        return Console::table($table, $columnWidth);
     }
 }

@@ -2,7 +2,7 @@
 Model persistence is the ability to save and subsequently load a learner's state in another process. Trained estimators can be used for real-time inference by loading the model onto a server or they can be saved to make predictions offline at a later time. Estimators that implement the [Persistable](persistable.md) interface are able to have their internal state persisted between processes by a [Persister](persisters/api.md). In addition, the library provides the [Persistent Model](persistent-model.md) meta-estimator that acts as a wrapper for persistable estimators.
 
 ## Persisters
-Persisters are objects that interface with your storage backend such as a filesystem or Redis database. They provide the `save()` and `load()` methods which take and receive persistable objects. In order to function properly, persisters must have read and write access to your storage system. In the example below, we'll use the [Filesystem](persisters/filesystem.md) persister to load a [Persistable](persistable.md) estimator from the filesystem and then save it after performing some task.
+Persisters are objects that interface with your storage backend. They provide the `save()` and `load()` methods which take and receive persistable objects. In order to function properly, persisters must have read and write access to your storage system. In the example below, we'll use the [Filesystem](persisters/filesystem.md) persister to load a [Persistable](persistable.md) estimator from the filesystem and then save it after performing some task.
 
 ```php
 use Rubix\ML\Persisters\Filesystem;

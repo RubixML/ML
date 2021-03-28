@@ -77,7 +77,7 @@ class RobustZScoreTest extends TestCase
             1 => new Circle(0.0, 0.0, 8.0, 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(3.5, 0.5);
+        $this->estimator = new RobustZScore(3.5, 0.5, 1e-9);
 
         $this->metric = new FBeta();
 
@@ -143,7 +143,8 @@ class RobustZScoreTest extends TestCase
     {
         $expected = [
             'threshold' => 3.5,
-            'alpha' => 0.5,
+            'beta' => 0.5,
+            'smoothing' => 1e-9,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

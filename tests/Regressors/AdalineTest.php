@@ -11,9 +11,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -135,13 +135,13 @@ class AdalineTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'batch_size' => 1,
+            'batch size' => 1,
             'optimizer' => new Adam(0.01),
             'alpha' => 1e-4,
             'epochs' => 100,
-            'min_change' => 1e-3,
+            'min change' => 1e-3,
             'window' => 5,
-            'cost_fn' => new HuberLoss(1.0),
+            'cost fn' => new HuberLoss(1.0),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

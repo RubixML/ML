@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;

@@ -120,7 +120,7 @@ class DBSCANTest extends TestCase
     {
         $expected = [
             'radius' => 25.0,
-            'min_density' => 50,
+            'min density' => 50,
             'tree' => new BallTree(),
         ];
 

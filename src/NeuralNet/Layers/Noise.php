@@ -138,6 +138,6 @@ class Noise implements Hidden
      */
     public function __toString() : string
     {
-        return "Noise (std_dev: {$this->stdDev})";
+        return "Noise (std dev: {$this->stdDev})";
     }
 }

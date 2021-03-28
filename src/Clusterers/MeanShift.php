@@ -9,18 +9,18 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -244,7 +244,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             'radius' => $this->radius,
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
-            'min_shift' => $this->minShift,
+            'min shift' => $this->minShift,
             'tree' => $this->tree,
             'seeder' => $this->seeder,
         ];

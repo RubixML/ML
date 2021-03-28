@@ -11,16 +11,14 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
-use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Other\Traits\PredictsSingle;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
@@ -52,7 +50,7 @@ use function count;
  */
 class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, ProbaSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * The number of training samples to process at a time.
@@ -216,13 +214,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function params() : array
     {
         return [
-            'batch_size' => $this->batchSize,
+            'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
             'alpha' => $this->alpha,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'cost_fn' => $this->costFn,
+            'cost fn' => $this->costFn,
         ];
     }
 

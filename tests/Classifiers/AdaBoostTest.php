@@ -9,9 +9,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -141,7 +141,7 @@ class AdaBoostTest extends TestCase
             'rate' => 1.0,
             'ratio' => 0.8,
             'estimators' => 100,
-            'min_change' => 0.0001,
+            'min change' => 0.0001,
             'window' => 5,
         ];
 

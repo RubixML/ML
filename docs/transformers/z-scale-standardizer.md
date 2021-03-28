@@ -34,10 +34,5 @@ Return the variances calculated during fitting:
 public variances() : array
 ```
 
-Return the standard deviations calculated during fitting:
-```php
-public stdDevs() : array
-```
-
 ## References
 [^1]: T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.

@@ -10,18 +10,16 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\ProbaSingle;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -62,7 +60,7 @@ use function count;
  */
 class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
-    use AutotrackRevisions, PredictsSingle, ProbaSingle, LoggerAware;
+    use AutotrackRevisions, LoggerAware;
 
     /**
      * An array composing the user-specified hidden layers of the network in order.
@@ -280,15 +278,15 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     public function params() : array
     {
         return [
-            'hidden_layers' => $this->hiddenLayers,
-            'batch_size' => $this->batchSize,
+            'hidden layers' => $this->hiddenLayers,
+            'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
             'alpha' => $this->alpha,
             'epochs' => $this->epochs,
-            'min_change' => $this->minChange,
+            'min change' => $this->minChange,
             'window' => $this->window,
-            'hold_out' => $this->holdOut,
-            'cost_fn' => $this->costFn,
+            'hold out' => $this->holdOut,
+            'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
     }

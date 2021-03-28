@@ -8,13 +8,13 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Average;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Trees\ExtraTree;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -94,10 +94,10 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     public function params() : array
     {
         return [
-            'max_height' => $this->maxHeight,
-            'max_leaf_size' => $this->maxLeafSize,
-            'max_features' => $this->maxFeatures,
-            'min_purity_increase' => $this->minPurityIncrease,
+            'max height' => $this->maxHeight,
+            'max leaf size' => $this->maxLeafSize,
+            'max features' => $this->maxFeatures,
+            'min purity increase' => $this->minPurityIncrease,
         ];
     }
 

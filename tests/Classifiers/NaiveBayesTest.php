@@ -80,7 +80,7 @@ class NaiveBayesTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new NaiveBayes(1.0, null);
+        $this->estimator = new NaiveBayes(null, 1.0);
 
         $this->metric = new Accuracy();
 
@@ -107,7 +107,7 @@ class NaiveBayesTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new NaiveBayes(-1.0);
+        new NaiveBayes(null, -1.0);
     }
 
     /**
@@ -136,8 +136,8 @@ class NaiveBayesTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'smoothing' => 1.0,
             'priors' => null,
+            'smoothing' => 1.0,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

@@ -6,12 +6,12 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -73,7 +73,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
+    public function __construct(int $k = 5, bool $weighted = false, ?Spatial $tree = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

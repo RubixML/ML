@@ -42,7 +42,7 @@ class AggregateReport implements ReportGenerator
     public function __construct(array $reports)
     {
         if (empty($reports)) {
-            throw new InvalidArgumentException('Aggregate must contain'
+            throw new InvalidArgumentException('Report must contain'
                 . ' at least 1 sub report.');
         }
 
@@ -90,12 +90,12 @@ class AggregateReport implements ReportGenerator
      */
     public function generate(array $predictions, array $labels) : Report
     {
-        $report = [];
+        $reports = [];
 
-        foreach ($this->reports as $name => $subReport) {
-            $report[$name] = $subReport->generate($predictions, $labels);
+        foreach ($this->reports as $name => $report) {
+            $reports[$name] = $report->generate($predictions, $labels);
         }
 
-        return new Report($report);
+        return new Report($reports);
     }
 }

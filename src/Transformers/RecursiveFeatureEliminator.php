@@ -8,9 +8,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Other\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -267,9 +267,9 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      */
     public function __toString() : string
     {
-        return "Recursive Feature Eliminator (min_features: {$this->minFeatures},"
-            . " max_dropped_features: {$this->maxDroppedFeatures},"
-            . " max_dropped_importance: {$this->maxDroppedImportance},"
+        return "Recursive Feature Eliminator (min features: {$this->minFeatures},"
+            . " max dropped features: {$this->maxDroppedFeatures},"
+            . " max dropped importance: {$this->maxDroppedImportance},"
             . " scorer: {$this->scorer})";
     }
 }
