@@ -131,7 +131,7 @@ class CSV implements Extractor, Writable
 
             $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
 
-            if (!$length) {
+            if ($length === false) {
                 throw new RuntimeException("Could not write header on line $line.");
             }
 
@@ -141,7 +141,7 @@ class CSV implements Extractor, Writable
         foreach ($iterator as $row) {
             $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure);
 
-            if (!$length) {
+            if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");
             }
 

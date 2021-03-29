@@ -78,16 +78,16 @@ class NDJSON implements Extractor, Writable
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 0;
+        $line = 1;
 
         foreach ($iterator as $row) {
             $length = fputs($handle, JSON::encode($row) . PHP_EOL);
 
-            ++$line;
-
-            if (!$length) {
+            if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");
             }
+
+            ++$line;
         }
 
         fclose($handle);
@@ -115,12 +115,10 @@ class NDJSON implements Extractor, Writable
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 0;
+        $line = 1;
 
         while (!feof($handle)) {
             $data = rtrim(fgets($handle) ?: '');
-
-            ++$line;
 
             if (empty($data)) {
                 continue;
@@ -135,6 +133,8 @@ class NDJSON implements Extractor, Writable
                     $exception
                 );
             }
+
+            ++$line;
         }
 
         fclose($handle);
