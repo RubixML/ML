@@ -2,6 +2,10 @@
 
 namespace Rubix\ML\Loggers;
 
+use function trim;
+use function date;
+use function strtoupper;
+
 /**
  * Screen
  *

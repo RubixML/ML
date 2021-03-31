@@ -81,8 +81,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
     protected $ratio;
 
     /**
-     * The proportion of outliers that are presumed to be present in the
-     * training set.
+     * The proportion of outliers that are presumed to be present in the training set.
      *
      * @var float|null
      */

@@ -61,6 +61,13 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
     /**
+     * The proportion of outliers that are assumed to be present in the training set.
+     *
+     * @var float
+     */
+    protected $contamination;
+
+    /**
      * The number of projection/histogram pairs in the ensemble.
      *
      * @var int
@@ -80,14 +87,6 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * @var bool
      */
     protected $fitBins;
-
-    /**
-     * The proportion of outliers that are assumed to be present in the
-     * training set.
-     *
-     * @var float
-     */
-    protected $contamination;
 
     /**
      * The sparse random projection matrix.
@@ -120,13 +119,18 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     protected $n = 0;
 
     /**
+     * @param float $contamination
      * @param int $estimators
      * @param int|null $bins
-     * @param float $contamination
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, ?int $bins = null, float $contamination = 0.1)
+    public function __construct(float $contamination = 0.1, int $estimators = 100, ?int $bins = null)
     {
+        if ($contamination < 0.0 or $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be'
+                . " between 0 and 0.5, $contamination given.");
+        }
+
         if ($estimators < 1) {
             throw new InvalidArgumentException('Number of estimators'
                 . " must be greater than 0, $estimators given.");
@@ -137,15 +141,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
                 . ' than ' . self::MIN_BINS . ", $bins given.");
         }
 
-        if ($contamination < 0.0 or $contamination > 0.5) {
-            throw new InvalidArgumentException('Contamination must be'
-                . " between 0 and 0.5, $contamination given.");
-        }
-
+        $this->contamination = $contamination;
         $this->estimators = $estimators;
         $this->bins = $bins;
         $this->fitBins = is_null($bins);
-        $this->contamination = $contamination;
     }
 
     /**
@@ -184,9 +183,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     public function params() : array
     {
         return [
+            'contamination' => $this->contamination,
             'estimators' => $this->estimators,
             'bins' => $this->bins,
-            'contamination' => $this->contamination,
         ];
     }
 
@@ -303,9 +302,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         $threshold = Stats::quantile($densities, 1.0 - $this->contamination);
 
-        $weight = $n / $this->n;
+        $beta = $n / $this->n;
 
-        $this->threshold = (1.0 - $weight) * $this->threshold + $weight * $threshold;
+        $this->threshold = (1.0 - $beta) * $this->threshold + $beta * $threshold;
     }
 
     /**

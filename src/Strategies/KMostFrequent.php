@@ -11,8 +11,7 @@ use function array_slice;
 /**
  * K Most Frequent
  *
- * This Strategy outputs one of k most frequently occurring classes at random
- * with equal probability.
+ * This Strategy outputs one of k most frequently occurring classes at random with equal probability.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

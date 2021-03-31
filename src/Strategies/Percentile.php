@@ -83,9 +83,7 @@ class Percentile implements Strategy
                 . ' to at least 1 value.');
         }
 
-        $q = $this->p / 100.0;
-
-        $this->percentile = Stats::quantile($values, $q);
+        $this->percentile = Stats::quantile($values, $this->p / 100.0);
     }
 
     /**
