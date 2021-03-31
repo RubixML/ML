@@ -85,7 +85,6 @@ namespace Rubix\ML
             return $element;
         }
 
-        return null;
     }
 
     /**
