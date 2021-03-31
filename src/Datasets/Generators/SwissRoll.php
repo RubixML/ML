@@ -4,7 +4,6 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
-use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
