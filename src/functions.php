@@ -84,6 +84,8 @@ namespace Rubix\ML
         foreach ($iterator as $element) {
             return $element;
         }
+
+        return null;
     }
 
     /**
