@@ -8,6 +8,8 @@ use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function Rubix\ML\array_transpose;
+
 use const Rubix\ML\HALF_PI;
 
 /**
@@ -113,19 +115,21 @@ class SwissRoll implements Generator
      */
     public function generate(int $n) : Labeled
     {
-        $t = ColumnVector::rand($n)
+        $t = Vector::rand($n)
             ->multiply(2)
             ->add(1)
             ->multiply(M_PI + HALF_PI);
 
-        $x = $t->multiply($t->cos());
-        $y = ColumnVector::rand($n)->multiply($this->depth);
-        $z = $t->multiply($t->sin());
+        $x = $t->multiply($t->cos())->asArray();
+        $y = Vector::rand($n)->multiply($this->depth)->asArray();
+        $z = $t->multiply($t->sin())->asArray();
+
+        $coordinates = array_transpose([$x, $y, $z]);
 
         $noise = Matrix::gaussian($n, 3)
             ->multiply($this->noise);
 
-        $samples = Matrix::stack([$x, $y, $z])
+        $samples = Matrix::quick($coordinates)
             ->multiply($this->scale)
             ->add($this->center)
             ->add($noise)

@@ -4,9 +4,10 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
-use Tensor\ColumnVector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+
+use function Rubix\ML\array_transpose;
 
 use const Rubix\ML\TWO_PI;
 
@@ -90,15 +91,17 @@ class Circle implements Generator
      */
     public function generate(int $n) : Labeled
     {
-        $r = ColumnVector::rand($n)->multiply(TWO_PI);
+        $r = Vector::rand($n)->multiply(TWO_PI);
 
-        $x = $r->cos();
-        $y = $r->sin();
+        $x = $r->cos()->asArray();
+        $y = $r->sin()->asArray();
+
+        $coordinates = array_transpose([$x, $y]);
 
         $noise = Matrix::gaussian($n, 2)
             ->multiply($this->noise);
 
-        $samples = Matrix::stack([$x, $y])
+        $samples = Matrix::quick($coordinates)
             ->multiply($this->scale)
             ->add($this->center)
             ->add($noise)
