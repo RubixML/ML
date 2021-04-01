@@ -21,10 +21,11 @@
         "svm", "text mining", "tf-idf", "tf idf", "t-sne", "tsne", "unsupervised learning"
     ],
     "authors": [
-        {
+        { 
             "name": "Andrew DalPino",
-            "email": "support@andrewdalpino.com",
-            "role": "Project Lead"
+            "role": "Project Lead",
+            "homepage": "https://github.com/andrewdalpino",
+            "email": "support@andrewdalpino.com"
         },
         {
             "name": "Contributors",
