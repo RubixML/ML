@@ -14,7 +14,12 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use Generator;
 
+use function range;
+use function max;
+use function sqrt;
 use function array_slice;
+use function array_pop;
+use function array_unique;
 use function is_string;
 use function is_int;
 use function is_null;

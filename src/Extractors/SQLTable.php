@@ -48,7 +48,7 @@ class SQLTable implements Extractor
      * @param int $batchSize
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(PDO $connection, string $table, int $batchSize = 200)
+    public function __construct(PDO $connection, string $table, int $batchSize = 100)
     {
         ExtensionIsLoaded::with('PDO')->check();
 
@@ -97,6 +97,6 @@ class SQLTable implements Extractor
             yield from $rows;
 
             $offset += $this->batchSize;
-        } while (count($rows) === $this->batchSize);
+        } while (count($rows) >= $this->batchSize);
     }
 }

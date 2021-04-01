@@ -7,7 +7,7 @@ The SQL table extractor iterates over the rows of a relational database table. I
     This extractor requires the [PDO extension](https://www.php.net/manual/en/book.pdo.php).
 
 !!! note
-    The order in which the rows are iterated over is not guaranteed. Use a custom query with `ORDER BY` statement if ordering is important.
+    The order in which the rows are iterated over is not guaranteed. Use a custom query with `ORDER BY` statement if ordering matters.
 
 **Interfaces:** [Extractor](api.md)
 
@@ -16,7 +16,7 @@ The SQL table extractor iterates over the rows of a relational database table. I
 |---|---|---|---|---|
 | 1 | connection | | PDO | The PDO connection to the database. |
 | 2 | table | | string | The name of the table to select from. |
-| 3 | batch size | 200 | int | The number of rows of the table to load in a single query. |
+| 3 | batch size | 100 | int | The number of rows of the table to load in a single query. |
 
 ## Example
 ```php
