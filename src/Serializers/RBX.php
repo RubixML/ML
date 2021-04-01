@@ -71,7 +71,7 @@ class RBX implements Serializer
      */
     public function __construct(?Gzip $base = null)
     {
-        $this->base = $base ?? new Gzip(9);
+        $this->base = $base ?? new Gzip();
     }
 
     /**

@@ -26,6 +26,8 @@
     - Remove Wrapper interface
     - RBX serializer now accepts base Gzip parameter
     - Gzip serializer no longer accepts base serializer
+    - Changed Gzip default compression level from 1 to 6
+    - Changed RBX default compression level from 9 to 6
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
