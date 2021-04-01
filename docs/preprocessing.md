@@ -136,29 +136,6 @@ These transformers operate on the high-level image data type.
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
-### Persisting Transformers
-The persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md) so we can load it in another process.
-
-```php
-use Rubix\ML\Persisters\Filesystem;
-
-$transformer->fit($dataset);
-
-$persister = new Filesystem('example.transformer');
-
-$persister->save($transformer);
-```
-
-Then, to load the transformer in another process call the `load()` method on the [Persister](persisters/api.md) instance.
-
-```php
-$persister = new Filesystem('example.transformer');
-
-$transformer = $persister->load();
-
-$dataset->apply($transformer);
-```
-
 ## Transformer Pipelines
 The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
 
@@ -188,14 +165,6 @@ Any time a dataset is passed to the Pipeline it will automatically be transforme
 
 ```php
 $predictions = $estimator->predict($dataset); // Dataset transformed automatically
-```
-
-You can save the transformer fittings alongside the model data by persisting the entire Pipeline object or by wrapping it in a [Persistent Model](persistent-model.md) meta-estimator.
-
-```php
-$persister = new Filesystem('example.model');
-
-$persister->save($estimator);
 ```
 
 ## Advanced Preprocessing

@@ -150,11 +150,13 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
      */
     public function save() : void
     {
-        if ($this->base instanceof Persistable) {
-            $encoding = $this->serializer->serialize($this->base);
-
-            $this->persister->save($encoding);
+        if (!$this->base instanceof Persistable) {
+            throw new RuntimeException('Base estimator is not persistable.');
         }
+
+        $encoding = $this->serializer->serialize($this->base);
+
+        $this->persister->save($encoding);
     }
 
     /**
