@@ -54,14 +54,12 @@ You can access individual report attributes by treating the report object as an 
 $accuracy = $results['accuracy'];
 ```
 
-## Saving the Report
+## Encoding the Report
 To return a JSON encoding that can be written to a file, call the `toJSON()` method on the report object.
 ```php
 public toJSON(bool $pretty = true) : Encoding
 ```
 
-Then you can use the `write()` method on the encoding object to save the file to the filesystem.
-
 ```php
-$results->toJSON()->write('report.json');
+$encoding = $report->toJSON();
 ```
