@@ -42,7 +42,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Estimator, Learner, Parallel, Verbose, ModelWrapper, Persistable
+class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
 

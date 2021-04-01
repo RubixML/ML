@@ -6,7 +6,7 @@ Pipeline is a meta-estimator capable of transforming an input dataset by applyin
 !!! note
     Pipeline modifies the input dataset during fitting. If you need to keep a *clean* dataset in memory, you can clone the dataset object before calling the method that consumes it.
 
-**Interfaces:** [Model Wrapper](model-wrapper.md), [Estimator](estimator.md), [Learner](learner.md), [Online](online.md), [Probabilistic](probabilistic.md), [Scoring](scoring.md), [Persistable](persistable.md), [Verbose](verbose.md)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Online](online.md), [Probabilistic](probabilistic.md), [Scoring](scoring.md), [Persistable](persistable.md), [Verbose](verbose.md)
 
 **Data Type Compatibility:** Depends on base learner and transformers
 

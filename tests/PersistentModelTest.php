@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\ModelWrapper;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\PersistentModel;
@@ -40,7 +39,6 @@ class PersistentModelTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(PersistentModel::class, $this->estimator);
-        $this->assertInstanceOf(ModelWrapper::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
