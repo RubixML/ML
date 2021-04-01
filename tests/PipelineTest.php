@@ -3,12 +3,12 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Online;
-use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\ModelWrapper;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
@@ -80,7 +80,7 @@ class PipelineTest extends TestCase
     {
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Wrapper::class, $this->estimator);
+        $this->assertInstanceOf(ModelWrapper::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);

@@ -15,8 +15,6 @@ use Generator;
 /**
  * Report
  *
- * The results of a cross-validation report.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -24,7 +22,7 @@ use Generator;
  * @implements ArrayAccess<int, array>
  * @implements IteratorAggregate<int, array>
  */
-class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Stringable, Countable
+class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Countable, Stringable
 {
     /**
      * The attributes that make up the report.
@@ -42,16 +40,6 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     }
 
     /**
-     * Return an array representation of the report.
-     *
-     * @return mixed[]
-     */
-    public function toArray() : array
-    {
-        return $this->attributes;
-    }
-
-    /**
      * Return a JSON representation of the report.
      *
      * @param bool $pretty
@@ -59,7 +47,19 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
      */
     public function toJSON(bool $pretty = true) : Encoding
     {
-        return new Encoding(JSON::encode($this, $pretty ? JSON_PRETTY_PRINT : 0) ?: '');
+        $options = $pretty ? JSON_PRETTY_PRINT : 0;
+
+        return new Encoding(JSON::encode($this, $options));
+    }
+
+    /**
+     * Return an array representation of the report.
+     *
+     * @return mixed[]
+     */
+    public function toArray() : array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -109,14 +109,6 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     }
 
     /**
-     * @return mixed[]
-     */
-    public function jsonSerialize() : array
-    {
-        return $this->toArray();
-    }
-
-    /**
      * Get an iterator for the attributes in the report.
      *
      * @return \Generator<mixed>
@@ -134,6 +126,14 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, String
     public function count() : int
     {
         return count($this->attributes);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->toArray();
     }
 
     /**

@@ -3,13 +3,13 @@
 namespace Rubix\ML;
 
 /**
- * Wrapper
+ * Model Wrapper
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Wrapper extends Estimator
+interface ModelWrapper extends Estimator
 {
     /**
      * Return the base estimator instance.
