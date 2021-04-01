@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Persisters\Serializers;
+namespace Rubix\ML\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
@@ -31,13 +31,13 @@ class Gzip implements Serializer
     /**
      * The base serializer.
      *
-     * @var \Rubix\ML\Persisters\Serializers\Serializer
+     * @var \Rubix\ML\Serializers\Serializer
      */
     protected $base;
 
     /**
      * @param int $level
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $base
+     * @param \Rubix\ML\Serializers\Serializer|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $level = 1, ?Serializer $base = null)

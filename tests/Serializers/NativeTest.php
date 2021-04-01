@@ -5,8 +5,8 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\RBX;
-use Rubix\ML\Persisters\Serializers\Serializer;
+use Rubix\ML\Serializers\Native;
+use Rubix\ML\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
 use stdClass;
@@ -15,9 +15,9 @@ use function serialize;
 
 /**
  * @group Serializers
- * @covers \Rubix\ML\Persisters\Serializers\RBX
+ * @covers \Rubix\ML\Serializers\Native
  */
-class RBXTest extends TestCase
+class NativeTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Persistable
@@ -25,7 +25,7 @@ class RBXTest extends TestCase
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\RBX
+     * @var \Rubix\ML\Serializers\Native
      */
     protected $serializer;
 
@@ -34,7 +34,7 @@ class RBXTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->serializer = new RBX();
+        $this->serializer = new Native();
 
         $this->persistable = new DummyClassifier();
     }
@@ -44,7 +44,7 @@ class RBXTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(RBX::class, $this->serializer);
+        $this->assertInstanceOf(Native::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 

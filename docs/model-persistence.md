@@ -17,11 +17,11 @@ $persister->save($estimator);
 ```
 
 ## Serialization
-Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in byte-stream format such as with PHP's [Native](persisters/serializers/native.md) serializer or in a compressed byte-stream with integrity checks such as with the library's own [RBX](persisters/serializers/rbx.md) serializer. In the next example, we demonstrate how to replace the default serializer of the [Filesystem](persisters/filesystem.md) persister with the RBX format.
+Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in byte-stream format such as with PHP's [Native](serializers/native.md) serializer or in a compressed byte-stream with integrity checks such as with the library's own [RBX](serializers/rbx.md) serializer. In the next example, we demonstrate how to replace the default serializer of the [Filesystem](persisters/filesystem.md) persister with the RBX format.
 
 ```php
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Serializers\RBX;
 
 $persister = new Filesystem('example.rbx', true, new RBX());
 ```

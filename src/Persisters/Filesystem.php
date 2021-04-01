@@ -5,8 +5,6 @@ namespace Rubix\ML\Persisters;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Persisters\Serializers\RBX;
-use Rubix\ML\Persisters\Serializers\Serializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -53,19 +51,11 @@ class Filesystem implements Persister
     protected $history;
 
     /**
-     * The serializer used to convert to and from serial format.
-     *
-     * @var \Rubix\ML\Persisters\Serializers\Serializer
-     */
-    protected $serializer;
-
-    /**
      * @param string $path
      * @param bool $history
-     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(string $path, bool $history = false, ?Serializer $serializer = null)
+    public function __construct(string $path, bool $history = false)
     {
         if (empty($path)) {
             throw new InvalidArgumentException('Path cannot be empty.');
@@ -77,16 +67,15 @@ class Filesystem implements Persister
 
         $this->path = $path;
         $this->history = $history;
-        $this->serializer = $serializer ?? new RBX();
     }
 
     /**
-     * Save the persistable object.
+     * Save an encoding.
      *
-     * @param \Rubix\ML\Persistable $persistable
+     * @param \Rubix\ML\Encoding $encoding
      * @throws \RuntimeException
      */
-    public function save(Persistable $persistable) : void
+    public function save(Encoding $encoding) : void
     {
         if (!is_file($this->path) and !is_writable(dirname($this->path))) {
             throw new RuntimeException('Folder does not exist or is not writable');
@@ -112,8 +101,6 @@ class Filesystem implements Persister
             }
         }
 
-        $encoding = $this->serializer->serialize($persistable);
-
         if ($encoding->bytes() === 0) {
             throw new RuntimeException("Cannot save empty file to {$this->path}");
         }
@@ -126,12 +113,12 @@ class Filesystem implements Persister
     }
 
     /**
-     * Load the last saved persistable instance.
+     * Load a persisted encoding.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\Persistable
+     * @return \Rubix\ML\Encoding
      */
-    public function load() : Persistable
+    public function load() : Encoding
     {
         if (!is_file($this->path)) {
             throw new RuntimeException("File {$this->path} does not exist.");
@@ -154,7 +141,7 @@ class Filesystem implements Persister
                 . ' contain any data.');
         }
 
-        return $this->serializer->unserialize($encoding);
+        return $encoding;
     }
 
     /**
@@ -164,8 +151,6 @@ class Filesystem implements Persister
      */
     public function __toString() : string
     {
-        return "Filesystem (path: {$this->path},"
-            . ' history: ' . Params::toString($this->history) . ','
-            . " serializer: {$this->serializer})";
+        return "Filesystem (path: {$this->path}, history: " . Params::toString($this->history) . ')';
     }
 }

@@ -13,7 +13,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 ## Example
 ```php
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Serializers\RBX;
 
 $persister = new Filesystem('/path/to/example.model', true, new RBX());
 ```

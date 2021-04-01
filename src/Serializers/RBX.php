@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Persisters\Serializers;
+namespace Rubix\ML\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
@@ -62,7 +62,7 @@ class RBX implements Serializer
     /**
      * The base serializer.
      *
-     * @var \Rubix\ML\Persisters\Serializers\Gzip
+     * @var \Rubix\ML\Serializers\Gzip
      */
     protected $base;
 

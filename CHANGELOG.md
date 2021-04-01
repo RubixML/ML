@@ -21,6 +21,7 @@
     - Promoted the Other namespace
     - Moved Flysystem persister to the Extras package
     - Change order of Loda hyper-parameters
+    - Persistent Model now accepts an optional serializer
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

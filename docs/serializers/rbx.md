@@ -11,7 +11,7 @@ This serializer does not have any parameters.
 
 ## Example
 ```php
-use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Serializers\RBX;
 
 $serializer = new RBX();
 ```

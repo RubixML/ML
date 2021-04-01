@@ -11,8 +11,8 @@ A compression format based on the DEFLATE algorithm with a header and CRC32 chec
 
 ## Example
 ```php
-use Rubix\ML\Persisters\Serializers\Gzip;
-use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Serializers\Gzip;
+use Rubix\ML\Serializers\Native;
 
 $serializer = new Gzip(1, new Native());
 ```

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Persisters;
 
-use Rubix\ML\Persistable;
+use Rubix\ML\Encoding;
 use Stringable;
 
 /**
@@ -15,16 +15,16 @@ use Stringable;
 interface Persister extends Stringable
 {
     /**
-     * Save the persistable object.
+     * Save an encoding.
      *
-     * @param \Rubix\ML\Persistable $persistable
+     * @param \Rubix\ML\Encoding $encoding
      */
-    public function save(Persistable $persistable) : void;
+    public function save(Encoding $encoding) : void;
 
     /**
-     * Load the last saved persistable instance.
+     * Load a persisted encoding.
      *
-     * @return \Rubix\ML\Persistable
+     * @return \Rubix\ML\Encoding
      */
-    public function load() : Persistable;
+    public function load() : Encoding;
 }
