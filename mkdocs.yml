@@ -243,6 +243,7 @@ nav:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
     - Serializers:
+      - API Reference: serializers/api.md
       - Gzip: serializers/gzip.md
       - Native: serializers/native.md
       - RBX: serializers/rbx.md
