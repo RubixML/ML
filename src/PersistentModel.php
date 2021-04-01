@@ -3,8 +3,10 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Serializers\RBX;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Serializers\Serializer;
 use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -19,7 +21,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Scoring
+class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
 {
     /**
      * The persistable base learner.
@@ -36,29 +38,41 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
     protected $persister;
 
     /**
+     * The object serializer.
+     *
+     * @var \Rubix\ML\Serializers\Serializer
+     */
+    protected $serializer;
+
+    /**
      * Factory method to restore the model from persistence.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
+     * @param \Rubix\ML\Serializers\Serializer|null $serializer
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
-    public static function load(Persister $persister) : self
+    public static function load(Persister $persister, ?Serializer $serializer = null) : self
     {
-        $base = $persister->load();
+        $serializer = $serializer ?? new RBX();
+
+        $base = $serializer->unserialize($persister->load());
 
         if (!$base instanceof Learner) {
             throw new InvalidArgumentException('Persistable must'
                 . ' implement the Learner interface.');
         }
 
-        return new self($base, $persister);
+        return new self($base, $persister, $serializer);
     }
 
     /**
      * @param \Rubix\ML\Learner $base
      * @param \Rubix\ML\Persisters\Persister $persister
+     * @param \Rubix\ML\Serializers\Serializer|null $serializer
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(Learner $base, Persister $persister)
+    public function __construct(Learner $base, Persister $persister, ?Serializer $serializer = null)
     {
         if (!$base instanceof Persistable) {
             throw new InvalidArgumentException('Base Learner must'
@@ -67,6 +81,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
 
         $this->base = $base;
         $this->persister = $persister;
+        $this->serializer = $serializer ?? new RBX();
     }
 
     /**
@@ -105,6 +120,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
         return [
             'base' => $this->base,
             'persister' => $this->persister,
+            'serializer' => $this->serializer,
         ];
     }
 
@@ -133,9 +149,13 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Sco
      */
     public function save() : void
     {
-        if ($this->base instanceof Persistable) {
-            $this->persister->save($this->base);
+        if (!$this->base instanceof Persistable) {
+            throw new RuntimeException('Base estimator is not persistable.');
         }
+
+        $encoding = $this->serializer->serialize($this->base);
+
+        $this->persister->save($encoding);
     }
 
     /**

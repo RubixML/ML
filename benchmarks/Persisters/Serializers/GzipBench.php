@@ -5,7 +5,7 @@ namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Persisters\Serializers\Gzip;
+use Rubix\ML\Serializers\Gzip;
 
 /**
  * @Groups({"Serializers"})
@@ -16,7 +16,7 @@ class GzipBench
     protected const TRAINING_SIZE = 2500;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\Gzip
+     * @var \Rubix\ML\Serializers\Gzip
      */
     protected $serializer;
 

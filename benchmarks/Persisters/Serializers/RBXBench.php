@@ -5,7 +5,7 @@ namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Persisters\Serializers\RBX;
+use Rubix\ML\Serializers\RBX;
 
 /**
  * @Groups({"Serializers"})
@@ -16,7 +16,7 @@ class RBXBench
     protected const TRAINING_SIZE = 2500;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\RBX
+     * @var \Rubix\ML\Serializers\RBX
      */
     protected $serializer;
 

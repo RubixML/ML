@@ -5,19 +5,15 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\Native;
-use Rubix\ML\Persisters\Serializers\Serializer;
+use Rubix\ML\Serializers\Gzip;
+use Rubix\ML\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Exceptions\RuntimeException;
-use stdClass;
-
-use function serialize;
 
 /**
  * @group Serializers
- * @covers \Rubix\ML\Persisters\Serializers\Native
+ * @covers \Rubix\ML\Serializers\Gzip
  */
-class NativeTest extends TestCase
+class GzipTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Persistable
@@ -25,7 +21,7 @@ class NativeTest extends TestCase
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Persisters\Serializers\Native
+     * @var \Rubix\ML\Serializers\Gzip
      */
     protected $serializer;
 
@@ -34,7 +30,7 @@ class NativeTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->serializer = new Native();
+        $this->serializer = new Gzip(1);
 
         $this->persistable = new DummyClassifier();
     }
@@ -44,7 +40,7 @@ class NativeTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Native::class, $this->serializer);
+        $this->assertInstanceOf(Gzip::class, $this->serializer);
         $this->assertInstanceOf(Serializer::class, $this->serializer);
     }
 
@@ -61,32 +57,5 @@ class NativeTest extends TestCase
 
         $this->assertInstanceOf(DummyClassifier::class, $persistable);
         $this->assertInstanceOf(Persistable::class, $persistable);
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function deserializeInvalidData() : array
-    {
-        return [
-            [3],
-            [new stdClass()],
-        ];
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $obj
-     *
-     * @dataProvider deserializeInvalidData
-     */
-    public function deserializeBadData($obj) : void
-    {
-        $data = new Encoding(serialize($obj));
-
-        $this->expectException(RuntimeException::class);
-
-        $this->serializer->unserialize($data);
     }
 }

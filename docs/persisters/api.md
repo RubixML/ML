@@ -1,22 +1,22 @@
 # Persisters
-Persisters are responsible for persisting a [Persistable](../persistable.md) object to storage and are also used by the [Persistent Model](../persistent-model.md) meta-estimator to save and restore models.
+Persisters are responsible for persisting Encoding objects to storage and are also used by the [Persistent Model](../persistent-model.md) meta-estimator to save and restore models that have been serialized.
 
 ### Save
-To store a persistable object:
+To save an encoding:
 ```php
-public save(Persistable $persistable) : void
+public save(Encoding $encoding) : void
 ```
 
 ```php
-$persister->save($estimator);
+$persister->save($encoding);
 ```
 
 ### Load
-Load the saved object from persistence:
+To load an encoding from persistence:
 ```php
-public load() : Persistable
+public load() : Encoding
 ```
 
 ```php
-$estimator = $persister->load();
+$encoding = $persister->load();
 ```

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Online;
-use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\DataType;
@@ -80,7 +79,6 @@ class PipelineTest extends TestCase
     {
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Wrapper::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Scoring::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);

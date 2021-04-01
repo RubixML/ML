@@ -27,7 +27,7 @@ use Psr\Log\LoggerInterface;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Verbose, Persistable
+class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 

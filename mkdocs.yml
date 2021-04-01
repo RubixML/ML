@@ -37,7 +37,6 @@ nav:
       - Ranks Features: ranks-features.md
       - Scoring: scoring.md
       - Verbose: verbose.md
-      - Wrapper: wrapper.md
     - Extractors:
       - API Reference: extractors/api.md
       - Column Picker: extractors/column-picker.md
@@ -242,10 +241,11 @@ nav:
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
-      - Serializers:
-        - Gzip: persisters/serializers/gzip.md
-        - Native: persisters/serializers/native.md
-        - RBX: persisters/serializers/rbx.md
+    - Serializers:
+      - API Reference: serializers/api.md
+      - Gzip: serializers/gzip.md
+      - Native: serializers/native.md
+      - RBX: serializers/rbx.md
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md

@@ -137,10 +137,12 @@ $mae = $results['mean_absolute_error'];
 ```
 
 ### Saving a Report
-You may want to save the results of a report for later reference. To do so, you may call the `toJSON()` method on the report object and subsequently the `write()` method on the returned encoding to save the report to a file.
+Report objects can be cast to JSON encodings which are persistable using a [Persister](persisters/api.md) object. To save a report, call the `toJSON()` method on the report object and pass it to the `save()` method on the persister.
 
 ```php
-$results->toJSON()->write('report.json');
+$persister = new Filesystem('error.report');
+
+$persister->save($results->toJSON());
 ```
 
 ## Validators

@@ -8,7 +8,7 @@ This serializer does not have any parameters.
 
 ## Example
 ```php
-use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Serializers\Native;
 
 $serializer = new Native();
 ```

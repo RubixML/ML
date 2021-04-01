@@ -2,11 +2,9 @@
 
 namespace Rubix\ML\Tests\Persisters;
 
-use Rubix\ML\Persistable;
+use Rubix\ML\Encoding;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Persisters\Serializers\RBX;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,11 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 class FilesystemTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Persistable
-     */
-    protected $persistable;
-
     /**
      * @var \Rubix\ML\Persisters\Filesystem
      */
@@ -37,9 +30,7 @@ class FilesystemTest extends TestCase
     {
         $this->path = __DIR__ . '/test.model';
 
-        $this->persistable = new DummyClassifier();
-
-        $this->persister = new Filesystem($this->path, true, new RBX());
+        $this->persister = new Filesystem($this->path, true);
     }
 
     /**
@@ -70,14 +61,15 @@ class FilesystemTest extends TestCase
      */
     public function saveLoad() : void
     {
-        $this->persister->save($this->persistable);
+        $encoding = new Encoding("Bitch, I'm for real!");
+
+        $this->persister->save($encoding);
 
         $this->assertFileExists($this->path);
 
-        $model = $this->persister->load();
+        $encoding = $this->persister->load();
 
-        $this->assertInstanceOf(DummyClassifier::class, $model);
-        $this->assertInstanceOf(Persistable::class, $model);
+        $this->assertInstanceOf(Encoding::class, $encoding);
     }
 
     protected function assertPreConditions() : void

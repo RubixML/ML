@@ -6,15 +6,13 @@ A compression format based on the DEFLATE algorithm with a header and CRC32 chec
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | level | 1 | int | The compression level between 0 and 9, 0 meaning no compression. |
-| 2 | serializer | Native | Serializer | The base serializer. |
+| 1 | level | 6 | int | The compression level between 0 and 9, 0 meaning no compression. |
 
 ## Example
 ```php
-use Rubix\ML\Persisters\Serializers\Gzip;
-use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Serializers\Gzip;
 
-$serializer = new Gzip(1, new Native());
+$serializer = new Gzip(1);
 ```
 
 ## References

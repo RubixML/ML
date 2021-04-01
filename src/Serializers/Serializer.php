@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Persisters\Serializers;
+namespace Rubix\ML\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;

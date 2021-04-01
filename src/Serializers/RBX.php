@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Persisters\Serializers;
+namespace Rubix\ML\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
@@ -60,15 +60,18 @@ class RBX implements Serializer
     protected const EOL = "\n";
 
     /**
-     * The base serializer.
+     * The base Gzip serializer.
      *
-     * @var \Rubix\ML\Persisters\Serializers\Gzip
+     * @var \Rubix\ML\Serializers\Gzip
      */
     protected $base;
 
-    public function __construct()
+    /**
+     * @param \Rubix\ML\Serializers\Gzip|null $base
+     */
+    public function __construct(?Gzip $base = null)
     {
-        $this->base = new Gzip(9, new Native());
+        $this->base = $base ?? new Gzip(9);
     }
 
     /**
