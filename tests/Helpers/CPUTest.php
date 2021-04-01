@@ -12,14 +12,6 @@ use PHPUnit\Framework\TestCase;
 class CPUTest extends TestCase
 {
     /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        ini_set('precision', '28');
-    }
-
-    /**
      * @test
      */
     public function epsilon() : void
@@ -28,5 +20,7 @@ class CPUTest extends TestCase
 
         $this->assertLessThan(1.0, $epsilon);
         $this->assertGreaterThan(0.0, $epsilon);
+
+        $this->assertFalse(1.0 + $epsilon === 1.0);
     }
 }

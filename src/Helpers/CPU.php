@@ -74,12 +74,14 @@ class CPU
      */
     public static function epsilon() : float
     {
-        $epsilon = 1.0;
+        $epsilon = $previous = 1.0;
 
         while (1.0 + $epsilon !== 1.0) {
+            $previous = $epsilon;
+
             $epsilon *= 0.5;
         }
 
-        return $epsilon;
+        return $previous;
     }
 }
