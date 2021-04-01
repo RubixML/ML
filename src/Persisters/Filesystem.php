@@ -85,6 +85,10 @@ class Filesystem implements Persister
             throw new RuntimeException("File {$this->path} is not writable.");
         }
 
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException('Encoding does not contain any data.');
+        }
+
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 
@@ -99,10 +103,6 @@ class Filesystem implements Persister
             if (!rename($this->path, $filename)) {
                 throw new RuntimeException('Could not create history file.');
             }
-        }
-
-        if ($encoding->bytes() === 0) {
-            throw new RuntimeException("Cannot save empty file to {$this->path}");
         }
 
         $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
@@ -137,8 +137,7 @@ class Filesystem implements Persister
         $encoding = new Encoding($data);
 
         if ($encoding->bytes() === 0) {
-            throw new RuntimeException("File {$this->path} does not"
-                . ' contain any data.');
+            throw new RuntimeException('File does not contain any data.');
         }
 
         return $encoding;

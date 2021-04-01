@@ -7,11 +7,15 @@ Rubix Object File format (RBX) is a format designed to reliably store and share 
     We recommend to use the extension `.rbx` when storing RBX-formatted object files.
 
 ## Parameters
-This serializer does not have any parameters.
+## Parameters
+| # | Name | Default | Type | Description |
+|---|---|---|---|---|
+| 1 | base | Gzip | Gzip | The base Gzip serializer. |
 
 ## Example
 ```php
 use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Serializers\Gzip;
 
-$serializer = new RBX();
+$serializer = new RBX(new Gzip(9));
 ```

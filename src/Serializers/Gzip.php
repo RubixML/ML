@@ -31,29 +31,23 @@ class Gzip implements Serializer
     /**
      * The base serializer.
      *
-     * @var \Rubix\ML\Serializers\Serializer
+     * @var \Rubix\ML\Serializers\Native
      */
     protected $base;
 
     /**
      * @param int $level
-     * @param \Rubix\ML\Serializers\Serializer|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $level = 1, ?Serializer $base = null)
+    public function __construct(int $level = 6)
     {
         if ($level < 0 or $level > 9) {
             throw new InvalidArgumentException('Level must be'
                 . " between 0 and 9, $level given.");
         }
 
-        if ($base instanceof self) {
-            throw new InvalidArgumentException('Base serializer'
-                . ' must not be an instance of Gzip.');
-        }
-
         $this->level = $level;
-        $this->base = $base ?? new Native();
+        $this->base = new Native();
     }
 
     /**

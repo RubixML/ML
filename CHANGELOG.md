@@ -22,7 +22,10 @@
     - Moved Flysystem persister to the Extras package
     - Change order of Loda hyper-parameters
     - Persistent Model now accepts an optional serializer
-    - Remove Persister dependence on Serializer
+    - Peristers no longer interact directly with Persistables
+    - Remove Wrapper interface
+    - RBX serializer now accepts base Gzip parameter
+    - Gzip serializer no longer accepts base serializer
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

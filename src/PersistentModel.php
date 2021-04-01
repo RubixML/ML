@@ -49,15 +49,14 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
      *
      * @param \Rubix\ML\Persisters\Persister $persister
      * @param \Rubix\ML\Serializers\Serializer|null $serializer
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
     public static function load(Persister $persister, ?Serializer $serializer = null) : self
     {
-        $encoding = $persister->load();
-
         $serializer = $serializer ?? new RBX();
 
-        $base = $serializer->unserialize($encoding);
+        $base = $serializer->unserialize($persister->load());
 
         if (!$base instanceof Learner) {
             throw new InvalidArgumentException('Persistable must'
