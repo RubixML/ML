@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
@@ -213,7 +214,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
             $this->mads[$column] = $mad;
         }
 
-        $epsilon = $this->smoothing * max($this->mads);
+        $epsilon = max($this->smoothing * max($this->mads), CPU::epsilon());
 
         foreach ($this->mads as &$mad) {
             $mad += $epsilon;

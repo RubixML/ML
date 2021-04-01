@@ -7,6 +7,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
@@ -302,7 +303,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->weights[$class] = $weight;
         }
 
-        $epsilon = $this->smoothing * $maxVariance;
+        $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
 
         foreach ($this->variances as &$variances) {
             foreach ($variances as &$variance) {

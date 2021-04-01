@@ -7,6 +7,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
@@ -207,7 +208,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $this->variances[$column] = $variance;
         }
 
-        $epsilon = $this->smoothing * max($this->variances);
+        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
 
         foreach ($this->variances as &$variance) {
             $variance += $epsilon;
@@ -261,7 +262,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
                 / ($this->n + $n);
         }
 
-        $epsilon = $this->smoothing * max($this->variances);
+        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
 
         foreach ($this->variances as &$variance) {
             $variance += $epsilon;

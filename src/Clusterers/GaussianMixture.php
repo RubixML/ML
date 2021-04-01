@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
@@ -284,6 +285,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $n = $dataset->numRows();
 
+        $minEpsilon = CPU::epsilon();
         $prevLoss = INF;
 
         $this->steps = [];
@@ -351,7 +353,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $this->logPriors[$cluster] = $logPrior;
             }
 
-            $epsilon = $this->smoothing * $maxVariance;
+            $epsilon = max($this->smoothing * $maxVariance, $minEpsilon);
 
             foreach ($this->variances as &$variances) {
                 foreach ($variances as &$variance) {
@@ -543,7 +545,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             $this->logPriors[$cluster] = $logPrior;
         }
 
-        $epsilon = $this->smoothing * $maxVariance;
+        $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
 
         foreach ($this->variances as &$variances) {
             foreach ($variances as &$variance) {
