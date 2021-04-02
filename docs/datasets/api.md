@@ -349,7 +349,7 @@ echo $dataset->describe();
 [
     {
         "type": "categorical",
-        "num_categories": 2,
+        "num categories": 2,
         "probabilities": {
             "friendly": 0.6666666666666666,
             "loner": 0.3333333333333333

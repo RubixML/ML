@@ -170,7 +170,7 @@ echo $dataset->describeByLabel();
     "not monster": [
         {
             "type": "categorical",
-            "num_categories": 2,
+            "num categories": 2,
             "probabilities": {
                 "friendly": 0.75,
                 "loner": 0.25
@@ -193,7 +193,7 @@ echo $dataset->describeByLabel();
     "monster": [
         {
             "type": "categorical",
-            "num_categories": 2,
+            "num categories": 2,
             "probabilities": {
                 "loner": 0.5,
                 "friendly": 0.5
@@ -229,7 +229,7 @@ echo $dataset->describeLabels();
 ```json
 {
     "type": "categorical",
-    "num_categories": 2,
+    "num categories": 2,
     "probabilities": {
         "not monster": 0.6666666666666666,
         "monster": 0.3333333333333333

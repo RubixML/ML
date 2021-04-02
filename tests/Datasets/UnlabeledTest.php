@@ -574,7 +574,7 @@ class UnlabeledTest extends TestCase
             [
                 'column' => 0,
                 'type' => 'categorical',
-                'num_categories' => 2,
+                'num categories' => 2,
                 'probabilities' => [
                     'nice' => 0.6666666666666666,
                     'mean' => 0.3333333333333333,
@@ -583,7 +583,7 @@ class UnlabeledTest extends TestCase
             [
                 'column' => 1,
                 'type' => 'categorical',
-                'num_categories' => 2,
+                'num categories' => 2,
                 'probabilities' => [
                     'furry' => 0.5,
                     'rough' => 0.5,
@@ -592,7 +592,7 @@ class UnlabeledTest extends TestCase
             [
                 'column' => 2,
                 'type' => 'categorical',
-                'num_categories' => 2,
+                'num categories' => 2,
                 'probabilities' => [
                     'friendly' => 0.6666666666666666,
                     'loner' => 0.3333333333333333,
