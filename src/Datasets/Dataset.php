@@ -404,7 +404,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     arsort($probabilities);
 
                     $desc += [
-                        'num_categories' => count($probabilities),
+                        'num categories' => count($probabilities),
                         'probabilities' => $probabilities,
                     ];
 

@@ -21,7 +21,6 @@ use function is_float;
 use function is_nan;
 
 use const Rubix\ML\PHI;
-use const Rubix\ML\EPSILON;
 
 /**
  * Labeled
@@ -945,7 +944,7 @@ class Labeled extends Dataset
                 $desc += [
                     'mean' => $mean,
                     'variance' => $variance,
-                    'std_dev' => sqrt($variance ?: EPSILON),
+                    'stddev' => sqrt($variance),
                     'skewness' => Stats::skewness($this->labels, $mean),
                     'kurtosis' => Stats::kurtosis($this->labels, $mean),
                     'min' => $quartiles[0],
@@ -971,7 +970,7 @@ class Labeled extends Dataset
                 arsort($probabilities);
 
                 $desc += [
-                    'num_categories' => count($probabilities),
+                    'num categories' => count($probabilities),
                     'probabilities' => $probabilities,
                 ];
 
