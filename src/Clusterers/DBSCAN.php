@@ -171,7 +171,7 @@ class DBSCAN implements Estimator
             $predictions[$i] = $cluster;
 
             while ($indices) {
-                $index = array_pop($indices);
+                $index = (int) array_pop($indices);
 
                 if (isset($predictions[$index])) {
                     if ($predictions[$index] === self::NOISE) {

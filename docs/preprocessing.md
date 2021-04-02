@@ -181,18 +181,18 @@ use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
-$extractor1 = new ColumnPicker(new NDJSON('dataset.ndjson'), [
+$extractor1 = new ColumnPicker(new NDJSON('example.ndjson'), [
     'review', 'sentiment',
 ]);
 
-$extractor2 = new ColumnPicker(new NDJSON('dataset.ndjson'), [
+$extractor2 = new ColumnPicker(new NDJSON('example.ndjson'), [
     'category', 'clicks', 'rating',
 ]);
 
 $dataset1 = Labeled::fromIterator($extractor1)
     ->apply(new TextNormalizer())
     ->apply(new WordCountVectorizer(5000))
-    ->apply(new IfIdfTransformer());
+    ->apply(new TfIdfTransformer());
 
 $dataset2 = Unlabeled::fromIterator($extractor2)
     ->apply(new OneHotEncoder());
@@ -221,12 +221,10 @@ $dataset->deduplicate();
     The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
-Since data objects are iterators, to save a dataset object, you can pass it to the `write()` method of a [Writable](extractors/api.md) extractor.
+To save a dataset, pass a [Writable](extractors/api.md) extractor to the `save()` method like in the example below.
 
 ```php
-use Rubix\ML\Extractors\NDJSON;
+use Rubix\ML\Extractors\CSV;
 
-$extractor = new NDJSON('example.ndjson');
-
-$extractor->write($dataset);
+$dataset->save(new CSV('example.csv'));
 ```

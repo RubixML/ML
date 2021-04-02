@@ -276,7 +276,7 @@ $subset = $dataset->randomSubset(50);
 
 Generate a random subset with replacement:
 ```php
-public randomSubsetWithReplacement($n) : self
+public randomSubsetWithReplacement(int $n) : self
 ```
 
 ```php
@@ -285,7 +285,7 @@ $subset = $dataset->randomSubsetWithReplacement(500);
 
 Generate a random *weighted* subset with replacement of size *n*:
 ```php
-public randomWeightedSubsetWithReplacement($n, array $weights) : self
+public randomWeightedSubsetWithReplacement(int $n, array $weights) : self
 ```
 
 ```php
@@ -359,7 +359,7 @@ echo $dataset->describe();
         "type": "continuous",
         "mean": 0.3333333333333333,
         "variance": 9.792222222222222,
-        "std_dev": 3.129252661934191,
+        "stddev": 3.129252661934191,
         "skewness": -0.4481030843690633,
         "kurtosis": -1.1330702741786107,
         "min": -5,
@@ -375,4 +375,16 @@ echo $dataset->describe();
 Remove duplicate rows from the dataset:
 ```php
 public deduplicate() : self
+```
+
+## Saving
+Save the dataset to the location and format given by a writable extractor:
+```php
+public save(Writable $extractor) : void
+```
+
+```php
+use Rubix\ML\Extractors\NDJSON;
+
+$dataset->save(new NDJSON('example.ndjson'));
 ```

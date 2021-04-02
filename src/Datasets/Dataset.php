@@ -5,6 +5,7 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Extractors\Writable;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -17,8 +18,6 @@ use Countable;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
-
-use const Rubix\ML\EPSILON;
 
 /**
  * Dataset
@@ -45,7 +44,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * The rows of samples and columns of features that make up the
      * data table i.e. the fixed-length feature vectors.
      *
-     * @var array[]
+     * @var list<list<mixed>>
      */
     protected $samples;
 
@@ -110,7 +109,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample matrix.
      *
-     * @return array[]
+     * @return list<list<mixed>>
      */
     public function samples() : array
     {
@@ -121,7 +120,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return the sample at the given row offset.
      *
      * @param int $offset
-     * @return mixed[]
+     * @return list<mixed>
      */
     public function sample(int $offset) : array
     {
@@ -377,7 +376,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     $desc += [
                         'mean' => $mean,
                         'variance' => $variance,
-                        'std_dev' => sqrt($variance ?: EPSILON),
+                        'stddev' => sqrt($variance),
                         'skewness' => Stats::skewness($values, $mean),
                         'kurtosis' => Stats::kurtosis($values, $mean),
                         'min' => $quartiles[0],
@@ -416,6 +415,16 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new Report($stats);
+    }
+
+    /**
+     * Save the dataset to the location and format given by a writable extractor.
+     *
+     * @param \Rubix\ML\Extractors\Writable $extractor
+     */
+    public function save(Writable $extractor) : void
+    {
+        $extractor->write($this);
     }
 
     /**

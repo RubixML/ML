@@ -1,4 +1,5 @@
 - 1.0.0-beta
+    - Add Dataset save() method
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score
     - Added Writable extractor interface

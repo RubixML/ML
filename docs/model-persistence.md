@@ -52,7 +52,7 @@ $estimator->save();
 ```
 
 ## Persisting Transformers
-In addition to Learners, the persistence subsystem can be used to save and load any Stateful transformer that implements the [Persistable](persistable.md) interface. In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md).
+In addition to Learners, the persistence subsystem can be used to individually save and load any Stateful transformer that implements the [Persistable](persistable.md) interface . In the example below we'll fit a transformer to a dataset and then save it to the [Filesystem](persisters/filesystem.md).
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
