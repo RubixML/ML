@@ -12,8 +12,7 @@ use const Rubix\ML\EPSILON;
 /**
  * AdaMax
  *
- * A version of Adam that replaces the RMS property with the infinity norm of
- * the gradients.
+ * A version of Adam that replaces the RMS property with the infinity norm of the gradients.
  *
  * References:
  * [1] D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
@@ -40,9 +39,9 @@ class AdaMax extends Adam
         $velocity = $velocity->multiply($this->beta1)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $tensor = get_class($param->param());
+        $class = get_class($param->param());
 
-        $norm = $tensor::maximum($norm->multiply($this->beta2), $gradient->abs());
+        $norm = $class::maximum($norm->multiply($this->beta2), $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 

@@ -52,7 +52,7 @@ class DataTypeTest extends TestCase
      */
     public function determineImage() : void
     {
-        $value = imagecreatefromjpeg('tests/test.jpg');
+        $value = imagecreatefrompng('tests/test.png');
 
         $this->assertEquals(DataType::image(), DataType::detect($value));
     }

@@ -87,9 +87,9 @@ class StepDecay implements Optimizer
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        $f = floor($this->t / $this->steps);
+        $floor = floor($this->t / $this->steps);
 
-        $rate = $this->rate * (1.0 / (1.0 + $f * $this->decay));
+        $rate = $this->rate * (1.0 / (1.0 + $floor * $this->decay));
 
         ++$this->t;
 

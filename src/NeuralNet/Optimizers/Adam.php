@@ -126,7 +126,9 @@ class Adam implements Optimizer, Adaptive
      */
     public function warm(Parameter $param) : void
     {
-        $zeros = get_class($param->param())::zeros(...$param->param()->shape());
+        $class = get_class($param->param());
+
+        $zeros = $class::zeros(...$param->param()->shape());
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
     }
@@ -161,7 +163,7 @@ class Adam implements Optimizer, Adaptive
         }
 
         return $velocity->multiply($this->rate)
-            ->divide($norm->sqrt()->clipLower(EPSILON));
+            ->divide($norm->clipLower(EPSILON)->sqrt());
     }
 
     /**
