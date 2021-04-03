@@ -71,8 +71,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
     protected $tree;
 
     /**
-     * The precomputed k distances between each training sample and its kth
-     * nearest neighbor.
+     * The precomputed k distances between each training sample and its k'th nearest neighbor.
      *
      * @var float[]
      */

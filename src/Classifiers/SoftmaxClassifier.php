@@ -400,6 +400,20 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['steps']);
+
+        return $properties;
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @return string

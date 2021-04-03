@@ -428,7 +428,23 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $importances = $layer->weights()->rowAsVector(0)->abs();
 
-        return $importances->divide($importances->sum())->asArray();
+        $importances = $importances->divide($importances->sum());
+
+        return $importances->asArray();
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['steps']);
+
+        return $properties;
     }
 
     /**

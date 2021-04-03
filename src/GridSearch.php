@@ -367,6 +367,20 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     }
 
     /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['results']);
+
+        return $properties;
+    }
+
+    /**
      * Allow methods to be called on the estimator from the wrapper.
      *
      * @param string $name

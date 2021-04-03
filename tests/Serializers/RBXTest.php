@@ -4,11 +4,11 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Serializers\Serializer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function serialize;
@@ -36,7 +36,7 @@ class RBXTest extends TestCase
     {
         $this->serializer = new RBX();
 
-        $this->persistable = new DummyClassifier();
+        $this->persistable = new AdaBoost();
     }
 
     /**
@@ -59,7 +59,7 @@ class RBXTest extends TestCase
 
         $persistable = $this->serializer->unserialize($data);
 
-        $this->assertInstanceOf(DummyClassifier::class, $persistable);
+        $this->assertInstanceOf(AdaBoost::class, $persistable);
         $this->assertInstanceOf(Persistable::class, $persistable);
     }
 
