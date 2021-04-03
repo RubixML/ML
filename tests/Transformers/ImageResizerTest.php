@@ -30,8 +30,7 @@ class ImageResizerTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            [imagecreatefromjpeg('tests/test.jpg'), 'whatever'],
-            [imagecreatefromjpeg('tests/test.jpg'), 'etc'],
+            [imagecreatefrompng('tests/test.png'), 'whatever'],
         ]);
 
         $this->transformer = new ImageResizer(32, 32);
@@ -53,7 +52,7 @@ class ImageResizerTest extends TestCase
     {
         $this->dataset->apply($this->transformer);
 
-        $sample = $this->dataset->sample(1);
+        $sample = $this->dataset->sample(0);
 
         $image = $sample[0];
 

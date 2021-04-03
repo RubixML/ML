@@ -66,7 +66,9 @@ class AdaGrad implements Optimizer, Adaptive
      */
     public function warm(Parameter $param) : void
     {
-        $this->cache[$param->id()] = get_class($param->param())::zeros(...$param->param()->shape());
+        $class = get_class($param->param());
+
+        $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
     }
 
     /**

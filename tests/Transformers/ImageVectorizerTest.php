@@ -32,7 +32,7 @@ class ImageVectorizerTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            [imagecreatefromjpeg('tests/test.jpg'), 'something else'],
+            [imagecreatefrompng('tests/test.png'), 'something else'],
         ]);
 
         $this->transformer = new ImageVectorizer(false);
@@ -58,8 +58,8 @@ class ImageVectorizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $outcome = [
-            ['something else', 60, 35, 22, 102, 66, 53, 73, 44, 29, 79, 49, 36, 89, 57, 45, 56,
-                32, 21, 85, 53, 44, 75, 49, 43, 34, 18, 12],
+            ['something else', 46, 51, 66, 130, 135, 134, 118, 119, 116, 25, 26, 45, 149, 154, 154, 180,
+                183, 170, 39, 39, 54, 77, 80, 89, 141, 140, 132],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());
