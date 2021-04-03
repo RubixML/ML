@@ -10,10 +10,10 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | maxVocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
+| 1 | maxVocabularySize | PHP_INT_MAX | int | The maximum number of unique tokens to embed into each document vector. |
 | 2 | minDocumentFrequency | 0.0 | float | The minimum proportion of documents a word must appear in to be added to the vocabulary. |
 | 3 | maxDocumentFrequency | 1.0 | float | The maximum proportion of documents a word can appear in to be added to the vocabulary. |
-| 4 | tokenizer | Word | Tokenizer | The tokenizer used to extract tokens from blobs of text. |
+| 4 | tokenizer | Word | Tokenizer | The tokenizer used to extract features from blobs of text. |
 
 ## Example
 ```php

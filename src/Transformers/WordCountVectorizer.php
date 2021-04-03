@@ -14,7 +14,11 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function array_slice;
-use function is_null;
+use function array_combine;
+use function array_count_values;
+use function array_keys;
+use function arsort;
+use function range;
 
 /**
  * Word Count Vectorizer
@@ -33,11 +37,11 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
-     * The maximum size of the vocabulary.
+     * The maximum number of unique tokens to embed into each document vector.
      *
      * @var int
      */
-    protected $maxVocabulary;
+    protected $maxVocabularySize;
 
     /**
      * The minimum proportion of documents a word must appear in to be added to the vocabulary.
@@ -54,7 +58,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     protected $maxDocumentFrequency;
 
     /**
-     * The tokenizer used to extract tokens from blobs of text.
+     * The tokenizer used to extract features from blobs of text.
      *
      * @var \Rubix\ML\Tokenizers\Tokenizer
      */
@@ -68,20 +72,20 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     protected $vocabularies;
 
     /**
-     * @param int $maxVocabulary
+     * @param int $maxVocabularySize
      * @param float $minDocumentFrequency
      * @param float $maxDocumentFrequency
      * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
      */
     public function __construct(
-        int $maxVocabulary = PHP_INT_MAX,
+        int $maxVocabularySize = PHP_INT_MAX,
         float $minDocumentFrequency = 0.0,
         float $maxDocumentFrequency = 1.0,
         ?Tokenizer $tokenizer = null
     ) {
-        if ($maxVocabulary < 1) {
-            throw new InvalidArgumentException('Max vocabulary must be'
-                . " greater than 0, $maxVocabulary given.");
+        if ($maxVocabularySize < 1) {
+            throw new InvalidArgumentException('Max vocabulary size must be'
+                . " greater than 0, $maxVocabularySize given.");
         }
 
         if ($minDocumentFrequency < 0.0 or $minDocumentFrequency > 1.0) {
@@ -99,7 +103,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
                 . ' cannot be less than min document frequency.');
         }
 
-        $this->maxVocabulary = $maxVocabulary;
+        $this->maxVocabularySize = $maxVocabularySize;
         $this->minDocumentFrequency = $minDocumentFrequency;
         $this->maxDocumentFrequency = $maxDocumentFrequency;
         $this->tokenizer = $tokenizer ?? new Word();
@@ -130,11 +134,11 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     /**
      * Return an array of words that comprise each of the vocabularies.
      *
-     * @return array[]
+     * @return array[]|null
      */
-    public function vocabularies() : array
+    public function vocabularies() : ?array
     {
-        return array_map('array_flip', $this->vocabularies ?? []);
+        return isset($this->vocabularies) ? array_map('array_flip', $this->vocabularies) : null;
     }
 
     /**
@@ -190,16 +194,17 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
                         . " constraints on column $column.");
                 }
 
-                if (count($tfs) > $this->maxVocabulary) {
+                if (count($tfs) > $this->maxVocabularySize) {
                     arsort($tfs);
 
-                    $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
+                    $tfs = array_slice($tfs, 0, $this->maxVocabularySize, true);
                 }
 
-                $vocabulary = array_combine(
-                    array_keys($tfs),
-                    range(0, count($tfs) - 1)
-                ) ?: [];
+                $tokens = array_keys($tfs);
+
+                $offsets = range(0, count($tfs) - 1);
+
+                $vocabulary = array_combine($tokens, $offsets) ?: [];
 
                 $this->vocabularies[$column] = $vocabulary;
             }
@@ -214,7 +219,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->vocabularies)) {
+        if ($this->vocabularies === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -250,7 +255,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      */
     public function __toString() : string
     {
-        return "Word Count Vectorizer (max vocabulary: {$this->maxVocabulary},"
+        return "Word Count Vectorizer (max vocabulary size: {$this->maxVocabularySize},"
             . " min document frequency: {$this->minDocumentFrequency},"
             . " max document frequency: {$this->maxDocumentFrequency},"
             . " tokenizer: {$this->tokenizer})";

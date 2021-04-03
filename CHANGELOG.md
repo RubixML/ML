@@ -23,13 +23,15 @@
     - Moved Flysystem persister to the Extras package
     - Change order of Loda hyper-parameters
     - Persistent Model now accepts an optional serializer
-    - Peristers no longer interact directly with Persistables
+    - Persisters no longer interact directly with Persistables
     - Remove Wrapper interface
     - RBX serializer now accepts base Gzip parameter
     - Gzip serializer no longer accepts base serializer
     - Changed Gzip default compression level from 1 to 6
     - Changed RBX default compression level from 9 to 6
     - Do not persist training progress information
+    - Change underscores in Report property names to spaces
+    - Add save() method to Encoding object
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

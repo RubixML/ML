@@ -10,7 +10,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function is_null;
+use function array_fill;
+use function log;
 
 /**
  * TF-IDF Transformer
@@ -36,8 +37,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     use AutotrackRevisions;
 
     /**
-     * The amount of additive Laplace smoothing to add to the inverse document
-     * frequencies (IDFs).
+     * The amount of additive Laplace smoothing to add to the inverse document frequencies (IDFs).
      *
      * @var float
      */
@@ -61,9 +61,9 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     /**
      * The number of documents (samples) that have been fitted so far.
      *
-     * @var int|null
+     * @var int
      */
-    protected $n;
+    protected $n = 0;
 
     /**
      * @param float $smoothing
@@ -135,7 +135,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        if (is_null($this->dfs) or is_null($this->n)) {
+        if ($this->dfs === null) {
             $this->fit($dataset);
 
             return;
@@ -170,7 +170,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->idfs)) {
+        if ($this->idfs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

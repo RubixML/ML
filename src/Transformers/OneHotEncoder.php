@@ -10,7 +10,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
-use function is_null;
+use function array_values;
+use function array_merge;
+use function array_fill;
+use function array_flip;
 
 /**
  * One Hot Encoder
@@ -67,7 +70,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      */
     public function categories() : ?array
     {
-        return $this->categories ? array_map('array_flip', $this->categories) : null;
+        return isset($this->categories) ? array_map('array_flip', $this->categories) : null;
     }
 
     /**
@@ -100,7 +103,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->categories)) {
+        if ($this->categories === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

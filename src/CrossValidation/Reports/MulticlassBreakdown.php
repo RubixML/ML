@@ -74,13 +74,13 @@ class MulticlassBreakdown implements ReportGenerator
         }
 
         $averages = array_fill_keys([
-            'accuracy', 'accuracy_balanced', 'f1_score', 'precision', 'recall', 'specificity',
-            'negative_predictive_value', 'false_discovery_rate', 'miss_rate', 'fall_out',
-            'false_omission_rate', 'threat_score', 'mcc', 'informedness', 'markedness',
+            'accuracy', 'accuracy balanced', 'f1 score', 'precision', 'recall', 'specificity',
+            'negative predictive value', 'false discovery rate', 'miss rate', 'fall out',
+            'false omission rate', 'threat score', 'mcc', 'informedness', 'markedness',
         ], 0.0);
 
         $counts = array_fill_keys([
-            'true_positives', 'true_negatives', 'false_positives', 'false_negatives',
+            'true positives', 'true negatives', 'false positives', 'false negatives',
         ], 0);
 
         $overall = $averages + $counts;
@@ -110,47 +110,47 @@ class MulticlassBreakdown implements ReportGenerator
 
             $table[$label] = [
                 'accuracy' => $accuracy,
-                'accuracy_balanced' => ($recall + $specificity) / 2.0,
-                'f1_score' => $f1score,
+                'accuracy balanced' => ($recall + $specificity) / 2.0,
+                'f1 score' => $f1score,
                 'precision' => $precision,
                 'recall' => $recall,
                 'specificity' => $specificity,
-                'negative_predictive_value' => $npv,
-                'false_discovery_rate' => 1.0 - $precision,
-                'miss_rate' => 1.0 - $recall,
-                'fall_out' => 1.0 - $specificity,
-                'false_omission_rate' => 1.0 - $npv,
-                'threat_score' => $threatScore,
+                'negative predictive value' => $npv,
+                'false discovery rate' => 1.0 - $precision,
+                'miss rate' => 1.0 - $recall,
+                'fall out' => 1.0 - $specificity,
+                'false omission rate' => 1.0 - $npv,
+                'threat score' => $threatScore,
                 'informedness' => $recall + $specificity - 1.0,
                 'markedness' => $precision + $npv - 1.0,
                 'mcc' => $mcc,
-                'true_positives' => $tp,
-                'true_negatives' => $tn,
-                'false_positives' => $fp,
-                'false_negatives' => $fn,
+                'true positives' => $tp,
+                'true negatives' => $tn,
+                'false positives' => $fp,
+                'false negatives' => $fn,
                 'cardinality' => $cardinality,
                 'proportion' => $cardinality / $n,
             ];
 
             $overall['accuracy'] += $accuracy;
-            $overall['accuracy_balanced'] += ($recall + $specificity) / 2.0;
-            $overall['f1_score'] += $f1score;
+            $overall['accuracy balanced'] += ($recall + $specificity) / 2.0;
+            $overall['f1 score'] += $f1score;
             $overall['precision'] += $precision;
             $overall['recall'] += $recall;
             $overall['specificity'] += $specificity;
-            $overall['negative_predictive_value'] += $npv;
-            $overall['false_discovery_rate'] += 1.0 - $precision;
-            $overall['miss_rate'] += 1.0 - $recall;
-            $overall['fall_out'] += 1.0 - $specificity;
-            $overall['false_omission_rate'] += 1.0 - $npv;
-            $overall['threat_score'] += $threatScore;
+            $overall['negative predictive value'] += $npv;
+            $overall['false discovery rate'] += 1.0 - $precision;
+            $overall['miss rate'] += 1.0 - $recall;
+            $overall['fall out'] += 1.0 - $specificity;
+            $overall['false omission rate'] += 1.0 - $npv;
+            $overall['threat score'] += $threatScore;
             $overall['informedness'] += $recall + $specificity - 1.0;
             $overall['markedness'] += $precision + $npv - 1.0;
             $overall['mcc'] += $mcc;
-            $overall['true_positives'] += $tp;
-            $overall['true_negatives'] += $tn;
-            $overall['false_positives'] += $fp;
-            $overall['false_negatives'] += $fn;
+            $overall['true positives'] += $tp;
+            $overall['true negatives'] += $tn;
+            $overall['false positives'] += $fp;
+            $overall['false negatives'] += $fn;
         }
 
         foreach (array_keys($averages) as $metric) {

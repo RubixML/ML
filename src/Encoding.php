@@ -2,6 +2,7 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Persisters\Persister;
 use Stringable;
 
 use function strlen;
@@ -31,6 +32,16 @@ class Encoding implements Stringable
     public function data() : string
     {
         return $this->data;
+    }
+
+    /**
+     * Save the encoding.
+     *
+     * @param \Rubix\ML\Persisters\Persister $persister
+     */
+    public function save(Persister $persister) : void
+    {
+        $persister->save($this);
     }
 
     /**

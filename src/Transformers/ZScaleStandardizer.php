@@ -11,7 +11,6 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function is_null;
 use function sqrt;
 
 /**
@@ -45,14 +44,14 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     protected $center;
 
     /**
-     * The means of each feature column from the fitted data.
+     * The means of each continuous feature column of the fitted data.
      *
      * @var float[]|null
      */
     protected $means;
 
     /**
-     * The variances of each feature column from the fitted data.
+     * The variances of each continuous feature column of the fitted data.
      *
      * @var float[]|null
      */
@@ -64,17 +63,6 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
      * @var int
      */
     protected $n = 0;
-
-    /**
-     * Return the inverse of the standard deviation while taking zeros and negatives into consideration.
-     *
-     * @param float $variance
-     * @return float
-     */
-    protected static function stdInv(float $variance) : float
-    {
-        return $variance > 0.0 ? 1.0 / sqrt($variance) : 1.0;
-    }
 
     /**
      * @param bool $center
@@ -107,7 +95,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
-     * Return the means calculated by fitting the training set.
+     * Return the means of the fitted continuous features.
      *
      * @return float[]|null
      */
@@ -117,13 +105,23 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
-     * Return the variances calculated by fitting the training set.
+     * Return the variances of the fitted continuous features.
      *
      * @return float[]|null
      */
     public function variances() : ?array
     {
         return $this->variances;
+    }
+
+    /**
+     * Return the standard deviations of the fitted continuous features.
+     *
+     * @return float[]|null
+     */
+    public function stddevs() : ?array
+    {
+        return isset($this->variances) ? array_map('sqrt', $this->variances) : null;
     }
 
     /**
@@ -194,21 +192,21 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->means) or is_null($this->variances)) {
+        if ($this->means === null or $this->variances === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $stdInvs = array_map([self::class, 'stdInv'], $this->variances);
-
         foreach ($samples as &$sample) {
-            foreach ($stdInvs as $column => $stdInv) {
+            foreach ($this->variances as $column => $variance) {
                 $value = &$sample[$column];
 
                 if ($this->center) {
                     $value -= $this->means[$column];
                 }
 
-                $value *= $stdInv;
+                if ($variance > 0.0) {
+                    $value /= sqrt($variance);
+                }
             }
         }
     }
