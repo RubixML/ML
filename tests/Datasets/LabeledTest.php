@@ -732,7 +732,7 @@ class LabeledTest extends TestCase
     {
         $expected = [
             [
-                'column' => 0,
+                'offset' => 0,
                 'type' => 'categorical',
                 'num categories' => 2,
                 'probabilities' => [
@@ -741,7 +741,7 @@ class LabeledTest extends TestCase
                 ],
             ],
             [
-                'column' => 1,
+                'offset' => 1,
                 'type' => 'categorical',
                 'num categories' => 2,
                 'probabilities' => [
@@ -750,7 +750,7 @@ class LabeledTest extends TestCase
                 ],
             ],
             [
-                'column' => 2,
+                'offset' => 2,
                 'type' => 'categorical',
                 'num categories' => 2,
                 'probabilities' => [
@@ -759,7 +759,7 @@ class LabeledTest extends TestCase
                 ],
             ],
             [
-                'column' => 3,
+                'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
                 'variance' => 9.792222222222222,
@@ -788,7 +788,7 @@ class LabeledTest extends TestCase
         $expected = [
             'not monster' => [
                 [
-                    'column' => 0,
+                    'offset' => 0,
                     'type' => 'categorical',
                     'num categories' => 1,
                     'probabilities' => [
@@ -796,7 +796,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 1,
+                    'offset' => 1,
                     'type' => 'categorical',
                     'num categories' => 2,
                     'probabilities' => [
@@ -805,7 +805,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 2,
+                    'offset' => 2,
                     'type' => 'categorical',
                     'num categories' => 2,
                     'probabilities' => [
@@ -814,7 +814,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 3,
+                    'offset' => 3,
                     'type' => 'continuous',
                     'mean' => 1.125,
                     'variance' => 12.776875,
@@ -830,7 +830,7 @@ class LabeledTest extends TestCase
             ],
             'monster' => [
                 [
-                    'column' => 0,
+                    'offset' => 0,
                     'type' => 'categorical',
                     'num categories' => 1,
                     'probabilities' => [
@@ -838,7 +838,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 1,
+                    'offset' => 1,
                     'type' => 'categorical',
                     'num categories' => 2,
                     'probabilities' => [
@@ -847,7 +847,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 2,
+                    'offset' => 2,
                     'type' => 'categorical',
                     'num categories' => 2,
                     'probabilities' => [
@@ -856,7 +856,7 @@ class LabeledTest extends TestCase
                     ],
                 ],
                 [
-                    'column' => 3,
+                    'offset' => 3,
                     'type' => 'continuous',
                     'mean' => -1.25,
                     'variance' => 0.0625,

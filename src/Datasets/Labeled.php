@@ -922,8 +922,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Return an array of descriptive statistics about the labels in the
-     * dataset.
+     * Return an array of descriptive statistics about the labels in the dataset.
      *
      * @return \Rubix\ML\Report
      */
@@ -931,7 +930,9 @@ class Labeled extends Dataset
     {
         $type = $this->labelType();
 
-        $desc = ['type' => (string) $type];
+        $desc = [
+            'type' => (string) $type,
+        ];
 
         switch ($type) {
             case DataType::continuous():

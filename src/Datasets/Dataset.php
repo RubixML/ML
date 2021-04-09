@@ -359,7 +359,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
         foreach ($this->columnTypes() as $offset => $type) {
             $desc = [
-                'column' => $offset,
+                'offset' => $offset,
                 'type' => (string) $type,
             ];
 

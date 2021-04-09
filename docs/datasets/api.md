@@ -348,6 +348,7 @@ echo $dataset->describe();
 ```json
 [
     {
+        "offset": 0,
         "type": "categorical",
         "num categories": 2,
         "probabilities": {
@@ -356,6 +357,7 @@ echo $dataset->describe();
         }
     },
     {
+        "offset": 1,
         "type": "continuous",
         "mean": 0.3333333333333333,
         "variance": 9.792222222222222,

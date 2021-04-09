@@ -20,6 +20,7 @@ nav:
     - Representing Your Data: representing-your-data.md
     - Extracting Data: extracting-data.md
     - Preprocessing: preprocessing.md
+    - Exploring Data: exploring-data.md
     - Choosing an Estimator: choosing-an-estimator.md
     - Training: training.md
     - Inference: inference.md

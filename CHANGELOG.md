@@ -1,4 +1,4 @@
-- 1.0.0-beta
+- 1.0.0-beta1
     - Add Dataset saveTo() method
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score
