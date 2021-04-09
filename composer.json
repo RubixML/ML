@@ -44,7 +44,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.18.*",
-        "phpbench/phpbench": "1.0.0-alpha6",
+        "phpbench/phpbench": "1.0.0-alpha8",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.*",
         "phpstan/phpstan-phpunit": "0.12.*",

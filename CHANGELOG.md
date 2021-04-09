@@ -1,5 +1,4 @@
 - 1.0.0-beta1
-    - Add Dataset saveTo() method
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score
     - Added Writable extractor interface
@@ -16,7 +15,7 @@
     - Remove Loda estimate bins static method
     - Change Grid Search base estimator param name to class
     - Remove Dataset cast to string preview
-    - Add Error Analysis error standard deviation, drop midrange
+    - Add Error Analysis error standard deviation and drop midrange
     - Naive Bayes Laplace smoothing no longer effects priors
     - Nearest Neighbors distance weighting off by default
     - Promoted the Other namespace
@@ -31,7 +30,8 @@
     - Changed RBX default compression level from 9 to 6
     - Do not persist training progress information
     - Change underscores in Report property names to spaces
-    - Add save() method to Encoding object
+    - Add saveTo() method to Encoding object
+    - Add Dataset writeTo() method
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

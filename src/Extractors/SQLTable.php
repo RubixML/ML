@@ -96,7 +96,9 @@ class SQLTable implements Extractor
 
             yield from $rows;
 
+            $more = count($rows) >= $this->batchSize;
+
             $offset += $this->batchSize;
-        } while (count($rows) >= $this->batchSize);
+        } while ($more);
     }
 }
