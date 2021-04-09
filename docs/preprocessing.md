@@ -221,10 +221,10 @@ $dataset->deduplicate();
     The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
 
 ## Saving a Dataset
-To save a dataset, pass a [Writable](extractors/api.md) extractor to the `save()` method like in the example below.
+To save a dataset, pass a [Writable](extractors/api.md) extractor to the `writeTo()` method like in the example below.
 
 ```php
 use Rubix\ML\Extractors\CSV;
 
-$dataset->save(new CSV('example.csv'));
+$dataset->writeTo(new CSV('example.csv'));
 ```

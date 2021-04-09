@@ -70,13 +70,13 @@ class Gzip implements Serializer
     }
 
     /**
-     * Unserialize a persistable object and return it.
+     * Deserialize a persistable object and return it.
      *
      * @param \Rubix\ML\Encoding $encoding
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $encoding) : Persistable
+    public function deserialize(Encoding $encoding) : Persistable
     {
         $data = gzdecode($encoding);
 
@@ -84,7 +84,7 @@ class Gzip implements Serializer
             throw new RuntimeException('Failed to decompress data.');
         }
 
-        return $this->base->unserialize(new Encoding($data));
+        return $this->base->deserialize(new Encoding($data));
     }
 
     /**

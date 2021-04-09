@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Serializers\Serializer;
 use Stringable;
 
 use function strlen;
@@ -35,11 +36,22 @@ class Encoding implements Stringable
     }
 
     /**
-     * Save the encoding.
+     * Deserialize the encoding with a given serializer and return a persistable object.
+     *
+     * @param \Rubix\ML\Serializers\Serializer $serializer
+     * @return \Rubix\ML\Persistable
+     */
+    public function deserializeWith(Serializer $serializer) : Persistable
+    {
+        return $serializer->deserialize($this);
+    }
+
+    /**
+     * Save the encoding with a given persister.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
      */
-    public function save(Persister $persister) : void
+    public function saveTo(Persister $persister) : void
     {
         $persister->save($this);
     }

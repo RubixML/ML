@@ -119,7 +119,7 @@ class RBX implements Serializer
     }
 
     /**
-     * Unserialize a persistable object and return it.
+     * Deserialize a persistable object and return it.
      *
      * @internal
      *
@@ -127,7 +127,7 @@ class RBX implements Serializer
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $encoding) : Persistable
+    public function deserialize(Encoding $encoding) : Persistable
     {
         if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
             throw new RuntimeException('Unrecognized message format.');
@@ -159,7 +159,7 @@ class RBX implements Serializer
             throw new RuntimeException('Data checksum verification failed.');
         }
 
-        $persistable = $this->base->unserialize(new Encoding($payload));
+        $persistable = $this->base->deserialize(new Encoding($payload));
 
         if (get_class($persistable) !== $header['class']['name']) {
             throw new RuntimeException('Class name mismatch.');

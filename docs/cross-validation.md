@@ -137,10 +137,12 @@ $mae = $results['mean_absolute_error'];
 ```
 
 ### Saving a Report
-Report objects can be cast to JSON encodings which are persistable using a [Persister](persisters/api.md) object. To save a report, call the `toJSON()` method on the report to return an encoding object and then pass a persister to its `save()` method like in the example below.
+Report objects can be cast to JSON encodings which are persistable using a [Persister](persisters/api.md) object. To save a report, call the `toJSON()` method on the report to return an encoding object and then pass a persister to its `saveTo()` method like in the example below.
 
 ```php
-$results->toJSON()->save(new Filesystem('error.report'));
+use Rubix\ML\Persisters\Filesystem;
+
+$results->toJSON()->saveTo(new Filesystem('error.report'));
 ```
 
 ## Validators

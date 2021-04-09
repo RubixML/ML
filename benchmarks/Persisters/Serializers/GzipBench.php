@@ -50,10 +50,10 @@ class GzipBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function serializeUnserialize() : void
+    public function serializeDeserialize() : void
     {
         $encoding = $this->serializer->serialize($this->persistable);
 
-        $persistable = $this->serializer->unserialize($encoding);
+        $persistable = $this->serializer->deserialize($encoding);
     }
 }

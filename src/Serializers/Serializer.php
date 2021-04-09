@@ -26,7 +26,7 @@ interface Serializer extends Stringable
     public function serialize(Persistable $persistable) : Encoding;
 
     /**
-     * Unserialize a persistable object and return it.
+     * Deserialize a persistable object and return it.
      *
      * @internal
      *
@@ -34,5 +34,5 @@ interface Serializer extends Stringable
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $encoding) : Persistable;
+    public function deserialize(Encoding $encoding) : Persistable;
 }

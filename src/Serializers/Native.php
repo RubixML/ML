@@ -14,7 +14,7 @@ use function unserialize;
 /**
  * Native
  *
- * The native PHP plain text serialization format.
+ * The native bytecode format that comes bundled with PHP core.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -36,7 +36,7 @@ class Native implements Serializer
     }
 
     /**
-     * Unserialize a persistable object and return it.
+     * Deserialize a persistable object and return it.
      *
      * @internal
      *
@@ -44,12 +44,12 @@ class Native implements Serializer
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function unserialize(Encoding $encoding) : Persistable
+    public function deserialize(Encoding $encoding) : Persistable
     {
         $persistable = unserialize($encoding);
 
         if (!is_object($persistable)) {
-            throw new RuntimeException('Unserialized data must be an object.');
+            throw new RuntimeException('Deserialized data must be an object.');
         }
 
         if ($persistable instanceof __PHP_Incomplete_Class) {
@@ -57,7 +57,7 @@ class Native implements Serializer
         }
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Unserialized object must'
+            throw new RuntimeException('Deserialized object must'
                 . ' implement the Persistable interface.');
         }
 

@@ -128,9 +128,7 @@ Now we can write the dataset to a CSV file and import it into our favorite plott
 ```php
 use Rubix\ML\Extractors\CSV;
 
-$extractor = new CSV('half-moon.csv');
-
-$extractor->write($dataset);
+$dataset->writeTo(new CSV('half-moon.csv'));
 ```
 
 ![Half Moon Dataset Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/half-moon-scatterplot.png?raw=true)

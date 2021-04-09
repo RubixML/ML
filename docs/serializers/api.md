@@ -11,12 +11,12 @@ public serialize(Persistable $persistable) : Encoding
 $encoding = $serializer->serialize($persistable);
 ```
 
-### Unserialize
-To unserialize a persistable object from an encoding:
+### Deserialize
+To deserialize a persistable object from an encoding:
 ```php
-public unserialize(Encoding $encoding) : Persistable
+public deserialize(Encoding $encoding) : Persistable
 ```
 
 ```php
-$persistable = $serializer->unserialize($encoding);
+$persistable = $serializer->deserialize($encoding);
 ```

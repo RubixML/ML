@@ -51,13 +51,13 @@ class NativeTest extends TestCase
     /**
      * @test
      */
-    public function serializeUnserialize() : void
+    public function serializeDeserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
 
         $this->assertInstanceOf(Encoding::class, $data);
 
-        $persistable = $this->serializer->unserialize($data);
+        $persistable = $this->serializer->deserialize($data);
 
         $this->assertInstanceOf(DummyClassifier::class, $persistable);
         $this->assertInstanceOf(Persistable::class, $persistable);
@@ -87,6 +87,6 @@ class NativeTest extends TestCase
 
         $this->expectException(RuntimeException::class);
 
-        $this->serializer->unserialize($data);
+        $this->serializer->deserialize($data);
     }
 }

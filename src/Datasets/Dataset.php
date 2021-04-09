@@ -418,11 +418,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Save the dataset to the location and format given by a writable extractor.
+     * Write the dataset to the location and format given by a writable extractor.
      *
      * @param \Rubix\ML\Extractors\Writable $extractor
      */
-    public function save(Writable $extractor) : void
+    public function writeTo(Writable $extractor) : void
     {
         $extractor->write($this);
     }

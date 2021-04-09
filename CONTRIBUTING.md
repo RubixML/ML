@@ -72,7 +72,7 @@ Objects implemented in Rubix ML have a mutability policy of *generally* immutabl
 Please provide a docblock for every class, property, method, constant, and function that includes a brief description of what the thing does. Inline comments are strongly discouraged - instead use expressive syntax and abstractions to articulate your intent in code.
 
 ### Anonymous Classes and Functions
-Due to a limitation in PHP that requires objects and functions to be named in order to be unserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.
+Due to a limitation in PHP that requires objects and functions to be named in order to be deserialized and since the library relies on serialization for persistence, we do not use anonymous classes or functions in our codebase. Instead, create a named class or function.
 
 ## Benchmarks
 Performance can be critical for some machine learning projects. To ensure that our users have the best experience, we benchmark every learner and use the information as a baseline to make optimizations. When contributing a new learner or transformer please include a benchmark.

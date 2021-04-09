@@ -11,7 +11,7 @@ use Rubix\ML\Transformers\ImageVectorizer;
  */
 class ImageVectorizerBench
 {
-    protected const DATASET_SIZE = 10;
+    protected const DATASET_SIZE = 1000;
 
     /**
      * @var \Rubix\ML\Datasets\Dataset
@@ -28,7 +28,7 @@ class ImageVectorizerBench
         $samples = [];
 
         for ($i = 0; $i < self::DATASET_SIZE; ++$i) {
-            $samples[] = [imagecreatefromjpeg('tests/test.jpg')];
+            $samples[] = [imagecreatefrompng('tests/test.png')];
         }
 
         $this->dataset = Unlabeled::build($samples);

@@ -56,7 +56,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     {
         $serializer = $serializer ?? new RBX();
 
-        $base = $serializer->unserialize($persister->load());
+        $base = $serializer->deserialize($persister->load());
 
         if (!$base instanceof Learner) {
             throw new InvalidArgumentException('Persistable must'
