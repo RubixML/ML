@@ -76,7 +76,7 @@ class MulticlassBreakdown implements ReportGenerator
         $averages = array_fill_keys([
             'accuracy', 'accuracy balanced', 'f1 score', 'precision', 'recall', 'specificity',
             'negative predictive value', 'false discovery rate', 'miss rate', 'fall out',
-            'false omission rate', 'threat score', 'mcc', 'informedness', 'markedness',
+            'false omission rate', 'mcc', 'informedness', 'markedness',
         ], 0.0);
 
         $counts = array_fill_keys([
@@ -97,7 +97,6 @@ class MulticlassBreakdown implements ReportGenerator
             $recall = $tp / (($tp + $fn) ?: EPSILON);
             $specificity = $tn / (($tn + $fp) ?: EPSILON);
             $npv = $tn / (($tn + $fn) ?: EPSILON);
-            $threatScore = $tp / (($tp + $fn + $fp) ?: EPSILON);
 
             $f1score = 2.0 * (($precision * $recall)
                 / (($precision + $recall) ?: EPSILON));
@@ -120,7 +119,6 @@ class MulticlassBreakdown implements ReportGenerator
                 'miss rate' => 1.0 - $recall,
                 'fall out' => 1.0 - $specificity,
                 'false omission rate' => 1.0 - $npv,
-                'threat score' => $threatScore,
                 'informedness' => $recall + $specificity - 1.0,
                 'markedness' => $precision + $npv - 1.0,
                 'mcc' => $mcc,
@@ -143,7 +141,6 @@ class MulticlassBreakdown implements ReportGenerator
             $overall['miss rate'] += 1.0 - $recall;
             $overall['fall out'] += 1.0 - $specificity;
             $overall['false omission rate'] += 1.0 - $npv;
-            $overall['threat score'] += $threatScore;
             $overall['informedness'] += $recall + $specificity - 1.0;
             $overall['markedness'] += $precision + $npv - 1.0;
             $overall['mcc'] += $mcc;

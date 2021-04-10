@@ -35,6 +35,7 @@
     - Pipeline and Committee Machine are no longer Verbose
     - Remove K Best feature selector (special case of RFE)
     - Changed Error Analysis metrics
+    - Remove threat score from Multiclass Breakdown
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
