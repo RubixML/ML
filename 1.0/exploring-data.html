@@ -486,6 +486,26 @@
     Describe a Dataset
   </a>
   
+    <nav class="md-nav" aria-label="Describe a Dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#label-statistics" class="md-nav__link">
+    Label Statistics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe-samples-by-label" class="md-nav__link">
+    Describe Samples by Label
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2024,18 +2044,6 @@
           Feature Selection
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/k-best-feature-selector.html" class="md-nav__link">
-        K Best Feature Selector
-      </a>
-    </li>
-  
-
           
             
   
@@ -4145,6 +4153,26 @@
     Describe a Dataset
   </a>
   
+    <nav class="md-nav" aria-label="Describe a Dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#label-statistics" class="md-nav__link">
+    Label Statistics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe-samples-by-label" class="md-nav__link">
+    Describe Samples by Label
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4181,7 +4209,7 @@
                 <h1 id="exploring-data">Exploring Data<a class="headerlink" href="#exploring-data" title="Permanent link">#</a></h1>
 <p>Exploratory Data Analysis (EDA) is an approach to modeling data that produces insights from their summarization and visualization. EDA is often used in the engineering of features as well as model selection and can save time and lead to more accurate models when included in your machine learning lifecycle. In general, there are two types of Exploratory Data Analysis - quantitative and graphical. Quantitative analysis summarizes the data using statistical or probabilistic methods that are then interpreted for meaning. Graphical analysis uses techniques such as scatterplots and histograms to glean information from the structure and shape of the data and often incorporates Manifold Learning to reduce the dimensionality of the samples. </p>
 <h2 id="describe-a-dataset">Describe a Dataset<a class="headerlink" href="#describe-a-dataset" title="Permanent link">#</a></h2>
-<p>The Dataset API has a handy method named <code>describe()</code> that computes statistics for each continuous feature of the dataset such as the column median, standard deviation, and skewness. In addition, it provides the probabilities of each category for categorical feature columns. In the example below, we'll echo the Report object returned by <code>describe()</code> to get a better understanding for how the values of our features are distributed.</p>
+<p>The Dataset API has a handy method named <code>describe()</code> that computes statistics for each continuous feature of the dataset such as the column median, standard deviation, and skewness. In addition, it provides the probabilities of each category for categorical feature columns. In the example below, we'll echo the Report object returned by the <code>describe()</code> method to get a better understanding for how the values of our features are distributed.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describe</span><span class="p">();</span>
 
 <span class="k">echo</span> <span class="nv">$report</span><span class="p">;</span>
@@ -4200,7 +4228,6 @@
         <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;continuous&quot;</span><span class="p">,</span>
         <span class="nt">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">0.3333333333333333</span><span class="p">,</span>
-        <span class="nt">&quot;variance&quot;</span><span class="p">:</span> <span class="mf">9.792222222222222</span><span class="p">,</span>
         <span class="nt">&quot;stddev&quot;</span><span class="p">:</span> <span class="mf">3.129252661934191</span><span class="p">,</span>
         <span class="nt">&quot;skewness&quot;</span><span class="p">:</span> <span class="mf">-0.4481030843690633</span><span class="p">,</span>
         <span class="nt">&quot;kurtosis&quot;</span><span class="p">:</span> <span class="mf">-1.1330702741786107</span><span class="p">,</span>
@@ -4217,14 +4244,24 @@
 
 <span class="nv">$report</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.json&#39;</span><span class="p">));</span>
 </code></pre></div>
+<h3 id="label-statistics">Label Statistics<a class="headerlink" href="#label-statistics" title="Permanent link">#</a></h3>
+<p>If you have a <a href="datasets/labeled.html">Labeled</a> dataset, you can describe the label column by calling the <code>describeLabels()</code> method.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeLabels</span><span class="p">();</span>
+</code></pre></div>
+<h3 id="describe-samples-by-label">Describe Samples by Label<a class="headerlink" href="#describe-samples-by-label" title="Permanent link">#</a></h3>
+<p>If you have categorically labeled data, you can describe your dataset in terms of the classes each sample belongs to by calling the <code>describeByLabel()</code> method on a Labeled dataset object.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeByLabel</span><span class="p">();</span>
+</code></pre></div>
 <h2 id="plotting">Plotting<a class="headerlink" href="#plotting" title="Permanent link">#</a></h2>
 <p>On the map ...</p>
 <h2 id="manifold-learning">Manifold Learning<a class="headerlink" href="#manifold-learning" title="Permanent link">#</a></h2>
-<p>Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) embedding of a dataset for visualization. In the example below, we'll use <a href="transformers/t-sne.html">t-SNE</a> to embed the dataset into 2 dimensions and then save the data to a CSV file so we can import it into our plotting software.</p>
+<p>Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a dataset for visualization. In the example below, we'll use <a href="transformers/t-sne.html">t-SNE</a> to embed the dataset into 2 dimensions and then save the data to a <a href="extractors/csv.html">CSV</a> file so we can import it into our plotting software.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TSNE</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">writeTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">writeTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
                 
                   
@@ -4234,7 +4271,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-09
+      Last update: 2021-04-10
     
   </small>
 </div>

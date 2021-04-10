@@ -2152,18 +2152,6 @@
   
   
     <li class="md-nav__item">
-      <a href="transformers/k-best-feature-selector.html" class="md-nav__link">
-        K Best Feature Selector
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="transformers/recursive-feature-eliminator.html" class="md-nav__link">
         Recursive Feature Eliminator
       </a>
@@ -4630,21 +4618,20 @@
     <span class="nt">&quot;mean squared log error&quot;</span><span class="p">:</span> <span class="mf">0.019107097505647368</span><span class="p">,</span>
     <span class="nt">&quot;r squared&quot;</span><span class="p">:</span> <span class="mf">0.9958930551562692</span><span class="p">,</span>
     <span class="nt">&quot;error mean&quot;</span><span class="p">:</span> <span class="mf">-0.2</span><span class="p">,</span>
-    <span class="nt">&quot;error median&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nt">&quot;error variance&quot;</span><span class="p">:</span> <span class="mf">0.9599999999999997</span><span class="p">,</span>
     <span class="nt">&quot;error stddev&quot;</span><span class="p">:</span> <span class="mf">0.9898464007663</span><span class="p">,</span>
-    <span class="nt">&quot;error mad&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="nt">&quot;error iqr&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
     <span class="nt">&quot;error skewness&quot;</span><span class="p">:</span> <span class="mf">-0.22963966338592326</span><span class="p">,</span>
     <span class="nt">&quot;error kurtosis&quot;</span><span class="p">:</span> <span class="mf">-1.0520833333333324</span><span class="p">,</span>
     <span class="nt">&quot;error min&quot;</span><span class="p">:</span> <span class="mi">-2</span><span class="p">,</span>
+    <span class="nt">&quot;error 25%&quot;</span><span class="p">:</span> <span class="mf">-1.0</span><span class="p">,</span>
+    <span class="nt">&quot;error median&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="nt">&quot;error 75%&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span>
     <span class="nt">&quot;error max&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="nt">&quot;cardinality&quot;</span><span class="p">:</span> <span class="mi">10</span>
-<span class="p">}</span><span class="err">.</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="accessing-report-attributes">Accessing Report Attributes<a class="headerlink" href="#accessing-report-attributes" title="Permanent link">#</a></h3>
 <p>You can access individual report attributes by treating the report object as an associative array.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$mae</span> <span class="o">=</span> <span class="nv">$results</span><span class="p">[</span><span class="s1">&#39;mean_absolute_error&#39;</span><span class="p">];</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$mae</span> <span class="o">=</span> <span class="nv">$results</span><span class="p">[</span><span class="s1">&#39;mean absolute error&#39;</span><span class="p">];</span>
 </code></pre></div>
 <h3 id="saving-a-report">Saving a Report<a class="headerlink" href="#saving-a-report" title="Permanent link">#</a></h3>
 <p>Report objects can be cast to JSON encodings which are persistable using a <a href="persisters/api.html">Persister</a> object. To save a report, call the <code>toJSON()</code> method on the report to return an encoding object and then pass a persister to its <code>saveTo()</code> method like in the example below.</p>
@@ -4713,7 +4700,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-08
+      Last update: 2021-04-10
     
   </small>
 </div>
