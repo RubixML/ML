@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Exceptions;
 
-class LabelsMissing extends InvalidArgumentException
+class LabelsAreMissing extends InvalidArgumentException
 {
     public function __construct()
     {

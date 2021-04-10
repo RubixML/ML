@@ -4,7 +4,7 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Exceptions\LabelsMissing;
+use Rubix\ML\Exceptions\LabelsAreMissing;
 
 /**
  * @internal
@@ -40,12 +40,12 @@ class DatasetIsLabeled extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\LabelsMissing
+     * @throws \Rubix\ML\Exceptions\LabelsAreMissing
      */
     public function check() : void
     {
         if (!$this->dataset instanceof Labeled) {
-            throw new LabelsMissing();
+            throw new LabelsAreMissing();
         }
     }
 }
