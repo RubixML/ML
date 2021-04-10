@@ -73,7 +73,10 @@ class ErrorAnalysis implements ReportGenerator
         $mse = Stats::mean($l2);
 
         [$mean, $variance] = Stats::meanVar($errors);
-        [$median, $mad] = Stats::medianMad($errors);
+
+        $quartiles = Stats::quantiles($errors, [
+            0.0, 0.25, 0.5, 0.75, 1.0,
+        ]);
 
         return new Report([
             'mean absolute error' => Stats::mean($l1),
@@ -84,15 +87,14 @@ class ErrorAnalysis implements ReportGenerator
             'rms error' => sqrt($mse),
             'r squared' => 1.0 - ($sse / ($sst ?: EPSILON)),
             'error mean' => $mean,
-            'error median' => $median,
-            'error variance' => $variance,
             'error stddev' => sqrt($variance),
-            'error mad' => $mad,
-            'error iqr' => Stats::iqr($errors),
             'error skewness' => Stats::skewness($errors, $mean),
             'error kurtosis' => Stats::kurtosis($errors, $mean),
-            'error min' => min($errors),
-            'error max' => max($errors),
+            'error min' => $quartiles[0],
+            'error 25%' => $quartiles[1],
+            'error median' => $quartiles[2],
+            'error 75%' => $quartiles[3],
+            'error max' => $quartiles[4],
             'cardinality' => count($predictions),
         ]);
     }

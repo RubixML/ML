@@ -944,7 +944,6 @@ class Labeled extends Dataset
 
                 $desc += [
                     'mean' => $mean,
-                    'variance' => $variance,
                     'stddev' => sqrt($variance),
                     'skewness' => Stats::skewness($this->labels, $mean),
                     'kurtosis' => Stats::kurtosis($this->labels, $mean),

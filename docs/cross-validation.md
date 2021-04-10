@@ -116,24 +116,23 @@ echo $results;
     "mean squared log error": 0.019107097505647368,
     "r squared": 0.9958930551562692,
     "error mean": -0.2,
-    "error median": 0,
-    "error variance": 0.9599999999999997,
     "error stddev": 0.9898464007663,
-    "error mad": 1,
-    "error iqr": 2,
     "error skewness": -0.22963966338592326,
     "error kurtosis": -1.0520833333333324,
     "error min": -2,
+    "error 25%": -1.0,
+    "error median": 0.0,
+    "error 75%": 0.75,
     "error max": 1,
     "cardinality": 10
-}.
+}
 ```
 
 ### Accessing Report Attributes
 You can access individual report attributes by treating the report object as an associative array.
 
 ```php
-$mae = $results['mean_absolute_error'];
+$mae = $results['mean absolute error'];
 ```
 
 ### Saving a Report
