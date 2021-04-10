@@ -25,7 +25,6 @@ echo $report;
         "offset": 1,
         "type": "continuous",
         "mean": 0.3333333333333333,
-        "variance": 9.792222222222222,
         "stddev": 3.129252661934191,
         "skewness": -0.4481030843690633,
         "kurtosis": -1.1330702741786107,
@@ -46,19 +45,32 @@ use Rubix\ML\Persisters\Filesystem;
 $report->toJSON()->saveTo(new Filesystem('example.json'));
 ```
 
-### Describe by Label
+### Label Statistics
+If you have a [Labeled](datasets/labeled.md) dataset, you can describe the label column by calling the `describeLabels()` method.
 
+```php
+$report = $dataset->describeLabels();
+```
+
+### Describe Samples by Label
+If you have categorically labeled data, you can describe your dataset in terms of the classes each sample belongs to by calling the `describeByLabel()` method on a Labeled dataset object.
+
+```php
+$report = $dataset->describeByLabel();
+```
 
 ## Plotting
 
 On the map ...
 
 ## Manifold Learning
-Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) embedding of a dataset for visualization. In the example below, we'll use [t-SNE](transformers/t-sne.md) to embed the dataset into 2 dimensions and then save the data to a CSV file so we can import it into our plotting software.
+Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a dataset for visualization. In the example below, we'll use [t-SNE](transformers/t-sne.md) to embed the dataset into 2 dimensions and then save the data to a [CSV](extractors/csv.md) file so we can import it into our plotting software.
 
 ```php
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Extractors\CSV;
 
-$dataset->apply(new TSNE(2))->writeTo(new CSV('example.csv'));
+$dataset->apply(new TSNE(2));
+
+$dataset->writeTo(new CSV('example.csv'));
 ```
