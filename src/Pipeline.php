@@ -65,13 +65,6 @@ class Pipeline implements Online, Wrapper, Probabilistic, Scoring, Ranking, Verb
     protected $logger;
 
     /**
-     * Whether or not the transformer pipeline has been fitted.
-     *
-     * @var bool
-     */
-    protected $fitted;
-
-    /**
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
      * @param \Rubix\ML\Estimator $base
      * @param bool $elastic
