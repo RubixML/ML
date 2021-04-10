@@ -32,6 +32,7 @@
     - Change underscores in Report property names to spaces
     - Add saveTo() method to Encoding object
     - Add Dataset writeTo() method
+    - Pipeline and Committee Machine are no longer Verbose
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

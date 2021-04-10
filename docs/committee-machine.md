@@ -6,7 +6,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 !!! note
     Influence values can be on any arbitrary scale as they are automatically normalized upon instantiation.
 
-**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Persistable](persistable.md)
 
 **Data Type Compatibility:** Depends on the base learners
 

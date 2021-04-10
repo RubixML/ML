@@ -7,7 +7,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Logger Aware
  *
- * This trait fulfills the requirements of the Verbose interface and is suitable for most estimators.
+ * This trait fulfills the requirements of the Verbose interface and is suitable for most implementations.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

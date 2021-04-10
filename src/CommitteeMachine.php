@@ -7,7 +7,6 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -39,9 +38,9 @@ use function in_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
+class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, LoggerAware;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The integer-encoded estimator types this ensemble is compatible with.
@@ -249,17 +248,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
 
         SpecificationChain::with($specifications)->check();
 
-        if ($this->logger) {
-            $this->logger->info("$this initialized");
-        }
-
         $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            $this->backend->enqueue(
-                new TrainLearner($estimator, $dataset),
-                [$this, 'afterTrain']
-            );
+            $this->backend->enqueue(new TrainLearner($estimator, $dataset));
         }
 
         $this->experts = $this->backend->process();
@@ -276,29 +268,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
                 $this->classes = [0 => 0.0, 1 => 0.0];
 
                 break;
-        }
-
-        if ($this->logger) {
-            $this->logger->info('Training complete');
-        }
-    }
-
-    /**
-     * The callback that executes after the training task.
-     *
-     * @internal
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     */
-    public function afterTrain(Learner $estimator) : void
-    {
-        if (!$estimator->trained()) {
-            throw new RuntimeException("There was a problem training $estimator.");
-        }
-
-        if ($this->logger) {
-            $this->logger->info("$estimator finished training");
         }
     }
 

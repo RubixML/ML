@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
 use Rubix\ML\Parallel;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -11,7 +10,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\CommitteeMachine;
-use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -83,7 +81,6 @@ class CommitteeMachineTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
@@ -133,7 +130,6 @@ class CommitteeMachineTest extends TestCase
      */
     public function trainPredict() : void
     {
-        $this->estimator->setLogger(new BlackHole());
         $this->estimator->setBackend(new Serial());
 
         $training = $this->generator->generate(self::TRAIN_SIZE);

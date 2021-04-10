@@ -4,7 +4,6 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
@@ -12,7 +11,6 @@ use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Psr\Log\LoggerInterface;
 
 /**
  * Pipeline
@@ -27,9 +25,9 @@ use Psr\Log\LoggerInterface;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
+class Pipeline implements Online, Probabilistic, Scoring, Persistable
 {
-    use AutotrackRevisions, LoggerAware;
+    use AutotrackRevisions;
 
     /**
      * A list of transformers to be applied in series.
@@ -53,20 +51,6 @@ class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
      * @var bool
      */
     protected $elastic;
-
-    /**
-     * The PSR-3 logger instance.
-     *
-     * @var \Psr\Log\LoggerInterface|null
-     */
-    protected $logger;
-
-    /**
-     * Whether or not the transformer pipeline has been fitted.
-     *
-     * @var bool
-     */
-    protected $fitted;
 
     /**
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
@@ -129,20 +113,6 @@ class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
     }
 
     /**
-     * Sets a logger instance on the object.
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger) : void
-    {
-        if ($this->base instanceof Verbose) {
-            $this->base->setLogger($logger);
-        }
-
-        $this->logger = $logger;
-    }
-
-    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -175,10 +145,6 @@ class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
-
-                if ($this->logger) {
-                    $this->logger->info("Fitted $transformer");
-                }
             }
 
             $dataset->apply($transformer);
@@ -200,10 +166,6 @@ class Pipeline implements Online, Probabilistic, Scoring, Verbose, Persistable
             foreach ($this->transformers as $transformer) {
                 if ($transformer instanceof Elastic) {
                     $transformer->update($dataset);
-
-                    if ($this->logger) {
-                        $this->logger->info("Updated $transformer");
-                    }
                 }
 
                 $dataset->apply($transformer);

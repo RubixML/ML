@@ -3,14 +3,12 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Online;
-use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -81,7 +79,6 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Scoring::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
@@ -128,8 +125,6 @@ class PipelineTest extends TestCase
      */
     public function trainPartialPredict() : void
     {
-        $this->estimator->setLogger(new BlackHole());
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
