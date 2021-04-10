@@ -31,7 +31,7 @@
     - Do not persist training progress information
     - Change underscores in Report property names to spaces
     - Add saveTo() method to Encoding object
-    - Add Dataset writeTo() method
+    - Add Dataset exportTo() method
     - Pipeline and Committee Machine are no longer Verbose
     - Remove K Best feature selector (special case of RFE)
     - Changed Error Analysis metrics

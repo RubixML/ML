@@ -22,14 +22,14 @@ $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
 ## Write to Storage
-Extractors that implement the Writable interface have an additional `write()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
+Extractors that implement the Writable interface have an additional `export()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
 
 ```php
-public write(iterable $iterator, ?array $header = null) : void
+public export(iterable $iterator, ?array $header = null) : void
 ```
 
 ```php
-$extractor->write($dataset);
+$extractor->export($dataset);
 ```
 
 !!! note

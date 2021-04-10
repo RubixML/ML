@@ -58,7 +58,7 @@ class CSVTest extends TestCase
 
         $this->assertEquals($expected, $records);
 
-        $this->extractor->write($records);
+        $this->extractor->export($records);
 
         $this->assertFileExists('tests/test.csv');
     }

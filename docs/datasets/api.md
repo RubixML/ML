@@ -380,13 +380,13 @@ public deduplicate() : self
 ```
 
 ## Saving
-Write the dataset to the location and format given by a writable extractor:
+Export the dataset to the location and format given by a [Writable](extractors/api.md) extractor:
 ```php
-public writeTo(Writable $extractor) : void
+public exportTo(Writable $extractor) : void
 ```
 
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset->writeTo(new NDJSON('example.ndjson'));
+$dataset->exportTo(new NDJSON('example.ndjson'));
 ```

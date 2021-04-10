@@ -72,5 +72,5 @@ use Rubix\ML\Extractors\CSV;
 
 $dataset->apply(new TSNE(2));
 
-$dataset->writeTo(new CSV('example.csv'));
+$dataset->exportTo(new CSV('example.csv'));
 ```

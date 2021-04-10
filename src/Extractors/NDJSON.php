@@ -62,7 +62,7 @@ class NDJSON implements Extractor, Writable
      * @param iterable<mixed[]> $iterator
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function write(iterable $iterator) : void
+    public function export(iterable $iterator) : void
     {
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("Path {$this->path} is not writable.");

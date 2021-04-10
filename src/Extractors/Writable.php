@@ -16,5 +16,5 @@ interface Writable
      *
      * @param iterable<mixed[]> $iterator
      */
-    public function write(iterable $iterator) : void;
+    public function export(iterable $iterator) : void;
 }

@@ -421,9 +421,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param \Rubix\ML\Extractors\Writable $extractor
      */
-    public function writeTo(Writable $extractor) : void
+    public function exportTo(Writable $extractor) : void
     {
-        $extractor->write($this);
+        $extractor->export($this);
     }
 
     /**
