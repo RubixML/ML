@@ -13,7 +13,7 @@ use function sort;
 /**
  * Autotrack Revisions
  *
- * Automatically update class revision numbers by tracking changes in the object-property definition tree stemming from this instance.
+ * Automatically update class revision hashes by tracking changes in the object-property definition tree stemming from this instance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,7 +22,7 @@ use function sort;
 trait AutotrackRevisions
 {
     /**
-     * Return the revision number of the class.
+     * Return the revision hash of the class.
      *
      * @return string
      */

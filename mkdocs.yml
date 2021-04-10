@@ -128,7 +128,6 @@ nav:
         - Numeric String Converter: transformers/numeric-string-converter.md
         - Boolean Converter: transformers/boolean-converter.md
       - Feature Selection:
-        - K Best Feature Selector: transformers/k-best-feature-selector.md
         - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
       - Imputation:
         - KNN Imputer: transformers/knn-imputer.md
