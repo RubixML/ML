@@ -4320,17 +4320,17 @@ mean,furry,loner,-1.5,monster
 <p>Now we can write the dataset to a CSV file and import it into our favorite plotting software.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">writeTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;half-moon.csv&#39;</span><span class="p">));</span>
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;half-moon.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
 <p><img alt="Half Moon Dataset Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/half-moon-scatterplot.png?raw=true" /></p>
 <h2 id="converting-formats">Converting Formats<a class="headerlink" href="#converting-formats" title="Permanent link">#</a></h2>
-<p>At some point, you may want to convert a dataset stored in one format to another format. To convert formats, pass the extractor object to the <code>write()</code> method on a target extractor that implements the <a href="extractors/api.html">Writable</a> interface. In the example below, we'll convert a data table from CSV format to NDJSON format and save it to a new file.</p>
+<p>At some point, you may want to convert a dataset stored in one format to another format. To convert formats, pass the extractor object to the <code>export()</code> method on a target extractor that implements the <a href="extractors/api.html">Writable</a> interface. In the example below, we'll convert a data table from CSV format to NDJSON format and save it to a new file.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
 
 <span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;example.ndjson&#39;</span><span class="p">);</span>
 
-<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
+<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
                 
                   
@@ -4340,7 +4340,7 @@ mean,furry,loner,-1.5,monster
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-08
+      Last update: 2021-04-10
     
   </small>
 </div>

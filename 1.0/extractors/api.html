@@ -4185,10 +4185,10 @@
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="nx">Labeled</span><span class="o">::</span><span class="na">fromIterator</span><span class="p">(</span><span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;example.ndjson&#39;</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="write-to-storage">Write to Storage<a class="headerlink" href="#write-to-storage" title="Permanent link">#</a></h2>
-<p>Extractors that implement the Writable interface have an additional <code>write()</code> method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">write</span><span class="p">(</span><span class="nx">iterable</span> <span class="nv">$iterator</span><span class="p">,</span> <span class="o">?</span><span class="k">array</span> <span class="nv">$header</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
+<p>Extractors that implement the Writable interface have an additional <code>export()</code> method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">export</span><span class="p">(</span><span class="nx">iterable</span> <span class="nv">$iterator</span><span class="p">,</span> <span class="o">?</span><span class="k">array</span> <span class="nv">$header</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4217,7 +4217,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-27
+      Last update: 2021-04-10
     
   </small>
 </div>
