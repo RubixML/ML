@@ -11,15 +11,14 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function chr;
-use function ord;
-use function is_null;
+use function min;
+use function max;
 
 /**
  * Interval Discretizer
  *
- * Assigns each continuous feature to a discrete category using equi-width histograms. Useful
- * for converting continuous data to categorical.
+ * Assigns each continuous feature to ordered categories using an equi-width histogram with a
+ * user-specified number of bins.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -30,25 +29,11 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
-     * The value of the starting category for each feature column.
-     *
-     * @var string
-     */
-    protected const START_CATEGORY = 'a';
-
-    /**
      * The number of bins per feature column.
      *
      * @var int
      */
     protected $bins;
-
-    /**
-     * The categories available for each feature column.
-     *
-     * @var string[]
-     */
-    protected $categories;
 
     /**
      * The bin intervals of the fitted data.
@@ -68,12 +53,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
                 . " greater than 3, $bins given.");
         }
 
-        $last = chr(ord(self::START_CATEGORY) + $bins - 1);
-
-        $categories = array_map('strval', range(self::START_CATEGORY, $last));
-
         $this->bins = $bins;
-        $this->categories = $categories;
     }
 
     /**
@@ -96,16 +76,6 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     public function fitted() : bool
     {
         return isset($this->intervals);
-    }
-
-    /**
-     * Return the list of possible category values for each discretized feature column.
-     *
-     * @return string[]
-     */
-    public function categories() : array
-    {
-        return $this->categories;
     }
 
     /**
@@ -151,7 +121,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->intervals)) {
+        if ($this->intervals === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -159,9 +129,9 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
             foreach ($this->intervals as $column => $interval) {
                 $value = &$sample[$column];
 
-                foreach ($interval as $k => $edge) {
+                foreach ($interval as $ordinal => $edge) {
                     if ($value <= $edge) {
-                        $value = $this->categories[$k];
+                        $value = "$ordinal";
 
                         continue 2;
                     }

@@ -50,17 +50,11 @@ class IntervalDiscretizerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $outcomes = ['a', 'b', 'c', 'd', 'e'];
+        $outcomes = ['0', '1', '2', '3', '4'];
 
         $this->transformer->fit($this->generator->generate(30));
 
         $this->assertTrue($this->transformer->fitted());
-
-        $categories = $this->transformer->categories();
-
-        $this->assertIsArray($categories);
-        $this->assertCount(5, $categories);
-        $this->assertContainsOnly('string', $categories);
 
         $intervals = $this->transformer->intervals();
 

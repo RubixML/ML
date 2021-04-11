@@ -418,7 +418,7 @@ abstract class CART implements IteratorAggregate
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / (2.0 + sqrt($m));
+                    $step = 1.0 / (2.0 + round(sqrt($m)));
 
                     $q = range(0.0, 1.0, $step);
 

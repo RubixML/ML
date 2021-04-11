@@ -39,6 +39,7 @@
     - Rename Labels Are Missing exception
     - Feature importances are no longer normalized
     - Optimized CART binary categorical node splitting
+    - Interval Discretizer outputs numeric string categories
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
