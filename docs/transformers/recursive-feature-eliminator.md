@@ -14,12 +14,12 @@ Recursive Feature Eliminator (RFE) is a supervised feature selector that uses th
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | minFeatures | | int | The minimum number of features to select from the dataset. |
-| 2 | maxDroppedFeatures | 3 | int | The maximum number of features to drop from the dataset per iteration. |
-| 3 | maxDroppedImportance | 0.2 | float | The maximum importance to drop from the dataset per iteration. |
+| 2 | maxDroppedFeatures | 5 | int | The maximum number of features to drop from the dataset per iteration. |
+| 3 | maxDroppedImportance | 0.2 | float | The maximum importance to drop from the dataset per epoch. |
 | 4 | scorer | Auto | RanksFeatures | The base feature scorer. |
 
 ## Additional Methods
-Return the final importances of the selected feature columns:
+Return the normalized importances of the selected feature columns:
 ``` php
 public importances() : ?array
 ```

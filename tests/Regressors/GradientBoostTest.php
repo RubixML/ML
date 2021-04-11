@@ -187,7 +187,6 @@ class GradientBoostTest extends TestCase
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
         $this->assertContainsOnly('float', $importances);
-        $this->assertEqualsWithDelta(1.0, array_sum($importances), 1e-8);
 
         $predictions = $this->estimator->predict($testing);
 

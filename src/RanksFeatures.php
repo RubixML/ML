@@ -14,7 +14,7 @@ use Stringable;
 interface RanksFeatures extends Trainable, Stringable
 {
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @return float[]
      */

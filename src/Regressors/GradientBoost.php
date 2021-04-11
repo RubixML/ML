@@ -507,7 +507,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]

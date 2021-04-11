@@ -95,17 +95,15 @@ $estimator->train($dataset);
 
 $importances = $estimator->featureImportances();
 
-arsort($importances);
-
 print_r($importances);
 ```
 
 ```sh
 Array
 (
-    [2] => 0.53170249909942
-    [1] => 0.3794817175945
     [0] => 0.047576266783176
+    [1] => 0.3794817175945
+    [2] => 0.53170249909942
     [3] => 0.041239516522901
 )
 ```

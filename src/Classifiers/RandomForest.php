@@ -327,7 +327,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]

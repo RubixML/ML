@@ -24,8 +24,6 @@ use function is_string;
 use function is_int;
 use function is_null;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * CART
  *
@@ -306,7 +304,7 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \RuntimeException
      * @return float[]
@@ -323,12 +321,6 @@ abstract class CART implements IteratorAggregate
             if ($node instanceof Split) {
                 $importances[$node->column()] += $node->purityIncrease();
             }
-        }
-
-        $total = array_sum($importances) ?: EPSILON;
-
-        foreach ($importances as &$importance) {
-            $importance /= $total;
         }
 
         return $importances;

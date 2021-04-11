@@ -371,7 +371,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
@@ -388,9 +388,10 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             throw new RuntimeException('Weight layer is missing.');
         }
 
-        $importances = $layer->weights()->rowAsVector(0)->abs();
-
-        return $importances->divide($importances->sum())->asArray();
+        return $layer->weights()
+            ->rowAsVector(0)
+            ->abs()
+            ->asArray();
     }
 
     /**

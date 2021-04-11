@@ -186,7 +186,6 @@ class LogisticRegressionTest extends TestCase
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
         $this->assertContainsOnly('float', $importances);
-        $this->assertEquals(1.0, array_sum($importances));
 
         $predictions = $this->estimator->predict($testing);
 

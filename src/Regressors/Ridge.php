@@ -203,7 +203,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
@@ -214,9 +214,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             throw new RuntimeException('Learner has not been trained.');
         }
 
-        $importances = $this->coefficients->abs();
-
-        return $importances->divide($importances->sum())->asArray();
+        return $this->coefficients->abs()->asArray();
     }
 
     /**

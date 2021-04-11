@@ -17,6 +17,11 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 use function is_null;
+use function array_slice;
+use function array_values;
+use function asort;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Recursive Feature Eliminator
@@ -53,7 +58,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
     protected $maxDroppedFeatures;
 
     /**
-     * The maximum importance to drop from the dataset per iteration.
+     * The maximum importance to drop from the dataset per epoch.
      *
      * @var float
      */
@@ -88,7 +93,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      */
     public function __construct(
         int $minFeatures,
-        int $maxDroppedFeatures = 3,
+        int $maxDroppedFeatures = 5,
         float $maxDroppedImportance = 0.2,
         ?RanksFeatures $scorer = null
     ) {
@@ -123,7 +128,10 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      */
     public function compatibility() : array
     {
-        return DataType::all();
+        return [
+            DataType::categorical(),
+            DataType::continuous(),
+        ];
     }
 
     /**
@@ -137,7 +145,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
     }
 
     /**
-     * Return the final importances of the selected feature columns.
+     * Return the normalized importances of the selected features indexed by column offset.
      *
      * @return float[]|null
      */
@@ -159,7 +167,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
                 . ' Labeled training set.');
         }
 
-        if ($this->fitBase or is_null($this->scorer)) {
+        if ($this->fitBase or $this->scorer === null) {
             switch ($dataset->labelType()) {
                 case DataType::categorical():
                     $this->scorer = new ClassificationTree();
@@ -172,8 +180,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
                     break;
 
                 default:
-                    throw new InvalidArgumentException('No compatible base'
-                        . " learner for {$dataset->labelType()} label type.");
+                    throw new InvalidArgumentException('A compatible base'
+                        . ' feature scorer cannot be determined.');
             }
         }
 
@@ -181,60 +189,63 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
             $this->logger->info("$this initialized");
         }
 
-        $n = $dataset->numColumns();
-
         $subset = clone $dataset;
 
-        $importances = array_fill(0, $n, 1.0 / $n);
-        $selected = range(0, $n - 1);
-        $epoch = 0;
+        $selected = range(0, $subset->numColumns() - 1);
+        $epoch = 1;
 
-        while (count($selected) > $this->minFeatures) {
-            ++$epoch;
-
+        do {
             $this->scorer->train($subset);
 
             $importances = $this->scorer->featureImportances();
 
+            $total = array_sum($importances) ?: EPSILON;
+
+            foreach ($importances as &$importance) {
+                $importance /= $total;
+            }
+
             asort($importances);
 
+            $k = min($this->maxDroppedFeatures, count($selected) - $this->minFeatures);
+
+            $candidates = array_slice($importances, 0, $k, true);
+
+            $totalDroppedImportance = 0.0;
             $dropped = [];
-            $total = 0.0;
 
-            foreach ($importances as $column => $importance) {
-                $total += $importance;
+            foreach ($candidates as $column => $importance) {
+                $totalDroppedImportance += $importance;
 
-                if ($total >= $this->maxDroppedImportance) {
+                if ($totalDroppedImportance > $this->maxDroppedImportance) {
                     break;
                 }
-
-                $dropped[] = (int) $column;
 
                 unset($selected[$column], $importances[$column]);
 
-                if (count($dropped) >= $this->maxDroppedFeatures) {
-                    break;
-                }
-
-                if (count($selected) <= $this->minFeatures) {
-                    break;
-                }
+                $dropped[] = $column;
             }
 
             $selected = array_values($selected);
 
-            $subset->dropColumns($dropped);
-
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Dropped "
-                    . count($dropped) . "/{$subset->numColumns()} columns,"
-                    . " Total Dropped Importance: $total");
+                    . count($dropped) . ' features with'
+                    . " $totalDroppedImportance importance");
+            }
+
+            if (count($selected) <= $this->minFeatures) {
+                break;
             }
 
             if (empty($dropped)) {
                 break;
             }
-        }
+
+            $subset->dropColumns($dropped);
+
+            ++$epoch;
+        } while (true);
 
         $this->importances = array_combine($selected, array_values($importances)) ?: [];
 
@@ -251,7 +262,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->importances)) {
+        if ($this->importances === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

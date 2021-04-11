@@ -409,7 +409,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Return the normalized importance scores of each feature column of the training set.
+     * Return the importance scores of each feature column of the training set.
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return float[]
@@ -426,11 +426,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        $importances = $layer->weights()->rowAsVector(0)->abs();
-
-        $importances = $importances->divide($importances->sum());
-
-        return $importances->asArray();
+        return $layer->weights()
+            ->rowAsVector(0)
+            ->abs()
+            ->asArray();
     }
 
     /**
