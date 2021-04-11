@@ -6,15 +6,15 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @covers \Rubix\ML\Transformers\RandomHotDeckImputer
+ * @covers \Rubix\ML\Transformers\HotDeckImputer
  */
-class RandomHotDeckImputerTest extends TestCase
+class HotDeckImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
 
@@ -29,7 +29,7 @@ class RandomHotDeckImputerTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\RandomHotDeckImputer
+     * @var \Rubix\ML\Transformers\HotDeckImputer
      */
     protected $transformer;
 
@@ -49,7 +49,7 @@ class RandomHotDeckImputerTest extends TestCase
 
         $this->generator = new Blob([30.0, 0.0]);
 
-        $this->transformer = new RandomHotDeckImputer(2, true, '?');
+        $this->transformer = new HotDeckImputer(2, true, '?');
 
         srand(self::RANDOM_SEED);
     }
@@ -59,7 +59,7 @@ class RandomHotDeckImputerTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(RandomHotDeckImputer::class, $this->transformer);
+        $this->assertInstanceOf(HotDeckImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }

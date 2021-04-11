@@ -16,11 +16,11 @@ $dataset->apply(new OneHotEncoder());
 Transformations can be chained by calling the `apply()` method fluently.
 
 ```php
-use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 
-$dataset->apply(new RandomHotDeckImputer(5))
+$dataset->apply(new HotDeckImputer(5))
     ->apply(new OneHotEncoder())
     ->apply(new MinMaxNormalizer());
 ```
@@ -111,7 +111,7 @@ A technique for handling missing values in your dataset is a preprocessing step 
 |---|---|---|---|
 | [KNN Imputer](transformers/knn-imputer.md) | Depends on distance kernel | ● | |
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | ● | |
-| [Random Hot Deck Imputer](transformers/random-hot-deck-imputer.md) | Depends on distance kernel | ● | |
+| [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | ● | |
 
 ## Text Transformers
 The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) tasks such as those for text cleaning, normalization, and feature extraction from raw text blobs.
@@ -140,13 +140,13 @@ The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transf
 
 ```php
 use Rubix\ML\Pipeline;
-use Rubix\ML\Transformers\RandomHotDeckImputer;
+use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Clusterers\KMeans;
 
 $estimator = new Pipeline([
-    new RandomHotDeckImputer(5),
+    new HotDeckImputer(5),
     new OneHotEncoder(),
     new ZScaleStandardizer(),
 ], new KMeans(10, 256));

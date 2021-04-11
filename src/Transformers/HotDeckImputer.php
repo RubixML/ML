@@ -7,11 +7,11 @@ use Rubix\ML\DataType;
 use const Rubix\ML\PHI;
 
 /**
- * Random Hot Deck Imputer
+ * Hot Deck Imputer
  *
  * A method of imputation that is similar to KNN Imputer but instead of computing a weighted average
  * of the neighbors' feature values, Random Hot Deck picks a value from the neighborhood randomly
- * but weighted by distance. Compared to its KNN counterpart, Random Hot Deck Imputer is slightly
+ * but weighted by distance. Compared to its KNN counterpart, Hot Deck Imputer is slightly
  * more computationally efficient while satisfying some balancing equations at the same time.
  *
  * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required
@@ -24,7 +24,7 @@ use const Rubix\ML\PHI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomHotDeckImputer extends KNNImputer
+class HotDeckImputer extends KNNImputer
 {
     /**
      * Choose a value to impute from a given set of values.
@@ -72,7 +72,7 @@ class RandomHotDeckImputer extends KNNImputer
      */
     public function __toString() : string
     {
-        return "Random Hot Deck Imputer (k: {$this->k}, weighted: {$this->weighted},"
+        return "Hot Deck Imputer (k: {$this->k}, weighted: {$this->weighted},"
             . " categorical placeholder: {$this->categoricalPlaceholder},"
             . " tree: {$this->tree})";
     }

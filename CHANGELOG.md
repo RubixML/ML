@@ -40,6 +40,7 @@
     - Feature importances are no longer normalized
     - Optimized CART binary categorical node splitting
     - Interval Discretizer outputs numeric string categories
+    - Renamed Random Hot Deck Imputer
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
