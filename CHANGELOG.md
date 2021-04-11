@@ -38,6 +38,7 @@
     - Remove threat score from Multiclass Breakdown
     - Rename Labels Are Missing exception
     - Feature importances are no longer normalized
+    - Optimized CART binary categorical node splitting
 
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features

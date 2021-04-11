@@ -526,10 +526,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
         }
 
-        $n = count($this->ensemble);
+        $estimators = count($this->ensemble);
 
         foreach ($importances as &$importance) {
-            $importance /= $n;
+            $importance /= $estimators;
         }
 
         return $importances;

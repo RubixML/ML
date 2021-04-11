@@ -17,9 +17,11 @@ use Generator;
 use function range;
 use function max;
 use function sqrt;
+use function shuffle;
 use function array_slice;
 use function array_pop;
 use function array_unique;
+use function array_keys;
 use function is_string;
 use function is_int;
 use function is_null;
@@ -190,13 +192,14 @@ abstract class CART implements IteratorAggregate
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->featureCount = $dataset->numColumns();
+        $n = $dataset->numColumns();
 
         if ($this->fitMaxFeatures) {
-            $this->maxFeatures = (int) round(sqrt($this->featureCount));
+            $this->maxFeatures = (int) round(sqrt($n));
         }
 
         $this->types = $dataset->columnTypes();
+        $this->featureCount = $n;
 
         $this->root = $this->split($dataset);
 
@@ -397,13 +400,13 @@ abstract class CART implements IteratorAggregate
      */
     protected function split(Labeled $dataset) : Split
     {
+        $m = $dataset->numRows();
+
         $columns = array_keys($this->types ?? []);
 
         shuffle($columns);
 
         $columns = array_slice($columns, 0, $this->maxFeatures);
-
-        $n = $dataset->numRows();
 
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
@@ -415,20 +418,26 @@ abstract class CART implements IteratorAggregate
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / max(2.0, sqrt($n));
+                    $step = 1.0 / (2.0 + sqrt($m));
 
-                    $q = array_slice(range(0.0, 1.0, $step), 1, -1);
+                    $q = range(0.0, 1.0, $step);
+
+                    $q = array_slice($q, 1, -1);
                 }
 
                 $values = Stats::quantiles($values, $q);
-            }
+            } else {
+                $values = array_unique($values);
 
-            $values = array_unique($values);
+                if (count($values) === 2) {
+                    $values = array_slice($values, 0, 1);
+                }
+            }
 
             foreach ($values as $value) {
                 $groups = $dataset->splitByColumn($column, $value);
 
-                $impurity = $this->splitImpurity($groups, $n);
+                $impurity = $this->splitImpurity($groups, $m);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
@@ -452,7 +461,7 @@ abstract class CART implements IteratorAggregate
             $bestValue,
             $bestGroups,
             $bestImpurity,
-            $n
+            $m
         );
     }
 

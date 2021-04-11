@@ -77,14 +77,6 @@ class StatsTest extends TestCase
 
     /**
      * @test
-     */
-    public function range() : void
-    {
-        $this->assertSame(13.5, Stats::range(self::TEST_VALUES));
-    }
-
-    /**
-     * @test
      * @dataProvider quantileProvider
      *
      * @param (int|float)[] $values
@@ -114,14 +106,6 @@ class StatsTest extends TestCase
     public function mad() : void
     {
         $this->assertEquals(3.5, Stats::mad(self::TEST_VALUES));
-    }
-
-    /**
-     * @test
-     */
-    public function iqr() : void
-    {
-        $this->assertEquals(8., Stats::iqr(self::TEST_VALUES));
     }
 
     /**

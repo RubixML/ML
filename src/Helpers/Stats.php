@@ -4,8 +4,10 @@ namespace Rubix\ML\Helpers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function array_slice;
 use function count;
+use function array_sum;
+use function sort;
+use function abs;
 
 use const Rubix\ML\EPSILON;
 
@@ -23,7 +25,7 @@ use const Rubix\ML\EPSILON;
 class Stats
 {
     /**
-     * Compute the population mean of a set of values.
+     * Compute the mean of a set of values.
      *
      * @param mixed[] $values
      * @return float
@@ -71,32 +73,6 @@ class Stats
     }
 
     /**
-     * Compute the variance of a set of values given a mean and n degrees of
-     * freedom.
-     *
-     * @param mixed[] $values
-     * @param float|null $mean
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return float
-     */
-    public static function variance(array $values, ?float $mean = null) : float
-    {
-        if (empty($values)) {
-            throw new InvalidArgumentException('Variance is undefined for empty set.');
-        }
-
-        $mean = $mean ?? self::mean($values);
-
-        $ssd = 0.0;
-
-        foreach ($values as $value) {
-            $ssd += ($value - $mean) ** 2;
-        }
-
-        return $ssd / count($values);
-    }
-
-    /**
      * Calculate the median of a set of values.
      *
      * @param mixed[] $values
@@ -134,7 +110,7 @@ class Stats
      */
     public static function quantile(array $values, float $q) : float
     {
-        return (float) current(self::quantiles($values, [$q])) ?: NAN;
+        return current(self::quantiles($values, [$q])) ?: NAN;
     }
 
     /**
@@ -179,38 +155,32 @@ class Stats
     }
 
     /**
-     * Compute the interquartile range of a set of values.
+     * Compute the variance of a set of values.
      *
      * @param mixed[] $values
+     * @param float|null $mean
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
-    public static function iqr(array $values) : float
+    public static function variance(array $values, ?float $mean = null) : float
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Interquartile range is'
-                . ' undefined for empty set.');
+            throw new InvalidArgumentException('Variance is undefined for empty set.');
         }
 
-        $n = count($values);
+        $mean = $mean ?? self::mean($values);
 
-        $mid = intdiv($n, 2);
+        $ssd = 0.0;
 
-        sort($values);
-
-        if ($n % 2 === 0) {
-            $lower = array_slice($values, 0, $mid);
-            $upper = array_slice($values, $mid);
-        } else {
-            $lower = array_slice($values, 0, $mid);
-            $upper = array_slice($values, $mid + 1);
+        foreach ($values as $value) {
+            $ssd += ($value - $mean) ** 2;
         }
 
-        return self::median($upper) - self::median($lower);
+        return $ssd / count($values);
     }
 
     /**
-     * Calculate the median absolute deviation of a set of values given a median.
+     * Calculate the median absolute deviation of a set of values.
      *
      * @param mixed[] $values
      * @param float|null $median
@@ -236,8 +206,7 @@ class Stats
     }
 
     /**
-     * Compute the skewness of a set of values given a mean and n degrees of
-     * freedom.
+     * Compute the skewness of a set of values.
      *
      * @param mixed[] $values
      * @param float|null $mean
@@ -311,24 +280,7 @@ class Stats
     }
 
     /**
-     * Return the statistical range given by the maximum minus the minimum
-     * of a set of values.
-     *
-     * @param mixed[] $values
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return float
-     */
-    public static function range(array $values) : float
-    {
-        if (empty($values)) {
-            throw new InvalidArgumentException('Range is undefined for empty set.');
-        }
-
-        return (float) (max($values) - min($values));
-    }
-
-    /**
-     * Compute the population mean and variance and return them in a 2-tuple.
+     * Compute the mean and variance and return them in a 2-tuple.
      *
      * @param mixed[] $values
      * @return float[]
@@ -341,8 +293,7 @@ class Stats
     }
 
     /**
-     * Compute the population median and median absolute deviation and return
-     * them in a 2-tuple.
+     * Compute the median and median absolute deviation and return them in a 2-tuple.
      *
      * @param mixed[] $values
      * @return float[]
