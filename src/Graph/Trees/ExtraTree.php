@@ -60,7 +60,7 @@ abstract class ExtraTree extends CART
 
             $groups = $dataset->splitByColumn($column, $value);
 
-            $impurity = $this->splitImpurity($groups, $m);
+            $impurity = $this->splitImpurity($groups);
 
             if ($impurity < $bestImpurity) {
                 $bestColumn = $column;

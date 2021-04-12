@@ -706,9 +706,11 @@ class Labeled extends Dataset
      */
     public function splitByColumn(int $column, $value) : array
     {
+        $type = $this->columnType($column);
+
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
-        if ($this->columnType($column)->isContinuous()) {
+        if ($type->isContinuous()) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$column] <= $value) {
                     $leftSamples[] = $sample;

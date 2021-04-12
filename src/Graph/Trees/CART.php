@@ -16,6 +16,7 @@ use Generator;
 
 use function range;
 use function max;
+use function log;
 use function sqrt;
 use function shuffle;
 use function array_slice;
@@ -418,7 +419,7 @@ abstract class CART implements IteratorAggregate
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / (2.0 + round(sqrt($m)));
+                    $step = 1.0 / round(3.0 + log($m, 2.0));
 
                     $q = range(0.0, 1.0, $step);
 
@@ -437,7 +438,7 @@ abstract class CART implements IteratorAggregate
             foreach ($values as $value) {
                 $groups = $dataset->splitByColumn($column, $value);
 
-                $impurity = $this->splitImpurity($groups, $m);
+                $impurity = $this->splitImpurity($groups);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
@@ -469,11 +470,12 @@ abstract class CART implements IteratorAggregate
      * Calculate the impurity of a given split.
      *
      * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
-     * @param int $n
      * @return float
      */
-    protected function splitImpurity(array $groups, int $n) : float
+    protected function splitImpurity(array $groups) : float
     {
+        $n = array_sum(array_map('count', $groups));
+
         $impurity = 0.0;
 
         foreach ($groups as $dataset) {
