@@ -2057,6 +2057,18 @@
   
   
     <li class="md-nav__item">
+      <a href="transformers/hot-deck-imputer.html" class="md-nav__link">
+        Hot Deck Imputer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="transformers/knn-imputer.html" class="md-nav__link">
         KNN Imputer
       </a>
@@ -2071,18 +2083,6 @@
     <li class="md-nav__item">
       <a href="transformers/missing-data-imputer.html" class="md-nav__link">
         Missing Data Imputer
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/random-hot-deck-imputer.html" class="md-nav__link">
-        Random Hot Deck Imputer
       </a>
     </li>
   
@@ -4143,7 +4143,7 @@
                 <h1 id="ranks-features">Ranks Features<a class="headerlink" href="#ranks-features" title="Permanent link">#</a></h1>
 <p>The Ranks Features interface is for learners that can determine the importances of the features used to train them. Low importance is given to feature columns that do not contribute significantly in the model whereas high importance indicates that the feature is more influential. Feature importances can help explain the predictions derived from a model and can also be used to identify informative features for feature selection.</p>
 <h3 id="feature-importances">Feature Importances<a class="headerlink" href="#feature-importances" title="Permanent link">#</a></h3>
-<p>Return the normalized importance scores of each feature column of the training set:
+<p>Return the importance scores of each feature column of the training set:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">featureImportances</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
@@ -4167,7 +4167,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2020-07-26
+      Last update: 2021-04-10
     
   </small>
 </div>

@@ -2173,6 +2173,18 @@
   
   
     <li class="md-nav__item">
+      <a href="transformers/hot-deck-imputer.html" class="md-nav__link">
+        Hot Deck Imputer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="transformers/knn-imputer.html" class="md-nav__link">
         KNN Imputer
       </a>
@@ -2187,18 +2199,6 @@
     <li class="md-nav__item">
       <a href="transformers/missing-data-imputer.html" class="md-nav__link">
         Missing Data Imputer
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/random-hot-deck-imputer.html" class="md-nav__link">
-        Random Hot Deck Imputer
       </a>
     </li>
   
@@ -4385,11 +4385,11 @@
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">());</span>
 </code></pre></div>
 <p>Transformations can be chained by calling the <code>apply()</code> method fluently.</p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\RandomHotDeckImputer</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\HotDeckImputer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\MinMaxNormalizer</span><span class="p">;</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">RandomHotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">HotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
     <span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">())</span>
     <span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">MinMaxNormalizer</span><span class="p">());</span>
 </code></pre></div>
@@ -4615,7 +4615,7 @@
 <td></td>
 </tr>
 <tr>
-<td><a href="transformers/random-hot-deck-imputer.html">Random Hot Deck Imputer</a></td>
+<td><a href="transformers/hot-deck-imputer.html">Hot Deck Imputer</a></td>
 <td>Depends on distance kernel</td>
 <td>●</td>
 <td></td>
@@ -4701,13 +4701,13 @@
 <h2 id="transformer-pipelines">Transformer Pipelines<a class="headerlink" href="#transformer-pipelines" title="Permanent link">#</a></h2>
 <p>The <a href="pipeline.html">Pipeline</a> meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Pipeline</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\RandomHotDeckImputer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\HotDeckImputer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\ZScaleStandardizer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Clusterers\KMeans</span><span class="p">;</span>
 
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
-    <span class="k">new</span> <span class="nx">RandomHotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">HotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
     <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">(),</span>
     <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">(),</span>
 <span class="p">],</span> <span class="k">new</span> <span class="nx">KMeans</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">256</span><span class="p">));</span>
@@ -4779,7 +4779,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-10
+      Last update: 2021-04-11
     
   </small>
 </div>
