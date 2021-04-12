@@ -12,14 +12,14 @@ A decision tree based on the CART (*Classification and Regression Tree*) learnin
 |---|---|---|---|---|
 | 1 | maxHeight | PHP_INT_MAX | int | The maximum height of the tree. |
 | 2 | maxLeafSize | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
-| 4 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
+| 3 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary to continue splitting a subtree. |
+| 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
 
 ## Example
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(20, 2, null, 1e-3);
+$estimator = new RegressionTree(20, 2, 1e-3, 10);
 ```
 
 ## Additional Methods

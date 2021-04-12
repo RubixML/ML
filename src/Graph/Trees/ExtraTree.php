@@ -6,7 +6,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function array_slice;
 use function is_int;
 
 use const Rubix\ML\PHI;
@@ -31,13 +30,13 @@ abstract class ExtraTree extends CART
      */
     protected function split(Labeled $dataset) : Split
     {
-        $m = $dataset->numRows();
+        [$m, $n] = $dataset->shape();
 
-        $columns = array_keys($this->types);
+        $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
 
-        shuffle($columns);
+        $columns = array_fill(0, $dataset->numColumns(), null);
 
-        $columns = array_slice($columns, 0, $this->maxFeatures);
+        $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
@@ -45,7 +44,7 @@ abstract class ExtraTree extends CART
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            $type = $this->types[$column];
+            $type = $dataset->columnType($column);
 
             if ($type->isContinuous()) {
                 $min = (int) floor(min($values) * PHI);

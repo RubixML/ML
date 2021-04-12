@@ -72,7 +72,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
-        $this->estimator = new RegressionTree(10, 2, 3, 1e-7);
+        $this->estimator = new RegressionTree(10, 2, 1e-7, 3);
 
         $this->metric = new RSquared();
 
@@ -130,8 +130,8 @@ class RegressionTreeTest extends TestCase
         $expected = [
             'max height' => 10,
             'max leaf size' => 2,
-            'max features' => 3,
             'min purity increase' => 1.0E-7,
+            'max features' => 3,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

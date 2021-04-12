@@ -72,7 +72,7 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
 
-        $this->estimator = new ExtraTreeRegressor(10, 3, 6, 1e-7);
+        $this->estimator = new ExtraTreeRegressor(10, 3, 1e-7, 4);
 
         $this->metric = new RSquared();
 
@@ -130,8 +130,8 @@ class ExtraTreeRegressorTest extends TestCase
         $expected = [
             'max height' => 10,
             'max leaf size' => 3,
-            'max features' => 6,
             'min purity increase' => 1.0E-7,
+            'max features' => 4,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

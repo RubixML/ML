@@ -24,6 +24,12 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
+use function count;
+use function array_fill;
+use function array_combine;
+use function array_replace;
+use function array_count_values;
+use function array_map;
 
 /**
  * Extra Tree Classifier
@@ -47,9 +53,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     use AutotrackRevisions;
 
     /**
-     * The zero vector for the possible class outcomes.
+     * The list of possible class outcomes.
      *
-     * @var float[]
+     * @var string[]
      */
     protected $classes = [
         //
@@ -58,16 +64,16 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize
-     * @param int|null $maxFeatures
      * @param float $minPurityIncrease
+     * @param int|null $maxFeatures
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
         int $maxLeafSize = 3,
-        ?int $maxFeatures = null,
-        float $minPurityIncrease = 1e-7
+        float $minPurityIncrease = 1e-7,
+        ?int $maxFeatures = null
     ) {
-        parent::__construct($maxHeight, $maxLeafSize, $maxFeatures, $minPurityIncrease);
+        parent::__construct($maxHeight, $maxLeafSize, $minPurityIncrease, $maxFeatures);
     }
 
     /**
@@ -138,7 +144,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+        $this->classes = $dataset->possibleOutcomes();
 
         $this->grow($dataset);
     }
@@ -208,7 +214,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         /** @var \Rubix\ML\Graph\Nodes\Best $node */
         $node = $this->search($sample);
 
-        return array_replace($this->classes, $node->probabilities()) ?? [];
+        $template = array_combine($this->classes, array_fill(0, count($this->classes), 0.0)) ?: [];
+
+        return array_replace($template, $node->probabilities());
     }
 
     /**
@@ -240,20 +248,20 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Compute the entropy of a labeled dataset.
+     * Calculate the impurity of a set of labels.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param list<string|int> $labels
      * @return float
      */
-    protected function impurity(Labeled $dataset) : float
+    protected function impurity(array $labels) : float
     {
-        $n = $dataset->numRows();
+        $n = count($labels);
 
         if ($n <= 1) {
             return 0.0;
         }
 
-        $counts = array_count_values($dataset->labels());
+        $counts = array_count_values($labels);
 
         $entropy = 0.0;
 

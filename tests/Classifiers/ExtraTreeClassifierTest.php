@@ -78,7 +78,7 @@ class ExtraTreeClassifierTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new ExtraTreeClassifier(10, 3, 3, 1e-7);
+        $this->estimator = new ExtraTreeClassifier(10, 3, 1e-7, 3);
 
         $this->metric = new Accuracy();
 
@@ -137,8 +137,8 @@ class ExtraTreeClassifierTest extends TestCase
         $expected = [
             'max height' => 10,
             'max leaf size' => 3,
-            'max features' => 3,
             'min purity increase' => 1.0E-7,
+            'max features' => 3,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

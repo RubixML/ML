@@ -45,16 +45,16 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     /**
      * @param int $maxHeight
      * @param int $maxLeafSize
-     * @param int|null $maxFeatures
      * @param float $minPurityIncrease
+     * @param int|null $maxFeatures
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
         int $maxLeafSize = 3,
-        ?int $maxFeatures = null,
-        float $minPurityIncrease = 1e-7
+        float $minPurityIncrease = 1e-7,
+        ?int $maxFeatures = null
     ) {
-        parent::__construct($maxHeight, $maxLeafSize, $maxFeatures, $minPurityIncrease);
+        parent::__construct($maxHeight, $maxLeafSize, $minPurityIncrease, $maxFeatures);
     }
 
     /**
@@ -177,14 +177,14 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     }
 
     /**
-     * Compute the impurity of a labeled dataset.
+     * Calculate the impurity of a set of labels.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param list<int|float> $labels
      * @return float
      */
-    protected function impurity(Labeled $dataset) : float
+    protected function impurity(array $labels) : float
     {
-        return Stats::variance($dataset->labels());
+        return Stats::variance($labels);
     }
 
     /**

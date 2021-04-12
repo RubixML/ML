@@ -15,17 +15,14 @@ use IteratorAggregate;
 use Generator;
 
 use function range;
-use function max;
 use function log;
 use function sqrt;
-use function shuffle;
 use function array_slice;
 use function array_pop;
 use function array_unique;
-use function array_keys;
+use function array_rand;
 use function is_string;
 use function is_int;
-use function is_null;
 
 /**
  * CART
@@ -78,13 +75,6 @@ abstract class CART implements IteratorAggregate
     protected $maxFeatures;
 
     /**
-     * Should we determine max features on the fly?
-     *
-     * @var bool
-     */
-    protected $fitMaxFeatures;
-
-    /**
      * The minimum increase in purity necessary for a node not to be post pruned.
      *
      * @var float
@@ -99,15 +89,6 @@ abstract class CART implements IteratorAggregate
     protected $featureCount;
 
     /**
-     * The memorized column types of the dataset.
-     *
-     * @var \Rubix\ML\DataType[]
-     */
-    protected $types = [
-        //
-    ];
-
-    /**
      * @internal
      *
      * @param int $maxHeight
@@ -119,8 +100,8 @@ abstract class CART implements IteratorAggregate
     public function __construct(
         int $maxHeight,
         int $maxLeafSize,
-        ?int $maxFeatures,
-        float $minPurityIncrease
+        float $minPurityIncrease,
+        ?int $maxFeatures
     ) {
         if ($maxHeight < 1) {
             throw new InvalidArgumentException('Tree must have'
@@ -146,7 +127,6 @@ abstract class CART implements IteratorAggregate
         $this->maxLeafSize = $maxLeafSize;
         $this->minPurityIncrease = $minPurityIncrease;
         $this->maxFeatures = $maxFeatures;
-        $this->fitMaxFeatures = is_null($maxFeatures);
     }
 
     /**
@@ -195,11 +175,6 @@ abstract class CART implements IteratorAggregate
     {
         $n = $dataset->numColumns();
 
-        if ($this->fitMaxFeatures) {
-            $this->maxFeatures = (int) round(sqrt($n));
-        }
-
-        $this->types = $dataset->columnTypes();
         $this->featureCount = $n;
 
         $this->root = $this->split($dataset);
@@ -262,8 +237,6 @@ abstract class CART implements IteratorAggregate
                 }
             }
         }
-
-        unset($this->types);
     }
 
     /**
@@ -386,12 +359,12 @@ abstract class CART implements IteratorAggregate
     abstract protected function terminate(Labeled $dataset);
 
     /**
-     * Compute the impurity of a labeled dataset.
+     * Calculate the impurity of a set of labels.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param list<string|int> $labels
      * @return float
      */
-    abstract protected function impurity(Labeled $dataset) : float;
+    abstract protected function impurity(array $labels) : float;
 
     /**
      * Greedy algorithm to choose the best split point for a given dataset.
@@ -401,13 +374,13 @@ abstract class CART implements IteratorAggregate
      */
     protected function split(Labeled $dataset) : Split
     {
-        $m = $dataset->numRows();
+        [$m, $n] = $dataset->shape();
 
-        $columns = array_keys($this->types ?? []);
+        $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
 
-        shuffle($columns);
+        $columns = array_fill(0, $dataset->numColumns(), null);
 
-        $columns = array_slice($columns, 0, $this->maxFeatures);
+        $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
@@ -415,11 +388,11 @@ abstract class CART implements IteratorAggregate
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            $type = $this->types[$column];
+            $type = $dataset->columnType($column);
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
-                    $step = 1.0 / round(3.0 + log($m, 2.0));
+                    $step = 1.0 / (3.0 + log($m, 2.0));
 
                     $q = range(0.0, 1.0, $step);
 
@@ -485,7 +458,7 @@ abstract class CART implements IteratorAggregate
                 continue;
             }
 
-            $impurity += ($nHat / $n) * $this->impurity($dataset);
+            $impurity += ($nHat / $n) * $this->impurity($dataset->labels());
         }
 
         return $impurity;

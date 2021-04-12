@@ -19,6 +19,13 @@ use function Rubix\ML\warn_deprecated;
 class FunctionsTest extends TestCase
 {
     /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
+    protected const RANDOM_SEED = 0;
+
+    /**
      * @test
      */
     public function argmin() : void

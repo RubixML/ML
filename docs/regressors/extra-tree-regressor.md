@@ -12,14 +12,14 @@
 |---|---|---|---|---|
 | 1 | maxHeight | PHP_INT_MAX | int | The maximum height of the tree. |
 | 2 | maxLeafSize | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
-| 4 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned during tree growth. |
+| 3 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary to continue splitting a subtree. |
+| 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
 
 ## Example
 ```php
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 
-$estimator = new ExtraTreeRegressor(30, 3, 20, 0.05);
+$estimator = new ExtraTreeRegressor(30, 5, 0.05, null);
 ```
 
 ## Additional Methods
