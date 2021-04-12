@@ -103,7 +103,7 @@ class CSV implements Extractor, Writable
     }
 
     /**
-     * Write an iterable data table to disk.
+     * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
      * @throws \Rubix\ML\Exceptions\RuntimeException

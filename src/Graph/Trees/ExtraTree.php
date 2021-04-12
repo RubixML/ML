@@ -31,13 +31,13 @@ abstract class ExtraTree extends CART
      */
     protected function split(Labeled $dataset) : Split
     {
+        $m = $dataset->numRows();
+
         $columns = array_keys($this->types);
 
         shuffle($columns);
 
         $columns = array_slice($columns, 0, $this->maxFeatures);
-
-        $n = $dataset->numRows();
 
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
@@ -60,7 +60,7 @@ abstract class ExtraTree extends CART
 
             $groups = $dataset->splitByColumn($column, $value);
 
-            $impurity = $this->splitImpurity($groups, $n);
+            $impurity = $this->splitImpurity($groups, $m);
 
             if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
@@ -83,7 +83,7 @@ abstract class ExtraTree extends CART
             $bestValue,
             $bestGroups,
             $bestImpurity,
-            $n
+            $m
         );
     }
 }

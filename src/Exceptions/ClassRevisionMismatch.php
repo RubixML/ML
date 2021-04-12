@@ -21,7 +21,7 @@ class ClassRevisionMismatch extends RuntimeException
         $direction = $createdWithVersion > VERSION ? 'up' : 'down';
 
         parent::__construct('Object serialized with incompatible class'
-            . " revision, {$direction}grade to library version"
+            . " revision hash, {$direction}grade to library version"
             . " $createdWithVersion and try again.");
 
         $this->createdWithVersion = $createdWithVersion;
