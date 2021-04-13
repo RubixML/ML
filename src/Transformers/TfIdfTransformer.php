@@ -6,6 +6,8 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -25,8 +27,9 @@ use function log;
  * vectors such as those created by Word Count Vectorizer.
  *
  * References:
- * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On
- * theoretical arguments for IDF.
+ * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical
+ * arguments for IDF.
+ * [2] S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -51,15 +54,21 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected $dampening;
 
     /**
-     * The document frequencies of each word i.e. the number of times a word
-     * appeared in a document given the entire corpus.
+     * Should we normalize the document vectors by their document length?
+     *
+     * @var bool
+     */
+    protected $normalize;
+
+    /**
+     * The document frequencies of each word i.e. the number of times a word appeared in a document.
      *
      * @var int[]|null
      */
     protected $dfs;
 
     /**
-     * The inverse document frequency values for each feature column.
+     * The inverse document frequencies for each feature column.
      *
      * @var float[]|null
      */
@@ -138,6 +147,16 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
+     * Return the average length of a document in tokens.
+     *
+     * @return float|null
+     */
+    public function averageDocumentLength() : ?float
+    {
+        return $this->averageDocumentLength;
+    }
+
+    /**
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -159,7 +178,10 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function update(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithTransformer($dataset, $this),
+        ])->check();
 
         if ($this->dfs === null) {
             $this->fit($dataset);
@@ -206,23 +228,23 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
 
         foreach ($samples as &$sample) {
             if ($this->normalize) {
-                $length = array_sum($sample);
+                $documentLength = array_sum($sample);
 
-                if ($length == 0) {
+                if ($documentLength == 0) {
                     continue;
                 }
 
-                $delta = $this->averageDocumentLength / $length;
+                $delta = $this->averageDocumentLength / $documentLength;
             }
 
             foreach ($sample as $column => &$tf) {
                 if ($tf > 0) {
-                    if ($this->dampening) {
-                        $tf = sqrt($tf);
-                    }
-
                     if (isset($delta)) {
                         $tf *= $delta;
+                    }
+
+                    if ($this->dampening) {
+                        $tf = sqrt($tf);
                     }
 
                     $tf *= $this->idfs[$column];
