@@ -44,6 +44,13 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected $smoothing;
 
     /**
+     * Should we apply a sub-linear function to dampen the effect of recurring tokens?
+     *
+     * @var bool
+     */
+    protected $dampening;
+
+    /**
      * The document frequencies of each word i.e. the number of times a word
      * appeared in a document given the entire corpus.
      *
@@ -59,16 +66,32 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected $idfs;
 
     /**
+     * The number of tokens fitted so far.
+     *
+     * @var int|null
+     */
+    protected $tokenCount;
+
+    /**
      * The number of documents (samples) that have been fitted so far.
      *
-     * @var int
+     * @var int|null
      */
-    protected $n = 0;
+    protected $n;
+
+    /**
+     * The average token count per document.
+     *
+     * @var float|null
+     */
+    protected $averageDocumentLength;
 
     /**
      * @param float $smoothing
+     * @param bool $dampening
+     * @param bool $normalize
      */
-    public function __construct(float $smoothing = 1.0)
+    public function __construct(float $smoothing = 1.0, bool $dampening = true, bool $normalize = true)
     {
         if ($smoothing <= 0.0) {
             throw new InvalidArgumentException('Smoothing must be'
@@ -76,6 +99,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
         }
 
         $this->smoothing = $smoothing;
+        $this->dampening = $dampening;
+        $this->normalize = $normalize;
     }
 
     /**
@@ -99,7 +124,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function fitted() : bool
     {
-        return isset($this->idfs);
+        return isset($this->idfs) and isset($this->averageDocumentLength);
     }
 
     /**
@@ -120,6 +145,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     public function fit(Dataset $dataset) : void
     {
         $this->dfs = array_fill(0, $dataset->numColumns(), 0);
+        $this->tokenCount = 0;
         $this->n = 0;
 
         $this->update($dataset);
@@ -145,11 +171,15 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
             foreach ($sample as $column => $value) {
                 if ($value > 0) {
                     ++$this->dfs[$column];
+
+                    $this->tokenCount += $value;
                 }
             }
         }
 
         $this->n += $dataset->numRows();
+
+        $this->averageDocumentLength = $this->tokenCount / $this->n;
 
         $nHat = $this->n + $this->smoothing;
 
@@ -170,13 +200,31 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if ($this->idfs === null) {
+        if ($this->idfs === null or $this->averageDocumentLength === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
+            if ($this->normalize) {
+                $length = array_sum($sample);
+
+                if ($length == 0) {
+                    continue;
+                }
+
+                $delta = $this->averageDocumentLength / $length;
+            }
+
             foreach ($sample as $column => &$tf) {
                 if ($tf > 0) {
+                    if ($this->dampening) {
+                        $tf = sqrt($tf);
+                    }
+
+                    if (isset($delta)) {
+                        $tf *= $delta;
+                    }
+
                     $tf *= $this->idfs[$column];
                 }
             }

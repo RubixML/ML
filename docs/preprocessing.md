@@ -113,7 +113,7 @@ A technique for handling missing values in your dataset is a preprocessing step 
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | ● | |
 | [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | ● | |
 
-## Text Transformers
+## Natural Language
 The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) tasks such as those for text cleaning, normalization, and feature extraction from raw text blobs.
 
 | Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
@@ -124,10 +124,11 @@ The library provides a number of transformers for natural language processing (N
 | [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | |
 | [Stop Word Filter](transformers/stop-word-filter.md) | | |
 | [TF-IDF Transformer](transformers/tf-idf-transformer.md) | ● | ● |
+| [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) | | |
 | [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | |
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | ● | |
 
-## Image Transformers
+## Images
 These transformers operate on the high-level image data type.
 
 | Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
