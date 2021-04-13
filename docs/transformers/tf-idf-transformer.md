@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/TfIdfTransformer.php">[source]</a></span>
 
 # TF-IDF Transformer
-*Term Frequency - Inverse Document Frequency* is a measurement of how important a word is to a document. The TF-IDF value increases proportionally (linearly) with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
+*Term Frequency - Inverse Document Frequency* is a measurement of how important a word is to a document. The TF-IDF value increases with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
 
 !!! note
     TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
@@ -13,9 +13,9 @@
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | smoothing | 1.0 | float | The amount of additive Laplace smoothing to add to the inverse document frequencies (IDFs). |
+| 1 | smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to add to the IDFs. |
 | 2 | dampening | true | bool | Should we apply a sub-linear function to dampen the effect of recurring tokens? |
-| 3 | normalize | true | bool | Should we normalize the document vectors by their document length? |
+| 3 | normalize | true | bool | Should we normalize document lengths? |
 
 ## Example
 ```php

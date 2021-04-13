@@ -13,15 +13,16 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_fill;
+use function array_sum;
 use function log;
+use function sqrt;
 
 /**
  * TF-IDF Transformer
  *
  * Term Frequency - Inverse Document Frequency is a measure of how important a word is to
- * a document. The TF-IDF value increases proportionally (linearly) with the number of
- * times a word appears in a document and is offset by the frequency of the word in the
- * corpus.
+ * a document. The TF-IDF value increases with the number of times a word appears in a document
+ * and is offset by the frequency of the word in the corpus.
  *
  * > **Note**: TF-IDF Transformer assumes that its input is made up of term frequency
  * vectors such as those created by Word Count Vectorizer.
@@ -40,7 +41,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     use AutotrackRevisions;
 
     /**
-     * The amount of additive Laplace smoothing to add to the inverse document frequencies (IDFs).
+     * The amount of additive (Laplace) smoothing to add to the IDFs.
      *
      * @var float
      */
@@ -54,7 +55,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected $dampening;
 
     /**
-     * Should we normalize the document vectors by their document length?
+     * Should we normalize document lengths?
      *
      * @var bool
      */
@@ -164,8 +165,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     public function fit(Dataset $dataset) : void
     {
         $this->dfs = array_fill(0, $dataset->numColumns(), 0);
-        $this->tokenCount = 0;
-        $this->n = 0;
+        $this->tokenCount = $this->n = 0;
 
         $this->update($dataset);
     }
@@ -230,24 +230,24 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
             if ($this->normalize) {
                 $documentLength = array_sum($sample);
 
-                if ($documentLength == 0) {
+                if (!$documentLength) {
                     continue;
                 }
 
                 $delta = $this->averageDocumentLength / $documentLength;
             }
 
-            foreach ($sample as $column => &$tf) {
-                if ($tf > 0) {
+            foreach ($sample as $column => &$value) {
+                if ($value > 0) {
                     if (isset($delta)) {
-                        $tf *= $delta;
+                        $value *= $delta;
                     }
 
                     if ($this->dampening) {
-                        $tf = sqrt($tf);
+                        $value = sqrt($value);
                     }
 
-                    $tf *= $this->idfs[$column];
+                    $value *= $this->idfs[$column];
                 }
             }
         }
@@ -260,6 +260,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function __toString() : string
     {
-        return "TF-IDF Transformer (smoothing: {$this->smoothing})";
+        return "TF-IDF Transformer (smoothing: {$this->smoothing}, dampening: "
+            . Params::toString($this->dampening) . ', normalize: '
+            . Params::toString($this->normalize) . ')';
     }
 }
