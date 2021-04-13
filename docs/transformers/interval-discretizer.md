@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/IntervalDiscretizer.php">[source]</a></span>
 
 # Interval Discretizer
-Assigns each continuous feature to ordered categories using an equi-width histogram with a user-specified number of bins.
+Assigns continuous features to ordered categories using variable width per-feature histograms with a fixed user-specified number of bins.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
@@ -10,22 +10,17 @@ Assigns each continuous feature to ordered categories using an equi-width histog
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | bins | 5 | int | The number of bins (discrete categories) per continuous feature column. |
+| 1 | bins | 5 | int | The number of bins per histogram. |
 
 ## Example
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
-$transformer = new IntervalDiscretizer(10);
+$transformer = new IntervalDiscretizer(8);
 ```
 
 ## Additional Methods
-Return the list of possible category values for each discretized feature column:
-```php
-public categories() : array
-```
-
-Return the intervals for each continuous feature column calculated during fitting:
+Return the bin intervals of the fitted data:
 ```php
 public intervals() : array
 ```

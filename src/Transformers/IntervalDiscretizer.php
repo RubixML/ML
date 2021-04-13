@@ -5,19 +5,17 @@ namespace Rubix\ML\Transformers;
 use Tensor\Vector;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function min;
-use function max;
-
 /**
  * Interval Discretizer
  *
- * Assigns each continuous feature to ordered categories using an equi-width histogram with a
+ * Assigns continuous features to ordered categories using variable width per-feature histograms with a fixed
  * user-specified number of bins.
  *
  * @category    Machine Learning
@@ -29,7 +27,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
-     * The number of bins per feature column.
+     * The number of bins per histogram.
      *
      * @var int
      */
@@ -79,7 +77,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     }
 
     /**
-     * Return the intervals for each continuous feature column calculated during fitting.
+     * Return the bin intervals of the fitted data.
      *
      * @return array[]|null
      */
@@ -98,13 +96,17 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
+        $q = Vector::linspace(0.0, 1.0, 1 + $this->bins)->asArray();
+
+        $q = array_slice($q, 1, -1);
+
         $this->intervals = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $values = $dataset->column($column);
 
-                $edges = Vector::linspace(min($values), max($values), $this->bins - 1)->asArray();
+                $edges = Stats::quantiles($values, $q);
 
                 $edges[] = INF;
 
@@ -133,7 +135,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
                     if ($value <= $edge) {
                         $value = "$ordinal";
 
-                        continue 2;
+                        break;
                     }
                 }
             }

@@ -150,7 +150,7 @@ class NaiveBayesTest extends TestCase
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $transformer = new IntervalDiscretizer(6);
+        $transformer = new IntervalDiscretizer(5);
 
         $transformer->fit($dataset);
         $dataset->apply($transformer);

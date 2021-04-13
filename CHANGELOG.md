@@ -1,3 +1,6 @@
+- 1.0.0-beta2
+    - Interval Discretizer now uses variable width histograms
+
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
     - Added MAD smoothing to Robust Z Score

@@ -57,7 +57,9 @@ class Isolator implements BinaryNode
 
         $values = $dataset->column($column);
 
-        if ($dataset->columnType($column)->isContinuous()) {
+        $type = $dataset->columnType($column);
+
+        if ($type->isContinuous()) {
             $min = (int) floor(min($values) * PHI);
             $max = (int) ceil(max($values) * PHI);
 
