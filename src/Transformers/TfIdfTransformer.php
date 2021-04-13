@@ -15,7 +15,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function array_fill;
 use function array_sum;
 use function log;
-use function sqrt;
 
 /**
  * TF-IDF Transformer
@@ -31,6 +30,7 @@ use function sqrt;
  * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical
  * arguments for IDF.
  * [2] S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.
+ * [3] C. D. Manning et al. (2009). An Introduction to Information Retrieval.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -101,7 +101,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      * @param bool $dampening
      * @param bool $normalize
      */
-    public function __construct(float $smoothing = 1.0, bool $dampening = true, bool $normalize = true)
+    public function __construct(float $smoothing = 1.0, bool $dampening = false, bool $normalize = false)
     {
         if ($smoothing <= 0.0) {
             throw new InvalidArgumentException('Smoothing must be'
@@ -230,7 +230,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
             if ($this->normalize) {
                 $documentLength = array_sum($sample);
 
-                if (!$documentLength) {
+                if ($documentLength == 0) {
                     continue;
                 }
 
@@ -244,7 +244,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
                     }
 
                     if ($this->dampening) {
-                        $value = sqrt($value);
+                        $value = 1.0 + log($value);
                     }
 
                     $value *= $this->idfs[$column];
