@@ -83,8 +83,13 @@ $extractor = new NDJSON('dataset.ndjson');
 $extractor->export(new CSV('dataset.csv'));
 ```
 
+### 1D Histogram
+One way to visualize the categorical features of a dataset is to put each sample into a bin corresponding to the particular category it belongs to. We can then count the number of samples and display them in a histogram so they can be visually compared. In the following example, we'll bin the samples of the [Housing](https://github.com/RubixML/Housing) dataset according to building type.
+
+![Housing Dataset 1D Histogram](https://github.com/RubixML/ML/blob/master/docs/images/housing-dataset-1d-histogram.png?raw=true)
+
 ### 2D Scatterplot
-A common way to visualize a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the `petal width` and `petal length` features of the [Iris](https://github.com/RubixML/Iris) dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.
+A common way to visualize the continuous features of a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the `petal width` and `petal length` features of the [Iris](https://github.com/RubixML/Iris) dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.
 
 ![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot.png?raw=true)
 
@@ -100,6 +105,6 @@ $dataset->apply(new TSNE(2));
 $dataset->exportTo(new CSV('embedding.csv'));
 ```
 
-When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional manifold.
+When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional embedding of all the features.
 
-![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true)
+![Iris Dataset Embedding 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true)
