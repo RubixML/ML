@@ -497,8 +497,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe-samples-by-label" class="md-nav__link">
-    Describe Samples by Label
+  <a href="#describe-by-label" class="md-nav__link">
+    Describe by Label
   </a>
   
 </li>
@@ -509,9 +509,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotting" class="md-nav__link">
-    Plotting
+  <a href="#visualization" class="md-nav__link">
+    Visualization
   </a>
+  
+    <nav class="md-nav" aria-label="Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exporting-data" class="md-nav__link">
+    Exporting Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converting-formats" class="md-nav__link">
+    Converting Formats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-scatterplot" class="md-nav__link">
+    2D Scatterplot
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4164,8 +4191,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe-samples-by-label" class="md-nav__link">
-    Describe Samples by Label
+  <a href="#describe-by-label" class="md-nav__link">
+    Describe by Label
   </a>
   
 </li>
@@ -4176,9 +4203,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotting" class="md-nav__link">
-    Plotting
+  <a href="#visualization" class="md-nav__link">
+    Visualization
   </a>
+  
+    <nav class="md-nav" aria-label="Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exporting-data" class="md-nav__link">
+    Exporting Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converting-formats" class="md-nav__link">
+    Converting Formats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-scatterplot" class="md-nav__link">
+    2D Scatterplot
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4207,7 +4261,7 @@
                 
                 
                 <h1 id="exploring-data">Exploring Data<a class="headerlink" href="#exploring-data" title="Permanent link">#</a></h1>
-<p>Exploratory Data Analysis (EDA) is an approach to modeling data that produces insights from their summarization and visualization. EDA is often used in the engineering of features as well as model selection and can save time and lead to more accurate models when included in your machine learning lifecycle. In general, there are two types of Exploratory Data Analysis - quantitative and graphical. Quantitative analysis summarizes the data using statistical or probabilistic methods that are then interpreted for meaning. Graphical analysis uses techniques such as scatterplots and histograms to glean information from the structure and shape of the data and often incorporates Manifold Learning to reduce the dimensionality of the samples. </p>
+<p>Exploratory Data Analysis (EDA) is an approach to modeling data that produces insights from their summarization and visualization. EDA is often used in the engineering of features as well as model selection and can save time and lead to more accurate models when included in your machine learning lifecycle. In general, there are two types of Exploratory Data Analysis - quantitative and graphical. Quantitative analysis summarizes the data using statistical or probabilistic methods that are then interpreted for meaning. Graphical analysis uses techniques such as scatterplots and histograms to glean information from the structure and shape of the data and can incorporate Manifold Learning to reduce the dimensionality of the samples. </p>
 <h2 id="describe-a-dataset">Describe a Dataset<a class="headerlink" href="#describe-a-dataset" title="Permanent link">#</a></h2>
 <p>The Dataset API has a handy method named <code>describe()</code> that computes statistics for each continuous feature of the dataset such as the column median, standard deviation, and skewness. In addition, it provides the probabilities of each category for categorical feature columns. In the example below, we'll echo the Report object returned by the <code>describe()</code> method to get a better understanding for how the values of our features are distributed.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describe</span><span class="p">();</span>
@@ -4242,27 +4296,47 @@
 <p>We can also save the report by passing a <a href="persisters/api.html">Persister</a> to the <code>saveTo()</code> method on the Encoding object returned by calling <code>toJSON()</code> on the Report object.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
 
-<span class="nv">$report</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.json&#39;</span><span class="p">));</span>
+<span class="nv">$report</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;report.json&#39;</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="label-statistics">Label Statistics<a class="headerlink" href="#label-statistics" title="Permanent link">#</a></h3>
 <p>If you have a <a href="datasets/labeled.html">Labeled</a> dataset, you can describe the label column by calling the <code>describeLabels()</code> method.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeLabels</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="describe-samples-by-label">Describe Samples by Label<a class="headerlink" href="#describe-samples-by-label" title="Permanent link">#</a></h3>
-<p>If you have categorically labeled data, you can describe your dataset in terms of the classes each sample belongs to by calling the <code>describeByLabel()</code> method on a Labeled dataset object.</p>
+<h3 id="describe-by-label">Describe by Label<a class="headerlink" href="#describe-by-label" title="Permanent link">#</a></h3>
+<p>You can also describe the dataset in terms of the classes each sample belongs to by calling the <code>describeByLabel()</code> method on a Labeled dataset object with categorical labels.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeByLabel</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="plotting">Plotting<a class="headerlink" href="#plotting" title="Permanent link">#</a></h2>
-<p>On the map ...</p>
+<h2 id="visualization">Visualization<a class="headerlink" href="#visualization" title="Permanent link">#</a></h2>
+<p>Another technique used in data analysis is plotting one or more of its dimensions in a chart such as a scatterplot or histogram. Visualizing the data gives us an understanding as to the shape of the data and can aid in discovering outliers or for choosing features to train our model with. Since the library works with common data formats, you are free to use your favorite 3rd party plotting software to visualize the data copied from Rubix ML. If you are looking for a place to start, the free Plotly online <a href="https://plotly.com/chart-studio/">Chart Studio</a> or a modern spreadsheet application should work well for most visualization tasks.</p>
+<h3 id="exporting-data">Exporting Data<a class="headerlink" href="#exporting-data" title="Permanent link">#</a></h3>
+<p>Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the <a href="extractors/api.html">Extractor</a> API to handle importing and exporting datasets from various formats including <a href="extractors/csv.html">CSV</a> and <a href="extractors/ndjson.html">NDJSON</a>. For example, to export a dataset in CSV format pass the CSV extractor to the <code>exportTo()</code> method on the dataset object.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;dataset.csv&#39;</span><span class="p">));</span>
+</code></pre></div>
+<h3 id="converting-formats">Converting Formats<a class="headerlink" href="#converting-formats" title="Permanent link">#</a></h3>
+<p>You may want to convert a dataset stored in one format to another format. To convert formats, pass an extractor object to the <code>export()</code> method on a target extractor that implements the <a href="extractors/api.html">Writable</a> interface. In the example below, we'll convert a data table from CSV format to NDJSON, saving it to a new file.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
+
+<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;dataset.ndjson&#39;</span><span class="p">);</span>
+
+<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;dataset.csv&#39;</span><span class="p">));</span>
+</code></pre></div>
+<h3 id="2d-scatterplot">2D Scatterplot<a class="headerlink" href="#2d-scatterplot" title="Permanent link">#</a></h3>
+<p>A common way to visualize a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the <code>petal width</code> and <code>petal length</code> features of the <a href="https://github.com/RubixML/Iris">Iris</a> dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.</p>
+<p><img alt="Iris Dataset 2D Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot?raw=true" /></p>
 <h2 id="manifold-learning">Manifold Learning<a class="headerlink" href="#manifold-learning" title="Permanent link">#</a></h2>
-<p>Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a dataset for visualization. In the example below, we'll use <a href="transformers/t-sne.html">t-SNE</a> to embed the dataset into 2 dimensions and then save the data to a <a href="extractors/csv.html">CSV</a> file so we can import it into our plotting software.</p>
+<p>Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of <em>all</em> the features. This representation is referred to as an <em>embedding</em> because the high-dimensional features are embedded into a lower-dimensional manifold. In the example below, we'll use <a href="transformers/t-sne.html">t-SNE</a> to embed the 4-dimensional Iris dataset into 2 dimensions and then save the data to a <a href="extractors/csv.html">CSV</a> file so we can import it into our plotting software.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TSNE</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;embedding.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
+<p>When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional manifold.</p>
+<p><img alt="Iris Dataset 2D Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot?raw=true" /></p>
                 
                   
                     
@@ -4271,7 +4345,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-10
+      Last update: 2021-04-13
     
   </small>
 </div>

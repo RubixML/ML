@@ -4215,24 +4215,24 @@
 </tr>
 <tr>
 <td>3</td>
+<td>minPurityIncrease</td>
+<td>1e-7</td>
+<td>float</td>
+<td>The minimum increase in purity necessary to continue splitting a subtree.</td>
+</tr>
+<tr>
+<td>4</td>
 <td>maxFeatures</td>
 <td>Auto</td>
 <td>int</td>
 <td>The max number of feature columns to consider when determining a best split.</td>
-</tr>
-<tr>
-<td>4</td>
-<td>minPurityIncrease</td>
-<td>1e-7</td>
-<td>float</td>
-<td>The minimum increase in purity necessary for a node <em>not</em> to be post pruned during tree growth.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Regressors\RegressionTree</span><span class="p">;</span>
 
-<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RegressionTree</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">);</span>
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RegressionTree</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return a human-readable text representation of the decision tree ruleset:
@@ -4264,7 +4264,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-03
+      Last update: 2021-04-12
     
   </small>
 </div>

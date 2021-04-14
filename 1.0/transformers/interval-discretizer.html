@@ -4172,7 +4172,7 @@
                 
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/IntervalDiscretizer.php">[source]</a></span></p>
 <h1 id="interval-discretizer">Interval Discretizer<a class="headerlink" href="#interval-discretizer" title="Permanent link">#</a></h1>
-<p>Assigns each continuous feature to ordered categories using an equi-width histogram with a user-specified number of bins.</p>
+<p>Assigns continuous features to ordered categories using variable width per-feature histograms with a fixed user-specified number of bins.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4192,20 +4192,17 @@
 <td>bins</td>
 <td>5</td>
 <td>int</td>
-<td>The number of bins (discrete categories) per continuous feature column.</td>
+<td>The number of bins per histogram.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\IntervalDiscretizer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IntervalDiscretizer</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IntervalDiscretizer</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
-<p>Return the list of possible category values for each discretized feature column:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">categories</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<p>Return the intervals for each continuous feature column calculated during fitting:
+<p>Return the bin intervals of the fitted data:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">intervals</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
 </code></pre></div></p>
                 
@@ -4216,7 +4213,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-11
+      Last update: 2021-04-12
     
   </small>
 </div>
