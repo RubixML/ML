@@ -380,7 +380,7 @@ public deduplicate() : self
 ```
 
 ## Saving
-Export the dataset to the location and format given by a [Writable](extractors/api.md) extractor:
+Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor:
 ```php
 public exportTo(Writable $extractor) : void
 ```
