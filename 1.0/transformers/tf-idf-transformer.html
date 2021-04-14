@@ -4186,7 +4186,7 @@
                 
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/TfIdfTransformer.php">[source]</a></span></p>
 <h1 id="tf-idf-transformer">TF-IDF Transformer<a class="headerlink" href="#tf-idf-transformer" title="Permanent link">#</a></h1>
-<p><em>Term Frequency - Inverse Document Frequency</em> is a measurement of how important a word is to a document. The TF-IDF value increases with the number of times a word appears in a document (<em>TF</em>) and is offset by the frequency of the word in the corpus (<em>IDF</em>).</p>
+<p><em>Term Frequency - Inverse Document Frequency</em> is a measurement of how important a word is to a document. The TF-IDF value increases proportionally (linearly) with the number of times a word appears in a document (<em>TF</em>) and is offset by the frequency of the word in the corpus (<em>IDF</em>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by <a href="word-count-vectorizer.html">Word Count Vectorizer</a>.</p>
@@ -4210,35 +4210,18 @@
 <td>smoothing</td>
 <td>1.0</td>
 <td>float</td>
-<td>The amount of additive (Laplace) smoothing to add to the IDFs.</td>
-</tr>
-<tr>
-<td>2</td>
-<td>dampening</td>
-<td>true</td>
-<td>bool</td>
-<td>Should we apply a sub-linear function to dampen the effect of recurring tokens?</td>
-</tr>
-<tr>
-<td>3</td>
-<td>normalize</td>
-<td>true</td>
-<td>bool</td>
-<td>Should we normalize document lengths?</td>
+<td>The amount of additive Laplace smoothing to add to the inverse document frequencies (IDFs).</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TfIdfTransformer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TfIdfTransformer</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TfIdfTransformer</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return the document frequencies calculated during fitting:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dfs</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="k">array</span>
-</code></pre></div></p>
-<p>Return the average length of a document in tokens:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">averageDocumentLength</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="nx">float</span>
 </code></pre></div></p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
 <div class="footnote">
@@ -4246,9 +4229,6 @@
 <ol>
 <li id="fn:1">
 <p>S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:2">
-<p>S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -4260,7 +4240,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-13
+      Last update: 2021-03-27
     
   </small>
 </div>

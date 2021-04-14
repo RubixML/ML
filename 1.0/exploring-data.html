@@ -531,6 +531,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#1d-histogram" class="md-nav__link">
+    1D Histogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#2d-scatterplot" class="md-nav__link">
     2D Scatterplot
   </a>
@@ -4225,6 +4232,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#1d-histogram" class="md-nav__link">
+    1D Histogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#2d-scatterplot" class="md-nav__link">
     2D Scatterplot
   </a>
@@ -4323,8 +4337,11 @@
 
 <span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;dataset.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
+<h3 id="1d-histogram">1D Histogram<a class="headerlink" href="#1d-histogram" title="Permanent link">#</a></h3>
+<p>One way to visualize the categorical features of a dataset is to put each sample into a bin corresponding to the particular category it belongs to. We can then count the number of samples and display them in a histogram so they can be visually compared. In the following example, we'll bin the samples of the <a href="https://github.com/RubixML/Housing">Housing</a> dataset according to building type.</p>
+<p><img alt="Housing Dataset 1D Histogram" src="https://github.com/RubixML/ML/blob/master/docs/images/housing-dataset-1d-histogram.png?raw=true" /></p>
 <h3 id="2d-scatterplot">2D Scatterplot<a class="headerlink" href="#2d-scatterplot" title="Permanent link">#</a></h3>
-<p>A common way to visualize a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the <code>petal width</code> and <code>petal length</code> features of the <a href="https://github.com/RubixML/Iris">Iris</a> dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.</p>
+<p>A common way to visualize the continuous features of a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the <code>petal width</code> and <code>petal length</code> features of the <a href="https://github.com/RubixML/Iris">Iris</a> dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.</p>
 <p><img alt="Iris Dataset 2D Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot.png?raw=true" /></p>
 <h2 id="manifold-learning">Manifold Learning<a class="headerlink" href="#manifold-learning" title="Permanent link">#</a></h2>
 <p>Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of <em>all</em> the features. This representation is referred to as an <em>embedding</em> because the high-dimensional features are embedded into a lower-dimensional manifold. In the example below, we'll use <a href="transformers/t-sne.html">t-SNE</a> to embed the 4-dimensional Iris dataset into 2 dimensions and then save the data to a <a href="extractors/csv.html">CSV</a> file so we can import it into our plotting software.</p>
@@ -4335,8 +4352,8 @@
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;embedding.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
-<p>When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional manifold.</p>
-<p><img alt="Iris Dataset 2D Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true" /></p>
+<p>When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional embedding of all the features.</p>
+<p><img alt="Iris Dataset Embedding 2D Scatterplot" src="https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true" /></p>
                 
                   
                     
