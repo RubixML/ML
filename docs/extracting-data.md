@@ -132,15 +132,3 @@ $dataset->exportTo(new CSV('half-moon.csv'));
 ```
 
 ![Half Moon Dataset Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/half-moon-scatterplot.png?raw=true)
-
-## Converting Formats
-At some point, you may want to convert a dataset stored in one format to another format. To convert formats, pass the extractor object to the `export()` method on a target extractor that implements the [Writable](extractors/api.md) interface. In the example below, we'll convert a data table from CSV format to NDJSON format and save it to a new file.
-
-```php
-use Rubix\ML\Extractors\NDJSON;
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new NDJSON('example.ndjson');
-
-$extractor->export(new CSV('example.csv'));
-```
