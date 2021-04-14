@@ -86,7 +86,7 @@ $extractor->export(new CSV('dataset.csv'));
 ### 2D Scatterplot
 A common way to visualize a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the `petal width` and `petal length` features of the [Iris](https://github.com/RubixML/Iris) dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.
 
-![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot?raw=true)
+![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot.png?raw=true)
 
 ## Manifold Learning
 Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of *all* the features. This representation is referred to as an *embedding* because the high-dimensional features are embedded into a lower-dimensional manifold. In the example below, we'll use [t-SNE](transformers/t-sne.md) to embed the 4-dimensional Iris dataset into 2 dimensions and then save the data to a [CSV](extractors/csv.md) file so we can import it into our plotting software.
@@ -102,4 +102,4 @@ $dataset->exportTo(new CSV('embedding.csv'));
 
 When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional manifold.
 
-![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot?raw=true)
+![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true)
