@@ -10,6 +10,7 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\comb;
 use function Rubix\ML\array_transpose;
+use function Rubix\ML\array_contains_nan;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\warn_deprecated;
 
@@ -126,6 +127,53 @@ class FunctionsTest extends TestCase
                 [0],
                 [0],
             ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider arrayContainsNanProvider
+     *
+     * @param mixed[] $values
+     * @param bool $expected
+     */
+    public function arrayContainsNan(array $values, bool $expected) : void
+    {
+        $this->assertEquals($expected, array_contains_nan($values));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function arrayContainsNanProvider() : Generator
+    {
+        yield [
+            [0.0, NAN, -5],
+            true,
+        ];
+
+        yield [
+            [0.0, 0.0, 0.0],
+            false,
+        ];
+
+        yield [
+            [1.0, INF, NAN],
+            true,
+        ];
+
+        yield [
+            [
+                [1.0, 2.0, 3.0],
+                [4.0, 5.0, 6.0],
+                [7.0, 8.0, NAN],
+            ],
+            true,
+        ];
+
+        yield [
+            ['NaN', 'NAN'],
+            false,
         ];
     }
 

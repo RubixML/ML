@@ -527,14 +527,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function randomize();
 
     /**
-     * Filter the rows of the dataset using the values of a feature column as the
-     * argument to a callback.
+     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
      *
-     * @param int $offset
      * @param callable $fn
      * @return self
      */
-    abstract public function filterByColumn(int $offset, callable $fn);
+    abstract public function filter(callable $fn);
 
     /**
      * Sort the dataset by a column in the sample matrix.

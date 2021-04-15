@@ -270,19 +270,17 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Filter the rows of the dataset using the values of a feature column as the
-     * argument to a callback.
+     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
      *
-     * @param int $offset
      * @param callable $callback
      * @return self
      */
-    public function filterByColumn(int $offset, callable $callback) : self
+    public function filter(callable $callback) : self
     {
         $samples = [];
 
         foreach ($this->samples as $sample) {
-            if ($callback($sample[$offset])) {
+            if ($callback($sample)) {
                 $samples[] = $sample;
             }
         }

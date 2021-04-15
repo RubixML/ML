@@ -5,6 +5,8 @@ namespace Rubix\ML
     /**
      * Compute the argmin of the given values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @return mixed
      */
@@ -15,6 +17,8 @@ namespace Rubix\ML
 
     /**
      * Compute the argmax of the given values.
+     *
+     * @internal
      *
      * @param (int|float)[] $values
      * @return mixed
@@ -27,6 +31,8 @@ namespace Rubix\ML
     /**
      * Compute the log of the sum of exponential values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @return float
      */
@@ -37,6 +43,8 @@ namespace Rubix\ML
 
     /**
      * Compute n choose k.
+     *
+     * @internal
      *
      * @param int $n
      * @param int $k
@@ -49,6 +57,8 @@ namespace Rubix\ML
 
     /**
      * Transpose a 2-dimensional array i.e. columns become rows and rows become columns.
+     *
+     * @internal
      *
      * @param array[] $table
      * @return array[]
@@ -74,7 +84,36 @@ namespace Rubix\ML
     }
 
     /**
+     * Check if a multidimensional array contains NAN values recursively.
+     *
+     * @internal
+     *
+     * @param mixed[] $values
+     * @return bool
+     */
+    function array_contains_nan(array $values) : bool
+    {
+        foreach ($values as $value) {
+            if (is_array($value)) {
+                if (array_contains_nan($value)) {
+                    return true;
+                }
+            }
+
+            if (is_float($value)) {
+                if (is_nan($value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return the first element of an iterator.
+     *
+     * @internal
      *
      * @param iterable<mixed> $iterator
      * @return mixed
@@ -88,6 +127,8 @@ namespace Rubix\ML
 
     /**
      * Emit a deprecation warning with a message.
+     *
+     * @internal
      *
      * @param string $message
      */

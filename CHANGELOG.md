@@ -1,5 +1,6 @@
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
+    - Dataset filterByColumn() is now filter()
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE

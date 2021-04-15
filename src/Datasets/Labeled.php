@@ -445,42 +445,19 @@ class Labeled extends Dataset
     }
 
     /**
-     * Filter the rows of the dataset using the values of a feature column at the given
-     * offset as the arguments to a filter callback. The callback should return false
-     * for rows that should be filtered.
-     *
-     * @param int $offset
-     * @param callable $callback
-     * @return self
-     */
-    public function filterByColumn(int $offset, callable $callback) : self
-    {
-        $samples = $labels = [];
-
-        foreach ($this->samples as $i => $sample) {
-            if ($callback($sample[$offset])) {
-                $samples[] = $sample;
-                $labels[] = $this->labels[$i];
-            }
-        }
-
-        return self::quick($samples, $labels);
-    }
-
-    /**
-     * Filter the rows of the dataset using the labels as the argument to a callback.
+     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
      *
      * @param callable $callback
      * @return self
      */
-    public function filterByLabel(callable $callback) : self
+    public function filter(callable $callback) : self
     {
         $samples = $labels = [];
 
-        foreach ($this->labels as $i => $label) {
-            if ($callback($label)) {
+        foreach ($this as $i => $record) {
+            if ($callback($record)) {
                 $samples[] = $this->samples[$i];
-                $labels[] = $label;
+                $labels[] = $this->labels[$i];
             }
         }
 

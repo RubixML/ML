@@ -254,13 +254,13 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function filterByColumn() : void
+    public function filter() : void
     {
-        $isFriendly = function ($value) {
-            return $value === 'friendly';
+        $isFriendly = function ($record) {
+            return $record[2] === 'friendly';
         };
 
-        $filtered = $this->dataset->filterByColumn(2, $isFriendly);
+        $filtered = $this->dataset->filter($isFriendly);
 
         $expected = [
             ['nice', 'furry', 'friendly', 4.0],

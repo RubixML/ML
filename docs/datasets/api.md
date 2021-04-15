@@ -293,14 +293,14 @@ $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
 
 ## Filtering
-Filter the rows of the dataset using the values of a feature column at the given offset as the arguments to a filter callback. The callback should return false for rows that should be filtered.
+Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset:
 ```php
-public filterByColumn(int $offset, callable $fn) : self
+public filter(callable $fn) : self
 ```
 
 ```php
-$tallPeople = $dataset->filterByColumn(3, function ($value) {
-	return $value > 178.5;
+$tallPeople = $dataset->filter(function ($record) {
+	return $record[3] > 178.5;
 });
 ```
 
