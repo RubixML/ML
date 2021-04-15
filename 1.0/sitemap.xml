@@ -1,851 +1,851 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://rubixml.com/index.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/what-is-machine-learning.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/installation.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/basic-introduction.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/representing-your-data.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extracting-data.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/preprocessing.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/exploring-data.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/choosing-an-estimator.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/training.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/inference.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/hyper-parameter-tuning.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/model-persistence.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/estimator.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/learner.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/online.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/parallel.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/persistable.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/probabilistic.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/ranks-features.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/scoring.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/verbose.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extractors/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extractors/column-picker.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extractors/csv.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extractors/ndjson.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/extractors/sql-table.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/agglomerate.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/blob.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/circle.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/half-moon.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/hyperplane.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/generators/swiss-roll.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/labeled.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/datasets/unlabeled.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/adaboost.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/classification-tree.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/dummy-classifier.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/extra-tree-classifier.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/gaussian-naive-bayes.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/kd-neighbors.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/k-nearest-neighbors.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/logistic-regression.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/multilayer-perceptron.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/naive-bayes.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/radius-neighbors.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/random-forest.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/softmax-classifier.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/classifiers/svc.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/adaline.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/dummy-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/extra-tree-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/gradient-boost.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/kd-neighbors-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/knn-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/mlp-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/radius-neighbors-regressor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/regression-tree.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/ridge.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/regressors/svr.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/seeders/k-mc2.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/seeders/plus-plus.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/seeders/random.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/dbscan.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/fuzzy-c-means.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/gaussian-mixture.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/k-means.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/clusterers/mean-shift.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/gaussian-mle.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/isolation-forest.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/loda.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/local-outlier-factor.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/one-class-svm.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/anomaly-detectors/robust-z-score.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/bootstrap-aggregator.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/committee-machine.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/grid-search.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/persistent-model.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/pipeline.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/l1-normalizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/l2-normalizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/max-absolute-scaler.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/min-max-normalizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/robust-standardizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/z-scale-standardizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/gaussian-random-projector.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/linear-discriminant-analysis.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/principal-component-analysis.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/sparse-random-projector.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/truncated-svd.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/t-sne.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/interval-discretizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/one-hot-encoder.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/numeric-string-converter.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/boolean-converter.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/recursive-feature-eliminator.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/hot-deck-imputer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/knn-imputer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/missing-data-imputer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/image-resizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/image-vectorizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/html-stripper.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/regex-filter.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/text-normalizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/multibyte-text-normalizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/stop-word-filter.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/tf-idf-transformer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/whitespace-trimmer.html</loc>
-     <lastmod>2021-04-14</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://rubixml.com/transformers/word-count-vectorizer.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/transformers/polynomial-expander.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/hot-deck-imputer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/knn-imputer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/missing-data-imputer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/html-stripper.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/regex-filter.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/text-normalizer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/multibyte-text-normalizer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/stop-word-filter.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/tf-idf-transformer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/whitespace-trimmer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/word-count-vectorizer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/image-resizer.html</loc>
+     <lastmod>2021-04-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://rubixml.com/transformers/image-vectorizer.html</loc>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/activation.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/batch-norm.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/dense.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/dropout.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/noise.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/hidden-layers/prelu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/elu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/hyperbolic-tangent.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/leaky-relu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/relu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/selu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/sigmoid.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/softmax.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/soft-plus.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/softsign.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/activation-functions/thresholded-relu.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/cost-functions/cross-entropy.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/cost-functions/huber-loss.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/cost-functions/least-squares.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/cost-functions/relative-entropy.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/constant.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/he.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/lecun.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/normal.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/uniform.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/xavier-1.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/initializers/xavier-2.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/adagrad.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/adam.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/adamax.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/cyclical.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/momentum.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/rms-prop.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/step-decay.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/neural-network/optimizers/stochastic.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/graph/trees/ball-tree.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/graph/trees/k-d-tree.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/canberra.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/cosine.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/diagonal.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/euclidean.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/hamming.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/jaccard.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/manhattan.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/minkowski.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/distance/safe-euclidean.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/svm/linear.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/svm/polynomial.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/svm/rbf.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/kernels/svm/sigmoidal.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/accuracy.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/f-beta.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/informedness.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/mcc.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/mean-absolute-error.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/mean-squared-error.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/median-absolute-error.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/rmse.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/r-squared.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/smape.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/completeness.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/homogeneity.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/rand-index.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/metrics/v-measure.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/aggregate-report.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/confusion-matrix.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/contingency-table.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/error-analysis.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/reports/multiclass-breakdown.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/hold-out.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/k-fold.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/leave-p-out.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/cross-validation/monte-carlo.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/persisters/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/persisters/filesystem.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/serializers/api.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/serializers/gzip.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/serializers/native.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/serializers/rbx.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/backends/amp.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/backends/serial.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/loggers/screen.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/tokenizers/k-skip-n-gram.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/tokenizers/n-gram.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/tokenizers/sentence.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/tokenizers/whitespace.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/tokenizers/word.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/helpers/params.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/constant.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/k-most-frequent.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/mean.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/percentile.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/prior.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/strategies/wild-guess.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://rubixml.com/faq.html</loc>
-     <lastmod>2021-04-14</lastmod>
+     <lastmod>2021-04-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
