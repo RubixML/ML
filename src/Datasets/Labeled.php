@@ -84,7 +84,7 @@ class Labeled extends Dataset
             $samples[] = $record;
         }
 
-        return static::build($samples, $labels);
+        return self::build($samples, $labels);
     }
 
     /**

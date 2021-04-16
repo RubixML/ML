@@ -60,8 +60,7 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Stack a number of datasets on top of each other to form a single
-     * dataset.
+     * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset[] $datasets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
