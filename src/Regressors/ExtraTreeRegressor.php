@@ -173,7 +173,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     {
         [$mean, $variance] = Stats::meanVar($dataset->labels());
 
-        return new Average($mean, $variance, $dataset->numRows());
+        return new Average($mean, $variance, $dataset->numSamples());
     }
 
     /**

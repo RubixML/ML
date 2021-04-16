@@ -283,7 +283,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         $samples = $dataset->samples();
         $columns = $dataset->columns();
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $minEpsilon = CPU::epsilon();
         $prevLoss = INF;
@@ -499,7 +499,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         $kernel = new Euclidean();
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $maxVariance = 0.0;
 

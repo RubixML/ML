@@ -68,7 +68,7 @@ class Unlabeled extends Dataset
      */
     public static function stack(array $datasets) : self
     {
-        $n = $datasets[array_key_first($datasets)]->numColumns();
+        $n = $datasets[array_key_first($datasets)]->numFeatures();
 
         $samples = [];
 
@@ -78,10 +78,10 @@ class Unlabeled extends Dataset
                     . ' the Dataset interface.');
             }
 
-            if ($dataset->numColumns() !== $n) {
+            if ($dataset->numFeatures() !== $n) {
                 throw new InvalidArgumentException('Dataset must have'
                     . " the same number of columns, $n expected but"
-                    . " {$dataset->numColumns()} given.");
+                    . " {$dataset->numFeatures()} given.");
             }
 
             $samples[] = $dataset->samples();
@@ -121,7 +121,7 @@ class Unlabeled extends Dataset
                 . " cannot be less than 1, $n given.");
         }
 
-        return $this->slice(-$n, $this->numRows());
+        return $this->slice(-$n, $this->numSamples());
     }
 
     /**
@@ -155,7 +155,7 @@ class Unlabeled extends Dataset
                 . " cannot be less than 1, $n given.");
         }
 
-        return $this->splice($n, $this->numRows());
+        return $this->splice($n, $this->numSamples());
     }
 
     /**
@@ -193,10 +193,10 @@ class Unlabeled extends Dataset
     public function merge(Dataset $dataset) : self
     {
         if (!$dataset->empty() and !$this->empty()) {
-            if ($dataset->numColumns() !== $this->numColumns()) {
+            if ($dataset->numFeatures() !== $this->numFeatures()) {
                 throw new InvalidArgumentException('Datasets must have'
-                    . " the same dimensionality, {$this->numColumns()}"
-                    . " expected, but {$dataset->numColumns()} given.");
+                    . " the same dimensionality, {$this->numFeatures()}"
+                    . " expected, but {$dataset->numFeatures()} given.");
             }
         }
 
@@ -212,10 +212,10 @@ class Unlabeled extends Dataset
      */
     public function join(Dataset $dataset) : self
     {
-        if ($dataset->numRows() !== $this->numRows()) {
+        if ($dataset->numSamples() !== $this->numSamples()) {
             throw new InvalidArgumentException('Datasets must have'
-                . " the same number of rows, {$this->numRows()}"
-                . " expected, but {$dataset->numRows()} given.");
+                . " the same number of rows, {$this->numSamples()}"
+                . " expected, but {$dataset->numSamples()} given.");
         }
 
         $samples = [];
@@ -269,7 +269,7 @@ class Unlabeled extends Dataset
                 . " between 0 and 1, $ratio given.");
         }
 
-        $n = (int) floor($ratio * $this->numRows());
+        $n = (int) floor($ratio * $this->numSamples());
 
         return [
             self::quick(array_slice($this->samples, 0, $n)),
@@ -394,9 +394,9 @@ class Unlabeled extends Dataset
                 . " subset of less than 1 sample, $n given.");
         }
 
-        if ($n > $this->numRows()) {
+        if ($n > $this->numSamples()) {
             throw new InvalidArgumentException('Cannot generate subset'
-                . " of more than {$this->numRows()}, $n given.");
+                . " of more than {$this->numSamples()}, $n given.");
         }
 
         $offsets = array_rand($this->samples, $n);
@@ -426,7 +426,7 @@ class Unlabeled extends Dataset
                 . " less than 1 sample, $n given.");
         }
 
-        $maxOffset = $this->numRows() - 1;
+        $maxOffset = $this->numSamples() - 1;
 
         $samples = [];
 

@@ -294,7 +294,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $this->histograms[$i] = [$edges, $counts];
         }
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $this->n += $n;
 

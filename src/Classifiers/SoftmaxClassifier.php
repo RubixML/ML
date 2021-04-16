@@ -267,7 +267,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numColumns()),
+            new Placeholder1D($dataset->numFeatures()),
             [new Dense(count($classes), $this->alpha, true, new Xavier1())],
             new Multiclass($classes, $this->costFn),
             $this->optimizer

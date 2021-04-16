@@ -142,7 +142,7 @@ class BallTree implements BinaryTree, Spatial
 
             $current->cleanup();
 
-            if ($left->numRows() > $this->maxLeafSize) {
+            if ($left->numSamples() > $this->maxLeafSize) {
                 $node = Ball::split($left, $this->kernel);
 
                 $current->attachLeft($node);
@@ -152,7 +152,7 @@ class BallTree implements BinaryTree, Spatial
                 $current->attachLeft(Clique::terminate($left, $this->kernel));
             }
 
-            if ($right->numRows() > $this->maxLeafSize) {
+            if ($right->numSamples() > $this->maxLeafSize) {
                 $node = Ball::split($right, $this->kernel);
 
                 if ($node->isPoint()) {

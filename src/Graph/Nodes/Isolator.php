@@ -53,7 +53,7 @@ class Isolator implements BinaryNode
      */
     public static function split(Dataset $dataset) : self
     {
-        $column = rand(0, $dataset->numColumns() - 1);
+        $column = rand(0, $dataset->numFeatures() - 1);
 
         $values = $dataset->column($column);
 

@@ -14,7 +14,7 @@ class IncorrectDatasetDimensionality extends InvalidArgumentException
     {
         $message = 'Dataset must contain samples with'
             . " exactly $dimensions dimensions,"
-            . " {$dataset->numColumns()} given.";
+            . " {$dataset->numFeatures()} given.";
 
         parent::__construct($message);
     }

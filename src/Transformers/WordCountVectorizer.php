@@ -151,7 +151,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $min = (int) round($this->minDocumentFrequency * $n);
         $max = (int) round($this->maxDocumentFrequency * $n);

@@ -210,7 +210,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $p = $this->ratio
             ? max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $n))
@@ -240,7 +240,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
     }
 
     /**

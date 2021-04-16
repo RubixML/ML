@@ -146,7 +146,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
             }
         }
 
-        $this->n = $dataset->numRows();
+        $this->n = $dataset->numSamples();
     }
 
     /**
@@ -162,7 +162,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
             return;
         }
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         foreach ($this->means as $column => $oldMean) {
             $oldVariance = $this->variances[$column];

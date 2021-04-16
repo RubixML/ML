@@ -167,7 +167,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
 
         $this->tree->grow($dataset);
     }

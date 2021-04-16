@@ -138,7 +138,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return int
      */
-    public function numRows() : int
+    public function numSamples() : int
     {
         return count($this->samples);
     }
@@ -159,7 +159,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return int
      */
-    public function numColumns() : int
+    public function numFeatures() : int
     {
         return isset($this->samples[0]) ? count($this->samples[0]) : 0;
     }
@@ -229,7 +229,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function shape() : array
     {
-        return [$this->numRows(), $this->numColumns()];
+        return [$this->numSamples(), $this->numFeatures()];
     }
 
     /**
@@ -239,7 +239,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function size() : int
     {
-        return $this->numRows() * $this->numColumns();
+        return $this->numSamples() * $this->numFeatures();
     }
 
     /**
@@ -580,7 +580,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function count() : int
     {
-        return $this->numRows();
+        return $this->numSamples();
     }
 
     /**

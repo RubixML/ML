@@ -338,7 +338,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $hiddenLayers[] = new Dense(1, $this->alpha, true, new Xavier2());
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numColumns()),
+            new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),
             $this->optimizer

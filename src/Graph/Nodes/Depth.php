@@ -60,7 +60,7 @@ class Depth implements BinaryNode
      */
     public static function terminate(Dataset $dataset, int $depth) : self
     {
-        return new self($depth + self::c($dataset->numRows()) - 1.0);
+        return new self($depth + self::c($dataset->numSamples()) - 1.0);
     }
 
     /**

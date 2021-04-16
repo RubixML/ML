@@ -208,7 +208,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
 
         $subset = clone $dataset;
 
-        $selected = range(0, $subset->numColumns() - 1);
+        $selected = range(0, $subset->numFeatures() - 1);
         $epoch = 1;
 
         do {

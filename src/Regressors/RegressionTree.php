@@ -172,7 +172,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     {
         [$mean, $variance] = Stats::meanVar($dataset->labels());
 
-        return new Average($mean, $variance, $dataset->numRows());
+        return new Average($mean, $variance, $dataset->numSamples());
     }
 
     /**

@@ -259,7 +259,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $oldVariances = $this->variances[$class];
                 $oldWeight = $this->weights[$class];
 
-                $n = $stratum->numRows();
+                $n = $stratum->numSamples();
 
                 $means = $variances = [];
 
@@ -293,7 +293,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                     $variances[] = $variance;
                 }
 
-                $weight = $stratum->numRows();
+                $weight = $stratum->numSamples();
             }
 
             $maxVariance = max($maxVariance, ...$variances);

@@ -270,7 +270,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numColumns()),
+            new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->alpha, true, new Xavier1())],
             new Binary($classes, $this->costFn),
             $this->optimizer

@@ -60,7 +60,7 @@ class DatasetHasDimensionality extends Specification
      */
     public function check() : void
     {
-        if ($this->dataset->numColumns() !== $this->dimensions) {
+        if ($this->dataset->numFeatures() !== $this->dimensions) {
             throw new IncorrectDatasetDimensionality($this->dataset, $this->dimensions);
         }
     }

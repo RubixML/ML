@@ -145,7 +145,7 @@ class DBSCAN implements Estimator
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
-        $labels = range(0, $dataset->numRows() - 1);
+        $labels = range(0, $dataset->numSamples() - 1);
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 

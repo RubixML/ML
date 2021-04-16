@@ -13,24 +13,19 @@ use PHPUnit\Framework\TestCase;
  */
 class FilesystemTest extends TestCase
 {
+    protected const PATH = __DIR__ . '/test.model';
+
     /**
      * @var \Rubix\ML\Persisters\Filesystem
      */
     protected $persister;
 
     /**
-     * @var string
-     */
-    protected $path;
-
-    /**
      * @before
      */
     protected function setUp() : void
     {
-        $this->path = __DIR__ . '/test.model';
-
-        $this->persister = new Filesystem($this->path, true);
+        $this->persister = new Filesystem(self::PATH, true);
     }
 
     /**
@@ -38,11 +33,11 @@ class FilesystemTest extends TestCase
      */
     protected function tearDown() : void
     {
-        if (file_exists($this->path)) {
-            unlink($this->path);
+        if (file_exists(self::PATH)) {
+            unlink(self::PATH);
         }
 
-        foreach (glob("$this->path.*.old") ?: [] as $filename) {
+        foreach (glob(self::PATH . '*.old') ?: [] as $filename) {
             unlink($filename);
         }
     }
@@ -65,7 +60,7 @@ class FilesystemTest extends TestCase
 
         $this->persister->save($encoding);
 
-        $this->assertFileExists($this->path);
+        $this->assertFileExists(self::PATH);
 
         $encoding = $this->persister->load();
 
@@ -74,6 +69,6 @@ class FilesystemTest extends TestCase
 
     protected function assertPreConditions() : void
     {
-        $this->assertFileNotExists($this->path);
+        $this->assertFileNotExists(self::PATH);
     }
 }

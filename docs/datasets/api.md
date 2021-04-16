@@ -65,18 +65,18 @@ $columns = $dataset->columnsByType(DataType::continuous());
 ## Properties
 Return the number of rows in the dataset:
 ```php
-public numRows() : int
+public numSamples() : int
 ```
 
 Return the number of columns in the samples matrix:
 ```php
-public numColumns() : int
+public numFeatures() : int
 ```
 
 ```php
-$m = $dataset->numRows();
+$m = $dataset->numSamples();
 
-$n = $dataset->numColumns();
+$n = $dataset->numFeatures();
 ```
 
 Return a 2-tuple with the *shape* of the samples matrix:

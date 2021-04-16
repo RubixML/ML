@@ -228,7 +228,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     protected function terminate(Labeled $dataset) : Best
     {
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $counts = array_count_values($dataset->labels());
 

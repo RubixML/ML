@@ -52,11 +52,11 @@ class RecursiveFeatureEliminatorTest extends TestCase
     {
         $dataset = $this->generator->generate(100);
 
-        $this->assertEquals(3, $dataset->numColumns());
+        $this->assertEquals(3, $dataset->numFeatures());
 
         $dataset->apply($this->transformer);
 
-        $this->assertEquals(1, $dataset->numColumns());
+        $this->assertEquals(1, $dataset->numFeatures());
     }
 
     /**

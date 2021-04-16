@@ -446,7 +446,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $scores = array_fill(0, $dataset->numRows(), $this->classes);
+        $scores = array_fill(0, $dataset->numSamples(), $this->classes);
 
         foreach ($this->ensemble as $i => $estimator) {
             $influence = $this->influences[$i];

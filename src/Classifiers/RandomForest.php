@@ -216,7 +216,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $p = max(self::MIN_SUBSAMPLE, (int) ceil($this->ratio * $dataset->numRows()));
+        $p = max(self::MIN_SUBSAMPLE, (int) ceil($this->ratio * $dataset->numSamples()));
 
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
@@ -248,7 +248,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
     }
 
     /**
@@ -298,7 +298,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $probabilities = array_fill(0, $dataset->numRows(), $this->classes);
+        $probabilities = array_fill(0, $dataset->numSamples(), $this->classes);
 
         $this->backend->flush();
 

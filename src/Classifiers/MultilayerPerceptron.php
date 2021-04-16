@@ -351,7 +351,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $hiddenLayers[] = new Dense(count($classes), $this->alpha, true, new Xavier1());
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numColumns()),
+            new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
             $this->optimizer

@@ -348,7 +348,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->logger->info("$this initialized");
         }
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
@@ -375,7 +375,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $prevPred = Vector::quick($predictions);
         }
 
-        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numRows()));
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numSamples()));
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;

@@ -36,7 +36,7 @@ class LabeledBench
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
 
-        $this->weights = Vector::rand($this->dataset->numRows())->asArray();
+        $this->weights = Vector::rand($this->dataset->numSamples())->asArray();
     }
 
     /**

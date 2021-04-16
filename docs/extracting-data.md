@@ -23,6 +23,16 @@ $dataset = Labeled::fromIterator(new CSV('example.csv', true))
     ->apply(new NumericStringConverter());
 ```
 
+We can check the number of records that were imported by calling the `numSamples()` method on the dataset object.
+
+```php
+echo $dataset->numSamples();
+```
+
+```sh
+5000
+```
+
 ## NDJSON
 Another plain-text format called [NDJSON](http://ndjson.org/) or *Newline Delimited* Javascript Object Notation (JSON) can be considered a hybrid of both CSV and JSON. It contains rows of JSON arrays or objects delineated by a newline character (`\n` or `\r\n`). It has the advantage of retaining type information like JSON and can also be read into memory efficiently like CSV.
 

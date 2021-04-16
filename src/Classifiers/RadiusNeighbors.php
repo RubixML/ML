@@ -201,7 +201,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
         $this->classes = array_fill_keys($classes, 0.0);
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
 
         $this->tree->grow($dataset);
     }
