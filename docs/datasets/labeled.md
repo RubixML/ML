@@ -134,21 +134,6 @@ $dataset->transformLabels(function ($label) {
 });
 ```
 
-### Filter
-Filter the dataset by label:
-```php
-public filterByLabel(callable $fn) : self
-```
-
-!!! note
-    The callback function is given a label as its only argument and should return true if the row should be kept or false if the row should be filtered out of the result.
-
-```php
-$filtered = $dataset->filterByLabel(function ($label)) {
-	return $label <= 10000;;
-});
-```
-
 ### Sorting
 Sort the dataset by label and return self for method chaining:
 ```php

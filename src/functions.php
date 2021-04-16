@@ -2,8 +2,21 @@
 
 namespace Rubix\ML
 {
+    use Generator;
+
+    use function count;
+    use function is_nan;
+    use function is_float;
+    use function is_iterable;
+    use function array_search;
+    use function array_map;
+    use function array_sum;
+    use function trigger_error;
+
     /**
      * Compute the argmin of the given values.
+     *
+     * @internal
      *
      * @param (int|float)[] $values
      * @return mixed
@@ -16,6 +29,8 @@ namespace Rubix\ML
     /**
      * Compute the argmax of the given values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @return mixed
      */
@@ -27,6 +42,8 @@ namespace Rubix\ML
     /**
      * Compute the log of the sum of exponential values.
      *
+     * @internal
+     *
      * @param (int|float)[] $values
      * @return float
      */
@@ -37,6 +54,8 @@ namespace Rubix\ML
 
     /**
      * Compute n choose k.
+     *
+     * @internal
      *
      * @param int $n
      * @param int $k
@@ -50,31 +69,45 @@ namespace Rubix\ML
     /**
      * Transpose a 2-dimensional array i.e. columns become rows and rows become columns.
      *
+     * @internal
+     *
      * @param array[] $table
      * @return array[]
      */
     function array_transpose(array $table) : array
     {
-        switch (count($table)) {
-            case 0:
-                return $table;
+        if (count($table) < 2) {
+            $columns = [];
 
-            case 1:
-                $columns = [];
+            foreach (current($table) ?: [] as $row) {
+                $columns[] = [$row];
+            }
 
-                foreach (current($table) ?: [] as $row) {
-                    $columns[] = [$row];
-                }
+            return $columns;
+        }
 
-                return $columns;
+        return array_map(null, ...$table);
+    }
 
-            default:
-                return array_map(null, ...$table);
+    /**
+     * Unset the given indices from an array.
+     *
+     * @internal
+     *
+     * @param mixed[] $values
+     * @param (string|int)[] $indices
+     */
+    function array_unset(array &$values, array $indices) : void
+    {
+        foreach ($indices as $index) {
+            unset($values[$index]);
         }
     }
 
     /**
      * Return the first element of an iterator.
+     *
+     * @internal
      *
      * @param iterable<mixed> $iterator
      * @return mixed
@@ -87,7 +120,70 @@ namespace Rubix\ML
     }
 
     /**
+     * Map a callback function over the elements of an iterator.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_map(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            yield $callback($value);
+        }
+    }
+
+    /**
+     * Filter the elements of an iterator using a callback.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_filter(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            if ($callback($value)) {
+                yield $value;
+            }
+        }
+    }
+
+    /**
+     * Check if an iterator contains NAN values recursively.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $values
+     * @return bool
+     */
+    function iterator_contains_nan(iterable $values) : bool
+    {
+        foreach ($values as $value) {
+            if (is_iterable($value)) {
+                if (iterator_contains_nan($value)) {
+                    return true;
+                }
+            }
+
+            if (is_float($value)) {
+                if (is_nan($value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Emit a deprecation warning with a message.
+     *
+     * @internal
      *
      * @param string $message
      */

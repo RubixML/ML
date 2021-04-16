@@ -60,8 +60,7 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Stack a number of datasets on top of each other to form a single
-     * dataset.
+     * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset[] $datasets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -229,35 +228,6 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Drop the row at the given offset.
-     *
-     * @param int $offset
-     * @return self
-     */
-    public function dropRow(int $offset) : self
-    {
-        return $this->dropRows([$offset]);
-    }
-
-    /**
-     * Drop the rows at the given indices.
-     *
-     * @param int[] $offsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
-     */
-    public function dropRows(array $offsets) : self
-    {
-        foreach ($offsets as $offset) {
-            unset($this->samples[$offset]);
-        }
-
-        $this->samples = array_values($this->samples);
-
-        return $this;
-    }
-
-    /**
      * Randomize the dataset in place and return self for chaining.
      *
      * @return self
@@ -267,27 +237,6 @@ class Unlabeled extends Dataset
         shuffle($this->samples);
 
         return $this;
-    }
-
-    /**
-     * Filter the rows of the dataset using the values of a feature column as the
-     * argument to a callback.
-     *
-     * @param int $offset
-     * @param callable $callback
-     * @return self
-     */
-    public function filterByColumn(int $offset, callable $callback) : self
-    {
-        $samples = [];
-
-        foreach ($this->samples as $sample) {
-            if ($callback($sample[$offset])) {
-                $samples[] = $sample;
-            }
-        }
-
-        return self::quick($samples);
     }
 
     /**
@@ -382,7 +331,7 @@ class Unlabeled extends Dataset
     {
         $left = $right = [];
 
-        if ($this->columnType($column)->isContinuous()) {
+        if ($this->featureType($column)->isContinuous()) {
             foreach ($this->samples as $sample) {
                 if ($sample[$column] <= $value) {
                     $left[] = $sample;

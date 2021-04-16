@@ -78,14 +78,4 @@ class LabeledBench
     {
         $this->dataset->splitByColumn(2, 3.0);
     }
-
-    /**
-     * @Subject
-     * @Iterations(5)
-     * @OutputTimeUnit("milliseconds", precision=3)
-     */
-    public function dropColumns() : void
-    {
-        $this->dataset->dropColumns([1, 2]);
-    }
 }

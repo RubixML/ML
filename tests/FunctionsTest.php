@@ -11,6 +11,9 @@ use function Rubix\ML\logsumexp;
 use function Rubix\ML\comb;
 use function Rubix\ML\array_transpose;
 use function Rubix\ML\iterator_first;
+use function Rubix\ML\iterator_map;
+use function Rubix\ML\iterator_filter;
+use function Rubix\ML\iterator_contains_nan;
 use function Rubix\ML\warn_deprecated;
 
 /**
@@ -134,12 +137,88 @@ class FunctionsTest extends TestCase
      */
     public function iteratorFirst() : void
     {
-        $element = iterator_first((function () : Generator {
-            yield 'first';
-            yield 'last';
-        })());
+        $element = iterator_first(['first', 'last']);
 
         $this->assertEquals('first', $element);
+    }
+
+    /**
+     * @test
+     */
+    public function iteratorMap() : void
+    {
+        $doubleIt = function ($value) {
+            return $value * 2;
+        };
+
+        $values = iterator_map([3, 6, 9], $doubleIt);
+
+        $expected = [6, 12, 18];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    /**
+     * @test
+     */
+    public function iteratorFilter() : void
+    {
+        $isPositive = function ($value) {
+            return $value >= 0;
+        };
+
+        $values = iterator_filter([3, -6, 9], $isPositive);
+
+        $expected = [3, 9];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    /**
+     * @test
+     * @dataProvider iteratorContainsNanProvider
+     *
+     * @param mixed[] $values
+     * @param bool $expected
+     */
+    public function iteratorContainsNan(array $values, bool $expected) : void
+    {
+        $this->assertEquals($expected, iterator_contains_nan($values));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function iteratorContainsNanProvider() : Generator
+    {
+        yield [
+            [0.0, NAN, -5],
+            true,
+        ];
+
+        yield [
+            [0.0, 0.0, 0.0],
+            false,
+        ];
+
+        yield [
+            [1.0, INF, NAN],
+            true,
+        ];
+
+        yield [
+            [
+                [1.0, 2.0, 3.0],
+                [4.0, 5.0, 6.0],
+                [7.0, 8.0, NAN],
+            ],
+            true,
+        ];
+
+        yield [
+            ['NaN', 'NAN'],
+            false,
+        ];
     }
 
     /**

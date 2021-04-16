@@ -129,14 +129,13 @@ nav:
         - Boolean Converter: transformers/boolean-converter.md
       - Feature Selection:
         - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
+      - Feature Expansion:
+        - Polynomial Expander: transformers/polynomial-expander.md
       - Imputation:
         - Hot Deck Imputer: transformers/hot-deck-imputer.md
         - KNN Imputer: transformers/knn-imputer.md
         - Missing Data Imputer: transformers/missing-data-imputer.md
-      - Image Transformers:
-        - Image Resizer: transformers/image-resizer.md
-        - Image Vectorizer: transformers/image-vectorizer.md
-      - Text Transformers:
+      - Natural Language:
         - HTML Stripper: transformers/html-stripper.md
         - Regex Filter: transformers/regex-filter.md
         - Text Normalizer: transformers/text-normalizer.md
@@ -145,8 +144,11 @@ nav:
         - TF-IDF Transformer: transformers/tf-idf-transformer.md
         - Whitespace Trimmer: transformers/whitespace-trimmer.md
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
+      - Images:
+        - Image Resizer: transformers/image-resizer.md
+        - Image Vectorizer: transformers/image-vectorizer.md
       - Other:
-        - Polynomial Expander: transformers/polynomial-expander.md
+        - Lambda Function: transformers/lambda-function.md
     - Neural Network:
       - Hidden Layers:
         - Activation: neural-network/hidden-layers/activation.md

@@ -15,6 +15,9 @@ use IteratorAggregate;
 use ArrayAccess;
 use Countable;
 
+use function Rubix\ML\iterator_first;
+use function Rubix\ML\iterator_map;
+use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
@@ -93,18 +96,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<array> $iterator
-     * @return self
+     * @return static
      */
-    abstract public static function fromIterator(iterable $iterator);
+    abstract public static function fromIterator(iterable $iterator) : self;
 
     /**
-     * Stack a number of datasets on top of each other to form a single
-     * dataset.
+     * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset[] $datasets
-     * @return self
+     * @return static
      */
-    abstract public static function stack(array $datasets);
+    abstract public static function stack(array $datasets) : self;
 
     /**
      * Return the sample matrix.
@@ -163,28 +165,55 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return an array of feature column data types autodectected using the first
-     * sample in the dataset.
+     * Get the data type for a feature column at the given offset.
+     *
+     * @param int $offset
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\DataType
+     */
+    public function featureType(int $offset) : DataType
+    {
+        if (empty($this->samples)) {
+            throw new RuntimeException('Cannot determine data type of empty dataset.');
+        }
+
+        $prototype = $this->samples[0];
+
+        if (!isset($prototype[$offset])) {
+            throw new InvalidArgumentException('Column at offset'
+                . " $offset does not exist.");
+        }
+
+        return DataType::detect($prototype[$offset]);
+    }
+
+    /**
+     * Return an array of feature column data types autodetected using the first sample in the dataset.
      *
      * @return list<\Rubix\ML\DataType>
      */
-    public function columnTypes() : array
+    public function featureTypes() : array
     {
+        if (empty($this->samples)) {
+            throw new RuntimeException('Cannot determine data types of empty dataset.');
+        }
+
         return array_map([DataType::class, 'detect'], $this->samples[0] ?? []);
     }
 
     /**
-     * Return the unique data types.
+     * Return the unique feature types.
      *
      * @return list<\Rubix\ML\DataType>
      */
     public function uniqueTypes() : array
     {
-        return array_unique($this->columnTypes());
+        return array_unique($this->featureTypes());
     }
 
     /**
-     * Does the dataset consist of data of a single type?
+     * Do the samples consist of values of a single data type?
      *
      * @return bool
      */
@@ -194,31 +223,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Get the datatype for a feature column at the given offset.
-     *
-     * @param int $offset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\DataType
-     */
-    public function columnType(int $offset) : DataType
-    {
-        if (empty($this->samples)) {
-            throw new RuntimeException('Cannot determine data type'
-                . ' of an empty dataset.');
-        }
-
-        if (!isset($this->samples[0][$offset])) {
-            throw new InvalidArgumentException('Column at offset'
-                . " $offset does not exist.");
-        }
-
-        return DataType::detect($this->samples[0][$offset]);
-    }
-
-    /**
-     * Return a 2-tuple containing the shape of the dataset i.e the number of
-     * rows and columns.
+     * Return a 2-tuple containing the shape of the sample matrix i.e the number of rows and columns.
      *
      * @return int[]
      */
@@ -228,7 +233,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the number of elements in the dataset.
+     * Return the number of feature values in the dataset.
      *
      * @return int
      */
@@ -238,8 +243,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Rotate the dataset and return it in an array. i.e. rows become
-     * columns and columns become rows.
+     * Rotate the sample matrix and return it in an array. i.e. rows become columns and columns become rows.
      *
      * @return array[]
      */
@@ -249,7 +253,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the columns that match a given data type.
+     * Return the feature columns that match a given data type.
      *
      * @param \Rubix\ML\DataType $type
      * @return array[]
@@ -258,73 +262,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     {
         $columns = [];
 
-        foreach ($this->columnTypes() as $offset => $columnType) {
-            if ($columnType == $type) {
+        foreach ($this->featureTypes() as $offset => $featureType) {
+            if ($featureType == $type) {
                 $columns[$offset] = $this->column($offset);
             }
         }
 
         return $columns;
-    }
-
-    /**
-     * Transform a feature column with a callback function.
-     *
-     * @param int $offset
-     * @param callable $callback
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
-     */
-    public function transformColumn(int $offset, callable $callback) : self
-    {
-        if ($offset < 0 or $offset >= $this->numColumns()) {
-            throw new InvalidArgumentException('Column offset must'
-                . " be between 0 and {$this->numColumns()}, $offset"
-                . ' given.');
-        }
-
-        foreach ($this->samples as &$sample) {
-            $value = &$sample[$offset];
-
-            $value = $callback($value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Drop the column at the given offset.
-     *
-     * @param int $offset
-     * @return self
-     */
-    public function dropColumn(int $offset) : self
-    {
-        return $this->dropColumns([$offset]);
-    }
-
-    /**
-     * Drop the columns at the given offsets.
-     *
-     * @param int[] $offsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
-     */
-    public function dropColumns(array $offsets) : self
-    {
-        if (empty($offsets)) {
-            return $this;
-        }
-
-        foreach ($this->samples as &$sample) {
-            foreach ($offsets as $offset) {
-                unset($sample[$offset]);
-            }
-
-            $sample = array_values($sample);
-        }
-
-        return $this;
     }
 
     /**
@@ -347,49 +291,78 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Map a callback function over the records of the dataset and return the result in a new dataset object.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function map(callable $callback) : self
+    {
+        return static::fromIterator(iterator_map($this, $callback));
+    }
+
+    /**
+     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function filter(callable $callback) : self
+    {
+        return static::fromIterator(iterator_filter($this, $callback));
+    }
+
+    /**
      * Return an array of statistics such as the central tendency, dispersion
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.
      *
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Report
      */
     public function describe() : Report
     {
+        if ($this->empty()) {
+            throw new RuntimeException('Cannot describe an empty dataset.');
+        }
+
+        $columns = array_transpose(iterator_to_array($this));
+
+        $types = iterator_map(iterator_first($this), [DataType::class, 'detect']);
+
         $stats = [];
 
-        foreach ($this->columnTypes() as $offset => $type) {
-            $desc = [
+        foreach ($types as $offset => $type) {
+            $description = [
                 'offset' => $offset,
                 'type' => (string) $type,
             ];
 
+            $values = $columns[$offset];
+
             switch ($type->code()) {
                 case DataType::CONTINUOUS:
-                    $values = $this->column($offset);
-
                     [$mean, $variance] = Stats::meanVar($values);
 
-                    $quartiles = Stats::quantiles($values, [
+                    $quantiles = Stats::quantiles($values, [
                         0.0, 0.25, 0.5, 0.75, 1.0,
                     ]);
 
-                    $desc += [
+                    $description += [
                         'mean' => $mean,
-                        'stddev' => sqrt($variance),
+                        'standard deviation' => sqrt($variance),
                         'skewness' => Stats::skewness($values, $mean),
                         'kurtosis' => Stats::kurtosis($values, $mean),
-                        'min' => $quartiles[0],
-                        '25%' => $quartiles[1],
-                        'median' => $quartiles[2],
-                        '75%' => $quartiles[3],
-                        'max' => $quartiles[4],
+                        'min' => $quantiles[0],
+                        '25%' => $quantiles[1],
+                        'median' => $quantiles[2],
+                        '75%' => $quantiles[3],
+                        'max' => $quantiles[4],
                     ];
 
                     break;
 
                 case DataType::CATEGORICAL:
-                    $values = $this->column($offset);
-
                     $counts = array_count_values($values);
 
                     $total = count($values);
@@ -402,7 +375,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
                     arsort($probabilities);
 
-                    $desc += [
+                    $description += [
                         'num categories' => count($probabilities),
                         'probabilities' => $probabilities,
                     ];
@@ -410,7 +383,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                     break;
             }
 
-            $stats[] = $desc;
+            $stats[] = $description;
         }
 
         return new Report($stats);
@@ -440,42 +413,42 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function head(int $n = 10);
+    abstract public function head(int $n = 10) : self;
 
     /**
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function tail(int $n = 10);
+    abstract public function tail(int $n = 10) : self;
 
     /**
      * Take n samples from the dataset and return them in a new dataset.
      *
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function take(int $n = 1);
+    abstract public function take(int $n = 1) : self;
 
     /**
      * Leave n samples on the dataset and return the rest in a new dataset.
      *
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function leave(int $n = 1);
+    abstract public function leave(int $n = 1) : self;
 
     /**
      * Return an n size portion of the dataset in a new dataset.
      *
      * @param int $offset
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function slice(int $offset, int $n);
+    abstract public function slice(int $offset, int $n) : self;
 
     /**
      * Remove a size n chunk of the dataset starting at offset and return it in
@@ -483,67 +456,41 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param int $offset
      * @param int $n
-     * @return self
+     * @return static
      */
-    abstract public function splice(int $offset, int $n);
+    abstract public function splice(int $offset, int $n) : self;
 
     /**
      * Merge another dataset with this dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return static
      */
-    abstract public function merge(Dataset $dataset);
+    abstract public function merge(Dataset $dataset) : self;
 
     /**
      * Join the columns of this dataset with another dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return static
      */
-    abstract public function join(Dataset $dataset);
-
-    /**
-     * Drop the row at the given offset.
-     *
-     * @param int $offset
-     * @return self
-     */
-    abstract public function dropRow(int $offset);
-
-    /**
-     * Drop the rows at the given indices.
-     *
-     * @param int[] $indices
-     * @return self
-     */
-    abstract public function dropRows(array $indices);
+    abstract public function join(Dataset $dataset) : self;
 
     /**
      * Randomize the dataset.
      *
-     * @return self
+     * @return static
      */
-    abstract public function randomize();
-
-    /**
-     * Filter the rows of the dataset using the values of a feature column as the
-     * argument to a callback.
-     *
-     * @param int $offset
-     * @param callable $fn
-     * @return self
-     */
-    abstract public function filterByColumn(int $offset, callable $fn);
+    abstract public function randomize() : self;
 
     /**
      * Sort the dataset by a column in the sample matrix.
      *
      * @param int $offset
      * @param bool $descending
-     * @return self
+     * @return static
      */
-    abstract public function sortByColumn(int $offset, bool $descending = false);
+    abstract public function sortByColumn(int $offset, bool $descending = false) : self;
 
     /**
      * Split the dataset into two subsets with a given ratio of samples.

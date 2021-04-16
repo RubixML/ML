@@ -136,7 +136,7 @@ class KDTree implements BinaryTree, Spatial
      */
     public function grow(Labeled $dataset) : void
     {
-        if ($dataset->columnType(0) != DataType::continuous() or !$dataset->homogeneous()) {
+        if ($dataset->featureType(0) != DataType::continuous() or !$dataset->homogeneous()) {
             throw new InvalidArgumentException('KD Tree only works with continuous features.');
         }
 

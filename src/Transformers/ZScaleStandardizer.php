@@ -135,7 +135,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 
         $this->means = $this->variances = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
+        foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $values = $dataset->column($column);
 

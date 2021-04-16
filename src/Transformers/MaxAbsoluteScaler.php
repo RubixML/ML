@@ -75,7 +75,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
 
         $this->maxabs = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
+        foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
                 $this->maxabs[$column] = -INF;
             }

@@ -142,18 +142,18 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function columnType() : void
+    public function featureType() : void
     {
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(0));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(1));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(2));
-        $this->assertEquals(DataType::continuous(), $this->dataset->columnType(3));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(0));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(1));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(2));
+        $this->assertEquals(DataType::continuous(), $this->dataset->featureType(3));
     }
 
     /**
      * @test
      */
-    public function columnTypes() : void
+    public function featureTypes() : void
     {
         $expected = [
             DataType::categorical(),
@@ -162,7 +162,7 @@ class UnlabeledTest extends TestCase
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->dataset->columnTypes());
+        $this->assertEquals($expected, $this->dataset->featureTypes());
     }
 
     /**
@@ -210,9 +210,13 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function transformColumn() : void
+    public function map() : void
     {
-        $dataset = $this->dataset->transformColumn(3, 'abs');
+        $dataset = $this->dataset->map(function ($record) {
+            $record[3] = abs($record[3]);
+
+            return $record;
+        });
 
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
@@ -254,13 +258,13 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function filterByColumn() : void
+    public function filter() : void
     {
-        $isFriendly = function ($value) {
-            return $value === 'friendly';
+        $isFriendly = function ($record) {
+            return $record[2] === 'friendly';
         };
 
-        $filtered = $this->dataset->filterByColumn(2, $isFriendly);
+        $filtered = $this->dataset->filter($isFriendly);
 
         $expected = [
             ['nice', 'furry', 'friendly', 4.0],
@@ -489,83 +493,6 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function dropRow() : void
-    {
-        $dataset = $this->dataset->dropRow(1);
-
-        $samples = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-            ['nice', 'furry', 'loner', -5.0],
-        ];
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function dropRows() : void
-    {
-        $dataset = $this->dataset->dropRows([1, 5]);
-
-        $samples = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-        ];
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function dropColumn() : void
-    {
-        $dataset = $this->dataset->dropColumn(2);
-
-        $samples = [
-            ['nice', 'furry', 4.0],
-            ['mean', 'furry', -1.5],
-            ['nice', 'rough', 2.6],
-            ['mean', 'rough', -1.0],
-            ['nice', 'rough', 2.9],
-            ['nice', 'furry', -5.0],
-        ];
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function dropColumns() : void
-    {
-        $dataset = $this->dataset->dropColumns([0, 2]);
-
-        $samples = [
-            ['furry', 4.0],
-            ['furry', -1.5],
-            ['rough', 2.6],
-            ['rough', -1.0],
-            ['rough', 2.9],
-            ['furry', -5.0],
-        ];
-
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-    }
-
-    /**
-     * @test
-     */
     public function describe() : void
     {
         $results = $this->dataset->describe();
@@ -602,7 +529,7 @@ class UnlabeledTest extends TestCase
                 'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
-                'stddev' => 3.129252661934191,
+                'standard deviation' => 3.129252661934191,
                 'skewness' => -0.4481030843690633,
                 'kurtosis' => -1.1330702741786107,
                 'min' => -5.0,
