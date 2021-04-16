@@ -16,7 +16,7 @@ $ composer require rubix/ml
 ```
 
 ### Requirements
-- [PHP](https://php.net/manual/en/install.php) 7.2 or above
+- [PHP](https://php.net/manual/en/install.php) 7.4 or above
 
 #### Recommended
 - [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
@@ -56,8 +56,6 @@ Check out these example projects using the Rubix ML library. Many come with inst
 
 - [Join Our Telegram Channel](https://t.me/RubixML)
 - [Receive Our Newsletter](https://rubixml.com/#get-notified)
-- [Meet on LinkedIn](https://www.linkedin.com/company/76327971)
-- [Interact on Twitter](https://twitter.com/RubixML)
 
 ## Funding
 Rubix ML is funded by donations from the community. You can become a sponsor by making a contribution to one of our funding sources below.

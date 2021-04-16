@@ -1,6 +1,8 @@
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
     - Dataset filterByColumn() is now filter()
+    - Added Lambda Function transformer from Extras
+    - Rename Dataset columnTypes() to featureTypes()
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE
@@ -204,7 +206,7 @@
     - Renamed Dataset partition method to partitionByColumn
     - Decreased default neural net learner batch size to 128
     - Increased default K Means batch size to 128
-    - Renamed Dataset types method to columnTypes
+    - Renamed Dataset types method to featureTypes
     - Efficient serialization of Word Count Vectorizer
     - Decoupled Persistable interface from Learner
     - Moved Gower Distance kernel to Extras package

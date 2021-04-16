@@ -45,13 +45,6 @@ use Rubix\ML\Persisters\Filesystem;
 $report->toJSON()->saveTo(new Filesystem('report.json'));
 ```
 
-### Label Statistics
-If you have a [Labeled](datasets/labeled.md) dataset, you can describe the label column by calling the `describeLabels()` method.
-
-```php
-$report = $dataset->describeLabels();
-```
-
 ### Describe by Label
 You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByLabel()` method on a Labeled dataset object with categorical labels.
 

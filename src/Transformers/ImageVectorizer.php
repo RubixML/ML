@@ -86,7 +86,7 @@ class ImageVectorizer implements Transformer, Stateful
 
         $this->sizes = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
+        foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isImage()) {
                 $value = $sample[$column];
 

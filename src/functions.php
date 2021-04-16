@@ -2,6 +2,17 @@
 
 namespace Rubix\ML
 {
+    use Generator;
+
+    use function count;
+    use function is_nan;
+    use function is_float;
+    use function is_iterable;
+    use function array_search;
+    use function array_map;
+    use function array_sum;
+    use function trigger_error;
+
     /**
      * Compute the argmin of the given values.
      *
@@ -65,49 +76,32 @@ namespace Rubix\ML
      */
     function array_transpose(array $table) : array
     {
-        switch (count($table)) {
-            case 0:
-                return $table;
+        if (count($table) < 2) {
+            $columns = [];
 
-            case 1:
-                $columns = [];
+            foreach (current($table) ?: [] as $row) {
+                $columns[] = [$row];
+            }
 
-                foreach (current($table) ?: [] as $row) {
-                    $columns[] = [$row];
-                }
-
-                return $columns;
-
-            default:
-                return array_map(null, ...$table);
+            return $columns;
         }
+
+        return array_map(null, ...$table);
     }
 
     /**
-     * Check if a multidimensional array contains NAN values recursively.
+     * Unset the given indices from an array.
      *
      * @internal
      *
      * @param mixed[] $values
-     * @return bool
+     * @param (string|int)[] $indices
      */
-    function array_contains_nan(array $values) : bool
+    function array_unset(array &$values, array $indices) : void
     {
-        foreach ($values as $value) {
-            if (is_array($value)) {
-                if (array_contains_nan($value)) {
-                    return true;
-                }
-            }
-
-            if (is_float($value)) {
-                if (is_nan($value)) {
-                    return true;
-                }
-            }
+        foreach ($indices as $index) {
+            unset($values[$index]);
         }
-
-        return false;
     }
 
     /**
@@ -123,6 +117,67 @@ namespace Rubix\ML
         foreach ($iterator as $element) {
             return $element;
         }
+    }
+
+    /**
+     * Map a callback function over the elements of an iterator.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_map(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            yield $callback($value);
+        }
+    }
+
+    /**
+     * Filter the elements of an iterator using a callback.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_filter(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            if ($callback($value)) {
+                yield $value;
+            }
+        }
+    }
+
+    /**
+     * Check if an iterator contains NAN values recursively.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $values
+     * @return bool
+     */
+    function iterator_contains_nan(iterable $values) : bool
+    {
+        foreach ($values as $value) {
+            if (is_iterable($value)) {
+                if (iterator_contains_nan($value)) {
+                    return true;
+                }
+            }
+
+            if (is_float($value)) {
+                if (is_nan($value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

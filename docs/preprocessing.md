@@ -25,8 +25,12 @@ $dataset->apply(new HotDeckImputer(5))
     ->apply(new MinMaxNormalizer());
 ```
 
-!!! note
-    Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance.
+### Transforming the Labels
+Transformers do not alter the labels in a dataset. For that we can pass a callback function to the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance. The callback accepts a single argument that is the value of the label to be transformed. In this example, we'll convert the categorical labels of a dataset to integer ordinals.
+
+```php
+$dataset->transformLabels('intval');
+```
 
 ### Manually Fitting
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
@@ -46,21 +50,6 @@ To update the fitting of an [Elastic](transformers/api.md#elastic) transformer c
 
 ```php
 $transformer->update($dataset);
-```
-
-## Transform a Single Column
-Sometimes, we just want to transform a single column of the dataset. In the example below, we use the `transformColumn()` method on the dataset object to perform a log transformation to a specified column offset by passing it the `log1p()` callback function to apply to each value in the column.
-
-```php
-$dataset->transformColumn(6, 'log1p');
-```
-
-In the next example, we'll convert the `null` values of another column to a special placeholder class `?`.
-
-```php
-$dataset->transformColumn(9, function ($value) {
-    return $value === null ? '?' : $value;
-});
 ```
 
 ## Types of Preprocessing
@@ -145,6 +134,19 @@ These transformers operate on the high-level image data type.
 | [Image Resizer](transformers/image-resizer.md) | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
+## Custom Transformations
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. We'll choose to represent the crossed features as a CRC32 hash to save memory and storage but you could simply concatenate both variables to represent the new feature as well.
+
+```php
+use Rubix\ML\Transformers\LambdaFunction;
+
+$crossFeatures = function (&$sample) {
+    $sample[] = hash('crc32b', "$sample[6] $sample[7]");
+};
+
+$dataset->apply(new LambdaFunction($crossFeatures));
+```
+
 ## Transformer Pipelines
 The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
 
@@ -214,9 +216,11 @@ $dataset = $dataset1->join($dataset2)
 In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The `filter()` method on the dataset object uses a callback function to determine if a row should be included in the return dataset. In this example, we'll filter all the samples whose value for feature at offset 3 is greater than some amount.
 
 ```php
-$tallPeople = $dataset->filter(function ($record) {
+$tallPeople = function ($record) {
 	return $record[3] > 178.5;
-});
+};
+
+$dataset = $dataset->filter($tallPeople);
 ```
 
 Let's say we wanted to train a classifier with our [Labeled](datasets/labeled.md) dataset but only on a subset of the possible class outcomes. We could filter the samples that correspond to undesirable outcomes by targetting the label with our callback.
@@ -224,24 +228,31 @@ Let's say we wanted to train a classifier with our [Labeled](datasets/labeled.md
 ```php
 use function in_array;
 
-$training = $dataset->filter(function ($record) {
+$dogsAndCats = function ($record) {
     return in_array(end($record), ['dog', 'cat']);
-});
+}
+
+$training = $dataset->filter($dogsAndCats);
 ```
 
 !!! note
     For [Labeled](datasets/labeled.md) datasets the label column is always the last column of the record.
 
-In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the library function `array_contains_nan()` on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value `'?'`, to denote missing categorical variables.
+In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the custom library function `iterator_contains_nan()` on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value `'?'`, to denote missing categorical variables.
 
 ```php
-use function Rubix\ML\array_contains_nan;
+use function Rubix\ML\iterator_contains_nan;
 use function in_array;
 
-$complete = $dataset->filter(function ($record) {
-    return !array_contains_nan($record) and !in_array('?', $record);
-});
+$noMissingValues = function ($record) {
+    return !iterator_contains_nan($record) and !in_array('?', $record);
+};
+
+$complete = $dataset->filter($noMissingValues);
 ```
+
+!!! note
+    The standard PHP library function `in_array()` does not handle `NAN` comparisons.
 
 ## De-duplication
 When it is undesirable for a dataset to contain duplicate records, you can remove all duplicates by calling the `deduplicate()` method on the dataset object.

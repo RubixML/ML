@@ -27,9 +27,12 @@ class NumericStringConverterBench
     {
         $generator = new Blob([0.0, 0.0, 0.0, 0.0]);
 
-        $this->dataset = $generator->generate(self::DATASET_SIZE)
-            ->transformColumn(1, 'strval')
-            ->transformColumn(3, 'strval');
+        $this->dataset = $generator->generate(self::DATASET_SIZE)->map(function ($record) {
+            $record[1] = strval($record[1]);
+            $record[3] = strval($record[3]);
+
+            return $record;
+        });
 
         $this->transformer = new NumericStringConverter();
     }
