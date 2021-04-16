@@ -98,6 +98,8 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
     public static function dropColumns(array &$sample, $index, $offsets) : void
     {
         array_unset($sample, $offsets);
+
+        $sample = array_values($sample);
     }
 
     /**
