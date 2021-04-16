@@ -10,8 +10,10 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\comb;
 use function Rubix\ML\array_transpose;
-use function Rubix\ML\array_contains_nan;
 use function Rubix\ML\iterator_first;
+use function Rubix\ML\iterator_map;
+use function Rubix\ML\iterator_filter;
+use function Rubix\ML\iterator_contains_nan;
 use function Rubix\ML\warn_deprecated;
 
 /**
@@ -132,20 +134,62 @@ class FunctionsTest extends TestCase
 
     /**
      * @test
-     * @dataProvider arrayContainsNanProvider
+     */
+    public function iteratorFirst() : void
+    {
+        $element = iterator_first(['first', 'last']);
+
+        $this->assertEquals('first', $element);
+    }
+
+    /**
+     * @test
+     */
+    public function iteratorMap() : void
+    {
+        $doubleIt = function ($value) {
+            return $value * 2;
+        };
+
+        $values = iterator_map([3, 6, 9], $doubleIt);
+
+        $expected = [6, 12, 18];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    /**
+     * @test
+     */
+    public function iteratorFilter() : void
+    {
+        $isPositive = function ($value) {
+            return $value >= 0;
+        };
+
+        $values = iterator_filter([3, -6, 9], $isPositive);
+
+        $expected = [3, 9];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    /**
+     * @test
+     * @dataProvider iteratorContainsNanProvider
      *
      * @param mixed[] $values
      * @param bool $expected
      */
-    public function arrayContainsNan(array $values, bool $expected) : void
+    public function iteratorContainsNan(array $values, bool $expected) : void
     {
-        $this->assertEquals($expected, array_contains_nan($values));
+        $this->assertEquals($expected, iterator_contains_nan($values));
     }
 
     /**
      * @return \Generator<array>
      */
-    public function arrayContainsNanProvider() : Generator
+    public function iteratorContainsNanProvider() : Generator
     {
         yield [
             [0.0, NAN, -5],
@@ -175,19 +219,6 @@ class FunctionsTest extends TestCase
             ['NaN', 'NAN'],
             false,
         ];
-    }
-
-    /**
-     * @test
-     */
-    public function iteratorFirst() : void
-    {
-        $element = iterator_first((function () : Generator {
-            yield 'first';
-            yield 'last';
-        })());
-
-        $this->assertEquals('first', $element);
     }
 
     /**

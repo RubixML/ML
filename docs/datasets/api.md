@@ -102,11 +102,11 @@ public featureTypes() : array
 
 Return the data type for a given column offset:
 ```php
-public columnType(int $offset) : DataType
+public featureType(int $offset) : DataType
 ```
 
 ```php
-echo $dataset->columnType(15);
+echo $dataset->featureType(15);
 ```
 
 ```sh

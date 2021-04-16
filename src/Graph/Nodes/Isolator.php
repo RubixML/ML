@@ -57,7 +57,7 @@ class Isolator implements BinaryNode
 
         $values = $dataset->column($column);
 
-        $type = $dataset->columnType($column);
+        $type = $dataset->featureType($column);
 
         if ($type->isContinuous()) {
             $min = (int) floor(min($values) * PHI);

@@ -142,12 +142,12 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function columnType() : void
+    public function featureType() : void
     {
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(0));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(1));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(2));
-        $this->assertEquals(DataType::continuous(), $this->dataset->columnType(3));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(0));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(1));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(2));
+        $this->assertEquals(DataType::continuous(), $this->dataset->featureType(3));
     }
 
     /**
@@ -529,7 +529,7 @@ class UnlabeledTest extends TestCase
                 'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
-                'stddev' => 3.129252661934191,
+                'standard deviation' => 3.129252661934191,
                 'skewness' => -0.4481030843690633,
                 'kurtosis' => -1.1330702741786107,
                 'min' => -5.0,

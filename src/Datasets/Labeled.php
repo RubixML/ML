@@ -632,7 +632,7 @@ class Labeled extends Dataset
      */
     public function splitByColumn(int $column, $value) : array
     {
-        $type = $this->columnType($column);
+        $type = $this->featureType($column);
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 

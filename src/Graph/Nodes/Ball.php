@@ -57,7 +57,7 @@ class Ball implements BinaryNode, Hypersphere
         $center = [];
 
         foreach ($dataset->columns() as $column => $values) {
-            if ($dataset->columnType($column)->isContinuous()) {
+            if ($dataset->featureType($column)->isContinuous()) {
                 $center[] = Stats::mean($values);
             } else {
                 $center[] = argmax(array_count_values($values));

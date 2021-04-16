@@ -152,12 +152,12 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function columnType() : void
+    public function featureType() : void
     {
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(0));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(1));
-        $this->assertEquals(DataType::categorical(), $this->dataset->columnType(2));
-        $this->assertEquals(DataType::continuous(), $this->dataset->columnType(3));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(0));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(1));
+        $this->assertEquals(DataType::categorical(), $this->dataset->featureType(2));
+        $this->assertEquals(DataType::continuous(), $this->dataset->featureType(3));
     }
 
     /**
@@ -649,7 +649,7 @@ class LabeledTest extends TestCase
                 'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
-                'stddev' => 3.129252661934191,
+                'standard deviation' => 3.129252661934191,
                 'skewness' => -0.4481030843690633,
                 'kurtosis' => -1.1330702741786107,
                 'min' => -5.0,
@@ -657,6 +657,15 @@ class LabeledTest extends TestCase
                 'median' => 0.8,
                 '75%' => 2.825,
                 'max' => 4.0,
+            ],
+            [
+                'offset' => 4,
+                'type' => 'categorical',
+                'num categories' => 2,
+                'probabilities' => [
+                    'not monster' => 0.6666666666666666,
+                    'monster' => 0.3333333333333333,
+                ],
             ],
         ];
 
@@ -703,7 +712,7 @@ class LabeledTest extends TestCase
                     'offset' => 3,
                     'type' => 'continuous',
                     'mean' => 1.125,
-                    'stddev' => 3.574475485997911,
+                    'standard deviation' => 3.574475485997911,
                     'skewness' => -1.0795676577113944,
                     'kurtosis' => -0.7175867765792474,
                     'min' => -5.0,
@@ -711,6 +720,14 @@ class LabeledTest extends TestCase
                     'median' => 2.75,
                     '75%' => 3.175,
                     'max' => 4.0,
+                ],
+                [
+                    'offset' => 4,
+                    'type' => 'categorical',
+                    'num categories' => 1,
+                    'probabilities' => [
+                        'not monster' => 1.0,
+                    ],
                 ],
             ],
             'monster' => [
@@ -744,7 +761,7 @@ class LabeledTest extends TestCase
                     'offset' => 3,
                     'type' => 'continuous',
                     'mean' => -1.25,
-                    'stddev' => 0.25,
+                    'standard deviation' => 0.25,
                     'skewness' => 0.0,
                     'kurtosis' => -2.0,
                     'min' => -1.5,
@@ -752,6 +769,14 @@ class LabeledTest extends TestCase
                     'median' => -1.25,
                     '75%' => -1.125,
                     'max' => -1.0,
+                ],
+                [
+                    'offset' => 4,
+                    'type' => 'categorical',
+                    'num categories' => 1,
+                    'probabilities' => [
+                        'monster' => 1.0,
+                    ],
                 ],
             ],
         ];

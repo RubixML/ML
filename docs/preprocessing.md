@@ -25,8 +25,12 @@ $dataset->apply(new HotDeckImputer(5))
     ->apply(new MinMaxNormalizer());
 ```
 
-!!! note
-    Transformers do not alter the labels in a dataset. Instead, you can use the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance.
+### Transforming the Labels
+Transformers do not alter the labels in a dataset. For that we can pass a callback function to the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance. The callback accepts a single argument that is the value of the label to be transformed. In this example, we'll convert the categorical labels of a dataset to integer ordinals.
+
+```php
+$dataset->transformLabels('intval');
+```
 
 ### Manually Fitting
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
@@ -131,18 +135,16 @@ These transformers operate on the high-level image data type.
 | [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
 
 ## Custom Transformations
-In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform two operations at once. We'll log transform the feature at column offset 6 while dropping the column at offsets 3 from the dataset.
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. We'll choose to represent the crossed features as a CRC32 hash to save memory and storage but you could simply concatenate both variables to represent the new feature as well.
 
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
 
-$dropColumns = function (&$sample) {
-    $sample[6] = log1p($sample[6]);
-
-    unset($sample[3]);
+$crossFeatures = function (&$sample) {
+    $sample[] = hash('crc32b', "$sample[6] $sample[7]");
 };
 
-$dataset->apply(new LambdaFunction($dropColumns));
+$dataset->apply(new LambdaFunction($crossFeatures));
 ```
 
 ## Transformer Pipelines
@@ -236,14 +238,14 @@ $training = $dataset->filter($dogsAndCats);
 !!! note
     For [Labeled](datasets/labeled.md) datasets the label column is always the last column of the record.
 
-In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the custom library function `array_contains_nan()` on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value `'?'`, to denote missing categorical variables.
+In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the custom library function `iterator_contains_nan()` on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value `'?'`, to denote missing categorical variables.
 
 ```php
-use function Rubix\ML\array_contains_nan;
+use function Rubix\ML\iterator_contains_nan;
 use function in_array;
 
 $noMissingValues = function ($record) {
-    return !array_contains_nan($record) and !in_array('?', $record);
+    return !iterator_contains_nan($record) and !in_array('?', $record);
 };
 
 $complete = $dataset->filter($noMissingValues);

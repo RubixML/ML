@@ -389,7 +389,7 @@ abstract class CART implements IteratorAggregate
         foreach ($columns as $column) {
             $values = $dataset->column($column);
 
-            $type = $dataset->columnType($column);
+            $type = $dataset->featureType($column);
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
