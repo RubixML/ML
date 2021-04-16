@@ -267,7 +267,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 break;
             }
 
-            $loss /= $dataset->numRows();
+            $loss /= $dataset->numSamples();
 
             $this->steps[] = $loss;
 

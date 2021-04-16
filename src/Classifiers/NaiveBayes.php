@@ -236,7 +236,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 $classCounts = $this->counts[$class];
                 $classProbs = $this->probs[$class];
             } else {
-                $classCounts = $classProbs = array_fill(0, $stratum->numColumns(), []);
+                $classCounts = $classProbs = array_fill(0, $stratum->numFeatures(), []);
 
                 $this->weights[$class] = 0;
             }
@@ -269,7 +269,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->counts[$class] = $classCounts;
             $this->probs[$class] = $classProbs;
 
-            $this->weights[$class] += $stratum->numRows();
+            $this->weights[$class] += $stratum->numSamples();
         }
 
         if ($this->fitPriors) {

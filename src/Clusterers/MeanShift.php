@@ -296,7 +296,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             $this->logger->info("$this initialized");
         }
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         $labels = range(0, $n - 1);
 

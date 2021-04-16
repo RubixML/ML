@@ -83,7 +83,7 @@ class MonteCarlo implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        if ($dataset->numRows() * $this->ratio < 1) {
+        if ($dataset->numSamples() * $this->ratio < 1) {
             throw new RuntimeException('Dataset does not contain'
                 . ' enough records to create a validation set with a'
                 . " hold out ratio of {$this->ratio}.");

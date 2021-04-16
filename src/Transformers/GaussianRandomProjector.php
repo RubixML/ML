@@ -117,7 +117,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $this->r = Matrix::gaussian($dataset->numColumns(), $this->dimensions);
+        $this->r = Matrix::gaussian($dataset->numFeatures(), $this->dimensions);
     }
 
     /**

@@ -71,7 +71,7 @@ class SparseRandomProjector extends GaussianRandomProjector
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $n = $dataset->numColumns();
+        $n = $dataset->numFeatures();
 
         if (is_null($this->sparsity)) {
             $density = 1.0 / (1.0 + sqrt($n));

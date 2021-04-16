@@ -127,7 +127,7 @@ class ITree implements BinaryTree
                 continue;
             }
 
-            if ($left->numRows() > self::MAX_LEAF_SIZE) {
+            if ($left->numSamples() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($left);
 
                 $current->attachLeft($node);
@@ -137,7 +137,7 @@ class ITree implements BinaryTree
                 $current->attachLeft(Depth::terminate($left, $depth));
             }
 
-            if ($right->numRows() > self::MAX_LEAF_SIZE) {
+            if ($right->numSamples() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($right);
 
                 $current->attachRight($node);

@@ -119,7 +119,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->dfs = array_fill(0, $dataset->numColumns(), 0);
+        $this->dfs = array_fill(0, $dataset->numFeatures(), 0);
         $this->n = 0;
 
         $this->update($dataset);
@@ -149,7 +149,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
             }
         }
 
-        $this->n += $dataset->numRows();
+        $this->n += $dataset->numSamples();
 
         $nHat = $this->n + $this->smoothing;
 

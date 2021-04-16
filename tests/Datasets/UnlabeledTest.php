@@ -92,8 +92,8 @@ class UnlabeledTest extends TestCase
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
 
-        $this->assertEquals(3, $dataset->numRows());
-        $this->assertEquals(1, $dataset->numColumns());
+        $this->assertEquals(3, $dataset->numSamples());
+        $this->assertEquals(1, $dataset->numFeatures());
     }
 
     /**
@@ -116,9 +116,9 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function numRows() : void
+    public function numSamples() : void
     {
-        $this->assertEquals(6, $this->dataset->numRows());
+        $this->assertEquals(6, $this->dataset->numSamples());
     }
 
     /**
@@ -134,9 +134,9 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function numColumns() : void
+    public function numFeatures() : void
     {
-        $this->assertEquals(4, $this->dataset->numColumns());
+        $this->assertEquals(4, $this->dataset->numFeatures());
     }
 
     /**
@@ -471,7 +471,7 @@ class UnlabeledTest extends TestCase
      */
     public function join() : void
     {
-        $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numColumns());
+        $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numFeatures());
 
         $dataset = new Unlabeled([
             [1],
@@ -484,7 +484,7 @@ class UnlabeledTest extends TestCase
 
         $joined = $this->dataset->join($dataset);
 
-        $this->assertEquals(count(current(self::SAMPLES)) + 1, $joined->numColumns());
+        $this->assertEquals(count(current(self::SAMPLES)) + 1, $joined->numFeatures());
 
         $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $joined->sample(1));
         $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $joined->sample(2));

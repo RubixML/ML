@@ -174,7 +174,7 @@ abstract class CART implements IteratorAggregate
      */
     public function grow(Labeled $dataset) : void
     {
-        $n = $dataset->numColumns();
+        $n = $dataset->numFeatures();
 
         $this->featureCount = $n;
 
@@ -205,13 +205,13 @@ abstract class CART implements IteratorAggregate
                 continue;
             }
 
-            if ($left->numRows() > $this->maxLeafSize) {
+            if ($left->numSamples() > $this->maxLeafSize) {
                 $leftNode = $this->split($left);
             } else {
                 $leftNode = $this->terminate($left);
             }
 
-            if ($right->numRows() > $this->maxLeafSize) {
+            if ($right->numSamples() > $this->maxLeafSize) {
                 $rightNode = $this->split($right);
             } else {
                 $rightNode = $this->terminate($right);
@@ -379,7 +379,7 @@ abstract class CART implements IteratorAggregate
 
         $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
 
-        $columns = array_fill(0, $dataset->numColumns(), null);
+        $columns = array_fill(0, $dataset->numFeatures(), null);
 
         $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
@@ -453,7 +453,7 @@ abstract class CART implements IteratorAggregate
         $impurity = 0.0;
 
         foreach ($groups as $dataset) {
-            $nHat = $dataset->numRows();
+            $nHat = $dataset->numSamples();
 
             if ($nHat <= 1) {
                 continue;

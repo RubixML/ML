@@ -193,7 +193,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         SpecificationChain::with($specifications)->check();
 
-        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numRows()));
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numSamples()));
 
         $this->backend->flush();
 

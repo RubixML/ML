@@ -220,7 +220,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $this->epsilon = $epsilon;
 
-        $this->n = $dataset->numRows();
+        $this->n = $dataset->numSamples();
     }
 
     /**
@@ -242,7 +242,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             new DatasetHasDimensionality($dataset, count($this->means)),
         ])->check();
 
-        $n = $dataset->numRows();
+        $n = $dataset->numSamples();
 
         foreach ($dataset->columns() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);

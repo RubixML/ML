@@ -258,7 +258,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         DatasetIsNotEmpty::with($dataset)->check();
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numColumns()),
+            new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->alpha, true, new Xavier2())],
             new Continuous($this->costFn),
             $this->optimizer

@@ -149,7 +149,7 @@ class KDTree implements BinaryTree, Spatial
 
             $current->cleanup();
 
-            if ($left->numRows() > $this->maxLeafSize) {
+            if ($left->numSamples() > $this->maxLeafSize) {
                 $node = Box::split($left);
 
                 if ($node->isPoint()) {
@@ -163,7 +163,7 @@ class KDTree implements BinaryTree, Spatial
                 $current->attachLeft(Neighborhood::terminate($left));
             }
 
-            if ($right->numRows() > $this->maxLeafSize) {
+            if ($right->numSamples() > $this->maxLeafSize) {
                 $node = Box::split($right);
 
                 $current->attachRight($node);

@@ -65,7 +65,7 @@ class LeavePOut implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        $n = (int) round($dataset->numRows() / $this->p);
+        $n = (int) round($dataset->numSamples() / $this->p);
 
         $this->backend->flush();
 

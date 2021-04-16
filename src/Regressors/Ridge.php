@@ -158,7 +158,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $biases = Matrix::ones($dataset->numRows(), 1);
+        $biases = Matrix::ones($dataset->numSamples(), 1);
 
         $x = Matrix::build($dataset->samples())->augmentLeft($biases);
         $y = Vector::build($dataset->labels());

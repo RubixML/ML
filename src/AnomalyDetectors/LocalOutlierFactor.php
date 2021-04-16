@@ -197,7 +197,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
-        $labels = range(0, $dataset->numRows() - 1);
+        $labels = range(0, $dataset->numSamples() - 1);
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
@@ -226,7 +226,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
 
         $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
 
-        $this->featureCount = $dataset->numColumns();
+        $this->featureCount = $dataset->numFeatures();
     }
 
     /**

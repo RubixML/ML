@@ -34,7 +34,7 @@ abstract class ExtraTree extends CART
 
         $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
 
-        $columns = array_fill(0, $dataset->numColumns(), null);
+        $columns = array_fill(0, $dataset->numFeatures(), null);
 
         $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 

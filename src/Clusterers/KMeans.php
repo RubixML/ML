@@ -277,7 +277,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
         $sizes = array_fill(0, $this->k, 0);
-        $sizes[0] = $dataset->numRows();
+        $sizes[0] = $dataset->numSamples();
 
         $this->sizes = $sizes;
 
@@ -307,7 +307,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->logger->info("$this initialized");
         }
 
-        $labels = array_fill(0, $dataset->numRows(), 0);
+        $labels = array_fill(0, $dataset->numSamples(), 0);
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
@@ -362,7 +362,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 }
             }
 
-            $loss /= $dataset->numRows();
+            $loss /= $dataset->numSamples();
 
             $this->steps[] = $loss;
 
