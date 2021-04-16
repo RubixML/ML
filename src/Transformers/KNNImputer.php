@@ -168,7 +168,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
 
         $this->tree->grow(Labeled::quick($donors, $labels));
 
-        $this->types = $dataset->columnTypes();
+        $this->types = $dataset->featureTypes();
     }
 
     /**

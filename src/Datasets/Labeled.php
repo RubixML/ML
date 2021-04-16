@@ -4,7 +4,6 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
-use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -395,36 +394,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Drop the row at the given offset.
-     *
-     * @param int $offset
-     * @return self
-     */
-    public function dropRow(int $offset) : self
-    {
-        return $this->dropRows([$offset]);
-    }
-
-    /**
-     * Drop the rows at the given indices.
-     *
-     * @param int[] $offsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
-     */
-    public function dropRows(array $offsets) : self
-    {
-        foreach ($offsets as $offset) {
-            unset($this->samples[$offset], $this->labels[$offset]);
-        }
-
-        $this->samples = array_values($this->samples);
-        $this->labels = array_values($this->labels);
-
-        return $this;
-    }
-
-    /**
      * Randomize the dataset in place and return self for chaining.
      *
      * @return self
@@ -442,26 +411,6 @@ class Labeled extends Dataset
         array_multisort($order, $this->samples, $this->labels);
 
         return $this;
-    }
-
-    /**
-     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
-     *
-     * @param callable $callback
-     * @return self
-     */
-    public function filter(callable $callback) : self
-    {
-        $samples = $labels = [];
-
-        foreach ($this as $i => $record) {
-            if ($callback($record)) {
-                $samples[] = $this->samples[$i];
-                $labels[] = $this->labels[$i];
-            }
-        }
-
-        return self::quick($samples, $labels);
     }
 
     /**
@@ -898,65 +847,6 @@ class Labeled extends Dataset
         }
 
         return new Report($stats);
-    }
-
-    /**
-     * Return an array of descriptive statistics about the labels in the dataset.
-     *
-     * @return \Rubix\ML\Report
-     */
-    public function describeLabels() : Report
-    {
-        $type = $this->labelType();
-
-        $desc = [
-            'type' => (string) $type,
-        ];
-
-        switch ($type) {
-            case DataType::continuous():
-                [$mean, $variance] = Stats::meanVar($this->labels);
-
-                $quartiles = Stats::quantiles($this->labels, [
-                    0.0, 0.25, 0.5, 0.75, 1.0,
-                ]);
-
-                $desc += [
-                    'mean' => $mean,
-                    'stddev' => sqrt($variance),
-                    'skewness' => Stats::skewness($this->labels, $mean),
-                    'kurtosis' => Stats::kurtosis($this->labels, $mean),
-                    'min' => $quartiles[0],
-                    '25%' => $quartiles[1],
-                    'median' => $quartiles[2],
-                    '75%' => $quartiles[3],
-                    'max' => $quartiles[4],
-                ];
-
-                break;
-
-            case DataType::categorical():
-                $counts = array_count_values($this->labels);
-
-                $total = count($this->labels);
-
-                $probabilities = [];
-
-                foreach ($counts as $category => $count) {
-                    $probabilities[$category] = $count / $total;
-                }
-
-                arsort($probabilities);
-
-                $desc += [
-                    'num categories' => count($probabilities),
-                    'probabilities' => $probabilities,
-                ];
-
-                break;
-        }
-
-        return new Report($desc);
     }
 
     /**

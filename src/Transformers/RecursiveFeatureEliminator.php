@@ -15,6 +15,7 @@ use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\array_unset;
 use function count;
 use function is_null;
 use function array_slice;
@@ -84,6 +85,20 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
      * @var float[]|null
      */
     protected $importances;
+
+    /**
+     * Lambda function to drop feature columns from a sample given their offsets.
+     *
+     * @internal
+     *
+     * @param mixed[] $sample
+     * @param int|string $index
+     * @param mixed $offsets
+     */
+    public static function dropColumns(array &$sample, $index, $offsets) : void
+    {
+        array_unset($sample, $offsets);
+    }
 
     /**
      * @param int $minFeatures
@@ -242,7 +257,7 @@ class RecursiveFeatureEliminator implements Transformer, Stateful, Verbose, Pers
                 break;
             }
 
-            $subset->dropColumns($dropped);
+            $subset->apply(new LambdaFunction([self::class, 'dropColumns'], $dropped));
 
             ++$epoch;
         } while (true);

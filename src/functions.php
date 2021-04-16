@@ -2,6 +2,8 @@
 
 namespace Rubix\ML
 {
+    use Generator;
+
     /**
      * Compute the argmin of the given values.
      *
@@ -84,6 +86,21 @@ namespace Rubix\ML
     }
 
     /**
+     * Unset the given indices from an array.
+     *
+     * @internal
+     *
+     * @param mixed[] $values
+     * @param (string|int)[] $indices
+     */
+    function array_unset(array &$values, array $indices) : void
+    {
+        foreach ($indices as $index) {
+            unset($values[$index]);
+        }
+    }
+
+    /**
      * Check if a multidimensional array contains NAN values recursively.
      *
      * @internal
@@ -122,6 +139,40 @@ namespace Rubix\ML
     {
         foreach ($iterator as $element) {
             return $element;
+        }
+    }
+
+    /**
+     * Map a callback function over the elements of an iterator.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_map(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            yield $callback($value);
+        }
+    }
+
+    /**
+     * Filter the elements of an iterator using a callback.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param callable $callback
+     * @return Generator<mixed>
+     */
+    function iterator_filter(iterable $iterator, callable $callback) : Generator
+    {
+        foreach ($iterator as $value) {
+            if ($callback($value)) {
+                yield $value;
+            }
         }
     }
 

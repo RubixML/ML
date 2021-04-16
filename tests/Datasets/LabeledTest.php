@@ -163,7 +163,7 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function columnTypes() : void
+    public function featureTypes() : void
     {
         $expected = [
             DataType::categorical(),
@@ -172,7 +172,7 @@ class LabeledTest extends TestCase
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->dataset->columnTypes());
+        $this->assertEquals($expected, $this->dataset->featureTypes());
     }
 
     /**
@@ -220,9 +220,15 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function transformColumn() : void
+    public function map() : void
     {
-        $dataset = $this->dataset->transformColumn(3, 'abs');
+        $callback = function ($record) {
+            $record[3] = abs($record[3]);
+
+            return $record;
+        };
+
+        $dataset = $this->dataset->map($callback);
 
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
@@ -609,101 +615,6 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function dropRow() : void
-    {
-        $dataset = $this->dataset->dropRow(1);
-
-        $samples = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-            ['nice', 'furry', 'loner', -5.0],
-        ];
-
-        $labels = ['not monster', 'not monster', 'monster', 'not monster', 'not monster'];
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-        $this->assertEquals($labels, $dataset->labels());
-    }
-
-    /**
-     * @test
-     */
-    public function dropRows() : void
-    {
-        $dataset = $this->dataset->dropRows([1, 5]);
-
-        $samples = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-        ];
-
-        $labels = ['not monster', 'not monster', 'monster', 'not monster'];
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-        $this->assertEquals($labels, $dataset->labels());
-    }
-
-    /**
-     * @test
-     */
-    public function dropColumn() : void
-    {
-        $dataset = $this->dataset->dropColumn(2);
-
-        $samples = [
-            ['nice', 'furry', 4.0],
-            ['mean', 'furry', -1.5],
-            ['nice', 'rough', 2.6],
-            ['mean', 'rough', -1.0],
-            ['nice', 'rough', 2.9],
-            ['nice', 'furry', -5.0],
-        ];
-
-        $labels = [
-            'not monster', 'monster', 'not monster',
-            'monster', 'not monster', 'not monster',
-        ];
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-        $this->assertEquals($labels, $dataset->labels());
-    }
-
-    /**
-     * @test
-     */
-    public function dropColumns() : void
-    {
-        $dataset = $this->dataset->dropColumns([0, 2]);
-
-        $samples = [
-            ['furry', 4.0],
-            ['furry', -1.5],
-            ['rough', 2.6],
-            ['rough', -1.0],
-            ['rough', 2.9],
-            ['furry', -5.0],
-        ];
-
-        $labels = [
-            'not monster', 'monster', 'not monster',
-            'monster', 'not monster', 'not monster',
-        ];
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertEquals($samples, $dataset->samples());
-        $this->assertEquals($labels, $dataset->labels());
-    }
-
-    /**
-     * @test
-     */
     public function describe() : void
     {
         $expected = [
@@ -846,26 +757,6 @@ class LabeledTest extends TestCase
         ];
 
         $results = $this->dataset->describeByLabel();
-
-        $this->assertInstanceOf(Report::class, $results);
-        $this->assertEquals($expected, $results->toArray());
-    }
-
-    /**
-     * @test
-     */
-    public function describeLabels() : void
-    {
-        $expected = [
-            'type' => 'categorical',
-            'num categories' => 2,
-            'probabilities' => [
-                'monster' => 0.3333333333333333,
-                'not monster' => 0.6666666666666666,
-            ],
-        ];
-
-        $results = $this->dataset->describeLabels();
 
         $this->assertInstanceOf(Report::class, $results);
         $this->assertEquals($expected, $results->toArray());

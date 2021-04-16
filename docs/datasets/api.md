@@ -97,7 +97,7 @@ int(30)
 
 Return the data types for each feature column:
 ```php
-public columnTypes() : array
+public featureTypes() : array
 ```
 
 Return the data type for a given column offset:
@@ -114,7 +114,7 @@ categorical
 ```
 
 ## Applying Transformations
-You can apply a [Transformer](#transformers) directly to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object.
+You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
 ```php
 public apply(Transformer $transformer) : self
 ```
@@ -123,68 +123,6 @@ public apply(Transformer $transformer) : self
 use Rubix\ML\Transformers\RobustStandardizer;
 
 $dataset->apply(new RobustStandardizer);
-```
-
-You can also transform a single feature column using a callback function with the `transformColumn()` method.
-```php
-public transformColumn(int $column, callable $callback) : self
-```
-
-```php
-$dataset->transformColumn(0, 'log1p');
-
-$dataset->transformColumn(5, function ($value) {
-    return $value === 0 ? NAN : $value;
-});
-
-$dataset->transformColumn(6, function ($value) {
-    return min($value, 1000);
-});
-```
-
-## Stacking Datasets
-Stack any number of dataset objects on top of each other to form a single dataset:
-```php
-public static stack(array $datasets) : self
-```
-
-!!! note
-    Datasets must have the same number of feature columns i.e. dimensionality.
-
-```php
-use Rubix\ML\Datasets\Labeled;
-
-$dataset = Labeled::stack([
-    $dataset1,
-    $dataset2,
-    $dataset3,
-    // ...
-]);
-```
-
-## Merging Datasets
-To merge the rows of this dataset with another dataset:
-```php
-public merge(Dataset $dataset) : self
-```
-
-!!! note
-    Datasets must have the same number of columns.
-
-```php
-$dataset = $dataset1->merge($dataset2);
-```
-
-To join the columns of this dataset with another dataset:
-```php
-public join(Dataset $dataset) : self
-```
-
-!!! note
-    Datasets must have the same number of rows.
-
-```php
-$dataset = $dataset1->join($dataset2);
 ```
 
 ## Head and Tail
@@ -292,47 +230,78 @@ public randomWeightedSubsetWithReplacement(int $n, array $weights) : self
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
 
-## Filtering
+## Mapping and Filtering
+Map a callback function over the records of the dataset and return the result in a new dataset object:
+```php
+public map(callable $callback) : self 
+```
+
+```php
+$addMeanColumn = function ($record) {
+    $record[] = array_sum($record) / count($record);
+
+    return $record;
+};
+
+$dataset = $dataset->map($addMeanColumn);
+```
+
 Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset:
 ```php
-public filter(callable $fn) : self
+public filter(callable $callback) : self
 ```
 
 ```php
-$tallPeople = $dataset->filter(function ($record) {
+$tallPeople = function ($record) {
 	return $record[3] > 178.5;
-});
+};
+
+$dataset = $dataset->filter($tallPeople);
 ```
 
-## Sorting
-To sort a dataset in place by a specific feature column:
+## Stacking
+Stack any number of dataset objects on top of each other to form a single dataset:
 ```php
-public sortByColumn(int $offset, bool $descending = false) : self
+public static stack(array $datasets) : self
 ```
 
+!!! note
+    Datasets must have the same number of feature columns i.e. dimensionality.
+
 ```php
-$dataset->sortByColumn(5);
+use Rubix\ML\Datasets\Labeled;
+
+$dataset = Labeled::stack([
+    $dataset1,
+    $dataset2,
+    $dataset3,
+    // ...
+]);
 ```
 
-## Dropping Rows and Columns
-Drop the row at the given offset:
+## Merging and Joining
+To merge the rows of this dataset with another dataset:
 ```php
-public dropRow(int $offset) : self
+public merge(Dataset $dataset) : self
 ```
 
-Drop the rows at the given offsets:
+!!! note
+    Datasets must have the same number of columns.
+
 ```php
-public dropRows(array $indices) : self
+$dataset = $dataset1->merge($dataset2);
 ```
 
-Drop the column at the given offset:
+To join the columns of this dataset with another dataset:
 ```php
-public dropColumn(int $offset) : self
+public join(Dataset $dataset) : self
 ```
 
-Drop the columns at the given indices:
+!!! note
+    Datasets must have the same number of rows.
+
 ```php
-public dropColumns(array $indices) : self
+$dataset = $dataset1->join($dataset2);
 ```
 
 ## Descriptive Statistics
@@ -371,6 +340,16 @@ echo $dataset->describe();
         "max": 4
     }
 ]
+```
+
+## Sorting
+To sort a dataset in place by a specific feature column:
+```php
+public sortByColumn(int $offset, bool $descending = false) : self
+```
+
+```php
+$dataset->sortByColumn(5, true);
 ```
 
 ## De-duplication

@@ -15,6 +15,8 @@ use IteratorAggregate;
 use ArrayAccess;
 use Countable;
 
+use function Rubix\ML\iterator_map;
+use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
@@ -168,7 +170,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return list<\Rubix\ML\DataType>
      */
-    public function columnTypes() : array
+    public function featureTypes() : array
     {
         return array_map([DataType::class, 'detect'], $this->samples[0] ?? []);
     }
@@ -180,7 +182,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function uniqueTypes() : array
     {
-        return array_unique($this->columnTypes());
+        return array_unique($this->featureTypes());
     }
 
     /**
@@ -258,7 +260,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     {
         $columns = [];
 
-        foreach ($this->columnTypes() as $offset => $columnType) {
+        foreach ($this->featureTypes() as $offset => $columnType) {
             if ($columnType == $type) {
                 $columns[$offset] = $this->column($offset);
             }
@@ -268,63 +270,25 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Transform a feature column with a callback function.
+     * Map a callback function over the records of the dataset and return the result in a new dataset object.
      *
-     * @param int $offset
      * @param callable $callback
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
+     * @return static
      */
-    public function transformColumn(int $offset, callable $callback) : self
+    public function map(callable $callback) : self
     {
-        if ($offset < 0 or $offset >= $this->numColumns()) {
-            throw new InvalidArgumentException('Column offset must'
-                . " be between 0 and {$this->numColumns()}, $offset"
-                . ' given.');
-        }
-
-        foreach ($this->samples as &$sample) {
-            $value = &$sample[$offset];
-
-            $value = $callback($value);
-        }
-
-        return $this;
+        return static::fromIterator(iterator_map($this, $callback));
     }
 
     /**
-     * Drop the column at the given offset.
+     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
      *
-     * @param int $offset
-     * @return self
+     * @param callable $callback
+     * @return static
      */
-    public function dropColumn(int $offset) : self
+    public function filter(callable $callback) : self
     {
-        return $this->dropColumns([$offset]);
-    }
-
-    /**
-     * Drop the columns at the given offsets.
-     *
-     * @param int[] $offsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return self
-     */
-    public function dropColumns(array $offsets) : self
-    {
-        if (empty($offsets)) {
-            return $this;
-        }
-
-        foreach ($this->samples as &$sample) {
-            foreach ($offsets as $offset) {
-                unset($sample[$offset]);
-            }
-
-            $sample = array_values($sample);
-        }
-
-        return $this;
+        return static::fromIterator(iterator_filter($this, $callback));
     }
 
     /**
@@ -357,7 +321,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     {
         $stats = [];
 
-        foreach ($this->columnTypes() as $offset => $type) {
+        foreach ($this->featureTypes() as $offset => $type) {
             $desc = [
                 'offset' => $offset,
                 'type' => (string) $type,
@@ -504,35 +468,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function join(Dataset $dataset);
 
     /**
-     * Drop the row at the given offset.
-     *
-     * @param int $offset
-     * @return self
-     */
-    abstract public function dropRow(int $offset);
-
-    /**
-     * Drop the rows at the given indices.
-     *
-     * @param int[] $indices
-     * @return self
-     */
-    abstract public function dropRows(array $indices);
-
-    /**
      * Randomize the dataset.
      *
      * @return self
      */
     abstract public function randomize();
-
-    /**
-     * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
-     *
-     * @param callable $fn
-     * @return self
-     */
-    abstract public function filter(callable $fn);
 
     /**
      * Sort the dataset by a column in the sample matrix.
