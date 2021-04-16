@@ -106,34 +106,33 @@ Contrasting feature selection is a preprocessing step that aims to derive additi
 ### Imputation
 Imputation is a technique for handling missing values in your dataset by replacing them with a pretty good guess.
 
-| Transformer | Data Compatibility | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
-| [KNN Imputer](transformers/knn-imputer.md) | Depends on distance kernel | ● | |
-| [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | ● | |
-| [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | ● | |
+| Transformer | Compatibility | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+|---|---|---|---|---|
+| [KNN Imputer](transformers/knn-imputer.md) | Depends on distance kernel | | ● | |
+| [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | | ● | |
+| [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | | ● | |
 
 ### Natural Language
 The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) tasks such as those for text cleaning, feature extraction, and term weighting of features from raw text blobs.
 
-| Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|
-| [HTML Stripper](transformers/html-stripper.md) | | |
-| [Regex Filter](transformers/regex-filter.md) | | |
-| [Text Normalizer](transformers/text-normalizer.md) | | |
-| [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | |
-| [Stop Word Filter](transformers/stop-word-filter.md) | | |
-| [TF-IDF Transformer](transformers/tf-idf-transformer.md) | ● | ● |
-| [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) | | |
-| [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | |
-| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | ● | |
+| Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+|---|---|---|---|
+| [HTML Stripper](transformers/html-stripper.md) | | | |
+| [Regex Filter](transformers/regex-filter.md) | | | |
+| [Text Normalizer](transformers/text-normalizer.md) | | | |
+| [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | | |
+| [Stop Word Filter](transformers/stop-word-filter.md) | | | |
+| [TF-IDF Transformer](transformers/tf-idf-transformer.md) | | ● | ● |
+| [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | | |
+| [Word Count Vectorizer](transformers/word-count-vectorizer.md) | | ● | |
 
 ### Images
 These transformers operate on the high-level image data type.
 
-| Transformer | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|
-| [Image Resizer](transformers/image-resizer.md) | | |
-| [Image Vectorizer](transformers/image-vectorizer.md) | ● | |
+| Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+|---|---|---|---|
+| [Image Resizer](transformers/image-resizer.md) | | | |
+| [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
 In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. We'll choose to represent the feature cross as a CRC32 hash to save on memory and storage but you could just concatenate both categories to represent the new feature as well.
