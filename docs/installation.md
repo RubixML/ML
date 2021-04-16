@@ -15,7 +15,7 @@ $ composer require rubix/ml
 **Optional**
 
 - [Extras Package](https://github.com/RubixML/Extras) for experimental features
-- [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
+- [GD extension](https://php.net/manual/en/book.image.php) for image support
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support
