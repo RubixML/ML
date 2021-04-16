@@ -485,6 +485,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#transforming-the-labels" class="md-nav__link">
+    Transforming the Labels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#manually-fitting" class="md-nav__link">
     Manually Fitting
   </a>
@@ -500,13 +507,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#transform-a-single-column" class="md-nav__link">
-    Transform a Single Column
-  </a>
   
 </li>
       
@@ -576,6 +576,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-transformations" class="md-nav__link">
+    Custom Transformations
+  </a>
   
 </li>
       
@@ -2436,6 +2443,45 @@
   
 
           
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_10" type="checkbox" id="__nav_4_9_10" >
+      
+      <label class="md-nav__link" for="__nav_4_9_10">
+        Other
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Other" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_10">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/lambda-function.html" class="md-nav__link">
+        Lambda Function
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -4261,6 +4307,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#transforming-the-labels" class="md-nav__link">
+    Transforming the Labels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#manually-fitting" class="md-nav__link">
     Manually Fitting
   </a>
@@ -4276,13 +4329,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#transform-a-single-column" class="md-nav__link">
-    Transform a Single Column
-  </a>
   
 </li>
       
@@ -4356,6 +4402,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#custom-transformations" class="md-nav__link">
+    Custom Transformations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#transformer-pipelines" class="md-nav__link">
     Transformer Pipelines
   </a>
@@ -4419,10 +4472,10 @@
     <span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">())</span>
     <span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">MinMaxNormalizer</span><span class="p">());</span>
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Transformers do not alter the labels in a dataset. Instead, you can use the <code>transformLabels()</code> method on a <a href="datasets/labeled.html#transform-labels">Labeled</a> dataset instance.</p>
-</div>
+<h3 id="transforming-the-labels">Transforming the Labels<a class="headerlink" href="#transforming-the-labels" title="Permanent link">#</a></h3>
+<p>Transformers do not alter the labels in a dataset. For that we can pass a callback function to the <code>transformLabels()</code> method on a <a href="datasets/labeled.html#transform-labels">Labeled</a> dataset instance. The callback accepts a single argument that is the value of the label to be transformed. In this example, we'll convert the categorical labels of a dataset to integer ordinals.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformLabels</span><span class="p">(</span><span class="s1">&#39;intval&#39;</span><span class="p">);</span>
+</code></pre></div>
 <h3 id="manually-fitting">Manually Fitting<a class="headerlink" href="#manually-fitting" title="Permanent link">#</a></h3>
 <p>If you need to fit a <a href="transformers/api.html#stateful">Stateful</a> transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the <code>fit()</code> method before applying the transformation.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\WordCountVectorizer</span><span class="p">;</span>
@@ -4436,15 +4489,6 @@
 <h3 id="update-fitting">Update Fitting<a class="headerlink" href="#update-fitting" title="Permanent link">#</a></h3>
 <p>To update the fitting of an <a href="transformers/api.html#elastic">Elastic</a> transformer call the <code>update()</code> method with a new dataset.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="transform-a-single-column">Transform a Single Column<a class="headerlink" href="#transform-a-single-column" title="Permanent link">#</a></h2>
-<p>Sometimes, we just want to transform a single column of the dataset. In the example below, we use the <code>transformColumn()</code> method on the dataset object to perform a log transformation to a specified column offset by passing it the <code>log1p()</code> callback function to apply to each value in the column.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformColumn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;log1p&#39;</span><span class="p">);</span>
-</code></pre></div>
-<p>In the next example, we'll convert the <code>null</code> values of another column to a special placeholder class <code>?</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformColumn</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nv">$value</span> <span class="o">===</span> <span class="k">null</span> <span class="o">?</span> <span class="s1">&#39;?&#39;</span> <span class="o">:</span> <span class="nv">$value</span><span class="p">;</span>
-<span class="p">});</span>
 </code></pre></div>
 <h2 id="types-of-preprocessing">Types of Preprocessing<a class="headerlink" href="#types-of-preprocessing" title="Permanent link">#</a></h2>
 <p>Here we dive into the different types of data preprocessing that Transformers are capable of.</p>
@@ -4746,6 +4790,16 @@
 </tr>
 </tbody>
 </table>
+<h2 id="custom-transformations">Custom Transformations<a class="headerlink" href="#custom-transformations" title="Permanent link">#</a></h2>
+<p>In additional to providing specialized Transformers for common preprocessing tasks, the library includes a <a href="transformers/lambda-function.html">Lambda Function</a> transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. We'll choose to represent the crossed features as a CRC32 hash to save memory and storage but you could simply concatenate both variables to represent the new feature as well.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\LambdaFunction</span><span class="p">;</span>
+
+<span class="nv">$crossFeatures</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$sample</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$sample</span><span class="p">[]</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;crc32b&#39;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">$sample[6]</span><span class="s2"> </span><span class="si">$sample[7]</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">LambdaFunction</span><span class="p">(</span><span class="nv">$crossFeatures</span><span class="p">));</span>
+</code></pre></div>
 <h2 id="transformer-pipelines">Transformer Pipelines<a class="headerlink" href="#transformer-pipelines" title="Permanent link">#</a></h2>
 <p>The <a href="pipeline.html">Pipeline</a> meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Pipeline</span><span class="p">;</span>
@@ -4801,29 +4855,39 @@
 </code></pre></div>
 <h2 id="filtering-records">Filtering Records<a class="headerlink" href="#filtering-records" title="Permanent link">#</a></h2>
 <p>In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The <code>filter()</code> method on the dataset object uses a callback function to determine if a row should be included in the return dataset. In this example, we'll filter all the samples whose value for feature at offset 3 is greater than some amount.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$tallPeople</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$tallPeople</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nv">$record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">178.5</span><span class="p">;</span>
-<span class="p">});</span>
+<span class="p">};</span>
+
+<span class="nv">$dataset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="nv">$tallPeople</span><span class="p">);</span>
 </code></pre></div>
 <p>Let's say we wanted to train a classifier with our <a href="datasets/labeled.html">Labeled</a> dataset but only on a subset of the possible class outcomes. We could filter the samples that correspond to undesirable outcomes by targetting the label with our callback.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="k">function</span> <span class="nf">in_array</span><span class="p">;</span>
 
-<span class="nv">$training</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+<span class="nv">$dogsAndCats</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nb">in_array</span><span class="p">(</span><span class="nb">end</span><span class="p">(</span><span class="nv">$record</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">]);</span>
-<span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nv">$training</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="nv">$dogsAndCats</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For <a href="datasets/labeled.html">Labeled</a> datasets the label column is always the last column of the record.</p>
 </div>
-<p>In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the library function <code>array_contains_nan()</code> on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value <code>'?'</code>, to denote missing categorical variables.</p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="k">function</span> <span class="nf">Rubix\ML\array_contains_nan</span><span class="p">;</span>
+<p>In the next example, we'll filter all the records that have missing feature values. We can detect missing continuous variables by calling the custom library function <code>iterator_contains_nan()</code> on each record. Additionally, we can filter records with missing categorical values by looking for a special placeholder category, in this case we'll use the value <code>'?'</code>, to denote missing categorical variables.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="k">function</span> <span class="nf">Rubix\ML\iterator_contains_nan</span><span class="p">;</span>
 <span class="k">use</span> <span class="k">function</span> <span class="nf">in_array</span><span class="p">;</span>
 
-<span class="nv">$complete</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">!</span><span class="nx">array_contains_nan</span><span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="k">and</span> <span class="o">!</span><span class="nb">in_array</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="nv">$record</span><span class="p">);</span>
-<span class="p">});</span>
+<span class="nv">$noMissingValues</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">iterator_contains_nan</span><span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="k">and</span> <span class="o">!</span><span class="nb">in_array</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="nv">$record</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nv">$complete</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="nv">$noMissingValues</span><span class="p">);</span>
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The standard PHP library function <code>in_array()</code> does not handle <code>NAN</code> comparisons.</p>
+</div>
 <h2 id="de-duplication">De-duplication<a class="headerlink" href="#de-duplication" title="Permanent link">#</a></h2>
 <p>When it is undesirable for a dataset to contain duplicate records, you can remove all duplicates by calling the <code>deduplicate()</code> method on the dataset object.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">deduplicate</span><span class="p">();</span>
@@ -4840,7 +4904,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-15
+      Last update: 2021-04-16
     
   </small>
 </div>

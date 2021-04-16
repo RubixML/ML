@@ -490,13 +490,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#label-statistics" class="md-nav__link">
-    Label Statistics
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#describe-by-label" class="md-nav__link">
     Describe by Label
   </a>
@@ -2373,6 +2366,45 @@
   
 
           
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_10" type="checkbox" id="__nav_4_9_10" >
+      
+      <label class="md-nav__link" for="__nav_4_9_10">
+        Other
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Other" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_10">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/lambda-function.html" class="md-nav__link">
+        Lambda Function
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -4191,13 +4223,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#label-statistics" class="md-nav__link">
-    Label Statistics
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#describe-by-label" class="md-nav__link">
     Describe by Label
   </a>
@@ -4312,10 +4337,6 @@
 
 <span class="nv">$report</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;report.json&#39;</span><span class="p">));</span>
 </code></pre></div>
-<h3 id="label-statistics">Label Statistics<a class="headerlink" href="#label-statistics" title="Permanent link">#</a></h3>
-<p>If you have a <a href="datasets/labeled.html">Labeled</a> dataset, you can describe the label column by calling the <code>describeLabels()</code> method.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeLabels</span><span class="p">();</span>
-</code></pre></div>
 <h3 id="describe-by-label">Describe by Label<a class="headerlink" href="#describe-by-label" title="Permanent link">#</a></h3>
 <p>You can also describe the dataset in terms of the classes each sample belongs to by calling the <code>describeByLabel()</code> method on a Labeled dataset object with categorical labels.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$report</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describeByLabel</span><span class="p">();</span>
@@ -4362,7 +4383,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-13
+      Last update: 2021-04-16
     
   </small>
 </div>
