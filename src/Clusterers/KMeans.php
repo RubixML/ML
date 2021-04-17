@@ -352,7 +352,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 foreach ($batch->stratify() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
-                    $means = array_map([Stats::class, 'mean'], $stratum->columns());
+                    $means = array_map([Stats::class, 'mean'], $stratum->features());
 
                     $weight = 1.0 / (1 + $this->sizes[$cluster]);
 

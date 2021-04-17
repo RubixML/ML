@@ -149,7 +149,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @param int $offset
      * @return mixed[]
      */
-    public function column(int $offset) : array
+    public function feature(int $offset) : array
     {
         return array_column($this->samples, $offset);
     }
@@ -243,11 +243,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Rotate the sample matrix and return it in an array. i.e. rows become columns and columns become rows.
+     * Rotate the sample matrix so that the values of each feature become rows.
      *
      * @return array[]
      */
-    public function columns() : array
+    public function features() : array
     {
         return array_transpose($this->samples);
     }
@@ -258,13 +258,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\DataType $type
      * @return array[]
      */
-    public function columnsByType(DataType $type) : array
+    public function featuresByType(DataType $type) : array
     {
         $columns = [];
 
         foreach ($this->featureTypes() as $offset => $featureType) {
             if ($featureType == $type) {
-                $columns[$offset] = $this->column($offset);
+                $columns[$offset] = $this->feature($offset);
             }
         }
 
@@ -484,15 +484,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function randomize() : self;
 
     /**
-     * Sort the dataset by a column in the sample matrix.
-     *
-     * @param int $offset
-     * @param bool $descending
-     * @return static
-     */
-    abstract public function sortByColumn(int $offset, bool $descending = false) : self;
-
-    /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
@@ -527,7 +518,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @param mixed $value
      * @return array{self,self}
      */
-    abstract public function splitByColumn(int $offset, $value) : array;
+    abstract public function splitByFeature(int $offset, $value) : array;
 
     /**
      * Partition the dataset into left and right subsets based on the samples' distances from two centroids.

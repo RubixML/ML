@@ -98,7 +98,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
         }
 
         foreach ($this->maxabs as $column => $oldMax) {
-            $values = $dataset->column($column);
+            $values = $dataset->feature($column);
 
             $max = max(array_map('abs', $values));
 

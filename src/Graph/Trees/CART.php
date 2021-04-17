@@ -387,7 +387,7 @@ abstract class CART implements IteratorAggregate
         $bestImpurity = INF;
 
         foreach ($columns as $column) {
-            $values = $dataset->column($column);
+            $values = $dataset->feature($column);
 
             $type = $dataset->featureType($column);
 
@@ -410,7 +410,7 @@ abstract class CART implements IteratorAggregate
             }
 
             foreach ($values as $value) {
-                $groups = $dataset->splitByColumn($column, $value);
+                $groups = $dataset->splitByFeature($column, $value);
 
                 $impurity = $this->splitImpurity($groups);
 

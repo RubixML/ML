@@ -131,7 +131,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
                 case DataType::CONTINUOUS:
                     $strategy = clone $this->continuous;
 
-                    foreach ($dataset->column($column) as $value) {
+                    foreach ($dataset->feature($column) as $value) {
                         if (is_float($value) and is_nan($value)) {
                             continue;
                         }
@@ -144,7 +144,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
                 case DataType::CATEGORICAL:
                     $strategy = clone $this->categorical;
 
-                    foreach ($dataset->column($column) as $value) {
+                    foreach ($dataset->feature($column) as $value) {
                         if ($value !== $this->categoricalPlaceholder) {
                             $donors[] = $value;
                         }

@@ -53,7 +53,7 @@ class Neighborhood implements BinaryNode, Hypercube
     {
         $min = $max = [];
 
-        foreach ($dataset->columns() as $values) {
+        foreach ($dataset->features() as $values) {
             $min[] = min($values);
             $max[] = max($values);
         }

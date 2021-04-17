@@ -42,7 +42,7 @@ abstract class ExtraTree extends CART
         $bestImpurity = INF;
 
         foreach ($columns as $column) {
-            $values = $dataset->column($column);
+            $values = $dataset->feature($column);
 
             $type = $dataset->featureType($column);
 
@@ -57,7 +57,7 @@ abstract class ExtraTree extends CART
                 $value = $values[$offset];
             }
 
-            $groups = $dataset->splitByColumn($column, $value);
+            $groups = $dataset->splitByFeature($column, $value);
 
             $impurity = $this->splitImpurity($groups);
 

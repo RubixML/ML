@@ -2,8 +2,7 @@
     - Interval Discretizer now uses variable width histograms
     - Dataset filterByColumn() is now filter()
     - Added Lambda Function transformer from Extras
-    - Rename Dataset columnTypes() to featureTypes()
-    - Rename Dataset numRows/Columns to numSamples / numFeatures
+    - Rename Dataset column methods to feature
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE

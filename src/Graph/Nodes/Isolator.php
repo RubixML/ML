@@ -55,7 +55,7 @@ class Isolator implements BinaryNode
     {
         $column = rand(0, $dataset->numFeatures() - 1);
 
-        $values = $dataset->column($column);
+        $values = $dataset->feature($column);
 
         $type = $dataset->featureType($column);
 
@@ -70,7 +70,7 @@ class Isolator implements BinaryNode
             $value = $values[$offset];
         }
 
-        $groups = $dataset->splitByColumn($column, $value);
+        $groups = $dataset->splitByFeature($column, $value);
 
         return new self($column, $value, $groups);
     }

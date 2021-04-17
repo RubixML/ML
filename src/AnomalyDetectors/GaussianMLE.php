@@ -201,7 +201,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $this->means = $this->variances = [];
 
-        foreach ($dataset->columns() as $column => $values) {
+        foreach ($dataset->features() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
 
             $this->means[$column] = $mean;
@@ -244,7 +244,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $n = $dataset->numSamples();
 
-        foreach ($dataset->columns() as $column => $values) {
+        foreach ($dataset->features() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
 
             $oldMean = $this->means[$column];

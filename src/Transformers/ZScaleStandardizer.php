@@ -137,7 +137,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
-                $values = $dataset->column($column);
+                $values = $dataset->feature($column);
 
                 [$mean, $variance] = Stats::meanVar($values);
 
@@ -167,7 +167,7 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
         foreach ($this->means as $column => $oldMean) {
             $oldVariance = $this->variances[$column];
 
-            $values = $dataset->column($column);
+            $values = $dataset->feature($column);
 
             [$mean, $variance] = Stats::meanVar($values);
 

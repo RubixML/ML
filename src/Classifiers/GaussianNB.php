@@ -263,7 +263,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                 $means = $variances = [];
 
-                foreach ($stratum->columns() as $column => $values) {
+                foreach ($stratum->features() as $column => $values) {
                     $oldMean = $oldMeans[$column];
                     $oldVariance = $oldVariances[$column];
 
@@ -286,7 +286,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             } else {
                 $means = $variances = [];
 
-                foreach ($stratum->columns() as $values) {
+                foreach ($stratum->features() as $values) {
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $means[] = $mean;

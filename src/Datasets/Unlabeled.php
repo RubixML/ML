@@ -240,22 +240,6 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Sort the dataset in place by a column in the sample matrix.
-     *
-     * @param int $offset
-     * @param bool $descending
-     * @return self
-     */
-    public function sortByColumn(int $offset, bool $descending = false) : self
-    {
-        $column = $this->column($offset);
-
-        array_multisort($column, $this->samples, $descending ? SORT_DESC : SORT_ASC);
-
-        return $this;
-    }
-
-    /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param float $ratio
@@ -327,7 +311,7 @@ class Unlabeled extends Dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByColumn(int $column, $value) : array
+    public function splitByFeature(int $column, $value) : array
     {
         $left = $right = [];
 

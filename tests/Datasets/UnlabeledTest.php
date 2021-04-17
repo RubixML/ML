@@ -124,11 +124,11 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function column() : void
+    public function feature() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
-        $this->assertEquals($expected, $this->dataset->column(2));
+        $this->assertEquals($expected, $this->dataset->feature(2));
     }
 
     /**
@@ -200,11 +200,11 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function columns() : void
+    public function features() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
-        $this->assertEquals($expected, $this->dataset->columns());
+        $this->assertEquals($expected, $this->dataset->features());
     }
 
     /**
@@ -220,17 +220,17 @@ class UnlabeledTest extends TestCase
 
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
-        $this->assertEquals($expected, $dataset->column(3));
+        $this->assertEquals($expected, $dataset->feature(3));
     }
 
     /**
      * @test
      */
-    public function columnsByType() : void
+    public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
-        $columns = $this->dataset->columnsByType(DataType::categorical());
+        $columns = $this->dataset->featuresByType(DataType::categorical());
 
         $this->assertEquals($expected, $columns);
     }
@@ -274,20 +274,6 @@ class UnlabeledTest extends TestCase
         ];
 
         $this->assertEquals($expected, $filtered->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function sortByColumn() : void
-    {
-        $this->dataset->sortByColumn(2);
-
-        $sorted = array_column(self::SAMPLES, 2);
-
-        sort($sorted);
-
-        $this->assertEquals($sorted, $this->dataset->column(2));
     }
 
     /**
@@ -409,7 +395,7 @@ class UnlabeledTest extends TestCase
      */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->splitByColumn(2, 'loner');
+        [$left, $right] = $this->dataset->splitByFeature(2, 'loner');
 
         $this->assertInstanceOf(Unlabeled::class, $left);
         $this->assertInstanceOf(Unlabeled::class, $right);

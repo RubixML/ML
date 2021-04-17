@@ -134,11 +134,11 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function column() : void
+    public function feature() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
-        $this->assertEquals($expected, $this->dataset->column(2));
+        $this->assertEquals($expected, $this->dataset->feature(2));
     }
 
     /**
@@ -210,11 +210,11 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function columns() : void
+    public function features() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
-        $this->assertEquals($expected, $this->dataset->columns());
+        $this->assertEquals($expected, $this->dataset->features());
     }
 
     /**
@@ -232,17 +232,17 @@ class LabeledTest extends TestCase
 
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
-        $this->assertEquals($expected, $dataset->column(3));
+        $this->assertEquals($expected, $dataset->feature(3));
     }
 
     /**
      * @test
      */
-    public function columnsByType() : void
+    public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
-        $columns = $this->dataset->columnsByType(DataType::categorical());
+        $columns = $this->dataset->featuresByType(DataType::categorical());
 
         $this->assertEquals($expected, $columns);
     }
@@ -345,39 +345,6 @@ class LabeledTest extends TestCase
 
         $this->assertEquals($samples, $filtered->samples());
         $this->assertEquals($labels, $filtered->labels());
-    }
-
-    /**
-     * @test
-     */
-    public function sortByColumn() : void
-    {
-        $this->dataset->sortByColumn(1);
-
-        $sorted = array_column(self::SAMPLES, 1);
-
-        $labels = self::LABELS;
-
-        array_multisort($sorted, $labels, SORT_ASC);
-
-        $this->assertEquals($sorted, $this->dataset->column(1));
-        $this->assertEquals($labels, $this->dataset->labels());
-    }
-
-    /**
-     * @test
-     */
-    public function sortByLabel() : void
-    {
-        $this->dataset->sortByLabel();
-
-        $samples = self::SAMPLES;
-        $labels = self::LABELS;
-
-        array_multisort($labels, $samples, SORT_ASC);
-
-        $this->assertEquals($samples, $this->dataset->samples());
-        $this->assertEquals($labels, $this->dataset->labels());
     }
 
     /**
@@ -531,7 +498,7 @@ class LabeledTest extends TestCase
      */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->splitByColumn(1, 'rough');
+        [$left, $right] = $this->dataset->splitByFeature(1, 'rough');
 
         $this->assertInstanceOf(Labeled::class, $left);
         $this->assertInstanceOf(Labeled::class, $right);

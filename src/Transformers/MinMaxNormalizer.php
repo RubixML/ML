@@ -164,7 +164,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
-                $values = $dataset->column($column);
+                $values = $dataset->feature($column);
 
                 $min = min($values);
                 $max = max($values);
