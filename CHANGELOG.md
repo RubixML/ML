@@ -3,6 +3,7 @@
     - Dataset filterByColumn() is now filter()
     - Added Lambda Function transformer from Extras
     - Rename Dataset column methods to feature
+    - Added Dataset general sort() using callback
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE

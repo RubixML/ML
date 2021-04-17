@@ -781,21 +781,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Remove duplicate rows from the dataset.
-     *
-     * @return self
-     */
-    public function deduplicate() : self
-    {
-        $table = array_unique(iterator_to_array($this), SORT_REGULAR);
-
-        $this->samples = array_values(array_intersect_key($this->samples, $table));
-        $this->labels = array_values(array_intersect_key($this->labels, $table));
-
-        return $this;
-    }
-
-    /**
      * Describe the features of the dataset broken down by label.
      *
      * @return \Rubix\ML\Report

@@ -226,6 +226,48 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
+    public function filter() : void
+    {
+        $isFriendly = function ($record) {
+            return $record[2] === 'friendly';
+        };
+
+        $filtered = $this->dataset->filter($isFriendly);
+
+        $expected = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.9],
+        ];
+
+        $this->assertEquals($expected, $filtered->samples());
+    }
+
+    /**
+     * @test
+     */
+    public function sort() : void
+    {
+        $dataset = $this->dataset->sort(function ($recordA, $recordB) {
+            return $recordA[3] > $recordB[3];
+        });
+
+        $expected = [
+            ['nice', 'furry', 'loner', -5.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'friendly', 4.0],
+        ];
+
+        $this->assertEquals($expected, $dataset->samples());
+    }
+
+    /**
+     * @test
+     */
     public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
@@ -253,27 +295,6 @@ class UnlabeledTest extends TestCase
         $this->dataset->randomize();
 
         $this->assertNotEquals($samples, $this->dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function filter() : void
-    {
-        $isFriendly = function ($record) {
-            return $record[2] === 'friendly';
-        };
-
-        $filtered = $this->dataset->filter($isFriendly);
-
-        $expected = [
-            ['nice', 'furry', 'friendly', 4.0],
-            ['nice', 'rough', 'friendly', 2.6],
-            ['mean', 'rough', 'friendly', -1.0],
-            ['nice', 'rough', 'friendly', 2.9],
-        ];
-
-        $this->assertEquals($expected, $filtered->samples());
     }
 
     /**

@@ -481,18 +481,6 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Remove duplicate rows from the dataset.
-     *
-     * @return self
-     */
-    public function deduplicate() : self
-    {
-        $this->samples = array_values(array_unique($this->samples, SORT_REGULAR));
-
-        return $this;
-    }
-
-    /**
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset

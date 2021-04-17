@@ -15,7 +15,7 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 ## Factory Methods
-Build a dataset with the rows from a 2-dimensional iterable data table:
+Build a dataset with the records of a 2-dimensional iterable data table:
 ```php
 public static fromIterator(Traversable $iterator) : self
 ```
@@ -322,6 +322,18 @@ echo $dataset->describe();
         "max": 4
     }
 ]
+```
+
+## Sorting
+Sort the records in the dataset using a callback for comparisons between samples. The callback function accepts two records to be compared and should return `true` if the records should be swapped.
+```php
+public function sort(callable $callback) : self
+```
+
+```php
+$sorted = $dataset->sort(function ($recordA, $recordB) {
+    return $recordA[2] > $recordB[2];
+});
 ```
 
 ## De-duplication

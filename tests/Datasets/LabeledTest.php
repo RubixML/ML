@@ -582,6 +582,27 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
+    public function sort() : void
+    {
+        $dataset = $this->dataset->sort(function ($recordA, $recordB) {
+            return $recordA[3] > $recordB[3];
+        });
+
+        $expected = [
+            ['nice', 'furry', 'loner', -5.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'friendly', 4.0],
+        ];
+
+        $this->assertEquals($expected, $dataset->samples());
+    }
+
+    /**
+     * @test
+     */
     public function describe() : void
     {
         $expected = [

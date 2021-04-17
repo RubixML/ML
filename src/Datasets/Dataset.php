@@ -390,6 +390,52 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Sort the records in the dataset using a callback for comparisons between samples. The callback function
+     * accepts two records to be compared and should return `true` if the records should be swapped.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function sort(callable $callback) : self
+    {
+        $records = iterator_to_array($this);
+
+        $nHat = count($records) - 1;
+
+        for ($i = 0; $i < $nHat; ++$i) {
+            $swapped = false;
+
+            for ($j = 0; $j < $nHat - $i; ++$j) {
+                $recordA = $records[$j];
+                $recordB = $records[$j + 1];
+
+                if ($callback($recordA, $recordB)) {
+                    $records[$j] = $recordB;
+                    $records[$j + 1] = $recordA;
+
+                    $swapped = true;
+                }
+            }
+
+            if (!$swapped) {
+                break;
+            }
+        }
+
+        return static::fromIterator($records);
+    }
+
+    /**
+     * Remove duplicate rows from the dataset.
+     *
+     * @return self
+     */
+    public function deduplicate() : self
+    {
+        return static::fromIterator(array_unique(iterator_to_array($this), SORT_REGULAR));
+    }
+
+    /**
      * Write the dataset to the location and format given by a writable extractor.
      *
      * @param \Rubix\ML\Extractors\Writable $extractor
@@ -556,13 +602,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
-
-    /**
-     * Remove duplicate rows from the dataset.
-     *
-     * @return self
-     */
-    abstract public function deduplicate();
 
     /**
      * Return the number of rows in the dataset.
