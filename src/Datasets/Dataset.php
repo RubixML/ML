@@ -109,13 +109,33 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public static function stack(array $datasets) : self;
 
     /**
-     * Return the sample matrix.
+     * Return a 2-tuple containing the shape of the sample matrix i.e the number of rows and columns.
      *
-     * @return list<list<mixed>>
+     * @return int[]
      */
-    public function samples() : array
+    public function shape() : array
     {
-        return $this->samples;
+        return [$this->numSamples(), $this->numFeatures()];
+    }
+
+    /**
+     * Return the number of feature values in the dataset.
+     *
+     * @return int
+     */
+    public function size() : int
+    {
+        return $this->numSamples() * $this->numFeatures();
+    }
+
+    /**
+     * Return the number of rows in the datasets.
+     *
+     * @return int
+     */
+    public function numSamples() : int
+    {
+        return count($this->samples);
     }
 
     /**
@@ -134,13 +154,23 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the number of rows in the datasets.
+     * Return the sample matrix.
+     *
+     * @return list<list<mixed>>
+     */
+    public function samples() : array
+    {
+        return $this->samples;
+    }
+
+    /**
+     * Return the number of feature columns in the dataset.
      *
      * @return int
      */
-    public function numSamples() : int
+    public function numFeatures() : int
     {
-        return count($this->samples);
+        return isset($this->samples[0]) ? count($this->samples[0]) : 0;
     }
 
     /**
@@ -155,32 +185,32 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the number of feature columns in the dataset.
+     * Rotate the sample matrix so that the values of each feature become rows.
      *
-     * @return int
+     * @return array[]
      */
-    public function numFeatures() : int
+    public function features() : array
     {
-        return isset($this->samples[0]) ? count($this->samples[0]) : 0;
+        return array_transpose($this->samples);
     }
 
     /**
-     * Drop feature columns from the dataset given their offsets.
+     * Return the feature columns that match a given data type.
      *
-     * @param list<int> $offsets
-     * @return self
+     * @param \Rubix\ML\DataType $type
+     * @return array[]
      */
-    public function dropFeatures(array $offsets) : self
+    public function featuresByType(DataType $type) : array
     {
-        foreach ($this->samples as &$sample) {
-            foreach ($offsets as $offset) {
-                unset($sample[$offset]);
-            }
+        $columns = [];
 
-            $sample = array_values($sample);
+        foreach ($this->featureTypes() as $offset => $featureType) {
+            if ($featureType == $type) {
+                $columns[$offset] = $this->feature($offset);
+            }
         }
 
-        return $this;
+        return $columns;
     }
 
     /**
@@ -239,55 +269,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     public function homogeneous() : bool
     {
         return count($this->uniqueTypes()) === 1;
-    }
-
-    /**
-     * Return a 2-tuple containing the shape of the sample matrix i.e the number of rows and columns.
-     *
-     * @return int[]
-     */
-    public function shape() : array
-    {
-        return [$this->numSamples(), $this->numFeatures()];
-    }
-
-    /**
-     * Return the number of feature values in the dataset.
-     *
-     * @return int
-     */
-    public function size() : int
-    {
-        return $this->numSamples() * $this->numFeatures();
-    }
-
-    /**
-     * Rotate the sample matrix so that the values of each feature become rows.
-     *
-     * @return array[]
-     */
-    public function features() : array
-    {
-        return array_transpose($this->samples);
-    }
-
-    /**
-     * Return the feature columns that match a given data type.
-     *
-     * @param \Rubix\ML\DataType $type
-     * @return array[]
-     */
-    public function featuresByType(DataType $type) : array
-    {
-        $columns = [];
-
-        foreach ($this->featureTypes() as $offset => $featureType) {
-            if ($featureType == $type) {
-                $columns[$offset] = $this->feature($offset);
-            }
-        }
-
-        return $columns;
     }
 
     /**
@@ -542,13 +523,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function join(Dataset $dataset) : self;
 
     /**
-     * Randomize the dataset.
-     *
-     * @return static
-     */
-    abstract public function randomize() : self;
-
-    /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
@@ -596,6 +570,13 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return array{self,self}
      */
     abstract public function spatialSplit(array $leftCentroid, array $rightCentroid, Distance $kernel);
+
+    /**
+     * Randomize the dataset.
+     *
+     * @return static
+     */
+    abstract public function randomize() : self;
 
     /**
      * Generate a random subset without replacement.

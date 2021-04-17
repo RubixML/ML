@@ -128,19 +128,7 @@ These transformers operate on the high-level image data type.
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
-In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. For the first example, we'll drop a couple predetermined feature columns and reindex each sample in the dataset.
-
-```php
-use Rubix\ML\Transformers\LambdaFunction;
-
-$dropFeatures = function (&$sample) {
-    unset($sample[4], $sample[6]);
-
-    $sample = array_values($sample); // Reindex
-};
-
-$dataset->apply(new LambdaFunction($dropFeatures));
-```
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place.
 
 In the next example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own category. We'll choose to represent the feature cross as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories together to represent the new feature as well.
 
