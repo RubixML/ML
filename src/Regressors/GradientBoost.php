@@ -352,7 +352,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
-        [$min, $max] = $this->metric->range();
+        [$min, $max] = $this->metric->range()->list();
 
         if ($this->logger) {
             $this->logger->info("Training {$this->base}");

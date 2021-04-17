@@ -69,7 +69,7 @@ class HoldOutTest extends TestCase
      */
     public function test() : void
     {
-        [$min, $max] = $this->metric->range();
+        [$min, $max] = $this->metric->range()->list();
 
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

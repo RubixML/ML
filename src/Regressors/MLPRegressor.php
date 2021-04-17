@@ -377,7 +377,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
-        [$min, $max] = $this->metric->range();
+        [$min, $max] = $this->metric->range()->list();
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -41,9 +42,11 @@ class RMSETest extends TestCase
      */
     public function range() : void
     {
-        $expected = [-INF, 0.0];
+        $tuple = $this->metric->range();
 
-        $this->assertEquals($expected, $this->metric->range());
+        $this->assertInstanceOf(Tuple::class, $tuple);
+        $this->assertCount(2, $tuple);
+        $this->assertGreaterThan($tuple[0], $tuple[1]);
     }
 
     /**
@@ -68,7 +71,7 @@ class RMSETest extends TestCase
      */
     public function score(array $predictions, array $labels, float $expected) : void
     {
-        [$min, $max] = $this->metric->range();
+        [$min, $max] = $this->metric->range()->list();
 
         $score = $this->metric->score($predictions, $labels);
 
