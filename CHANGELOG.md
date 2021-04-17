@@ -4,6 +4,8 @@
     - Added Lambda Function transformer from Extras
     - Rename Dataset column methods to feature
     - Added Dataset general sort() using callback
+    - Confusion Matrix classes no longer selectable
+    - Remove Recursive Feature Eliminator transformer
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE

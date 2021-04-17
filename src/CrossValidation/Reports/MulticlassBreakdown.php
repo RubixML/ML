@@ -8,6 +8,10 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 
 use function count;
+use function array_fill_keys;
+use function array_merge;
+use function array_unique;
+use function array_keys;
 
 use const Rubix\ML\EPSILON;
 
@@ -74,7 +78,7 @@ class MulticlassBreakdown implements ReportGenerator
         }
 
         $averages = array_fill_keys([
-            'accuracy', 'accuracy balanced', 'f1 score', 'precision', 'recall', 'specificity',
+            'accuracy', 'balanced accuracy', 'f1 score', 'precision', 'recall', 'specificity',
             'negative predictive value', 'false discovery rate', 'miss rate', 'fall out',
             'false omission rate', 'mcc', 'informedness', 'markedness',
         ], 0.0);
@@ -109,7 +113,7 @@ class MulticlassBreakdown implements ReportGenerator
 
             $table[$label] = [
                 'accuracy' => $accuracy,
-                'accuracy balanced' => ($recall + $specificity) / 2.0,
+                'balanced accuracy' => ($recall + $specificity) / 2.0,
                 'f1 score' => $f1score,
                 'precision' => $precision,
                 'recall' => $recall,
@@ -131,7 +135,7 @@ class MulticlassBreakdown implements ReportGenerator
             ];
 
             $overall['accuracy'] += $accuracy;
-            $overall['accuracy balanced'] += ($recall + $specificity) / 2.0;
+            $overall['balanced accuracy'] += ($recall + $specificity) / 2.0;
             $overall['f1 score'] += $f1score;
             $overall['precision'] += $precision;
             $overall['recall'] += $recall;

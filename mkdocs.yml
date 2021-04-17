@@ -127,8 +127,6 @@ nav:
         - One Hot Encoder: transformers/one-hot-encoder.md
         - Numeric String Converter: transformers/numeric-string-converter.md
         - Boolean Converter: transformers/boolean-converter.md
-      - Feature Selection:
-        - Recursive Feature Eliminator: transformers/recursive-feature-eliminator.md
       - Feature Expansion:
         - Polynomial Expander: transformers/polynomial-expander.md
       - Imputation:

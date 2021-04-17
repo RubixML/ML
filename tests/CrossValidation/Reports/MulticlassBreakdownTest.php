@@ -77,7 +77,7 @@ class MulticlassBreakdownTest extends TestCase
             [
                 'overall' => [
                     'accuracy' => 0.6,
-                    'accuracy balanced' => 0.5833333333333333,
+                    'balanced accuracy' => 0.5833333333333333,
                     'f1 score' => 0.5833333333333333,
                     'precision' => 0.5833333333333333,
                     'recall' => 0.5833333333333333,
@@ -99,7 +99,7 @@ class MulticlassBreakdownTest extends TestCase
                 'classes' => [
                     'wolf' => [
                         'accuracy' => 0.6,
-                        'accuracy balanced' => 0.5833333333333333,
+                        'balanced accuracy' => 0.5833333333333333,
                         'f1 score' => 0.6666666666666666,
                         'precision' => 0.6666666666666666,
                         'recall' => 0.6666666666666666,
@@ -121,7 +121,7 @@ class MulticlassBreakdownTest extends TestCase
                     ],
                     'lamb' => [
                         'accuracy' => 0.6,
-                        'accuracy balanced' => 0.5833333333333333,
+                        'balanced accuracy' => 0.5833333333333333,
                         'f1 score' => 0.5,
                         'precision' => 0.5,
                         'recall' => 0.5,
@@ -151,7 +151,7 @@ class MulticlassBreakdownTest extends TestCase
             [
                 'overall' => [
                     'accuracy' => 0.75,
-                    'accuracy balanced' => 0.5,
+                    'balanced accuracy' => 0.5,
                     'f1 score' => 0.42857142857142855,
                     'precision' => 0.375,
                     'recall' => 0.5,
@@ -173,7 +173,7 @@ class MulticlassBreakdownTest extends TestCase
                 'classes' => [
                     'tammy' => [
                         'accuracy' => 0.75,
-                        'accuracy balanced' => 0.5,
+                        'balanced accuracy' => 0.5,
                         'f1 score' => 0.8571428571428571,
                         'precision' => 0.75,
                         'recall' => 1.0,
@@ -195,7 +195,7 @@ class MulticlassBreakdownTest extends TestCase
                     ],
                     'morgan' => [
                         'accuracy' => 0.75,
-                        'accuracy balanced' => 0.5,
+                        'balanced accuracy' => 0.5,
                         'f1 score' => 0.0,
                         'precision' => 0.0,
                         'recall' => 0.0,

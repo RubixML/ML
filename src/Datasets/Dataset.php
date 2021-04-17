@@ -165,6 +165,25 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Drop feature columns from the dataset given their offsets.
+     *
+     * @param list<int> $offsets
+     * @return self
+     */
+    public function dropFeatures(array $offsets) : self
+    {
+        foreach ($this->samples as &$sample) {
+            foreach ($offsets as $offset) {
+                unset($sample[$offset]);
+            }
+
+            $sample = array_values($sample);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get the data type for a feature column at the given offset.
      *
      * @param int $offset

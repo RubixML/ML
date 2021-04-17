@@ -4,6 +4,8 @@ namespace Rubix\ML\Tokenizers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function explode;
+
 /**
  * Whitespace
  *
@@ -28,7 +30,7 @@ class Whitespace implements Tokenizer
      */
     public function __construct(string $delimiter = ' ')
     {
-        if (strlen($delimiter) < 1) {
+        if (empty($delimiter)) {
             throw new InvalidArgumentException('Delimiter must be'
                 . ' at least 1 character in length.');
         }
