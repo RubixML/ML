@@ -2036,50 +2036,11 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_5" type="checkbox" id="__nav_4_9_5" >
       
       <label class="md-nav__link" for="__nav_4_9_5">
-        Feature Selection
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Feature Selection" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_5">
-          <span class="md-nav__icon md-icon"></span>
-          Feature Selection
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/recursive-feature-eliminator.html" class="md-nav__link">
-        Recursive Feature Eliminator
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_6" type="checkbox" id="__nav_4_9_6" >
-      
-      <label class="md-nav__link" for="__nav_4_9_6">
         Feature Expansion
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Feature Expansion" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_6">
+        <label class="md-nav__title" for="__nav_4_9_5">
           <span class="md-nav__icon md-icon"></span>
           Feature Expansion
         </label>
@@ -2111,14 +2072,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_7" type="checkbox" id="__nav_4_9_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_6" type="checkbox" id="__nav_4_9_6" >
       
-      <label class="md-nav__link" for="__nav_4_9_7">
+      <label class="md-nav__link" for="__nav_4_9_6">
         Imputation
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Imputation" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_7">
+        <label class="md-nav__title" for="__nav_4_9_6">
           <span class="md-nav__icon md-icon"></span>
           Imputation
         </label>
@@ -2174,14 +2135,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_8" type="checkbox" id="__nav_4_9_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_7" type="checkbox" id="__nav_4_9_7" >
       
-      <label class="md-nav__link" for="__nav_4_9_8">
+      <label class="md-nav__link" for="__nav_4_9_7">
         Natural Language
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Natural Language" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_8">
+        <label class="md-nav__title" for="__nav_4_9_7">
           <span class="md-nav__icon md-icon"></span>
           Natural Language
         </label>
@@ -2297,14 +2258,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_9" type="checkbox" id="__nav_4_9_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_8" type="checkbox" id="__nav_4_9_8" >
       
-      <label class="md-nav__link" for="__nav_4_9_9">
+      <label class="md-nav__link" for="__nav_4_9_8">
         Images
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Images" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_9">
+        <label class="md-nav__title" for="__nav_4_9_8">
           <span class="md-nav__icon md-icon"></span>
           Images
         </label>
@@ -2348,14 +2309,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_10" type="checkbox" id="__nav_4_9_10" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_9" type="checkbox" id="__nav_4_9_9" >
       
-      <label class="md-nav__link" for="__nav_4_9_10">
+      <label class="md-nav__link" for="__nav_4_9_9">
         Other
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Other" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_9_10">
+        <label class="md-nav__title" for="__nav_4_9_9">
           <span class="md-nav__icon md-icon"></span>
           Other
         </label>
@@ -4264,6 +4225,11 @@ mean,furry,loner,-1.5,monster
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="nx">Labeled</span><span class="o">::</span><span class="na">fromIterator</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">))</span>
     <span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">NumericStringConverter</span><span class="p">());</span>
 </code></pre></div>
+<p>We can check the number of records that were imported by calling the <code>numSamples()</code> method on the dataset object.</p>
+<div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">numSamples</span><span class="p">();</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="m">5000</span>
+</code></pre></div>
 <h2 id="ndjson">NDJSON<a class="headerlink" href="#ndjson" title="Permanent link">#</a></h2>
 <p>Another plain-text format called <a href="http://ndjson.org/">NDJSON</a> or <em>Newline Delimited</em> Javascript Object Notation (JSON) can be considered a hybrid of both CSV and JSON. It contains rows of JSON arrays or objects delineated by a newline character (<code>\n</code> or <code>\r\n</code>). It has the advantage of retaining type information like JSON and can also be read into memory efficiently like CSV.</p>
 <p><strong>Example</strong></p>
@@ -4356,7 +4322,7 @@ mean,furry,loner,-1.5,monster
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-13
+      Last update: 2021-04-16
     
   </small>
 </div>
