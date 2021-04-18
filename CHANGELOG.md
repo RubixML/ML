@@ -1,5 +1,6 @@
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
+    - Added TF-IDF sublinear TF scaling and document length normalization
     - Dataset filterByColumn() is now filter()
     - Added Lambda Function transformer from Extras
     - Rename Dataset column methods to feature

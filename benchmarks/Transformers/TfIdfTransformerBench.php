@@ -35,7 +35,7 @@ class TfIdfTransformerBench
 
         $this->dataset = Unlabeled::quick($samples);
 
-        $this->transformer = new TfIdfTransformer(1.0);
+        $this->transformer = new TfIdfTransformer();
     }
 
     /**
