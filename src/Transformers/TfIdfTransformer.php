@@ -56,7 +56,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected $dampening;
 
     /**
-     * Should we normalize document lengths?
+     * Should we normalize by document length?
      *
      * @var bool
      */
