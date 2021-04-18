@@ -414,44 +414,6 @@ class Labeled extends Dataset
     }
 
     /**
-     * Sort the dataset in place by a column in the sample matrix.
-     *
-     * @param int $offset
-     * @param bool $descending
-     * @return self
-     */
-    public function sortByColumn(int $offset, bool $descending = false) : self
-    {
-        $order = $this->column($offset);
-
-        array_multisort(
-            $order,
-            $this->samples,
-            $this->labels,
-            $descending ? SORT_DESC : SORT_ASC
-        );
-
-        return $this;
-    }
-
-    /**
-     * Sort the dataset in place by its labels.
-     *
-     * @param bool $descending
-     * @return self
-     */
-    public function sortByLabel(bool $descending = false) : self
-    {
-        array_multisort(
-            $this->labels,
-            $this->samples,
-            $descending ? SORT_DESC : SORT_ASC
-        );
-
-        return $this;
-    }
-
-    /**
      * Group samples by label and return an array of stratified datasets. i.e.
      * n datasets consisting of samples with the same label where n is equal to
      * the number of unique labels.
@@ -630,7 +592,7 @@ class Labeled extends Dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByColumn(int $column, $value) : array
+    public function splitByFeature(int $column, $value) : array
     {
         $type = $this->featureType($column);
 
@@ -816,21 +778,6 @@ class Labeled extends Dataset
         }
 
         return self::quick($samples, $labels);
-    }
-
-    /**
-     * Remove duplicate rows from the dataset.
-     *
-     * @return self
-     */
-    public function deduplicate() : self
-    {
-        $table = array_unique(iterator_to_array($this), SORT_REGULAR);
-
-        $this->samples = array_values(array_intersect_key($this->samples, $table));
-        $this->labels = array_values(array_intersect_key($this->labels, $table));
-
-        return $this;
     }
 
     /**

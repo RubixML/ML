@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
-use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class ConfusionMatrixTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->report = new ConfusionMatrix(['wolf', 'lamb']);
+        $this->report = new ConfusionMatrix();
     }
 
     /**
@@ -72,16 +72,16 @@ class ConfusionMatrixTest extends TestCase
     public function generateProvider() : Generator
     {
         yield [
-            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf', 'morgan', 'lamb'],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf', 'lamb', 'tammy'],
+            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf', 'lamb', 'lamb'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf', 'lamb', 'wolf'],
             [
                 'wolf' => [
                     'wolf' => 2,
                     'lamb' => 1,
                 ],
                 'lamb' => [
-                    'wolf' => 1,
-                    'lamb' => 1,
+                    'wolf' => 2,
+                    'lamb' => 2,
                 ],
             ],
         ];

@@ -56,7 +56,7 @@ class Clique implements BinaryNode, Hypersphere
     {
         $center = [];
 
-        foreach ($dataset->columns() as $column => $values) {
+        foreach ($dataset->features() as $column => $values) {
             if ($dataset->featureType($column)->isContinuous()) {
                 $center[] = Stats::mean($values);
             } else {

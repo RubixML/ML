@@ -241,7 +241,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 $this->weights[$class] = 0;
             }
 
-            foreach ($stratum->columns() as $column => $values) {
+            foreach ($stratum->features() as $column => $values) {
                 $columnCounts = $classCounts[$column];
 
                 $counts = array_count_values($values);

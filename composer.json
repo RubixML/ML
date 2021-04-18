@@ -39,7 +39,6 @@
         "psr/log": "^1.1",
         "rubix/tensor": "^2.2",
         "symfony/polyfill-mbstring": "^1.0",
-        "symfony/polyfill-php73": "^1.20",
         "symfony/polyfill-php80": "^1.17"
     },
     "require-dev": {
@@ -53,9 +52,9 @@
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
         "rubix/extras": "For experimental features",
-        "ext-svm": "For Support Vector Machine engine (libsvm)",
+        "ext-gd": "For image support",
         "ext-mbstring": "For fast multibyte string manipulation",
-        "ext-gd": "For image manipulation"
+        "ext-svm": "For Support Vector Machine engine (libsvm)"
     },
     "autoload": {
         "psr-4": {

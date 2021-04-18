@@ -90,21 +90,6 @@ namespace Rubix\ML
     }
 
     /**
-     * Unset the given indices from an array.
-     *
-     * @internal
-     *
-     * @param mixed[] $values
-     * @param (string|int)[] $indices
-     */
-    function array_unset(array &$values, array $indices) : void
-    {
-        foreach ($indices as $index) {
-            unset($values[$index]);
-        }
-    }
-
-    /**
      * Return the first element of an iterator.
      *
      * @internal

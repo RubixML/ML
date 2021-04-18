@@ -281,7 +281,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         $this->initialize($dataset);
 
         $samples = $dataset->samples();
-        $columns = $dataset->columns();
+        $features = $dataset->features();
 
         $n = $dataset->numSamples();
 
@@ -325,7 +325,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
                 $means = $variances = [];
 
-                foreach ($columns as $column) {
+                foreach ($features as $column) {
                     $sigma = $ssd = 0.0;
 
                     foreach ($column as $i => $value) {
@@ -527,9 +527,9 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         foreach ($clusters as $cluster => $samples) {
             $means = $variances = [];
 
-            $columns = array_transpose($samples);
+            $features = array_transpose($samples);
 
-            foreach ($columns as $values) {
+            foreach ($features as $values) {
                 [$mean, $variance] = Stats::meanVar($values);
 
                 $means[] = $mean;

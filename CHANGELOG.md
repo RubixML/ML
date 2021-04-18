@@ -3,8 +3,11 @@
     - Added TF-IDF sublinear TF scaling and document length normalization
     - Dataset filterByColumn() is now filter()
     - Added Lambda Function transformer from Extras
-    - Rename Dataset columnTypes() to featureTypes()
-    - Rename Dataset numRows/Columns to numSamples / numFeatures
+    - Rename Dataset column methods to feature
+    - Added Dataset general sort() using callback
+    - Confusion Matrix classes no longer selectable
+    - Remove Recursive Feature Eliminator transformer
+    - Metric range() now returns a Tuple object
 
 - 1.0.0-beta1
     - Added variance smoothing to Gaussian NB, Mixture, and MLE

@@ -42,19 +42,6 @@ Return a single label at the given row offset:
 public label(int $offset) : mixed
 ```
 
-Return the data type of the label:
-```php
-public labelType() : DataType
-```
-
-```php
-echo $dataset->labelType();
-```
-
-```sh
-continuous
-```
-
 Return all of the possible outcomes i.e. the unique labels in an array:
 ```php
 public possibleOutcomes() : array
@@ -69,6 +56,20 @@ array(2) {
 	[0]=> string(5) "female"
 	[1]=> string(4) "male"
 }
+```
+
+### Data Types
+Return the data type of the label:
+```php
+public labelType() : Rubix\ML\DataType
+```
+
+```php
+echo $dataset->labelType();
+```
+
+```sh
+continuous
 ```
 
 ### Stratification
@@ -111,37 +112,15 @@ public transformLabels(callable $fn) : self
 ```php
 $dataset->transformLabels('intval');
 
-$dataset->transformLabels('floatval');
-
-$dataset->transformLabels(function ($label) {
-	switch ($label) {
-		case 0:
-			return 'disagree';
-
-		case 1:
-            return 'neutral';
-            
-        case 2:
-            return 'agree';
-            
-        default:
-            return '?';
-	}
-});
+//
 
 $dataset->transformLabels(function ($label) {
 	return $label > 0.5 ? 'yes' : 'no';
 });
 ```
 
-### Sorting
-Sort the dataset by label and return self for method chaining:
-```php
-public sortByLabel(bool $descending = false) : self
-```
-
 ### Describe by Label
-Describe the features of the dataset broken down by label:
+Describe the features of the dataset broken down by categorical label:
 ```php
 public describeByLabel() : Report
 ```
@@ -165,7 +144,7 @@ echo $dataset->describeByLabel();
             "type": "continuous",
             "mean": 1.125,
             "variance": 12.776875,
-            "std_dev": 3.574475485997911,
+            "stddev": 3.574475485997911,
             "skewness": -1.0795676577113944,
             "kurtosis": -0.7175867765792474,
             "min": -5,
@@ -188,7 +167,7 @@ echo $dataset->describeByLabel();
             "type": "continuous",
             "mean": -1.25,
             "variance": 0.0625,
-            "std_dev": 0.25,
+            "stddev": 0.25,
             "skewness": 0,
             "kurtosis": -2,
             "min": -1.5,
@@ -198,26 +177,5 @@ echo $dataset->describeByLabel();
             "max": -1
         }
     ]
-}
-```
-
-### Describe the Labels
-Return an array of descriptive statistics about the labels in the dataset:
-```php
-public describeLabels() : Report
-```
-
-```php
-echo $dataset->describeLabels();
-```
-
-```json
-{
-    "type": "categorical",
-    "num categories": 2,
-    "probabilities": {
-        "not monster": 0.6666666666666666,
-        "monster": 0.3333333333333333
-    }
 }
 ```

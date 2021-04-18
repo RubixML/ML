@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Tokenizers;
 
+use function preg_split;
+
 /**
  * Sentence
  *

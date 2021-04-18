@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  * @Groups({"Datasets"})
  * @BeforeMethods({"setUp"})
  */
-class LabeledBench
+class RandomizationBench
 {
     protected const DATASET_SIZE = 25000;
 
@@ -67,15 +67,5 @@ class LabeledBench
     public function randomWeightedSubsetWithReplacement() : void
     {
         $this->dataset->randomWeightedSubsetWithReplacement(self::SUBSAMPLE_SIZE, $this->weights);
-    }
-
-    /**
-     * @Subject
-     * @Iterations(5)
-     * @OutputTimeUnit("milliseconds", precision=3)
-     */
-    public function splitByColumn() : void
-    {
-        $this->dataset->splitByColumn(2, 3.0);
     }
 }

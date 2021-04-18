@@ -250,7 +250,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         $this->steps = [];
 
-        $columns = $dataset->columns();
+        $features = $dataset->features();
 
         $prevLoss = INF;
 
@@ -278,7 +278,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             foreach ($this->centroids as $cluster => &$centroid) {
                 $means = [];
 
-                foreach ($columns as $column => $values) {
+                foreach ($features as $column => $values) {
                     $sigma = $total = 0.0;
 
                     foreach ($memberships as $i => $probabilities) {

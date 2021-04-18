@@ -27,13 +27,13 @@ float(-0.99846070553066)
     Regression metrics output the negative of their value to maintain the notion that cross validation scores should be *maximized* instead of *minimized* such as the case with loss functions.
 
 ### Output Range
-Output the range of values the validation score can take on in a [2-tuple](../../faq.md#what-is-a-tuple):
+Output the minimum and maximum value the validation score can take in a [2-tuple](../../faq.md#what-is-a-tuple):
 ```php
-public range() : array
+public range() : Rubix\ML\Tuple{float, float}
 ```
 
 ```php
-[$min, $max] = $metric->range();
+[$min, $max] = $metric->range()->list();
 
 var_dump($min);
 var_dump($max);

@@ -117,7 +117,7 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
-                $values = $dataset->column($column);
+                $values = $dataset->feature($column);
 
                 [$median, $mad] = Stats::medianMad($values);
 

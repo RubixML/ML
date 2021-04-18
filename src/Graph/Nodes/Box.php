@@ -70,7 +70,7 @@ class Box implements BinaryNode, Hypercube
     {
         $mins = $maxs = $ranges = [];
 
-        foreach ($dataset->columns() as $values) {
+        foreach ($dataset->features() as $values) {
             $mins[] = $min = min($values);
             $maxs[] = $max = max($values);
 
@@ -81,7 +81,7 @@ class Box implements BinaryNode, Hypercube
 
         $value = 0.5 * ($mins[$column] + $maxs[$column]);
 
-        $groups = $dataset->splitByColumn($column, $value);
+        $groups = $dataset->splitByFeature($column, $value);
 
         return new self($column, $value, $groups, $mins, $maxs);
     }

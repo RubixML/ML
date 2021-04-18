@@ -7,7 +7,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 
-use function is_null;
+use function array_fill_keys;
+use function array_merge;
+use function array_unique;
 
 /**
  * Confusion Matrix
@@ -21,21 +23,6 @@ use function is_null;
  */
 class ConfusionMatrix implements ReportGenerator
 {
-    /**
-     * The classes to include in the report.
-     *
-     * @var (string|int)[]|null
-     */
-    protected $classes;
-
-    /**
-     * @param (string|int)[]|null $classes
-     */
-    public function __construct(?array $classes = null)
-    {
-        $this->classes = $classes;
-    }
-
     /**
      * The estimator types that this report is compatible with.
      *
@@ -62,24 +49,12 @@ class ConfusionMatrix implements ReportGenerator
     {
         PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
-        if (is_null($this->classes)) {
-            $classes = array_unique(array_merge($predictions, $labels));
-        } else {
-            $classes = $this->classes;
-        }
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
-        $classes = array_flip($classes);
-
         foreach ($predictions as $i => $prediction) {
-            if (isset($classes[$prediction])) {
-                $label = $labels[$i];
-
-                if (isset($classes[$label])) {
-                    ++$matrix[$prediction][$label];
-                }
-            }
+            ++$matrix[$prediction][$labels[$i]];
         }
 
         return new Report($matrix);

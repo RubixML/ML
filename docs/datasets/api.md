@@ -15,7 +15,7 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 ## Factory Methods
-Build a dataset with the rows from a 2-dimensional iterable data table:
+Build a dataset with the records of a 2-dimensional iterable data table:
 ```php
 public static fromIterator(Traversable $iterator) : self
 ```
@@ -30,38 +30,6 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
-## Selecting
-Return all the samples in the dataset in a 2-dimensional array:
-```php
-public samples() : array
-```
-
-Select a single row containing the sample at a given offset (offsets begin at 0):
-```php
-public sample(int $offset) : array
-```
-
-Select the values of a feature column at a given offset (offsets begin at 0):
-```php
-public column(int $offset) : array
-```
-
-Return the columns of the sample matrix:
-```php
-public columns() : array
-```
-
-Return the columns of the sample matrix of a particular type:
-```php
-public columnsByType(DataType $type) : array
-```
-
-```php
-use Rubix\ML\DataType;
-
-$columns = $dataset->columnsByType(DataType::continuous());
-```
-
 ## Properties
 Return the number of rows in the dataset:
 ```php
@@ -73,15 +41,9 @@ Return the number of columns in the samples matrix:
 public numFeatures() : int
 ```
 
-```php
-$m = $dataset->numSamples();
-
-$n = $dataset->numFeatures();
-```
-
 Return a 2-tuple with the *shape* of the samples matrix:
 ```php
-public shape() : array
+public shape() : array{int, int}
 ```
 
 ```php
@@ -95,14 +57,15 @@ int(1000)
 int(30)
 ```
 
+## Data Types
 Return the data types for each feature column:
 ```php
-public featureTypes() : array
+public featureTypes() : Rubix\ML\DataType[]
 ```
 
 Return the data type for a given column offset:
 ```php
-public featureType(int $offset) : DataType
+public featureType(int $offset) : Rubix\ML\DataType
 ```
 
 ```php
@@ -113,16 +76,25 @@ echo $dataset->featureType(15);
 categorical
 ```
 
-## Applying Transformations
-You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
+## Selecting
+Return all the samples in the dataset in a 2-dimensional array:
 ```php
-public apply(Transformer $transformer) : self
+public samples() : array[]
 ```
 
+Select a single row containing the sample at a given offset beginning at 0:
 ```php
-use Rubix\ML\Transformers\RobustStandardizer;
+public sample(int $offset) : mixed[]
+```
 
-$dataset->apply(new RobustStandardizer);
+Return the columns of the sample matrix:
+```php
+public features() : array[]
+```
+
+Select the values of a feature column at a given offset :
+```php
+public feature(int $offset) : mixed[]
 ```
 
 ## Head and Tail
@@ -131,15 +103,13 @@ Return the first *n* rows of data in a new dataset object:
 public head(int $n = 10) : self
 ```
 
+```php
+$subset = $dataset->head(10);
+```
+
 Return the last *n* rows of data in a new dataset object:
 ```php
 public tail(int $n = 10) : self
-```
-
-```php
-$subset = $dataset->head(10);
-
-$subset = $dataset->tail(30);
 ```
 
 ## Taking and Leaving
@@ -156,7 +126,7 @@ public leave(int $n = 1) : self
 ## Splitting
 Split the dataset into left and right subsets:
 ```php
-public split(float $ratio = 0.5) : array
+public split(float $ratio = 0.5) : array{self, self}
 ```
 
 ```php
@@ -166,7 +136,7 @@ public split(float $ratio = 0.5) : array
 ## Folding
 Fold the dataset to form *k* equal size datasets:
 ```php
-public fold(int $k = 10) : array
+public fold(int $k = 10) : self[]
 ```
 
 !!! note
@@ -190,7 +160,7 @@ public splice(int $offset, int $n) : self
 ## Batching
 Batch the dataset into subsets containing a maximum of *n* rows per batch:
 ```php
-public batch(int $n = 50) : array
+public batch(int $n = 50) : self[]
 ```
 
 ```php
@@ -228,6 +198,18 @@ public randomWeightedSubsetWithReplacement(int $n, array $weights) : self
 
 ```php
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
+```
+
+## Applying Transformations
+You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
+```php
+public apply(Transformer $transformer) : self
+```
+
+```php
+use Rubix\ML\Transformers\RobustStandardizer;
+
+$dataset->apply(new RobustStandardizer);
 ```
 
 ## Mapping and Filtering
@@ -307,7 +289,7 @@ $dataset = $dataset1->join($dataset2);
 ## Descriptive Statistics
 Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
 ```php
-public describe() : Report
+public describe() : Rubix\ML\Report
 ```
 
 ```php
@@ -343,13 +325,15 @@ echo $dataset->describe();
 ```
 
 ## Sorting
-To sort a dataset in place by a specific feature column:
+Sort the records in the dataset using a callback for comparisons between samples. The callback function accepts two records to be compared and should return `true` if the records should be swapped.
 ```php
-public sortByColumn(int $offset, bool $descending = false) : self
+public function sort(callable $callback) : self
 ```
 
 ```php
-$dataset->sortByColumn(5, true);
+$sorted = $dataset->sort(function ($recordA, $recordB) {
+    return $recordA[2] > $recordB[2];
+});
 ```
 
 ## De-duplication
@@ -358,7 +342,7 @@ Remove duplicate rows from the dataset:
 public deduplicate() : self
 ```
 
-## Saving
+## Exporting
 Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor:
 ```php
 public exportTo(Writable $extractor) : void

@@ -86,7 +86,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
-                $values = $dataset->column($column);
+                $values = $dataset->feature($column);
 
                 $categories = array_values(array_unique($values));
 

@@ -124,11 +124,11 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function column() : void
+    public function feature() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
-        $this->assertEquals($expected, $this->dataset->column(2));
+        $this->assertEquals($expected, $this->dataset->feature(2));
     }
 
     /**
@@ -200,11 +200,11 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function columns() : void
+    public function features() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
-        $this->assertEquals($expected, $this->dataset->columns());
+        $this->assertEquals($expected, $this->dataset->features());
     }
 
     /**
@@ -220,39 +220,7 @@ class UnlabeledTest extends TestCase
 
         $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
 
-        $this->assertEquals($expected, $dataset->column(3));
-    }
-
-    /**
-     * @test
-     */
-    public function columnsByType() : void
-    {
-        $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
-
-        $columns = $this->dataset->columnsByType(DataType::categorical());
-
-        $this->assertEquals($expected, $columns);
-    }
-
-    /**
-     * @test
-     */
-    public function empty() : void
-    {
-        $this->assertFalse($this->dataset->empty());
-    }
-
-    /**
-     * @test
-     */
-    public function randomize() : void
-    {
-        $samples = $this->dataset->samples();
-
-        $this->dataset->randomize();
-
-        $this->assertNotEquals($samples, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->feature(3));
     }
 
     /**
@@ -279,15 +247,54 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function sortByColumn() : void
+    public function sort() : void
     {
-        $this->dataset->sortByColumn(2);
+        $dataset = $this->dataset->sort(function ($recordA, $recordB) {
+            return $recordA[3] > $recordB[3];
+        });
 
-        $sorted = array_column(self::SAMPLES, 2);
+        $expected = [
+            ['nice', 'furry', 'loner', -5.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['mean', 'rough', 'friendly', -1.0],
+            ['nice', 'rough', 'friendly', 2.6],
+            ['nice', 'rough', 'friendly', 2.9],
+            ['nice', 'furry', 'friendly', 4.0],
+        ];
 
-        sort($sorted);
+        $this->assertEquals($expected, $dataset->samples());
+    }
 
-        $this->assertEquals($sorted, $this->dataset->column(2));
+    /**
+     * @test
+     */
+    public function featuresByType() : void
+    {
+        $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
+
+        $columns = $this->dataset->featuresByType(DataType::categorical());
+
+        $this->assertEquals($expected, $columns);
+    }
+
+    /**
+     * @test
+     */
+    public function empty() : void
+    {
+        $this->assertFalse($this->dataset->empty());
+    }
+
+    /**
+     * @test
+     */
+    public function randomize() : void
+    {
+        $samples = $this->dataset->samples();
+
+        $this->dataset->randomize();
+
+        $this->assertNotEquals($samples, $this->dataset->samples());
     }
 
     /**
@@ -409,7 +416,7 @@ class UnlabeledTest extends TestCase
      */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->splitByColumn(2, 'loner');
+        [$left, $right] = $this->dataset->splitByFeature(2, 'loner');
 
         $this->assertInstanceOf(Unlabeled::class, $left);
         $this->assertInstanceOf(Unlabeled::class, $right);

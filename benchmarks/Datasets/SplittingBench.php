@@ -1,28 +1,22 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Transformers;
+namespace Rubix\ML\Benchmarks\Datasets;
 
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Transformers\RecursiveFeatureEliminator;
 
 /**
- * @Groups({"Transformers"})
+ * @Groups({"Datasets"})
  * @BeforeMethods({"setUp"})
  */
-class RecursiveFeatureEliminatorBench
+class SplittingBench
 {
-    protected const DATASET_SIZE = 10000;
+    protected const DATASET_SIZE = 25000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    public $dataset;
-
-    /**
-     * @var \Rubix\ML\Transformers\RecursiveFeatureEliminator
-     */
-    protected $transformer;
+    protected $dataset;
 
     public function setUp() : void
     {
@@ -33,17 +27,15 @@ class RecursiveFeatureEliminatorBench
         ]);
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
-
-        $this->transformer = new RecursiveFeatureEliminator(2);
     }
 
     /**
      * @Subject
-     * @Iterations(3)
-     * @OutputTimeUnit("seconds", precision=3)
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function apply() : void
+    public function splitByFeature() : void
     {
-        $this->dataset->apply($this->transformer);
+        $this->dataset->splitByFeature(2, 3.0);
     }
 }

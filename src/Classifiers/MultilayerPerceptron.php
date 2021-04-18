@@ -391,7 +391,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
 
-        [$min, $max] = $this->metric->range();
+        [$min, $max] = $this->metric->range()->list();
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;

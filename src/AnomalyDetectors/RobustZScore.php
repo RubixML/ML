@@ -207,7 +207,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
 
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->columns() as $column => $values) {
+        foreach ($dataset->features() as $column => $values) {
             [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;

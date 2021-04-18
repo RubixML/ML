@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Tuple;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
@@ -32,11 +33,11 @@ class SMAPE implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array{float,float}
+     * @return \Rubix\ML\Tuple{float,float}
      */
-    public function range() : array
+    public function range() : Tuple
     {
-        return [-100.0, 0.0];
+        return new Tuple(-100.0, 0.0);
     }
 
     /**

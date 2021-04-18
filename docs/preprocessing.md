@@ -89,13 +89,6 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [Truncated SVD](transformers/truncated-svd.md) | | ● | |
 | [t-SNE](transformers/t-sne.md) | | | |
 
-### Feature Selection
-Similarly to dimensionality reduction, feature selection aims to reduce the number of features in a dataset, however, feature selection seeks to keep the best features as-is and drop the less informative ones entirely. Adding feature selection can help speed up training and inference by creating a more parsimonious model. It can also improve the performance of the model by removing *noise* features and features that are uncorrelated with the outcome.
-
-| Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
-| [Recursive Feature Eliminator](transformers/recursive-feature-eliminator.md) | ● | ● | |
-
 ### Feature Expansion
 Contrasting feature selection is a preprocessing step that aims to derive additional features from the dataset called feature expansion. Derived features are often used to add flexibility to a model by appending more degrees of freedom to the dataset.
 
@@ -135,14 +128,16 @@ These transformers operate on the high-level image data type.
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
-In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. We'll choose to represent the feature cross as a CRC32 hash to save on memory and storage but you could just concatenate both categories to represent the new feature as well.
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place.
+
+In the next example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own category. We'll choose to represent the feature cross as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories together to represent the new feature as well.
 
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
 use function hash;
 
 $crossFeatures = function (&$sample) {
-    $sample[] = hash('crc32b', "$sample[6] $sample[7]");
+    $sample[] = hash('crc32b', "$sample[6] and $sample[7]");
 };
 
 $dataset->apply(new LambdaFunction($crossFeatures));

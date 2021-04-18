@@ -160,7 +160,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
-                $values = $dataset->column($column);
+                $values = $dataset->feature($column);
 
                 $tfs = $dfs = [];
 
