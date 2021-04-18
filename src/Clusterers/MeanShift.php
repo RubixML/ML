@@ -64,56 +64,56 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @var float
      */
-    protected $radius;
+    protected float $radius;
 
     /**
      * The precomputed denominator of the weight calculation.
      *
      * @var float
      */
-    protected $delta;
+    protected float $delta;
 
     /**
      * The ratio of samples from the training set to use as initial centroids.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum shift in the position of the centroids necessary to continue training.
      *
      * @var float
      */
-    protected $minShift;
+    protected float $minShift;
 
     /**
      * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The cluster centroid seeder.
      *
      * @var \Rubix\ML\Clusterers\Seeders\Seeder
      */
-    protected $seeder;
+    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
 
     /**
      * The computed centroid vectors of the training data.
      *
      * @var array[]
      */
-    protected $centroids = [
+    protected array $centroids = [
         //
     ];
 
@@ -122,7 +122,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * Estimate the radius of a cluster that encompasses a certain percentage of

@@ -46,35 +46,35 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @var float
      */
-    protected $radius;
+    protected float $radius;
 
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The class label for any samples that have 0 neighbors within the specified radius.
      *
      * @var string
      */
-    protected $outlierClass;
+    protected string $outlierClass;
 
     /**
      * The zero vector for the possible class outcomes.
      *
      * @var float[]
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 
@@ -83,7 +83,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param float $radius

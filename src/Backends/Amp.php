@@ -32,14 +32,14 @@ class Amp implements Backend
      *
      * @var \Amp\Parallel\Worker\Pool
      */
-    protected $pool;
+    protected \Amp\Parallel\Worker\Pool $pool;
 
     /**
      * The queue of coroutines to be processed in parallel.
      *
      * @var \Amp\Promise<mixed>[]
      */
-    protected $queue = [
+    protected array $queue = [
         //
     ];
 
@@ -48,7 +48,7 @@ class Amp implements Backend
      *
      * @var mixed[]
      */
-    protected $results = [
+    protected array $results = [
         //
     ];
 

@@ -71,35 +71,35 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      *
      * @var int
      */
-    protected $estimators;
+    protected int $estimators;
 
     /**
      * The ratio of training samples to train each estimator on.
      *
      * @var float|null
      */
-    protected $ratio;
+    protected ?float $ratio = null;
 
     /**
      * The proportion of outliers that are presumed to be present in the training set.
      *
      * @var float|null
      */
-    protected $contamination;
+    protected ?float $contamination = null;
 
     /**
      * The sum of the average depth of all the isolation trees in the ensemble.
      *
      * @var float|null
      */
-    protected $delta;
+    protected ?float $delta = null;
 
     /**
      * The isolation trees that make up the forest.
      *
      * @var \Rubix\ML\Graph\Trees\ITree[]
      */
-    protected $trees = [
+    protected array $trees = [
         //
     ];
 
@@ -108,14 +108,14 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      *
      * @var float|null
      */
-    protected $threshold;
+    protected ?float $threshold = null;
 
     /**
      * The dimensionality of the training set.
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param int $estimators

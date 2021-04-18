@@ -54,26 +54,26 @@ class DBSCAN implements Estimator
     public const NOISE = -1;
 
     /**
-     * The maximum distance between two points to be considered neighbors. The
-     * smaller the value, the tighter the clusters will be.
+     * The maximum distance between two points to be considered neighbors. The smaller the value,
+     * the tighter the clusters will be.
      *
      * @var float
      */
-    protected $radius;
+    protected float $radius;
 
     /**
      * The minimum number of points to from a dense region or cluster.
      *
      * @var int
      */
-    protected $minDensity;
+    protected int $minDensity;
 
     /**
      * The spatial tree used to run range searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * @param float $radius

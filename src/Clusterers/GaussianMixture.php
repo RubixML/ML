@@ -68,42 +68,42 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * The amount of epsilon smoothing added to the variance of each feature.
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum shift in the components necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
      * The cluster centroid seeder.
      *
      * @var \Rubix\ML\Clusterers\Seeders\Seeder
      */
-    protected $seeder;
+    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
 
     /**
      * The precomputed log prior probabilities of each cluster.
      *
      * @var float[]
      */
-    protected $logPriors = [
+    protected array $logPriors = [
         //
     ];
 
@@ -112,7 +112,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var array[]
      */
-    protected $means = [
+    protected array $means = [
         //
     ];
 
@@ -121,7 +121,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var array[]
      */
-    protected $variances = [
+    protected array $variances = [
         //
     ];
 
@@ -130,7 +130,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param int $k

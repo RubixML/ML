@@ -65,42 +65,42 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var float
      */
-    protected $contamination;
+    protected float $contamination;
 
     /**
      * The number of projection/histogram pairs in the ensemble.
      *
      * @var int
      */
-    protected $estimators;
+    protected int $estimators;
 
     /**
      * The number of bins in each equi-width histogram.
      *
      * @var int|null
      */
-    protected $bins;
+    protected ?int $bins = null;
 
     /**
      * Should we calculate the equi-width bin count on the fly?
      *
      * @var bool
      */
-    protected $fitBins;
+    protected bool $fitBins;
 
     /**
      * The sparse random projection matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $r;
+    protected ?\Tensor\Matrix $r = null;
 
     /**
      * The edges and bin counts of each histogram.
      *
      * @var array[]
      */
-    protected $histograms = [
+    protected array $histograms = [
         //
     ];
 
@@ -109,14 +109,14 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var float|null
      */
-    protected $threshold;
+    protected ?float $threshold;
 
     /**
      * The number of samples that have been learned so far.
      *
      * @var int
      */
-    protected $n = 0;
+    protected int $n = 0;
 
     /**
      * @param float $contamination

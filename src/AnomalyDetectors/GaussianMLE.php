@@ -47,21 +47,21 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var float
      */
-    protected $contamination;
+    protected float $contamination;
 
     /**
      * The amount of epsilon smoothing added to the variance of each feature.
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * The precomputed means of each feature column of the training set.
      *
      * @var float[]
      */
-    protected $means = [
+    protected array $means = [
         //
     ];
 
@@ -70,7 +70,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var float[]
      */
-    protected $variances = [
+    protected array $variances = [
         //
     ];
 
@@ -79,21 +79,21 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var float|null
      */
-    protected $epsilon;
+    protected ?float $epsilon = null;
 
     /**
      * The number of samples that have passed through training so far.
      *
      * @var int
      */
-    protected $n = 0;
+    protected int $n = 0;
 
     /**
      * The minimum log likelihood score necessary to flag an anomaly.
      *
      * @var float|null
      */
-    protected $threshold;
+    protected ?float $threshold = null;
 
     /**
      * @param float $contamination
