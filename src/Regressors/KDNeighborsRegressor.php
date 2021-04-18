@@ -44,28 +44,28 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The spatial tree used to run nearest neighbor searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The dimensionality of the training set.
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param int $k

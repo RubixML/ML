@@ -81,35 +81,35 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var \Rubix\ML\Learner
      */
-    protected $booster;
+    protected \Rubix\ML\Learner $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The ratio of samples to subsample from the training set for each booster.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      *  The max number of estimators to train in the ensemble.
      *
      * @var int
      */
-    protected $estimators;
+    protected int $estimators;
 
     /**
      * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
      * The number of epochs without improvement in the validation score to wait
@@ -117,59 +117,58 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
      * The proportion of training samples to use for validation and progress monitoring.
      *
      * @var float
      */
-    protected $holdOut;
+    protected float $holdOut;
 
     /**
-     * The metric used to score the generalization performance of the model
-     * during training.
+     * The metric used to score the generalization performance of the model during training.
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
-    protected $metric;
+    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
      * The *weak* base regressor to be boosted.
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected \Rubix\ML\Learner $base;
 
     /**
      * An ensemble of weak regressors.
      *
      * @var mixed[]
      */
-    protected $ensemble = [
+    protected array $ensemble = [
         //
     ];
-
-    /**
-     * The dimensionality of the training set.
-     *
-     * @var int|null
-     */
-    protected $featureCount;
 
     /**
      * The validation scores at each epoch.
      *
      * @var float[]|null
      */
-    protected $scores;
+    protected ?array $scores = null;
 
     /**
      * The average training loss at each epoch.
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected ?int $featureCount = null;
 
     /**
      * @param \Rubix\ML\Learner|null $booster

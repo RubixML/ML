@@ -31,28 +31,28 @@ class RMSProp implements Optimizer, Adaptive
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The rms decay rate.
      *
      * @var float
      */
-    protected $decay;
+    protected float $decay;
 
     /**
      * The opposite of the rms decay rate.
      *
      * @var float
      */
-    protected $rho;
+    protected float $rho;
 
     /**
      * The cache of running squared gradients.
      *
      * @var \Tensor\Tensor[]
      */
-    protected $cache = [
+    protected array $cache = [
         //
     ];
 

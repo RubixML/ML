@@ -22,21 +22,21 @@ class Polynomial implements Kernel
      *
      * @var int
      */
-    protected $degree;
+    protected int $degree;
 
     /**
      * The kernel coefficient.
      *
      * @var float|null
      */
-    protected $gamma;
+    protected ?float $gamma;
 
     /**
      * The independent term.
      *
      * @var float
      */
-    protected $coef0;
+    protected float $coef0;
 
     /**
      * @param int $degree

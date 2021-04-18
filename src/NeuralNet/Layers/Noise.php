@@ -30,14 +30,14 @@ class Noise implements Hidden
      *
      * @var float
      */
-    protected $stdDev;
+    protected float $stdDev;
 
     /**
      * The width of the layer.
      *
      * @var int|null
      */
-    protected $width;
+    protected ?int $width = null;
 
     /**
      * @param float $stdDev

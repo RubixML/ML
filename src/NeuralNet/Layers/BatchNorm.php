@@ -34,75 +34,74 @@ use const Rubix\ML\EPSILON;
 class BatchNorm implements Hidden, Parametric
 {
     /**
-     * The decay rate of the previous running averages of the global mean
-     * and variance.
+     * The decay rate of the previous running averages of the global mean and variance.
      *
      * @var float
      */
-    protected $decay;
+    protected float $decay;
 
     /**
      * The initializer for the beta parameter.
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $betaInitializer;
+    protected \Rubix\ML\NeuralNet\Initializers\Initializer $betaInitializer;
 
     /**
      * The initializer for the gamma parameter.
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $gammaInitializer;
+    protected \Rubix\ML\NeuralNet\Initializers\Initializer $gammaInitializer;
 
     /**
      * The width of the layer. i.e. the number of neurons.
      *
      * @var int|null
      */
-    protected $width;
+    protected ?int $width = null;
 
     /**
      * The learnable centering parameter.
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected $beta;
+    protected ?\Rubix\ML\NeuralNet\Parameter $beta = null;
 
     /**
      * The learnable scaling parameter.
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected $gamma;
+    protected ?\Rubix\ML\NeuralNet\Parameter $gamma = null;
 
     /**
      * The running mean of each input dimension.
      *
      * @var \Tensor\Vector|null
      */
-    protected $mean;
+    protected ?\Tensor\Vector $mean = null;
 
     /**
      * The running variance of each input dimension.
      *
      * @var \Tensor\Vector|null
      */
-    protected $variance;
+    protected ?\Tensor\Vector $variance = null;
 
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
      *
      * @var \Tensor\Vector|null
      */
-    protected $stdInv;
+    protected ?\Tensor\Vector $stdInv = null;
 
     /**
      * A cache of normalized inputs to the layer.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $xHat;
+    protected ?\Tensor\Matrix $xHat = null;
 
     /**
      * @param float $decay

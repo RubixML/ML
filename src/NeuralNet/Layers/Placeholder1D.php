@@ -24,7 +24,7 @@ class Placeholder1D implements Input
      *
      * @var int
      */
-    protected $inputs;
+    protected int $inputs;
 
     /**
      * @param int $inputs

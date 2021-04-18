@@ -39,7 +39,7 @@ class DummyRegressor implements Estimator, Learner, Persistable
      *
      * @var \Rubix\ML\Strategies\Strategy
      */
-    protected $strategy;
+    protected \Rubix\ML\Strategies\Strategy $strategy;
 
     /**
      * @param \Rubix\ML\Strategies\Strategy|null $strategy

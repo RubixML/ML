@@ -23,14 +23,14 @@ class Snapshot
      *
      * @var \Rubix\ML\NeuralNet\Layers\Parametric[]
      */
-    protected $layers;
+    protected array $layers;
 
     /**
      * The parameters corresponding to each layer in the network at the time of the snapshot.
      *
      * @var array[]
      */
-    protected $parameters;
+    protected array $parameters;
 
     /**
      * @param \Rubix\ML\NeuralNet\Network $network

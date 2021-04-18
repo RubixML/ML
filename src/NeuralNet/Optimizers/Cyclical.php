@@ -29,42 +29,42 @@ class Cyclical implements Optimizer
      *
      * @var float
      */
-    protected $lower;
+    protected float $lower;
 
     /**
      * The upper bound on the learning rate.
      *
      * @var float
      */
-    protected $upper;
+    protected float $upper;
 
     /**
      * The range of the learning rate.
      *
      * @var float
      */
-    protected $range;
+    protected float $range;
 
     /**
      * The number of steps in every cycle.
      *
      * @var int
      */
-    protected $steps;
+    protected int $steps;
 
     /**
      * The exponential scaling factor applied to each step as decay.
      *
      * @var float
      */
-    protected $decay;
+    protected float $decay;
 
     /**
      * The number of steps taken so far.
      *
      * @var int
      */
-    protected $t = 0;
+    protected int $t = 0;
 
     /**
      * @param float $lower

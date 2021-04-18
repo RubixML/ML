@@ -41,42 +41,42 @@ class Adam implements Optimizer, Adaptive
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The momentum decay rate.
      *
      * @var float
      */
-    protected $momentumDecay;
+    protected float $momentumDecay;
 
     /**
      * The decay rate of the previous norms.
      *
      * @var float
      */
-    protected $normDecay;
+    protected float $normDecay;
 
     /**
      * The opposite of the momentum decay.
      *
      * @var float
      */
-    protected $beta1;
+    protected float $beta1;
 
     /**
      * The opposite of the norm decay.
      *
      * @var float
      */
-    protected $beta2;
+    protected float $beta2;
 
     /**
      * The parameter cache of running velocity and squared gradients.
      *
      * @var array[]
      */
-    protected $cache = [
+    protected array $cache = [
         //
     ];
 
@@ -85,7 +85,7 @@ class Adam implements Optimizer, Adaptive
      *
      * @var int
      */
-    protected $t = 0;
+    protected int $t = 0;
 
     /**
      * @param float $rate

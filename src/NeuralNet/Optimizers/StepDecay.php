@@ -24,29 +24,28 @@ class StepDecay implements Optimizer
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
-     * The size of every floor in steps. i.e. the number of steps to take before
-     * applying another factor of decay.
+     * The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay.
      *
      * @var int
      */
-    protected $steps;
+    protected int $steps;
 
     /**
      * The factor to decrease the learning rate by over a period of k steps.
      *
      * @var float
      */
-    protected $decay;
+    protected float $decay;
 
     /**
      * The number of steps taken so far.
      *
      * @var int
      */
-    protected $t = 0;
+    protected int $t = 0;
 
     /**
      * @param float $rate
