@@ -35,7 +35,7 @@ class FBeta implements Metric
      *
      * @var float
      */
-    protected $beta;
+    protected float $beta;
 
     /**
      * Compute the class precision.

@@ -29,7 +29,7 @@ class HoldOut implements Validator
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * @param float $ratio

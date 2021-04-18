@@ -26,21 +26,21 @@ class SQLTable implements Extractor
      *
      * @var \PDO
      */
-    protected $connection;
+    protected \PDO $connection;
 
     /**
      * The name of the table to select from.
      *
      * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * The number of rows of the table to load in a single query.
      *
      * @var int
      */
-    protected $batchSize;
+    protected int $batchSize;
 
     /**
      * @param \PDO $connection

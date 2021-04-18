@@ -35,7 +35,7 @@ class LeavePOut implements Validator, Parallel
      *
      * @var int
      */
-    protected $p;
+    protected int $p;
 
     /**
      * @param int $p

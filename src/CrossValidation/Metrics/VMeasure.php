@@ -31,7 +31,7 @@ class VMeasure implements Metric
      *
      * @var float
      */
-    protected $beta;
+    protected float $beta;
 
     /**
      * @param float $beta

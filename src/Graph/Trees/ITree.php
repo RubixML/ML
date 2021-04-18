@@ -32,18 +32,18 @@ class ITree implements BinaryTree
     protected const MAX_LEAF_SIZE = 2;
 
     /**
-     * The root node of the tree.
-     *
-     * @var \Rubix\ML\Graph\Nodes\Isolator|null
-     */
-    protected $root;
-
-    /**
      * The maximum depth of a branch before it is forced to terminate.
      *
      * @var int
      */
-    protected $maxHeight;
+    protected int $maxHeight;
+
+    /**
+     * The root node of the tree.
+     *
+     * @var \Rubix\ML\Graph\Nodes\Isolator|null
+     */
+    protected ?\Rubix\ML\Graph\Nodes\Isolator $root = null;
 
     /**
      * @param int $maxHeight

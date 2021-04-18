@@ -24,14 +24,14 @@ class ColumnPicker implements Extractor
      *
      * @var iterable<array>
      */
-    protected $iterator;
+    protected iterable $iterator;
 
     /**
      * The string and/or integer keys of the columns to pick and reorder from the table.
      *
      * @var list<string|int>
      */
-    protected $columns;
+    protected array $columns;
 
     /**
      * @param iterable<mixed[]> $iterator

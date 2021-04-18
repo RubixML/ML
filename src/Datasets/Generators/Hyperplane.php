@@ -27,21 +27,21 @@ class Hyperplane implements Generator
      *
      * @var \Tensor\Vector
      */
-    protected $coefficients;
+    protected \Tensor\Vector $coefficients;
 
     /**
      * The y intercept term.
      *
      * @var float
      */
-    protected $intercept;
+    protected float $intercept;
 
     /**
      * The factor of gaussian noise to add to the data points.
      *
      * @var float
      */
-    protected $noise;
+    protected float $noise;
 
     /**
      * @param (int|float)[] $coefficients

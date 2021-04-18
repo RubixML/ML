@@ -191,7 +191,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !$this->classes) {
+        if ($this->bare() or !$this->featureCount or !$this->classes) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 

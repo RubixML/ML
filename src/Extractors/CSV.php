@@ -42,28 +42,28 @@ class CSV implements Extractor, Writable
      *
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Does the CSV document have a header as the first row?
      *
      * @var bool
      */
-    protected $header;
+    protected bool $header;
 
     /**
      * The character that delineates the values of the columns of the data table.
      *
      * @var string
      */
-    protected $delimiter;
+    protected string $delimiter;
 
     /**
      * The character used to enclose a cell that contains a delimiter in the body.
      *
      * @var string
      */
-    protected $enclosure;
+    protected string $enclosure;
 
     /**
      * @param string $path

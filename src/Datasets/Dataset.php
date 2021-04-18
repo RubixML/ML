@@ -49,7 +49,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @var list<list<mixed>>
      */
-    protected $samples;
+    protected array $samples;
 
     /**
      * @param mixed[] $samples

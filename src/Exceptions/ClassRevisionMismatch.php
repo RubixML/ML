@@ -11,7 +11,7 @@ class ClassRevisionMismatch extends RuntimeException
      *
      * @var string
      */
-    protected $createdWithVersion;
+    protected string $createdWithVersion;
 
     /**
      * @param string $createdWithVersion

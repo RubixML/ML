@@ -31,14 +31,14 @@ class Average implements Outcome
      *
      * @var float
      */
-    protected $impurity;
+    protected float $impurity;
 
     /**
      * The number of labels this node is responsible for.
      *
      * @var int
      */
-    protected $n;
+    protected int $n;
 
     /**
      * @param int|float $outcome

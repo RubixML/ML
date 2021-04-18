@@ -37,7 +37,7 @@ class NDJSON implements Extractor, Writable
      *
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * @param string $path

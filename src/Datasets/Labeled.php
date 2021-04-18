@@ -41,9 +41,9 @@ class Labeled extends Dataset
     /**
      * The observed outcomes for each sample in the dataset.
      *
-     * @var (int|float|string)[]
+     * @var list<int|float|string>
      */
-    protected $labels;
+    protected array $labels;
 
     /**
      * Build a new labeled dataset with validation.
