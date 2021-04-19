@@ -10,7 +10,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use const Rubix\ML\EPSILON;
+use function min;
+use function max;
 
 /**
  * Min Max Normalizer
@@ -55,18 +56,11 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
     protected ?array $maximums = null;
 
     /**
-     * The scale of each feature column.
+     * The scale coefficients of each feature.
      *
-     * @var (int|float)[]|null
+     * @var float[]|null
      */
     protected ?array $scales = null;
-
-    /**
-     * The scaled minimums of each feature column.
-     *
-     * @var (int|float)[]|null
-     */
-    protected ?array $mins = null;
 
     /**
      * @param float $min
@@ -103,7 +97,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
      */
     public function fitted() : bool
     {
-        return $this->mins and $this->scales;
+        return $this->minimums and $this->maximums;
     }
 
     /**
@@ -135,16 +129,22 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $this->minimums = $this->maximums = $this->scales = $this->mins = [];
+        $this->minimums = $this->maximums = [];
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
-                $this->minimums[$column] = INF;
-                $this->maximums[$column] = -INF;
+                $values = $dataset->feature($column);
+
+                $min = min($values);
+                $max = max($values);
+
+                $scale = ($this->max - $this->min) / ($max - $min);
+
+                $this->minimums[$column] = $min;
+                $this->maximums[$column] = $max;
+                $this->scales[$column] = $scale;
             }
         }
-
-        $this->update($dataset);
     }
 
     /**
@@ -154,7 +154,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
      */
     public function update(Dataset $dataset) : void
     {
-        if ($this->minimums === null or $this->maximums === null) {
+        if ($this->minimums === null or $this->maximums === null or $this->scales === null) {
             $this->fit($dataset);
 
             return;
@@ -162,26 +162,16 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
 
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        foreach ($dataset->featureTypes() as $column => $type) {
-            if ($type->isContinuous()) {
-                $values = $dataset->feature($column);
+        foreach ($this->scales as $column => &$scale) {
+            $values = $dataset->feature($column);
 
-                $min = min($values);
-                $max = max($values);
+            $min = min($this->minimums[$column], ...$values);
+            $max = max($this->maximums[$column], ...$values);
 
-                $min = min($min, $this->minimums[$column]);
-                $max = max($max, $this->maximums[$column]);
+            $scale = ($this->max - $this->min) / ($max - $min);
 
-                $scale = ($this->max - $this->min)
-                    / (($max - $min) ?: EPSILON);
-
-                $minHat = $this->min - $min * $scale;
-
-                $this->minimums[$column] = $min;
-                $this->maximums[$column] = $max;
-                $this->scales[$column] = $scale;
-                $this->mins[$column] = $minHat;
-            }
+            $this->minimums[$column] = $min;
+            $this->maximums[$column] = $max;
         }
     }
 
@@ -193,7 +183,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if ($this->mins === null or $this->scales === null) {
+        if ($this->scales === null or $this->minimums === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -201,8 +191,11 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
             foreach ($this->scales as $column => $scale) {
                 $value = &$sample[$column];
 
+                $min = $this->minimums[$column];
+
                 $value *= $scale;
-                $value += $this->mins[$column];
+
+                $value += $this->min - $min * $scale;
             }
         }
     }
