@@ -58,28 +58,28 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      *
      * @var list<\Rubix\ML\Learner>
      */
-    protected $experts;
+    protected array $experts;
 
     /**
      * The influence values of each expert in the committee.
      *
      * @var list<float>
      */
-    protected $influences;
+    protected array $influences;
 
     /**
      * The data types that the committee is compatible with.
      *
      * @var list<\Rubix\ML\DataType>
      */
-    protected $compatibility;
+    protected array $compatibility;
 
     /**
      * The zero vector of each possible discrete outcome.
      *
      * @var float[]
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 

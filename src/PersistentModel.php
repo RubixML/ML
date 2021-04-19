@@ -28,21 +28,21 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected \Rubix\ML\Learner $base;
 
     /**
      * The persister used to interface with the storage medium.
      *
      * @var \Rubix\ML\Persisters\Persister
      */
-    protected $persister;
+    protected \Rubix\ML\Persisters\Persister $persister;
 
     /**
      * The object serializer.
      *
      * @var \Rubix\ML\Serializers\Serializer
      */
-    protected $serializer;
+    protected \Rubix\ML\Serializers\Serializer $serializer;
 
     /**
      * Factory method to restore the model from persistence.

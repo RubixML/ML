@@ -15,7 +15,7 @@ class Encoding implements Stringable
      *
      * @var string
      */
-    protected $data;
+    protected string $data;
 
     /**
      * @param string $data

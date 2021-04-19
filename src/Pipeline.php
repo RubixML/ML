@@ -34,7 +34,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      *
      * @var list<\Rubix\ML\Transformers\Transformer>
      */
-    protected $transformers = [
+    protected array $transformers = [
         //
     ];
 
@@ -43,14 +43,14 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      *
      * @var \Rubix\ML\Estimator
      */
-    protected $base;
+    protected \Rubix\ML\Estimator $base;
 
     /**
      * Should we update the elastic transformers during partial train?
      *
      * @var bool
      */
-    protected $elastic;
+    protected bool $elastic;
 
     /**
      * @param \Rubix\ML\Transformers\Transformer[] $transformers

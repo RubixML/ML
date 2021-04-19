@@ -20,7 +20,7 @@ class HTMLStripper implements Transformer
     /**
      * A list of html tags that should not be stripped ex. ['p', 'br'].
      *
-     * @var array
+     * @var list<string>
      */
     protected array $allowedTags;
 
@@ -29,7 +29,7 @@ class HTMLStripper implements Transformer
      */
     public function __construct(array $allowedTags = [])
     {
-        $this->allowedTags = $allowedTags;
+        $this->allowedTags = array_values($allowedTags);
     }
 
     /**

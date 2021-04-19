@@ -79,7 +79,7 @@ class DataType implements Stringable
      *
      * @var int
      */
-    protected $code;
+    protected int $code;
 
     /**
      * Build a new data type object.

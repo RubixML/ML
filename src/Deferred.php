@@ -30,7 +30,7 @@ class Deferred
      *
      * @var mixed[]
      */
-    protected $args;
+    protected array $args;
 
     /**
      * @param callable $fn

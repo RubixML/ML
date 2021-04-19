@@ -51,35 +51,35 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      *
      * @var string
      */
-    protected $class;
+    protected string $class;
 
     /**
      * An array of tuples containing the possible values for each of the base learner's constructor parameters.
      *
      * @var array[]
      */
-    protected $params;
+    protected array $params;
 
     /**
      * The validation metric used to score the estimator.
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
-    protected $metric;
+    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
      * The validator used to test the estimator.
      *
      * @var \Rubix\ML\CrossValidation\Validator
      */
-    protected $validator;
+    protected \Rubix\ML\CrossValidation\Validator $validator;
 
     /**
      * The argument names for the base estimator's constructor.
      *
      * @var string[]
      */
-    protected $args = [
+    protected array $args = [
         //
     ];
 
@@ -88,14 +88,14 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      *
      * @var array[]|null
      */
-    protected $results;
+    protected ?array $results = null;
 
     /**
      * The base estimator instance.
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected \Rubix\ML\Learner $base;
 
     /**
      * @param class-string $class

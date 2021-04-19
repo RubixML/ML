@@ -77,7 +77,7 @@ class EstimatorType implements Stringable
      *
      * @var int
      */
-    protected $code;
+    protected int $code;
 
     /**
      * Build a new estimator type object.
