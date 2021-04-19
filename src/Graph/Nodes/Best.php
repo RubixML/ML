@@ -24,28 +24,28 @@ class Best implements Outcome
      *
      * @var string
      */
-    protected $outcome;
+    protected string $outcome;
 
     /**
      * The probabilities of each discrete class outcome.
      *
      * @var float[]
      */
-    protected $probabilities;
+    protected array $probabilities;
 
     /**
      * The amount of impurity among the labels in the node.
      *
      * @var float
      */
-    protected $impurity;
+    protected float $impurity;
 
     /**
      * The number of labels this node is responsible for.
      *
      * @var int
      */
-    protected $n;
+    protected int $n;
 
     /**
      * @param string $outcome

@@ -28,11 +28,10 @@ class Depth implements BinaryNode
      *
      * @var float
      */
-    protected $depth;
+    protected float $depth;
 
     /**
-     * Estimate the average path length of an unsuccessful search given n unisolated
-     * samples.
+     * Estimate the average path length of an unsuccessful search given n unisolated samples.
      *
      * @param int $n
      * @return float

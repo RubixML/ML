@@ -23,7 +23,7 @@ class Mean implements Strategy
      *
      * @var float|null
      */
-    protected $mean;
+    protected ?float $mean = null;
 
     /**
      * Return the data type the strategy handles.

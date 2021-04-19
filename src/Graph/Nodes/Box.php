@@ -29,7 +29,7 @@ class Box implements BinaryNode, Hypercube
      *
      * @var int
      */
-    protected $column;
+    protected int $column;
 
     /**
      * The value that the node splits on.
@@ -43,21 +43,21 @@ class Box implements BinaryNode, Hypercube
      *
      * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected $groups;
+    protected array $groups;
 
     /**
-     * The minimum vector containing all points.
+     * The minimum vector containing all the points.
      *
      * @var list<int|float>
      */
-    protected $min;
+    protected array $min;
 
     /**
-     * The maximum vector containing all points.
+     * The maximum vector containing all the points.
      *
      * @var list<int|float>
      */
-    protected $max;
+    protected array $max;
 
     /**
      * Factory method to build a coordinate node from a labeled dataset

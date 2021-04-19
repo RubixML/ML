@@ -64,50 +64,49 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected \Rubix\ML\Learner $base;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The ratio of samples to train each weak learner on.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * The maximum number of estimators to train in the ensemble.
      *
      * @var int
      */
-    protected $estimators;
+    protected int $estimators;
 
     /**
      * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
      * The ensemble of *weak* classifiers.
      *
      * @var \Rubix\ML\Learner[]
      */
-    protected $ensemble = [
+    protected array $ensemble = [
         //
     ];
 
@@ -116,7 +115,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var float[]
      */
-    protected $influences = [
+    protected array $influences = [
         //
     ];
 
@@ -125,21 +124,21 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var float[]|null
      */
-    protected $classes;
+    protected ?array $classes = null;
 
     /**
      * The loss at each epoch from the last training session.
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * The dimensionality of the training set.
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param \Rubix\ML\Learner|null $base

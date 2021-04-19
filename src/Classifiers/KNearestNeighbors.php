@@ -48,46 +48,46 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The distance function to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
-    protected $kernel;
+    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The zero vector for the possible class outcomes.
      *
      * @var float[]
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 
     /**
-     * The training samples that make up the neighborhood of the problem space.
+     * The training samples.
      *
      * @var array[]
      */
-    protected $samples = [
+    protected array $samples = [
         //
     ];
 
     /**
-     * The memoized labels of the training set.
+     * The training labels.
      *
      * @var string[]
      */
-    protected $labels = [
+    protected array $labels = [
         //
     ];
 

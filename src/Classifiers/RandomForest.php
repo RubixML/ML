@@ -72,49 +72,49 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var \Rubix\ML\Learner
      */
-    protected $base;
+    protected \Rubix\ML\Learner $base;
 
     /**
      * The number of learners to train in the ensemble.
      *
      * @var int
      */
-    protected $estimators;
+    protected int $estimators;
 
     /**
      * The ratio of samples from the training set to randomly subsample to train each base learner.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * Should we sample the bootstrap set to compensate for imbalanced class labels?
      *
      * @var bool
      */
-    protected $balanced;
+    protected bool $balanced;
 
     /**
      * The decision trees that make up the forest.
      *
      * @var list<ClassificationTree|ExtraTreeClassifier>|null
      */
-    protected $trees;
+    protected ?array $trees = null;
 
     /**
      * The zero vector for the possible class outcomes.
      *
      * @var float[]|null
      */
-    protected $classes;
+    protected ?array $classes = null;
 
     /**
      * The dimensionality of the training set.
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param \Rubix\ML\Learner|null $base

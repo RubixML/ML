@@ -46,56 +46,56 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * Should we apply a sub-linear function to dampen the effect of recurring tokens?
      *
      * @var bool
      */
-    protected $dampening;
+    protected bool $dampening;
 
     /**
      * Should we normalize by document length?
      *
      * @var bool
      */
-    protected $normalize;
+    protected bool $normalize;
 
     /**
      * The document frequencies of each word i.e. the number of times a word appeared in a document.
      *
      * @var int[]|null
      */
-    protected $dfs;
+    protected ?array $dfs = null;
 
     /**
      * The inverse document frequencies for each feature column.
      *
      * @var float[]|null
      */
-    protected $idfs;
+    protected ?array $idfs = null;
 
     /**
      * The number of tokens fitted so far.
      *
      * @var int|null
      */
-    protected $tokenCount;
+    protected ?int $tokenCount = null;
 
     /**
      * The number of documents (samples) that have been fitted so far.
      *
-     * @var int|null
+     * @var int
      */
-    protected $n;
+    protected int $n = 0;
 
     /**
      * The average token count per document.
      *
      * @var float|null
      */
-    protected $averageDocumentLength;
+    protected ?float $averageDocumentLength = null;
 
     /**
      * @param float $smoothing

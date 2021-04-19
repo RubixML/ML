@@ -41,14 +41,14 @@ class Filesystem implements Persister
      *
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Should we keep a history of past saves?
      *
      * @var bool
      */
-    protected $history;
+    protected bool $history;
 
     /**
      * @param string $path

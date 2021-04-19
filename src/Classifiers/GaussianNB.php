@@ -57,28 +57,28 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var float[]|null
      */
-    protected $logPriors;
+    protected ?array $logPriors = null;
 
     /**
      * Should we compute the prior probabilities from the training set?
      *
      * @var bool
      */
-    protected $fitPriors;
+    protected bool $fitPriors;
 
     /**
      * The amount of epsilon smoothing added to the variance of each feature.
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var float[]
      */
-    protected $weights = [
+    protected array $weights = [
         //
     ];
 
@@ -87,7 +87,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var array[]
      */
-    protected $means = [
+    protected array $means = [
         //
     ];
 
@@ -96,16 +96,16 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var array[]
      */
-    protected $variances = [
+    protected array $variances = [
         //
     ];
 
     /**
      * A small portion of variance to add for smoothing.
      *
-     * @var float
+     * @var float|null
      */
-    protected $epsilon;
+    protected ?float $epsilon = null;
 
     /**
      * @param float[]|null $priors

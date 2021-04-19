@@ -12,7 +12,7 @@ class SpecificationChain extends Specification
      *
      * @var iterable<\Rubix\ML\Specifications\Specification>
      */
-    protected $specifications;
+    protected iterable $specifications;
 
     /**
      * Build a specification object with the given arguments.

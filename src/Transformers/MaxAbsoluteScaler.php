@@ -30,7 +30,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
      *
      * @var (int|float)[]|null
      */
-    protected $maxabs;
+    protected ?array $maxabs = null;
 
     /**
      * Return the data types that this transformer is compatible with.

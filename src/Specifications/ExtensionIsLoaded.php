@@ -16,7 +16,7 @@ class ExtensionIsLoaded extends Specification
      *
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Build a specification object with the given arguments.

@@ -30,21 +30,21 @@ class Momentum implements Optimizer, Adaptive
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The rate at which the momentum force decays.
      *
      * @var float
      */
-    protected $decay;
+    protected float $decay;
 
     /**
      * The parameter cache of velocity matrices.
      *
      * @var \Tensor\Tensor[]
      */
-    protected $cache = [
+    protected array $cache = [
         //
     ];
 

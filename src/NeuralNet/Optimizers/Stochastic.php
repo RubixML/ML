@@ -22,7 +22,7 @@ class Stochastic implements Optimizer
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * @param float $rate

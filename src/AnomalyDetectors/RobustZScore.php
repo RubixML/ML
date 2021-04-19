@@ -59,28 +59,28 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      *
      * @var float
      */
-    protected $threshold;
+    protected float $threshold;
 
     /**
      * The weight of the maximum per sample z score in the overall anomaly score.
      *
      * @var float
      */
-    protected $beta;
+    protected float $beta;
 
     /**
      * The amount of epsilon smoothing added to the median absolute deviation (MAD) of each feature.
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * The median of each feature column in the training set.
      *
      * @var float[]
      */
-    protected $medians = [
+    protected array $medians = [
         //
     ];
 
@@ -89,7 +89,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      *
      * @var float[]
      */
-    protected $mads = [
+    protected array $mads = [
         //
     ];
 

@@ -21,7 +21,7 @@ class Constant implements Initializer
      *
      * @var float
      */
-    protected $value;
+    protected float $value;
 
     /**
      * @param float $value

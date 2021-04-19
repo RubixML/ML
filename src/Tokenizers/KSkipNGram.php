@@ -35,35 +35,35 @@ class KSkipNGram implements Tokenizer
      *
      * @var int
      */
-    protected $min;
+    protected int $min;
 
     /**
      * The maximum number of words in a single token.
      *
      * @var int
      */
-    protected $max;
+    protected int $max;
 
     /**
      * The number of words to skip over to form new sequences.
      *
      * @var int
      */
-    protected $skip;
+    protected int $skip;
 
     /**
      * The word tokenizer.
      *
      * @var \Rubix\ML\Tokenizers\Word
      */
-    protected $wordTokenizer;
+    protected \Rubix\ML\Tokenizers\Word $wordTokenizer;
 
     /**
      * The sentence tokenizer.
      *
      * @var \Rubix\ML\Tokenizers\Sentence
      */
-    protected $sentenceTokenizer;
+    protected \Rubix\ML\Tokenizers\Sentence $sentenceTokenizer;
 
     /**
      * @param int $min

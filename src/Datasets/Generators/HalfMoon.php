@@ -26,28 +26,28 @@ class HalfMoon implements Generator
      *
      * @var \Tensor\Vector
      */
-    protected $center;
+    protected \Tensor\Vector $center;
 
     /**
      * The scaling factor of the half moon.
      *
      * @var float
      */
-    protected $scale;
+    protected float $scale;
 
     /**
      * The rotation on the half moon in degrees.
      *
      * @var float
      */
-    protected $rotation;
+    protected float $rotation;
 
     /**
      * The factor of Gaussian noise to add to the data points.
      *
      * @var float
      */
-    protected $noise;
+    protected float $noise;
 
     /**
      * @param float $x

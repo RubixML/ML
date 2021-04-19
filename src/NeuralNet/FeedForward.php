@@ -33,14 +33,14 @@ class FeedForward implements Network
      *
      * @var \Rubix\ML\NeuralNet\Layers\Input
      */
-    protected $input;
+    protected \Rubix\ML\NeuralNet\Layers\Input $input;
 
     /**
      * The hidden layers of the network.
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected $hidden = [
+    protected array $hidden = [
         //
     ];
 
@@ -49,7 +49,7 @@ class FeedForward implements Network
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected $backPass = [
+    protected array $backPass = [
         //
     ];
 
@@ -58,14 +58,14 @@ class FeedForward implements Network
      *
      * @var \Rubix\ML\NeuralNet\Layers\Output
      */
-    protected $output;
+    protected \Rubix\ML\NeuralNet\Layers\Output $output;
 
     /**
      * The gradient descent optimizer used to train the network.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected $optimizer;
+    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Input $input

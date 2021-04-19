@@ -31,14 +31,14 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
      *
      * @var int
      */
-    protected $bins;
+    protected int $bins;
 
     /**
      * The bin intervals of the fitted data.
      *
      * @var array[]|null
      */
-    protected $intervals;
+    protected ?array $intervals = null;
 
     /**
      * @param int $bins

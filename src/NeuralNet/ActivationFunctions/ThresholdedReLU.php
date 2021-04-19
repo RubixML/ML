@@ -26,7 +26,7 @@ class ThresholdedReLU implements ActivationFunction
      *
      * @var float
      */
-    protected $threshold;
+    protected float $threshold;
 
     /**
      * @param float $threshold

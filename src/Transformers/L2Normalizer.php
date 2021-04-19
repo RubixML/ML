@@ -4,8 +4,6 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * L2 Normalizer
  *
@@ -40,18 +38,30 @@ class L2Normalizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        foreach ($samples as &$sample) {
-            $sigma = 0.0;
+        array_walk($samples, [$this, 'normalize']);
+    }
 
-            foreach ($sample as &$value) {
-                $sigma += $value ** 2;
-            }
+    /**
+     * Normalize a sample by its L2 norm.
+     *
+     * @param list<int|float> $sample
+     */
+    protected function normalize(array &$sample) : void
+    {
+        $norm = 0.0;
 
-            $norm = sqrt($sigma ?: EPSILON);
+        foreach ($sample as $value) {
+            $norm += $value ** 2;
+        }
 
-            foreach ($sample as &$value) {
-                $value /= $norm;
-            }
+        if ($norm == 0) {
+            return;
+        }
+
+        $norm = sqrt($norm);
+
+        foreach ($sample as &$value) {
+            $value /= $norm;
         }
     }
 

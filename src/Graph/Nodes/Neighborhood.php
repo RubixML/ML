@@ -27,21 +27,21 @@ class Neighborhood implements BinaryNode, Hypercube
      *
      * @var \Rubix\ML\Datasets\Labeled
      */
-    protected $dataset;
+    protected \Rubix\ML\Datasets\Labeled $dataset;
 
     /**
      * The multivariate minimum of the bounding box.
      *
      * @var list<int|float>
      */
-    protected $min;
+    protected array $min;
 
     /**
      * The multivariate maximum of the bounding box.
      *
      * @var list<int|float>
      */
-    protected $max;
+    protected array $max;
 
     /**
      * Terminate a branch with a dataset.

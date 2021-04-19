@@ -24,7 +24,7 @@ class Split implements Decision
      *
      * @var int
      */
-    protected $column;
+    protected int $column;
 
     /**
      * The value to split on.
@@ -38,21 +38,21 @@ class Split implements Decision
      *
      * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected $groups;
+    protected array $groups;
 
     /**
      * The amount of impurity that the split introduces.
      *
      * @var float
      */
-    protected $impurity;
+    protected float $impurity;
 
     /**
      * The number of training samples this node is responsible for.
      *
      * @var int
      */
-    protected $n;
+    protected int $n;
 
     /**
      * @param int $column

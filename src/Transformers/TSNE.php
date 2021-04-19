@@ -112,28 +112,28 @@ class TSNE implements Transformer, Verbose
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
 
     /**
      * The number of degrees of freedom for the student's t distribution.
      *
      * @var int
      */
-    protected $dofs;
+    protected int $dofs;
 
     /**
      * The precomputed c factor of the gradient computation.
      *
      * @var float
      */
-    protected $c;
+    protected float $c;
 
     /**
      * The learning rate that controls the global step size.
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The number of effective nearest neighbors to refer to when computing
@@ -141,68 +141,63 @@ class TSNE implements Transformer, Verbose
      *
      * @var float
      */
-    protected $perplexity;
+    protected float $perplexity;
 
     /**
-     * The desired entropy of the Gaussian component over each sample i.e the
-     * log perplexity.
+     * The desired entropy of the Gaussian component over each sample i.e the log perplexity.
      *
      * @var float
      */
-    protected $entropy;
+    protected float $entropy;
 
     /**
-     * The factor to exaggerate the distances between samples by during the
-     * early stage of fitting.
+     * The factor to exaggerate the distances between samples by during the early stage of fitting.
      *
      * @var float
      */
-    protected $exaggeration;
+    protected float $exaggeration;
 
     /**
      * The number of times to iterate over the embedding.
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
-     * The number of epochs that are considered to be in the early training
-     * stage.
+     * The number of epochs that are considered to be in the early training stage.
      *
      * @var int
      */
-    protected $early;
+    protected int $early;
 
     /**
      * The minimum norm of the gradient necessary to continue embedding.
      *
      * @var float
      */
-    protected $minGradient;
+    protected float $minGradient;
 
     /**
-     * The number of epochs without improvement in the training loss to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
-     * The distance metric used to measure distances between samples in both
-     * high and low dimensions.
+     * The distance metric used to measure distances between samples in both high and low dimensions.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
-    protected $kernel;
+    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The loss at each epoch from the last embedding.
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param int $dimensions

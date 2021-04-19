@@ -26,7 +26,7 @@ class Serial implements Backend
      *
      * @var array[]
      */
-    protected $queue = [
+    protected array $queue = [
         //
     ];
 

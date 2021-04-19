@@ -23,12 +23,11 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 class LeakyReLU implements ActivationFunction
 {
     /**
-     * The amount of leakage as a ratio of the input value to allow to pass
-     * through when not activated.
+     * The amount of leakage as a ratio of the input value to allow to pass through when inactivated.
      *
      * @var float
      */
-    protected $leakage;
+    protected float $leakage;
 
     /**
      * @param float $leakage

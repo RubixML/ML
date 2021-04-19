@@ -39,14 +39,14 @@ class MonteCarlo implements Validator, Parallel
      *
      * @var int
      */
-    protected $simulations;
+    protected int $simulations;
 
     /**
      * The hold out ratio. i.e. the ratio of samples to use for testing.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * @param int $simulations

@@ -29,7 +29,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      *
      * @var mixed[]
      */
-    protected $attributes;
+    protected array $attributes;
 
     /**
      * @param mixed[] $attributes

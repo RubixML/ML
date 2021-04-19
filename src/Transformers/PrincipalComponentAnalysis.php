@@ -43,28 +43,28 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
 
     /**
      * The matrix of eigenvectors computed at fitting.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $eigenvectors;
+    protected ?\Tensor\Matrix $eigenvectors = null;
 
     /**
      * The percentage of information lost due to the transformation.
      *
      * @var float|null
      */
-    protected $lossiness;
+    protected ?float $lossiness = null;
 
     /**
      * The centers (means) of the input feature columns.
      *
      * @var \Tensor\Vector|null
      */
-    protected $mean;
+    protected ?\Tensor\Vector $mean = null;
 
     /**
      * @param int $dimensions

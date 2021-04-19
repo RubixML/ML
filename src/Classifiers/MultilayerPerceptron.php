@@ -67,28 +67,28 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected $hiddenLayers;
+    protected array $hiddenLayers;
 
     /**
      * The number of training samples to process at a time.
      *
      * @var int
      */
-    protected $batchSize;
+    protected int $batchSize;
 
     /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected $optimizer;
+    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
      *
      * @var float
      */
-    protected $alpha;
+    protected float $alpha;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -96,73 +96,70 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the validation score to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the validation score to wait before considering an early stop.
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
      * The proportion of training samples to use for validation and progress monitoring.
      *
      * @var float
      */
-    protected $holdOut;
+    protected float $holdOut;
 
     /**
-     * The function that computes the loss associated with an erroneous
-     * activation during training.
+     * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
      */
-    protected $costFn;
+    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
 
     /**
-     * The validation metric used to score the generalization performance of
-     * the model during training.
+     * The validation metric used to score the generalization performance of the model during training.
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
-    protected $metric;
+    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
-    protected $network;
+    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
 
     /**
      * The unique class labels.
      *
      * @var string[]|null
      */
-    protected $classes;
+    protected ?array $classes = null;
 
     /**
      * The validation scores at each epoch from the last training session.
      *
      * @var float[]|null
      */
-    protected $scores;
+    protected ?array $scores = null;
 
     /**
      * The loss at each epoch from the last training session.
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers

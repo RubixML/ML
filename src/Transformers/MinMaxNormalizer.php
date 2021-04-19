@@ -31,42 +31,42 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
      *
      * @var float
      */
-    protected $min;
+    protected float $min;
 
     /**
      * The maximum value of the transformed features.
      *
      * @var float
      */
-    protected $max;
+    protected float $max;
 
     /**
      * The computed minimums of the fitted data.
      *
      * @var (int|float)[]|null
      */
-    protected $minimums;
+    protected ?array $minimums = null;
 
     /**
      * The computed maximums of the fitted data.
      *
      * @var (int|float)[]|null
      */
-    protected $maximums;
+    protected ?array $maximums = null;
 
     /**
      * The scale of each feature column.
      *
      * @var (int|float)[]|null
      */
-    protected $scales;
+    protected ?array $scales = null;
 
     /**
      * The scaled minimums of each feature column.
      *
      * @var (int|float)[]|null
      */
-    protected $mins;
+    protected ?array $mins = null;
 
     /**
      * @param float $min

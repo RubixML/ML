@@ -64,7 +64,7 @@ class RBX implements Serializer
      *
      * @var \Rubix\ML\Serializers\Gzip
      */
-    protected $base;
+    protected \Rubix\ML\Serializers\Gzip $base;
 
     /**
      * @param \Rubix\ML\Serializers\Gzip|null $base

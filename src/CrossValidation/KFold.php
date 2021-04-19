@@ -37,7 +37,7 @@ class KFold implements Validator, Parallel
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * @param int $k

@@ -27,14 +27,14 @@ class Parameter
      *
      * @var int
      */
-    protected $id;
+    protected int $id;
 
     /**
      * The parameter.
      *
      * @var \Tensor\Tensor
      */
-    protected $param;
+    protected \Tensor\Tensor $param;
 
     /**
      * @param \Tensor\Tensor $param

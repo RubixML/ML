@@ -26,14 +26,14 @@ class HuberLoss implements RegressionLoss
      *
      * @var float
      */
-    protected $alpha;
+    protected float $alpha;
 
     /**
      * The square of the alpha parameter.
      *
      * @var float
      */
-    protected $alpha2;
+    protected float $alpha2;
 
     /**
      * @param float $alpha

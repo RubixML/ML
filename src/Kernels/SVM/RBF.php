@@ -21,7 +21,7 @@ class RBF implements Kernel
      *
      * @var float|null
      */
-    protected $gamma;
+    protected ?float $gamma;
 
     /**
      * @param float|null $gamma

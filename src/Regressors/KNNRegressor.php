@@ -48,37 +48,37 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The distance kernel to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
-    protected $kernel;
+    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The training samples.
      *
-     * @var array[]
+     * @var list<array>
      */
-    protected $samples = [
+    protected array $samples = [
         //
     ];
 
     /**
      * The training labels.
      *
-     * @var (string|int|float)[]
+     * @var list<int|float>
      */
-    protected $labels = [
+    protected array $labels = [
         //
     ];
 

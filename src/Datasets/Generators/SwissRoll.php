@@ -33,28 +33,28 @@ class SwissRoll implements Generator
      *
      * @var \Tensor\Vector
      */
-    protected $center;
+    protected \Tensor\Vector $center;
 
     /**
      * The scaling factor of the swiss roll.
      *
      * @var float
      */
-    protected $scale;
+    protected float $scale;
 
     /**
      * The depth of the swiss roll i.e the scale of the y dimension.
      *
      * @var float
      */
-    protected $depth;
+    protected float $depth;
 
     /**
      * The standard deviation of the gaussian noise.
      *
      * @var float
      */
-    protected $noise;
+    protected float $noise;
 
     /**
      * @param float $x

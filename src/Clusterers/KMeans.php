@@ -57,68 +57,65 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * The size of each mini batch in samples.
      *
      * @var int
      */
-    protected $batchSize;
+    protected int $batchSize;
 
     /**
-     * The maximum number of iterations to run until the algorithm
-     * terminates.
+     * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum change in the inertia for training to continue.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
      * The distance function to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
-    protected $kernel;
+    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The cluster centroid seeder.
      *
      * @var \Rubix\ML\Clusterers\Seeders\Seeder
      */
-    protected $seeder;
+    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
 
     /**
      * The computed centroid vectors of the training data.
      *
      * @var array[]
      */
-    protected $centroids = [
+    protected array $centroids = [
         //
     ];
 
     /**
-     * The number of training samples contained within each cluster
-     * centroid.
+     * The number of training samples contained within each cluster centroid.
      *
      * @var int[]
      */
-    protected $sizes = [
+    protected array $sizes = [
         //
     ];
 
@@ -127,7 +124,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param int $k

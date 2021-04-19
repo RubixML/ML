@@ -58,21 +58,21 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var int
      */
-    protected $batchSize;
+    protected int $batchSize;
 
     /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected $optimizer;
+    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
      *
      * @var float
      */
-    protected $alpha;
+    protected float $alpha;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -80,22 +80,21 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum change in the training loss necessary to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
      * @var int
      */
-    protected $window;
+    protected int $window;
 
     /**
      * The function that computes the loss associated with an erroneous
@@ -103,21 +102,21 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
-    protected $costFn;
+    protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
-    protected $network;
+    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
 
     /**
      * The loss at each epoch from the last training session.
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param int $batchSize

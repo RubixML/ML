@@ -31,14 +31,14 @@ class ImageVectorizer implements Transformer, Stateful
      *
      * @var bool
      */
-    protected $grayscale;
+    protected bool $grayscale;
 
     /**
      * The fixed width and height of the images for each image feature column.
      *
      * @var array[]|null
      */
-    protected $sizes;
+    protected ?array $sizes = null;
 
     /**
      * @param bool $grayscale

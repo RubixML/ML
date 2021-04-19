@@ -23,14 +23,14 @@ class Percentile implements Strategy
      *
      * @var float
      */
-    protected $p;
+    protected float $p;
 
     /**
      * The pth percentile of the fitted data.
      *
      * @var float|null
      */
-    protected $percentile;
+    protected ?float $percentile = null;
 
     /**
      * @param float $p

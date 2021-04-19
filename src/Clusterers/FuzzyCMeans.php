@@ -55,56 +55,56 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      *
      * @var int
      */
-    protected $c;
+    protected int $c;
 
     /**
      * This determines the bandwidth of the fuzzy area. i.e. The fuzz factor.
      *
      * @var float
      */
-    protected $fuzz;
+    protected float $fuzz;
 
     /**
      * The precomputed exponent of the membership calculation.
      *
      * @var float
      */
-    protected $rho;
+    protected float $rho;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
      */
-    protected $epochs;
+    protected int $epochs;
 
     /**
      * The minimum change in inertia to continue training.
      *
      * @var float
      */
-    protected $minChange;
+    protected float $minChange;
 
     /**
      * The distance kernel to use when computing the distances between samples.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
-    protected $kernel;
+    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The cluster centroid seeder.
      *
      * @var \Rubix\ML\Clusterers\Seeders\Seeder
      */
-    protected $seeder;
+    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
 
     /**
      * The computed centroid vectors of the training data.
      *
      * @var array[]
      */
-    protected $centroids = [
+    protected array $centroids = [
         //
     ];
 
@@ -113,7 +113,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      *
      * @var float[]|null
      */
-    protected $steps;
+    protected ?array $steps = null;
 
     /**
      * @param int $c

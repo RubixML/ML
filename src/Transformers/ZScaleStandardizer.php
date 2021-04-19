@@ -41,28 +41,28 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
      *
      * @var bool
      */
-    protected $center;
+    protected bool $center;
 
     /**
      * The means of each continuous feature column of the fitted data.
      *
      * @var float[]|null
      */
-    protected $means;
+    protected ?array $means = null;
 
     /**
      * The variances of each continuous feature column of the fitted data.
      *
      * @var float[]|null
      */
-    protected $variances;
+    protected ?array $variances = null;
 
     /**
      *  The number of samples that this transformer has fitted.
      *
      * @var int
      */
-    protected $n = 0;
+    protected int $n = 0;
 
     /**
      * @param bool $center

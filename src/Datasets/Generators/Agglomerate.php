@@ -26,7 +26,7 @@ class Agglomerate implements Generator
      *
      * @var \Rubix\ML\Datasets\Generators\Generator[]
      */
-    protected $generators;
+    protected array $generators;
 
     /**
      * The normalized weights of each generator i.e. the probability that a
@@ -34,14 +34,14 @@ class Agglomerate implements Generator
      *
      * @var float[]
      */
-    protected $weights;
+    protected array $weights;
 
     /**
      * The dimensionality of the agglomerate.
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
 
     /**
      * @param \Rubix\ML\Datasets\Generators\Generator[] $generators

@@ -53,29 +53,28 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
-     * The percentage of outliers that are assumed to be present in the
-     * training set.
+     * The percentage of outliers that are assumed to be present in the training set.
      *
      * @var float|null
      */
-    protected $contamination;
+    protected ?float $contamination = null;
 
     /**
      * The k-d tree used for nearest neighbor queries.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The precomputed k distances between each training sample and its k'th nearest neighbor.
      *
      * @var float[]
      */
-    protected $kdistances = [
+    protected array $kdistances = [
         //
     ];
 
@@ -84,7 +83,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
      *
      * @var float[]
      */
-    protected $lrds = [
+    protected array $lrds = [
         //
     ];
 
@@ -93,14 +92,14 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
      *
      * @var float|null
      */
-    protected $threshold;
+    protected ?float $threshold = null;
 
     /**
      * The dimensionality of the training set.
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param int $k

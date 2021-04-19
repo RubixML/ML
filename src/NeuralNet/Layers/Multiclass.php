@@ -32,7 +32,7 @@ class Multiclass implements Output
      *
      * @var string[]
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 
@@ -41,28 +41,28 @@ class Multiclass implements Output
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
      */
-    protected $costFn;
+    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
 
     /**
      * The softmax activation function.
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\Softmax
      */
-    protected $activationFn;
+    protected \Rubix\ML\NeuralNet\ActivationFunctions\Softmax $activationFn;
 
     /**
      * The memorized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $input;
+    protected ?\Tensor\Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $computed;
+    protected ?\Tensor\Matrix $computed = null;
 
     /**
      * @param string[] $classes

@@ -31,7 +31,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      *
      * @var list<mixed>
      */
-    protected $elements;
+    protected array $elements;
 
     public function __construct()
     {

@@ -21,14 +21,14 @@ class Sigmoidal implements Kernel
      *
      * @var float|null
      */
-    protected $gamma;
+    protected ?float $gamma;
 
     /**
      * The independent term.
      *
      * @var float
      */
-    protected $coef0;
+    protected float $coef0;
 
     /**
      * @param float $gamma

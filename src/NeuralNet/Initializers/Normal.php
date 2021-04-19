@@ -22,7 +22,7 @@ class Normal implements Initializer
      *
      * @var float
      */
-    protected $stdDev;
+    protected float $stdDev;
 
     /**
      * @param float $stdDev

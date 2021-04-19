@@ -54,28 +54,28 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var float[]|null
      */
-    protected $logPriors;
+    protected ?array $logPriors = null;
 
     /**
      * Should we compute the prior probabilities from the training set?
      *
      * @var bool
      */
-    protected $fitPriors;
+    protected bool $fitPriors;
 
     /**
      * The amount of Laplace smoothing added to the probabilities.
      *
      * @var float
      */
-    protected $smoothing;
+    protected float $smoothing;
 
     /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var float[]
      */
-    protected $weights = [
+    protected array $weights = [
         //
     ];
 
@@ -84,7 +84,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var array[]
      */
-    protected $counts = [
+    protected array $counts = [
         //
     ];
 
@@ -93,7 +93,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @var array[]
      */
-    protected $probs = [
+    protected array $probs = [
         //
     ];
 

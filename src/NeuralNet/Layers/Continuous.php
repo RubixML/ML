@@ -28,14 +28,14 @@ class Continuous implements Output
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
-    protected $costFn;
+    protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
 
     /**
      * The memorized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $input;
+    protected ?\Tensor\Matrix $input = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn

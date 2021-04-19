@@ -66,8 +66,7 @@ class RegexFilter implements Transformer
     public const HASHTAG = '/(#\w+)/';
 
     /**
-     * Matches extra non word or number characters such as repeated punctuation and
-     * special characters.
+     * Matches extra non word or number characters such as repeated punctuation and special characters.
      *
      * @var string
      */
@@ -81,12 +80,11 @@ class RegexFilter implements Transformer
     public const EXTRA_WORDS = '/\b(\w+)(?=\s+\1+\b)/ui';
 
     /**
-     * A list of regular expression patterns used to filter the text columns of
-     * the dataset.
+     * A list of regular expression patterns used to filter the text columns of the dataset.
      *
-     * @var string[]
+     * @var list<string>
      */
-    protected $patterns;
+    protected array $patterns;
 
     /**
      * @param string[] $patterns

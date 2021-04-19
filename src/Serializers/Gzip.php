@@ -26,14 +26,14 @@ class Gzip implements Serializer
      *
      * @var int
      */
-    protected $level;
+    protected int $level;
 
     /**
      * The base serializer.
      *
      * @var \Rubix\ML\Serializers\Native
      */
-    protected $base;
+    protected \Rubix\ML\Serializers\Native $base;
 
     /**
      * @param int $level

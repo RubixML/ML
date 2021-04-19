@@ -32,14 +32,14 @@ class AdaGrad implements Optimizer, Adaptive
      *
      * @var float
      */
-    protected $rate;
+    protected float $rate;
 
     /**
      * The cache of sum of squared gradients.
      *
      * @var \Tensor\Tensor[]
      */
-    protected $cache = [
+    protected array $cache = [
         //
     ];
 

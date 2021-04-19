@@ -49,21 +49,21 @@ class SVR implements Estimator, Learner
      *
      * @var \svm
      */
-    protected $svm;
+    protected \svm $svm;
 
     /**
      * The memoized hyper-parameters of the model.
      *
      * @var mixed[]
      */
-    protected $params;
+    protected array $params;
 
     /**
      * The trained model instance.
      *
      * @var \svmmodel|null
      */
-    protected $model;
+    protected ?\svmmodel $model = null;
 
     /**
      * @param float $c

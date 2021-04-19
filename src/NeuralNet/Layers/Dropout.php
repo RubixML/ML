@@ -31,28 +31,28 @@ class Dropout implements Hidden
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * The scaling coefficient.
      *
      * @var float
      */
-    protected $scale;
+    protected float $scale;
 
     /**
      * The width of the layer.
      *
      * @var int|null
      */
-    protected $width;
+    protected ?int $width = null;
 
     /**
      * The memoized dropout mask.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $mask;
+    protected ?\Tensor\Matrix $mask = null;
 
     /**
      * @param float $ratio

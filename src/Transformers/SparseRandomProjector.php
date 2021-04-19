@@ -42,7 +42,7 @@ class SparseRandomProjector extends GaussianRandomProjector
      *
      * @var float|null
      */
-    protected $sparsity;
+    protected ?float $sparsity;
 
     /**
      * @param int $dimensions

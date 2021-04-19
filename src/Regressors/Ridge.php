@@ -44,21 +44,21 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @var float
      */
-    protected $alpha;
+    protected float $alpha;
 
     /**
      * The y intercept i.e. the bias added to the decision function.
      *
      * @var float|null
      */
-    protected $bias;
+    protected ?float $bias = null;
 
     /**
      * The computed coefficients of the regression line.
      *
      * @var \Tensor\Vector|null
      */
-    protected $coefficients;
+    protected ?\Tensor\Vector $coefficients = null;
 
     /**
      * @param float $alpha

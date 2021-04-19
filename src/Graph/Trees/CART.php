@@ -48,46 +48,46 @@ abstract class CART implements IteratorAggregate
     protected const BRANCH_INDENTER = '├───';
 
     /**
-     * The root node of the tree.
-     *
-     * @var \Rubix\ML\Graph\Nodes\Split|null
-     */
-    protected $root;
-
-    /**
      * The maximum depth of a branch before it is forced to terminate.
      *
      * @var int
      */
-    protected $maxHeight;
+    protected int $maxHeight;
 
     /**
      * The maximum number of samples that a leaf node can contain.
      *
      * @var int
      */
-    protected $maxLeafSize;
-
-    /**
-     * The maximum number of features to consider when determining a split.
-     *
-     * @var int|null
-     */
-    protected $maxFeatures;
+    protected int $maxLeafSize;
 
     /**
      * The minimum increase in purity necessary for a node not to be post pruned.
      *
      * @var float
      */
-    protected $minPurityIncrease;
+    protected float $minPurityIncrease;
+
+    /**
+     * The maximum number of features to consider when determining a split.
+     *
+     * @var int|null
+     */
+    protected ?int $maxFeatures = null;
+
+    /**
+     * The root node of the tree.
+     *
+     * @var \Rubix\ML\Graph\Nodes\Split|null
+     */
+    protected ?\Rubix\ML\Graph\Nodes\Split $root = null;
 
     /**
      * The number of feature columns in the training set.
      *
      * @var int
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @internal
@@ -289,7 +289,7 @@ abstract class CART implements IteratorAggregate
      */
     public function featureImportances() : array
     {
-        if ($this->bare()) {
+        if ($this->bare() or !$this->featureCount) {
             throw new RuntimeException('Tree has not been constructed.');
         }
 

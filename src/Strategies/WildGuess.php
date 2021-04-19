@@ -24,14 +24,14 @@ class WildGuess implements Strategy
      *
      * @var int|null
      */
-    protected $min;
+    protected ?int $min = null;
 
     /**
      * The maximum value of the fitted data.
      *
      * @var int|null
      */
-    protected $max;
+    protected ?int $max = null;
 
     /**
      * Return the data type the strategy handles.

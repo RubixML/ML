@@ -34,14 +34,14 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
 
     /**
      * The random matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected $r;
+    protected ?\Tensor\Matrix $r = null;
 
     /**
      * Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n*

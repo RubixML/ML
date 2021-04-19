@@ -22,7 +22,7 @@ class Uniform implements Initializer
      *
      * @var float
      */
-    protected $beta;
+    protected float $beta;
 
     /**
      * @param float $beta

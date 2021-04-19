@@ -29,7 +29,7 @@ class ELU implements ActivationFunction
      *
      * @var float
      */
-    protected $alpha;
+    protected float $alpha;
 
     /**
      * @param float $alpha

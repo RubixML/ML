@@ -46,28 +46,28 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * Should we consider the distances of our nearest neighbors when making predictions?
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The spatial tree used to run nearest neighbor searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The zero vector for the possible class outcomes.
      *
      * @var float[]
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 
@@ -76,7 +76,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @var int|null
      */
-    protected $featureCount;
+    protected ?int $featureCount = null;
 
     /**
      * @param int $k
