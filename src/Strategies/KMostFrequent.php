@@ -24,14 +24,14 @@ class KMostFrequent implements Strategy
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * The k most frequent classes.
      *
      * @var list<string>
      */
-    protected $classes = [
+    protected array $classes = [
         //
     ];
 

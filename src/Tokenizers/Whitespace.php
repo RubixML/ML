@@ -22,7 +22,7 @@ class Whitespace implements Tokenizer
      *
      * @var string
      */
-    protected $delimiter;
+    protected string $delimiter;
 
     /**
      * @param string $delimiter

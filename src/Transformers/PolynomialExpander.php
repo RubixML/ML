@@ -26,7 +26,7 @@ class PolynomialExpander implements Transformer
      *
      * @var int
      */
-    protected $degree;
+    protected int $degree;
 
     /**
      * @param int $degree

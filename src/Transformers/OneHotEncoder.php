@@ -39,7 +39,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      *
      * @var array[]|null
      */
-    protected $categories;
+    protected ?array $categories = null;
 
     /**
      * Return the data types that this transformer is compatible with.

@@ -47,35 +47,35 @@ class KNNImputer implements Transformer, Stateful, Persistable
      *
      * @var int
      */
-    protected $k;
+    protected int $k;
 
     /**
      * Should we use the inverse distances as confidence scores when imputing values.
      *
      * @var bool
      */
-    protected $weighted;
+    protected bool $weighted;
 
     /**
      * The placeholder category that denotes missing values.
      *
      * @var string
      */
-    protected $categoricalPlaceholder;
+    protected string $categoricalPlaceholder;
 
     /**
      * The spatial tree used to run nearest neighbor searches.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $tree;
+    protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
     /**
      * The data types of the fitted feature columns.
      *
      * @var \Rubix\ML\DataType[]|null
      */
-    protected $types;
+    protected ?array $types = null;
 
     /**
      * @param int $k

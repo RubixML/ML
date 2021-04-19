@@ -32,28 +32,28 @@ class NGram implements Tokenizer
      *
      * @var int
      */
-    protected $min;
+    protected int $min;
 
     /**
      * The maximum number of contiguous words in a single token.
      *
      * @var int
      */
-    protected $max;
+    protected int $max;
 
     /**
      * The word tokenizer.
      *
      * @var \Rubix\ML\Tokenizers\Word
      */
-    protected $wordTokenizer;
+    protected \Rubix\ML\Tokenizers\Word $wordTokenizer;
 
     /**
      * The sentence tokenizer.
      *
      * @var \Rubix\ML\Tokenizers\Sentence
      */
-    protected $sentenceTokenizer;
+    protected \Rubix\ML\Tokenizers\Sentence $sentenceTokenizer;
 
     /**
      * @param int $min

@@ -37,14 +37,14 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
      *
      * @var bool
      */
-    protected $center;
+    protected bool $center;
 
     /**
      * The computed medians of the fitted data indexed by column.
      *
      * @var (int|float)[]|null
      */
-    protected $medians;
+    protected ?array $medians = null;
 
     /**
      * The computed median absolute deviations of the fitted data
@@ -52,7 +52,7 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
      *
      * @var (int|float)[]|null
      */
-    protected $mads;
+    protected ?array $mads = null;
 
     /**
      * @param bool $center

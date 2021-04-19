@@ -14,14 +14,14 @@ class PredictionAndLabelCountsAreEqual
      *
      * @var (string|int|float)[]
      */
-    protected $predictions;
+    protected array $predictions;
 
     /**
      * The ground-truth labels.
      *
      * @var (string|int|float)[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
      * Build a specification object with the given arguments.

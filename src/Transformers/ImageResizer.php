@@ -25,21 +25,21 @@ class ImageResizer implements Transformer
      *
      * @var int
      */
-    protected $width;
+    protected int $width;
 
     /**
      * The height to fit the image to.
      *
      * @var int
      */
-    protected $height;
+    protected int $height;
 
     /**
      * The ratio of width to height.
      *
      * @var float
      */
-    protected $ratio;
+    protected float $ratio;
 
     /**
      * @param int $width

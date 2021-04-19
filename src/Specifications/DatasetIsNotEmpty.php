@@ -15,7 +15,7 @@ class DatasetIsNotEmpty extends Specification
      *
      * @var \Rubix\ML\Datasets\Dataset
      */
-    protected $dataset;
+    protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * Build a specification object with the given arguments.

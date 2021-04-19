@@ -18,14 +18,14 @@ class SamplesAreCompatibleWithTransformer extends Specification
      *
      * @var \Rubix\ML\Datasets\Dataset
      */
-    protected $dataset;
+    protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * The transformer.
      *
      * @var \Rubix\ML\Transformers\Transformer
      */
-    protected $transformer;
+    protected \Rubix\ML\Transformers\Transformer $transformer;
 
     /**
      * Build a specification object with the given arguments.

@@ -24,14 +24,14 @@ class Prior implements Strategy
      *
      * @var int[]|null
      */
-    protected $counts;
+    protected ?array $counts = null;
 
     /**
      * The sample size.
      *
      * @var int|null
      */
-    protected $n;
+    protected ?int $n = null;
 
     /**
      * Return the data type the strategy handles.

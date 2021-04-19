@@ -18,25 +18,18 @@ use function is_string;
 class HTMLStripper implements Transformer
 {
     /**
-     * A list of html tags that should not be stripped ex. ['p', 'br']. Note this is converted
-     * to a string for backwards compatibility with PHP < 7.4.
+     * A list of html tags that should not be stripped ex. ['p', 'br'].
      *
-     * @var string
+     * @var array
      */
-    protected $allowedTags;
+    protected array $allowedTags;
 
     /**
      * @param string[] $allowedTags
      */
     public function __construct(array $allowedTags = [])
     {
-        $list = '';
-
-        foreach ($allowedTags as $tag) {
-            $list .= "<$tag>";
-        }
-
-        $this->allowedTags = $list;
+        $this->allowedTags = $allowedTags;
     }
 
     /**
@@ -74,6 +67,6 @@ class HTMLStripper implements Transformer
      */
     public function __toString() : string
     {
-        return "HTML Stripper (allowed tags: {$this->allowedTags})";
+        return 'HTML Stripper (allowed tags: ' . implode(', ', $this->allowedTags) . ')';
     }
 }

@@ -41,35 +41,35 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      *
      * @var int
      */
-    protected $maxVocabularySize;
+    protected int $maxVocabularySize;
 
     /**
      * The minimum proportion of documents a word must appear in to be added to the vocabulary.
      *
      * @var float
      */
-    protected $minDocumentFrequency;
+    protected float $minDocumentFrequency;
 
     /**
      * The maximum proportion of documents a word can appear in to be added to the vocabulary.
      *
      * @var float
      */
-    protected $maxDocumentFrequency;
+    protected float $maxDocumentFrequency;
 
     /**
      * The tokenizer used to extract features from blobs of text.
      *
      * @var \Rubix\ML\Tokenizers\Tokenizer
      */
-    protected $tokenizer;
+    protected \Rubix\ML\Tokenizers\Tokenizer $tokenizer;
 
     /**
      * The vocabularies of each categorical feature column of the fitted dataset.
      *
      * @var array[]|null
      */
-    protected $vocabularies;
+    protected ?array $vocabularies = null;
 
     /**
      * @param int $maxVocabularySize

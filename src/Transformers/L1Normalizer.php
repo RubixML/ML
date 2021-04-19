@@ -40,12 +40,24 @@ class L1Normalizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        foreach ($samples as &$sample) {
-            $norm = array_sum(array_map('abs', $sample)) ?: EPSILON;
+        array_walk($samples, [$this, 'normalize']);
+    }
 
-            foreach ($sample as &$value) {
-                $value /= $norm;
-            }
+    /**
+     * Normalize a sample by its L1 norm.
+     * 
+     * @param list<int|float>
+     */
+    protected function normalize(array &$sample) : void
+    {
+        $norm = array_sum(array_map('abs', $sample));
+
+        if ($norm == 0) {
+            return;
+        }
+
+        foreach ($sample as &$value) {
+            $value /= $norm;
         }
     }
 
