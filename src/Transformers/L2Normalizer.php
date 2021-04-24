@@ -4,6 +4,9 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
+use function array_walk;
+use function sqrt;
+
 /**
  * L2 Normalizer
  *
@@ -15,13 +18,8 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L2Normalizer extends LambdaFunction
+class L2Normalizer implements Transformer
 {
-    public function __construct()
-    {
-        parent::__construct([$this, 'normalize']);
-    }
-
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -34,6 +32,16 @@ class L2Normalizer extends LambdaFunction
         return [
             DataType::continuous(),
         ];
+    }
+
+    /**
+     * Transform the dataset in place.
+     *
+     * @param array[] $samples
+     */
+    public function transform(array &$samples) : void
+    {
+        array_walk($samples, [$this, 'normalize']);
     }
 
     /**

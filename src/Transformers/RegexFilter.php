@@ -7,6 +7,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function gettype;
 use function is_string;
+use function preg_replace;
+use function array_walk;
+use function array_values;
 
 /**
  * Regex Filter
@@ -117,7 +120,7 @@ class RegexFilter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param list<list<mixed>> $samples
+     * @param array[] $samples
      */
     public function transform(array &$samples) : void
     {
@@ -125,11 +128,19 @@ class RegexFilter implements Transformer
             return;
         }
 
-        foreach ($samples as &$sample) {
-            foreach ($sample as &$value) {
-                if (is_string($value)) {
-                    $value = preg_replace($this->patterns, '', $value);
-                }
+        array_walk($samples, [$this, 'filter']);
+    }
+
+    /**
+     * Filter the regex patterns from the dataset.
+     *
+     * @param list<mixed> $sample
+     */
+    protected function filter(array &$sample) : void
+    {
+        foreach ($sample as &$value) {
+            if (is_string($value)) {
+                $value = preg_replace($this->patterns, '', $value);
             }
         }
     }

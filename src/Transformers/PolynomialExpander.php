@@ -8,10 +8,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 /**
  * Polynomial Expander
  *
- * This transformer will generate polynomials up to and including the
- * specified degree of each feature column. Polynomial expansion is sometimes
- * used to fit data that is non-linear using a linear estimator such as Ridge
- * or Logistic Regression.
+ * This transformer will generate polynomials up to and including the specified *degree* of each continuous feature.
+ * Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as Ridge,
+ * Logistic Regression, or Softmax Classifier.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -20,9 +19,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 class PolynomialExpander implements Transformer
 {
     /**
-     * The degree of the polynomials to generate. Higher order polynomials are
-     * able to fit data better, however require extra features to be added
-     * to the dataset.
+     * The degree of the polynomials to generate for each feature.
      *
      * @var int
      */
@@ -59,23 +56,31 @@ class PolynomialExpander implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param list<list<mixed>> $samples
+     * @param array[] $samples
      */
     public function transform(array &$samples) : void
     {
-        foreach ($samples as &$sample) {
-            $vector = [];
+        array_walk($samples, [$this, 'expand']);
+    }
 
-            foreach ($sample as $value) {
-                $vector[] = $value;
+    /**
+     * Expand the continuous features of a sample.
+     *
+     * @param list<mixed> $sample
+     */
+    protected function expand(array &$sample) : void
+    {
+        $vector = [];
 
-                for ($i = 2; $i <= $this->degree; ++$i) {
-                    $vector[] = $value ** $i;
-                }
+        foreach ($sample as $value) {
+            $vector[] = $value;
+
+            for ($exponent = 2; $exponent <= $this->degree; ++$exponent) {
+                $vector[] = $value ** $exponent;
             }
-
-            $sample = $vector;
         }
+
+        $sample = $vector;
     }
 
     /**

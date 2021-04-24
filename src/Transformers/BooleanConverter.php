@@ -70,17 +70,23 @@ class BooleanConverter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param list<list<mixed>> $samples
+     * @param array[] $samples
      */
     public function transform(array &$samples) : void
     {
-        foreach ($samples as &$sample) {
-            foreach ($sample as &$value) {
-                if (is_bool($value)) {
-                    $value = $value
-                        ? $this->trueValue
-                        : $this->falseValue;
-                }
+        array_walk($samples, [$this, 'convert']);
+    }
+
+    /**
+     * Convert booleans to their user-defined values.
+     *
+     * @param list<mixed> $sample
+     */
+    public function convert(array &$sample) : void
+    {
+        foreach ($sample as &$value) {
+            if (is_bool($value)) {
+                $value = $value ? $this->trueValue : $this->falseValue;
             }
         }
     }

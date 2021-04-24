@@ -44,24 +44,32 @@ class NumericStringConverter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param list<list<mixed>> $samples
+     * @param array[] $samples
      */
     public function transform(array &$samples) : void
     {
-        foreach ($samples as &$sample) {
-            foreach ($sample as &$value) {
-                if (is_string($value)) {
-                    if (is_numeric($value)) {
-                        $value = (int) $value == $value
-                            ? (int) $value
-                            : (float) $value;
+        array_walk($samples, [$this, 'convert']);
+    }
 
-                        continue;
-                    }
+    /**
+     * Convert the numeric strings to integer and floating point numbers.
+     *
+     * @param list<mixed> $sample
+     */
+    public function convert(array &$sample) : void
+    {
+        foreach ($sample as &$value) {
+            if (is_string($value)) {
+                if (is_numeric($value)) {
+                    $value = (int) $value == $value
+                        ? (int) $value
+                        : (float) $value;
 
-                    if ($value === self::NAN_PLACEHOLDER) {
-                        $value = NAN;
-                    }
+                    continue;
+                }
+
+                if ($value === self::NAN_PLACEHOLDER) {
+                    $value = NAN;
                 }
             }
         }

@@ -13,6 +13,7 @@ use function is_string;
 use function array_fill;
 use function array_merge;
 use function array_count_values;
+use function array_walk;
 use function intval;
 use function crc32;
 
@@ -44,14 +45,21 @@ class TokenHashingVectorizer implements Transformer
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
+
+    /**
+     * The proportion of dimensionality being utilized in the output vector space.
+     *
+     * @var float
+     */
+    protected float $scale;
 
     /**
      * The tokenizer used to extract tokens from blobs of text.
      *
      * @var \Rubix\ML\Tokenizers\Tokenizer
      */
-    protected $tokenizer;
+    protected \Rubix\ML\Tokenizers\Tokenizer $tokenizer;
 
     /**
      * @param int $dimensions
@@ -67,6 +75,7 @@ class TokenHashingVectorizer implements Transformer
         }
 
         $this->dimensions = $dimensions;
+        $this->scale = $dimensions / self::MAX_DIMENSIONS;
         $this->tokenizer = $tokenizer ?? new Word();
     }
 
@@ -87,33 +96,39 @@ class TokenHashingVectorizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        $scale = $this->dimensions / self::MAX_DIMENSIONS;
+        array_walk($samples, [$this, 'vectorize']);
+    }
 
-        foreach ($samples as &$sample) {
-            $vectors = [];
+    /**
+     * Vectorize the text features of a sample.
+     *
+     * @param list<mixed> $sample
+     */
+    public function vectorize(array &$sample) : void
+    {
+        $vectors = [];
 
-            foreach ($sample as $column => $value) {
-                if (is_string($value)) {
-                    $template = array_fill(0, $this->dimensions, 0);
+        foreach ($sample as $column => $value) {
+            if (is_string($value)) {
+                $template = array_fill(0, $this->dimensions, 0);
 
-                    $tokens = $this->tokenizer->tokenize($value);
+                $tokens = $this->tokenizer->tokenize($value);
 
-                    $counts = array_count_values($tokens);
+                $counts = array_count_values($tokens);
 
-                    foreach ($counts as $token => $count) {
-                        $offset = intval(crc32($token) * $scale);
+                foreach ($counts as $token => $count) {
+                    $offset = intval(crc32($token) * $this->scale);
 
-                        $template[$offset] += $count;
-                    }
-
-                    $vectors[] = $template;
-
-                    unset($sample[$column]);
+                    $template[$offset] += $count;
                 }
-            }
 
-            $sample = array_merge($sample, ...$vectors);
+                $vectors[] = $template;
+
+                unset($sample[$column]);
+            }
         }
+
+        $sample = array_merge($sample, ...$vectors);
     }
 
     /**
