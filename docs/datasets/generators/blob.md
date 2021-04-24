@@ -5,7 +5,7 @@ A normally distributed (Gaussian) n-dimensional blob of samples centered at a gi
 
 **Data Types:** Continuous
 
-**Label Type:** Categorical
+**Label Type:** Unlabeled
 
 ## Parameters
 | # | Name | Default | Type | Description |
