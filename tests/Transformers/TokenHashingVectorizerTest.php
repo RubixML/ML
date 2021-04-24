@@ -2,16 +2,17 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\WhitespaceTrimmer;
+use Rubix\ML\Transformers\TokenHashingVectorizer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @covers \Rubix\ML\Transformers\WhitespaceTrimmer
+ * @covers \Rubix\ML\Transformers\TokenHashingVectorizer
  */
-class WhitespaceTrimmerTest extends TestCase
+class TokenHashingVectorizerTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -19,7 +20,7 @@ class WhitespaceTrimmerTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\WhitespaceTrimmer
+     * @var \Rubix\ML\Transformers\TokenHashingVectorizer
      */
     protected $transformer;
 
@@ -29,12 +30,11 @@ class WhitespaceTrimmerTest extends TestCase
     protected function setUp() : void
     {
         $this->dataset = Unlabeled::quick([
-            ['The quick brown fox jumped  over  the lazy man sitting at a bus'
-                . ' stop drinking a can of     Coke'],
-            [' with a Dandy   umbrella '],
+            ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
+            ['with a dandy umbrella'],
         ]);
 
-        $this->transformer = new WhitespaceTrimmer();
+        $this->transformer = new TokenHashingVectorizer(20, new Word());
     }
 
     /**
@@ -42,7 +42,7 @@ class WhitespaceTrimmerTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(WhitespaceTrimmer::class, $this->transformer);
+        $this->assertInstanceOf(TokenHashingVectorizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -54,9 +54,8 @@ class WhitespaceTrimmerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $outcome = [
-            ['The quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of Coke'],
-            ['with a Dandy umbrella'],
+            [1, 1, 0, 1, 2, 0, 0, 1, 3, 0, 0, 1, 0, 0, 2, 1, 0, 1, 5, 0],
+            [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());

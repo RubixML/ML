@@ -4,6 +4,9 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
+use function is_string;
+use function is_numeric;
+
 /**
  * Numeric String Converter
  *

@@ -134,13 +134,12 @@ nav:
         - KNN Imputer: transformers/knn-imputer.md
         - Missing Data Imputer: transformers/missing-data-imputer.md
       - Natural Language:
-        - HTML Stripper: transformers/html-stripper.md
         - Regex Filter: transformers/regex-filter.md
         - Text Normalizer: transformers/text-normalizer.md
         - Multibyte Text Normalizer: transformers/multibyte-text-normalizer.md
         - Stop Word Filter: transformers/stop-word-filter.md
         - TF-IDF Transformer: transformers/tf-idf-transformer.md
-        - Whitespace Trimmer: transformers/whitespace-trimmer.md
+        - Token Hashing Vectorizer: transformers/token-hashing-vectorizer.md
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
       - Images:
         - Image Resizer: transformers/image-resizer.md

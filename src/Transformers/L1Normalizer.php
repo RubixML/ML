@@ -15,8 +15,13 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L1Normalizer implements Transformer
+class L1Normalizer extends LambdaFunction
 {
+    public function __construct()
+    {
+        parent::__construct([$this, 'normalize']);
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -29,16 +34,6 @@ class L1Normalizer implements Transformer
         return [
             DataType::continuous(),
         ];
-    }
-
-    /**
-     * Transform the dataset in place.
-     *
-     * @param list<list<mixed>> $samples
-     */
-    public function transform(array &$samples) : void
-    {
-        array_walk($samples, [$this, 'normalize']);
     }
 
     /**

@@ -3,13 +3,13 @@
 namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Transformers\TokenHashingVectorizer;
 
 /**
  * @Groups({"Transformers"})
  * @BeforeMethods({"setUp"})
  */
-class WordCountVectorizerBench
+class TokenHashingVectorizerBench
 {
     protected const DATASET_SIZE = 2500;
 
@@ -21,7 +21,7 @@ class WordCountVectorizerBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\WordCountVectorizer
+     * @var \Rubix\ML\Transformers\TokenHashingVectorizer
      */
     protected $transformer;
 
@@ -47,7 +47,7 @@ class WordCountVectorizerBench
 
         $this->dataset = Unlabeled::quick($samples);
 
-        $this->transformer = new WordCountVectorizer(1000);
+        $this->transformer = new TokenHashingVectorizer(1000);
     }
 
     /**

@@ -106,17 +106,16 @@ Imputation is a technique for handling missing values in your dataset by replaci
 | [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | | ● | |
 
 ### Natural Language
-The library provides a number of transformers for natural language processing (NLP) and information retrieval (IR) tasks such as those for text cleaning, feature extraction, and term weighting of features from raw text blobs.
+The library provides a number of transformers for Natural Language Processing (NLP) and Information Retrieval (IR) tasks such as those for text cleaning, feature extraction, and term weighting of features from raw text blobs.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
-| [HTML Stripper](transformers/html-stripper.md) | | | |
 | [Regex Filter](transformers/regex-filter.md) | | | |
 | [Text Normalizer](transformers/text-normalizer.md) | | | |
 | [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | | |
 | [Stop Word Filter](transformers/stop-word-filter.md) | | | |
 | [TF-IDF Transformer](transformers/tf-idf-transformer.md) | | ● | ● |
-| [Whitespace Trimmer](transformers/whitespace-trimmer.md) | | | |
+| [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) | | | |
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | | ● | |
 
 ### Images

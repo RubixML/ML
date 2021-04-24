@@ -15,8 +15,13 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L2Normalizer implements Transformer
+class L2Normalizer extends LambdaFunction
 {
+    public function __construct()
+    {
+        parent::__construct([$this, 'normalize']);
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -32,16 +37,6 @@ class L2Normalizer implements Transformer
     }
 
     /**
-     * Transform the dataset in place.
-     *
-     * @param list<list<mixed>> $samples
-     */
-    public function transform(array &$samples) : void
-    {
-        array_walk($samples, [$this, 'normalize']);
-    }
-
-    /**
      * Normalize a sample by its L2 norm.
      *
      * @param list<int|float> $sample
@@ -54,7 +49,7 @@ class L2Normalizer implements Transformer
             $norm += $value ** 2;
         }
 
-        if ($norm == 0) {
+        if ($norm === 0.0) {
             return;
         }
 

@@ -1,3 +1,7 @@
+- 1.0.0-beta3
+    - Added Token Hashing Vectorizer transformer
+    - Remove HTML Stripper and Whitespace Remover transformers
+
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
     - Added TF-IDF sublinear TF scaling and document length normalization
