@@ -2136,18 +2136,6 @@
   
   
     <li class="md-nav__item">
-      <a href="html-stripper.html" class="md-nav__link">
-        HTML Stripper
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="regex-filter.html" class="md-nav__link">
         Regex Filter
       </a>
@@ -2208,8 +2196,8 @@
   
   
     <li class="md-nav__item">
-      <a href="whitespace-trimmer.html" class="md-nav__link">
-        Whitespace Trimmer
+      <a href="token-hashing-vectorizer.html" class="md-nav__link">
+        Token Hashing Vectorizer
       </a>
     </li>
   
@@ -4172,7 +4160,7 @@
                 
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/PolynomialExpander.php">[source]</a></span></p>
 <h1 id="polynomial-expander">Polynomial Expander<a class="headerlink" href="#polynomial-expander" title="Permanent link">#</a></h1>
-<p>This transformer will generate polynomials up to and including the specified <em>degree</em> of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as <a href="#ridge">Ridge</a> or <a href="#logistic-regression">Logistic Regression</a>.</p>
+<p>This transformer will generate polynomials up to and including the specified <em>degree</em> of each continuous feature. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as <a href="../regressors/ridge.html">Ridge</a>, <a href="../classifiers/logistic-regression.html">Logistic Regression</a>, or <a href="../classifiers/softmax-classifier.html">Softmax Classifier</a>.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous only</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4192,7 +4180,7 @@
 <td>degree</td>
 <td>2</td>
 <td>int</td>
-<td>The highest degree polynomial to generate from each feature vector.</td>
+<td>The degree of the polynomials to generate for each feature.</td>
 </tr>
 </tbody>
 </table>
@@ -4211,7 +4199,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-23
+      Last update: 2021-04-24
     
   </small>
 </div>

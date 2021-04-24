@@ -2084,18 +2084,6 @@
   
   
     <li class="md-nav__item">
-      <a href="html-stripper.html" class="md-nav__link">
-        HTML Stripper
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="regex-filter.html" class="md-nav__link">
         Regex Filter
       </a>
@@ -2215,8 +2203,8 @@
   
   
     <li class="md-nav__item">
-      <a href="whitespace-trimmer.html" class="md-nav__link">
-        Whitespace Trimmer
+      <a href="token-hashing-vectorizer.html" class="md-nav__link">
+        Token Hashing Vectorizer
       </a>
     </li>
   
@@ -4219,26 +4207,16 @@
 <td>bool</td>
 <td>Should we apply a sub-linear function to dampen the effect of recurring tokens?</td>
 </tr>
-<tr>
-<td>3</td>
-<td>normalize</td>
-<td>false</td>
-<td>bool</td>
-<td>Should we normalize by document length?</td>
-</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TfIdfTransformer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TfIdfTransformer</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TfIdfTransformer</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return the document frequencies calculated during fitting:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dfs</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="k">array</span>
-</code></pre></div></p>
-<p>Return the average length of a document in tokens:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">averageDocumentLength</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="nx">float</span>
 </code></pre></div></p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
 <div class="footnote">
@@ -4248,10 +4226,7 @@
 <p>S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-<li id="fn:3">
-<p>C. D. Manning et al. (2009). An Introduction to Information Retrieval.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>C. D. Manning et al. (2009). An Introduction to Information Retrieval.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -4263,7 +4238,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-18
+      Last update: 2021-04-23
     
   </small>
 </div>
@@ -4300,13 +4275,13 @@
         </a>
       
       
-        <a href="whitespace-trimmer.html" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="token-hashing-vectorizer.html" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Whitespace Trimmer
+              Token Hashing Vectorizer
             </div>
           </div>
           <div class="md-footer__button md-icon">

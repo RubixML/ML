@@ -11,14 +11,14 @@
       
       
       
-        <link rel="canonical" href="https://rubixml.com/transformers/html-stripper.html">
+        <link rel="canonical" href="https://rubixml.com/transformers/token-hashing-vectorizer.html">
       
       <link rel="shortcut icon" href="../images/app-icon-small.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.3">
     
     
       
-        <title>HTML Stripper - Rubix ML</title>
+        <title>Token Hashing Vectorizer - Rubix ML</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#html-stripper" class="md-skip">
+        <a href="#token-hashing-vectorizer" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              HTML Stripper
+              Token Hashing Vectorizer
             
           </span>
         </div>
@@ -2082,70 +2082,6 @@
             
   
   
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          HTML Stripper
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="html-stripper.html" class="md-nav__link md-nav__link--active">
-        HTML Stripper
-      </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-methods" class="md-nav__link">
-    Additional Methods
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-          
-            
-  
-  
   
     <li class="md-nav__item">
       <a href="regex-filter.html" class="md-nav__link">
@@ -2206,11 +2142,63 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="whitespace-trimmer.html" class="md-nav__link">
-        Whitespace Trimmer
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Token Hashing Vectorizer
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="token-hashing-vectorizer.html" class="md-nav__link md-nav__link--active">
+        Token Hashing Vectorizer
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-methods" class="md-nav__link">
+    Additional Methods
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -4165,26 +4153,22 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/RubixML/ML/edit/master/docs/transformers/html-stripper.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/RubixML/ML/edit/master/docs/transformers/token-hashing-vectorizer.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/HTMLStripper.php">[source]</a></span></p>
-<h1 id="html-stripper">HTML Stripper<a class="headerlink" href="#html-stripper" title="Permanent link">#</a></h1>
-<p>Removes any HTML or PHP tags from the text of a feature column.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Since the HTML is not actually validated during transformation, broken tags may result in unexpectedly removing non-HTML text.</p>
-</div>
+                <p><span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Transformers/TokenHashingVectorizer.php">[source]</a></span></p>
+<h1 id="token-hashing-vectorizer">Token Hashing Vectorizer<a class="headerlink" href="#token-hashing-vectorizer" title="Permanent link">#</a></h1>
+<p>Token Hashing Vectorizer builds token count vectors on the fly by employing a <em>hashing trick</em>. It is a stateless transformer that uses the CRC32 (Cyclic Redundancy Check) hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
-<p><strong>Data Type Compatibility:</strong> Categorical</p>
+<p><strong>Data Type Compatibility:</strong> Continuous only</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
 <tr>
 <th>#</th>
-<th>Name</th>
+<th>Param</th>
 <th>Default</th>
 <th>Type</th>
 <th>Description</th>
@@ -4193,17 +4177,25 @@
 <tbody>
 <tr>
 <td>1</td>
-<td>allowedTags</td>
+<td>dimensions</td>
 <td></td>
-<td>array</td>
-<td>A list of html tags that should not be stripped ex. ['p', 'br'].</td>
+<td>int</td>
+<td>The dimensionality of the vector space.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>tokenizer</td>
+<td>Word</td>
+<td>Tokenizer</td>
+<td>The tokenizer used to extract tokens from blobs of text.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\HTMLStripper</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TokenHashingVectorizer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Tokenizers\NGram</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HTMLStripper</span><span class="p">();</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TokenHashingVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="k">new</span> <span class="nx">NGram</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This transformer does not have any additional methods.</p>
@@ -4215,7 +4207,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-04-23
     
   </small>
 </div>
@@ -4237,7 +4229,7 @@
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="missing-data-imputer.html" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="tf-idf-transformer.html" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -4246,19 +4238,19 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Missing Data Imputer
+              TF-IDF Transformer
             </div>
           </div>
         </a>
       
       
-        <a href="regex-filter.html" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="word-count-vectorizer.html" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Regex Filter
+              Word Count Vectorizer
             </div>
           </div>
           <div class="md-footer__button md-icon">
