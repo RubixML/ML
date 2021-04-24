@@ -14,7 +14,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_fill;
-use function array_sum;
 use function log;
 
 /**
@@ -30,8 +29,7 @@ use function log;
  * References:
  * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical
  * arguments for IDF.
- * [2] S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.
- * [3] C. D. Manning et al. (2009). An Introduction to Information Retrieval.
+ * [2] C. D. Manning et al. (2009). An Introduction to Information Retrieval.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -56,13 +54,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected bool $dampening;
 
     /**
-     * Should we normalize by document length?
-     *
-     * @var bool
-     */
-    protected bool $normalize;
-
-    /**
      * The document frequencies of each word i.e. the number of times a word appeared in a document.
      *
      * @var int[]|null
@@ -77,13 +68,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected ?array $idfs = null;
 
     /**
-     * The number of tokens fitted so far.
-     *
-     * @var int|null
-     */
-    protected ?int $tokenCount = null;
-
-    /**
      * The number of documents (samples) that have been fitted so far.
      *
      * @var int
@@ -91,18 +75,11 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     protected int $n = 0;
 
     /**
-     * The average token count per document.
-     *
-     * @var float|null
-     */
-    protected ?float $averageDocumentLength = null;
-
-    /**
      * @param float $smoothing
      * @param bool $dampening
-     * @param bool $normalize
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $smoothing = 1.0, bool $dampening = false, bool $normalize = false)
+    public function __construct(float $smoothing = 1.0, bool $dampening = false)
     {
         if ($smoothing <= 0.0) {
             throw new InvalidArgumentException('Smoothing must be'
@@ -111,7 +88,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
 
         $this->smoothing = $smoothing;
         $this->dampening = $dampening;
-        $this->normalize = $normalize;
     }
 
     /**
@@ -135,7 +111,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function fitted() : bool
     {
-        return isset($this->idfs) and isset($this->averageDocumentLength);
+        return isset($this->idfs);
     }
 
     /**
@@ -149,16 +125,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     }
 
     /**
-     * Return the average length of a document in tokens.
-     *
-     * @return float|null
-     */
-    public function averageDocumentLength() : ?float
-    {
-        return $this->averageDocumentLength;
-    }
-
-    /**
      * Fit the transformer to a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -166,7 +132,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     public function fit(Dataset $dataset) : void
     {
         $this->dfs = array_fill(0, $dataset->numFeatures(), 0);
-        $this->tokenCount = $this->n = 0;
+        $this->n = 0;
 
         $this->update($dataset);
     }
@@ -194,15 +160,11 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
             foreach ($sample as $column => $value) {
                 if ($value > 0) {
                     ++$this->dfs[$column];
-
-                    $this->tokenCount += $value;
                 }
             }
         }
 
         $this->n += $dataset->numSamples();
-
-        $this->averageDocumentLength = $this->tokenCount / $this->n;
 
         $nHat = $this->n + $this->smoothing;
 
@@ -223,27 +185,13 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if ($this->idfs === null or $this->averageDocumentLength === null) {
+        if ($this->idfs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            if ($this->normalize) {
-                $documentLength = array_sum($sample);
-
-                if ($documentLength == 0) {
-                    continue;
-                }
-
-                $delta = $this->averageDocumentLength / $documentLength;
-            }
-
             foreach ($sample as $column => &$value) {
                 if ($value > 0) {
-                    if (isset($delta)) {
-                        $value *= $delta;
-                    }
-
                     if ($this->dampening) {
                         $value = 1.0 + log($value);
                     }
@@ -262,7 +210,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
     public function __toString() : string
     {
         return "TF-IDF Transformer (smoothing: {$this->smoothing}, dampening: "
-            . Params::toString($this->dampening) . ', normalize: '
-            . Params::toString($this->normalize) . ')';
+            . Params::toString($this->dampening) . ')';
     }
 }
