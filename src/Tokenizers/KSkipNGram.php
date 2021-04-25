@@ -5,6 +5,7 @@ namespace Rubix\ML\Tokenizers;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
+use function min;
 
 /**
  * K-Skip-N-Gram

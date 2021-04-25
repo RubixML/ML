@@ -3,6 +3,7 @@
     - Remove HTML Stripper and Whitespace Remover transformers
     - Rename steps() method to losses()
     - Steps() now returns iterable progress table
+    - Remove rules() method on CART
 
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms

@@ -167,10 +167,6 @@ class ClassificationTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $rules = $this->estimator->rules(['r', 'g', 'b']);
-
-        $this->assertIsString($rules);
     }
 
     /**

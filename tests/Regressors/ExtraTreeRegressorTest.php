@@ -160,10 +160,6 @@ class ExtraTreeRegressorTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $rules = $this->estimator->rules();
-
-        $this->assertIsString($rules);
     }
 
     /**

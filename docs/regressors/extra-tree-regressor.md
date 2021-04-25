@@ -23,19 +23,14 @@ $estimator = new ExtraTreeRegressor(30, 5, 0.05, null);
 ```
 
 ## Additional Methods
-Return a human-readable text representation of the decision tree ruleset:
+Return the number of levels in the tree.
 ```php
-public rules(?array $header = null) : string
+public height() : ?int
 ```
 
-Return the height of the tree i.e. the number of layers:
+Return a factor that quantifies the skewness of the distribution of nodes in the tree.
 ```php
-public height() : int
-```
-
-Return the balance factor of the tree:
-```php
-public balance() : int
+public balance() : ?int
 ```
 
 ## References

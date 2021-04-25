@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
@@ -131,25 +130,23 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Return the height of the tree i.e. the number of levels.
+     * Return the number of levels in the tree.
      *
-     * @return int
+     * @return int|null
      */
-    public function height() : int
+    public function height() : ?int
     {
-        return $this->root ? $this->root->height() : 0;
+        return $this->root ? $this->root->height() : null;
     }
 
     /**
-     * Return the balance factor of the tree. A balanced tree will have
-     * a factor of 0 whereas an imbalanced tree will either be positive
-     * or negative indicating the direction and degree of the imbalance.
+     * Return a factor that quantifies the skewness of the distribution of nodes in the tree.
      *
-     * @return int
+     * @return int|null
      */
-    public function balance() : int
+    public function balance() : ?int
     {
-        return $this->root ? $this->root->balance() : 0;
+        return $this->root ? $this->root->balance() : null;
     }
 
     /**
@@ -305,33 +302,6 @@ abstract class CART implements IteratorAggregate
     }
 
     /**
-     * Print a human readable text representation of the decision tree.
-     *
-     * @param string[] $header
-     * @throws RuntimeException
-     * @return string
-     */
-    public function rules(?array $header = null) : string
-    {
-        if (!$this->root) {
-            throw new RuntimeException('Tree has not been constructed.');
-        }
-
-        if (isset($header) and count($header) !== $this->featureCount) {
-            throw new InvalidArgumentException('Header must have the'
-                . ' same number of columns as the training set, '
-                . "{$this->featureCount} expected but "
-                . count($header) . ' given.');
-        }
-
-        $carry = '';
-
-        $this->_rules($carry, $this->root, $header);
-
-        return $carry;
-    }
-
-    /**
      * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
      *
      * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
@@ -463,51 +433,5 @@ abstract class CART implements IteratorAggregate
         }
 
         return $impurity;
-    }
-
-    /**
-     * Recursive function to print out the decision rule at each node using preorder traversal.
-     *
-     * @param string $carry
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
-     * @param string[]|null $header
-     * @param int $depth
-     */
-    protected function _rules(string &$carry, BinaryNode $node, ?array $header = null, int $depth = 0) : void
-    {
-        ++$depth;
-
-        $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
-
-        if ($node instanceof Split) {
-            $left = $node->left();
-            $right = $node->right();
-
-            $identifier = $header ? $header[$node->column()] : "Feature {$node->column()}";
-
-            if ($left) {
-                $value = $node->value();
-
-                $operator = is_string($value) ? '==' : '<';
-
-                $carry .= "$prefix $identifier $operator $value" . PHP_EOL;
-
-                $this->_rules($carry, $left, $header, $depth);
-            }
-
-            if ($right) {
-                $value = $node->value();
-
-                $operator = is_string($value) ? '!=' : '>=';
-
-                $carry .= "$prefix $identifier $operator $value" . PHP_EOL;
-
-                $this->_rules($carry, $right, $header, $depth);
-            }
-        }
-
-        if ($node instanceof Outcome) {
-            $carry .= $prefix . $node . PHP_EOL;
-        }
     }
 }

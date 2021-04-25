@@ -23,39 +23,14 @@ $estimator = new ExtraTreeClassifier(50, 3, 1e-7, 10);
 ```
 
 ## Additional Methods
-Return a human-readable text representation of the decision tree ruleset:
+Return the number of levels in the tree.
 ```php
-public rules(?array $header = null) : string
+public height() : ?int
 ```
 
+Return a factor that quantifies the skewness of the distribution of nodes in the tree.
 ```php
-echo $estimator->rules(['age', 'height', 'income']);
-```
-
-```sh
-├─── age < 70
-├───├─── income < 260734.0
-├───├───├─── income < 80207.0
-├───├───├───├─── height < 182.0
-├───├───├───├───├─── Best (outcome=high school impurity=0.19546677755182 n=9)
-├───├───├───├─── height >= 182.0
-├───├───├───├───├─── Best (outcome=bachelors impurity=-0 n=67)
-├───├───├─── income >= 80207.0
-├───├───├───├─── Best (outcome=masters impurity=-0 n=77)
-├───├─── income >= 260.73460601
-├───├───├─── Best (outcome=doctorate impurity=-0 n=49)
-├─── age >= 70
-├───├─── Best (outcome=high school impurity=-0 n=98)
-```
-
-Return the height of the tree i.e. the number of layers:
-```php
-public height() : int
-```
-
-Return the balance factor of the tree:
-```php
-public balance() : int
+public balance() : ?int
 ```
 
 ## References
