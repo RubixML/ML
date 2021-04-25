@@ -50,10 +50,9 @@ class ErrorAnalysis implements ReportGenerator
     {
         PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
-        $muHat = Stats::mean($labels);
+        $mu = Stats::mean($labels);
 
         $errors = $l1 = $l2 = $are = $sle = [];
-
         $sse = $sst = 0.0;
 
         foreach ($predictions as $i => $prediction) {
@@ -67,14 +66,14 @@ class ErrorAnalysis implements ReportGenerator
             $sle[] = log((1.0 + $label) / ((1.0 + $prediction) ?: EPSILON)) ** 2;
 
             $sse += $se;
-            $sst += ($label - $muHat) ** 2;
+            $sst += ($label - $mu) ** 2;
         }
 
         $mse = Stats::mean($l2);
 
         [$mean, $variance] = Stats::meanVar($errors);
 
-        $quartiles = Stats::quantiles($errors, [
+        $quantiles = Stats::quantiles($errors, [
             0.0, 0.25, 0.5, 0.75, 1.0,
         ]);
 
@@ -90,11 +89,11 @@ class ErrorAnalysis implements ReportGenerator
             'error stddev' => sqrt($variance),
             'error skewness' => Stats::skewness($errors, $mean),
             'error kurtosis' => Stats::kurtosis($errors, $mean),
-            'error min' => $quartiles[0],
-            'error 25%' => $quartiles[1],
-            'error median' => $quartiles[2],
-            'error 75%' => $quartiles[3],
-            'error max' => $quartiles[4],
+            'error min' => $quantiles[0],
+            'error 25%' => $quantiles[1],
+            'error median' => $quantiles[2],
+            'error 75%' => $quantiles[3],
+            'error max' => $quantiles[4],
             'cardinality' => count($predictions),
         ]);
     }

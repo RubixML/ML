@@ -35,9 +35,11 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function is_nan;
 use function count;
+use function get_object_vars;
 
 /**
  * MLP Regressor
@@ -151,7 +153,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
@@ -291,6 +293,26 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'score' => $this->scores[$epoch] ?? null,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
      * Return the validation score at each epoch.
      *
      * @return float[]|null
@@ -305,9 +327,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -380,7 +402,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $snapshot = null;
         $prevLoss = INF;
 
-        $this->scores = $this->steps = [];
+        $this->scores = $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -402,14 +424,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             $loss /= count($batches);
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if (!$testing->empty()) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
 
-                $this->scores[] = $score;
+                $this->scores[$epoch] = $score;
             }
 
             if ($this->logger) {
@@ -490,7 +512,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['steps'], $properties['scores']);
+        unset($properties['losses'], $properties['scores']);
 
         return $properties;
     }

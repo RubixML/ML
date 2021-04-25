@@ -103,9 +103,9 @@ class TSNETest extends TestCase
         $this->assertCount(self::TEST_SIZE, $dataset);
         $this->assertCount(1, $dataset->sample(0));
 
-        $steps = $this->embedder->steps();
+        $losses = $this->embedder->losses();
 
-        $this->assertIsArray($steps);
-        $this->assertContainsOnly('float', $steps);
+        $this->assertIsArray($losses);
+        $this->assertContainsOnly('float', $losses);
     }
 }

@@ -31,9 +31,11 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function is_nan;
 use function count;
+use function get_object_vars;
 
 /**
  * Adaline
@@ -116,7 +118,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param int $batchSize
@@ -228,13 +230,32 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Return the loss at each epoch from the last training session.
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
+     * Return the loss for each epoch from the last training session.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -296,7 +317,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
-        $this->steps = [];
+        $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -317,7 +338,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             $loss /= count($batches);
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
@@ -402,7 +423,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     {
         $properties = get_object_vars($this);
 
-        unset($properties['steps']);
+        unset($properties['losses']);
 
         return $properties;
     }

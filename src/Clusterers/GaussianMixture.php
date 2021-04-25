@@ -24,6 +24,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
@@ -35,6 +36,7 @@ use function max;
 use function abs;
 use function log;
 use function exp;
+use function get_object_vars;
 
 use const Rubix\ML\TWO_PI;
 use const Rubix\ML\EPSILON;
@@ -130,7 +132,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param int $k
@@ -253,13 +255,32 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     }
 
     /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
      * Return the loss at each epoch of training from the last training session.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -288,7 +309,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         $minEpsilon = CPU::epsilon();
         $prevLoss = INF;
 
-        $this->steps = [];
+        $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $loss = $maxVariance = 0.0;
@@ -363,7 +384,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
             $loss /= $n;
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - loss: $loss");
@@ -552,6 +573,20 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $variance += $epsilon;
             }
         }
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['losses']);
+
+        return $properties;
     }
 
     /**

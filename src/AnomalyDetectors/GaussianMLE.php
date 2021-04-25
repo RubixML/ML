@@ -31,8 +31,8 @@ use const Rubix\ML\TWO_PI;
  * are more likely to be outliers.
  *
  * References:
- * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
- * Computing Sample Variances.
+ * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing
+ * Sample Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -179,7 +179,7 @@ class MeanShiftTest extends TestCase
         $this->assertIsArray($centroids);
         $this->assertContainsOnly('array', $centroids);
 
-        $losses = $this->estimator->steps();
+        $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);

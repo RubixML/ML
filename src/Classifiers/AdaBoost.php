@@ -20,11 +20,13 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function count;
 use function is_nan;
 use function array_fill_keys;
 use function array_sum;
+use function get_object_vars;
 
 use const Rubix\ML\EPSILON;
 
@@ -131,7 +133,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * The dimensionality of the training set.
@@ -249,13 +251,22 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the influence scores for each classifier in the ensemble.
+     * Return an iterable progress table with the steps from the last training session.
      *
-     * @return float[]
+     * @return \Generator<mixed[]>
      */
-    public function influences() : array
+    public function steps() : Generator
     {
-        return $this->influences;
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
     }
 
     /**
@@ -263,9 +274,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -301,7 +312,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
-        $this->ensemble = $this->influences = $this->steps = [];
+        $this->ensemble = $this->influences = $this->losses = [];
 
         $weights = array_fill(0, $m, 1 / $m);
 
@@ -334,10 +345,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $loss /= $total;
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Exp Loss: $loss");
+                $this->logger->info("Epoch $epoch - Exponential Loss: $loss");
             }
 
             if ($loss > $lossThreshold) {
@@ -467,7 +478,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $properties = get_object_vars($this);
 
-        unset($properties['steps']);
+        unset($properties['losses']);
 
         return $properties;
     }

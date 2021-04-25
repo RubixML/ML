@@ -26,12 +26,15 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function count;
 use function is_nan;
 use function array_slice;
 use function get_class;
 use function in_array;
+use function abs;
+use function get_object_vars;
 
 /**
  * Gradient Boost
@@ -161,7 +164,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * The dimensionality of the training set.
@@ -310,6 +313,26 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     }
 
     /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'score' => $this->scores[$epoch] ?? null,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
      * Return the validation scores at each epoch from the last training session.
      *
      * @return float[]|null
@@ -320,13 +343,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     }
 
     /**
-     * Return the loss at each epoch from the last training session.
+     * Return the loss for each epoch from the last training session.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -359,7 +382,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $this->base->train($training);
 
-        $this->ensemble = $this->scores = $this->steps = [];
+        $this->ensemble = $this->scores = $this->losses = [];
 
         /** @var list<int|float> $predictions */
         $predictions = $this->base->predict($training);
@@ -411,7 +434,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break;
             }
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if (isset($prevPred)) {
                 /** @var list<int|float> $predictions */
@@ -423,7 +446,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
                 $score = $this->metric->score($pred->asArray(), $testing->labels());
 
-                $this->scores[] = $score;
+                $this->scores[$epoch] = $score;
             }
 
             if ($this->logger) {
@@ -543,7 +566,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     {
         $properties = get_object_vars($this);
 
-        unset($properties['steps'], $properties['scores']);
+        unset($properties['losses'], $properties['scores']);
 
         return $properties;
     }

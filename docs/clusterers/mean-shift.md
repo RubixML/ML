@@ -40,9 +40,22 @@ Return the centroids computed from the training set:
 public centroids() : array[]
 ```
 
+Return an iterable progress table with the steps from the last training session:
+```php
+public steps() : iterable
+```
+
+```php
+use Rubix\ML\Extractor\CSV;
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($estimator->steps());
+```
+
 Returns the amount of centroid shift during each epoch of training:
 ```php
-public steps() : float[]|null
+public losses() : float[]|null
 ```
 
 ## References

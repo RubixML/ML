@@ -29,14 +29,22 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 10);
 ```
 
 ## Additional Methods
-Return the loss at each epoch from the last training session:
+Return an iterable progress table with the steps from the last training session:
 ```php
-public steps() : float[]|null
+public steps() : iterable
 ```
 
-Return the influence scores for each classifier in the ensemble:
 ```php
-public influences() : float[]
+use Rubix\ML\Extractor\CSV;
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($estimator->steps());
+```
+
+Return the loss for each epoch from the last training session:
+```php
+public losses() : float[]|null
 ```
 
 ## References

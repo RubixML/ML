@@ -178,7 +178,7 @@ class GaussianMixtureTest extends TestCase
         $this->assertCount(3, $variances);
         $this->assertContainsOnly('array', $variances);
 
-        $losses = $this->estimator->steps();
+        $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);

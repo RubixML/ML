@@ -26,9 +26,13 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function count;
 use function is_nan;
+use function array_fill;
+use function array_map;
+use function get_object_vars;
 
 use const Rubix\ML\EPSILON;
 
@@ -124,7 +128,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param int $k
@@ -250,13 +254,32 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     }
 
     /**
-     * Return the loss at each epoch from the last training session.
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
+     * Return the loss for each epoch from the last training session.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -311,7 +334,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
-        $this->steps = [];
+        $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -361,7 +384,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
             $loss /= $dataset->numSamples();
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Inertia: $loss");
@@ -506,6 +529,20 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         }
 
         return $inertia;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['losses']);
+
+        return $properties;
     }
 
     /**

@@ -28,9 +28,22 @@ $estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, 10
 ```
 
 ## Additional Methods
-Return the loss at each epoch from the last training session:
+Return an iterable progress table with the steps from the last training session:
 ```php
-public steps() : float[]|null
+public steps() : iterable
+```
+
+```php
+use Rubix\ML\Extractor\CSV;
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($estimator->steps());
+```
+
+Return the loss for each epoch from the last training session:
+```php
+public losses() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:

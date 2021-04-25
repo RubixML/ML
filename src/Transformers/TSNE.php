@@ -197,7 +197,7 @@ class TSNE implements Transformer, Verbose
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param int $dimensions
@@ -288,9 +288,9 @@ class TSNE implements Transformer, Verbose
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -325,7 +325,7 @@ class TSNE implements Transformer, Verbose
         $bestLoss = INF;
         $delta = 0;
 
-        $this->steps = [];
+        $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $distances = $this->pairwiseDistances($y->asArray());
@@ -357,7 +357,7 @@ class TSNE implements Transformer, Verbose
                 break;
             }
 
-            $this->steps[] = $loss;
+            $this->losses[] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - Gradient: $loss");

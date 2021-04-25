@@ -162,15 +162,10 @@ class AdaBoostTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $losses = $this->estimator->steps();
+        $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);
-
-        $influences = $this->estimator->influences();
-
-        $this->assertIsArray($influences);
-        $this->assertContainsOnly('float', $influences);
 
         $predictions = $this->estimator->predict($testing);
 

@@ -36,9 +36,11 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function is_nan;
 use function count;
+use function get_object_vars;
 
 /**
  * Multilayer Perceptron
@@ -159,7 +161,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
@@ -299,7 +301,27 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Return the validation score at each epoch from the last training session.
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'score' => $this->scores[$epoch] ?? null,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
+     * Return the validation score for each epoch from the last training session.
      *
      * @return float[]|null
      */
@@ -309,13 +331,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Return the loss at each epoch from the last training session.
+     * Return the loss for each epoch from the last training session.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -395,7 +417,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $snapshot = null;
         $prevLoss = INF;
 
-        $this->scores = $this->steps = [];
+        $this->scores = $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -417,14 +439,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $loss /= count($batches);
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if (!$testing->empty()) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
 
-                $this->scores[] = $score;
+                $this->scores[$epoch] = $score;
             }
 
             if ($this->logger) {
@@ -523,7 +545,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['steps'], $properties['scores']);
+        unset($properties['losses'], $properties['scores']);
 
         return $properties;
     }

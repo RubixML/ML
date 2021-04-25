@@ -181,7 +181,7 @@ class KMeansTest extends TestCase
         $this->assertCount(3, $sizes);
         $this->assertContainsOnly('int', $sizes);
 
-        $losses = $this->estimator->steps();
+        $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);

@@ -35,14 +35,27 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 10, 
 ```
 
 ## Additional Methods
-Return the validation score at each epoch from the last training session:
+Return an iterable progress table with the steps from the last training session:
+```php
+public steps() : iterable
+```
+
+```php
+use Rubix\ML\Extractor\CSV;
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($estimator->steps());
+```
+
+Return the validation score for each epoch from the last training session:
 ```php
 public scores() : float[]|null
 ```
 
-Return the loss at each epoch from the last training session:
+Return the loss for each epoch from the last training session:
 ```php
-public steps() : float[]|null
+public losses() : float[]|null
 ```
 
 ## References

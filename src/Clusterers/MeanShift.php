@@ -27,9 +27,14 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
 use function Rubix\ML\array_transpose;
 use function is_nan;
+use function array_map;
+use function round;
+use function exp;
+use function get_object_vars;
 
 use const Rubix\ML\EPSILON;
 
@@ -122,7 +127,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @var float[]|null
      */
-    protected ?array $steps = null;
+    protected ?array $losses = null;
 
     /**
      * Estimate the radius of a cluster that encompasses a certain percentage of
@@ -271,13 +276,32 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     }
 
     /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
+    }
+
+    /**
      * Return the amount of centroid shift at each epoch of training.
      *
      * @return float[]|null
      */
-    public function steps() : ?array
+    public function losses() : ?array
     {
-        return $this->steps;
+        return $this->losses;
     }
 
     /**
@@ -308,7 +332,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $this->tree->grow($dataset);
 
-        $this->steps = [];
+        $this->losses = [];
 
         $previous = $centroids;
 
@@ -349,7 +373,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
             $loss /= $n;
 
-            $this->steps[] = $loss;
+            $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch - loss: $loss");
@@ -479,6 +503,20 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         }
 
         return $shift;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['losses']);
+
+        return $properties;
     }
 
     /**

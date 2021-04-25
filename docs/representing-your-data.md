@@ -15,8 +15,8 @@ The library comes with a built-in higher-order type system which distinguishes t
 | Rubix Data Type | PHP Internal Type |
 |---|---|
 | Categorical | String |
-| Continuous | Integer or Floating Point Number |
-| Image | GD Resource |
+| Continuous | Integer or floating point number |
+| Image | GD Image object or resource |
 
 ## Quantities
 A quantity is a property that describes the magnitude or multitude of something. Temperature, credit limit, and age are all quantitative features. In Rubix ML, quantities are represented as one of the continuous data types such as integers or floating point numbers. Quantities can further be broken down into ratios, intervals, or counts and there is a measurable numerical relationship between their values.
