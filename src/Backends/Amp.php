@@ -85,12 +85,13 @@ class Amp implements Backend
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable(mixed):void|null $after
+     * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null) : void
+    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
     {
         $task = new CallableTask($task, []);
 
-        $coroutine = call([$this, 'coroutine'], $task, $after);
+        $coroutine = call([$this, 'coroutine'], $task, $after, $context);
 
         $this->queue[] = $coroutine;
     }
@@ -101,15 +102,16 @@ class Amp implements Backend
      * @internal
      *
      * @param \Amp\Parallel\Worker\Task $task
-     * @param callable(mixed):void|null $after
+     * @param callable(mixed,mixed):void $after
+     * @param mixed $context
      * @return \Generator<\Amp\Promise>
      */
-    public function coroutine(AmpTask $task, ?callable $after = null) : Generator
+    public function coroutine(AmpTask $task, ?callable $after = null, $context = null) : Generator
     {
         $result = yield $this->pool->enqueue($task);
 
         if ($after) {
-            $after($result);
+            $after($result, $context);
         }
 
         return $result;

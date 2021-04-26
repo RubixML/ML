@@ -46,18 +46,25 @@ $estimator = new GridSearch(KNearestNeighbors::class, $params);
 $estimator->train($dataset);
 ```
 
-Once training is complete, Grid Search automatically trains the base learner with the best hyper-parameters on the full dataset and can perform inference like a normal estimator. In addition, you can dump the results of the search for future reference using the `results()` method. In the example below, we'll just return the parameters that received the highest validation score using the `best()` method.
+Once training is complete, Grid Search automatically trains the base learner with the best hyper-parameters on the full dataset and can perform inference like a normal estimator.
 
 ```php
-var_dump($estimator->best());
+$predictions = $estimator->predict($dataset);
+```
+
+We can also dump the selected hyper-parameters by calling the `params()` method on the base learner. To return the base learner trained by Grid Search, call the `base()` method like in the example below.
+
+```php
+print_r($estimator->base()->params());
 ```
 
 ```sh
-array(3) {
-  [0]=> int(3)
-  [1]=> bool(true)
-  [2]=> object(Rubix\ML\Kernels\Distance\Manhattan) {}
-}
+Array
+(
+    [k] => 3
+    [weighted] => true
+    [kernel] => Rubix\ML\Kernels\Distance\Euclidean Object ()
+)
 ```
 ### Grid Search vs. Random Search
 When the possible values of the continuous hyper-parameters are selected such that they are evenly spaced out in a grid, we call that *grid search*. You can use the static `grid()` method on the [Params](helpers/params.md) helper to generate an array of evenly-spaced values automatically.

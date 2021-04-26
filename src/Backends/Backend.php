@@ -20,9 +20,10 @@ interface Backend extends Stringable
      * @internal
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable(mixed):void|null $after
+     * @param callable(mixed,mixed):void $after
+     * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null) : void;
+    public function enqueue(Task $task, ?callable $after = null, $context = null) : void;
 
     /**
      * Process the queue and return the results.

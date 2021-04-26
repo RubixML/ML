@@ -25,19 +25,15 @@ class CrossValidate extends Task
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\CrossValidation\Validator $validator
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @return mixed[]
+     * @return float
      */
     public static function score(
         Learner $estimator,
         Labeled $dataset,
         Validator $validator,
         Metric $metric
-    ) : array {
-        $score = $validator->test($estimator, $dataset, $metric);
-
-        $params = $estimator->params();
-
-        return [$score, $params];
+    ) : float {
+        return $validator->test($estimator, $dataset, $metric);
     }
 
     /**

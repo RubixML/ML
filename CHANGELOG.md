@@ -2,8 +2,9 @@
     - Added Token Hashing Vectorizer transformer
     - Remove HTML Stripper and Whitespace Remover transformers
     - Rename steps() method to losses()
-    - Steps() now returns iterable progress table
+    - Steps() now returns iterable progress table w/ header
     - Remove rules() method on CART
+    - Removed results() and best() methods from Grid Search
 
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms

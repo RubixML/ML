@@ -56,13 +56,13 @@ class GridSearchTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 1.0, 0.05),
-            'middle' => new Circle(0.0, 0.0, 5.0, 0.10),
-            'outer' => new Circle(0.0, 0.0, 10.0, 0.15),
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.5),
+            'middle' => new Circle(0.0, 0.0, 5.0, 1.0),
+            'outer' => new Circle(0.0, 0.0, 10.0, 2.0),
         ]);
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
-            [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
+            [1, 5, 10], [true], [new Euclidean(), new Manhattan()],
         ], new FBeta(), new HoldOut(0.2));
 
         $this->metric = new Accuracy();
@@ -106,7 +106,7 @@ class GridSearchTest extends TestCase
         $expected = [
             'class' => KNearestNeighbors::class,
             'params' => [
-                [1, 3, 5], [true], [new Euclidean(), new Manhattan()],
+                [1, 5, 10], [true], [new Euclidean(), new Manhattan()],
             ],
             'metric' => new FBeta(),
             'validator' => new HoldOut(0.2),
@@ -129,17 +129,6 @@ class GridSearchTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
-
-        $results = $this->estimator->results();
-
-        $this->assertIsArray($results);
-        $this->assertCount(6, $results);
-
-        $best = $this->estimator->best();
-
-        $this->assertIsArray($best);
-        $this->assertCount(3, $best);
-        $this->assertEquals($results[0][1], $best);
 
         $predictions = $this->estimator->predict($testing);
 

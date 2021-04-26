@@ -11,7 +11,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | string | The class name of the base learner. |
-| 2 | params | | array | An array of [n-tuples](faq.md#what-is-a-tuple) containing the possible values for each of the base learner's constructor parameters. |
+| 2 | params | | array | An array of lists containing the possible values for each of the base learner's constructor parameters. |
 | 3 | metric | null | Metric | The validation metric used to score each set of hyper-parameters. If null, automatically selects a default metric based on estimator type. |
 | 4 | validator | KFold | Validator | The validator used to test and score each trained model. |
 
@@ -32,25 +32,7 @@ $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new 
 ```
 
 ## Additional Methods
-Return an array containing the validation scores and hyper-parameters under test for each combination resulting from the last search:
+Return the base learner instance:
 ```php
-public results() : ?array
-```
-
-Return an array containing the best parameters from the last search:
-```php
-public best() : ?array
-```
-
-```php
-
-var_dump($estimator->best());
-```
-
-```sh
-array(3) {
-  [0]=> int(3)
-  [1]=> bool(true)
-  [2]=> object(Rubix\ML\Kernels\Distance\Manhattan) {}
-}
+public base() : ?\Rubix\ML\Learner
 ```

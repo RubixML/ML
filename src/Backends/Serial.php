@@ -22,7 +22,7 @@ use Rubix\ML\Backends\Tasks\Task;
 class Serial implements Backend
 {
     /**
-     * A 2-tuple of deferred computations and their optional callbacks.
+     * A 3-tuple of deferred computations and their optional callbacks and contexts.
      *
      * @var array[]
      */
@@ -34,11 +34,12 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable(mixed):void|null $after
+     * @param callable(mixed,mixed):void $after
+     * @param null|mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null) : void
+    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
     {
-        $this->queue[] = [$task, $after];
+        $this->queue[] = [$task, $after, $context];
     }
 
     /**
@@ -50,11 +51,11 @@ class Serial implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$task, $after]) {
+        foreach ($this->queue as [$task, $after, $context]) {
             $result = $task();
 
             if ($after) {
-                $after($result);
+                $after($result, $context);
             }
 
             $results[] = $result;

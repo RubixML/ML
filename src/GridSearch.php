@@ -25,8 +25,6 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function count;
-
 /**
  * Grid Search
  *
@@ -54,7 +52,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     protected string $class;
 
     /**
-     * An array of tuples containing the possible values for each of the base learner's constructor parameters.
+     * An array of lists containing the possible values for each of the base learner's constructor parameters.
      *
      * @var array[]
      */
@@ -75,27 +73,44 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     protected \Rubix\ML\CrossValidation\Validator $validator;
 
     /**
-     * The argument names for the base estimator's constructor.
-     *
-     * @var string[]
-     */
-    protected array $args = [
-        //
-    ];
-
-    /**
-     * The results of the last hyper-parameter search.
-     *
-     * @var array[]|null
-     */
-    protected ?array $results = null;
-
-    /**
      * The base estimator instance.
      *
      * @var \Rubix\ML\Learner
      */
     protected \Rubix\ML\Learner $base;
+
+    /**
+     * The validation scores obtained from the last search.
+     *
+     * @var list<float>|null
+     */
+    protected ?array $scores = null;
+
+    /**
+     * Return an array of all possible combinations of parameters. i.e their Cartesian product.
+     *
+     * @param mixed[] $params
+     * @return array[]
+     */
+    protected static function combine(array $params) : array
+    {
+        $combinations = [[]];
+
+        foreach ($params as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
+    }
 
     /**
      * @param class-string $class
@@ -120,6 +135,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             throw new InvalidArgumentException('Base class must'
                 . ' implement the Learner Interface.');
         }
+
+        $params = array_values($params);
 
         foreach ($params as &$tuple) {
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
@@ -216,29 +233,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     }
 
     /**
-     * Return an array containing the validation scores and hyper-parameters under test
-     * for each combination in a 2-tuple.
-     *
-     * @return array[]|null
-     */
-    public function results() : ?array
-    {
-        return $this->results;
-    }
-
-    /**
-     * Return an array containing the hyper-parameters with the highest validation score
-     * from the last search.
-     *
-     * @return mixed[]|null
-     */
-    public function best() : ?array
-    {
-        return $this->results ? $this->results[0][1] : null;
-    }
-
-    /**
-     * Return the base estimator instance.
+     * Return the base learner instance.
      *
      * @return \Rubix\ML\Estimator
      */
@@ -262,14 +257,11 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $combinations = $this->combinations();
-
         if ($this->logger) {
             $this->logger->info("$this initialized");
-
-            $this->logger->info('Searching ' . count($combinations)
-                . ' combinations of hyper-parameters');
         }
+
+        $combinations = self::combine($this->params);
 
         $this->backend->flush();
 
@@ -283,17 +275,16 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
                     $this->validator,
                     $this->metric
                 ),
-                [$this, 'afterScore']
+                [$this, 'afterScore'],
+                $estimator->params()
             );
         }
 
-        [$scores, $combinations] = array_transpose($this->backend->process());
+        $scores = $this->backend->process();
 
         array_multisort($scores, $combinations, SORT_DESC);
 
-        $this->results = array_transpose([$scores, $combinations]);
-
-        $best = reset($combinations);
+        $best = reset($combinations) ?: [];
 
         $estimator = new $this->base(...array_values($best));
 
@@ -323,61 +314,19 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     }
 
     /**
-     * The callback that executes after the scoring task.
+     * The callback that executes after the cross validation task.
      *
      * @internal
      *
-     * @param mixed[] $result
+     * @param float $score
+     * @param mixed[] $params
      */
-    public function afterScore(array $result) : void
+    public function afterScore(float $score, array $params) : void
     {
         if ($this->logger) {
-            [$score, $params] = $result;
-
-            $this->logger->info(
-                "{$this->metric}: $score, params: [" . Params::stringify($params) . ']'
-            );
+            $this->logger->info("{$this->metric}: $score, "
+                . 'params: [' . Params::stringify($params) . ']');
         }
-    }
-
-    /**
-     * Return an array of all possible combinations of parameters. i.e the Cartesian product of
-     * the user-supplied parameter array.
-     *
-     * @return array[]
-     */
-    protected function combinations() : array
-    {
-        $combinations = [[]];
-
-        foreach ($this->params as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
-    }
-
-    /**
-     * Return an associative array containing the data used to serialize the object.
-     *
-     * @return mixed[]
-     */
-    public function __serialize() : array
-    {
-        $properties = get_object_vars($this);
-
-        unset($properties['results']);
-
-        return $properties;
     }
 
     /**
