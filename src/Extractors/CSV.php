@@ -173,22 +173,20 @@ class CSV implements Extractor, Writable
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 0;
+        $line = 1;
 
         if ($this->header) {
             $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
 
-            ++$line;
-
             if (!$header) {
                 throw new RuntimeException("Header not found on line $line.");
             }
+
+            ++$line;
         }
 
         while (!feof($handle)) {
             $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
-
-            ++$line;
 
             if (empty($record)) {
                 continue;
@@ -203,6 +201,8 @@ class CSV implements Extractor, Writable
             }
 
             yield $record;
+
+            ++$line;
         }
 
         fclose($handle);

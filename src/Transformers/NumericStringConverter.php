@@ -27,7 +27,7 @@ class NumericStringConverter implements Transformer
      *
      * @var string
      */
-    public const NAN_PLACEHOLDER = 'NaN';
+    public const NAN_PLACEHOLDER = 'NAN';
 
     /**
      * Return the data types that this transformer is compatible with.

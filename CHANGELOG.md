@@ -6,6 +6,7 @@
     - Steps() now returns iterable progress table w/ header
     - Remove rules() method on CART
     - Removed results() and best() methods from Grid Search
+    - Change string representation of NAN to match PHP
 
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
