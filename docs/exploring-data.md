@@ -87,17 +87,32 @@ A common way to visualize the continuous features of a dataset is to plot two fe
 ![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot.png?raw=true)
 
 ## Manifold Learning
-Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of *all* the features. This representation is referred to as an *embedding* because the high-dimensional features are embedded into a lower-dimensional manifold. In the example below, we'll use [t-SNE](transformers/t-sne.md) to embed the 4-dimensional Iris dataset into 2 dimensions and then save the data to a [CSV](extractors/csv.md) file so we can import it into our plotting software.
+Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of *all* the features. This representation is referred to as an *embedding* because the high-dimensional features are embedded into a lower-dimensional manifold.
+
+In the first example, we'll use a dimensionality reduction method called [Truncated SVD](transformers/truncated-svd.md) to project the Iris dataset down into 2 dimensions and then export the data to a [CSV](extractors/csv.md) file using the `exportTo()` method so we can import it into our plotting software.
+
+```php
+use Rubix\ML\Transformers\TruncatedSVD;
+use Rubix\ML\Extractors\CSV;
+
+$dataset->apply(new TruncatedSVD(2))
+    ->exportTo(new CSV('embedding.csv'));
+```
+
+When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional embedding of all the features.
+
+![Iris Dataset Truncated SVD Embedding](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-truncated-svd-embedding.png?raw=true)
+
+Another algorithm often used for manifold learning is T-distributed Stochastic Neighbor Embedding or t-SNE. Unlike Truncated SVD which is a linear dimensionality reducer, t-SNE is able to find non-linear manifolds of the dataset and therefore can sometimes produce more faithful representations of the data in low dimensions. In the example below, we'll use the [t-SNE](transformers/t-sne.md) transformer to embed the 4-dimensional Iris dataset into 2 dimensions so we can visualize it.
 
 ```php
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Extractors\CSV;
 
-$dataset->apply(new TSNE(2));
-
-$dataset->exportTo(new CSV('embedding.csv'));
+$dataset->apply(new TSNE(2, 100.0, 10.0))
+    ->exportTo(new CSV('embedding.csv'));
 ```
 
-When we visualize the embedding, again we see the formation of clusters, however, notice that the X and Y axis no longer correspond to individual features but rather to arbitrary axis of the 2-dimensional embedding of all the features.
+Here is what a t-SNE embedding looks like when it is plotted. Notice that although the clusters are sparser and more gaussian-like, the structure and distances between samples is roughly preserved.
 
-![Iris Dataset Embedding 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-embedding-2d-scatterplot.png?raw=true)
+![Iris Dataset t-SNE Embedding](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-t-sne-embedding.png?raw=true)

@@ -1,5 +1,6 @@
 - 1.0.0-beta3
     - Added Token Hashing Vectorizer transformer
+    - Added Word Stemmer tokenizer from Extras
     - Remove HTML Stripper and Whitespace Remover transformers
     - Rename steps() method to losses()
     - Steps() now returns iterable progress table w/ header

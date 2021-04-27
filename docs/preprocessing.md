@@ -106,7 +106,7 @@ Imputation is a technique for handling missing values in your dataset by replaci
 | [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | | ● | |
 
 ### Natural Language
-The library provides a number of transformers for Natural Language Processing (NLP) and Information Retrieval (IR) tasks such as those for text cleaning, feature extraction, and term weighting of features from raw text blobs.
+The library provides a number of transformers for Natural Language Processing (NLP) and Information Retrieval (IR) tasks such as text cleaning, feature extraction, and term weighting.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|

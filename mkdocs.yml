@@ -237,6 +237,13 @@ nav:
         - K Fold: cross-validation/k-fold.md
         - Leave P Out: cross-validation/leave-p-out.md
         - Monte Carlo: cross-validation/monte-carlo.md
+    - Tokenizers:
+      - K-Skip-N-Gram: tokenizers/k-skip-n-gram.md
+      - N-Gram: tokenizers/n-gram.md
+      - Sentence: tokenizers/sentence.md
+      - Whitespace: tokenizers/whitespace.md
+      - Word: tokenizers/word.md
+      - Word Stemmer: tokenizers/word-stemmer.md
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
@@ -245,17 +252,11 @@ nav:
       - Gzip: serializers/gzip.md
       - Native: serializers/native.md
       - RBX: serializers/rbx.md
+    - Loggers:
+      - Screen: loggers/screen.md
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md
-    - Loggers:
-      - Screen: loggers/screen.md
-    - Tokenizers:
-      - K-Skip-N-Gram: tokenizers/k-skip-n-gram.md
-      - N-Gram: tokenizers/n-gram.md
-      - Sentence: tokenizers/sentence.md
-      - Whitespace: tokenizers/whitespace.md
-      - Word: tokenizers/word.md
     - Helpers:
       - Params: helpers/params.md
     - Strategies:

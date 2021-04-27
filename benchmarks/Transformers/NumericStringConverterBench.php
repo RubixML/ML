@@ -3,6 +3,7 @@
 namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\Transformers\NumericStringConverter;
 
 /**
@@ -27,12 +28,11 @@ class NumericStringConverterBench
     {
         $generator = new Blob([0.0, 0.0, 0.0, 0.0]);
 
-        $this->dataset = $generator->generate(self::DATASET_SIZE)->map(function ($record) {
-            $record[1] = strval($record[1]);
-            $record[3] = strval($record[3]);
-
-            return $record;
-        });
+        $this->dataset = $generator->generate(self::DATASET_SIZE)
+            ->apply(new LambdaFunction(function (&$sample) {
+                $sample[1] = strval($sample[1]);
+                $sample[3] = strval($sample[3]);
+            }));
 
         $this->transformer = new NumericStringConverter();
     }

@@ -12,8 +12,8 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 |---|---|---|---|---|
 | 1 | base | | string | The class name of the base learner. |
 | 2 | params | | array | An array of lists containing the possible values for each of the base learner's constructor parameters. |
-| 3 | metric | null | Metric | The validation metric used to score each set of hyper-parameters. If null, automatically selects a default metric based on estimator type. |
-| 4 | validator | KFold | Validator | The validator used to test and score each trained model. |
+| 3 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
+| 4 | validator | KFold | Validator | The validator used to test and score the model. |
 
 ## Example
 ```php

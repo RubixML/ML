@@ -291,17 +291,6 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Map a callback function over the records of the dataset and return the result in a new dataset object.
-     *
-     * @param callable $callback
-     * @return static
-     */
-    public function map(callable $callback) : self
-    {
-        return static::fromIterator(iterator_map($this, $callback));
-    }
-
-    /**
      * Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset.
      *
      * @param callable $callback

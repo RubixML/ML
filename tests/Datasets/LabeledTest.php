@@ -220,24 +220,6 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function map() : void
-    {
-        $callback = function ($record) {
-            $record[3] = abs($record[3]);
-
-            return $record;
-        };
-
-        $dataset = $this->dataset->map($callback);
-
-        $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
-
-        $this->assertEquals($expected, $dataset->feature(3));
-    }
-
-    /**
-     * @test
-     */
     public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);

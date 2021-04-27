@@ -210,22 +210,6 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
-    public function map() : void
-    {
-        $dataset = $this->dataset->map(function ($record) {
-            $record[3] = abs($record[3]);
-
-            return $record;
-        });
-
-        $expected = [4.0, 1.5, 2.6, 1.0, 2.9, 5.0];
-
-        $this->assertEquals($expected, $dataset->feature(3));
-    }
-
-    /**
-     * @test
-     */
     public function filter() : void
     {
         $isFriendly = function ($record) {

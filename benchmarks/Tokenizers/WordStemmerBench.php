@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Tokenizers;
 
-use Rubix\ML\Tokenizers\Word;
+use Rubix\ML\Tokenizers\WordStemmer;
 
 /**
  * @Groups({"Tokenizers"})
@@ -19,7 +19,7 @@ class WordBench
 
     public function setUp() : void
     {
-        $this->tokenizer = new Word();
+        $this->tokenizer = new WordStemmer('english');
     }
 
     /**
