@@ -2,7 +2,10 @@
 Here you will find answers to the most frequently asked questions.
 
 ## Is Machine Learning the same thing as AI?
-Machine Learning is a subset of Artificial Intelligence (AI) that focuses on using data to train a computer to perform tasks. While machine learning (ML) has contributed substantially to the field of AI, other non-learning techniques such as rule-based systems are also considered to be forms of artificial intelligence.
+Machine Learning is a subset of Artificial Intelligence (AI) that focuses on using data to train a computer to perform tasks. While machine learning (ML) has contributed substantially to the field of AI, other non-learning techniques such as rule-based or *symbolic* systems are also forms of artificial intelligence.
+
+## What types of problems is ML good for?
+Machine Learning is a good fit for problems in which it would be infeasible for software developers and domain experts to design a system that could encode all the necessary rulesets to obtain accurate predictions. In other words, if your problem can be solved with a few *if/then* statements, it is probably not a good fit for machine learning due to unnecessary complexity.
 
 ## What environment (SAPI) should I run Rubix ML in?
 All Rubix ML projects are designed to run from the PHP command line interface ([CLI](http://php.net/manual/en/features.commandline.php)). The reason almost always boils down to performance and memory consumption.
@@ -34,13 +37,6 @@ Training time depends on a number of factors including size of the dataset and c
 
 - [Xdebug](https://xdebug.org/) or other debuggers are not enabled.
 - You have enough RAM to hold the dataset and model in memory without swapping to disk.
-
-## What is a Tuple?
-A *tuple* is a way to denote an immutable sequential heterogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
-
-```php
-$tuple = ['first', 'second', 0.001]; // a 3-tuple
-```
 
 ## Does Rubix ML support multiprocessing/multithreading?
 Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend such as [Amp](https://docs.rubixml.com/latest/backends/amp.html) or extension such as [Tensor](https://github.com/RubixML/Tensor) under the hood.
