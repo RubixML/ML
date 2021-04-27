@@ -4339,12 +4339,12 @@
 <span class="p">];</span>
 </code></pre></div>
 <h2 id="high-level-data-types">High-level Data Types<a class="headerlink" href="#high-level-data-types" title="Permanent link">#</a></h2>
-<p>The library comes with a higher-order type system that distinguishes types that are continuous, categorical (discrete), or some other data type.</p>
+<p>The library comes with a higher-order type system that distinguishes types that are continuous, categorical (discrete), or some other data type. The distinction between types is important for determining the operations that can be performed on a particular feature.</p>
 <table>
 <thead>
 <tr>
-<th>Rubix Data Type</th>
-<th>PHP Internal Type</th>
+<th>Library Type</th>
+<th>PHP Type</th>
 </tr>
 </thead>
 <tbody>
@@ -4363,13 +4363,13 @@
 </tbody>
 </table>
 <h2 id="continuous-features">Continuous Features<a class="headerlink" href="#continuous-features" title="Permanent link">#</a></h2>
-<p>Continuous features represent some <em>quantitative</em> property of the sample and are represented as either natural (integer) or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.</p>
+<p>Continuous features represent some <em>quantitative</em> property of the sample and are represented as natural, integer, or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.</p>
 <h3 id="intervals">Intervals<a class="headerlink" href="#intervals" title="Permanent link">#</a></h3>
-<p>Intervals are the most general form of continuous measurement and can take on any value within the set of natural or real numbers. Some examples of interval data include temperature in Celsius or Fahrenheit, income, and scores on a personality test.</p>
+<p>Intervals are the most general form of continuous measurement and can take on any value within the set of real numbers. Some examples of interval data include temperature in Celsius or Fahrenheit, income, and scores on a personality test.</p>
 <h3 id="ratios">Ratios<a class="headerlink" href="#ratios" title="Permanent link">#</a></h3>
-<p>Unlike intervals, ratios are lower bounded at 0 and are therefore non-negative by definition. Due to this extra constraint ratio variables are able to say something about the relative differences between samples by comparing numbers on the scale to 0. Examples of ratio data include height, distance, and temperature in Kelvin.</p>
+<p>Ratios are lower bounded at a fixed zero point. Due to this extra constraint, ratio variables are able to say something about the relative differences between samples by comparing numbers on the scale to absolute zero. Examples of ratio data include height, distance, and temperature in Kelvin.</p>
 <h3 id="counts">Counts<a class="headerlink" href="#counts" title="Permanent link">#</a></h3>
-<p>Count variables share a similar set of constraints with ratios, however they are limited to the set of natural (or <em>counting</em>) numbers.</p>
+<p>Count variables are limited to the set of natural (or <em>counting</em>) numbers and therefore are always non-negative.</p>
 <h2 id="categorical-features">Categorical Features<a class="headerlink" href="#categorical-features" title="Permanent link">#</a></h2>
 <p>Categories are discrete values that describe a qualitative property of a sample such as texture, genre, or political party. They are represented as strings and, unlike continuous features, have no numerical relationship between the values.</p>
 <h3 id="categories">Categories<a class="headerlink" href="#categories" title="Permanent link">#</a></h3>
