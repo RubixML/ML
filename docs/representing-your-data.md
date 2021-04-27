@@ -10,24 +10,24 @@ $samples = [
 ```
 
 ## High-level Data Types
-The library comes with a higher-order type system that distinguishes types that are continuous, categorical (discrete), or some other data type.
+The library comes with a higher-order type system that distinguishes types that are continuous, categorical (discrete), or some other data type. The distinction between types is important for determining the operations that can be performed on a particular feature.
 
-| Rubix Data Type | PHP Internal Type |
+| Library Type | PHP Type |
 |---|---|
 | Continuous | Integer or floating point number |
 | Categorical | String |
 | Image | GD Image object or resource |
 
 ## Continuous Features
-Continuous features represent some *quantitative* property of the sample and are represented as either natural (integer) or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.
+Continuous features represent some *quantitative* property of the sample and are represented as natural, integer, or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.
 
 ### Intervals
-Intervals are the most general form of continuous measurement and can take on any value within the set of natural or real numbers. Some examples of interval data include temperature in Celsius or Fahrenheit, income, and scores on a personality test.
+Intervals are the most general form of continuous measurement and can take on any value within the set of real numbers. Some examples of interval data include temperature in Celsius or Fahrenheit, income, and scores on a personality test.
 
 ### Ratios
-Unlike intervals, ratios are lower bounded at 0 and are therefore non-negative by definition. Due to this extra constraint ratio variables are able to say something about the relative differences between samples by comparing numbers on the scale to 0. Examples of ratio data include height, distance, and temperature in Kelvin.
+Ratios are lower bounded at a fixed zero point. Due to this extra constraint, ratio variables are able to say something about the relative differences between samples by comparing numbers on the scale to absolute zero. Examples of ratio data include height, distance, and temperature in Kelvin.
 ### Counts
-Count variables share a similar set of constraints with ratios, however they are limited to the set of natural (or *counting*) numbers.
+Count variables are limited to the set of natural (or *counting*) numbers and therefore are always non-negative.
 
 ## Categorical Features
 Categories are discrete values that describe a qualitative property of a sample such as texture, genre, or political party. They are represented as strings and, unlike continuous features, have no numerical relationship between the values.
