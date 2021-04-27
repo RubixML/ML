@@ -121,8 +121,6 @@ class FBeta implements Metric
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $k = count($classes);
-
         $truePos = $falsePos = $falseNeg = array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $prediction) {
