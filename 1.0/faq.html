@@ -4081,6 +4081,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#what-types-of-problems-is-ml-good-for" class="md-nav__link">
+    What types of problems is ML good for?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-environment-sapi-should-i-run-rubix-ml-in" class="md-nav__link">
     What environment (SAPI) should I run Rubix ML in?
   </a>
@@ -4097,13 +4104,6 @@
         <li class="md-nav__item">
   <a href="#training-is-slower-than-usual" class="md-nav__link">
     Training is slower than usual.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-a-tuple" class="md-nav__link">
-    What is a Tuple?
   </a>
   
 </li>
@@ -4190,6 +4190,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#what-types-of-problems-is-ml-good-for" class="md-nav__link">
+    What types of problems is ML good for?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-environment-sapi-should-i-run-rubix-ml-in" class="md-nav__link">
     What environment (SAPI) should I run Rubix ML in?
   </a>
@@ -4206,13 +4213,6 @@
         <li class="md-nav__item">
   <a href="#training-is-slower-than-usual" class="md-nav__link">
     Training is slower than usual.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-a-tuple" class="md-nav__link">
-    What is a Tuple?
   </a>
   
 </li>
@@ -4279,7 +4279,9 @@
                 <h1 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h1>
 <p>Here you will find answers to the most frequently asked questions.</p>
 <h2 id="is-machine-learning-the-same-thing-as-ai">Is Machine Learning the same thing as AI?<a class="headerlink" href="#is-machine-learning-the-same-thing-as-ai" title="Permanent link">#</a></h2>
-<p>Machine Learning is a subset of Artificial Intelligence (AI) that focuses on using data to train a computer to perform tasks. While machine learning (ML) has contributed substantially to the field of AI, other non-learning techniques such as rule-based systems are also considered to be forms of artificial intelligence.</p>
+<p>Machine Learning is a subset of Artificial Intelligence (AI) that focuses on using data to train a computer to perform tasks. While machine learning (ML) has contributed substantially to the field of AI, other non-learning techniques such as rule-based or <em>symbolic</em> systems are also forms of artificial intelligence.</p>
+<h2 id="what-types-of-problems-is-ml-good-for">What types of problems is ML good for?<a class="headerlink" href="#what-types-of-problems-is-ml-good-for" title="Permanent link">#</a></h2>
+<p>Machine Learning is a good fit for problems in which it would be infeasible for software developers and domain experts to design a system that could encode all the necessary rulesets to obtain accurate predictions. In other words, if your problem can be solved with a few <em>if/then</em> statements, it is probably not a good fit for machine learning due to unnecessary complexity.</p>
 <h2 id="what-environment-sapi-should-i-run-rubix-ml-in">What environment (SAPI) should I run Rubix ML in?<a class="headerlink" href="#what-environment-sapi-should-i-run-rubix-ml-in" title="Permanent link">#</a></h2>
 <p>All Rubix ML projects are designed to run from the PHP command line interface (<a href="http://php.net/manual/en/features.commandline.php">CLI</a>). The reason almost always boils down to performance and memory consumption.</p>
 <p>If you would like to serve your models in production, the preferred method is to use the <a href="https://github.com/RubixML/Server">Server</a> library to spin up a high-performance standalone model server from the command line. If you plan to implement your own model server, we recommend using an asynchronous event loop such as <a href="https://reactphp.org/">React PHP</a> or <a href="https://www.swoole.co.uk/">Swoole</a> to prevent the model from having to be loaded into memory on each request.</p>
@@ -4305,10 +4307,6 @@
 <li><a href="https://xdebug.org/">Xdebug</a> or other debuggers are not enabled.</li>
 <li>You have enough RAM to hold the dataset and model in memory without swapping to disk.</li>
 </ul>
-<h2 id="what-is-a-tuple">What is a Tuple?<a class="headerlink" href="#what-is-a-tuple" title="Permanent link">#</a></h2>
-<p>A <em>tuple</em> is a way to denote an immutable sequential heterogeneous list with a predefined length. An <em>n-tuple</em> is a tuple with the length of n. In some languages, tuples are a separate data type and their properties such as immutability are enforced by the compiler/interpreter. In PHP, tuples are denoted by sequential arrays which are mutable as a side effect.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$tuple</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">];</span> <span class="c1">// a 3-tuple</span>
-</code></pre></div>
 <h2 id="does-rubix-ml-support-multiprocessingmultithreading">Does Rubix ML support multiprocessing/multithreading?<a class="headerlink" href="#does-rubix-ml-support-multiprocessingmultithreading" title="Permanent link">#</a></h2>
 <p>Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend such as <a href="https://docs.rubixml.com/latest/backends/amp.html">Amp</a> or extension such as <a href="https://github.com/RubixML/Tensor">Tensor</a> under the hood.</p>
 <h2 id="does-rubix-ml-support-deep-learning">Does Rubix ML support Deep Learning?<a class="headerlink" href="#does-rubix-ml-support-deep-learning" title="Permanent link">#</a></h2>
@@ -4329,7 +4327,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-03
+      Last update: 2021-04-27
     
   </small>
 </div>

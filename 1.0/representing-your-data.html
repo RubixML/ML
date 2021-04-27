@@ -453,37 +453,70 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quantities" class="md-nav__link">
-    Quantities
+  <a href="#continuous-features" class="md-nav__link">
+    Continuous Features
   </a>
+  
+    <nav class="md-nav" aria-label="Continuous Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intervals" class="md-nav__link">
+    Intervals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ratios" class="md-nav__link">
+    Ratios
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#counts" class="md-nav__link">
+    Counts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#categorical-features" class="md-nav__link">
+    Categorical Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#categories" class="md-nav__link">
     Categories
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#booleans" class="md-nav__link">
-    Booleans
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#ordinals" class="md-nav__link">
     Ordinals
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#datetime" class="md-nav__link">
-    Date/Time
+        
+          <li class="md-nav__item">
+  <a href="#booleans" class="md-nav__link">
+    Booleans
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -497,6 +530,13 @@
         <li class="md-nav__item">
   <a href="#images" class="md-nav__link">
     Images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datetime" class="md-nav__link">
+    Date/Time
   </a>
   
 </li>
@@ -4178,37 +4218,70 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quantities" class="md-nav__link">
-    Quantities
+  <a href="#continuous-features" class="md-nav__link">
+    Continuous Features
   </a>
+  
+    <nav class="md-nav" aria-label="Continuous Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intervals" class="md-nav__link">
+    Intervals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ratios" class="md-nav__link">
+    Ratios
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#counts" class="md-nav__link">
+    Counts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#categorical-features" class="md-nav__link">
+    Categorical Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#categories" class="md-nav__link">
     Categories
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#booleans" class="md-nav__link">
-    Booleans
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#ordinals" class="md-nav__link">
     Ordinals
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#datetime" class="md-nav__link">
-    Date/Time
+        
+          <li class="md-nav__item">
+  <a href="#booleans" class="md-nav__link">
+    Booleans
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4222,6 +4295,13 @@
         <li class="md-nav__item">
   <a href="#images" class="md-nav__link">
     Images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datetime" class="md-nav__link">
+    Date/Time
   </a>
   
 </li>
@@ -4251,7 +4331,7 @@
                 
                 
                 <h1 id="representing-your-data">Representing Your Data<a class="headerlink" href="#representing-your-data" title="Permanent link">#</a></h1>
-<p>The library makes it easy to work with your data via the <a href="datasets/api.html">Dataset</a> object, which is a specialized data container that every learner can recognize. A dataset is made up of a matrix of <em>samples</em> comprised of <em>features</em> which are usually scalar values. Each sample is a sequentially-ordered array with exactly the same number of elements as every other sample. The columns of the matrix contain the values for a particular feature represented by that column. The <em>dimensionality</em> of a sample is equal to the number of features it has. For example, the samples below are said to be <em>3-dimensional</em> because they contain 3 feature columns. You'll notice that samples can be made up of a heterogeneous mix of data types which we'll describe in detail in the next sections.</p>
+<p>The library makes it easy to work with your data via the <a href="datasets/api.html">Dataset</a> object, which is a specialized data container that every learner can recognize. A dataset is made up of a matrix of <em>samples</em> comprised of <em>features</em> which are usually scalar values. Each sample is a sequentially-ordered array with exactly the same number of elements as every other sample. The columns of the matrix contain the values for a particular feature represented by that column. The <em>dimensionality</em> of a sample is equal to the number of features it has. For example, the samples below are said to be <em>3-dimensional</em> because they contain 3 feature columns. You'll notice that samples can be made up of a heterogeneous mix of data types.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$samples</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">21.5</span><span class="p">,</span> <span class="s1">&#39;furry&#39;</span><span class="p">],</span>
     <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;rough&#39;</span><span class="p">],</span>
@@ -4259,7 +4339,7 @@
 <span class="p">];</span>
 </code></pre></div>
 <h2 id="high-level-data-types">High-level Data Types<a class="headerlink" href="#high-level-data-types" title="Permanent link">#</a></h2>
-<p>The library comes with a built-in higher-order type system which distinguishes types that are continuous (numerical), categorical (discrete), or some other data type. Continuous features represent some <em>quantitative</em> property of the sample such as temperature or credit limit, whereas categorical features form a <em>qualitative</em> property of a sample such as color or texture.</p>
+<p>The library comes with a higher-order type system that distinguishes types that are continuous, categorical (discrete), or some other data type.</p>
 <table>
 <thead>
 <tr>
@@ -4269,12 +4349,12 @@
 </thead>
 <tbody>
 <tr>
-<td>Categorical</td>
-<td>String</td>
-</tr>
-<tr>
 <td>Continuous</td>
 <td>Integer or floating point number</td>
+</tr>
+<tr>
+<td>Categorical</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Image</td>
@@ -4282,20 +4362,28 @@
 </tr>
 </tbody>
 </table>
-<h2 id="quantities">Quantities<a class="headerlink" href="#quantities" title="Permanent link">#</a></h2>
-<p>A quantity is a property that describes the magnitude or multitude of something. Temperature, credit limit, and age are all quantitative features. In Rubix ML, quantities are represented as one of the continuous data types such as integers or floating point numbers. Quantities can further be broken down into ratios, intervals, or counts and there is a measurable numerical relationship between their values.</p>
-<h2 id="categories">Categories<a class="headerlink" href="#categories" title="Permanent link">#</a></h2>
-<p>Categories are discrete values that describe a qualitative property of a sample such as color, texture, or personality type. They are represented as strings and have no numerical relationship between the values. Unlike some quantities that can take on an infinite number of values, categorical variables can only take on 1 of a finite set of values.</p>
-<h2 id="booleans">Booleans<a class="headerlink" href="#booleans" title="Permanent link">#</a></h2>
+<h2 id="continuous-features">Continuous Features<a class="headerlink" href="#continuous-features" title="Permanent link">#</a></h2>
+<p>Continuous features represent some <em>quantitative</em> property of the sample and are represented as either natural (integer) or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.</p>
+<h3 id="intervals">Intervals<a class="headerlink" href="#intervals" title="Permanent link">#</a></h3>
+<p>Intervals are the most general form of continuous measurement and can take on any value within the set of natural or real numbers. Some examples of interval data include temperature in Celsius or Fahrenheit, income, and scores on a personality test.</p>
+<h3 id="ratios">Ratios<a class="headerlink" href="#ratios" title="Permanent link">#</a></h3>
+<p>Unlike intervals, ratios are lower bounded at 0 and are therefore non-negative by definition. Due to this extra constraint ratio variables are able to say something about the relative differences between samples by comparing numbers on the scale to 0. Examples of ratio data include height, distance, and temperature in Kelvin.</p>
+<h3 id="counts">Counts<a class="headerlink" href="#counts" title="Permanent link">#</a></h3>
+<p>Count variables share a similar set of constraints with ratios, however they are limited to the set of natural (or <em>counting</em>) numbers.</p>
+<h2 id="categorical-features">Categorical Features<a class="headerlink" href="#categorical-features" title="Permanent link">#</a></h2>
+<p>Categories are discrete values that describe a qualitative property of a sample such as texture, genre, or political party. They are represented as strings and, unlike continuous features, have no numerical relationship between the values.</p>
+<h3 id="categories">Categories<a class="headerlink" href="#categories" title="Permanent link">#</a></h3>
+<p>Categorical or <em>nominal</em> variables specify which category a sample belongs to among a finite set of choices. For example, a texture feature might include categories such as <code>rough</code>, <code>furry</code>, or <code>smooth</code>.</p>
+<h3 id="ordinals">Ordinals<a class="headerlink" href="#ordinals" title="Permanent link">#</a></h3>
+<p>Numeric strings such as <code>'1'</code> and <code>'2'</code> are considered categorical variables in our high-level type system. This conveniently allows you to represent ordinals as <em>ordered categories</em> in which the distances between the levels could be arbitrary.</p>
+<h3 id="booleans">Booleans<a class="headerlink" href="#booleans" title="Permanent link">#</a></h3>
 <p>A boolean (or <em>binary</em>) variable is a special case of a categorical variable in which the number of possible categories is strictly two. For example, to denote if a subject is tall or not you can use the <code>tall</code> and <code>not tall</code> categories respectively.</p>
-<h2 id="ordinals">Ordinals<a class="headerlink" href="#ordinals" title="Permanent link">#</a></h2>
-<p>Even though PHP treats numeric strings like <code>'1'</code> and <code>'2'</code> as if they were numeric, they are still considered categorical variables in Rubix ML. This conveniently allows you to represent ordinal variables as <em>ordered categories</em>. For example, instead of the integers <code>1</code>, <code>2</code>, <code>3</code>, <code>...</code>, which imply a precise interval, you could use the strings <code>'1'</code>, <code>'2'</code>, <code>'3'</code>, <code>...</code> to signal ordinal values in which the distances between values could be arbitrary.</p>
-<h2 id="datetime">Date/Time<a class="headerlink" href="#datetime" title="Permanent link">#</a></h2>
-<p>There are a number of ways that date/time features can be represented in a dataset. One way is to discretize the value into days, months, and years using categories like <code>1</code>, <code>2</code>, <code>3</code>, <code>...</code>, <code>june</code>, <code>july</code>, <code>august</code>, and <code>2019</code>, <code>2020</code> etc. Date/times can also be represented as continuous features by converting them to a single numerical timestamp.</p>
 <h2 id="text">Text<a class="headerlink" href="#text" title="Permanent link">#</a></h2>
-<p>Text data are a product of language communication and can be viewed as an encoding of many individual features. Initially, text blobs are imported as categorical features, however, they have little meaning as a category because the features are still encoded. Thus, import text blobs and use a <a href="preprocessing.html">preprocessing</a> step to extract features such as word counts, weighted term frequencies, or word embeddings.</p>
+<p>Text data are a product of language communication and can be viewed as a dense encoding of many sparse features. Initially, text blobs are imported as categorical features, however, they have little meaning as a category because the features are still encoded. Thus, import text blobs and use a <a href="preprocessing.html">preprocessing</a> step to extract features such as word counts, weighted term frequencies, or word embeddings.</p>
 <h2 id="images">Images<a class="headerlink" href="#images" title="Permanent link">#</a></h2>
-<p>Images are represented as either the <a href="https://www.php.net/manual/en/book.image.php">GD</a> resource type or (as of PHP 8) a <code>GdImage</code> object. An image type is a special type that holds a reference to the data stored within the image file. For this reason, images must eventually be converted to a scalar type, such as the RGB color intensity values of each pixel, before they can be the input to a learning algorithm.</p>
+<p>Images are represented as either the <a href="https://www.php.net/manual/en/book.image.php">GD</a> resource type or a <code>GdImage</code> object. An image type is a special type that holds a reference to the data stored within the image file. For this reason, images must eventually be converted to a scalar type, such as the RGB color intensity values of each pixel, before they can be the input to a learning algorithm.</p>
+<h2 id="datetime">Date/Time<a class="headerlink" href="#datetime" title="Permanent link">#</a></h2>
+<p>There are a number of ways that date/time features can be represented in a dataset. One way is to discretize the value into days, months, and years using categories like <code>june</code>, <code>july</code>, <code>august</code>, and <code>2020</code>, <code>2021</code>. Date/times can also be represented as continuous features by converting them to a numerical timestamp.</p>
 <h2 id="what-about-null">What about NULL?<a class="headerlink" href="#what-about-null" title="Permanent link">#</a></h2>
 <p>Null values are often used to indicate the absence of a value, however since they do not give any information as to the type of variable that is missing, they cannot be used in a dataset. Instead, represent missing values as either the standard PHP math constant <code>NAN</code> for continuous features or use a special category (such as <code>?</code>) to denote missing categorical values.</p>
                 
@@ -4306,7 +4394,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-25
+      Last update: 2021-04-27
     
   </small>
 </div>
