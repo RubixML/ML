@@ -129,7 +129,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $this->minimums = $this->maximums = [];
+        $this->minimums = $this->maximums = $this->scales = [];
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isContinuous()) {
