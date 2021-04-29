@@ -17,7 +17,7 @@ Here are a few things to check off before sending in a pull request ...
 We use pull requests as an opportunity to communicate with our contributors. Oftentimes, we can improve code readability, find bugs, and make optimizations during the code review process. Every pull request must have the approval from at least one core engineer before merging into the main codebase.
 
 ### Contributor License Agreement
-To ensure that project maintainers are allowed to licence and distribute your code contributions, we ask that every contributor sign our [contributor license agreement](https://github.com/RubixML/Signatures/blob/master/CLA.md) (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement from our CLA bot with your first pull request.
+To ensure that project maintainers are freely allowed to licence and distribute your code contributions, we ask that every contributor sign our [contributor license agreement](https://github.com/RubixML/Signatures/blob/master/CLA.md) (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement from our CLA bot with your first pull request.
 
 ## Static Analysis
 Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
@@ -47,7 +47,7 @@ We use a unique end-to-end testing schema for all learners that involves generat
 > **Note:** Be sure to seed the random number generator with a known constant in your tests to make them deterministic.
 
 ## Coding Style
-Rubix ML follows the PSR-2 coding style with additional rules to keep the codebase clean and reduce cognitive load for our developers. A consistent codebase allows for quicker debugging and generally a more pleasant developer experience (DX).
+Rubix ML follows the PSR-2 coding style with additional rules to keep the codebase clean and reduce cognitive load for our developers. A consistent codebase allows for quicker debugging and generally a more pleasant developer experience.
 
 To run the style checker:
 ```sh
@@ -60,7 +60,7 @@ $ composer fix
 ```
 
 ### Naming
-Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. With some exceptions, interfaces and the classes that implement them should be named after what the object *does* whereas value objects and classes that extend a base class should be named after what the object *is*. Prefer verbs for function and method names unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
+Use accurate, descriptive, consistent, and concise nomenclature. A variable name should only describe the data that the variable contains. Prefer verbs for function and method names unless in the case of an accessor/getter function where the 'get' prefix may be dropped. Prioritize full names over abbreviations unless in the case where the abbreviation is the more common usage.
 
 #### Domain-driven Design
 We employ the Domain Driven Design (DDD) methodology in our naming and design. The goal is to allow developers and domain experts to be able to use the same language when referring to concepts in our codebase. Therefore, it is crucial that your naming reflects the domain that your abstraction operates within.
@@ -82,7 +82,7 @@ To run the benchmarking suite:
 $ composer benchmark
 ```
 
-## Compiling Docs
+## Compiling the Docs
 We use [Mkdocs](https://www.mkdocs.org) and [Mike](https://github.com/jimporter/mike) to compile the markdown documents in the `docs` folder to a versioned static document site.
 
 Make sure to have the following Python dependencies installed.
@@ -91,8 +91,10 @@ Make sure to have the following Python dependencies installed.
 $ pip install mike mkdocs mkdocs-material mkdocs-git-revision-date-plugin
 ```
 
-To serve the documentation site locally for development you can run the following command from the terminal. Then, you'll be able to view the docs by navigating to `http://127.0.0.1:8000` in your browser.
+To serve the documentation site locally for development you can run the following commands from the terminal. Then, you'll be able to view the docs by navigating to `http://127.0.0.1:8000` in your browser.
 
 ```sh
+$ mike deploy 'VERSION'
+
 $ mike serve
 ```
