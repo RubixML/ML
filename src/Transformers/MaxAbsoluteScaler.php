@@ -21,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
+class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable, Bidirectional
 {
     use AutotrackRevisions;
 
@@ -123,6 +123,25 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable
         foreach ($samples as &$sample) {
             foreach ($this->maxabs as $column => $maxabs) {
                 $sample[$column] /= $maxabs;
+            }
+        }
+    }
+
+    /**
+     * Reverse transform the dataset in place.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        if ($this->maxabs === null) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        foreach ($samples as &$sample) {
+            foreach ($this->maxabs as $column => $maxabs) {
+                $sample[$column] *= $maxabs;
             }
         }
     }
