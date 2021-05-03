@@ -4200,7 +4200,11 @@
                 
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RegexFilter.php">[source]</a></span></p>
 <h1 id="regex-filter">Regex Filter<a class="headerlink" href="#regex-filter" title="Permanent link">#</a></h1>
-<p>Filters the text columns of a dataset by matching a list of regular expressions.</p>
+<p>Filters the text features of a dataset by matching and removing patterns from a list of regular expressions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Patterns are filtered in the same sequence as they are given in the constructor.</p>
+</div>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
 <p><strong>Data Type Compatibility:</strong> Categorical</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4244,8 +4248,12 @@
 </thead>
 <tbody>
 <tr>
+<td>EMAIL</td>
+<td>A pattern to match any email address.</td>
+</tr>
+<tr>
 <td>URL</td>
-<td>An alias for the default URL matching pattern (GRUBER 1).</td>
+<td>An alias for the default URL matching pattern.</td>
 </tr>
 <tr>
 <td>GRUBER_1</td>
@@ -4256,8 +4264,16 @@
 <td>The improved Gruber URL matching pattern.</td>
 </tr>
 <tr>
-<td>EMAIL</td>
-<td>A pattern to match any email address.</td>
+<td>EXTRA_CHARACTERS</td>
+<td>Matches consecutively repeated non word or number characters such as punctuation and special characters.</td>
+</tr>
+<tr>
+<td>EXTRA_WORDS</td>
+<td>Matches consecutively repeated words.</td>
+</tr>
+<tr>
+<td>EXTRA_WHITESPACE</td>
+<td>Matches consecutively repeated whitespace characters.</td>
 </tr>
 <tr>
 <td>MENTION</td>
@@ -4266,14 +4282,6 @@
 <tr>
 <td>HASHTAG</td>
 <td>Matches Twitter-style hashtags (#example).</td>
-</tr>
-<tr>
-<td>EXTRA_CHARACTERS</td>
-<td>Matches extra non word or number characters such as repeated punctuation and special characters.</td>
-</tr>
-<tr>
-<td>EXTRA_WORDS</td>
-<td>Matches extra (consecutively repeated) words.</td>
 </tr>
 </tbody>
 </table>
@@ -4299,7 +4307,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-06
+      Last update: 2021-05-03
     
   </small>
 </div>
