@@ -509,8 +509,7 @@ class TSNE implements Transformer, Verbose
             ->add(1.0)
             ->pow((1.0 + $this->dofs) / -2.0);
 
-        $q = $q->divide($q->sum()->multiply(2.0))
-            ->clipLower(EPSILON);
+        $q = $q->divide($q->sum()->multiply(2.0)->clipLower(EPSILON));
 
         $pqd = $p->subtract($q)->multiply($distances);
 

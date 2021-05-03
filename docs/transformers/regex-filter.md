@@ -1,7 +1,10 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/RegexFilter.php">[source]</a></span>
 
 # Regex Filter
-Filters the text columns of a dataset by matching a list of regular expressions.
+Filters the text features of a dataset by matching and removing patterns from a list of regular expressions.
+
+!!! note
+    Patterns are filtered in the same sequence as they are given in the constructor.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
@@ -27,14 +30,15 @@ $transformer = new RegexFilter([
 ## Predefined Regex Patterns
 | Class Constant | Description |
 |---|---|
-| URL | An alias for the default URL matching pattern (GRUBER 1). |
+| EMAIL | A pattern to match any email address. |
+| URL | An alias for the default URL matching pattern. |
 | GRUBER_1 | The original Gruber URL matching pattern. |
 | GRUBER_2 | The improved Gruber URL matching pattern. |
-| EMAIL | A pattern to match any email address. |
+| EXTRA_CHARACTERS | Matches consecutively repeated non word or number characters such as punctuation and special characters. |
+| EXTRA_WORDS | Matches consecutively repeated words. |
+| EXTRA_WHITESPACE | Matches consecutively repeated whitespace characters. |
 | MENTION | A pattern that matches Twitter-style mentions (@example). |
 | HASHTAG | Matches Twitter-style hashtags (#example). |
-| EXTRA_CHARACTERS | Matches extra non word or number characters such as repeated punctuation and special characters. |
-| EXTRA_WORDS | Matches extra (consecutively repeated) words.
 
 ## Additional Methods
 This transformer does not have any additional methods.

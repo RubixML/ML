@@ -31,7 +31,7 @@ class RegexFilterTest extends TestCase
         $this->dataset = Unlabeled::quick([
             ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],
             ['Too weird to live, support@rubixml.com too rare to die https://rubixml.com'],
-            ['A man who procrastinates in @his choosing will inevitably have his choice made for him by #circumstance'],
+            ['A man who procrastinates in @his choosing will inevitably have his choice    made for him by #circumstance'],
             ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
             ['Diese äpfel Äpfel schmecken sehr gut'],
         ]);
@@ -39,10 +39,11 @@ class RegexFilterTest extends TestCase
         $this->transformer = new RegexFilter([
             RegexFilter::URL,
             RegexFilter::EMAIL,
-            RegexFilter::MENTION,
-            RegexFilter::HASHTAG,
             RegexFilter::EXTRA_CHARACTERS,
             RegexFilter::EXTRA_WORDS,
+            RegexFilter::MENTION,
+            RegexFilter::HASHTAG,
+            RegexFilter::EXTRA_WHITESPACE,
         ]);
     }
 
@@ -64,10 +65,10 @@ class RegexFilterTest extends TestCase
 
         $expected = [
             ['I was not proud of what I had learned, but I never doubted that it was worth $ knowing.'],
-            ['Too weird to live,  too rare to die '],
-            ['A man who procrastinates in  choosing will inevitably have his choice made for him by '],
-            ['The  quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of  cola'],
-            ['Diese  Äpfel schmecken sehr gut'],
+            ['Too weird to live, too rare to die '],
+            ['A man who procrastinates in choosing will inevitably have his choice made for him by '],
+            ['The quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of cola'],
+            ['Diese Äpfel schmecken sehr gut'],
         ];
 
         $this->assertEquals($expected, $this->dataset->samples());

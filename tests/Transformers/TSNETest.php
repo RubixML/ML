@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\ML\Tests\Embedders;
+namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
-use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;

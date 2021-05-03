@@ -234,6 +234,8 @@ class KNNImputer implements Transformer, Stateful, Persistable
                             }
 
                             $value = argmax($scores);
+
+                            break;
                     }
                 }
             }

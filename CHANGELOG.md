@@ -1,4 +1,4 @@
-- 1.0.0-beta3
+- 1.0.0-rc1
     - Added Token Hashing Vectorizer transformer
     - Added Word Stemmer tokenizer from Extras
     - Remove HTML Stripper and Whitespace Remover transformers
@@ -7,6 +7,7 @@
     - Remove rules() method on CART
     - Removed results() and best() methods from Grid Search
     - Change string representation of NAN to match PHP
+    - Added extra whitespace pattern to Regex Filter
 
 - 1.0.0-beta2
     - Interval Discretizer now uses variable width histograms
