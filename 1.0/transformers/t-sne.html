@@ -4267,9 +4267,18 @@
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TSNE</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Kernels\Distance\Manhattan</span><span class="p">;</span>
 
-<span class="nv">$embedder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Manhattan</span><span class="p">());</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Manhattan</span><span class="p">());</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
+<p>Return an iterable progress table with the steps from the last training session:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">steps</span><span class="p">()</span> <span class="o">:</span> <span class="nx">iterable</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
+
+<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;progress.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">steps</span><span class="p">());</span>
+</code></pre></div>
 <p>Return the magnitudes of the gradient at each epoch from the last embedding:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">losses</span><span class="p">()</span> <span class="o">:</span> <span class="nx">float</span><span class="p">[]</span><span class="o">|</span><span class="k">null</span>
 </code></pre></div></p>
@@ -4293,7 +4302,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-25
+      Last update: 2021-05-08
     
   </small>
 </div>
