@@ -1,3 +1,6 @@
+- 1.0.0
+    - No changes
+
 - 1.0.0-rc1
     - Added Token Hashing Vectorizer transformer
     - Added Word Stemmer tokenizer from Extras
