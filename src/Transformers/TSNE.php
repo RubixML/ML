@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Generator;
 
 use function count;
 
@@ -281,6 +282,25 @@ class TSNE implements Transformer, Verbose
     public function compatibility() : array
     {
         return $this->kernel->compatibility();
+    }
+
+    /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return \Generator<mixed[]>
+     */
+    public function steps() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'epoch' => $epoch,
+                'loss' => $loss,
+            ];
+        }
     }
 
     /**

@@ -27,10 +27,23 @@
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$embedder = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());
+$transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 10, new Manhattan());
 ```
 
 ## Additional Methods
+Return an iterable progress table with the steps from the last training session:
+```php
+public steps() : iterable
+```
+
+```php
+use Rubix\ML\Extractors\CSV;
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($transformer->steps());
+```
+
 Return the magnitudes of the gradient at each epoch from the last embedding:
 ```php
 public losses() : float[]|null

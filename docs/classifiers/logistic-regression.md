@@ -34,7 +34,7 @@ public steps() : iterable
 ```
 
 ```php
-use Rubix\ML\Extractor\CSV;
+use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('progress.csv', true);
 
