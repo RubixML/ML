@@ -451,6 +451,18 @@
   
   
     <li class="md-nav__item">
+      <a href="exploring-data.html" class="md-nav__link">
+        Exploring Data
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="choosing-an-estimator.html" class="md-nav__link">
         Choosing an Estimator
       </a>
@@ -542,13 +554,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#persisters" class="md-nav__link">
-    Persisters
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#serialization" class="md-nav__link">
     Serialization
   </a>
@@ -558,6 +563,13 @@
         <li class="md-nav__item">
   <a href="#persistent-model-meta-estimator" class="md-nav__link">
     Persistent Model Meta-estimator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persisting-transformers" class="md-nav__link">
+    Persisting Transformers
   </a>
   
 </li>
@@ -736,18 +748,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="wrapper.html" class="md-nav__link">
-        Wrapper
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -816,8 +816,8 @@
   
   
     <li class="md-nav__item">
-      <a href="extractors/json.html" class="md-nav__link">
-        JSON
+      <a href="extractors/ndjson.html" class="md-nav__link">
+        NDJSON
       </a>
     </li>
   
@@ -828,8 +828,8 @@
   
   
     <li class="md-nav__item">
-      <a href="extractors/ndjson.html" class="md-nav__link">
-        NDJSON
+      <a href="extractors/sql-table.html" class="md-nav__link">
+        SQL Table
       </a>
     </li>
   
@@ -1716,62 +1716,11 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9" type="checkbox" id="__nav_4_9" >
       
       <label class="md-nav__link" for="__nav_4_9">
-        Embedders
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Embedders" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_9">
-          <span class="md-nav__icon md-icon"></span>
-          Embedders
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="embedders/api.html" class="md-nav__link">
-        API Reference
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="embedders/t-sne.html" class="md-nav__link">
-        t-SNE
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10" type="checkbox" id="__nav_4_10" >
-      
-      <label class="md-nav__link" for="__nav_4_10">
         Transformers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Transformers" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_10">
+        <label class="md-nav__title" for="__nav_4_9">
           <span class="md-nav__icon md-icon"></span>
           Transformers
         </label>
@@ -1797,14 +1746,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_2" type="checkbox" id="__nav_4_10_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_2" type="checkbox" id="__nav_4_9_2" >
       
-      <label class="md-nav__link" for="__nav_4_10_2">
+      <label class="md-nav__link" for="__nav_4_9_2">
         Standardization and Normalization
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Standardization and Normalization" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_2">
+        <label class="md-nav__title" for="__nav_4_9_2">
           <span class="md-nav__icon md-icon"></span>
           Standardization and Normalization
         </label>
@@ -1896,30 +1845,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_3" type="checkbox" id="__nav_4_10_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_3" type="checkbox" id="__nav_4_9_3" >
       
-      <label class="md-nav__link" for="__nav_4_10_3">
+      <label class="md-nav__link" for="__nav_4_9_3">
         Dimensionality Reduction
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Dimensionality Reduction" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_3">
+        <label class="md-nav__title" for="__nav_4_9_3">
           <span class="md-nav__icon md-icon"></span>
           Dimensionality Reduction
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/dense-random-projector.html" class="md-nav__link">
-        Dense Random Projector
-      </a>
-    </li>
-  
-
           
             
   
@@ -1981,6 +1918,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/t-sne.html" class="md-nav__link">
+        t-SNE
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1995,14 +1944,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_4" type="checkbox" id="__nav_4_10_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_4" type="checkbox" id="__nav_4_9_4" >
       
-      <label class="md-nav__link" for="__nav_4_10_4">
+      <label class="md-nav__link" for="__nav_4_9_4">
         Feature Conversion
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Feature Conversion" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_4">
+        <label class="md-nav__title" for="__nav_4_9_4">
           <span class="md-nav__icon md-icon"></span>
           Feature Conversion
         </label>
@@ -2070,16 +2019,16 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_5" type="checkbox" id="__nav_4_10_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_5" type="checkbox" id="__nav_4_9_5" >
       
-      <label class="md-nav__link" for="__nav_4_10_5">
-        Feature Selection
+      <label class="md-nav__link" for="__nav_4_9_5">
+        Feature Expansion
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Feature Selection" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_5">
+      <nav class="md-nav" aria-label="Feature Expansion" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_5">
           <span class="md-nav__icon md-icon"></span>
-          Feature Selection
+          Feature Expansion
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -2088,20 +2037,8 @@
   
   
     <li class="md-nav__item">
-      <a href="transformers/k-best-feature-selector.html" class="md-nav__link">
-        K Best Feature Selector
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/recursive-feature-eliminator.html" class="md-nav__link">
-        Recursive Feature Eliminator
+      <a href="transformers/polynomial-expander.html" class="md-nav__link">
+        Polynomial Expander
       </a>
     </li>
   
@@ -2121,18 +2058,30 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_6" type="checkbox" id="__nav_4_10_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_6" type="checkbox" id="__nav_4_9_6" >
       
-      <label class="md-nav__link" for="__nav_4_10_6">
+      <label class="md-nav__link" for="__nav_4_9_6">
         Imputation
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Imputation" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_6">
+        <label class="md-nav__title" for="__nav_4_9_6">
           <span class="md-nav__icon md-icon"></span>
           Imputation
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/hot-deck-imputer.html" class="md-nav__link">
+        Hot Deck Imputer
+      </a>
+    </li>
+  
+
           
             
   
@@ -2158,18 +2107,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/random-hot-deck-imputer.html" class="md-nav__link">
-        Random Hot Deck Imputer
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -2184,81 +2121,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_7" type="checkbox" id="__nav_4_10_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_7" type="checkbox" id="__nav_4_9_7" >
       
-      <label class="md-nav__link" for="__nav_4_10_7">
-        Image Transformers
+      <label class="md-nav__link" for="__nav_4_9_7">
+        Natural Language
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Image Transformers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_7">
+      <nav class="md-nav" aria-label="Natural Language" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_7">
           <span class="md-nav__icon md-icon"></span>
-          Image Transformers
+          Natural Language
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/image-resizer.html" class="md-nav__link">
-        Image Resizer
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/image-vectorizer.html" class="md-nav__link">
-        Image Vectorizer
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_8" type="checkbox" id="__nav_4_10_8" >
-      
-      <label class="md-nav__link" for="__nav_4_10_8">
-        Text Transformers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Text Transformers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_8">
-          <span class="md-nav__icon md-icon"></span>
-          Text Transformers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="transformers/html-stripper.html" class="md-nav__link">
-        HTML Stripper
-      </a>
-    </li>
-  
-
           
             
   
@@ -2325,8 +2199,8 @@
   
   
     <li class="md-nav__item">
-      <a href="transformers/whitespace-trimmer.html" class="md-nav__link">
-        Whitespace Trimmer
+      <a href="transformers/token-hashing-vectorizer.html" class="md-nav__link">
+        Token Hashing Vectorizer
       </a>
     </li>
   
@@ -2358,14 +2232,65 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_9" type="checkbox" id="__nav_4_10_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_8" type="checkbox" id="__nav_4_9_8" >
       
-      <label class="md-nav__link" for="__nav_4_10_9">
+      <label class="md-nav__link" for="__nav_4_9_8">
+        Images
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Images" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_8">
+          <span class="md-nav__icon md-icon"></span>
+          Images
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/image-resizer.html" class="md-nav__link">
+        Image Resizer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/image-vectorizer.html" class="md-nav__link">
+        Image Vectorizer
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_9" type="checkbox" id="__nav_4_9_9" >
+      
+      <label class="md-nav__link" for="__nav_4_9_9">
         Other
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Other" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_9">
+        <label class="md-nav__title" for="__nav_4_9_9">
           <span class="md-nav__icon md-icon"></span>
           Other
         </label>
@@ -2376,8 +2301,8 @@
   
   
     <li class="md-nav__item">
-      <a href="transformers/polynomial-expander.html" class="md-nav__link">
-        Polynomial Expander
+      <a href="transformers/lambda-function.html" class="md-nav__link">
+        Lambda Function
       </a>
     </li>
   
@@ -2403,14 +2328,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11" type="checkbox" id="__nav_4_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10" type="checkbox" id="__nav_4_10" >
       
-      <label class="md-nav__link" for="__nav_4_11">
+      <label class="md-nav__link" for="__nav_4_10">
         Neural Network
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Neural Network" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_11">
+        <label class="md-nav__title" for="__nav_4_10">
           <span class="md-nav__icon md-icon"></span>
           Neural Network
         </label>
@@ -2424,14 +2349,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_1" type="checkbox" id="__nav_4_11_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_1" type="checkbox" id="__nav_4_10_1" >
       
-      <label class="md-nav__link" for="__nav_4_11_1">
+      <label class="md-nav__link" for="__nav_4_10_1">
         Hidden Layers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Hidden Layers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_1">
+        <label class="md-nav__title" for="__nav_4_10_1">
           <span class="md-nav__icon md-icon"></span>
           Hidden Layers
         </label>
@@ -2523,14 +2448,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_2" type="checkbox" id="__nav_4_11_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_2" type="checkbox" id="__nav_4_10_2" >
       
-      <label class="md-nav__link" for="__nav_4_11_2">
+      <label class="md-nav__link" for="__nav_4_10_2">
         Activation Functions
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Activation Functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_2">
+        <label class="md-nav__title" for="__nav_4_10_2">
           <span class="md-nav__icon md-icon"></span>
           Activation Functions
         </label>
@@ -2670,14 +2595,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_3" type="checkbox" id="__nav_4_11_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_3" type="checkbox" id="__nav_4_10_3" >
       
-      <label class="md-nav__link" for="__nav_4_11_3">
+      <label class="md-nav__link" for="__nav_4_10_3">
         Cost Functions
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Cost Functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_3">
+        <label class="md-nav__title" for="__nav_4_10_3">
           <span class="md-nav__icon md-icon"></span>
           Cost Functions
         </label>
@@ -2745,14 +2670,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_4" type="checkbox" id="__nav_4_11_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_4" type="checkbox" id="__nav_4_10_4" >
       
-      <label class="md-nav__link" for="__nav_4_11_4">
+      <label class="md-nav__link" for="__nav_4_10_4">
         Initializers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Initializers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_4">
+        <label class="md-nav__title" for="__nav_4_10_4">
           <span class="md-nav__icon md-icon"></span>
           Initializers
         </label>
@@ -2856,14 +2781,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_5" type="checkbox" id="__nav_4_11_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_5" type="checkbox" id="__nav_4_10_5" >
       
-      <label class="md-nav__link" for="__nav_4_11_5">
+      <label class="md-nav__link" for="__nav_4_10_5">
         Optimizers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Optimizers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_5">
+        <label class="md-nav__title" for="__nav_4_10_5">
           <span class="md-nav__icon md-icon"></span>
           Optimizers
         </label>
@@ -2985,14 +2910,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12" type="checkbox" id="__nav_4_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11" type="checkbox" id="__nav_4_11" >
       
-      <label class="md-nav__link" for="__nav_4_12">
+      <label class="md-nav__link" for="__nav_4_11">
         Graph
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Graph" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_12">
+        <label class="md-nav__title" for="__nav_4_11">
           <span class="md-nav__icon md-icon"></span>
           Graph
         </label>
@@ -3006,14 +2931,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_1" type="checkbox" id="__nav_4_12_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_1" type="checkbox" id="__nav_4_11_1" >
       
-      <label class="md-nav__link" for="__nav_4_12_1">
+      <label class="md-nav__link" for="__nav_4_11_1">
         Trees
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Trees" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_12_1">
+        <label class="md-nav__title" for="__nav_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Trees
         </label>
@@ -3063,14 +2988,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13" type="checkbox" id="__nav_4_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12" type="checkbox" id="__nav_4_12" >
       
-      <label class="md-nav__link" for="__nav_4_13">
+      <label class="md-nav__link" for="__nav_4_12">
         Kernels
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Kernels" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_13">
+        <label class="md-nav__title" for="__nav_4_12">
           <span class="md-nav__icon md-icon"></span>
           Kernels
         </label>
@@ -3084,14 +3009,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_1" type="checkbox" id="__nav_4_13_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_1" type="checkbox" id="__nav_4_12_1" >
       
-      <label class="md-nav__link" for="__nav_4_13_1">
+      <label class="md-nav__link" for="__nav_4_12_1">
         Distance
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Distance" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_13_1">
+        <label class="md-nav__title" for="__nav_4_12_1">
           <span class="md-nav__icon md-icon"></span>
           Distance
         </label>
@@ -3219,14 +3144,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_2" type="checkbox" id="__nav_4_13_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_2" type="checkbox" id="__nav_4_12_2" >
       
-      <label class="md-nav__link" for="__nav_4_13_2">
+      <label class="md-nav__link" for="__nav_4_12_2">
         SVM
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="SVM" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_13_2">
+        <label class="md-nav__title" for="__nav_4_12_2">
           <span class="md-nav__icon md-icon"></span>
           SVM
         </label>
@@ -3300,14 +3225,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14" type="checkbox" id="__nav_4_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13" type="checkbox" id="__nav_4_13" >
       
-      <label class="md-nav__link" for="__nav_4_14">
+      <label class="md-nav__link" for="__nav_4_13">
         Cross Validation
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Cross Validation" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_14">
+        <label class="md-nav__title" for="__nav_4_13">
           <span class="md-nav__icon md-icon"></span>
           Cross Validation
         </label>
@@ -3321,14 +3246,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_1" type="checkbox" id="__nav_4_14_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_1" type="checkbox" id="__nav_4_13_1" >
       
-      <label class="md-nav__link" for="__nav_4_14_1">
+      <label class="md-nav__link" for="__nav_4_13_1">
         Metrics
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Metrics" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_1">
+        <label class="md-nav__title" for="__nav_4_13_1">
           <span class="md-nav__icon md-icon"></span>
           Metrics
         </label>
@@ -3528,14 +3453,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_2" type="checkbox" id="__nav_4_14_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_2" type="checkbox" id="__nav_4_13_2" >
       
-      <label class="md-nav__link" for="__nav_4_14_2">
+      <label class="md-nav__link" for="__nav_4_13_2">
         Reports
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Reports" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_2">
+        <label class="md-nav__title" for="__nav_4_13_2">
           <span class="md-nav__icon md-icon"></span>
           Reports
         </label>
@@ -3627,14 +3552,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_3" type="checkbox" id="__nav_4_14_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_3" type="checkbox" id="__nav_4_13_3" >
       
-      <label class="md-nav__link" for="__nav_4_14_3">
+      <label class="md-nav__link" for="__nav_4_13_3">
         Validators
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Validators" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_3">
+        <label class="md-nav__title" for="__nav_4_13_3">
           <span class="md-nav__icon md-icon"></span>
           Validators
         </label>
@@ -3720,6 +3645,105 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14" type="checkbox" id="__nav_4_14" >
+      
+      <label class="md-nav__link" for="__nav_4_14">
+        Tokenizers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tokenizers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_14">
+          <span class="md-nav__icon md-icon"></span>
+          Tokenizers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/k-skip-n-gram.html" class="md-nav__link">
+        K-Skip-N-Gram
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/n-gram.html" class="md-nav__link">
+        N-Gram
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/sentence.html" class="md-nav__link">
+        Sentence
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/whitespace.html" class="md-nav__link">
+        Whitespace
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/word.html" class="md-nav__link">
+        Word
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/word-stemmer.html" class="md-nav__link">
+        Word Stemmer
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_15" type="checkbox" id="__nav_4_15" >
       
       <label class="md-nav__link" for="__nav_4_15">
@@ -3757,105 +3781,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/flysystem.html" class="md-nav__link">
-        Flysystem
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/redis-db.html" class="md-nav__link">
-        Redis DB
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_15_5" type="checkbox" id="__nav_4_15_5" >
-      
-      <label class="md-nav__link" for="__nav_4_15_5">
-        Serializers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Serializers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_15_5">
-          <span class="md-nav__icon md-icon"></span>
-          Serializers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/serializers/gzip.html" class="md-nav__link">
-        Gzip
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/serializers/igbinary.html" class="md-nav__link">
-        Igbinary
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/serializers/native.html" class="md-nav__link">
-        Native
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persisters/serializers/rbx.html" class="md-nav__link">
-        RBX
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -3873,11 +3798,125 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_16" type="checkbox" id="__nav_4_16" >
       
       <label class="md-nav__link" for="__nav_4_16">
+        Serializers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Serializers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_16">
+          <span class="md-nav__icon md-icon"></span>
+          Serializers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serializers/api.html" class="md-nav__link">
+        API Reference
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serializers/gzip.html" class="md-nav__link">
+        Gzip
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serializers/native.html" class="md-nav__link">
+        Native
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="serializers/rbx.html" class="md-nav__link">
+        RBX
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17" type="checkbox" id="__nav_4_17" >
+      
+      <label class="md-nav__link" for="__nav_4_17">
+        Loggers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Loggers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_17">
+          <span class="md-nav__icon md-icon"></span>
+          Loggers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="loggers/screen.html" class="md-nav__link">
+        Screen
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_18" type="checkbox" id="__nav_4_18" >
+      
+      <label class="md-nav__link" for="__nav_4_18">
         Backends
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Backends" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_16">
+        <label class="md-nav__title" for="__nav_4_18">
           <span class="md-nav__icon md-icon"></span>
           Backends
         </label>
@@ -3921,35 +3960,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17" type="checkbox" id="__nav_4_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_19" type="checkbox" id="__nav_4_19" >
       
-      <label class="md-nav__link" for="__nav_4_17">
-        Other
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Other" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_17">
-          <span class="md-nav__icon md-icon"></span>
-          Other
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_1" type="checkbox" id="__nav_4_17_1" >
-      
-      <label class="md-nav__link" for="__nav_4_17_1">
+      <label class="md-nav__link" for="__nav_4_19">
         Helpers
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Helpers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_1">
+      <nav class="md-nav" aria-label="Helpers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_19">
           <span class="md-nav__icon md-icon"></span>
           Helpers
         </label>
@@ -3960,7 +3978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/helpers/params.html" class="md-nav__link">
+      <a href="helpers/params.html" class="md-nav__link">
         Params
       </a>
     </li>
@@ -3981,53 +3999,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_2" type="checkbox" id="__nav_4_17_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_20" type="checkbox" id="__nav_4_20" >
       
-      <label class="md-nav__link" for="__nav_4_17_2">
-        Loggers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Loggers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_2">
-          <span class="md-nav__icon md-icon"></span>
-          Loggers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/loggers/screen.html" class="md-nav__link">
-        Screen
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_3" type="checkbox" id="__nav_4_17_3" >
-      
-      <label class="md-nav__link" for="__nav_4_17_3">
+      <label class="md-nav__link" for="__nav_4_20">
         Strategies
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Strategies" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_3">
+      <nav class="md-nav" aria-label="Strategies" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_20">
           <span class="md-nav__icon md-icon"></span>
           Strategies
         </label>
@@ -4038,7 +4017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/constant.html" class="md-nav__link">
+      <a href="strategies/constant.html" class="md-nav__link">
         Constant
       </a>
     </li>
@@ -4050,7 +4029,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/k-most-frequent.html" class="md-nav__link">
+      <a href="strategies/k-most-frequent.html" class="md-nav__link">
         K Most Frequent
       </a>
     </li>
@@ -4062,7 +4041,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/mean.html" class="md-nav__link">
+      <a href="strategies/mean.html" class="md-nav__link">
         Mean
       </a>
     </li>
@@ -4074,7 +4053,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/percentile.html" class="md-nav__link">
+      <a href="strategies/percentile.html" class="md-nav__link">
         Percentile
       </a>
     </li>
@@ -4086,7 +4065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/prior.html" class="md-nav__link">
+      <a href="strategies/prior.html" class="md-nav__link">
         Prior
       </a>
     </li>
@@ -4098,114 +4077,9 @@
   
   
     <li class="md-nav__item">
-      <a href="other/strategies/wild-guess.html" class="md-nav__link">
+      <a href="strategies/wild-guess.html" class="md-nav__link">
         Wild Guess
       </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_4" type="checkbox" id="__nav_4_17_4" >
-      
-      <label class="md-nav__link" for="__nav_4_17_4">
-        Tokenizers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Tokenizers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_4">
-          <span class="md-nav__icon md-icon"></span>
-          Tokenizers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/k-skip-n-gram.html" class="md-nav__link">
-        K-Skip-N-Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/n-gram.html" class="md-nav__link">
-        N-Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/sentence.html" class="md-nav__link">
-        Sentence
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/skip-gram.html" class="md-nav__link">
-        Skip Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/whitespace.html" class="md-nav__link">
-        Whitespace
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="other/tokenizers/word.html" class="md-nav__link">
-        Word
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -4262,13 +4136,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#persisters" class="md-nav__link">
-    Persisters
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#serialization" class="md-nav__link">
     Serialization
   </a>
@@ -4278,6 +4145,13 @@
         <li class="md-nav__item">
   <a href="#persistent-model-meta-estimator" class="md-nav__link">
     Persistent Model Meta-estimator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persisting-transformers" class="md-nav__link">
+    Persisting Transformers
   </a>
   
 </li>
@@ -4307,43 +4181,60 @@
                 
                 
                 <h1 id="model-persistence">Model Persistence<a class="headerlink" href="#model-persistence" title="Permanent link">#</a></h1>
-<p>Model persistence is the ability to save and subsequently load a learner's state in another process. Trained estimators can be used for real-time inference by loading the model onto a server or they can be saved to make predictions offline at a later time. Estimators that implement the <a href="persistable.html">Persistable</a> interface are able to have their internal state persisted between processes by a <a href="persisters/api.html">Persister</a>. In addition, the library provides the <a href="persistent-model.html">Persistent Model</a> meta-estimator that acts as a wrapper for persistable estimators.</p>
-<h2 id="persisters">Persisters<a class="headerlink" href="#persisters" title="Permanent link">#</a></h2>
-<p>Persisters are objects that interface with your storage backend such as a filesystem or Redis database. They provide the <code>save()</code> and <code>load()</code> methods which take and receive persistable objects. In order to function properly, persisters must have read and write access to your storage system. In the example below, we'll use the <a href="persisters/filesystem.html">Filesystem</a> persister to load a <a href="persistable.html">Persistable</a> estimator from the filesystem and then save it after performing some task.</p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
-
-<span class="nv">$persister</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.model&#39;</span><span class="p">);</span>
-
-<span class="nv">$estimator</span> <span class="o">=</span> <span class="nv">$persister</span><span class="o">-&gt;</span><span class="na">load</span><span class="p">();</span>
-
-<span class="c1">// Do something</span>
-
-<span class="nv">$persister</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="nv">$estimator</span><span class="p">);</span>
-</code></pre></div>
+<p>Model persistence is the ability to save and subsequently load a learner's state in another process. Trained estimators can be used for real-time inference by loading the model onto a server or they can be saved to make predictions in batches offline at a later time. Estimators that implement the <a href="persistable.html">Persistable</a> interface are able to have their internal state captured between processes. In addition, the library provides the <a href="persistent-model.html">Persistent Model</a> meta-estimator that acts as a wrapper for persistable estimators.</p>
 <h2 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">#</a></h2>
-<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in byte-stream format such as with PHP's <a href="persisters/serializers/native.html">Native</a> serializer or in a compressed byte-stream with integrity checks such as with the library's own <a href="persisters/serializers/rbx.html">RBX</a> serializer. In the next example, we demonstrate how to replace the default serializer of the <a href="persisters/filesystem.html">Filesystem</a> persister with the RBX format.</p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Serializers\RBX</span><span class="p">;</span>
+<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's <a href="serializers/native.html">Native</a> serializer or in a more robust format such as with the library's own <a href="serializers/rbx.html">RBX</a> serializer. In the this example, we'll demonstrate how to encode a Persistable learner using the compressed RBX format, save the encoding with a <a href="persisters/api.html">Persister</a>, and then how to deserialize the encoding.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
 
-<span class="nv">$persister</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">());</span>
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RandomForest</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">();</span>
+
+<span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$estimator</span><span class="p">);</span>
+
+
+
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">deserialize</span><span class="p">(</span><span class="nv">$encoding</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Due to a limitation in PHP, anonymous classes and functions (<em>closures</em>) are not able to be deserialized. Avoid adding anonymous classes or functions to an object that you intend to persist.</p>
 </div>
 <h2 id="persistent-model-meta-estimator">Persistent Model Meta-estimator<a class="headerlink" href="#persistent-model-meta-estimator" title="Permanent link">#</a></h2>
-<p>The <a href="persistent-model.html">Persistent Model</a> meta-estimator is a wrapper that uses the persistence subsystem under the hood. It provides the <code>save()</code> and <code>load()</code> methods that give the estimator the ability to save and load itself.</p>
+<p>The persistence subsystem can be interfaces at a low level with Serializer and Persister objects or it can be interacted with at a higher level using the <a href="persistent-model.html">Persistent Model</a> meta-estimator. It is a decorator that provides <code>save()</code> and <code>load()</code> methods giving the estimator the ability to save and load itself.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\PersistentModel</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
 
-<span class="nv">$estimator</span> <span class="o">=</span> <span class="nx">PersistentModel</span><span class="o">::</span><span class="na">load</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.model&#39;</span><span class="p">));</span>
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="nx">PersistentModel</span><span class="o">::</span><span class="na">load</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">));</span>
 
 <span class="c1">// Do something</span>
 
 <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
 </code></pre></div>
+<h2 id="persisting-transformers">Persisting Transformers<a class="headerlink" href="#persisting-transformers" title="Permanent link">#</a></h2>
+<p>In addition to Learners, the persistence subsystem can be used to individually save and load any Stateful transformer that implements the <a href="persistable.html">Persistable</a> interface . In the example below we'll fit a transformer to a dataset and then save it to the <a href="persisters/filesystem.html">Filesystem</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">();</span>
+
+<span class="c1">// Fit transformer</span>
+
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">();</span>
+
+<span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">));</span>
+</code></pre></div>
+<p>Then, to load the transformer in another process call the <code>deserialize()</code> method on the encoding returned by the persister's <code>load()</code> method.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="nv">$persister</span><span class="o">-&gt;</span><span class="na">load</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">deserializeWith</span><span class="p">(</span><span class="k">new</span> <span class="nx">RBX</span><span class="p">());</span>
+</code></pre></div>
 <h2 id="caveats">Caveats<a class="headerlink" href="#caveats" title="Permanent link">#</a></h2>
-<p>Since model data are exported with the learner's current class definition in mind, problems may occur when loading a model using a different version of the library than the one it was trained and saved on. For example, when upgrading to a new version, there is a small chance that a previously saved learner may not be able to be deserialized if the model is not compatible with the learner's new class definition. For maximum interoperability, ensure that each system is running the same version of Rubix ML.</p>
+<p>Since model data are exported with the learner's current class definition in mind, problems may occur when loading a model using a different version of the library than the one it was trained and saved on. For example, when upgrading to a new version, there is a small chance that a previously saved learner may not be able to be deserialized if the model is not compatible with the learner's new class definition. For maximum interoperability, ensure that each system is running the same version of the library.</p>
                 
                   
                     
@@ -4352,7 +4243,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-06
+      Last update: 2021-04-08
     
   </small>
 </div>

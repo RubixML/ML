@@ -449,6 +449,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../exploring-data.html" class="md-nav__link">
+        Exploring Data
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../choosing-an-estimator.html" class="md-nav__link">
         Choosing an Estimator
       </a>
@@ -677,18 +689,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../wrapper.html" class="md-nav__link">
-        Wrapper
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -757,8 +757,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../extractors/json.html" class="md-nav__link">
-        JSON
+      <a href="../extractors/ndjson.html" class="md-nav__link">
+        NDJSON
       </a>
     </li>
   
@@ -769,8 +769,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../extractors/ndjson.html" class="md-nav__link">
-        NDJSON
+      <a href="../extractors/sql-table.html" class="md-nav__link">
+        SQL Table
       </a>
     </li>
   
@@ -848,13 +848,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#selecting" class="md-nav__link">
-    Selecting
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#properties" class="md-nav__link">
     Properties
   </a>
@@ -862,22 +855,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#applying-transformations" class="md-nav__link">
-    Applying Transformations
+  <a href="#data-types" class="md-nav__link">
+    Data Types
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#stacking-datasets" class="md-nav__link">
-    Stacking Datasets
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merging-datasets" class="md-nav__link">
-    Merging Datasets
+  <a href="#selecting" class="md-nav__link">
+    Selecting
   </a>
   
 </li>
@@ -932,22 +918,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering" class="md-nav__link">
-    Filtering
+  <a href="#applying-transformations" class="md-nav__link">
+    Applying Transformations
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sorting" class="md-nav__link">
-    Sorting
+  <a href="#mapping-and-filtering" class="md-nav__link">
+    Mapping and Filtering
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dropping-rows-and-columns" class="md-nav__link">
-    Dropping Rows and Columns
+  <a href="#stacking" class="md-nav__link">
+    Stacking
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merging-and-joining" class="md-nav__link">
+    Merging and Joining
   </a>
   
 </li>
@@ -960,6 +953,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sorting" class="md-nav__link">
+    Sorting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#de-duplication" class="md-nav__link">
     De-duplication
   </a>
@@ -967,15 +967,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#encode-the-dataset" class="md-nav__link">
-    Encode the Dataset
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#previewing-in-the-console" class="md-nav__link">
-    Previewing in the Console
+  <a href="#exporting" class="md-nav__link">
+    Exporting
   </a>
   
 </li>
@@ -1830,62 +1823,11 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9" type="checkbox" id="__nav_4_9" >
       
       <label class="md-nav__link" for="__nav_4_9">
-        Embedders
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Embedders" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_9">
-          <span class="md-nav__icon md-icon"></span>
-          Embedders
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../embedders/api.html" class="md-nav__link">
-        API Reference
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../embedders/t-sne.html" class="md-nav__link">
-        t-SNE
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10" type="checkbox" id="__nav_4_10" >
-      
-      <label class="md-nav__link" for="__nav_4_10">
         Transformers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Transformers" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_10">
+        <label class="md-nav__title" for="__nav_4_9">
           <span class="md-nav__icon md-icon"></span>
           Transformers
         </label>
@@ -1911,14 +1853,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_2" type="checkbox" id="__nav_4_10_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_2" type="checkbox" id="__nav_4_9_2" >
       
-      <label class="md-nav__link" for="__nav_4_10_2">
+      <label class="md-nav__link" for="__nav_4_9_2">
         Standardization and Normalization
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Standardization and Normalization" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_2">
+        <label class="md-nav__title" for="__nav_4_9_2">
           <span class="md-nav__icon md-icon"></span>
           Standardization and Normalization
         </label>
@@ -2010,30 +1952,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_3" type="checkbox" id="__nav_4_10_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_3" type="checkbox" id="__nav_4_9_3" >
       
-      <label class="md-nav__link" for="__nav_4_10_3">
+      <label class="md-nav__link" for="__nav_4_9_3">
         Dimensionality Reduction
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Dimensionality Reduction" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_3">
+        <label class="md-nav__title" for="__nav_4_9_3">
           <span class="md-nav__icon md-icon"></span>
           Dimensionality Reduction
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/dense-random-projector.html" class="md-nav__link">
-        Dense Random Projector
-      </a>
-    </li>
-  
-
           
             
   
@@ -2095,6 +2025,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transformers/t-sne.html" class="md-nav__link">
+        t-SNE
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -2109,14 +2051,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_4" type="checkbox" id="__nav_4_10_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_4" type="checkbox" id="__nav_4_9_4" >
       
-      <label class="md-nav__link" for="__nav_4_10_4">
+      <label class="md-nav__link" for="__nav_4_9_4">
         Feature Conversion
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Feature Conversion" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_4">
+        <label class="md-nav__title" for="__nav_4_9_4">
           <span class="md-nav__icon md-icon"></span>
           Feature Conversion
         </label>
@@ -2184,16 +2126,16 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_5" type="checkbox" id="__nav_4_10_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_5" type="checkbox" id="__nav_4_9_5" >
       
-      <label class="md-nav__link" for="__nav_4_10_5">
-        Feature Selection
+      <label class="md-nav__link" for="__nav_4_9_5">
+        Feature Expansion
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Feature Selection" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_5">
+      <nav class="md-nav" aria-label="Feature Expansion" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_5">
           <span class="md-nav__icon md-icon"></span>
-          Feature Selection
+          Feature Expansion
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -2202,20 +2144,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../transformers/k-best-feature-selector.html" class="md-nav__link">
-        K Best Feature Selector
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/recursive-feature-eliminator.html" class="md-nav__link">
-        Recursive Feature Eliminator
+      <a href="../transformers/polynomial-expander.html" class="md-nav__link">
+        Polynomial Expander
       </a>
     </li>
   
@@ -2235,18 +2165,30 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_6" type="checkbox" id="__nav_4_10_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_6" type="checkbox" id="__nav_4_9_6" >
       
-      <label class="md-nav__link" for="__nav_4_10_6">
+      <label class="md-nav__link" for="__nav_4_9_6">
         Imputation
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Imputation" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_6">
+        <label class="md-nav__title" for="__nav_4_9_6">
           <span class="md-nav__icon md-icon"></span>
           Imputation
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transformers/hot-deck-imputer.html" class="md-nav__link">
+        Hot Deck Imputer
+      </a>
+    </li>
+  
+
           
             
   
@@ -2272,18 +2214,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/random-hot-deck-imputer.html" class="md-nav__link">
-        Random Hot Deck Imputer
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -2298,81 +2228,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_7" type="checkbox" id="__nav_4_10_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_7" type="checkbox" id="__nav_4_9_7" >
       
-      <label class="md-nav__link" for="__nav_4_10_7">
-        Image Transformers
+      <label class="md-nav__link" for="__nav_4_9_7">
+        Natural Language
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Image Transformers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_7">
+      <nav class="md-nav" aria-label="Natural Language" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_7">
           <span class="md-nav__icon md-icon"></span>
-          Image Transformers
+          Natural Language
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/image-resizer.html" class="md-nav__link">
-        Image Resizer
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/image-vectorizer.html" class="md-nav__link">
-        Image Vectorizer
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_8" type="checkbox" id="__nav_4_10_8" >
-      
-      <label class="md-nav__link" for="__nav_4_10_8">
-        Text Transformers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Text Transformers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_8">
-          <span class="md-nav__icon md-icon"></span>
-          Text Transformers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transformers/html-stripper.html" class="md-nav__link">
-        HTML Stripper
-      </a>
-    </li>
-  
-
           
             
   
@@ -2439,8 +2306,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../transformers/whitespace-trimmer.html" class="md-nav__link">
-        Whitespace Trimmer
+      <a href="../transformers/token-hashing-vectorizer.html" class="md-nav__link">
+        Token Hashing Vectorizer
       </a>
     </li>
   
@@ -2472,14 +2339,65 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_9" type="checkbox" id="__nav_4_10_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_8" type="checkbox" id="__nav_4_9_8" >
       
-      <label class="md-nav__link" for="__nav_4_10_9">
+      <label class="md-nav__link" for="__nav_4_9_8">
+        Images
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Images" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_9_8">
+          <span class="md-nav__icon md-icon"></span>
+          Images
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transformers/image-resizer.html" class="md-nav__link">
+        Image Resizer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transformers/image-vectorizer.html" class="md-nav__link">
+        Image Vectorizer
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_9_9" type="checkbox" id="__nav_4_9_9" >
+      
+      <label class="md-nav__link" for="__nav_4_9_9">
         Other
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Other" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_10_9">
+        <label class="md-nav__title" for="__nav_4_9_9">
           <span class="md-nav__icon md-icon"></span>
           Other
         </label>
@@ -2490,8 +2408,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../transformers/polynomial-expander.html" class="md-nav__link">
-        Polynomial Expander
+      <a href="../transformers/lambda-function.html" class="md-nav__link">
+        Lambda Function
       </a>
     </li>
   
@@ -2517,14 +2435,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11" type="checkbox" id="__nav_4_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10" type="checkbox" id="__nav_4_10" >
       
-      <label class="md-nav__link" for="__nav_4_11">
+      <label class="md-nav__link" for="__nav_4_10">
         Neural Network
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Neural Network" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_11">
+        <label class="md-nav__title" for="__nav_4_10">
           <span class="md-nav__icon md-icon"></span>
           Neural Network
         </label>
@@ -2538,14 +2456,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_1" type="checkbox" id="__nav_4_11_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_1" type="checkbox" id="__nav_4_10_1" >
       
-      <label class="md-nav__link" for="__nav_4_11_1">
+      <label class="md-nav__link" for="__nav_4_10_1">
         Hidden Layers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Hidden Layers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_1">
+        <label class="md-nav__title" for="__nav_4_10_1">
           <span class="md-nav__icon md-icon"></span>
           Hidden Layers
         </label>
@@ -2637,14 +2555,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_2" type="checkbox" id="__nav_4_11_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_2" type="checkbox" id="__nav_4_10_2" >
       
-      <label class="md-nav__link" for="__nav_4_11_2">
+      <label class="md-nav__link" for="__nav_4_10_2">
         Activation Functions
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Activation Functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_2">
+        <label class="md-nav__title" for="__nav_4_10_2">
           <span class="md-nav__icon md-icon"></span>
           Activation Functions
         </label>
@@ -2784,14 +2702,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_3" type="checkbox" id="__nav_4_11_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_3" type="checkbox" id="__nav_4_10_3" >
       
-      <label class="md-nav__link" for="__nav_4_11_3">
+      <label class="md-nav__link" for="__nav_4_10_3">
         Cost Functions
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Cost Functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_3">
+        <label class="md-nav__title" for="__nav_4_10_3">
           <span class="md-nav__icon md-icon"></span>
           Cost Functions
         </label>
@@ -2859,14 +2777,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_4" type="checkbox" id="__nav_4_11_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_4" type="checkbox" id="__nav_4_10_4" >
       
-      <label class="md-nav__link" for="__nav_4_11_4">
+      <label class="md-nav__link" for="__nav_4_10_4">
         Initializers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Initializers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_4">
+        <label class="md-nav__title" for="__nav_4_10_4">
           <span class="md-nav__icon md-icon"></span>
           Initializers
         </label>
@@ -2970,14 +2888,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_5" type="checkbox" id="__nav_4_11_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_10_5" type="checkbox" id="__nav_4_10_5" >
       
-      <label class="md-nav__link" for="__nav_4_11_5">
+      <label class="md-nav__link" for="__nav_4_10_5">
         Optimizers
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Optimizers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_11_5">
+        <label class="md-nav__title" for="__nav_4_10_5">
           <span class="md-nav__icon md-icon"></span>
           Optimizers
         </label>
@@ -3099,14 +3017,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12" type="checkbox" id="__nav_4_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11" type="checkbox" id="__nav_4_11" >
       
-      <label class="md-nav__link" for="__nav_4_12">
+      <label class="md-nav__link" for="__nav_4_11">
         Graph
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Graph" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_12">
+        <label class="md-nav__title" for="__nav_4_11">
           <span class="md-nav__icon md-icon"></span>
           Graph
         </label>
@@ -3120,14 +3038,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_1" type="checkbox" id="__nav_4_12_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_11_1" type="checkbox" id="__nav_4_11_1" >
       
-      <label class="md-nav__link" for="__nav_4_12_1">
+      <label class="md-nav__link" for="__nav_4_11_1">
         Trees
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Trees" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_12_1">
+        <label class="md-nav__title" for="__nav_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Trees
         </label>
@@ -3177,14 +3095,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13" type="checkbox" id="__nav_4_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12" type="checkbox" id="__nav_4_12" >
       
-      <label class="md-nav__link" for="__nav_4_13">
+      <label class="md-nav__link" for="__nav_4_12">
         Kernels
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Kernels" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_13">
+        <label class="md-nav__title" for="__nav_4_12">
           <span class="md-nav__icon md-icon"></span>
           Kernels
         </label>
@@ -3198,14 +3116,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_1" type="checkbox" id="__nav_4_13_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_1" type="checkbox" id="__nav_4_12_1" >
       
-      <label class="md-nav__link" for="__nav_4_13_1">
+      <label class="md-nav__link" for="__nav_4_12_1">
         Distance
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Distance" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_13_1">
+        <label class="md-nav__title" for="__nav_4_12_1">
           <span class="md-nav__icon md-icon"></span>
           Distance
         </label>
@@ -3333,14 +3251,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_2" type="checkbox" id="__nav_4_13_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_12_2" type="checkbox" id="__nav_4_12_2" >
       
-      <label class="md-nav__link" for="__nav_4_13_2">
+      <label class="md-nav__link" for="__nav_4_12_2">
         SVM
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="SVM" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_13_2">
+        <label class="md-nav__title" for="__nav_4_12_2">
           <span class="md-nav__icon md-icon"></span>
           SVM
         </label>
@@ -3414,14 +3332,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14" type="checkbox" id="__nav_4_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13" type="checkbox" id="__nav_4_13" >
       
-      <label class="md-nav__link" for="__nav_4_14">
+      <label class="md-nav__link" for="__nav_4_13">
         Cross Validation
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Cross Validation" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_14">
+        <label class="md-nav__title" for="__nav_4_13">
           <span class="md-nav__icon md-icon"></span>
           Cross Validation
         </label>
@@ -3435,14 +3353,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_1" type="checkbox" id="__nav_4_14_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_1" type="checkbox" id="__nav_4_13_1" >
       
-      <label class="md-nav__link" for="__nav_4_14_1">
+      <label class="md-nav__link" for="__nav_4_13_1">
         Metrics
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Metrics" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_1">
+        <label class="md-nav__title" for="__nav_4_13_1">
           <span class="md-nav__icon md-icon"></span>
           Metrics
         </label>
@@ -3642,14 +3560,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_2" type="checkbox" id="__nav_4_14_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_2" type="checkbox" id="__nav_4_13_2" >
       
-      <label class="md-nav__link" for="__nav_4_14_2">
+      <label class="md-nav__link" for="__nav_4_13_2">
         Reports
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Reports" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_2">
+        <label class="md-nav__title" for="__nav_4_13_2">
           <span class="md-nav__icon md-icon"></span>
           Reports
         </label>
@@ -3741,14 +3659,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14_3" type="checkbox" id="__nav_4_14_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_13_3" type="checkbox" id="__nav_4_13_3" >
       
-      <label class="md-nav__link" for="__nav_4_14_3">
+      <label class="md-nav__link" for="__nav_4_13_3">
         Validators
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Validators" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_14_3">
+        <label class="md-nav__title" for="__nav_4_13_3">
           <span class="md-nav__icon md-icon"></span>
           Validators
         </label>
@@ -3834,6 +3752,105 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_14" type="checkbox" id="__nav_4_14" >
+      
+      <label class="md-nav__link" for="__nav_4_14">
+        Tokenizers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tokenizers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_14">
+          <span class="md-nav__icon md-icon"></span>
+          Tokenizers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/k-skip-n-gram.html" class="md-nav__link">
+        K-Skip-N-Gram
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/n-gram.html" class="md-nav__link">
+        N-Gram
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/sentence.html" class="md-nav__link">
+        Sentence
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/whitespace.html" class="md-nav__link">
+        Whitespace
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/word.html" class="md-nav__link">
+        Word
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokenizers/word-stemmer.html" class="md-nav__link">
+        Word Stemmer
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_15" type="checkbox" id="__nav_4_15" >
       
       <label class="md-nav__link" for="__nav_4_15">
@@ -3871,105 +3888,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/flysystem.html" class="md-nav__link">
-        Flysystem
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/redis-db.html" class="md-nav__link">
-        Redis DB
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_15_5" type="checkbox" id="__nav_4_15_5" >
-      
-      <label class="md-nav__link" for="__nav_4_15_5">
-        Serializers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Serializers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_15_5">
-          <span class="md-nav__icon md-icon"></span>
-          Serializers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/serializers/gzip.html" class="md-nav__link">
-        Gzip
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/serializers/igbinary.html" class="md-nav__link">
-        Igbinary
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/serializers/native.html" class="md-nav__link">
-        Native
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../persisters/serializers/rbx.html" class="md-nav__link">
-        RBX
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -3987,11 +3905,125 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_16" type="checkbox" id="__nav_4_16" >
       
       <label class="md-nav__link" for="__nav_4_16">
+        Serializers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Serializers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_16">
+          <span class="md-nav__icon md-icon"></span>
+          Serializers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serializers/api.html" class="md-nav__link">
+        API Reference
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serializers/gzip.html" class="md-nav__link">
+        Gzip
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serializers/native.html" class="md-nav__link">
+        Native
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serializers/rbx.html" class="md-nav__link">
+        RBX
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17" type="checkbox" id="__nav_4_17" >
+      
+      <label class="md-nav__link" for="__nav_4_17">
+        Loggers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Loggers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_17">
+          <span class="md-nav__icon md-icon"></span>
+          Loggers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loggers/screen.html" class="md-nav__link">
+        Screen
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_18" type="checkbox" id="__nav_4_18" >
+      
+      <label class="md-nav__link" for="__nav_4_18">
         Backends
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Backends" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_16">
+        <label class="md-nav__title" for="__nav_4_18">
           <span class="md-nav__icon md-icon"></span>
           Backends
         </label>
@@ -4035,35 +4067,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17" type="checkbox" id="__nav_4_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_19" type="checkbox" id="__nav_4_19" >
       
-      <label class="md-nav__link" for="__nav_4_17">
-        Other
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Other" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_17">
-          <span class="md-nav__icon md-icon"></span>
-          Other
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_1" type="checkbox" id="__nav_4_17_1" >
-      
-      <label class="md-nav__link" for="__nav_4_17_1">
+      <label class="md-nav__link" for="__nav_4_19">
         Helpers
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Helpers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_1">
+      <nav class="md-nav" aria-label="Helpers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_19">
           <span class="md-nav__icon md-icon"></span>
           Helpers
         </label>
@@ -4074,7 +4085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/helpers/params.html" class="md-nav__link">
+      <a href="../helpers/params.html" class="md-nav__link">
         Params
       </a>
     </li>
@@ -4095,53 +4106,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_2" type="checkbox" id="__nav_4_17_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_20" type="checkbox" id="__nav_4_20" >
       
-      <label class="md-nav__link" for="__nav_4_17_2">
-        Loggers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Loggers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_2">
-          <span class="md-nav__icon md-icon"></span>
-          Loggers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/loggers/screen.html" class="md-nav__link">
-        Screen
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_3" type="checkbox" id="__nav_4_17_3" >
-      
-      <label class="md-nav__link" for="__nav_4_17_3">
+      <label class="md-nav__link" for="__nav_4_20">
         Strategies
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Strategies" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_3">
+      <nav class="md-nav" aria-label="Strategies" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_20">
           <span class="md-nav__icon md-icon"></span>
           Strategies
         </label>
@@ -4152,7 +4124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/constant.html" class="md-nav__link">
+      <a href="../strategies/constant.html" class="md-nav__link">
         Constant
       </a>
     </li>
@@ -4164,7 +4136,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/k-most-frequent.html" class="md-nav__link">
+      <a href="../strategies/k-most-frequent.html" class="md-nav__link">
         K Most Frequent
       </a>
     </li>
@@ -4176,7 +4148,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/mean.html" class="md-nav__link">
+      <a href="../strategies/mean.html" class="md-nav__link">
         Mean
       </a>
     </li>
@@ -4188,7 +4160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/percentile.html" class="md-nav__link">
+      <a href="../strategies/percentile.html" class="md-nav__link">
         Percentile
       </a>
     </li>
@@ -4200,7 +4172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/prior.html" class="md-nav__link">
+      <a href="../strategies/prior.html" class="md-nav__link">
         Prior
       </a>
     </li>
@@ -4212,114 +4184,9 @@
   
   
     <li class="md-nav__item">
-      <a href="../other/strategies/wild-guess.html" class="md-nav__link">
+      <a href="../strategies/wild-guess.html" class="md-nav__link">
         Wild Guess
       </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_17_4" type="checkbox" id="__nav_4_17_4" >
-      
-      <label class="md-nav__link" for="__nav_4_17_4">
-        Tokenizers
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Tokenizers" data-md-level="3">
-        <label class="md-nav__title" for="__nav_4_17_4">
-          <span class="md-nav__icon md-icon"></span>
-          Tokenizers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/k-skip-n-gram.html" class="md-nav__link">
-        K-Skip-N-Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/n-gram.html" class="md-nav__link">
-        N-Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/sentence.html" class="md-nav__link">
-        Sentence
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/skip-gram.html" class="md-nav__link">
-        Skip Gram
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/whitespace.html" class="md-nav__link">
-        Whitespace
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../other/tokenizers/word.html" class="md-nav__link">
-        Word
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -4383,13 +4250,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#selecting" class="md-nav__link">
-    Selecting
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#properties" class="md-nav__link">
     Properties
   </a>
@@ -4397,22 +4257,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#applying-transformations" class="md-nav__link">
-    Applying Transformations
+  <a href="#data-types" class="md-nav__link">
+    Data Types
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#stacking-datasets" class="md-nav__link">
-    Stacking Datasets
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merging-datasets" class="md-nav__link">
-    Merging Datasets
+  <a href="#selecting" class="md-nav__link">
+    Selecting
   </a>
   
 </li>
@@ -4467,22 +4320,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering" class="md-nav__link">
-    Filtering
+  <a href="#applying-transformations" class="md-nav__link">
+    Applying Transformations
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sorting" class="md-nav__link">
-    Sorting
+  <a href="#mapping-and-filtering" class="md-nav__link">
+    Mapping and Filtering
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dropping-rows-and-columns" class="md-nav__link">
-    Dropping Rows and Columns
+  <a href="#stacking" class="md-nav__link">
+    Stacking
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merging-and-joining" class="md-nav__link">
+    Merging and Joining
   </a>
   
 </li>
@@ -4495,6 +4355,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sorting" class="md-nav__link">
+    Sorting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#de-duplication" class="md-nav__link">
     De-duplication
   </a>
@@ -4502,15 +4369,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#encode-the-dataset" class="md-nav__link">
-    Encode the Dataset
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#previewing-in-the-console" class="md-nav__link">
-    Previewing in the Console
+  <a href="#exporting" class="md-nav__link">
+    Exporting
   </a>
   
 </li>
@@ -4546,7 +4406,7 @@
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Labeled</span><span class="p">(</span><span class="nv">$samples</span><span class="p">,</span> <span class="nv">$labels</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="factory-methods">Factory Methods<a class="headerlink" href="#factory-methods" title="Permanent link">#</a></h2>
-<p>Build a dataset with the rows from a 2-dimensional iterable data table:
+<p>Build a dataset with the records of a 2-dimensional iterable data table:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">fromIterator</span><span class="p">(</span><span class="nx">Traversable</span> <span class="nv">$iterator</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div></p>
 <div class="admonition note">
@@ -4558,39 +4418,15 @@
 
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="nx">Labeled</span><span class="o">::</span><span class="na">fromIterator</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
-<h2 id="selecting">Selecting<a class="headerlink" href="#selecting" title="Permanent link">#</a></h2>
-<p>Return all the samples in the dataset in a 2-dimensional array:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">samples</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<p>Select a single row containing the sample at a given offset (offsets begin at 0):
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">sample</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<p>Select the values of a feature column at a given offset (offsets begin at 0):
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">column</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<p>Return the columns of the sample matrix:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">columns</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<p>Return the columns of the sample matrix of a particular type:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">columnsByType</span><span class="p">(</span><span class="nx">DataType</span> <span class="nv">$type</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\DataType</span><span class="p">;</span>
-
-<span class="nv">$columns</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">columnsByType</span><span class="p">(</span><span class="nx">DataType</span><span class="o">::</span><span class="na">continuous</span><span class="p">());</span>
-</code></pre></div>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">#</a></h2>
 <p>Return the number of rows in the dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">numRows</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">numSamples</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span>
 </code></pre></div></p>
 <p>Return the number of columns in the samples matrix:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">numColumns</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">numFeatures</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span>
 </code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$m</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">numRows</span><span class="p">();</span>
-
-<span class="nv">$n</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">numColumns</span><span class="p">();</span>
-</code></pre></div>
 <p>Return a 2-tuple with the <em>shape</em> of the samples matrix:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">shape</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">shape</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span><span class="p">{</span><span class="nx">int</span><span class="p">,</span> <span class="nx">int</span><span class="p">}</span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$n</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">shape</span><span class="p">();</span>
 
@@ -4599,38 +4435,124 @@
 <div class="highlight"><pre><span></span><code>int<span class="o">(</span><span class="m">1000</span><span class="o">)</span>
 int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
 </code></pre></div>
+<h2 id="data-types">Data Types<a class="headerlink" href="#data-types" title="Permanent link">#</a></h2>
 <p>Return the data types for each feature column:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">columnTypes</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">featureTypes</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Rubix\ML\DataType</span><span class="p">[]</span>
 </code></pre></div></p>
 <p>Return the data type for a given column offset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">columnType</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">DataType</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">featureType</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Rubix\ML\DataType</span>
 </code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">columnType</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">featureType</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>categorical
 </code></pre></div>
+<h2 id="selecting">Selecting<a class="headerlink" href="#selecting" title="Permanent link">#</a></h2>
+<p>Return all the samples in the dataset in a 2-dimensional array:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">samples</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span><span class="p">[]</span>
+</code></pre></div></p>
+<p>Select a single row containing the sample at a given offset beginning at 0:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">sample</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">mixed</span><span class="p">[]</span>
+</code></pre></div></p>
+<p>Return the columns of the sample matrix:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">features</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span><span class="p">[]</span>
+</code></pre></div></p>
+<p>Select the values of a feature column at a given offset :
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">feature</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">mixed</span><span class="p">[]</span>
+</code></pre></div></p>
+<h2 id="head-and-tail">Head and Tail<a class="headerlink" href="#head-and-tail" title="Permanent link">#</a></h2>
+<p>Return the first <em>n</em> rows of data in a new dataset object:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">head</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">head</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</code></pre></div>
+<p>Return the last <em>n</em> rows of data in a new dataset object:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">tail</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<h2 id="taking-and-leaving">Taking and Leaving<a class="headerlink" href="#taking-and-leaving" title="Permanent link">#</a></h2>
+<p>Remove <em>n</em> rows from the dataset and return them in a new dataset:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">take</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<p>Leave <em>n</em> samples on the dataset and return the rest in a new dataset:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">leave</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<h2 id="splitting">Splitting<a class="headerlink" href="#splitting" title="Permanent link">#</a></h2>
+<p>Split the dataset into left and right subsets:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nb">split</span><span class="p">(</span><span class="nx">float</span> <span class="nv">$ratio</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span><span class="p">{</span><span class="nx">self</span><span class="p">,</span> <span class="nx">self</span><span class="p">}</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nv">$training</span><span class="p">,</span> <span class="nv">$testing</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">split</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="folding">Folding<a class="headerlink" href="#folding" title="Permanent link">#</a></h2>
+<p>Fold the dataset to form <em>k</em> equal size datasets:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">fold</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$k</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span><span class="p">[]</span>
+</code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="nv">$folds</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">fold</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="slicing-and-splicing">Slicing and Splicing<a class="headerlink" href="#slicing-and-splicing" title="Permanent link">#</a></h2>
+<p>Return an <em>n</em> size portion of the dataset in a new dataset:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<p>Remove a size <em>n</em> chunk of the dataset starting at <em>offset</em> and return it in a new dataset:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">splice</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<h2 id="batching">Batching<a class="headerlink" href="#batching" title="Permanent link">#</a></h2>
+<p>Batch the dataset into subsets containing a maximum of <em>n</em> rows per batch:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">batch</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span><span class="p">[]</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$batches</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">batch</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="randomization">Randomization<a class="headerlink" href="#randomization" title="Permanent link">#</a></h2>
+<p>Randomize the order of the dataset and return it for method chaining:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomize</span><span class="p">()</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<p>Generate a random subset of the dataset without replacement of size <em>n</em>:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomSubset</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomSubset</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span>
+</code></pre></div>
+<p>Generate a random subset with replacement:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomSubsetWithReplacement</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomSubsetWithReplacement</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</code></pre></div>
+<p>Generate a random <em>weighted</em> subset with replacement of size <em>n</em>:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomWeightedSubsetWithReplacement</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$weights</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomWeightedSubsetWithReplacement</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$weights</span><span class="p">);</span>
+</code></pre></div>
 <h2 id="applying-transformations">Applying Transformations<a class="headerlink" href="#applying-transformations" title="Permanent link">#</a></h2>
-<p>You can apply a <a href="#transformers">Transformer</a> directly to the samples in a Dataset object by passing it as an argument to the <code>apply()</code> method on the dataset object.
+<p>You can apply a <a href="../transformers/api.html">Transformer</a> to the samples in a Dataset object by passing it as an argument to the <code>apply()</code> method on the dataset object. If a <a href="../transformers/api.html#stateful">Stateful</a> transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">apply</span><span class="p">(</span><span class="nx">Transformer</span> <span class="nv">$transformer</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\RobustStandardizer</span><span class="p">;</span>
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">RobustStandardizer</span><span class="p">);</span>
 </code></pre></div>
-<p>You can also transform a single feature column using a callback function with the <code>transformColumn()</code> method.
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">transformColumn</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$column</span><span class="p">,</span> <span class="nx">callable</span> <span class="nv">$callback</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+<h2 id="mapping-and-filtering">Mapping and Filtering<a class="headerlink" href="#mapping-and-filtering" title="Permanent link">#</a></h2>
+<p>Map a callback function over the records of the dataset and return the result in a new dataset object:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">map</span><span class="p">(</span><span class="nx">callable</span> <span class="nv">$callback</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span> 
 </code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformColumn</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;log1p&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$addMeanColumn</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$record</span><span class="p">[]</span> <span class="o">=</span> <span class="nb">array_sum</span><span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="o">/</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$record</span><span class="p">);</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformColumn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nv">$value</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">?</span> <span class="nx">NAN</span> <span class="o">:</span> <span class="nv">$value</span><span class="p">;</span>
-<span class="p">});</span>
+    <span class="k">return</span> <span class="nv">$record</span><span class="p">;</span>
+<span class="p">};</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">transformColumn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
-<span class="p">});</span>
+<span class="nv">$dataset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">map</span><span class="p">(</span><span class="nv">$addMeanColumn</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="stacking-datasets">Stacking Datasets<a class="headerlink" href="#stacking-datasets" title="Permanent link">#</a></h2>
+<p>Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">filter</span><span class="p">(</span><span class="nx">callable</span> <span class="nv">$callback</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$tallPeople</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">178.5</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nv">$dataset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="nv">$tallPeople</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="stacking">Stacking<a class="headerlink" href="#stacking" title="Permanent link">#</a></h2>
 <p>Stack any number of dataset objects on top of each other to form a single dataset:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">stack</span><span class="p">(</span><span class="k">array</span> <span class="nv">$datasets</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div></p>
@@ -4647,7 +4569,7 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
     <span class="c1">// ...</span>
 <span class="p">]);</span>
 </code></pre></div>
-<h2 id="merging-datasets">Merging Datasets<a class="headerlink" href="#merging-datasets" title="Permanent link">#</a></h2>
+<h2 id="merging-and-joining">Merging and Joining<a class="headerlink" href="#merging-and-joining" title="Permanent link">#</a></h2>
 <p>To merge the rows of this dataset with another dataset:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">merge</span><span class="p">(</span><span class="nx">Dataset</span> <span class="nv">$dataset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div></p>
@@ -4666,119 +4588,28 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
 </div>
 <div class="highlight"><pre><span></span><code><span class="nv">$dataset</span> <span class="o">=</span> <span class="nv">$dataset1</span><span class="o">-&gt;</span><span class="na">join</span><span class="p">(</span><span class="nv">$dataset2</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="head-and-tail">Head and Tail<a class="headerlink" href="#head-and-tail" title="Permanent link">#</a></h2>
-<p>Return the first <em>n</em> rows of data in a new dataset object:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">head</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Return the last <em>n</em> rows of data in a new dataset object:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">tail</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">head</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-
-<span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">tail</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="taking-and-leaving">Taking and Leaving<a class="headerlink" href="#taking-and-leaving" title="Permanent link">#</a></h2>
-<p>Remove <em>n</em> rows from the dataset and return them in a new dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">take</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Leave <em>n</em> samples on the dataset and return the rest in a new dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">leave</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<h2 id="splitting">Splitting<a class="headerlink" href="#splitting" title="Permanent link">#</a></h2>
-<p>Split the dataset into left and right subsets:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nb">split</span><span class="p">(</span><span class="nx">float</span> <span class="nv">$ratio</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nv">$training</span><span class="p">,</span> <span class="nv">$testing</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">split</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="folding">Folding<a class="headerlink" href="#folding" title="Permanent link">#</a></h2>
-<p>Fold the dataset to form <em>k</em> equal size datasets:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">fold</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$k</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.</p>
-</div>
-<div class="highlight"><pre><span></span><code><span class="nv">$folds</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">fold</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="slicing-and-splicing">Slicing and Splicing<a class="headerlink" href="#slicing-and-splicing" title="Permanent link">#</a></h2>
-<p>Return an <em>n</em> size portion of the dataset in a new dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Remove a size <em>n</em> chunk of the dataset starting at <em>offset</em> and return it in a new dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">splice</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<h2 id="batching">Batching<a class="headerlink" href="#batching" title="Permanent link">#</a></h2>
-<p>Batch the dataset into subsets containing a maximum of <em>n</em> rows per batch:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">batch</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$batches</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">batch</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="randomization">Randomization<a class="headerlink" href="#randomization" title="Permanent link">#</a></h2>
-<p>Randomize the order of the dataset and return it for method chaining:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomize</span><span class="p">()</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Generate a random subset of the dataset without replacement of size <em>n</em>:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomSubset</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomSubset</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span>
-</code></pre></div>
-<p>Generate a random subset with replacement:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomSubsetWithReplacement</span><span class="p">(</span><span class="nv">$n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomSubsetWithReplacement</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
-</code></pre></div>
-<p>Generate a random <em>weighted</em> subset with replacement of size <em>n</em>:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">randomWeightedSubsetWithReplacement</span><span class="p">(</span><span class="nv">$n</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$weights</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$subset</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">randomWeightedSubsetWithReplacement</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$weights</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="filtering">Filtering<a class="headerlink" href="#filtering" title="Permanent link">#</a></h2>
-<p>Filter the rows of the dataset using the values of a feature column at the given offset as the arguments to a filter callback. The callback should return false for rows that should be filtered.
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">filterByColumn</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">callable</span> <span class="nv">$fn</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$tallPeople</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filterByColumn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nv">$value</span> <span class="o">&gt;</span> <span class="mf">178.5</span><span class="p">;</span>
-<span class="p">});</span>
-</code></pre></div>
-<h2 id="sorting">Sorting<a class="headerlink" href="#sorting" title="Permanent link">#</a></h2>
-<p>To sort a dataset in place by a specific feature column:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">sortByColumn</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$descending</span> <span class="o">=</span> <span class="k">false</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">sortByColumn</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="dropping-rows-and-columns">Dropping Rows and Columns<a class="headerlink" href="#dropping-rows-and-columns" title="Permanent link">#</a></h2>
-<p>Drop the row at the given offset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dropRow</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Drop the rows at the given offsets:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dropRows</span><span class="p">(</span><span class="k">array</span> <span class="nv">$indices</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Drop the column at the given offset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dropColumn</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$offset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
-<p>Drop the columns at the given indices:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">dropColumns</span><span class="p">(</span><span class="k">array</span> <span class="nv">$indices</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
-</code></pre></div></p>
 <h2 id="descriptive-statistics">Descriptive Statistics<a class="headerlink" href="#descriptive-statistics" title="Permanent link">#</a></h2>
 <p>Return an array of statistics such as the central tendency, dispersion and shape of each continuous feature column and the joint probabilities of each category for every categorical feature column:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">describe</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Report</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">describe</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Rubix\ML\Report</span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">describe</span><span class="p">();</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">[</span>
     <span class="p">{</span>
+        <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;num_categories&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nt">&quot;num categories&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
         <span class="nt">&quot;probabilities&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="nt">&quot;friendly&quot;</span><span class="p">:</span> <span class="mf">0.6666666666666666</span><span class="p">,</span>
             <span class="nt">&quot;loner&quot;</span><span class="p">:</span> <span class="mf">0.3333333333333333</span>
         <span class="p">}</span>
     <span class="p">},</span>
     <span class="p">{</span>
+        <span class="nt">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;continuous&quot;</span><span class="p">,</span>
         <span class="nt">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">0.3333333333333333</span><span class="p">,</span>
         <span class="nt">&quot;variance&quot;</span><span class="p">:</span> <span class="mf">9.792222222222222</span><span class="p">,</span>
-        <span class="nt">&quot;std_dev&quot;</span><span class="p">:</span> <span class="mf">3.129252661934191</span><span class="p">,</span>
+        <span class="nt">&quot;stddev&quot;</span><span class="p">:</span> <span class="mf">3.129252661934191</span><span class="p">,</span>
         <span class="nt">&quot;skewness&quot;</span><span class="p">:</span> <span class="mf">-0.4481030843690633</span><span class="p">,</span>
         <span class="nt">&quot;kurtosis&quot;</span><span class="p">:</span> <span class="mf">-1.1330702741786107</span><span class="p">,</span>
         <span class="nt">&quot;min&quot;</span><span class="p">:</span> <span class="mi">-5</span><span class="p">,</span>
@@ -4789,59 +4620,25 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
     <span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
+<h2 id="sorting">Sorting<a class="headerlink" href="#sorting" title="Permanent link">#</a></h2>
+<p>Sort the records in the dataset using a callback for comparisons between samples. The callback function accepts two records to be compared and should return <code>true</code> if the records should be swapped.
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">function</span> <span class="nf">sort</span><span class="p">(</span><span class="nx">callable</span> <span class="nv">$callback</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nv">$sorted</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">sort</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$recordA</span><span class="p">,</span> <span class="nv">$recordB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$recordA</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">$recordB</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">});</span>
+</code></pre></div>
 <h2 id="de-duplication">De-duplication<a class="headerlink" href="#de-duplication" title="Permanent link">#</a></h2>
 <p>Remove duplicate rows from the dataset:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">deduplicate</span><span class="p">()</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div></p>
-<h2 id="encode-the-dataset">Encode the Dataset<a class="headerlink" href="#encode-the-dataset" title="Permanent link">#</a></h2>
-<p>Return a JSON representation of the dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">toJSON</span><span class="p">(</span><span class="nx">bool</span> <span class="nv">$pretty</span> <span class="o">=</span> <span class="k">false</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Encoding</span>
+<h2 id="exporting">Exporting<a class="headerlink" href="#exporting" title="Permanent link">#</a></h2>
+<p>Export the dataset to the location and format given by a <a href="../extractors/api.html">Writable</a> extractor:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">exportTo</span><span class="p">(</span><span class="nx">Writable</span> <span class="nv">$extractor</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
 </code></pre></div></p>
-<p>Return a newline delimited JSON encoding of the dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">toNDJSON</span><span class="p">(</span><span class="o">?</span><span class="k">array</span> <span class="nv">$header</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span> <span class="o">:</span> <span class="nx">string</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">toNDJSON</span><span class="p">([</span>
-    <span class="s1">&#39;sepal length&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal width&#39;</span><span class="p">,</span> <span class="s1">&#39;petal length&#39;</span><span class="p">,</span> <span class="s1">&#39;petal width&#39;</span><span class="p">,</span>
-<span class="p">]);</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
 
-<span class="k">echo</span> <span class="nv">$encoding</span><span class="p">;</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;sepal length&quot;</span><span class="p">:</span><span class="mf">4.5</span><span class="p">,</span><span class="nt">&quot;sepal width&quot;</span><span class="p">:</span><span class="mf">2.3</span><span class="p">,</span><span class="nt">&quot;petal length&quot;</span><span class="p">:</span><span class="mf">1.3</span><span class="p">,</span><span class="nt">&quot;petal width&quot;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;Iris-setosa&quot;</span><span class="p">}</span>
-<span class="p">{</span><span class="nt">&quot;sepal length&quot;</span><span class="p">:</span><span class="mf">4.4</span><span class="p">,</span><span class="nt">&quot;sepal width&quot;</span><span class="p">:</span><span class="mf">3.2</span><span class="p">,</span><span class="nt">&quot;petal length&quot;</span><span class="p">:</span><span class="mf">1.3</span><span class="p">,</span><span class="nt">&quot;petal width&quot;</span><span class="p">:</span><span class="mf">0.2</span><span class="p">,</span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;Iris-setosa&quot;</span><span class="p">}</span>
-<span class="p">{</span><span class="nt">&quot;sepal length&quot;</span><span class="p">:</span><span class="mf">5.0</span><span class="p">,</span><span class="nt">&quot;sepal width&quot;</span><span class="p">:</span><span class="mf">3.5</span><span class="p">,</span><span class="nt">&quot;petal length&quot;</span><span class="p">:</span><span class="mf">1.6</span><span class="p">,</span><span class="nt">&quot;petal width&quot;</span><span class="p">:</span><span class="mf">0.6</span><span class="p">,</span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;Iris-setosa&quot;</span><span class="p">}</span>
-</code></pre></div>
-<p>Return the dataset as comma-separated values (CSV) encoding with an optional header:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">toCSV</span><span class="p">(</span><span class="o">?</span><span class="k">array</span> <span class="nv">$header</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$enclosure</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Encoding</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">toCSV</span><span class="p">([</span>
-    <span class="s1">&#39;sepal length&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal width&#39;</span><span class="p">,</span> <span class="s1">&#39;petal length&#39;</span><span class="p">,</span> <span class="s1">&#39;petal width&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">,</span>
-<span class="p">]);</span>
-
-<span class="k">echo</span> <span class="nv">$encoding</span><span class="p">;</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>sepal length,sepal width,petal length,petal width,class
-4.5,2.3,1.3,0.3,Iris-setosa
-4.4,3.2,1.3,0.2,Iris-setosa
-5.0,3.5,1.6,0.6,Iris-setosa
-</code></pre></div>
-<h2 id="previewing-in-the-console">Previewing in the Console<a class="headerlink" href="#previewing-in-the-console" title="Permanent link">#</a></h2>
-<p>You can echo the dataset object to preview the first few rows and columns in the console.</p>
-<div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$dataset</span><span class="p">;</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">|</span> Column <span class="m">0</span>    <span class="p">|</span> Column <span class="m">1</span>    <span class="p">|</span> Column <span class="m">2</span>    <span class="p">|</span> Column <span class="m">3</span>    <span class="p">|</span> Label       <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> nice        <span class="p">|</span> furry       <span class="p">|</span> friendly    <span class="p">|</span> <span class="m">4</span>           <span class="p">|</span> not monster <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> mean        <span class="p">|</span> furry       <span class="p">|</span> loner       <span class="p">|</span> -1.5        <span class="p">|</span> monster     <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> nice        <span class="p">|</span> rough       <span class="p">|</span> friendly    <span class="p">|</span> <span class="m">2</span>.6         <span class="p">|</span> not monster <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> mean        <span class="p">|</span> rough       <span class="p">|</span> friendly    <span class="p">|</span> -1          <span class="p">|</span> monster     <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> nice        <span class="p">|</span> rough       <span class="p">|</span> friendly    <span class="p">|</span> <span class="m">2</span>.9         <span class="p">|</span> not monster <span class="p">|</span>
------------------------------------------------------------------------
-<span class="p">|</span> nice        <span class="p">|</span> furry       <span class="p">|</span> loner       <span class="p">|</span> -5          <span class="p">|</span> not monster <span class="p">|</span>
------------------------------------------------------------------------
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;example.ndjson&#39;</span><span class="p">));</span>
 </code></pre></div>
                 
                   
@@ -4851,7 +4648,7 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-26
+      Last update: 2021-04-16
     
   </small>
 </div>
@@ -4873,7 +4670,7 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../extractors/ndjson.html" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../extractors/sql-table.html" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -4882,7 +4679,7 @@ int<span class="o">(</span><span class="m">30</span><span class="o">)</span>
               <span class="md-footer__direction">
                 Previous
               </span>
-              NDJSON
+              SQL Table
             </div>
           </div>
         </a>
