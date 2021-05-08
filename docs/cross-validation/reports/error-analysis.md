@@ -29,7 +29,7 @@ echo $results;
     "mean squared log error": 0.019107097505647368,
     "r squared": 0.9958930551562692,
     "error mean": -0.2,
-    "error stddev": 0.9898464007663,
+    "error standard deviation": 0.9898464007663,
     "error skewness": -0.22963966338592326,
     "error kurtosis": -1.0520833333333324,
     "error min": -2,

@@ -86,7 +86,7 @@ class ErrorAnalysis implements ReportGenerator
             'rms error' => sqrt($mse),
             'r squared' => 1.0 - ($sse / ($sst ?: EPSILON)),
             'error mean' => $mean,
-            'error stddev' => sqrt($variance),
+            'error standard deviation' => sqrt($variance),
             'error skewness' => Stats::skewness($errors, $mean),
             'error kurtosis' => Stats::kurtosis($errors, $mean),
             'error min' => $quantiles[0],

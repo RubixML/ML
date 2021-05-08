@@ -144,7 +144,7 @@ echo $dataset->describeByLabel();
             "type": "continuous",
             "mean": 1.125,
             "variance": 12.776875,
-            "stddev": 3.574475485997911,
+            "standard deviation": 3.574475485997911,
             "skewness": -1.0795676577113944,
             "kurtosis": -0.7175867765792474,
             "min": -5,
@@ -166,8 +166,7 @@ echo $dataset->describeByLabel();
         {
             "type": "continuous",
             "mean": -1.25,
-            "variance": 0.0625,
-            "stddev": 0.25,
+            "standard deviation": 0.25,
             "skewness": 0,
             "kurtosis": -2,
             "min": -1.5,
