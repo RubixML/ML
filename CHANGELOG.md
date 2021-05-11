@@ -2,6 +2,7 @@
     - Added Reversible transformer interface
     - MaxAbs, Z Score, and Robust scalers are now Reversible
     - Min Max Normalizer now implements Reversible
+    - TF-IDF Transformer is now Reversible
 
 - 1.0.0
     - No changes
