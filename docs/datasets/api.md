@@ -213,6 +213,9 @@ $dataset->apply(new RobustStandardizer);
 ```
 
 To reverse the transformation, pass a [Reversible](api.md#reversible) transformer to the dataset objects `reverseApply()` method.
+```php
+public apply(Reversible $transformer) : self
+```
 
 ```php
 use Rubix\ML\Transformers\MaxAbsoluteScaler;

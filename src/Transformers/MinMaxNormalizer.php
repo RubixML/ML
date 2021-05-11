@@ -23,7 +23,7 @@ use function max;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
+class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Persistable
 {
     use AutotrackRevisions;
 
@@ -196,6 +196,31 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Persistable
                 $value *= $scale;
 
                 $value += $this->min - $min * $scale;
+            }
+        }
+    }
+
+    /**
+     * Perform the reverse transformation to the samples.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        if ($this->scales === null or $this->minimums === null) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        foreach ($samples as &$sample) {
+            foreach ($this->scales as $column => $scale) {
+                $value = &$sample[$column];
+
+                $min = $this->minimums[$column];
+
+                $value -= $this->min - $min * $scale;
+
+                $value /= $scale;
             }
         }
     }

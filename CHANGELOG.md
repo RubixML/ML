@@ -1,6 +1,7 @@
 - 1.1.0
     - Added Reversible transformer interface
     - MaxAbs, Z Score, and Robust scalers are now Reversible
+    - Min Max Normalizer now implements Reversible
 
 - 1.0.0
     - No changes
