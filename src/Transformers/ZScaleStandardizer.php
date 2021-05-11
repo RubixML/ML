@@ -32,7 +32,7 @@ use function sqrt;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
+class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, Persistable
 {
     use AutotrackRevisions;
 
@@ -206,6 +206,33 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Persistable
 
                 if ($variance > 0.0) {
                     $value /= sqrt($variance);
+                }
+            }
+        }
+    }
+
+    /**
+     * Perform the reverse transformation to the samples.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        if ($this->means === null or $this->variances === null) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        foreach ($samples as &$sample) {
+            foreach ($this->variances as $column => $variance) {
+                $value = &$sample[$column];
+
+                if ($variance > 0.0) {
+                    $value *= sqrt($variance);
+                }
+
+                if ($this->center) {
+                    $value += $this->means[$column];
                 }
             }
         }

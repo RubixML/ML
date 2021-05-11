@@ -3,16 +3,16 @@
 namespace Rubix\ML\Transformers;
 
 /**
- * Bidirectional
+ * Reversible
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Alex Torchenko
  */
-interface Bidirectional extends Transformer
+interface Reversible extends Transformer
 {
     /**
-     * Reverse transform the dataset in place.
+     * Perform the reverse transformation to the samples.
      *
      * @param list<list<mixed>> $samples
      */

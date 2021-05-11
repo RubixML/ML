@@ -21,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable, Bidirectional
+class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, Persistable
 {
     use AutotrackRevisions;
 
@@ -128,7 +128,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Persistable, 
     }
 
     /**
-     * Reverse transform the dataset in place.
+     * Perform the reverse transformation to the samples.
      *
      * @param list<list<mixed>> $samples
      * @throws \Rubix\ML\Exceptions\RuntimeException

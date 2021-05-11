@@ -1,3 +1,7 @@
+- 1.1.0
+    - Added Reversible transformer interface
+    - Max Abs and Z Score scaler are now Reversible
+
 - 1.0.0
     - No changes
 
