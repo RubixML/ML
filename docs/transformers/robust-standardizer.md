@@ -7,7 +7,7 @@ $$
 {\displaystyle z^\prime = {x - \operatorname {median}(X) \over MAD }}
 $$
 
-**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Reversible](api.md#reversible), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

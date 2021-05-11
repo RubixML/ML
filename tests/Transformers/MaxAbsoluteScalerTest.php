@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use Rubix\ML\Persistable;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Reversible;
@@ -47,6 +48,7 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
         $this->assertInstanceOf(Reversible::class, $this->transformer);
+        $this->assertInstanceOf(Persistable::class, $this->transformer);
     }
 
     /**

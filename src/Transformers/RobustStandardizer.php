@@ -11,8 +11,6 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function is_null;
-
 /**
  * Robust Standardizer
  *
@@ -28,7 +26,7 @@ use function is_null;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustStandardizer implements Transformer, Stateful, Persistable
+class RobustStandardizer implements Transformer, Stateful, Reversible, Persistable
 {
     use AutotrackRevisions;
 
@@ -135,7 +133,7 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->mads) or is_null($this->medians)) {
+        if ($this->mads === null or $this->medians === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -148,6 +146,31 @@ class RobustStandardizer implements Transformer, Stateful, Persistable
                 }
 
                 $value /= $mad;
+            }
+        }
+    }
+
+    /**
+     * Perform the reverse transformation to the samples.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        if ($this->mads === null or $this->medians === null) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        foreach ($samples as &$sample) {
+            foreach ($this->mads as $column => $mad) {
+                $value = &$sample[$column];
+
+                $value *= $mad;
+
+                if ($this->center) {
+                    $value += $this->medians[$column];
+                }
             }
         }
     }

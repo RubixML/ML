@@ -2,13 +2,15 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use Rubix\ML\Persistable;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Reversible;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
@@ -45,6 +47,8 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
+        $this->assertInstanceOf(Reversible::class, $this->transformer);
+        $this->assertInstanceOf(Persistable::class, $this->transformer);
     }
 
     /**
