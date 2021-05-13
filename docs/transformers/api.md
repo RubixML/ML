@@ -81,7 +81,7 @@ $transformer->update($folds[2]);
 Transformers that implement the Reversible interface can reverse the transformation applied to a dataset. To apply the reverse transform to a dataset call the `reverseApply()` method on the dataset object and pass it the reversible transformer.
 
 ```php
-$transformer = new OneHotEncoder();
+$transformer = new ZScaleStandardizer();
 
 $dataset->apply($transformer);
 

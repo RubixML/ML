@@ -38,10 +38,10 @@ class Momentum implements Optimizer, Adaptive
      * @var float
      */
     protected float $decay;
-    
+
     /**
      * Should we employ Nesterov's lookahead (NAG) when updating the parameters?
-     * 
+     *
      * @var bool
      */
     protected bool $lookahead;
@@ -126,6 +126,6 @@ class Momentum implements Optimizer, Adaptive
     public function __toString() : string
     {
         return "Momentum (rate: {$this->rate}, decay: {$this->decay},"
-            . ' lookahead: ' . Params:: toString($this->lookahead). ')';
+            . ' lookahead: ' . Params:: toString($this->lookahead) . ')';
     }
 }
