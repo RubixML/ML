@@ -1,4 +1,5 @@
 - 1.1.0
+    - Added Nesterov's lookahead to Momentum Optimizer
     - Added Reversible transformer interface
     - MaxAbs, Z Score, and Robust scalers are now Reversible
     - Min Max Normalizer now implements Reversible
