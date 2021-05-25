@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
+ * @requires extension tensor
  * @covers \Rubix\ML\Transformers\LinearDiscriminantAnalysis
  */
 class LinearDiscriminantAnalysisTest extends TestCase

@@ -3,9 +3,9 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
+use Tensor\Vector;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
-
-use function get_class;
 
 use const Rubix\ML\EPSILON;
 
@@ -24,6 +24,36 @@ use const Rubix\ML\EPSILON;
 class AdaMax extends Adam
 {
     /**
+     * Return the element-wise maximum of two tensors.
+     *
+     * @param \Tensor\Tensor $a
+     * @param \Tensor\Tensor $b
+     * @return \Tensor\Tensor
+     */
+    protected static function maximum(Tensor $a, Tensor $b) : Tensor
+    {
+        if ($a instanceof Matrix and $b instanceof Matrix) {
+            $c = [];
+
+            foreach ($a as $i => $valueA) {
+                $c[] = static::maximum($valueA, $b[$i])->asArray();
+            }
+
+            return Matrix::quick($c);
+        }
+
+        $bHat = $b->asArray();
+
+        $c = [];
+
+        foreach ($a as $i => $valueA) {
+            $c[] = (float) max($valueA, $bHat[$i]);
+        }
+
+        return Vector::quick($c);
+    }
+
+    /**
      * Calculate a gradient descent step for a given parameter.
      *
      * @internal
@@ -36,24 +66,18 @@ class AdaMax extends Adam
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply($this->beta1)
+        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $class = get_class($param->param());
+        $norm = $norm->multiply(1.0 - $this->normDecay);
 
-        $norm = $class::maximum($norm->multiply($this->beta2), $gradient->abs());
+        $norm = static::maximum($norm, $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        if ($this->t < self::WARM_UP_STEPS) {
-            ++$this->t;
+        $norm = $norm->clipLower(EPSILON);
 
-            $rate = $this->rate / (1.0 - $this->beta1 ** $this->t);
-        } else {
-            $rate = $this->rate;
-        }
-
-        return $velocity->divide($norm->clipLower(EPSILON))->multiply($rate);
+        return $velocity->divide($norm)->multiply($this->rate);
     }
 
     /**
