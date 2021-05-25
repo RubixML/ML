@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Specifications;
 
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Exception;
 
 /**
  * Specification
@@ -33,7 +33,7 @@ abstract class Specification
             $this->check();
 
             return true;
-        } catch (InvalidArgumentException $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }
