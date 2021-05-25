@@ -9,6 +9,7 @@
     - Prevent certain specification false negatives
     - Add extension minimum version specification
     - Fix AdaMax optimizer when tensor extension loaded
+    - Add extension minimum version specification
 
 - 1.0.0
     - No changes
