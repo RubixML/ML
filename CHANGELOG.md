@@ -5,6 +5,8 @@
     - Min Max Normalizer now implements Reversible
     - TF-IDF Transformer is now Reversible
 
+1.0.1
+
 - 1.0.0
     - No changes
 

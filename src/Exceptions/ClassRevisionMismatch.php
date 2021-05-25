@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Exceptions;
 
+use function version_compare;
+
 use const Rubix\ML\VERSION;
 
 class ClassRevisionMismatch extends RuntimeException
@@ -18,11 +20,10 @@ class ClassRevisionMismatch extends RuntimeException
      */
     public function __construct(string $createdWithVersion)
     {
-        $direction = $createdWithVersion > VERSION ? 'up' : 'down';
+        $direction = version_compare($createdWithVersion, VERSION) >= 0 ? 'up' : 'down';
 
-        parent::__construct('Object serialized with incompatible class'
-            . " revision hash, {$direction}grade to library version"
-            . " $createdWithVersion and try again.");
+        parent::__construct('Object incompatible with class revision,'
+            . " {$direction}grade to version $createdWithVersion.");
 
         $this->createdWithVersion = $createdWithVersion;
     }
