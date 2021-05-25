@@ -84,8 +84,8 @@ class SVR implements Estimator, Learner
         float $cacheSize = 100.0
     ) {
         SpecificationChain::with([
-            ExtensionIsLoaded::with('svm'),
-            ExtensionMinimumVersion::with('svm', '0.2.0'),
+            new ExtensionIsLoaded('svm'),
+            new ExtensionMinimumVersion('svm', '0.2.0'),
         ])->check();
 
         if ($c < 0.0) {

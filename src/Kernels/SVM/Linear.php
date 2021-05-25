@@ -21,8 +21,8 @@ class Linear implements Kernel
     public function __construct()
     {
         SpecificationChain::with([
-            ExtensionIsLoaded::with('svm'),
-            ExtensionMinimumVersion::with('svm', '0.2.0'),
+            new ExtensionIsLoaded('svm'),
+            new ExtensionMinimumVersion('svm', '0.2.0'),
         ])->check();
     }
 
