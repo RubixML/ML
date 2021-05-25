@@ -66,10 +66,10 @@ class AdaMax extends Adam
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
+        $velocity = $velocity->multiply($this->beta1)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $norm = $norm->multiply(1.0 - $this->normDecay);
+        $norm = $norm->multiply($this->beta2);
 
         $norm = static::maximum($norm, $gradient->abs());
 
