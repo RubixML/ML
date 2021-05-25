@@ -387,7 +387,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        return $this->network->infer($dataset)->column(0);
+        $activations = $this->network->infer($dataset);
+
+        $activations = array_column($activations->asArray(), 0);
+
+        return $activations;
     }
 
     /**

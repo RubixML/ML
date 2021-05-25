@@ -538,7 +538,7 @@ class TSNE implements Transformer, Verbose
         foreach ($pqd->asVectors() as $i => $vector) {
             $yHat = $y->rowAsVector($i)->subtract($y);
 
-            $gradient[] = $vector->matmul($yHat)->row(0);
+            $gradient[] = current($vector->matmul($yHat)->asArray()) ?: [];
         }
 
         return Matrix::quick($gradient)

@@ -30,13 +30,6 @@ use const Rubix\ML\EPSILON;
 class Adam implements Optimizer, Adaptive
 {
     /**
-     * The number of initial steps to perform bias correction.
-     *
-     * @var int
-     */
-    protected const WARM_UP_STEPS = 50;
-
-    /**
      * The learning rate that controls the global step size.
      *
      * @var float
@@ -58,20 +51,6 @@ class Adam implements Optimizer, Adaptive
     protected float $normDecay;
 
     /**
-     * The opposite of the momentum decay.
-     *
-     * @var float
-     */
-    protected float $beta1;
-
-    /**
-     * The opposite of the norm decay.
-     *
-     * @var float
-     */
-    protected float $beta2;
-
-    /**
      * The parameter cache of running velocity and squared gradients.
      *
      * @var array[]
@@ -79,13 +58,6 @@ class Adam implements Optimizer, Adaptive
     protected array $cache = [
         //
     ];
-
-    /**
-     * The number of steps taken since initialization.
-     *
-     * @var int
-     */
-    protected int $t = 0;
 
     /**
      * @param float $rate
@@ -113,8 +85,6 @@ class Adam implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
-        $this->beta1 = 1.0 - $momentumDecay;
-        $this->beta2 = 1.0 - $normDecay;
     }
 
     /**
@@ -146,24 +116,17 @@ class Adam implements Optimizer, Adaptive
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply($this->beta1)
+        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $norm = $norm->multiply($this->beta2)
+        $norm = $norm->multiply(1.0 - $this->normDecay)
             ->add($gradient->square()->multiply($this->normDecay));
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        if ($this->t < self::WARM_UP_STEPS) {
-            ++$this->t;
+        $norm = $norm->sqrt()->clipLower(EPSILON);
 
-            $velocity = $velocity->divide(1.0 - $this->beta1 ** $this->t);
-
-            $norm = $norm->divide(1.0 - $this->beta2 ** $this->t);
-        }
-
-        return $velocity->multiply($this->rate)
-            ->divide($norm->clipLower(EPSILON)->sqrt());
+        return $velocity->multiply($this->rate)->divide($norm);
     }
 
     /**

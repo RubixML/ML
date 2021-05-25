@@ -231,7 +231,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->transpose();
 
         foreach ($projections->asArray() as $values) {
-            $edges = Vector::linspace(min($values), max($values), $this->bins - 1)->asArray();
+            $min = (float) min($values);
+            $max = (float) max($values);
+
+            $edges = Vector::linspace($min, $max, $this->bins - 1)->asArray();
 
             $counts = array_fill(0, count($edges), 0);
 

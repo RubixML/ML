@@ -415,9 +415,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $activations = $this->network->infer($dataset);
 
+        $activations = array_column($activations->asArray(), 0);
+
         $probabilities = [];
 
-        foreach ($activations->column(0) as $activation) {
+        foreach ($activations as $activation) {
             $probabilities[] = [
                 $classA => 1.0 - $activation,
                 $classB => $activation,
