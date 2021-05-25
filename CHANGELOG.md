@@ -1,4 +1,5 @@
 1.0.1
+    - Prevent certain specification false negatives
 
 - 1.0.0
     - No changes
