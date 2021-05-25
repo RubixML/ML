@@ -4,6 +4,7 @@
     - MaxAbs, Z Score, and Robust scalers are now Reversible
     - Min Max Normalizer now implements Reversible
     - TF-IDF Transformer is now Reversible
+    - Add extension minimum version specification
 
 1.0.1
     - Prevent certain specification false negatives
