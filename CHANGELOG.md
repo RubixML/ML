@@ -1,5 +1,6 @@
 1.0.1
     - Prevent certain specification false negatives
+    - Add extension minimum version specification
 
 - 1.0.0
     - No changes

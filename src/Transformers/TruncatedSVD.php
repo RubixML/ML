@@ -8,6 +8,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -62,7 +64,10 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
-        ExtensionIsLoaded::with('tensor')->check();
+        SpecificationChain::with([
+            ExtensionIsLoaded::with('tensor'),
+            ExtensionMinimumVersion::with('tensor', '2.2.0'),
+        ])->check();
 
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
