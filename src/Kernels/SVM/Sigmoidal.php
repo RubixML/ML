@@ -39,8 +39,8 @@ class Sigmoidal implements Kernel
     public function __construct(?float $gamma = null, float $coef0 = 0.0)
     {
         SpecificationChain::with([
-            ExtensionIsLoaded::with('svm'),
-            ExtensionMinimumVersion::with('svm', '0.2.0'),
+            new ExtensionIsLoaded('svm'),
+            new ExtensionMinimumVersion('svm', '0.2.0'),
         ])->check();
 
         $this->gamma = $gamma;

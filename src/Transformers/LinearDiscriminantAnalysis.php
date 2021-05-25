@@ -65,8 +65,8 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
     public function __construct(int $dimensions)
     {
         SpecificationChain::with([
-            ExtensionIsLoaded::with('tensor'),
-            ExtensionMinimumVersion::with('tensor', '2.1.4'),
+            new ExtensionIsLoaded('tensor'),
+            new ExtensionMinimumVersion('tensor', '2.1.4'),
         ])->check();
 
         if ($dimensions < 1) {
