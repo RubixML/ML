@@ -35,8 +35,8 @@ class AdaMax extends Adam
         if ($a instanceof Matrix and $b instanceof Matrix) {
             $c = [];
 
-            foreach ($a as $i => $valueA) {
-                $c[] = static::maximum($valueA, $b[$i])->asArray();
+            foreach ($a->asVectors() as $i => $valueA) {
+                $c[] = static::maximum($valueA, $b->rowAsVector($i))->asArray();
             }
 
             return Matrix::quick($c);
