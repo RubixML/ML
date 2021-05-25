@@ -13,6 +13,7 @@ use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -74,7 +75,10 @@ class OneClassSVM implements Estimator, Learner
         float $tolerance = 1e-3,
         float $cacheSize = 100.0
     ) {
-        ExtensionIsLoaded::with('svm')->check();
+        SpecificationChain::with([
+            ExtensionIsLoaded::with('svm'),
+            ExtensionMinimumVersion::with('svm', '0.2.0'),
+        ])->check();
 
         if ($nu < 0.0 or $nu > 1.0) {
             throw new InvalidArgumentException('Nu must be between'

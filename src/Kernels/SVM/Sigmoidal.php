@@ -3,6 +3,8 @@
 namespace Rubix\ML\Kernels\SVM;
 
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use svm;
 
 /**
@@ -36,7 +38,10 @@ class Sigmoidal implements Kernel
      */
     public function __construct(?float $gamma = null, float $coef0 = 0.0)
     {
-        ExtensionIsLoaded::with('svm')->check();
+        SpecificationChain::with([
+            ExtensionIsLoaded::with('svm'),
+            ExtensionMinimumVersion::with('svm', '0.2.0'),
+        ])->check();
 
         $this->gamma = $gamma;
         $this->coef0 = $coef0;

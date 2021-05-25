@@ -14,6 +14,7 @@ use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -85,7 +86,10 @@ class SVC implements Estimator, Learner
         float $tolerance = 1e-3,
         float $cacheSize = 100.0
     ) {
-        ExtensionIsLoaded::with('svm')->check();
+        SpecificationChain::with([
+            ExtensionIsLoaded::with('svm'),
+            ExtensionMinimumVersion::with('svm', '0.2.0'),
+        ])->check();
 
         if ($c < 0.0) {
             throw new InvalidArgumentException('C must be greater'
