@@ -1,3 +1,6 @@
+1.0.2
+    - Fix KNN and Hot Deck imputer reset donor samples
+
 1.0.1
     - Fix AdaMax optimizer when tensor extension loaded
     - Prevent certain specification false negatives
