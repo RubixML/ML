@@ -186,6 +186,8 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
         }
 
         foreach ($samples as &$sample) {
+            $donors = [];
+
             foreach ($sample as $column => &$value) {
                 if (is_float($value) && is_nan($value) or $value === $this->categoricalPlaceholder) {
                     if (empty($donors)) {
