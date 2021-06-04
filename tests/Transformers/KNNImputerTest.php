@@ -76,7 +76,7 @@ class KNNImputerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals(23.692172188539388, $this->dataset[1][0]);
-        $this->assertEquals(0.3160759991824576, $this->dataset[3][1]);
+        $this->assertEquals(-1.4826674509492581, $this->dataset[3][1]);
     }
 
     /**
