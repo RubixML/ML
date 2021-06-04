@@ -90,7 +90,7 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [t-SNE](transformers/t-sne.md) | | | |
 
 ### Feature Expansion
-Contrasting feature selection is a preprocessing step that aims to derive additional features from the dataset called feature expansion. Derived features are often used to add flexibility to a model by appending more degrees of freedom to the dataset.
+Feature expansion aims to derive additional features in order to add flexibility to a model by appending more degrees of freedom to the dataset.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
@@ -127,9 +127,19 @@ These transformers operate on the high-level image data type.
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
-In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place.
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use write a callback to *binarize* the continuous features just at column offset 3.
 
-In the next example, we'll use the Lambda Function transformer to perform a categorical feature cross derived from two feature columns of the dataset. A feature cross is a higher-order feature that represents the presence of two or more categories simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own category. We'll choose to represent the feature cross as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories together to represent the new feature as well.
+```php
+use Rubix\ML\Transformers\LambdaFunction;
+
+$binarize = function (&$sample) {
+    $sample[3] = $sample[3] > 182 ? 'tall' : 'not tall';
+}
+
+$dataset->apply(new LambdaFunction($binarize));
+```
+
+Another thing we can do is use the Lambda Function transformer to perform a categorical *feature cross* between two feature columns of the dataset. A cross feature is a higher-order feature that represents the presence of two or more features simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own feature. We'll choose to represent the new feature as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories to represent the new feature as well.
 
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
@@ -140,37 +150,6 @@ $crossFeatures = function (&$sample) {
 };
 
 $dataset->apply(new LambdaFunction($crossFeatures));
-```
-
-## Transformer Pipelines
-The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
-
-```php
-use Rubix\ML\Pipeline;
-use Rubix\ML\Transformers\HotDeckImputer;
-use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\Clusterers\KMeans;
-
-$estimator = new Pipeline([
-    new HotDeckImputer(5),
-    new OneHotEncoder(),
-    new ZScaleStandardizer(),
-], new KMeans(10));
-```
-
-Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.
-
-```php
-$estimator->train($dataset); // Transformers fitted and applied
-
-$estimator->partial($dataset); // Transformers updated and applied
-```
-
-Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
-
-```php
-$predictions = $estimator->predict($dataset); // Dataset transformed automatically
 ```
 
 ## Advanced Preprocessing
@@ -205,6 +184,37 @@ $dataset2 = Unlabeled::fromIterator($extractor2)
 
 $dataset = $dataset1->join($dataset2)
     ->apply(new ZScaleStandardizer());
+```
+
+## Transformer Pipelines
+The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
+
+```php
+use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\HotDeckImputer;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Clusterers\KMeans;
+
+$estimator = new Pipeline([
+    new HotDeckImputer(5),
+    new OneHotEncoder(),
+    new ZScaleStandardizer(),
+], new KMeans(10));
+```
+
+Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.
+
+```php
+$estimator->train($dataset); // Transformers fitted and applied
+
+$estimator->partial($dataset); // Transformers updated and applied
+```
+
+Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
+
+```php
+$predictions = $estimator->predict($dataset); // Dataset transformed automatically
 ```
 
 ## Filtering Records
