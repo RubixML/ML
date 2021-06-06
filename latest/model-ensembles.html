@@ -4193,29 +4193,27 @@
                 
                 
                 <h1 id="model-ensembles">Model Ensembles<a class="headerlink" href="#model-ensembles" title="Permanent link">#</a></h1>
-<p>Ensemble learning is when multiple estimators are used together to make the final prediction of a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator at the cost of training more models.</p>
+<p>Ensemble learning is when multiple estimators are used together to make the final prediction of a sample. Model ensembles can consist of multiple variations of the same estimator, a heterogeneous mix of estimators of the same type, or even a mix of different estimator types.</p>
 <h2 id="bootstrap-aggregator">Bootstrap Aggregator<a class="headerlink" href="#bootstrap-aggregator" title="Permanent link">#</a></h2>
-<p>Bootstrap Aggregation or <em>bagging</em> is an ensemble learning technique that trains a set of learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a <a href="regressors/regression-tree.html">Regression Tree</a> in a <a href="bootstrap-aggregator.html">Bootstrap Aggregator</a> to form a <em>forest</em> of 1000 trees.</p>
+<p>Bootstrap Aggregation or <em>bagging</em> is an ensemble learning technique that trains a set of learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a <a href="regressors/regression-tree.html">Regression Tree</a> in a <a href="bootstrap-aggregator.html">Bootstrap Aggregator</a> meta-estimator to form a <em>forest</em> of 1000 trees. By averaging the predictions of the ensemble, we can often achieve greater accuracy than a single estimator at the cost of training more models.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\BootstrapAggregator</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Regressors\RegressionTree</span><span class="p">;</span>
 
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BootstrapAggregator</span><span class="p">(</span><span class="k">new</span> <span class="nx">RegressionTree</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">1000</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="committee-machine">Committee Machine<a class="headerlink" href="#committee-machine" title="Permanent link">#</a></h2>
-<p><a href="committee-machine.html">Committee Machine</a> is a voting ensemble consisting of estimators (referred to as <em>experts</em>) with user-programmable <em>influences</em>. Each expert is trained on the same dataset and the final prediction is based on the contribution of each expert weighted by their influence in the committee.</p>
+<p><a href="committee-machine.html">Committee Machine</a> is another meta-estimator ensemble that works by the principal of averaging. It is a voting ensemble consisting of estimators (referred to as <em>experts</em>) with user-programmable <em>influences</em>. Each expert is trained on the same dataset and the final prediction is based on the contribution of each expert weighted by their influence in the committee. By varying the influences of the experts, we can control which estimators contribute more or less to the final prediction.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CommitteeMachine</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\RandomForest</span><span class="p">;</span>
 <span class="k">new</span> <span class="nx">Rubix\ML\SoftmaxClassifier</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\AdaBoost</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\ClassificationTree</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Backends\Amp</span><span class="p">;</span>
 
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CommitteeMachine</span><span class="p">([</span>
-    <span class="k">new</span> <span class="nx">RandomForest</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">RandomForest</span><span class="p">(),</span>
     <span class="k">new</span> <span class="nx">SoftmaxClassifier</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
-    <span class="k">new</span> <span class="nx">AdaBoost</span><span class="p">(</span><span class="k">new</span> <span class="nx">ClassificationTree</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">AdaBoost</span><span class="p">(),</span>
 <span class="p">],</span> <span class="p">[</span>
-    <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="c1">// Influence scores</span>
+    <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="c1">// Influence scores</span>
 <span class="p">]);</span>
 </code></pre></div>
 <h2 id="cascading-ml">Cascading ML<a class="headerlink" href="#cascading-ml" title="Permanent link">#</a></h2>
@@ -4242,17 +4240,19 @@
 </code></pre></div>
 <h2 id="model-orchestra">Model Orchestra<a class="headerlink" href="#model-orchestra" title="Permanent link">#</a></h2>
 <p>When you combine cascading with committee voting you get a technique referred to as <em>stacking</em>. Unlike the <a href="committee-machine.html">Committee Machine</a> meta-estimator, which relies on a priori knowledge of the estimator influences, stacking aims to learn the influence scores automatically bu using another model. We introduce the orchestra pattern for implementing a stacked model ensemble. The complete model consists of three <a href="probabilistic.html">Probabilistic</a> classifiers referred to as the <em>orchestra</em> and a <em>conductor</em> that makes the final prediction by training on the probabilities outputted by the orchestra. A key step to this process is to separate the training set into two sets so that we can do a second optimization over the second dataset to determine the model influences. We can vary the amount of data used to train each layer of the model by changing the proportion argument to the <code>stratifiedSplit()</code> method. For this example, we'll choose to use half of the data to train the orchestra and half to train the conductor.</p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\LogisticRegression</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\GaussianNB</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\AdaBoost</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\KDNeighbors</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\MultilayerPerceptron</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Optimizers\Stochastic</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Layers\Dense</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Layers\Activation</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\ActivationFunctions\ReLU</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Datasets\Labeled</span><span class="p">;</span>
 
 <span class="p">[</span><span class="nv">$dataset1</span><span class="p">,</span> <span class="nv">$dataset2</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$training</span><span class="o">-&gt;</span><span class="na">stratifiedSplit</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
 
 <span class="nv">$orchestra</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="k">new</span> <span class="nx">LogisticRegression</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">GaussianNB</span><span class="p">(),</span>
     <span class="k">new</span> <span class="nx">AdaBoost</span><span class="p">(),</span>
     <span class="k">new</span> <span class="nx">KDNeighbors</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
 <span class="p">];</span>
@@ -4273,7 +4273,10 @@
 
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Labeled</span><span class="p">(</span><span class="nv">$samples</span><span class="p">,</span> <span class="nv">$dataset2</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 
-<span class="nv">$conductor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MultilayerPerceptron</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Stochastic</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">));</span>
+<span class="nv">$conductor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MultilayerPerceptron</span><span class="p">([</span>
+    <span class="k">new</span> <span class="nx">Dense</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">Activation</span><span class="p">(</span><span class="k">new</span> <span class="nx">ReLU</span><span class="p">()),</span>
+<span class="p">]);</span>
 
 <span class="nv">$conductor</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 </code></pre></div>
