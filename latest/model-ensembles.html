@@ -4249,7 +4249,7 @@
 <span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Optimizers\Stochastic</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Datasets\Labeled</span><span class="p">;</span>
 
-<span class="p">[</span><span class="nv">$first</span><span class="p">,</span> <span class="nv">$second</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$training</span><span class="o">-&gt;</span><span class="na">stratifiedSplit</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="p">[</span><span class="nv">$dataset1</span><span class="p">,</span> <span class="nv">$dataset2</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$training</span><span class="o">-&gt;</span><span class="na">stratifiedSplit</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
 
 <span class="nv">$orchestra</span> <span class="o">=</span> <span class="p">[</span>
     <span class="k">new</span> <span class="nx">LogisticRegression</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
@@ -4260,9 +4260,9 @@
 <span class="nv">$samples</span> <span class="o">=</span> <span class="p">[];</span>
 
 <span class="k">foreach</span> <span class="p">(</span><span class="nv">$orchestra</span> <span class="k">as</span> <span class="nv">$estimator</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$training</span><span class="p">);</span>
+    <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset1</span><span class="p">);</span>
 
-    <span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$testing</span><span class="p">);</span>
+    <span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$dataset2</span><span class="p">);</span>
 
     <span class="k">foreach</span> <span class="p">(</span><span class="nv">$probabilities</span> <span class="k">as</span> <span class="nv">$offset</span> <span class="o">=&gt;</span> <span class="nv">$dist</span><span class="p">)</span> <span class="p">{</span>
         <span class="nv">$sample</span> <span class="o">=</span> <span class="o">&amp;</span><span class="nv">$sample</span><span class="p">[</span><span class="nv">$offset</span><span class="p">];</span>
@@ -4271,7 +4271,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nv">$dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Labeled</span><span class="p">(</span><span class="nv">$samples</span><span class="p">,</span> <span class="nv">$testing</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
+<span class="nv">$dataset</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Labeled</span><span class="p">(</span><span class="nv">$samples</span><span class="p">,</span> <span class="nv">$dataset2</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 
 <span class="nv">$conductor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MultilayerPerceptron</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Stochastic</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">));</span>
 
@@ -4285,7 +4285,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-06-05
+      Last update: 2021-06-06
     
   </small>
 </div>
