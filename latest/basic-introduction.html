@@ -4318,7 +4318,7 @@
 <p>We can verify that the learner has been trained by calling the <code>trained()</code> method.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">trained</span><span class="p">());</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>bool<span class="o">(</span><span class="nb">true</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><code>bool(true)
 </code></pre></div>
 <p>For our small training set, the training process should only take a matter of microseconds, but larger datasets with more features can take longer. Now that the learner is trained, in the next section we'll show how we can feed in unknown samples to generate predictions.</p>
 <div class="admonition note">
@@ -4344,14 +4344,15 @@
 
 <span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">4</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="s1">&#39;married&#39;</span>
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="s1">&#39;divorced&#39;</span>
-    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="s1">&#39;divorced&#39;</span>
-    <span class="o">[</span><span class="m">4</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="s1">&#39;married&#39;</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">married</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">divorced</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">divorced</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">married</span>
+<span class="p">)</span>
 </code></pre></div>
 <p>The output of the estimator are the predicted class labels of the unknown samples. We could either trust these predictions as-is or we could proceed to further evaluate the model. In the next section, we'll learn how to test its accuracy using a process called cross validation.</p>
 <div class="admonition note">

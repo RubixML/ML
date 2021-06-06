@@ -4194,7 +4194,7 @@
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nv">$folds</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">fold</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 
-<span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">partial</span><span class="p">(</span><span class="nv">$folds</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$folds</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 
 <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">partial</span><span class="p">(</span><span class="nv">$folds</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 

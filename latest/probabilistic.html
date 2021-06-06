@@ -4194,22 +4194,26 @@
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>  
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">[</span><span class="s1">&#39;monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.975,
-        <span class="o">[</span><span class="s1">&#39;not monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.025,
-    <span class="o">}</span>
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">[</span><span class="s1">&#39;monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.2,
-        <span class="o">[</span><span class="s1">&#39;not monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.8,
-    <span class="o">}</span>
-    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">[</span><span class="s1">&#39;monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.6,
-        <span class="o">[</span><span class="s1">&#39;not monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.4,
-    <span class="o">}</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.6</span>
+            <span class="p">[</span><span class="k">not</span> <span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.4</span>
+        <span class="p">)</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.5</span>
+            <span class="p">[</span><span class="k">not</span> <span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.5</span>
+        <span class="p">)</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.2</span>
+            <span class="p">[</span><span class="k">not</span> <span class="nx">monster</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.8</span>
+        <span class="p">)</span>
+<span class="p">)</span>
 </code></pre></div>
                 
                   

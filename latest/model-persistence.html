@@ -4229,7 +4229,7 @@
                 <h1 id="model-persistence">Model Persistence<a class="headerlink" href="#model-persistence" title="Permanent link">#</a></h1>
 <p>Model persistence is the ability to save and subsequently load a learner's state in another process. Trained estimators can be used for real-time inference by loading the model onto a server or they can be saved to make predictions in batches offline at a later time. Estimators that implement the <a href="persistable.html">Persistable</a> interface are able to have their internal state captured between processes. In addition, the library provides the <a href="persistent-model.html">Persistent Model</a> meta-estimator that acts as a wrapper for persistable estimators.</p>
 <h2 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">#</a></h2>
-<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's <a href="serializers/native.html">Native</a> serializer or in a more robust format such as with the library's own <a href="serializers/rbx.html">RBX</a> serializer. In the this example, we'll demonstrate how to encode a Persistable learner using the compressed RBX format, save the encoding with a <a href="persisters/api.html">Persister</a>, and then how to deserialize the encoding.</p>
+<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's <a href="serializers/native.html">Native</a> serializer or in a robust format such as <a href="serializers/rbx.html">RBX</a>. In the this example, we'll demonstrate how to encode a Persistable learner using the compressed RBX format, save the encoding with a <a href="persisters/api.html">Persister</a>, and then how to deserialize the encoding.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
@@ -4240,13 +4240,11 @@
 
 <span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$estimator</span><span class="p">);</span>
 
-
-
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">deserialize</span><span class="p">(</span><span class="nv">$encoding</span><span class="p">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Due to a limitation in PHP, anonymous classes and functions (<em>closures</em>) are not able to be deserialized. Avoid adding anonymous classes or functions to an object that you intend to persist.</p>
+<p>Due to a limitation in PHP, anonymous classes and functions (<em>closures</em>) are not able to be deserialized. Therefore, avoid anonymous classes or functions if you intend to persist the model.</p>
 </div>
 <h2 id="persistent-model-meta-estimator">Persistent Model Meta-estimator<a class="headerlink" href="#persistent-model-meta-estimator" title="Permanent link">#</a></h2>
 <p>The persistence subsystem can be interfaces at a low level with Serializer and Persister objects or it can be interacted with at a higher level using the <a href="persistent-model.html">Persistent Model</a> meta-estimator. It is a decorator that provides <code>save()</code> and <code>load()</code> methods giving the estimator the ability to save and load itself.</p>
@@ -4260,16 +4258,16 @@
 <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="persisting-transformers">Persisting Transformers<a class="headerlink" href="#persisting-transformers" title="Permanent link">#</a></h2>
-<p>In addition to Learners, the persistence subsystem can be used to individually save and load any Stateful transformer that implements the <a href="persistable.html">Persistable</a> interface . In the example below we'll fit a transformer to a dataset and then save it to the <a href="persisters/filesystem.html">Filesystem</a>.</p>
+<p>In addition to Learners, the persistence subsystem can be used to individually save and load any Stateful transformer that implements the <a href="persistable.html">Persistable</a> interface. In the example below we'll fit a transformer to a dataset and then save it to the <a href="persisters/filesystem.html">Filesystem</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
 
 <span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">();</span>
 
-<span class="c1">// Fit transformer</span>
-
 <span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">();</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
 <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">));</span>
 </code></pre></div>

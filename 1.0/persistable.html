@@ -4143,7 +4143,14 @@
                 
                 
                 <h1 id="persistable">Persistable<a class="headerlink" href="#persistable" title="Permanent link">#</a></h1>
-<p>An estimator that implements the Persistable interface can be saved and loaded by a <a href="persisters/api.html">Persister</a> object or using the <a href="persistent-model.html">Persistent Model</a> meta-estimator. The interface provides no additional methods otherwise.</p>
+<p>An estimator that implements the Persistable interface can be serialized by a <a href="serializers/api.html">Serializer</a> or save and loaded using the <a href="persistent-model.html">Persistent Model</a> meta-estimator.</p>
+<p>To return the current class revision hash:
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">revision</span><span class="p">()</span> <span class="o">:</span> <span class="nx">string</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="k">echo</span> <span class="nv">$persistable</span><span class="o">-&gt;</span><span class="na">revision</span><span class="p">();</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>e7eeec9a
+</code></pre></div>
                 
                   
                     
