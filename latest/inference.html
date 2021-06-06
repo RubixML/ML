@@ -4228,10 +4228,6 @@
                 
                 <h1 id="inference">Inference<a class="headerlink" href="#inference" title="Permanent link">#</a></h1>
 <p>Inference is the process of making predictions using an <a href="estimator.html">Estimator</a>. You can think of an estimator <em>inferring</em> the outcome of a sample given the input features and the estimator's hidden state obtained during training. Once a learner has been trained it can perform inference on any number of samples.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>As of version 0.3.0, single sample inference methods have been marked internal. As such, you should not rely on their API in your systems. Instead, use the associated dataset inference method with a dataset object containing a single sample.</p>
-</div>
 <h2 id="estimator-types">Estimator Types<a class="headerlink" href="#estimator-types" title="Permanent link">#</a></h2>
 <p>There are 4 base estimator types to consider in Rubix ML and each type outputs a prediction specific to its type. Meta-estimators are <em>polymorphic</em> in the sense that they take on the type of the base estimator they wrap.</p>
 <table>
@@ -4248,25 +4244,25 @@
 <td>Classifier</td>
 <td>Class label</td>
 <td>String</td>
-<td>'cat', 'positive'</td>
+<td>'cat'</td>
 </tr>
 <tr>
 <td>Regressor</td>
 <td>Number</td>
 <td>Integer or Float</td>
-<td>42, 1.348957</td>
+<td>1.348957</td>
 </tr>
 <tr>
 <td>Clusterer</td>
 <td>Cluster number</td>
 <td>Integer</td>
-<td>0, 15</td>
+<td>6</td>
 </tr>
 <tr>
 <td>Anomaly Detector</td>
 <td>1 for an anomaly or 0 otherwise</td>
 <td>Integer</td>
-<td>0, 1</td>
+<td>0</td>
 </tr>
 </tbody>
 </table>
@@ -4278,45 +4274,55 @@
 </div>
 <div class="highlight"><pre><span></span><code><span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">3</span><span class="o">)</span> <span class="o">{</span>
-  <span class="o">[</span><span class="m">0</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">3</span><span class="o">)</span> <span class="s2">&quot;cat&quot;</span>
-  <span class="o">[</span><span class="m">1</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">3</span><span class="o">)</span> <span class="s2">&quot;dog&quot;</span>
-  <span class="o">[</span><span class="m">2</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">4</span><span class="o">)</span> <span class="s2">&quot;frog&quot;</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>Array
+<span class="o">(</span>
+    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; cat
+    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; dog
+    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; frog
+<span class="o">)</span>
 </code></pre></div>
 <h2 id="estimation-of-probabilities">Estimation of Probabilities<a class="headerlink" href="#estimation-of-probabilities" title="Permanent link">#</a></h2>
 <p>Sometimes, you may want to know how <em>certain</em> the model is about a particular outcome. Classifiers and clusterers that implement the <a href="probabilistic.html">Probabilistic</a> interface have the <code>proba()</code> method that computes the joint probability estimates for each class or cluster number as shown in the example below.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>  
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">[</span><span class="s1">&#39;monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.975,
-        <span class="o">[</span><span class="s1">&#39;not monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.025,
-    <span class="o">}</span>
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; array<span class="o">(</span><span class="m">2</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">[</span><span class="s1">&#39;monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.2,
-        <span class="o">[</span><span class="s1">&#39;not monster&#39;</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.8,
-    <span class="o">}</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>Array
+<span class="o">(</span>
+    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; Array
+        <span class="o">(</span>
+            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.6
+            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.4
+            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
+        <span class="o">)</span>
+    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; Array
+        <span class="o">(</span>
+            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">3</span>.0
+            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">6</span>.0
+            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.0
+        <span class="o">)</span>
+    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; Array
+        <span class="o">(</span>
+            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
+            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
+            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.0
+        <span class="o">)</span>
+<span class="o">)</span>
 </code></pre></div>
 <h2 id="anomaly-scores">Anomaly Scores<a class="headerlink" href="#anomaly-scores" title="Permanent link">#</a></h2>
 <p>Anomaly detectors that implement the <a href="scoring.html">Scoring</a> interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$scores</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$scores</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$scores</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">3</span><span class="o">)</span> <span class="o">{</span>
-  <span class="o">[</span><span class="m">0</span><span class="o">]=</span>&gt; float<span class="o">(</span><span class="m">0</span>.35033859096744<span class="o">)</span>
-  <span class="o">[</span><span class="m">1</span><span class="o">]=</span>&gt; float<span class="o">(</span><span class="m">0</span>.40992076925443<span class="o">)</span>
-  <span class="o">[</span><span class="m">2</span><span class="o">]=</span>&gt; float<span class="o">(</span><span class="m">1</span>.68163357834096<span class="o">)</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>Array
+<span class="o">(</span>
+    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.35033
+    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.40992
+    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.68153
+<span class="o">)</span>
 </code></pre></div>
                 
                   
@@ -4326,7 +4332,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-27
+      Last update: 2021-06-05
     
   </small>
 </div>

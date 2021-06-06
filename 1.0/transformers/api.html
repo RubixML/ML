@@ -1766,13 +1766,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#reversible" class="md-nav__link">
-    Reversible
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4256,13 +4249,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#reversible" class="md-nav__link">
-    Reversible
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4334,16 +4320,6 @@
 
 <span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$folds</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
 </code></pre></div>
-<h2 id="reversible">Reversible<a class="headerlink" href="#reversible" title="Permanent link">#</a></h2>
-<p>Transformers that implement the Reversible interface can reverse the transformation applied to a dataset. To apply the reverse transform to a dataset call the <code>reverseApply()</code> method on the dataset object and pass it the reversible transformer.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">();</span>
-
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
-
-<span class="c1">// Do something</span>
-
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">reverseApply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
-</code></pre></div>
                 
                   
                     
@@ -4352,7 +4328,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-13
+      Last update: 2020-07-26
     
   </small>
 </div>
