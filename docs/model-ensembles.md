@@ -67,7 +67,7 @@ use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Labeled;
 
-[$first, $second] = $training->stratifiedSplit(0.5);
+[$dataset1, $dataset2] = $training->stratifiedSplit(0.5);
 
 $orchestra = [
     new LogisticRegression(128),
@@ -78,9 +78,9 @@ $orchestra = [
 $samples = [];
 
 foreach ($orchestra as $estimator) {
-    $estimator->train($training);
+    $estimator->train($dataset1);
 
-    $probabilities = $estimator->proba($testing);
+    $probabilities = $estimator->proba($dataset2);
 
     foreach ($probabilities as $offset => $dist) {
         $sample = &$sample[$offset];
@@ -89,7 +89,7 @@ foreach ($orchestra as $estimator) {
     }
 }
 
-$dataset = new Labeled($samples, $testing->labels());
+$dataset = new Labeled($samples, $dataset2->labels());
 
 $conductor = new MultilayerPerceptron(128, new Stochastic(0.0001));
 
