@@ -48,7 +48,7 @@
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.*",
         "phpstan/phpstan-phpunit": "0.12.*",
-        "phpunit/phpunit": "8.5.*"
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",

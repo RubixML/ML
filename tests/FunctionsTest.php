@@ -18,6 +18,16 @@ use function Rubix\ML\warn_deprecated;
 
 /**
  * @group Functions
+ * @covers \Rubix\ML\argmax
+ * @covers \Rubix\ML\argmin
+ * @covers \Rubix\ML\array_transpose
+ * @covers \Rubix\ML\comb
+ * @covers \Rubix\ML\iterator_contains_nan
+ * @covers \Rubix\ML\iterator_filter
+ * @covers \Rubix\ML\iterator_first
+ * @covers \Rubix\ML\iterator_map
+ * @covers \Rubix\ML\logsumexp
+ * @covers \Rubix\ML\warn_deprecated
  */
 class FunctionsTest extends TestCase
 {

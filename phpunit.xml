@@ -1,79 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         forceCoversAnnotation="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Base">
-            <directory>tests</directory>
-        </testsuite>
-        <testsuite name="Anomaly Detectors">
-            <directory>tests/AnomalyDetectors</directory>
-        </testsuite>
-        <testsuite name="Backends">
-            <directory>tests/Backends</directory>
-        </testsuite>
-        <testsuite name="Classifiers">
-            <directory>tests/Classifiers</directory>
-        </testsuite>
-        <testsuite name="Clusterers">
-            <directory>tests/Clusterers</directory>
-        </testsuite>
-        <testsuite name="Cross Validation">
-            <directory>tests/CrossValidation</directory>
-        </testsuite>
-        <testsuite name="Datasets">
-            <directory>tests/Datasets</directory>
-        </testsuite>
-        <testsuite name="Extractors">
-            <directory>tests/Extractors</directory>
-        </testsuite>
-        <testsuite name="Graph">
-            <directory>tests/Graph</directory>
-        </testsuite>
-        <testsuite name="Helpers">
-            <directory>tests/Helpers</directory>
-        </testsuite>
-        <testsuite name="Kernels">
-            <directory>tests/Kernels</directory>
-        </testsuite>
-        <testsuite name="Loggers">
-            <directory>tests/Loggers</directory>
-        </testsuite>
-        <testsuite name="Neural Net">
-            <directory>tests/NeuralNet</directory>
-        </testsuite>
-        <testsuite name="Persisters">
-            <directory>tests/Persisters</directory>
-        </testsuite>
-        <testsuite name="Regressors">
-            <directory>tests/Regressors</directory>
-        </testsuite>
-        <testsuite name="Specifications">
-            <directory>tests/Specifications</directory>
-        </testsuite>
-        <testsuite name="Strategies">
-            <directory>tests/Strategies</directory>
-        </testsuite>
-        <testsuite name="Tokenizers">
-            <directory>tests/Transformers</directory>
-        </testsuite>
-        <testsuite name="Transformers">
-            <directory>tests/Transformers</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <env name="ENV" value="testing"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="vendor/autoload.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" forceCoversAnnotation="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="Base">
+      <directory>tests</directory>
+    </testsuite>
+    <testsuite name="Anomaly Detectors">
+      <directory>tests/AnomalyDetectors</directory>
+    </testsuite>
+    <testsuite name="Backends">
+      <directory>tests/Backends</directory>
+    </testsuite>
+    <testsuite name="Classifiers">
+      <directory>tests/Classifiers</directory>
+    </testsuite>
+    <testsuite name="Clusterers">
+      <directory>tests/Clusterers</directory>
+    </testsuite>
+    <testsuite name="Cross Validation">
+      <directory>tests/CrossValidation</directory>
+    </testsuite>
+    <testsuite name="Datasets">
+      <directory>tests/Datasets</directory>
+    </testsuite>
+    <testsuite name="Extractors">
+      <directory>tests/Extractors</directory>
+    </testsuite>
+    <testsuite name="Graph">
+      <directory>tests/Graph</directory>
+    </testsuite>
+    <testsuite name="Helpers">
+      <directory>tests/Helpers</directory>
+    </testsuite>
+    <testsuite name="Kernels">
+      <directory>tests/Kernels</directory>
+    </testsuite>
+    <testsuite name="Loggers">
+      <directory>tests/Loggers</directory>
+    </testsuite>
+    <testsuite name="Neural Net">
+      <directory>tests/NeuralNet</directory>
+    </testsuite>
+    <testsuite name="Persisters">
+      <directory>tests/Persisters</directory>
+    </testsuite>
+    <testsuite name="Regressors">
+      <directory>tests/Regressors</directory>
+    </testsuite>
+    <testsuite name="Specifications">
+      <directory>tests/Specifications</directory>
+    </testsuite>
+    <testsuite name="Strategies">
+      <directory>tests/Strategies</directory>
+    </testsuite>
+    <testsuite name="Tokenizers">
+      <directory>tests/Transformers</directory>
+    </testsuite>
+    <testsuite name="Transformers">
+      <directory>tests/Transformers</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="ENV" value="testing"/>
+  </php>
 </phpunit>

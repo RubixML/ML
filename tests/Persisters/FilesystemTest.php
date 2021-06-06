@@ -69,6 +69,6 @@ class FilesystemTest extends TestCase
 
     protected function assertPreConditions() : void
     {
-        $this->assertFileNotExists(self::PATH);
+        $this->assertFileDoesNotExist(self::PATH);
     }
 }
