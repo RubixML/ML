@@ -18,9 +18,9 @@ $validator = new KFold(10);
 
 $score = $validator->test($estimator, $dataset, new Accuracy());
 
-var_dump($score);
+echo $score;
 ```
 
-```sh
-float(0.869)
+```
+0.86
 ```

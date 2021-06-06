@@ -48,14 +48,15 @@ public possibleOutcomes() : array
 ```
 
 ```php
-var_dump($dataset->possibleOutcomes());
+print_r($dataset->possibleOutcomes());
 ```
 
-```sh
-array(2) {
-	[0]=> string(5) "female"
-	[1]=> string(4) "male"
-}
+```php
+Array
+(
+    [0] => female
+    [1] => male
+)
 ```
 
 ### Data Types

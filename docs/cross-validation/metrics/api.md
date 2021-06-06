@@ -16,11 +16,11 @@ $metric = new MeanAbsoluteError();
 
 $score = $metric->score($predictions, $dataset->labels());
 
-var_dump($score);
+echo $score;
 ```
 
-```sh
-float(-0.99846070553066)
+```
+-0.99846
 ```
 
 !!! note
@@ -35,12 +35,9 @@ public range() : Rubix\ML\Tuple{float, float}
 ```php
 [$min, $max] = $metric->range()->list();
 
-var_dump($min);
-var_dump($max);
+echo "min: $min, max: $max";
 ```
 
-```sh
-float(-INF)
-
-int(0)
+```
+min: -INF, max: 0
 ```

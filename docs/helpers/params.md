@@ -12,17 +12,18 @@ use Rubix\ML\Helpers\Params;
 
 $ints = Params::ints(0, 100, 5);
 
-var_dump($ints);
+print_r($ints);
 ```
 
-```sh
-array(5) {
-  [0]=> int(88)
-  [1]=> int(48)
-  [2]=> int(64)
-  [3]=> int(100)
-  [4]=> int(41)
-}
+```php
+Array
+(
+    [0] => 88
+    [1] => 48
+    [2] => 64
+    [3] => 100
+    [4] => 42
+)
 ```
 
 To generate a random distribution of floating point parameters:
@@ -35,17 +36,18 @@ use Rubix\ML\Helpers\Params;
 
 $floats = Params::floats(0, 100, 5);
 
-var_dump($floats);
+print_r($floats);
 ```
 
-```sh
-array(5) {
-  [0]=> float(42.65728411)
-  [1]=> float(66.74335233)
-  [2]=> float(15.1724384)
-  [3]=> float(71.92631156)
-  [4]=> float(4.63886342)
-}
+```php
+Array
+(
+    [0] => 42.65728
+    [1] => 66.74335
+    [2] => 15.17243
+    [3] => 71.92631
+    [4] => 4.638863
+)
 ```
 
 To generate a uniformly spaced grid of parameters:
@@ -58,15 +60,16 @@ use Rubix\ML\Helpers\Params;
 
 $grid = Params::grid(0, 100, 5);
 
-var_dump($grid);
+print_r($grid);
 ```
 
-```sh
-array(5) {
-  [0]=> float(0)
-  [1]=> float(25)
-  [2]=> float(50)
-  [3]=> float(75)
-  [4]=> float(100)
-}
+```php
+Array
+(
+    [0] => 0
+    [1] => 25
+    [2] => 50
+    [3] => 75
+    [4] => 100
+)
 ```

@@ -49,12 +49,11 @@ public shape() : array{int, int}
 ```php
 [$m, $n] = $dataset->shape();
 
-var_dump($m, $n);
+echo "$m x $n";
 ```
 
-```sh
-int(1000)
-int(30)
+```
+1000 x 30
 ```
 
 ## Data Types
