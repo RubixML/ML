@@ -44,11 +44,11 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.18.*",
-        "phpbench/phpbench": "1.0.0-alpha8",
+        "phpbench/phpbench": "^1.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.*",
         "phpstan/phpstan-phpunit": "0.12.*",
-        "phpunit/phpunit": "8.5.*"
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
