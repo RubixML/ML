@@ -69,38 +69,5 @@ Anomaly Detectors are unsupervised learners that predict whether a sample should
 ## Model Flexibility Tradeoff
 A characteristic of most estimator types is the notion of *flexibility*. Flexibility can be expressed in different ways but greater flexibility usually comes with the capacity to handle more complex tasks. The tradeoff for flexibility is increased computational complexity, reduced model interpretability, and greater susceptibility to [overfitting](cross-validation.md#overfitting). In contrast, low flexibility models tend to be easier to interpret and quicker to train but are more prone to [underfitting](cross-validation.md#underfitting). In general, we recommend choosing the simplest model that does not underfit the training data for your project.
 
-## Meta-estimator Ensembles
-Ensemble learning is when multiple estimators are used together to make the final prediction of a sample. Meta-estimator ensembles can consist of multiple variations of the same estimator or a heterogeneous mix of estimators of the same type. They generally work by the principal of averaging and can often achieve greater accuracy than a single estimator at the cost of training more models.
-
-### Bootstrap Aggregator
-Bootstrap Aggregation or *bagging* is an ensemble learning technique that trains a set of learners that each specialize on a unique subset of the training set known as a bootstrap set. The final prediction made by the meta-estimator is the averaged prediction returned by the ensemble. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in a [Bootstrap Aggregator](bootstrap-aggregator.md) to form a *forest* of 1000 trees.
-
-```php
-use Rubix\ML\BootstrapAggregator;
-use Rubix\ML\Regressors\RegressionTree;
-
-$estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
-```
-
-### Committee Machine
-[Committee Machine](committee-machine.md) is a voting ensemble consisting of estimators (referred to as *experts*) with user-programmable *influences*. Each expert is trained on the same dataset and the final prediction is based on the contribution of each expert weighted by their influence.
-
-```php
-use Rubix\ML\CommitteeMachine;
-use Rubix\ML\RandomForest;
-new Rubix\ML\SoftmaxClassifier;
-use Rubix\ML\AdaBoost;
-use Rubix\ML\ClassificationTree;
-use Rubix\ML\Backends\Amp;
-
-$estimator = new CommitteeMachine([
-    new RandomForest(),
-    new SoftmaxClassifier(128),
-    new AdaBoost(new ClassificationTree(5), 1.0),
-], [
-    3.0, 1.0, 2.0, // Influences
-]);
-```
-
 ## No Free Lunch Theorem
 At some point you may ask yourself "Why do we need so many different learning algorithms?" The answer to that question can be understood by the [No Free Lunch Theorem](https://en.wikipedia.org/wiki/No_free_lunch_theorem) which states that, when averaged over the space of *all* possible problems, no algorithm performs any better than the next. Perhaps a more useful way of stating NFL is that certain learners perform better at certain tasks and worse in others. This is explained by the fact that all learning algorithms have some prior knowledge inherent in them whether it be via the choice of hyper-parameters or the design of the algorithm itself. Another consequence of No Free Lunch is that there exists no single estimator that performs better for all problems.

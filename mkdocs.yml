@@ -26,6 +26,7 @@ nav:
     - Inference: inference.md
     - Cross-validation: cross-validation.md
     - Hyper-parameter Tuning: hyper-parameter-tuning.md
+    - Model Ensembles: model-ensembles.md
     - Model Persistence: model-persistence.md
   - API Reference:
     - Fundamental Interfaces:
