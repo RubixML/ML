@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Tensor\Vector;
 use Tensor\Matrix;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\NeuralNet\Parameter;
 
 use const Rubix\ML\EPSILON;
@@ -51,6 +53,20 @@ class AdaMax extends Adam
         }
 
         return Vector::quick($c);
+    }
+
+    /**
+     * @param float $rate
+     * @param float $momentumDecay
+     * @param float $normDecay
+     */
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
+    {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
+        }
+
+        parent::__construct($rate, $momentumDecay, $normDecay);
     }
 
     /**
