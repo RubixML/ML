@@ -23,7 +23,7 @@ $predictions = $estimator->predict($dataset);
 print_r($predictions);
 ```
 
-```sh
+```php
 Array
 (
     [0] => cat
@@ -41,7 +41,7 @@ $probabilities = $estimator->proba($dataset);
 print_r($probabilities);
 ```
 
-```sh
+```php
 Array
 (
     [0] => Array
@@ -52,9 +52,9 @@ Array
         )
     [1] => Array
         (
-            [cat] => 3.0
-            [dog] => 6.0
-            [frog] => 1.0
+            [cat] => 0.3
+            [dog] => 0.6
+            [frog] => 0.1
         )
     [2] => Array
         (
@@ -74,7 +74,7 @@ $scores = $estimator->score($dataset);
 print_r($scores);
 ```
 
-```sh
+```php
 Array
 (
     [0] => 0.35033

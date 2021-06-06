@@ -46,7 +46,7 @@ $estimator->setLogger(new Screen());
 $estimator->train($dataset);
 ```
 
-```sh
+```
 [2020-09-04 08:39:04] INFO: Logistic Regression (batch_size: 128, optimizer: Adam (rate: 0.01, momentum_decay: 0.1, norm_decay: 0.001), alpha: 0.0001, epochs: 1000, min_change: 0.0001, window: 5, cost_fn: Cross Entropy) initialized
 [2020-09-04 08:39:04] INFO: Epoch 1 - Cross Entropy: 0.16895133388673
 [2020-09-04 08:39:04] INFO: Epoch 2 - Cross Entropy: 0.16559247705179
@@ -101,9 +101,9 @@ print_r($importances);
 ```sh
 Array
 (
-    [0] => 0.047576266783176
-    [1] => 0.3794817175945
-    [2] => 0.53170249909942
-    [3] => 0.041239516522901
+    [0] => 0.04757
+    [1] => 0.37948
+    [2] => 0.53170
+    [3] => 0.04123
 )
 ```

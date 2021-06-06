@@ -24,7 +24,7 @@ $estimator->setLogger(new Screen('example'));
 $estimator->train($dataset);
 ```
 
-```sh
+```
 [2020-08-05 04:26:11] INFO: Learner init Adaline {batch_size: 128, optimizer: Adam {rate: 0.01, momentum_decay: 0.1, norm_decay: 0.001}, alpha: 0.0001, epochs: 100, min_change: 0.001, window: 5, cost_fn: Huber Loss {alpha: 1}}
 [2020-08-05 04:26:11] INFO: Training started
 [2020-08-05 04:26:11] example.INFO: Epoch 1 - Huber Loss {alpha: 1}: 0.36839299586132
