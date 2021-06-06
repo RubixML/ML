@@ -67,7 +67,7 @@ We can verify that the learner has been trained by calling the `trained()` metho
 var_dump($estimator->trained());
 ```
 
-```sh
+```
 bool(true)
 ```
 
@@ -96,16 +96,17 @@ $dataset = new Unlabeled($samples);
 
 $predictions = $estimator->predict($dataset);
 
-var_dump($predictions);
+print_r($predictions);
 ```
 
-```sh
-array(4) {
-	[0] => 'married'
-	[1] => 'divorced'
-	[2] => 'divorced'
-	[4] => 'married'
-}
+```php
+Array
+(
+    [0] => married
+    [1] => divorced
+    [2] => divorced
+    [3] => married
+)
 ```
 
 The output of the estimator are the predicted class labels of the unknown samples. We could either trust these predictions as-is or we could proceed to further evaluate the model. In the next section, we'll learn how to test its accuracy using a process called cross validation.

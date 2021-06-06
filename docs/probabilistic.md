@@ -10,22 +10,26 @@ public proba(Dataset $dataset) : array
 ```php
 $probabilities = $estimator->proba($dataset);  
 
-var_dump($probabilities);
+print_r($probabilities);
 ```
 
-```sh
-array(2) {
-	[0] => array(2) {
-		['monster'] => 0.975,
-		['not monster'] => 0.025,
-	}
-	[1] => array(2) {
-		['monster'] => 0.2,
-		['not monster'] => 0.8,
-	}
-	[2] => array(2) {
-		['monster'] => 0.6,
-		['not monster'] => 0.4,
-	}
-}
+```php
+Array
+(
+    [0] => Array
+        (
+            [monster] => 0.6
+            [not monster] => 0.4
+        )
+    [1] => Array
+        (
+            [monster] => 0.5
+            [not monster] => 0.5
+        )
+    [2] => Array
+        (
+            [monster] => 0.2
+            [not monster] => 0.8
+        )
+)
 ```

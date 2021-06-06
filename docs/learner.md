@@ -24,6 +24,6 @@ public trained() : bool
 var_dump($estimator->trained());
 ```
 
-```sh
+```
 bool(true)
 ```

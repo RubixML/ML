@@ -10,13 +10,14 @@ public score(Dataset $dataset) : array
 ```php
 $scores = $estimator->score($dataset);
 
-var_dump($scores);
+print_r($scores);
 ```
 
-```sh
-array(3) {
-  [0]=> float(0.35033859096744)
-  [1]=> float(0.40992076925443)
-  [2]=> float(1.68163357834096)
-}
+```php
+Array
+(
+    [0] => 0.35033
+    [1] => 0.40992
+    [2] => 1.68153
+)
 ```

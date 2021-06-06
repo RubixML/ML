@@ -39,7 +39,7 @@ $score = $metric->score($predictions, $testing->labels());
 echo $score;
 ```
 
-```sh
+```
 0.85
 ```
 
@@ -167,7 +167,7 @@ $score = $validator->test($estimator, $dataset, new FBeta());
 echo $score;
 ```
 
-```sh
+```
 0.9175
 ```
 

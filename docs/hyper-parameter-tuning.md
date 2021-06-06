@@ -23,6 +23,10 @@ $score = $metric->score($predictions, $testing->labels());
 echo $score;
 ```
 
+```
+-4.75
+```
+
 ## Hyper-parameter Optimization
 In distinction to manual tuning, Hyper-parameter optimization is an AutoML technique that employs search and meta-learning strategies to explore various algorithm configurations. In Rubix ML, hyper-parameter optimizers are implemented as meta-estimators that wrap a base learner whose hyper-parameters we wish to optimize.
 
@@ -58,7 +62,7 @@ We can also dump the selected hyper-parameters by calling the `params()` method 
 print_r($estimator->base()->params());
 ```
 
-```sh
+```php
 Array
 (
     [k] => 3

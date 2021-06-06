@@ -29,7 +29,7 @@ We can check the number of records that were imported by calling the `numSamples
 echo $dataset->numSamples();
 ```
 
-```sh
+```
 5000
 ```
 
