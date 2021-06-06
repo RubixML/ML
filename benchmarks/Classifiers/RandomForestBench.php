@@ -67,7 +67,7 @@ class RandomForestBench
 
     /**
      * @Subject
-     * @Iterations(3)
+     * @Iterations(5)
      * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
      */
@@ -80,7 +80,7 @@ class RandomForestBench
 
     /**
      * @Subject
-     * @Iterations(3)
+     * @Iterations(5)
      * @BeforeMethods({"setUpCategorical"})
      * @OutputTimeUnit("seconds", precision=3)
      */

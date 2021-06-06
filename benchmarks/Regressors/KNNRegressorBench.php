@@ -43,7 +43,8 @@ class KNNRegressorBench
 
     /**
      * @Subject
-     * @Iterations(1)
+     * @Skip
+     * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
      */
     public function trainPredict() : void

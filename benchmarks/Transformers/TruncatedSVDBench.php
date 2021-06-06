@@ -39,7 +39,7 @@ class TruncatedSVDBench
 
     /**
      * @Subject
-     * @Iterations(3)
+     * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
     public function apply() : void

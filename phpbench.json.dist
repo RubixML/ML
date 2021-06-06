@@ -1,9 +1,8 @@
 {
-    "bootstrap": "vendor/autoload.php",
-    "path": "benchmarks",
-    "time_unit": "seconds",
-    "progress": "blinken",
-    "php_config": {
+    "runner.bootstrap": "vendor/autoload.php",
+    "runner.path": "benchmarks",
+    "runner.progress": "blinken",
+    "runner.php_config": {
         "memory_limit": "-1"
     }
 }

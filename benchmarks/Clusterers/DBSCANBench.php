@@ -39,7 +39,7 @@ class DBSCANBench
 
     /**
      * @Subject
-     * @Iterations(3)
+     * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
      */
     public function predict() : void
