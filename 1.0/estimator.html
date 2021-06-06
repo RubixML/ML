@@ -4160,16 +4160,15 @@
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
-<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>array<span class="o">(</span><span class="m">3</span><span class="o">)</span> <span class="o">{</span>
-  <span class="o">[</span><span class="m">0</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">7</span><span class="o">)</span> <span class="s2">&quot;married&quot;</span>
-  <span class="o">[</span><span class="m">1</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">8</span><span class="o">)</span> <span class="s2">&quot;divorced&quot;</span>
-  <span class="o">[</span><span class="m">2</span><span class="o">]=</span>&gt;
-  string<span class="o">(</span><span class="m">7</span><span class="o">)</span> <span class="s2">&quot;married&quot;</span>
-<span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">married</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">divorced</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">divorced</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">married</span>
+<span class="p">)</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4183,7 +4182,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-06-06
     
   </small>
 </div>
