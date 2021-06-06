@@ -568,8 +568,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cascading-ml" class="md-nav__link">
-    Cascading ML
+  <a href="#model-chaining" class="md-nav__link">
+    Model Chaining
   </a>
   
 </li>
@@ -4162,8 +4162,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cascading-ml" class="md-nav__link">
-    Cascading ML
+  <a href="#model-chaining" class="md-nav__link">
+    Model Chaining
   </a>
   
 </li>
@@ -4213,16 +4213,17 @@
     <span class="k">new</span> <span class="nx">SoftmaxClassifier</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
     <span class="k">new</span> <span class="nx">AdaBoost</span><span class="p">(),</span>
 <span class="p">],</span> <span class="p">[</span>
-    <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="c1">// Influence scores</span>
+    <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span>
 <span class="p">]);</span>
 </code></pre></div>
-<h2 id="cascading-ml">Cascading ML<a class="headerlink" href="#cascading-ml" title="Permanent link">#</a></h2>
-<p>Another type of ensemble learning is a form that uses the predictions of one or more estimators as input features to other downstream estimators. For example, if our task was to predict if we should give a customer a loan or not, we could first predict the customer's credit score and then feed the score as a new feature to our loan classifier. We can use the <a href="transformers/lambda-function.html">Lambda Function</a> transformer and a custom callback to add the new feature to the training set after their values have been predicted. The callback accepts three arguments - the current sample passed by reference, the current row offset in the dataset, and a context variable containing the credit scores.</p>
+<h2 id="model-chaining">Model Chaining<a class="headerlink" href="#model-chaining" title="Permanent link">#</a></h2>
+<p>Model chaining is a form of ensemble learning that uses the predictions of one or more estimators as the input features to other downstream estimators. For example, if our task was to predict if we should give a customer a loan or not, we could first predict the customer's credit score and then add it to the original features for the loan classifier to train and infer on. We can use the <a href="transformers/lambda-function.html">Lambda Function</a> transformer with a custom callback function to add the new feature to the training set after their values have been predicted. The callback accepts three arguments - the current sample passed by reference, the current row offset in the dataset, and a context variable which we'll use to store the predicted credit scores.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Regressors\KDNeighborsRegressor</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\LambdaFunction</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\ExtraTreeClassifier</span><span class="p">;</span>
 
-<span class="nv">$creditScoreEstimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">KDNeighborsRegressor</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="nv">$creditScoreEstimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">KDNeighborsRegressor</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 
 <span class="nv">$creditScoreEstimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
@@ -4234,12 +4235,12 @@
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">LambdaFunction</span><span class="p">(</span><span class="nv">$addFeature</span><span class="p">,</span> <span class="nv">$creditScores</span><span class="p">));</span>
 
-<span class="nv">$loanApprovalEstimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RandomForest</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span>
+<span class="nv">$loanApprovalEstimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RandomForest</span><span class="p">(</span><span class="k">new</span> <span class="nx">ExtraTreeClassifier</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="mi">300</span><span class="p">);</span>
 
 <span class="nv">$loanApprovalEstimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="model-orchestra">Model Orchestra<a class="headerlink" href="#model-orchestra" title="Permanent link">#</a></h2>
-<p>When you combine cascading with committee voting you get a technique referred to as <em>stacking</em>. Unlike the <a href="committee-machine.html">Committee Machine</a> meta-estimator, which relies on a priori knowledge of the estimator influences, stacking aims to learn the influence scores automatically bu using another model. We introduce the orchestra pattern for implementing a stacked model ensemble. The complete model consists of three <a href="probabilistic.html">Probabilistic</a> classifiers referred to as the <em>orchestra</em> and a <em>conductor</em> that makes the final prediction by training on the probabilities outputted by the orchestra. A key step to this process is to separate the training set into two sets so that we can do a second optimization over the second dataset to determine the model influences. We can vary the amount of data used to train each layer of the model by changing the proportion argument to the <code>stratifiedSplit()</code> method. For this example, we'll choose to use half of the data to train the orchestra and half to train the conductor.</p>
+<p>When you combine chaining with model averaging you get a technique referred to as <em>stacking</em>. Unlike the <a href="committee-machine.html">Committee Machine</a> meta-estimator, which relies on a priori knowledge of the estimator influences, stacking aims to learn the influence scores automatically bu using another model. We introduce the orchestra pattern for implementing a stacked model ensemble. The complete model consists of three <a href="probabilistic.html">Probabilistic</a> classifiers referred to as the <em>orchestra</em> and a <em>conductor</em> that makes the final prediction by training on the probabilities outputted by the orchestra. A key step to this process is to separate the training set into two sets so that we can do a second optimization over the second dataset to determine the model influences. We can vary the amount of data used to train each layer of the model by changing the proportion argument to the <code>stratifiedSplit()</code> method. For this example, we'll choose to use half of the data to train the orchestra and half to train the conductor.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\GaussianNB</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\AdaBoost</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\KDNeighbors</span><span class="p">;</span>
