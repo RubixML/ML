@@ -9,6 +9,8 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\NeuralNet\Parameter;
 
+use function get_class;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -87,13 +89,11 @@ class AdaMax extends Adam
 
         $norm = $norm->multiply(1.0 - $this->normDecay);
 
-        $norm = static::maximum($norm, $gradient->abs());
+        $norm = $class::maximum($norm->multiply($this->beta2), $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        $norm = $norm->clipLower(EPSILON);
-
-        return $velocity->divide($norm)->multiply($this->rate);
+        return $velocity->divide($norm->clipLower(EPSILON))->multiply($this->rate);
     }
 
     /**
@@ -103,7 +103,7 @@ class AdaMax extends Adam
      */
     public function __toString() : string
     {
-        return "AdaMax (rate: {$this->rate}, momentum decay: {$this->momentumDecay},"
-            . " norm decay: {$this->normDecay})";
+        return "AdaMax (rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
+            . " norm_decay: {$this->normDecay})";
     }
 }
