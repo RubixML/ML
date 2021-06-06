@@ -4276,12 +4276,12 @@
 
 <span class="nb">print_r</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Array
-<span class="o">(</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; cat
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; dog
-    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; frog
-<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">cat</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">dog</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">frog</span>
+<span class="p">)</span>
 </code></pre></div>
 <h2 id="estimation-of-probabilities">Estimation of Probabilities<a class="headerlink" href="#estimation-of-probabilities" title="Permanent link">#</a></h2>
 <p>Sometimes, you may want to know how <em>certain</em> the model is about a particular outcome. Classifiers and clusterers that implement the <a href="probabilistic.html">Probabilistic</a> interface have the <code>proba()</code> method that computes the joint probability estimates for each class or cluster number as shown in the example below.</p>
@@ -4289,27 +4289,27 @@
 
 <span class="nb">print_r</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Array
-<span class="o">(</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; Array
-        <span class="o">(</span>
-            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.6
-            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.4
-            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
-        <span class="o">)</span>
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; Array
-        <span class="o">(</span>
-            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">3</span>.0
-            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">6</span>.0
-            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.0
-        <span class="o">)</span>
-    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; Array
-        <span class="o">(</span>
-            <span class="o">[</span>cat<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
-            <span class="o">[</span>dog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.0
-            <span class="o">[</span>frog<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.0
-        <span class="o">)</span>
-<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">cat</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.6</span>
+            <span class="p">[</span><span class="nx">dog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.4</span>
+            <span class="p">[</span><span class="nx">frog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">cat</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">3.0</span>
+            <span class="p">[</span><span class="nx">dog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">6.0</span>
+            <span class="p">[</span><span class="nx">frog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">1.0</span>
+        <span class="p">)</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">Array</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">cat</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.0</span>
+            <span class="p">[</span><span class="nx">dog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.0</span>
+            <span class="p">[</span><span class="nx">frog</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">1.0</span>
+        <span class="p">)</span>
+<span class="p">)</span>
 </code></pre></div>
 <h2 id="anomaly-scores">Anomaly Scores<a class="headerlink" href="#anomaly-scores" title="Permanent link">#</a></h2>
 <p>Anomaly detectors that implement the <a href="scoring.html">Scoring</a> interface can output the anomaly scores assigned to the samples in a dataset. Anomaly scores are useful for attaining the degree of anomalousness for a sample relative to other samples. Higher anomaly scores equate to greater abnormality whereas low scores are typical of normal samples.</p>
@@ -4317,12 +4317,12 @@
 
 <span class="nb">print_r</span><span class="p">(</span><span class="nv">$scores</span><span class="p">);</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Array
-<span class="o">(</span>
-    <span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.35033
-    <span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">0</span>.40992
-    <span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span>&gt; <span class="m">1</span>.68153
-<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.35033</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">0.40992</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">1.68153</span>
+<span class="p">)</span>
 </code></pre></div>
                 
                   
