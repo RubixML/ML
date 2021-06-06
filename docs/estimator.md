@@ -10,18 +10,17 @@ public predict(Dataset $dataset) : array
 ```php
 $predictions = $estimator->predict($dataset);
 
-var_dump($predictions);
+print_r($predictions);
 ```
 
-```sh
-array(3) {
-  [0]=>
-  string(7) "married"
-  [1]=>
-  string(8) "divorced"
-  [2]=>
-  string(7) "married"
-}
+```php
+Array
+(
+    [0] => married
+    [1] => divorced
+    [2] => divorced
+    [3] => married
+)
 ```
 
 !!! note
