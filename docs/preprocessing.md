@@ -1,5 +1,5 @@
 # Preprocessing
-Sometimes, one or more preprocessing steps may need to be taken before handing your dataset off to a Learner. In some cases your data may not be in the correct format and in others you may want to process the data to improve the quality.
+Sometimes, one or more preprocessing steps may need to be taken before handing a dataset off to a Learner. In some cases, data may not be in the correct format and in others you may want to process the data to aid in training.
 
 ## Transformers
 [Transformers](transformers/api.md) are objects that perform various preprocessing steps to the samples in a dataset. They take a dataset object as input and transform it in place. [Stateful](transformers/api.md#stateful) transformers are a type of transformer that must be *fitted* to a dataset. Fitting a dataset to a transformer is much like training a learner but in the context of preprocessing rather than inference. After fitting a stateful transformer, it will expect the features to be present in the same order when transforming subsequent datasets. A few transformers are *supervised* meaning they must be fitted with a [Labeled](datasets/labeled.md) dataset. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting.
@@ -90,14 +90,14 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [t-SNE](transformers/t-sne.md) | | | |
 
 ### Feature Expansion
-Feature expansion aims to derive additional features in order to add flexibility to a model by appending more degrees of freedom to the dataset.
+Feature expansion aims to add flexibility to a model by deriving additional features from a dataset. It can be thought of as the opposite of dimensionality reduction.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
 | [Polynomial Expander](transformers/polynomial-expander.md) | | | |
 
 ### Imputation
-Imputation is a technique for handling missing values in your dataset by replacing them with a pretty good guess.
+Imputation is a technique for handling missing values in a dataset by replacing them with a pretty good guess.
 
 | Transformer | Compatibility | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|---|
@@ -127,7 +127,7 @@ These transformers operate on the high-level image data type.
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
-In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom dataset transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, we'll use write a callback to *binarize* the continuous features just at column offset 3.
+In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom data transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, let's write a callback to *binarize* the continuous features just at column offset 3 of the dataset.
 
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
@@ -139,21 +139,21 @@ $binarize = function (&$sample) {
 $dataset->apply(new LambdaFunction($binarize));
 ```
 
-Another thing we can do is use the Lambda Function transformer to perform a categorical *feature cross* between two feature columns of the dataset. A cross feature is a higher-order feature that represents the presence of two or more features simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own feature. We'll choose to represent the new feature as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories to represent the new feature as well.
+Another technique we can employ using the Lambda Function transformer is to perform a categorical *feature cross* between two feature columns of a dataset. A cross feature is a higher-order feature that represents the presence of two or more features simultaneously. For example, we may want to represent the combination of someone's gender and education level as it's own feature. We'll choose to represent the new feature as a [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) hash to save on memory and storage but you could just concatenate both categories to represent the new feature as well.
 
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
 use function hash;
 
 $crossFeatures = function (&$sample) {
-    $sample[] = hash('crc32b', "$sample[6] and $sample[7]");
+    $sample[] = hash('crc32b', "{$sample[6]} and {$sample[7]}");
 };
 
 $dataset->apply(new LambdaFunction($crossFeatures));
 ```
 
 ## Advanced Preprocessing
-In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we are able to extract only certain features, preprocess them, and then join them to another set of features. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformations to the dataset after that.
+In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we can extract a certain set of features, preprocess them, and then join them with the rest of the dataset later. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformations to the joined dataset after that.
 
 ```php
 use Rubix\ML\Dataset\Labeled;
@@ -268,4 +268,3 @@ $dataset->deduplicate();
 
 !!! note
     The O(N^2) time complexity of de-duplication may be prohibitive for large datasets.
-
