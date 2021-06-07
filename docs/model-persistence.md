@@ -22,17 +22,25 @@ $estimator = $serializer->deserialize($encoding);
     Due to a limitation in PHP, anonymous classes and functions (*closures*) are not able to be deserialized. Therefore, avoid anonymous classes or functions if you intend to persist the model.
 
 ## Persistent Model Meta-estimator
-The persistence subsystem can be interfaces at a low level with Serializer and Persister objects or it can be interacted with at a higher level using the [Persistent Model](persistent-model.md) meta-estimator. It is a decorator that provides `save()` and `load()` methods giving the estimator the ability to save and load itself.
+The persistence subsystem can be interfaced at a low level with Serializer and Persister objects or it can be interacted with at a higher level using the [Persistent Model](persistent-model.md) meta-estimator. It is a decorator that provides `save()` and `load()` methods giving the estimator the ability to save and load itself.
+
+```php
+use Rubix\ML\PersistentModel;
+use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Persisters\Filesystem;
+
+$estimator = new PersistentModel(new KMeans(5), new Filesystem('example.rbx'));
+
+$estimator->train($dataset);
+
+$estimator->save();
+```
 
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 
 $estimator = PersistentModel::load(new Filesystem('example.rbx'));
-
-// Do something
-
-$estimator->save();
 ```
 
 ## Persisting Transformers
