@@ -2,13 +2,15 @@
 Ensemble learning is when multiple estimators are used together to form the prediction of a sample. Model ensembles can consist of multiple variations of the same estimator, a heterogeneous mix of estimators of the same type, or even a mix of different estimator types.
 
 ## Bootstrap Aggregator
-Bootstrap Aggregation or *bagging* is a technique that trains multiple clones of the same estimator that each specialize on a subset of the training set known as a bootstrap set. The final prediction is the averaged prediction returned by the ensemble. By averaging, we can often achieve greater accuracy than a single estimator at the cost of training more models. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in the [Bootstrap Aggregator](bootstrap-aggregator.md) meta-estimator to form a *forest* of 1,000 trees.
+Bootstrap Aggregation or *bagging* is a technique that trains multiple clones of the same estimator that each specialize on a subset of the training set known as a bootstrap set. The final prediction is the averaged prediction returned by the ensemble. By averaging, we can often achieve greater accuracy than a single estimator at the cost of training more models. In the example below, we'll wrap a [Regression Tree](regressors/regression-tree.md) in the [Bootstrap Aggregator](bootstrap-aggregator.md) meta-estimator to form a *forest* of 1,000 trees. Calling the `train()` method will train the ensemble and afterward the meta-estimator can be used to make predictions like a regular estimator.
 
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(5), 1000);
+
+$estimator->train($dataset);
 ```
 
 ## Committee Machine
