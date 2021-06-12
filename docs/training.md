@@ -84,7 +84,7 @@ $estimator->train($dataset);
 ```
 
 ## Feature Importances
-Learners that implement the [Ranks Features](ranks-features.md) interface can evaluate the importance of each feature in the training set. Feature importances are defined as the degree to which an individual feature influences the model. Feature importances are useful for feature selection and for helping to explain predictions derived from a model. To output the normalized importance scores, call the `featureImportances()` method of a trained learner that implements the Ranks Features interface. In the example below, we'll sort the importances array so that we can easily see which features are most influential.
+Learners that implement the [Ranks Features](ranks-features.md) interface can evaluate the importance of each feature in the training set. Feature importances are defined as the degree to which an individual feature influences the model. Feature importances are useful for feature selection and for helping to explain predictions derived from a model. To output the importance scores, call the `featureImportances()` method of a trained learner that implements the Ranks Features interface.
 
 ```php
 use Rubix\ML\Regressors\Ridge;
