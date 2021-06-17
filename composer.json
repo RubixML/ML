@@ -37,7 +37,7 @@
         "ext-json": "*",
         "amphp/parallel": "^1.3",
         "psr/log": "^1.1",
-        "rubix/tensor": "^3.0",
+        "scienide/tensor": "^3.0",
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/polyfill-php80": "^1.17",
         "wamania/php-stemmer": "^2.0"

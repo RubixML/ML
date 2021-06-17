@@ -1,5 +1,5 @@
 - 1.1.0
-    - Update to Tensor 3.0
+    - Update to Scienide Tensor 3.0
     - Added Nesterov's lookahead to Momentum Optimizer
     - Added Reversible transformer interface
     - MaxAbs, Z Score, and Robust scalers are now Reversible
