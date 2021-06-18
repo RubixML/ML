@@ -88,6 +88,7 @@ nav:
       - Seeders:
         - K-MC2: clusterers/seeders/k-mc2.md
         - Plus Plus: clusterers/seeders/plus-plus.md
+        - Preset: clusterers/seeders/preset.md
         - Random: clusterers/seeders/random.md
       - DBSCAN: clusterers/dbscan.md
       - Fuzzy C Means: clusterers/fuzzy-c-means.md

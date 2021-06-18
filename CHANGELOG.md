@@ -5,6 +5,7 @@
     - MaxAbs, Z Score, and Robust scalers are now Reversible
     - Min Max Normalizer now implements Reversible
     - TF-IDF Transformer is now Reversible
+    - Added Preset cluster seeder
 
 1.0.2
     - Fix KNN and Hot Deck imputer reset donor samples
