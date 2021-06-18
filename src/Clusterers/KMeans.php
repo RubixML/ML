@@ -159,7 +159,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
