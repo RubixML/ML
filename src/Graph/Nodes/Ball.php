@@ -41,7 +41,7 @@ class Ball implements BinaryNode, Hypersphere
     /**
      * The left and right splits of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @var list<\Rubix\ML\Datasets\Labeled>
      */
     protected array $groups = [
         //
@@ -124,7 +124,7 @@ class Ball implements BinaryNode, Hypersphere
     /**
      * Return the left and right splits of the training data.
      *
-     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @return list<\Rubix\ML\Datasets\Labeled>
      */
     public function groups() : array
     {
