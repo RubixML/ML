@@ -1,5 +1,5 @@
 1.0.3
-    - Fix uninitialized node properties on deserialization
+    - Do not remove `groups` property from symbol table
 
 1.0.2
     - Fix KNN and Hot Deck imputer reset donor samples
