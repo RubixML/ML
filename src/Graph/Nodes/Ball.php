@@ -43,9 +43,7 @@ class Ball implements BinaryNode, Hypersphere
      *
      * @var list<\Rubix\ML\Datasets\Labeled>
      */
-    protected array $groups = [
-        //
-    ];
+    protected array $groups;
 
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.
@@ -146,6 +144,6 @@ class Ball implements BinaryNode, Hypersphere
      */
     public function cleanup() : void
     {
-        unset($this->groups);
+        $this->groups = [];
     }
 }

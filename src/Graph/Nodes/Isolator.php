@@ -42,9 +42,7 @@ class Isolator implements BinaryNode
      *
      * @var list<\Rubix\ML\Datasets\Dataset>
      */
-    protected array $groups = [
-        //
-    ];
+    protected array $groups;
 
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.
@@ -124,6 +122,6 @@ class Isolator implements BinaryNode
      */
     public function cleanup() : void
     {
-        unset($this->groups);
+        $this->groups = [];
     }
 }

@@ -38,9 +38,7 @@ class Split implements Decision
      *
      * @var list<\Rubix\ML\Datasets\Labeled>
      */
-    protected array $groups = [
-        //
-    ];
+    protected array $groups;
 
     /**
      * The amount of impurity that the split introduces.
@@ -148,6 +146,6 @@ class Split implements Decision
      */
     public function cleanup() : void
     {
-        unset($this->groups);
+        $this->groups = [];
     }
 }
