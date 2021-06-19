@@ -43,7 +43,9 @@ class Box implements BinaryNode, Hypercube
      *
      * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected array $groups;
+    protected array $groups = [
+        //
+    ];
 
     /**
      * The minimum vector containing all the points.

@@ -38,7 +38,9 @@ class Split implements Decision
      *
      * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected array $groups;
+    protected array $groups = [
+        //
+    ];
 
     /**
      * The amount of impurity that the split introduces.

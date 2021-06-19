@@ -42,7 +42,9 @@ class Isolator implements BinaryNode
      *
      * @var array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
-    protected array $groups;
+    protected array $groups = [
+        //
+    ];
 
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.

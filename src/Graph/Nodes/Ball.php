@@ -43,7 +43,9 @@ class Ball implements BinaryNode, Hypersphere
      *
      * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected array $groups;
+    protected array $groups = [
+        //
+    ];
 
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.

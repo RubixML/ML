@@ -1,3 +1,6 @@
+1.0.3
+    - Fix uninitialized node properties on deserialization
+
 1.0.2
     - Fix KNN and Hot Deck imputer reset donor samples
 
