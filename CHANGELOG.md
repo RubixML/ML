@@ -7,6 +7,9 @@
     - TF-IDF Transformer is now Reversible
     - Added Preset cluster seeder
 
+1.0.3
+    - Do not remove `groups` property from symbol table
+
 1.0.2
     - Fix KNN and Hot Deck imputer reset donor samples
 
