@@ -51,7 +51,7 @@ class ColumnPicker implements Extractor
     public function getIterator() : Generator
     {
         foreach ($this->iterator as $i => $record) {
-            $row = [];
+            $picked = [];
 
             foreach ($this->columns as $column) {
                 if (!isset($record[$column])) {
@@ -59,10 +59,10 @@ class ColumnPicker implements Extractor
                         . " at row offset $i.");
                 }
 
-                $row[$column] = $record[$column];
+                $picked[$column] = $record[$column];
             }
 
-            yield $row;
+            yield $picked;
         }
     }
 }

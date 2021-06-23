@@ -6,6 +6,7 @@
     - Min Max Normalizer now implements Reversible
     - TF-IDF Transformer is now Reversible
     - Added Preset cluster seeder
+    - Added Concatenator extractor
 
 1.0.3
     - Do not remove `groups` property from symbol table
