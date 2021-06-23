@@ -71,7 +71,7 @@ class Preset implements Seeder
     {
         DatasetHasDimensionality::with($dataset, $this->dimensions)->check();
 
-        if (count($this->centroids) < $k) {
+        if ($k > count($this->centroids)) {
             throw new RuntimeException('Not enough presets'
                 . " to generate $k centroids.");
         }
