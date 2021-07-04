@@ -74,8 +74,8 @@ class SVCTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [1.0, 3.0, 0.3]),
-            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
+            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
         ], [0.45, 0.55]);
 
         $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);

@@ -1,4 +1,4 @@
-# Rubix: Machine Learning for PHP
+# Rubix ML
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
