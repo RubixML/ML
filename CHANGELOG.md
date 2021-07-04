@@ -1,3 +1,6 @@
+- 1.2.0
+    - Added Logit Boost classifier
+
 - 1.1.0
     - Update to Scienide Tensor 3.0
     - Added Nesterov's lookahead to Momentum Optimizer
