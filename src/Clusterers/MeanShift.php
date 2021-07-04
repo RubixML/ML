@@ -197,7 +197,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " between 0 and 1, $ratio given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }

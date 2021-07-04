@@ -51,20 +51,6 @@ class Adam implements Optimizer, Adaptive
     protected float $normDecay;
 
     /**
-     * The opposite of the momentum decay.
-     *
-     * @var float
-     */
-    protected float $beta1;
-
-    /**
-     * The opposite of the norm decay.
-     *
-     * @var float
-     */
-    protected float $beta2;
-
-    /**
      * The parameter cache of running velocity and squared gradients.
      *
      * @var array[]
@@ -72,13 +58,6 @@ class Adam implements Optimizer, Adaptive
     protected array $cache = [
         //
     ];
-
-    /**
-     * The number of steps taken since initialization.
-     *
-     * @var int
-     */
-    protected int $t = 0;
 
     /**
      * @param float $rate
@@ -106,8 +85,6 @@ class Adam implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
-        $this->beta1 = 1.0 - $momentumDecay;
-        $this->beta2 = 1.0 - $normDecay;
     }
 
     /**
@@ -139,10 +116,10 @@ class Adam implements Optimizer, Adaptive
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply($this->beta1)
+        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $norm = $norm->multiply($this->beta2)
+        $norm = $norm->multiply(1.0 - $this->normDecay)
             ->add($gradient->square()->multiply($this->normDecay));
 
         $this->cache[$param->id()] = [$velocity, $norm];

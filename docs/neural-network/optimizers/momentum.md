@@ -8,13 +8,15 @@ Momentum accelerates each update step by accumulating velocity from past updates
 |---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the accumulated velocity. |
+| 3 | lookahead | false | bool | Should we employ Nesterov's lookahead (NAG) when updating the parameters? |
 
 ## Example
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
-$optimizer = new Momentum(0.001, 0.2);
+$optimizer = new Momentum(0.01, 0.1, true);
 ```
 
 ## References
 [^1]: D. E. Rumelhart et al. (1988). Learning representations by back-propagating errors.
+[^2]: I. Sutskever et al. (2013). On the importance of initialization and momentum in deep learning.

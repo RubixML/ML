@@ -27,7 +27,7 @@ class MomentumTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->optimizer = new Momentum(0.001, 0.1);
+        $this->optimizer = new Momentum(0.001, 0.1, false);
     }
 
     /**

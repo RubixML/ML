@@ -2,13 +2,15 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use Rubix\ML\Persistable;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Reversible;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
@@ -45,12 +47,14 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
+        $this->assertInstanceOf(Reversible::class, $this->transformer);
+        $this->assertInstanceOf(Persistable::class, $this->transformer);
     }
 
     /**
      * @test
      */
-    public function fitUpdateTransform() : void
+    public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -70,15 +74,23 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertCount(3, $variances);
         $this->assertContainsOnly('float', $variances);
 
-        $sample = $this->generator->generate(1)
-            ->apply($this->transformer)
-            ->sample(0);
+        $dataset = $this->generator->generate(1);
+
+        $original = $dataset->sample(0);
+
+        $dataset->apply($this->transformer);
+
+        $sample = $dataset->sample(0);
 
         $this->assertCount(3, $sample);
 
         $this->assertEqualsWithDelta(0, $sample[0], 6);
         $this->assertEqualsWithDelta(0, $sample[1], 6);
         $this->assertEqualsWithDelta(0, $sample[2], 6);
+
+        $dataset->reverseApply($this->transformer);
+
+        $this->assertEquals($original, $dataset->sample(0));
     }
 
     /**

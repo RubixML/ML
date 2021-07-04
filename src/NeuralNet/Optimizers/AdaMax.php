@@ -3,9 +3,11 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
+use Tensor\Vector;
+use Tensor\Matrix;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\NeuralNet\Parameter;
-
-use function get_class;
 
 use const Rubix\ML\EPSILON;
 
@@ -24,6 +26,50 @@ use const Rubix\ML\EPSILON;
 class AdaMax extends Adam
 {
     /**
+     * Return the element-wise maximum of two tensors.
+     *
+     * @param \Tensor\Tensor $a
+     * @param \Tensor\Tensor $b
+     * @return \Tensor\Tensor
+     */
+    protected static function maximum(Tensor $a, Tensor $b) : Tensor
+    {
+        if ($a instanceof Matrix and $b instanceof Matrix) {
+            $c = [];
+
+            foreach ($a as $i => $valueA) {
+                $c[] = static::maximum($valueA, $b[$i])->asArray();
+            }
+
+            return Matrix::quick($c);
+        }
+
+        $bHat = $b->asArray();
+
+        $c = [];
+
+        foreach ($a as $i => $valueA) {
+            $c[] = (float) max($valueA, $bHat[$i]);
+        }
+
+        return Vector::quick($c);
+    }
+
+    /**
+     * @param float $rate
+     * @param float $momentumDecay
+     * @param float $normDecay
+     */
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
+    {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
+        }
+
+        parent::__construct($rate, $momentumDecay, $normDecay);
+    }
+
+    /**
      * Calculate a gradient descent step for a given parameter.
      *
      * @internal
@@ -36,16 +82,18 @@ class AdaMax extends Adam
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply($this->beta1)
+        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $class = get_class($param->param());
+        $norm = $norm->multiply(1.0 - $this->normDecay);
 
-        $norm = $class::maximum($norm->multiply($this->beta2), $gradient->abs());
+        $norm = static::maximum($norm, $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        return $velocity->divide($norm->clipLower(EPSILON))->multiply($this->rate);
+        $norm = $norm->clipLower(EPSILON);
+
+        return $velocity->divide($norm)->multiply($this->rate);
     }
 
     /**

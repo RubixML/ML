@@ -159,7 +159,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 . " greater than 0, $smoothing given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }

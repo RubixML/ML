@@ -6,6 +6,7 @@ use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Extractors\Writable;
+use Rubix\ML\Transformers\Reversible;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -286,6 +287,26 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
         }
 
         $transformer->transform($this->samples);
+
+        return $this;
+    }
+
+    /**
+     * Reverse a transformation that was applied to the dataset.
+     *
+     * @param \Rubix\ML\Transformers\Reversible $transformer
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return static
+     */
+    public function reverseApply(Reversible $transformer) : self
+    {
+        if ($transformer instanceof Stateful) {
+            if (!$transformer->fitted()) {
+                throw new RuntimeException('Transformer has not been fitted.');
+            }
+        }
+
+        $transformer->reverseTransform($this->samples);
 
         return $this;
     }

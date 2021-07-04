@@ -35,7 +35,7 @@ use function log;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
+class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Persistable
 {
     use AutotrackRevisions;
 
@@ -197,6 +197,31 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Persistable
                     }
 
                     $value *= $this->idfs[$column];
+                }
+            }
+        }
+    }
+
+    /**
+     * Perform the reverse transformation to the samples.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        if ($this->idfs === null) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        foreach ($samples as &$sample) {
+            foreach ($sample as $column => &$value) {
+                if ($value > 0) {
+                    $value /= $this->idfs[$column];
+
+                    if ($this->dampening) {
+                        $value = exp($value - 1.0);
+                    }
                 }
             }
         }
