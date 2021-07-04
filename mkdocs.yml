@@ -42,7 +42,7 @@ nav:
     - Extractors:
       - API Reference: extractors/api.md
       - Column Picker: extractors/column-picker.md
-      - Concatenator: extractor/concatenator.md
+      - Concatenator: extractors/concatenator.md
       - CSV: extractors/csv.md
       - NDJSON: extractors/ndjson.md
       - SQL Table: extractors/sql-table.md
