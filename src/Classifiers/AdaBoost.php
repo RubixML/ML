@@ -383,21 +383,23 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break;
             }
 
-            $step = exp($influence);
+            if ($epoch < $this->estimators) {
+                $step = exp($influence);
 
-            foreach ($predictions as $i => $prediction) {
-                if ($prediction != $labels[$i]) {
-                    $weights[$i] *= $step;
+                foreach ($predictions as $i => $prediction) {
+                    if ($prediction != $labels[$i]) {
+                        $weights[$i] *= $step;
+                    }
                 }
+
+                $total = array_sum($weights) ?: EPSILON;
+
+                foreach ($weights as &$weight) {
+                    $weight /= $total;
+                }
+
+                $prevLoss = $loss;
             }
-
-            $total = array_sum($weights) ?: EPSILON;
-
-            foreach ($weights as &$weight) {
-                $weight /= $total;
-            }
-
-            $prevLoss = $loss;
         }
 
         if ($this->logger) {

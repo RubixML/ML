@@ -80,8 +80,8 @@ class LogisticRegressionTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [1.0, 3.0, 0.3]),
-            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
+            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
         ], [0.45, 0.55]);
 
         $this->estimator = new LogisticRegression(100, new Adam(0.01), 1e-4, 300, 1e-4, 5, new CrossEntropy());
@@ -149,7 +149,6 @@ class LogisticRegressionTest extends TestCase
             'min change' => 1e-4,
             'window' => 5,
             'cost fn' => new CrossEntropy(),
-
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
