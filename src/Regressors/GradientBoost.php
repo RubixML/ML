@@ -405,17 +405,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
+            $booster = clone $this->booster;
+
             $gradient = $target->subtract($out);
 
             $training = Labeled::quick($training->samples(), $gradient->asArray());
 
-            $booster = clone $this->booster;
-
             $subset = $training->randomSubset($p);
 
             $booster->train($subset);
-
-            $this->ensemble[] = $booster;
 
             /** @var list<int|float> $predictions */
             $predictions = $booster->predict($training);
@@ -435,6 +433,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
 
             $this->losses[$epoch] = $loss;
+
+            $this->ensemble[] = $booster;
 
             if (isset($prevPred)) {
                 /** @var list<int|float> $predictions */
@@ -483,13 +483,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break;
             }
 
-            $prevOut = $out;
-            $prevLoss = $loss;
+            if ($epoch < $this->estimators) {
+                $prevOut = $out;
+                $prevLoss = $loss;
+            }
         }
 
-        if ($this->scores and end($this->scores) < $bestScore) {
+        if ($this->scores and end($this->scores) <= $bestScore) {
             if ($this->logger) {
-                $this->logger->info("Restoring ensemble state to epoch $bestEpoch");
+                $this->logger->info("Restoring model state to epoch $bestEpoch");
             }
 
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
@@ -548,10 +550,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
         }
 
-        $estimators = count($this->ensemble);
+        $numEstimators = count($this->ensemble);
 
         foreach ($importances as &$importance) {
-            $importance /= $estimators;
+            $importance /= $numEstimators;
         }
 
         return $importances;
