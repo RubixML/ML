@@ -763,6 +763,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../../extractors/concatenator.html" class="md-nav__link">
+        Concatenator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../extractors/csv.html" class="md-nav__link">
         CSV
       </a>
@@ -1395,6 +1407,18 @@
     <li class="md-nav__item">
       <a href="../../clusterers/seeders/plus-plus.html" class="md-nav__link">
         Plus Plus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clusterers/seeders/preset.html" class="md-nav__link">
+        Preset
       </a>
     </li>
   
@@ -4257,12 +4281,19 @@
 <td>float</td>
 <td>The decay rate of the accumulated velocity.</td>
 </tr>
+<tr>
+<td>3</td>
+<td>lookahead</td>
+<td>false</td>
+<td>bool</td>
+<td>Should we employ Nesterov's lookahead (NAG) when updating the parameters?</td>
+</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Optimizers\Momentum</span><span class="p">;</span>
 
-<span class="nv">$optimizer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Momentum</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+<span class="nv">$optimizer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Momentum</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
 <div class="footnote">
@@ -4270,6 +4301,9 @@
 <ol>
 <li id="fn:1">
 <p>D. E. Rumelhart et al. (1988). Learning representations by back-propagating errors.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>I. Sutskever et al. (2013). On the importance of initialization and momentum in deep learning.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -4281,7 +4315,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-03
+      Last update: 2021-07-03
     
   </small>
 </div>

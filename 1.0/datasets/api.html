@@ -763,6 +763,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../extractors/concatenator.html" class="md-nav__link">
+        Concatenator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../extractors/csv.html" class="md-nav__link">
         CSV
       </a>
@@ -1561,6 +1573,18 @@
     <li class="md-nav__item">
       <a href="../clusterers/seeders/plus-plus.html" class="md-nav__link">
         Plus Plus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clusterers/seeders/preset.html" class="md-nav__link">
+        Preset
       </a>
     </li>
   
@@ -4588,6 +4612,19 @@
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">RobustStandardizer</span><span class="p">);</span>
 </code></pre></div>
+<p>To reverse the transformation, pass a <a href="api.html#reversible">Reversible</a> transformer to the dataset objects <code>reverseApply()</code> method.
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">apply</span><span class="p">(</span><span class="nx">Reversible</span> <span class="nv">$transformer</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\MaxAbsoluteScaler</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MaxAbsoluteScaler</span><span class="p">();</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+
+<span class="c1">// Do something</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">reverseApply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+</code></pre></div>
 <h2 id="mapping-and-filtering">Mapping and Filtering<a class="headerlink" href="#mapping-and-filtering" title="Permanent link">#</a></h2>
 <p>Map a callback function over the records of the dataset and return the result in a new dataset object:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">map</span><span class="p">(</span><span class="nx">callable</span> <span class="nv">$callback</span><span class="p">)</span> <span class="o">:</span> <span class="nx">self</span> 
@@ -4704,7 +4741,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-06-06
+      Last update: 2021-07-03
     
   </small>
 </div>

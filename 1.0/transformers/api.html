@@ -763,6 +763,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../extractors/concatenator.html" class="md-nav__link">
+        Concatenator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../extractors/csv.html" class="md-nav__link">
         CSV
       </a>
@@ -1405,6 +1417,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../clusterers/seeders/preset.html" class="md-nav__link">
+        Preset
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../clusterers/seeders/random.html" class="md-nav__link">
         Random
       </a>
@@ -1775,6 +1799,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reversible" class="md-nav__link">
+    Reversible
+  </a>
   
 </li>
       
@@ -4261,6 +4292,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#reversible" class="md-nav__link">
+    Reversible
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4332,6 +4370,16 @@
 
 <span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$folds</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
 </code></pre></div>
+<h2 id="reversible">Reversible<a class="headerlink" href="#reversible" title="Permanent link">#</a></h2>
+<p>Transformers that implement the Reversible interface can reverse the transformation applied to a dataset. To apply the reverse transform to a dataset call the <code>reverseApply()</code> method on the dataset object and pass it the reversible transformer.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">();</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+
+<span class="c1">// Do something</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">reverseApply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+</code></pre></div>
                 
                   
                     
@@ -4340,7 +4388,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2020-07-26
+      Last update: 2021-07-03
     
   </small>
 </div>
