@@ -412,7 +412,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $gradient = array_map([$this, 'gradient'], $out, $targets);
 
-            $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0) / $m;
+            $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0);
+
+            $loss /= $m;
 
             if (is_nan($loss)) {
                 if ($this->logger) {
@@ -470,10 +472,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 }
 
                 $prevOutTest = $outTest;
-            }
-
-            if ($loss <= 0.0) {
-                break;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {

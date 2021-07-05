@@ -460,10 +460,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 }
             }
 
-            if ($loss <= 0.0) {
-                break;
-            }
-
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break;
             }
