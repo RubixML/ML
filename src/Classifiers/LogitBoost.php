@@ -578,10 +578,10 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->ensemble as $tree) {
-            $importances = $tree->featureImportances();
+            $scores = $tree->featureImportances();
 
-            foreach ($importances as $column => $importance) {
-                $importances[$column] += $importance;
+            foreach ($scores as $column => $score) {
+                $importances[$column] += $score;
             }
         }
 
