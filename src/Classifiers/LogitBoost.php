@@ -191,7 +191,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         float $ratio = 0.5,
         int $estimators = 1000,
         float $minChange = 1e-4,
-        int $window = 10,
+        int $window = 5,
         float $holdOut = 0.1,
         ?Metric $metric = null
     ) {

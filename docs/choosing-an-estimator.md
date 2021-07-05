@@ -20,6 +20,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [K-d Neighbors](classifiers/kd-neighbors.md) | Medium | ● | | | | Depends on distance kernel |
 | [K Nearest Neighbors](classifiers/k-nearest-neighbors.md) | Medium | ● | ● | | | Depends on distance kernel |
 | [Logistic Regression](classifiers/logistic-regression.md) | Low | ● | ● | ● | ● | Continuous |
+| [Logit Boost](classifiers/logit-boost.md) | High | ● | | ● | ● | Categorical, Continuous |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | | ● | Continuous |
 | [Naive Bayes](classifiers/naive-bayes.md) | Medium | ● | ● | | | Categorical |
 | [Radius Neighbors](classifiers/radius-neighbors.md) | Medium | ● | | | | Depends on distance kernel |
