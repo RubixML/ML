@@ -487,11 +487,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         if ($this->scores and end($this->scores) <= $bestScore) {
-            if ($this->logger) {
-                $this->logger->info("Restoring model state to epoch $bestEpoch");
-            }
-
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
+
+            if ($this->logger) {
+                $this->logger->info("Model state restored to epoch $bestEpoch");
+            }
         }
 
         if ($this->logger) {
