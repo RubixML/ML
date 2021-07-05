@@ -627,7 +627,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     protected function crossEntropy(float $out, float $target) : float
     {
-        return -($target * log($out) + (1.0 - $target) * log(1.0 - $out));
+        return $target === 1.0 ? -log($out) : -log(1.0 - $out);
     }
 
     /**
