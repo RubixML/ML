@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Classifiers/LogitBoost.php">[source]</a></span>
 
 # Logit Boost
-Logit Boost is a stage-wise additive ensemble that uses regression trees to iteratively learn a logistic regression model for binary classification problems.
+Logit Boost is a stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary classification problems. Unlike standard [Logistic Regression](logistic-regression.md), Logit Boost has the ability to learn a flexible non-linear decision surface by training decision trees to follow the gradient of the smooth cross entropy loss function.
 
 !!! note
     Logit Boost utilizes progress monitoring via an internal validation set for snapshotting and early stopping. If there are not enough training samples to build an internal validation set given the user-specified holdout ratio then training will proceed with progress monitoring disabled.
@@ -13,12 +13,12 @@ Logit Boost is a stage-wise additive ensemble that uses regression trees to iter
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | booster | RegressionTree | Learner | The regressor that will fix up the error residuals. |
+| 1 | booster | RegressionTree | Learner | The regressor used to fix up the error residuals of the base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 4 | estimators | 1000 | int | The maximum number of boosters to train in the ensemble. |
 | 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 6 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 7 | holdOut | 0.1 | float | The proportion of training samples to use for progress monitoring. |
 | 8 | metric | F Beta | Metric | The metric used to score the generalization performance of the model during training. |
 
@@ -28,7 +28,7 @@ use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 10, 0.1, new FBeta());
+$estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 ```
 
 ## Additional Methods
