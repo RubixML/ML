@@ -364,15 +364,15 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        if ($this->logger) {
-            $this->logger->info("$this initialized");
-        }
-
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {
             throw new InvalidArgumentException('Number of classes'
                 . ' must be exactly 2, ' . count($classes) . ' given.');
+        }
+
+        if ($this->logger) {
+            $this->logger->info("$this initialized");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
@@ -468,7 +468,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     . ($score ?? 'n/a') . ", Cross Entropy: $loss");
             }
 
-            if (isset($zTest)) {
+            if (isset($score)) {
                 if ($score >= $max) {
                     break;
                 }
@@ -495,9 +495,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 foreach ($out as $i => $probability) {
                     $weights[$i] = max($epsilon, $probability * (1.0 - $probability));
                 }
-
-                $prevLoss = $loss;
             }
+
+            $prevLoss = $loss;
         }
 
         if ($this->scores and end($this->scores) <= $bestScore) {
