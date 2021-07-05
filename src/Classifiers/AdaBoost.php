@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
@@ -27,6 +28,11 @@ use function is_nan;
 use function array_fill_keys;
 use function array_sum;
 use function get_object_vars;
+use function round;
+use function max;
+use function abs;
+use function log;
+use function exp;
 
 use const Rubix\ML\EPSILON;
 
@@ -59,7 +65,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const MIN_SUBSAMPLE = 2;
 
     /**
      * The base classifier to be boosted.
@@ -297,24 +303,30 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->logger->info("$this initialized");
         }
 
+        $classes = $dataset->possibleOutcomes();
+
         [$m, $n] = $dataset->shape();
-
-        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
-
-        $this->featureCount = $n;
 
         $labels = $dataset->labels();
 
-        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
-        $k = count($this->classes);
+        $k = count($classes);
 
         $lossThreshold = 1.0 - (1.0 / $k);
-        $prevLoss = $bestLoss = INF;
-        $delta = 0;
+
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
+
+        $epsilon = 2.0 * CPU::epsilon();
+
+        $weights = array_fill(0, $m, max($epsilon, 1.0 / $m));
+
+        $this->classes = array_fill_keys($classes, 0.0);
+
+        $this->featureCount = $n;
 
         $this->ensemble = $this->influences = $this->losses = [];
 
-        $weights = array_fill(0, $m, 1 / $m);
+        $prevLoss = $bestLoss = INF;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $estimator = clone $this->base;
@@ -395,11 +407,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $total = array_sum($weights) ?: EPSILON;
 
                 foreach ($weights as &$weight) {
-                    $weight /= $total;
+                    $weight = max($epsilon, $weight / $total);
                 }
-
-                $prevLoss = $loss;
             }
+
+            $prevLoss = $loss;
         }
 
         if ($this->logger) {
@@ -461,9 +473,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $scores = array_fill(0, $dataset->numSamples(), $this->classes);
 
         foreach ($this->ensemble as $i => $estimator) {
+            $predictions = $estimator->predict($dataset);
+
             $influence = $this->influences[$i];
 
-            foreach ($estimator->predict($dataset) as $j => $prediction) {
+            foreach ($predictions as $j => $prediction) {
                 $scores[$j][$prediction] += $influence;
             }
         }
