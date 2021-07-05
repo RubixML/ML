@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
@@ -224,12 +223,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
             $min = min($counts);
 
-            $epsilon = CPU::epsilon();
-
             $weights = [];
 
             foreach ($dataset->labels() as $label) {
-                $weights[] = max($epsilon, $min / $counts[$label]);
+                $weights[] = $min / $counts[$label];
             }
         }
 
