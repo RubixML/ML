@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
@@ -11,6 +10,7 @@ use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -35,8 +35,11 @@ use function count;
 use function is_nan;
 use function get_class;
 use function in_array;
+use function array_map;
 use function abs;
 use function get_object_vars;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Logit Boost
@@ -165,32 +168,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @var int|null
      */
     protected ?int $featureCount = null;
-
-    /**
-     * The logistic sigmoid function.
-     *
-     * @internal
-     *
-     * @param float $value
-     * @return float
-     */
-    public static function sigmoid(float $value) : float
-    {
-        return 1.0 / (1.0 + exp(-$value));
-    }
-
-    /**
-     * Weight a sample by its activation signal.
-     *
-     * @internal
-     *
-     * @param float $activation
-     * @return float
-     */
-    public static function weightSample(float $activation) : float
-    {
-        return $activation * (1.0 - $activation);
-    }
 
     /**
      * @param \Rubix\ML\Learner|null $booster
@@ -392,26 +369,24 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         $classMap = array_flip($classes);
 
-        $target = [];
+        $targets = [];
 
         foreach ($training->labels() as $label) {
-            $target[] = (float) $classMap[$label];
+            $targets[] = (float) $classMap[$label];
         }
 
-        $target = Vector::quick($target);
-
-        $z = $prevZ = Vector::zeros($m);
-        $activation = Vector::fill(0.5, $m);
+        $z = $prevZ = array_fill(0, $m, 0.0);
+        $activations = array_fill(0, $m, 0.5);
 
         if (!$testing->empty()) {
-            $zTest = $prevZTest = Vector::zeros($testing->numSamples());
+            $zTest = $prevZTest = array_fill(0, $testing->numSamples(), 0.0);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
         $epsilon = 2.0 * CPU::epsilon();
 
-        $weights = Vector::fill(max($epsilon, 1.0 / $m), $m)->asArray();
+        $weights = array_fill(0, $m, max($epsilon, 1.0 / $m));
 
         $this->classes = $classes;
         $this->featureCount = $n;
@@ -426,9 +401,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $booster = clone $this->booster;
 
-            $gradient = $target->subtract($activation);
+            $gradient = array_map([$this, 'gradient'], $activations, $targets);
 
-            $training = Labeled::quick($training->samples(), $gradient->asArray());
+            $training = Labeled::quick($training->samples(), $gradient);
 
             $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
 
@@ -437,15 +412,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             /** @var list<float> $predictions */
             $predictions = $booster->predict($training);
 
-            $z = Vector::quick($predictions)
-                ->multiply($this->rate)
-                ->add($prevZ);
+            $z = array_map([$this, 'updateZ'], $predictions, $prevZ);
 
-            $activation = $z->map([self::class, 'sigmoid']);
+            $activations = array_map([$this, 'sigmoid'], $z);
 
-            $entropy = $activation->clipLower($epsilon)->log();
+            $losses = array_map([$this, 'crossEntropy'], $activations, $targets);
 
-            $loss = $target->negate()->multiply($entropy)->mean();
+            $loss = Stats::mean($losses);
 
             if (is_nan($loss)) {
                 if ($this->logger) {
@@ -463,15 +436,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 /** @var list<float> $predictions */
                 $predictions = $booster->predict($testing);
 
-                $zTest = Vector::quick($predictions)
-                    ->multiply($this->rate)
-                    ->add($prevZTest);
+                $zTest = array_map([$this, 'updateZ'], $predictions, $prevZTest);
 
-                $activationTest = $zTest->map([self::class, 'sigmoid']);
+                $activationsTest = array_map([$this, 'sigmoid'], $zTest);
 
                 $predictions = [];
 
-                foreach ($activationTest as $probability) {
+                foreach ($activationsTest as $probability) {
                     $predictions[] = $probability < 0.5 ? $classes[0] : $classes[1];
                 }
 
@@ -515,9 +486,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
-                $weights = $activation->map([self::class, 'weightSample'])
-                    ->clipLower($epsilon)
-                    ->asArray();
+                foreach ($activations as $i => $activation) {
+                    $weights[$i] = max($epsilon, $activation * (1.0 - $activation));
+                }
 
                 $prevZ = $z;
                 $prevLoss = $loss;
@@ -575,7 +546,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         [$classA, $classB] = $this->classes;
 
-        $activations = array_map([self::class, 'sigmoid'], $z);
+        $activations = array_map([$this, 'sigmoid'], $z);
 
         $probabilities = [];
 
@@ -618,6 +589,53 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         return $importances;
+    }
+
+    /**
+     * The logistic sigmoid function.
+     *
+     * @param float $z
+     * @return float
+     */
+    protected function sigmoid(float $z) : float
+    {
+        return 1.0 / (1.0 + exp(-$z));
+    }
+
+    /**
+     * Compute the gradient.
+     *
+     * @param float $activation
+     * @param float $target
+     * @return float
+     */
+    protected function gradient(float $activation, float $target) : float
+    {
+        return $target - $activation;
+    }
+
+    /**
+     * Compute z for an iteration.
+     *
+     * @param float $prediction
+     * @param float $prevZ
+     * @return float
+     */
+    protected function updateZ(float $prediction, float $prevZ) : float
+    {
+        return $this->rate * $prediction + $prevZ;
+    }
+
+    /**
+     * Compute the cross entropy loss function.
+     *
+     * @param float $activation
+     * @param float $target
+     * @return float
+     */
+    protected function crossEntropy(float $activation, float $target) : float
+    {
+        return -$target * log($activation ?: EPSILON);
     }
 
     /**
