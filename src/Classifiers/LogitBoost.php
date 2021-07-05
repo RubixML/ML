@@ -81,7 +81,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const MIN_SUBSAMPLE = 2;
 
     /**
      * The regressor used to fix up error residuals.
