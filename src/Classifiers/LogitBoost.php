@@ -15,8 +15,8 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -36,10 +36,15 @@ use function is_nan;
 use function get_class;
 use function in_array;
 use function array_map;
+use function array_slice;
+use function array_fill;
+use function array_flip;
+use function round;
+use function max;
 use function abs;
+use function log;
+use function exp;
 use function get_object_vars;
-
-use const Rubix\ML\EPSILON;
 
 /**
  * Logit Boost
@@ -376,7 +381,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         $z = $prevZ = array_fill(0, $m, 0.0);
-        $activations = array_fill(0, $m, 0.5);
+        $out = array_fill(0, $m, 0.5);
 
         if (!$testing->empty()) {
             $zTest = $prevZTest = array_fill(0, $testing->numSamples(), 0.0);
@@ -401,7 +406,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $booster = clone $this->booster;
 
-            $gradient = array_map([$this, 'gradient'], $activations, $targets);
+            $gradient = array_map([$this, 'gradient'], $out, $targets);
 
             $training = Labeled::quick($training->samples(), $gradient);
 
@@ -414,9 +419,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $z = array_map([$this, 'updateZ'], $predictions, $prevZ);
 
-            $activations = array_map([$this, 'sigmoid'], $z);
+            $out = array_map([$this, 'sigmoid'], $z);
 
-            $losses = array_map([$this, 'crossEntropy'], $activations, $targets);
+            $losses = array_map([$this, 'crossEntropy'], $out, $targets);
 
             $loss = Stats::mean($losses);
 
@@ -438,11 +443,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $prevZTest);
 
-                $activationsTest = array_map([$this, 'sigmoid'], $zTest);
+                $outTest = array_map([$this, 'sigmoid'], $zTest);
 
                 $predictions = [];
 
-                foreach ($activationsTest as $probability) {
+                foreach ($outTest as $probability) {
                     $predictions[] = $probability < 0.5 ? $classes[0] : $classes[1];
                 }
 
@@ -486,8 +491,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
-                foreach ($activations as $i => $activation) {
-                    $weights[$i] = max($epsilon, $activation * (1.0 - $activation));
+                foreach ($out as $i => $probability) {
+                    $weights[$i] = max($epsilon, $probability * (1.0 - $probability));
                 }
 
                 $prevZ = $z;
@@ -497,7 +502,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         if ($this->scores and end($this->scores) <= $bestScore) {
             if ($this->logger) {
-                $this->logger->info("Restoring model state to epoch $bestEpoch");
+                $this->logger->info("Model state restored to epoch $bestEpoch");
             }
 
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
@@ -546,14 +551,14 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         [$classA, $classB] = $this->classes;
 
-        $activations = array_map([$this, 'sigmoid'], $z);
+        $out = array_map([$this, 'sigmoid'], $z);
 
         $probabilities = [];
 
-        foreach ($activations as $activation) {
+        foreach ($out as $probability) {
             $probabilities[] = [
-                $classA => 1.0 - $activation,
-                $classB => $activation,
+                $classA => 1.0 - $probability,
+                $classB => $probability,
             ];
         }
 
@@ -605,13 +610,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * Compute the gradient.
      *
-     * @param float $activation
+     * @param float $out
      * @param float $target
      * @return float
      */
-    protected function gradient(float $activation, float $target) : float
+    protected function gradient(float $out, float $target) : float
     {
-        return $target - $activation;
+        return $target - $out;
     }
 
     /**
@@ -627,15 +632,15 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     }
 
     /**
-     * Compute the cross entropy loss function.
+     * Compute the binary cross entropy loss function.
      *
-     * @param float $activation
+     * @param float $out
      * @param float $target
      * @return float
      */
-    protected function crossEntropy(float $activation, float $target) : float
+    protected function crossEntropy(float $out, float $target) : float
     {
-        return -$target * log($activation ?: EPSILON);
+        return -($target * log($out) + (1.0 - $target) * log(1.0 - $out));
     }
 
     /**
