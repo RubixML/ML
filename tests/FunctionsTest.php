@@ -8,6 +8,7 @@ use Generator;
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\array_transpose;
 use function Rubix\ML\iterator_first;
@@ -27,6 +28,7 @@ use function Rubix\ML\warn_deprecated;
  * @covers \Rubix\ML\iterator_first
  * @covers \Rubix\ML\iterator_map
  * @covers \Rubix\ML\logsumexp
+ * @covers \Rubix\ML\sigmoid
  * @covers \Rubix\ML\warn_deprecated
  */
 class FunctionsTest extends TestCase
@@ -66,6 +68,32 @@ class FunctionsTest extends TestCase
         $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
 
         $this->assertEquals(2.8194175400311074, $value);
+    }
+
+    /**
+     * @test
+     * @dataProvider sigmoidProvider
+     *
+     * @param float $value
+     * @param float $expected
+     */
+    public function sigmoid(float $value, float $expected) : void
+    {
+        $this->assertEquals($expected, sigmoid($value));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function sigmoidProvider() : Generator
+    {
+        yield [2.0, 0.8807970779778823];
+
+        yield [-2.0, 0.11920292202211755];
+
+        yield [0.0, 0.5];
+
+        yield [10.0, 0.9999546021312976];
     }
 
     /**
