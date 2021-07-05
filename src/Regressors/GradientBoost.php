@@ -83,7 +83,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const MIN_SUBSAMPLE = 2;
 
     /**
      * The regressor that will fix up the error residuals of the *weak* base learner.
@@ -392,12 +392,12 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $this->base->train($training);
 
-        $out = $prevOut = $this->base->predict($training);
+        $out = $this->base->predict($training);
 
         $targets = $training->labels();
 
         if (!$testing->empty()) {
-            $prevOutTest = $this->base->predict($testing);
+            $outTest = $this->base->predict($testing);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -432,16 +432,16 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $predictions = $booster->predict($training);
 
-            $out = array_map([$this, 'updateOut'], $predictions, $prevOut);
+            $out = array_map([$this, 'updateOut'], $predictions, $out);
 
             $this->losses[$epoch] = $loss;
 
             $this->ensemble[] = $booster;
 
-            if (isset($prevOutTest)) {
+            if (isset($outTest)) {
                 $predictions = $booster->predict($testing);
 
-                $outTest = array_map([$this, 'updateOut'], $predictions, $prevOutTest);
+                $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
 
                 $score = $this->metric->score($outTest, $testing->labels());
 
@@ -470,18 +470,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 if ($delta >= $this->window) {
                     break;
                 }
-
-                $prevOutTest = $outTest;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break;
             }
 
-            if ($epoch < $this->estimators) {
-                $prevOut = $out;
-                $prevLoss = $loss;
-            }
+            $prevLoss = $loss;
         }
 
         if ($this->scores and end($this->scores) <= $bestScore) {
@@ -518,10 +513,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         foreach ($this->ensemble as $estimator) {
             $predictions = $estimator->predict($dataset);
 
-            /** @var int $j */
-            foreach ($predictions as $j => $prediction) {
-                $out[$j] += $this->rate * $prediction;
-            }
+            $out = array_map([$this, 'updateOut'], $predictions, $out);
         }
 
         return $out;
@@ -542,7 +534,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $importances = array_fill(0, $this->featureCount, 0.0);
 
         foreach ($this->ensemble as $tree) {
-            foreach ($tree->featureImportances() as $column => $importance) {
+            $importances = $tree->featureImportances();
+
+            foreach ($importances as $column => $importance) {
                 $importances[$column] += $importance;
             }
         }
@@ -560,12 +554,12 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * Compute the output for an iteration.
      *
      * @param float $prediction
-     * @param float $prevOut
+     * @param float $out
      * @return float
      */
-    protected function updateOut(float $prediction, float $prevOut) : float
+    protected function updateOut(float $prediction, float $out) : float
     {
-        return $this->rate * $prediction + $prevOut;
+        return $this->rate * $prediction + $out;
     }
 
     /**
