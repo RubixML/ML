@@ -28,9 +28,11 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 use function count;
+use function get_class;
 use function is_nan;
 use function array_slice;
-use function get_class;
+use function array_map;
+use function array_reduce;
 use function in_array;
 use function abs;
 use function get_object_vars;
