@@ -44,7 +44,6 @@ use function min;
 use function max;
 use function abs;
 use function log;
-use function exp;
 use function get_object_vars;
 
 /**
@@ -439,7 +438,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $z = array_map([$this, 'updateZ'], $predictions, $z);
 
-            $out = array_map([$this, 'sigmoid'], $z);
+            $out = array_map('Rubix\ML\sigmoid', $z);
 
             $this->losses[$epoch] = $loss;
 
@@ -451,7 +450,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
 
-                $outTest = array_map([$this, 'sigmoid'], $zTest);
+                $outTest = array_map('Rubix\ML\sigmoid', $zTest);
 
                 $predictions = [];
 
@@ -550,7 +549,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         [$classA, $classB] = $this->classes;
 
-        $out = array_map([$this, 'sigmoid'], $z);
+        $out = array_map('Rubix\ML\sigmoid', $z);
 
         $probabilities = [];
 
@@ -593,17 +592,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         return $importances;
-    }
-
-    /**
-     * The logistic sigmoid function.
-     *
-     * @param float $z
-     * @return float
-     */
-    protected function sigmoid(float $z) : float
-    {
-        return 1.0 / (1.0 + exp(-$z));
     }
 
     /**

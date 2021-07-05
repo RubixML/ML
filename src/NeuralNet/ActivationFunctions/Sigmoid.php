@@ -27,7 +27,7 @@ class Sigmoid implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map([$this, '_compute']);
+        return $z->map('Rubix\ML\sigmoid');
     }
 
     /**
@@ -42,17 +42,6 @@ class Sigmoid implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $z
-     * @return float
-     */
-    public function _compute(float $z) : float
-    {
-        return 1.0 / (1.0 + exp(-$z));
     }
 
     /**

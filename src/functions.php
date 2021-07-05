@@ -11,6 +11,7 @@ namespace Rubix\ML
     use function array_search;
     use function array_map;
     use function array_sum;
+    use function exp;
     use function trigger_error;
 
     /**
@@ -50,6 +51,19 @@ namespace Rubix\ML
     function logsumexp(array $values) : float
     {
         return log(array_sum(array_map('exp', $values)));
+    }
+
+    /**
+     * The logistic sigmoid function.
+     *
+     * @internal
+     *
+     * @param float $value
+     * @return float
+     */
+    function sigmoid(float $value) : float
+    {
+        return 1.0 / (1.0 + exp(-$value));
     }
 
     /**
