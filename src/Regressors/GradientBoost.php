@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Regressors;
 
-use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
@@ -370,11 +369,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->logger->info("$this initialized");
         }
 
-        $this->featureCount = $dataset->numFeatures();
-
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
         [$min, $max] = $this->metric->range()->list();
+
+        [$m, $n] = $dataset->shape();
+
+        $this->featureCount = $n;
+
+        $this->ensemble = $this->scores = $this->losses = [];
 
         if ($this->logger) {
             $this->logger->info("Training {$this->base}");
@@ -382,22 +385,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $this->base->train($training);
 
-        $this->ensemble = $this->scores = $this->losses = [];
+        $out = $prevOut = $this->base->predict($training);
 
-        /** @var list<int|float> $predictions */
-        $predictions = $this->base->predict($training);
-
-        $out = $prevOut = Vector::quick($predictions);
-        $target = Vector::quick($training->labels());
+        $targets = $training->labels();
 
         if (!$testing->empty()) {
-            /** @var list<int|float> $predictions */
-            $predictions = $this->base->predict($testing);
-
-            $prevPred = Vector::quick($predictions);
+            $prevOutTest = $this->base->predict($testing);
         }
 
-        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $training->numSamples()));
+        $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;
@@ -407,22 +403,19 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $booster = clone $this->booster;
 
-            $gradient = $target->subtract($out);
+            $gradient = array_map([$this, 'gradient'], $out, $targets);
 
-            $training = Labeled::quick($training->samples(), $gradient->asArray());
+            $training = Labeled::quick($training->samples(), $gradient);
 
             $subset = $training->randomSubset($p);
 
             $booster->train($subset);
 
-            /** @var list<int|float> $predictions */
             $predictions = $booster->predict($training);
 
-            $out = Vector::quick($predictions)
-                ->multiply($this->rate)
-                ->add($prevOut);
+            $out = array_map([$this, 'updateOut'], $predictions, $prevOut);
 
-            $loss = $gradient->square()->mean();
+            $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0) / $m;
 
             if (is_nan($loss)) {
                 if ($this->logger) {
@@ -436,15 +429,12 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->ensemble[] = $booster;
 
-            if (isset($prevPred)) {
-                /** @var list<int|float> $predictions */
+            if (isset($prevOutTest)) {
                 $predictions = $booster->predict($testing);
 
-                $pred = Vector::quick($predictions)
-                    ->multiply($this->rate)
-                    ->add($prevPred);
+                $outTest = array_map([$this, 'updateOut'], $predictions, $prevOutTest);
 
-                $score = $this->metric->score($pred->asArray(), $testing->labels());
+                $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -454,7 +444,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     . ($score ?? 'n/a') . ", L2 Loss: $loss");
             }
 
-            if (isset($pred)) {
+            if (isset($outTest)) {
                 if ($score >= $max) {
                     break;
                 }
@@ -472,7 +462,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     break;
                 }
 
-                $prevPred = $pred;
+                $prevOutTest = $outTest;
             }
 
             if ($loss <= 0.0) {
@@ -517,17 +507,19 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        /** @var list<int|float> $predictions */
-        $predictions = $this->base->predict($dataset);
+        /** @var list<int|float> $out */
+        $out = $this->base->predict($dataset);
 
         foreach ($this->ensemble as $estimator) {
+            $predictions = $estimator->predict($dataset);
+
             /** @var int $j */
-            foreach ($estimator->predict($dataset) as $j => $prediction) {
-                $predictions[$j] += $this->rate * $prediction;
+            foreach ($predictions as $j => $prediction) {
+                $out[$j] += $this->rate * $prediction;
             }
         }
 
-        return $predictions;
+        return $out;
     }
 
     /**
@@ -557,6 +549,42 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         return $importances;
+    }
+
+    /**
+     * Compute the output for an iteration.
+     *
+     * @param float $prediction
+     * @param float $prevOut
+     * @return float
+     */
+    protected function updateOut(float $prediction, float $prevOut) : float
+    {
+        return $this->rate * $prediction + $prevOut;
+    }
+
+    /**
+     * Compute the gradient for a single sample.
+     *
+     * @param float $out
+     * @param float $target
+     * @return float
+     */
+    protected function gradient(float $out, float $target) : float
+    {
+        return $target - $out;
+    }
+
+    /**
+     * Compute the cross entropy loss function.
+     *
+     * @param float $loss
+     * @param float $derivative
+     * @return float
+     */
+    protected function l2Loss(float $loss, float $derivative) : float
+    {
+        return $loss + $derivative ** 2;
     }
 
     /**
