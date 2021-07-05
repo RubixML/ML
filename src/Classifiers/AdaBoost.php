@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
@@ -316,9 +315,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
-        $epsilon = 2.0 * CPU::epsilon();
-
-        $weights = array_fill(0, $m, max($epsilon, 1.0 / $m));
+        $weights = array_fill(0, $m, 1.0 / $m);
 
         $this->classes = array_fill_keys($classes, 0.0);
         $this->featureCount = $n;
@@ -407,7 +404,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $total = array_sum($weights) ?: EPSILON;
 
                 foreach ($weights as &$weight) {
-                    $weight = max($epsilon, $weight / $total);
+                    $weight /= $total;
                 }
             }
 
