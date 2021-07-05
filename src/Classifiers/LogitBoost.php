@@ -408,6 +408,18 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $gradient = array_map([$this, 'gradient'], $out, $targets);
 
+            $losses = array_map([$this, 'crossEntropy'], $out, $targets);
+
+            $loss = Stats::mean($losses);
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break;
+            }
+
             $training = Labeled::quick($training->samples(), $gradient);
 
             $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
@@ -420,18 +432,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $z = array_map([$this, 'updateZ'], $predictions, $prevZ);
 
             $out = array_map([$this, 'sigmoid'], $z);
-
-            $losses = array_map([$this, 'crossEntropy'], $out, $targets);
-
-            $loss = Stats::mean($losses);
-
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
 
             $this->losses[$epoch] = $loss;
 
