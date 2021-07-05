@@ -380,7 +380,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         [$min, $max] = $this->metric->range()->list();
 
-        [$m, $n] = $dataset->shape();
+        [$m, $n] = $training->shape();
 
         $this->featureCount = $n;
 
@@ -453,7 +453,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     . ($score ?? 'n/a') . ", L2 Loss: $loss");
             }
 
-            if (isset($outTest)) {
+            if (isset($score)) {
                 if ($score >= $max) {
                     break;
                 }
