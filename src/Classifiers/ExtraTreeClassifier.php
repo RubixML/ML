@@ -198,25 +198,18 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return array_map([$this, 'probaSample'], $dataset->samples());
-    }
-
-    /**
-     * Predict the probabilities of a single sample and return the joint distribution.
-     *
-     * @internal
-     *
-     * @param list<string|int|float> $sample
-     * @return float[]
-     */
-    public function probaSample(array $sample) : array
-    {
-        /** @var \Rubix\ML\Graph\Nodes\Best $node */
-        $node = $this->search($sample);
-
         $template = array_combine($this->classes, array_fill(0, count($this->classes), 0.0)) ?: [];
 
-        return array_replace($template, $node->probabilities());
+        $probabilities = [];
+
+        foreach ($dataset->samples() as $sample) {
+            /** @var \Rubix\ML\Graph\Nodes\Best $node */
+            $node = $this->search($sample);
+
+            $probabilities[] = array_replace($template, $node->probabilities());
+        }
+
+        return $probabilities;
     }
 
     /**

@@ -382,10 +382,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         [$m, $n] = $training->shape();
 
-        $this->featureCount = $n;
-
-        $this->ensemble = $this->scores = $this->losses = [];
-
         if ($this->logger) {
             $this->logger->info("Training {$this->base}");
         }
@@ -401,6 +397,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
+
+        $this->featureCount = $n;
+
+        $this->ensemble = $this->scores = $this->losses = [];
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;

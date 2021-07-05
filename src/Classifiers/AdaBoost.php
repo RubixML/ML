@@ -25,6 +25,7 @@ use Generator;
 
 use function count;
 use function is_nan;
+use function array_fill;
 use function array_fill_keys;
 use function array_sum;
 use function get_object_vars;
@@ -320,7 +321,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $weights = array_fill(0, $m, max($epsilon, 1.0 / $m));
 
         $this->classes = array_fill_keys($classes, 0.0);
-
         $this->featureCount = $n;
 
         $this->ensemble = $this->influences = $this->losses = [];
@@ -365,8 +365,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if ($loss > $lossThreshold) {
                 if ($this->logger) {
-                    $this->logger->info('Estimator dropped due to'
-                        . ' high training loss');
+                    $this->logger->info('Estimator dropped due'
+                        . ' to high training loss');
                 }
 
                 continue;
@@ -438,15 +438,17 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function proba(Dataset $dataset) : array
     {
+        $scores = $this->score($dataset);
+
         $probabilities = [];
 
-        foreach ($this->score($dataset) as $scores) {
-            $total = array_sum($scores) ?: EPSILON;
+        foreach ($scores as $influences) {
+            $total = array_sum($influences) ?: EPSILON;
 
             $dist = [];
 
-            foreach ($scores as $class => $score) {
-                $dist[$class] = $score / $total;
+            foreach ($influences as $class => $influence) {
+                $dist[$class] = $influence / $total;
             }
 
             $probabilities[] = $dist;
