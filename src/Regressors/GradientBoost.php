@@ -412,16 +412,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $gradient = array_map([$this, 'gradient'], $out, $targets);
 
-            $training = Labeled::quick($training->samples(), $gradient);
-
-            $subset = $training->randomSubset($p);
-
-            $booster->train($subset);
-
-            $predictions = $booster->predict($training);
-
-            $out = array_map([$this, 'updateOut'], $predictions, $prevOut);
-
             $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0) / $m;
 
             if (is_nan($loss)) {
@@ -431,6 +421,16 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
                 break;
             }
+
+            $training = Labeled::quick($training->samples(), $gradient);
+
+            $subset = $training->randomSubset($p);
+
+            $booster->train($subset);
+
+            $predictions = $booster->predict($training);
+
+            $out = array_map([$this, 'updateOut'], $predictions, $prevOut);
 
             $this->losses[$epoch] = $loss;
 
