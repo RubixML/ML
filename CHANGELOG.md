@@ -1,5 +1,6 @@
 - 1.1.1
     - Fix Gradient Boost subsampling and importance scores
+    - Prevent AdaBoost sample weights from underflowing
     
 - 1.1.0
     - Update to Scienide Tensor 3.0
