@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
@@ -40,7 +39,6 @@ use function array_slice;
 use function array_fill;
 use function array_flip;
 use function round;
-use function min;
 use function max;
 use function abs;
 use function log;
@@ -84,13 +82,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @var int
      */
     protected const MIN_SUBSAMPLE = 2;
-
-    /**
-     * The maximum magnitude of the z signal for numerical stability.
-     *
-     * @var float
-     */
-    protected const MAX_Z = 20.0;
 
     /**
      * The regressor used to fix up error residuals.
@@ -398,9 +389,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
-        $epsilon = 2.0 * CPU::epsilon();
-
-        $weights = array_fill(0, $m, max($epsilon, 1.0 / $m));
+        $weights = array_fill(0, $m, 0.25);
 
         $this->classes = $classes;
         $this->featureCount = $n;
@@ -492,9 +481,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
-                foreach ($out as $i => $probability) {
-                    $weights[$i] = max($epsilon, $probability * (1.0 - $probability));
-                }
+                $weights = array_map([$this, 'differentiate'], $out);
             }
 
             $prevLoss = $loss;
@@ -607,18 +594,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     }
 
     /**
-     * Compute the z signal for an iteration.
-     *
-     * @param float $prediction
-     * @param float $z
-     * @return float
-     */
-    protected function updateZ(float $prediction, float $z) : float
-    {
-        return max(-self::MAX_Z, min($this->rate * $prediction + $z, self::MAX_Z));
-    }
-
-    /**
      * Compute the binary cross entropy loss function.
      *
      * @param float $out
@@ -628,6 +603,29 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected function crossEntropy(float $out, float $target) : float
     {
         return $target >= 0.5 ? -log($out) : -log(1.0 - $out);
+    }
+
+    /**
+     * Compute the z signal for an iteration.
+     *
+     * @param float $prediction
+     * @param float $z
+     * @return float
+     */
+    protected function updateZ(float $prediction, float $z) : float
+    {
+        return $this->rate * $prediction + $z;
+    }
+
+    /**
+     * Compute the derivative of the logistic function.
+     *
+     * @param float $out
+     * @return float
+     */
+    protected function differentiate(float $out) : float
+    {
+        return $out * (1.0 - $out);
     }
 
     /**
