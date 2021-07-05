@@ -475,10 +475,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 }
             }
 
-            if ($loss <= 0.0) {
-                break;
-            }
-
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break;
             }
