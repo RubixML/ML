@@ -49,9 +49,10 @@ use function get_object_vars;
 /**
  * Logit Boost
  *
- * Logit Boost is a stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model
- * for binary classification problems. Unlike standard Logistic Regression, Logit Boost has the ability to learn a flexible
+ * A stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary
+ * classification problems. Unlike standard Logistic Regression, Logit Boost has the ability to learn a flexible
  * non-linear decision surface by training decision trees to follow the gradient of the smooth cross entropy loss function.
+ * In addition, Logit Boost concentrates more effort on classifying samples that it is less certain about.
  *
  * References:
  * [1] J. H. Friedman et al. (2000). Additive Logistic Regression: A Statistical View of Boosting.
