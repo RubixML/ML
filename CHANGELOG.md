@@ -1,5 +1,5 @@
 - 1.1.1
-    - Fix Gradient Boost importance scores
+    - Fix Gradient Boost subsampling and importance scores
     
 - 1.1.0
     - Update to Scienide Tensor 3.0
