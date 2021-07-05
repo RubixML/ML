@@ -482,10 +482,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 $prevZTest = $zTest;
             }
 
-            if ($loss <= 0.0) {
-                break;
-            }
-
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break;
             }
@@ -501,11 +497,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         if ($this->scores and end($this->scores) <= $bestScore) {
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
+
             if ($this->logger) {
                 $this->logger->info("Model state restored to epoch $bestEpoch");
             }
-
-            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
         }
 
         if ($this->logger) {
