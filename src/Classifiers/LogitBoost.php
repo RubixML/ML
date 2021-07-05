@@ -40,6 +40,7 @@ use function array_slice;
 use function array_fill;
 use function array_flip;
 use function round;
+use function min;
 use function max;
 use function abs;
 use function log;
@@ -82,6 +83,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @var int
      */
     protected const MIN_SUBSAMPLE = 2;
+
+    /**
+     * The maximum magnitude of the z signal for numerical stability.
+     *
+     * @var float
+     */
+    protected const MAX_Z = 20.0;
 
     /**
      * The regressor used to fix up error residuals.
@@ -380,11 +388,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $targets[] = (float) $classMap[$label];
         }
 
-        $z = $prevZ = array_fill(0, $m, 0.0);
+        $z = array_fill(0, $m, 0.0);
         $out = array_fill(0, $m, 0.5);
 
         if (!$testing->empty()) {
-            $zTest = $prevZTest = array_fill(0, $testing->numSamples(), 0.0);
+            $zTest = array_fill(0, $testing->numSamples(), 0.0);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -429,7 +437,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             /** @var list<float> $predictions */
             $predictions = $booster->predict($training);
 
-            $z = array_map([$this, 'updateZ'], $predictions, $prevZ);
+            $z = array_map([$this, 'updateZ'], $predictions, $z);
 
             $out = array_map([$this, 'sigmoid'], $z);
 
@@ -437,11 +445,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $this->ensemble[] = $booster;
 
-            if (isset($prevZTest)) {
+            if (isset($zTest)) {
                 /** @var list<float> $predictions */
                 $predictions = $booster->predict($testing);
 
-                $zTest = array_map([$this, 'updateZ'], $predictions, $prevZTest);
+                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
 
                 $outTest = array_map([$this, 'sigmoid'], $zTest);
 
@@ -478,8 +486,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 if ($delta >= $this->window) {
                     break;
                 }
-
-                $prevZTest = $zTest;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
@@ -491,7 +497,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     $weights[$i] = max($epsilon, $probability * (1.0 - $probability));
                 }
 
-                $prevZ = $z;
                 $prevLoss = $loss;
             }
         }
@@ -540,9 +545,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         foreach ($this->ensemble as $estimator) {
             $predictions = $estimator->predict($dataset);
 
-            foreach ($predictions as $j => $prediction) {
-                $z[$j] += $this->rate * $prediction;
-            }
+            $z = array_map([$this, 'updateZ'], $predictions, $z);
         }
 
         [$classA, $classB] = $this->classes;
@@ -616,15 +619,15 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     }
 
     /**
-     * Compute z for an iteration.
+     * Compute the z signal for an iteration.
      *
      * @param float $prediction
-     * @param float $prevZ
+     * @param float $z
      * @return float
      */
-    protected function updateZ(float $prediction, float $prevZ) : float
+    protected function updateZ(float $prediction, float $z) : float
     {
-        return $this->rate * $prediction + $prevZ;
+        return max(-self::MAX_Z, min($this->rate * $prediction + $z, self::MAX_Z));
     }
 
     /**
