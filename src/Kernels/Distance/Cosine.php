@@ -4,8 +4,6 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Cosine
  *
@@ -80,7 +78,7 @@ class Cosine implements Distance
             return 2.0;
         }
 
-        return 1.0 - ($sigma / (sqrt($ssA * $ssB) ?: EPSILON));
+        return 1.0 - ($sigma / sqrt($ssA * $ssB));
     }
 
     /**
