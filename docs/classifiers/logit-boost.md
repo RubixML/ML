@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Classifiers/LogitBoost.php">[source]</a></span>
 
 # Logit Boost
-A stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary classification problems. Unlike standard [Logistic Regression](logistic-regression.md), Logit Boost has the ability to learn a flexible non-linear decision surface by training decision trees to follow the gradient of the smooth cross entropy loss function. In addition, Logit Boost concentrates more effort on classifying samples that it is less certain about.
+A stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary classification problems. Unlike standard [Logistic Regression](logistic-regression.md), Logit Boost has the ability to learn a smooth non-linear decision surface by training decision trees to follow the gradient of the cross entropy loss function. In addition, Logit Boost concentrates more effort on classifying samples that it is less certain about.
 
 !!! note
     Logit Boost utilizes progress monitoring via an internal validation set for snapshotting and early stopping. If there are not enough training samples to build an internal validation set given the user-specified holdout ratio then training will proceed with progress monitoring disabled.
@@ -28,7 +28,7 @@ use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
+$estimator = new LogitBoost(new RegressionTree(4), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 ```
 
 ## Additional Methods

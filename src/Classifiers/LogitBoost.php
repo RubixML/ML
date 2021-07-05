@@ -50,9 +50,9 @@ use function get_object_vars;
  * Logit Boost
  *
  * A stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary
- * classification problems. Unlike standard Logistic Regression, Logit Boost has the ability to learn a flexible
- * non-linear decision surface by training decision trees to follow the gradient of the smooth cross entropy loss function.
- * In addition, Logit Boost concentrates more effort on classifying samples that it is less certain about.
+ * classification problems. Unlike standard Logistic Regression, Logit Boost has the ability to learn a smooth non-linear
+ * decision surface by training decision trees to follow the gradient of the cross entropy loss function. In addition,
+ * Logit Boost concentrates more effort on classifying samples that it is less certain about.
  *
  * References:
  * [1] J. H. Friedman et al. (2000). Additive Logistic Regression: A Statistical View of Boosting.
@@ -435,7 +435,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $booster->train($subset);
 
-            /** @var list<float> $predictions */
             $predictions = $booster->predict($training);
 
             $z = array_map([$this, 'updateZ'], $predictions, $z);
@@ -447,7 +446,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $this->ensemble[] = $booster;
 
             if (isset($zTest)) {
-                /** @var list<float> $predictions */
                 $predictions = $booster->predict($testing);
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
