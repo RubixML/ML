@@ -7,6 +7,11 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function count;
+use function array_slice;
+use function array_unique;
+use function array_values;
+
 /**
  * Preset
  *
@@ -45,12 +50,16 @@ class Preset implements Seeder
 
         $dimensions = count(current($centroids));
 
-        foreach ($centroids as $centroid) {
+        $centroids = array_unique($centroids, SORT_REGULAR);
+
+        foreach ($centroids as &$centroid) {
             if (count($centroid) !== $dimensions) {
                 throw new InvalidArgumentException('Centroid must'
                     . " have $dimensions dimensions, "
                     . count($centroid) . ' given.');
             }
+
+            $centroid = array_values($centroid);
         }
 
         $this->centroids = array_values($centroids);
@@ -72,8 +81,8 @@ class Preset implements Seeder
         DatasetHasDimensionality::with($dataset, $this->dimensions)->check();
 
         if ($k > count($this->centroids)) {
-            throw new RuntimeException('Not enough presets'
-                . " to generate $k centroids.");
+            throw new RuntimeException('Not enough unique'
+                . " presets to generate $k centroids.");
         }
 
         return array_slice($this->centroids, 0, $k);
