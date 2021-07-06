@@ -1,5 +1,6 @@
 - 1.2.0
     - Added Logit Boost classifier
+    - Interval Discretizer variable or equi-depth binning
 
 - 1.1.2
     - Deduplicate Preset seeder centroids

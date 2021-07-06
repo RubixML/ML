@@ -32,7 +32,7 @@ class IntervalDiscretizerTest extends TestCase
     {
         $this->generator = new Blob([0.0, 4.0, 0.0, -1.5], [1.0, 5.0, 0.01, 10.0]);
 
-        $this->transformer = new IntervalDiscretizer(5);
+        $this->transformer = new IntervalDiscretizer(5, false);
     }
 
     /**
