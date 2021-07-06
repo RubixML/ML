@@ -25,8 +25,6 @@ use function array_rand;
 use function round;
 use function rand;
 
-use const Rubix\ML\PHI;
-
 /**
  * Hot Deck Imputer
  *
@@ -185,6 +183,8 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
+        $randMax = getrandmax();
+
         foreach ($samples as &$sample) {
             $donors = [];
 
@@ -200,14 +200,18 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
                                 $weights[] = 1.0 / (1.0 + $distance);
                             }
 
-                            $max = (int) round(array_sum($weights) * PHI);
+                            $total = array_sum($weights);
+
+                            $phi = $randMax / $total;
+
+                            $max = (int) round($total * $phi);
                         }
                     }
 
                     $values = array_column($donors, $column);
 
-                    if (isset($weights) and isset($max)) {
-                        $delta = rand(0, $max) / PHI;
+                    if (isset($weights, $max, $phi)) {
+                        $delta = rand(0, $max) / $phi;
 
                         foreach ($weights as $offset => $weight) {
                             $delta -= $weight;

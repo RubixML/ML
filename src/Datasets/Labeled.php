@@ -13,13 +13,19 @@ use Generator;
 use function count;
 use function get_class;
 use function gettype;
-use function array_slice;
 use function is_string;
 use function is_numeric;
 use function is_float;
 use function is_nan;
-
-use const Rubix\ML\PHI;
+use function array_slice;
+use function array_sum;
+use function array_map;
+use function array_chunk;
+use function array_rand;
+use function round;
+use function sqrt;
+use function getrandmax;
+use function rand;
 
 /**
  * Labeled
@@ -745,15 +751,18 @@ class Labeled extends Dataset
         $numLevels = (int) round(sqrt(count($weights)));
 
         $levels = array_chunk($weights, $numLevels, true);
+
         $levelTotals = array_map('array_sum', $levels);
 
         $total = array_sum($levelTotals);
-        $max = (int) round($total * PHI);
+
+        $phi = getrandmax() / $total;
+        $max = (int) round($total * $phi);
 
         $samples = $labels = [];
 
         while (count($samples) < $n) {
-            $delta = rand(0, $max) / PHI;
+            $delta = rand(0, $max) / $phi;
 
             foreach ($levels as $i => $level) {
                 $levelTotal = $levelTotals[$i];

@@ -45,7 +45,7 @@ class ParamsTest extends TestCase
      */
     public function floats() : void
     {
-        $values = Params::floats(0, 100, 5);
+        $values = Params::floats(0.0, 100.0, 5);
 
         $this->assertContainsOnly('float', $values);
 

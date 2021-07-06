@@ -9,8 +9,8 @@ use function count;
 use function in_array;
 use function get_class;
 use function gettype;
-
-use const Rubix\ML\PHI;
+use function max;
+use function abs;
 
 /**
  * Params
@@ -84,13 +84,15 @@ class Params
                 . ' less than 1 parameter.');
         }
 
-        $min = (int) round($min * PHI);
-        $max = (int) round($max * PHI);
+        $phi = getrandmax() / max(abs($max), abs($min));
+
+        $min = (int) floor($min * $phi);
+        $max = (int) ceil($max * $phi);
 
         $dist = [];
 
         while (count($dist) < $n) {
-            $dist[] = rand($min, $max) / PHI;
+            $dist[] = rand($min, $max) / $phi;
         }
 
         return $dist;

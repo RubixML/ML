@@ -7,8 +7,15 @@ use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_int;
-
-use const Rubix\ML\PHI;
+use function array_fill;
+use function array_unique;
+use function array_rand;
+use function floor;
+use function ceil;
+use function max;
+use function abs;
+use function getrandmax;
+use function rand;
 
 /**
  * Extra Tree
@@ -38,6 +45,7 @@ abstract class ExtraTree extends CART
 
         $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
+        $randMax = getrandmax();
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
 
@@ -47,10 +55,15 @@ abstract class ExtraTree extends CART
             $type = $dataset->featureType($column);
 
             if ($type->isContinuous()) {
-                $min = (int) floor(min($values) * PHI);
-                $max = (int) ceil(max($values) * PHI);
+                $min = min($values);
+                $max = max($values);
 
-                $value = rand($min, $max) / PHI;
+                $phi = $randMax / max(abs($max), abs($min));
+
+                $min = (int) floor($min * $phi);
+                $max = (int) ceil($max * $phi);
+
+                $value = rand($min, $max) / $phi;
             } else {
                 $offset = array_rand(array_unique($values));
 
