@@ -520,7 +520,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->ensemble or !$this->classes or !$this->featureCount) {
+        if (!isset($this->ensemble, $this->classes, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -558,7 +558,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     public function featureImportances() : array
     {
-        if (!$this->ensemble or !$this->featureCount) {
+        if (!isset($this->ensemble, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
