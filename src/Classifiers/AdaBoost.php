@@ -112,20 +112,16 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var \Rubix\ML\Learner[]
+     * @var \Rubix\ML\Learner[]|null
      */
-    protected array $ensemble = [
-        //
-    ];
+    protected ?array $ensemble = null;
 
     /**
      * The amount of influence a particular classifier has in the model.
      *
-     * @var float[]
+     * @var float[]|null
      */
-    protected array $influences = [
-        //
-    ];
+    protected ?array $influences = null;
 
     /**
      * The zero vector for the possible class outcomes.
@@ -253,7 +249,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function trained() : bool
     {
-        return $this->ensemble and $this->influences;
+        return isset($this->ensemble, $this->influences);
     }
 
     /**
@@ -463,7 +459,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     protected function score(Dataset $dataset) : array
     {
-        if (!$this->ensemble or !$this->influences or !$this->classes or !$this->featureCount) {
+        if (!isset($this->ensemble, $this->influences, $this->classes, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
