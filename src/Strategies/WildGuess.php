@@ -6,8 +6,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use const Rubix\ML\PHI;
-
 /**
  * Wild Guess
  *
@@ -34,6 +32,13 @@ class WildGuess implements Strategy
     protected ?int $max = null;
 
     /**
+     * A constant that determines the precision of the floating point numbers.
+     *
+     * @var float|null
+     */
+    protected ?float $phi = null;
+
+    /**
      * Return the data type the strategy handles.
      *
      * @return \Rubix\ML\DataType
@@ -52,7 +57,7 @@ class WildGuess implements Strategy
      */
     public function fitted() : bool
     {
-        return $this->min and $this->max;
+        return isset($this->min) and isset($this->max) and $this->phi;
     }
 
     /**
@@ -70,8 +75,14 @@ class WildGuess implements Strategy
                 . ' to at least 1 value.');
         }
 
-        $this->min = (int) round(min($values) * PHI);
-        $this->max = (int) round(max($values) * PHI);
+        $min = min($values);
+        $max = max($values);
+
+        $phi = getrandmax() / max(abs($max), abs($min));
+
+        $this->min = (int) floor($min * $phi);
+        $this->max = (int) ceil($max * $phi);
+        $this->phi = $phi;
     }
 
     /**
@@ -84,11 +95,11 @@ class WildGuess implements Strategy
      */
     public function guess() : float
     {
-        if ($this->min === null or $this->max === null) {
+        if ($this->min === null or $this->max === null or $this->phi === null) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return rand($this->min, $this->max) / PHI;
+        return rand($this->min, $this->max) / $this->phi;
     }
 
     /**

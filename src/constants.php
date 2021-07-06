@@ -46,13 +46,4 @@ namespace Rubix\ML
      * @var float
      */
     const HALF_PI = 0.5 * M_PI;
-
-    /**
-     * Coefficient that determines floating point precision of random number generation.
-     *
-     * @internal
-     *
-     * @var int
-     */
-    const PHI = 100000000;
 }

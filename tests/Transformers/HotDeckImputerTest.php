@@ -76,7 +76,7 @@ class HotDeckImputerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals(30, $this->dataset[1][0]);
-        $this->assertEquals(0.001, $this->dataset[3][1]);
+        $this->assertEquals(-2.0, $this->dataset[3][1]);
     }
 
     /**

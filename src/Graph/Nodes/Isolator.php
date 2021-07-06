@@ -5,7 +5,14 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 
-use const Rubix\ML\PHI;
+use function array_unique;
+use function array_rand;
+use function floor;
+use function ceil;
+use function min;
+use function max;
+use function getrandmax;
+use function rand;
 
 /**
  * Isolator
@@ -59,10 +66,15 @@ class Isolator implements BinaryNode
         $type = $dataset->featureType($column);
 
         if ($type->isContinuous()) {
-            $min = (int) floor(min($values) * PHI);
-            $max = (int) ceil(max($values) * PHI);
+            $min = min($values);
+            $max = max($values);
 
-            $value = rand($min, $max) / PHI;
+            $phi = getrandmax() / max(abs($max), abs($min));
+
+            $min = (int) floor($min * $phi);
+            $max = (int) ceil($max * $phi);
+
+            $value = rand($min, $max) / $phi;
         } else {
             $offset = array_rand(array_unique($values));
 

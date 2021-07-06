@@ -8,8 +8,14 @@ use Generator;
 
 use function count;
 use function array_slice;
-
-use const Rubix\ML\PHI;
+use function array_sum;
+use function array_map;
+use function array_chunk;
+use function array_rand;
+use function round;
+use function sqrt;
+use function getrandmax;
+use function rand;
 
 /**
  * Unlabeled
@@ -449,12 +455,14 @@ class Unlabeled extends Dataset
         $levelTotals = array_map('array_sum', $levels);
 
         $total = array_sum($levelTotals);
-        $max = (int) round($total * PHI);
+
+        $phi = getrandmax() / $total;
+        $max = (int) round($total * $phi);
 
         $samples = [];
 
         while (count($samples) < $n) {
-            $delta = rand(0, $max) / PHI;
+            $delta = rand(0, $max) / $phi;
 
             foreach ($levels as $i => $level) {
                 $levelTotal = $levelTotals[$i];
@@ -471,7 +479,7 @@ class Unlabeled extends Dataset
                     if ($delta <= 0.0) {
                         $samples[] = $this->samples[$offset];
 
-                        break;
+                        break 2;
                     }
                 }
             }

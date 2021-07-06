@@ -1,4 +1,5 @@
 - 1.1.2
+    - Improved random floating point number precision
     - Deduplicate Preset seeder centroids
     - Fix Gradient Boost learning rate upper bound
     - Fix Loda histogram edge alignment

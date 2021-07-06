@@ -31,7 +31,7 @@ class RandomForestTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 450;
 
     /**
      * The number of samples in the validation set.
@@ -80,7 +80,7 @@ class RandomForestTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new RandomForest(new ClassificationTree(3), 100, 0.2, true);
+        $this->estimator = new RandomForest(new ClassificationTree(3), 50, 0.2, true);
 
         $this->estimator->setBackend(new Serial());
 
@@ -140,7 +140,7 @@ class RandomForestTest extends TestCase
     {
         $expected = [
             'base' => new ClassificationTree(3),
-            'estimators' => 100,
+            'estimators' => 50,
             'ratio' => 0.2,
             'balanced' => true,
         ];
