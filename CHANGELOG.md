@@ -1,3 +1,6 @@
+1.1.2
+    - Fix Gradient Boost learning rate upper bound
+
 - 1.1.1
     - Fix Gradient Boost subsampling and importance scores
     
