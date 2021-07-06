@@ -1,4 +1,4 @@
-1.1.2
+- 1.1.2
     - Fix Gradient Boost learning rate upper bound
 
 - 1.1.1
