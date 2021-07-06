@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Tensor\Matrix;
-use Tensor\Vector;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
@@ -21,6 +20,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\linspace;
 use function count;
 use function array_fill;
 
@@ -234,7 +234,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $min = (float) min($values);
             $max = (float) max($values);
 
-            $edges = Vector::linspace($min, $max, $this->bins - 1)->asArray();
+            $edges = linspace($min, $max, $this->bins - 1);
 
             $counts = array_fill(0, count($edges), 0);
 

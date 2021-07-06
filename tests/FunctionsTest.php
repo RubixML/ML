@@ -10,6 +10,7 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
+use function Rubix\ML\linspace;
 use function Rubix\ML\array_transpose;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
@@ -27,6 +28,7 @@ use function Rubix\ML\warn_deprecated;
  * @covers \Rubix\ML\iterator_filter
  * @covers \Rubix\ML\iterator_first
  * @covers \Rubix\ML\iterator_map
+ * @covers \Rubix\ML\linspace
  * @covers \Rubix\ML\logsumexp
  * @covers \Rubix\ML\sigmoid
  * @covers \Rubix\ML\warn_deprecated
@@ -121,6 +123,35 @@ class FunctionsTest extends TestCase
         yield [8, 3, 56];
 
         yield [10, 6, 210];
+    }
+
+    /**
+     * @test
+     * @dataProvider linspaceProvider
+     *
+     * @param float $min
+     * @param float $max
+     * @param int $n
+     * @param list<float> $expected
+     */
+    public function linspace(float $min, float $max, int $n, array $expected) : void
+    {
+        $this->assertEquals($expected, linspace($min, $max, $n));
+    }
+
+    /**
+     * @return \Generator<array>
+     */
+    public function linspaceProvider() : Generator
+    {
+        yield [0.0, 1.0, 5, [
+            0.0, 0.25, 0.5, 0.75, 1.0,
+        ]];
+
+        yield [-4000.0, 6.0, 8, [
+            -4000.0, -3427.714285714286, -2855.4285714285716, -2283.1428571428573,
+            -1710.8571428571431, -1138.571428571429, -566.2857142857146, 6.0,
+        ]];
     }
 
     /**

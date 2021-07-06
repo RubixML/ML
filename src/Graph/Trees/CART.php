@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Tensor\Vector;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
@@ -14,6 +13,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use Generator;
 
+use function Rubix\ML\linspace;
 use function count;
 use function log;
 use function sqrt;
@@ -365,7 +365,7 @@ abstract class CART implements IteratorAggregate
                 if (!isset($q)) {
                     $bins = (int) round(3.0 + log($m, 2.0));
 
-                    $q = Vector::linspace(0.0, 1.0, $bins)->asArray();
+                    $q = linspace(0.0, 1.0, $bins);
 
                     $q = array_slice($q, 1, -1);
                 }
