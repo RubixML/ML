@@ -207,7 +207,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . ' with the ensemble.');
         }
 
-        if ($rate <= 0.0 or $rate > 1.0) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
