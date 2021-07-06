@@ -2,6 +2,7 @@
 
 namespace Rubix\ML
 {
+    use Rubix\ML\Exceptions\InvalidArgumentException;
     use Generator;
 
     use function count;
@@ -64,6 +65,42 @@ namespace Rubix\ML
     function comb(int $n, int $k) : int
     {
         return $k === 0 ? 1 : (int) (($n * comb($n - 1, $k - 1)) / $k);
+    }
+
+    /**
+     * Return an array of n evenly spaced numbers between minimum and maximum.
+     *
+     * @param float $min
+     * @param float $max
+     * @param int $n
+     * @throws \Tensor\Exceptions\InvalidArgumentException
+     * @return list<float>
+     */
+    function linspace(float $min, float $max, int $n) : array
+    {
+        if ($min > $max) {
+            throw new InvalidArgumentException('Minimum must be'
+                . ' less than maximum.');
+        }
+
+        if ($n < 2) {
+            throw new InvalidArgumentException('Number of elements'
+                . " must be greater than 1, $n given.");
+        }
+
+        $k = $n - 1;
+
+        $interval = abs($max - $min) / $k;
+
+        $values = [$min];
+
+        while (count($values) < $k) {
+            $values[] = end($values) + $interval;
+        }
+
+        $values[] = $max;
+
+        return $values;
     }
 
     /**

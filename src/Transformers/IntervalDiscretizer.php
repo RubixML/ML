@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Tensor\Vector;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\Stats;
@@ -11,6 +10,9 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+
+use function Rubix\ML\linspace;
+use function array_slice;
 
 /**
  * Interval Discretizer
@@ -96,7 +98,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $q = Vector::linspace(0.0, 1.0, 1 + $this->bins)->asArray();
+        $q = linspace(0.0, 1.0, 1 + $this->bins);
 
         $q = array_slice($q, 1, -1);
 
