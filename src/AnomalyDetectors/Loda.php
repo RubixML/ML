@@ -221,7 +221,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
         [$m, $n] = $dataset->shape();
 
         if ($this->fitBins) {
-            $this->bins = max((int) round(log($m, 2)) + 1, self::MIN_BINS);
+            $this->bins = max(self::MIN_BINS, (int) round(log($m, 2.0)) + 1);
         }
 
         $this->r = Matrix::gaussian($n, $this->estimators);
@@ -235,9 +235,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->transpose()
+            ->asArray();
 
-        foreach ($projections->asArray() as $values) {
+        foreach ($projections as $values) {
             $min = (float) min($values);
             $max = (float) max($values);
 
@@ -290,9 +291,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->transpose()
+            ->asArray();
 
-        foreach ($projections->asArray() as $i => $values) {
+        foreach ($projections as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 
             foreach ($values as $value) {
@@ -349,23 +351,26 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
-            ->transpose();
+            ->transpose()
+            ->asArray();
 
         return $this->densities($projections);
     }
 
     /**
-     * Estimate the probability density function of each 1-dimensional projection
-     * using the histograms generated during training.
+     * Estimate the probability density function of each 1-dimensional projection using the histograms
+     * created during training.
      *
-     * @param \Tensor\Matrix $projections
+     * @param list<list<float>> $projections
      * @return list<float>
      */
-    protected function densities(Matrix $projections) : array
+    protected function densities(array $projections) : array
     {
-        $densities = array_fill(0, $projections->n(), 0.0);
+        $n = count(current($projections) ?: []);
 
-        foreach ($projections->asArray() as $i => $values) {
+        $densities = array_fill(0, $n, 0.0);
+
+        foreach ($projections as $i => $values) {
             [$edges, $counts] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
