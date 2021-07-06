@@ -22,7 +22,14 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\linspace;
 use function count;
+use function is_null;
+use function array_slice;
 use function array_fill;
+use function round;
+use function min;
+use function max;
+use function log;
+use function sqrt;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -234,7 +241,11 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $min = (float) min($values);
             $max = (float) max($values);
 
-            $edges = linspace($min, $max, $this->bins - 1);
+            $edges = linspace($min, $max, $this->bins + 1);
+
+            $edges = array_slice($edges, 1, -1);
+
+            $edges[] = INF;
 
             $counts = array_fill(0, count($edges), 0);
 
