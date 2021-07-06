@@ -1,4 +1,5 @@
 - 1.1.2
+    - Deduplicate Preset seeder centroids
     - Fix Gradient Boost learning rate upper bound
 
 - 1.1.1
