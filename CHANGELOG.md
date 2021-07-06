@@ -5,6 +5,7 @@
 - 1.1.2
     - Deduplicate Preset seeder centroids
     - Fix Gradient Boost learning rate upper bound
+    - Fix Loda histogram edge alignment
 
 - 1.1.1
     - Fix Gradient Boost subsampling and importance scores
