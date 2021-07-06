@@ -15,6 +15,7 @@ use Generator;
 
 use function Rubix\ML\linspace;
 use function count;
+use function ceil;
 use function log;
 use function sqrt;
 use function array_slice;
@@ -363,9 +364,9 @@ abstract class CART implements IteratorAggregate
 
             if ($type->isContinuous()) {
                 if (!isset($q)) {
-                    $bins = (int) round(3.0 + log($m, 2.0));
+                    $bins = 1 + (int) ceil(log($m, 2.0));
 
-                    $q = linspace(0.0, 1.0, $bins);
+                    $q = linspace(0.0, 1.0, $bins + 1);
 
                     $q = array_slice($q, 1, -1);
                 }
