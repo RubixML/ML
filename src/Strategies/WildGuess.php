@@ -57,7 +57,7 @@ class WildGuess implements Strategy
      */
     public function fitted() : bool
     {
-        return isset($this->min) and isset($this->max) and $this->phi;
+        return isset($this->min, $this->max, $this->phi);
     }
 
     /**
