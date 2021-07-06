@@ -200,9 +200,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 . ' with the ensemble.');
         }
 
-        if ($rate <= 0.0 or $rate > 1.0) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
-                . " between 0 and 1, $rate given.");
+                . " greater than 0, $rate given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
