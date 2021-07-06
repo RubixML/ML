@@ -192,7 +192,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !$this->classes or !$this->featureCount) {
+        if ($this->bare() or !isset($this->classes, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
