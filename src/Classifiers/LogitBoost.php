@@ -295,6 +295,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         return [
             'booster' => $this->booster,
             'rate' => $this->rate,
+            'alpha' => $this->alpha,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
             'min change' => $this->minChange,
