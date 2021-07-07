@@ -98,13 +98,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected float $rate;
 
     /**
-     * The amount of L2 regularization applied to the ensemble.
-     *
-     * @var float
-     */
-    protected float $alpha;
-
-    /**
      * The ratio of samples to subsample from the training set for each booster.
      *
      * @var float
@@ -184,7 +177,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
-     * @param float $alpha
      * @param float $ratio
      * @param int $estimators
      * @param float $minChange
@@ -196,7 +188,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     public function __construct(
         ?Learner $booster = null,
         float $rate = 0.1,
-        float $alpha = 1e-4,
         float $ratio = 0.5,
         int $estimators = 1000,
         float $minChange = 1e-4,
@@ -212,11 +203,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
-        }
-
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
         }
 
         if ($ratio <= 0.0 or $ratio > 1.0) {
@@ -250,7 +236,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         $this->booster = $booster ?? new RegressionTree(3);
         $this->rate = $rate;
-        $this->alpha = $alpha;
         $this->ratio = $ratio;
         $this->estimators = $estimators;
         $this->minChange = $minChange;
@@ -295,7 +280,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         return [
             'booster' => $this->booster,
             'rate' => $this->rate,
-            'alpha' => $this->alpha,
             'ratio' => $this->ratio,
             'estimators' => $this->estimators,
             'min change' => $this->minChange,
@@ -420,7 +404,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
             $booster = clone $this->booster;
 
-            $gradient = array_map([$this, 'gradient'], $out, $targets, $z);
+            $gradient = array_map([$this, 'gradient'], $out, $targets);
 
             $losses = array_map([$this, 'crossEntropy'], $out, $targets);
 
@@ -602,12 +586,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @param float $out
      * @param float $target
-     * @param float $z
      * @return float
      */
-    protected function gradient(float $out, float $target, float $z) : float
+    protected function gradient(float $out, float $target) : float
     {
-        return ($target - $out) + $this->alpha * $z;
+        return $target - $out;
     }
 
     /**

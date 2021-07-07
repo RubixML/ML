@@ -32,7 +32,7 @@ class LogitBoostTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 35000;
+    protected const TRAIN_SIZE = 350;
 
     /**
      * The number of samples in the validation set.
@@ -80,7 +80,7 @@ class LogitBoostTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
         ]);
 
-        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 1e-4, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
+        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 
         $this->metric = new Accuracy();
 
@@ -129,7 +129,6 @@ class LogitBoostTest extends TestCase
     {
         $expected = [
             'min change' => 0.0001,
-            'alpha' => 1e-4,
             'window' => 5,
             'booster' => new RegressionTree(3),
             'rate' => 0.1,
@@ -173,6 +172,8 @@ class LogitBoostTest extends TestCase
         $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);
+
+        var_dump($this->estimator->proba($testing));
 
         $score = $this->metric->score($predictions, $testing->labels());
 
