@@ -10,7 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Loggers\Screen;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -129,6 +129,7 @@ class LogitBoostTest extends TestCase
     {
         $expected = [
             'min change' => 0.0001,
+            'alpha' => 1e-4,
             'window' => 5,
             'booster' => new RegressionTree(3),
             'rate' => 0.1,
@@ -146,7 +147,7 @@ class LogitBoostTest extends TestCase
      */
     public function trainPredict() : void
     {
-        $this->estimator->setLogger(new Screen());
+        $this->estimator->setLogger(new BlackHole());
 
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
