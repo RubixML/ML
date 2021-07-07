@@ -496,7 +496,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
-                $weights = array_map([$this, 'differentiate'], $out);
+                $weights = array_map([$this, 'weightSample'], $out);
             }
 
             $prevLoss = $loss;
@@ -634,12 +634,12 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     }
 
     /**
-     * Compute the derivative of the logistic function.
+     * Use the derivative of the logistic function to weight the sample.
      *
      * @param float $out
      * @return float
      */
-    protected function differentiate(float $out) : float
+    protected function weightSample(float $out) : float
     {
         return $out * (1.0 - $out);
     }
