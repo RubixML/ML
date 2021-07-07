@@ -144,7 +144,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var mixed[]|null
      */
-    protected ?array $ensemble = null;
+    protected ?array $boosters = null;
 
     /**
      * The validation scores at each epoch.
@@ -296,7 +296,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     public function trained() : bool
     {
-        return $this->ensemble
+        return $this->boosters
             and $this->classes
             and $this->featureCount;
     }
@@ -394,7 +394,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $this->classes = $classes;
         $this->featureCount = $n;
 
-        $this->ensemble = $this->scores = $this->losses = [];
+        $this->boosters = $this->scores = $this->losses = [];
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;
@@ -424,20 +424,20 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $booster->train($subset);
 
-            $predictions = $booster->predict($training);
+            $zHat = $booster->predict($training);
 
-            $z = array_map([$this, 'updateZ'], $predictions, $z);
+            $z = array_map([$this, 'updateZ'], $zHat, $z);
 
             $out = array_map('Rubix\ML\sigmoid', $z);
 
             $this->losses[$epoch] = $loss;
 
-            $this->ensemble[] = $booster;
+            $this->boosters[] = $booster;
 
             if (isset($zTest)) {
-                $predictions = $booster->predict($testing);
+                $zHat = $booster->predict($testing);
 
-                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
+                $zTest = array_map([$this, 'updateZ'], $zHat, $zTest);
 
                 $outTest = array_map('Rubix\ML\sigmoid', $zTest);
 
@@ -488,7 +488,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         if ($this->scores and end($this->scores) <= $bestScore) {
-            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
+            $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
 
             if ($this->logger) {
                 $this->logger->info("Model state restored to epoch $bestEpoch");
@@ -504,11 +504,34 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('Rubix\ML\argmax', $this->proba($dataset));
+        if (!isset($this->boosters, $this->classes, $this->featureCount)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+
+        $z = array_fill(0, $dataset->numSamples(), 0.0);
+
+        foreach ($this->boosters as $estimator) {
+            $zHat = $estimator->predict($dataset);
+
+            $z = array_map([$this, 'updateZ'], $zHat, $z);
+        }
+
+        [$classA, $classB] = $this->classes;
+
+        $predictions = [];
+
+        foreach ($z as $value) {
+            $predictions[] = $value < 0.0 ? $classA : $classB;
+        }
+
+        return $predictions;
     }
 
     /**
@@ -520,7 +543,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!isset($this->ensemble, $this->classes, $this->featureCount)) {
+        if (!isset($this->boosters, $this->classes, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -528,15 +551,15 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         $z = array_fill(0, $dataset->numSamples(), 0.0);
 
-        foreach ($this->ensemble as $estimator) {
-            $predictions = $estimator->predict($dataset);
+        foreach ($this->boosters as $estimator) {
+            $zHat = $estimator->predict($dataset);
 
-            $z = array_map([$this, 'updateZ'], $predictions, $z);
+            $z = array_map([$this, 'updateZ'], $zHat, $z);
         }
 
-        [$classA, $classB] = $this->classes;
-
         $out = array_map('Rubix\ML\sigmoid', $z);
+
+        [$classA, $classB] = $this->classes;
 
         $probabilities = [];
 
@@ -558,13 +581,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      */
     public function featureImportances() : array
     {
-        if (!isset($this->ensemble, $this->featureCount)) {
+        if (!isset($this->boosters, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         $importances = array_fill(0, $this->featureCount, 0.0);
 
-        foreach ($this->ensemble as $tree) {
+        foreach ($this->boosters as $tree) {
             $scores = $tree->featureImportances();
 
             foreach ($scores as $column => $score) {
@@ -572,7 +595,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
         }
 
-        $numEstimators = count($this->ensemble);
+        $numEstimators = count($this->boosters);
 
         foreach ($importances as &$importance) {
             $importance /= $numEstimators;
@@ -608,13 +631,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * Compute the z signal for an iteration.
      *
-     * @param float $prediction
      * @param float $z
+     * @param float $prevZ
      * @return float
      */
-    protected function updateZ(float $prediction, float $z) : float
+    protected function updateZ(float $z, float $prevZ) : float
     {
-        return $this->rate * $prediction + $z;
+        return $this->rate * $z + $prevZ;
     }
 
     /**

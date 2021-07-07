@@ -173,8 +173,6 @@ class LogitBoostTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        var_dump($this->estimator->proba($testing));
-
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
