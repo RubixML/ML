@@ -1,6 +1,7 @@
 - 1.2.0
     - Added Logit Boost classifier
     - Interval Discretizer variable or equi-depth binning
+    - Text Normalizers now lower or upper case
 
 - 1.1.2
     - Improved random floating point number precision

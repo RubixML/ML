@@ -4,6 +4,10 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
+use function is_string;
+use function array_walk;
+use function call_user_func;
+
 /**
  * Multibyte Text Normalizer
  *
@@ -19,6 +23,21 @@ use Rubix\ML\DataType;
  */
 class MultibyteTextNormalizer implements Transformer
 {
+    /**
+     * The normalization function.
+     *
+     * @var callable
+     */
+    protected $normalize;
+
+    /**
+     * @param bool $uppercase
+     */
+    public function __construct(bool $uppercase = false)
+    {
+        $this->normalize = $uppercase ? 'mb_strtoupper' : 'mb_strtolower';
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -50,7 +69,7 @@ class MultibyteTextNormalizer implements Transformer
     {
         foreach ($sample as &$value) {
             if (is_string($value)) {
-                $value = mb_strtolower($value);
+                $value = call_user_func($this->normalize, $value);
             }
         }
     }
