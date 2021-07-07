@@ -26,9 +26,9 @@ class MultibyteTextNormalizer implements Transformer
     /**
      * The normalization function.
      *
-     * @var callable
+     * @var callable-string
      */
-    protected $normalize;
+    protected string $normalize;
 
     /**
      * @param bool $uppercase
