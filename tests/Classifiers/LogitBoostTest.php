@@ -10,7 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\Loggers\Screen;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -32,7 +32,7 @@ class LogitBoostTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 35000;
 
     /**
      * The number of samples in the validation set.
@@ -80,7 +80,7 @@ class LogitBoostTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
         ]);
 
-        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
+        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 1e-4, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 
         $this->metric = new Accuracy();
 
@@ -146,7 +146,7 @@ class LogitBoostTest extends TestCase
      */
     public function trainPredict() : void
     {
-        $this->estimator->setLogger(new BlackHole());
+        $this->estimator->setLogger(new Screen());
 
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
