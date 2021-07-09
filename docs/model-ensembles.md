@@ -47,7 +47,9 @@ $creditScoreEstimator->train($dataset);
 $creditScores = $creditScoreEstimator->predict($dataset);
 
 $addFeature = function (&$sample, $offset, $context) {
+    $label = array_pop($sample);
     $sample[] = $context[$offset];
+    $sample[] = $label;
 }
 
 $dataset->apply(new LambdaFunction($addFeature, $creditScores));
