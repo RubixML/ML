@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Tuple;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
+use Tuple;
 
 use function count;
 
@@ -31,7 +31,7 @@ class Homogeneity implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return \Rubix\ML\Tuple{float,float}
+     * @return \Tuple{float,float}
      */
     public function range() : Tuple
     {

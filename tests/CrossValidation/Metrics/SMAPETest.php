@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
-use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
 use Generator;
+use Tuple;
 
 /**
  * @group Metrics

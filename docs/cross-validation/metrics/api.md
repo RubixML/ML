@@ -29,7 +29,7 @@ echo $score;
 ### Output Range
 Output the minimum and maximum value the validation score can take in a [2-tuple](../../faq.md#what-is-a-tuple):
 ```php
-public range() : Rubix\ML\Tuple{float, float}
+public range() : Tuple{float, float}
 ```
 
 ```php

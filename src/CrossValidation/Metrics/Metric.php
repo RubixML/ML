@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Tuple;
 use Stringable;
+use Tuple;
 
 interface Metric extends Stringable
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return \Rubix\ML\Tuple{float,float}
+     * @return \Tuple{float,float}
      */
     public function range() : Tuple;
 
