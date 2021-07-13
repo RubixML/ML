@@ -1,3 +1,6 @@
+- 1.1.3
+    - Min Max Normalizer compensate for 0 variance features
+
 - 1.1.2
     - Improved random floating point number precision
     - Deduplicate Preset seeder centroids
