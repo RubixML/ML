@@ -13,6 +13,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function min;
 use function max;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Min Max Normalizer
  *
@@ -138,7 +140,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $min = min($values);
                 $max = max($values);
 
-                $scale = ($this->max - $this->min) / ($max - $min);
+                $scale = ($this->max - $this->min) / (($max - $min) ?: EPSILON);
 
                 $this->minimums[$column] = $min;
                 $this->maximums[$column] = $max;
@@ -168,7 +170,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
             $min = min($this->minimums[$column], ...$values);
             $max = max($this->maximums[$column], ...$values);
 
-            $scale = ($this->max - $this->min) / ($max - $min);
+            $scale = ($this->max - $this->min) / (($max - $min) ?: EPSILON);
 
             $this->minimums[$column] = $min;
             $this->maximums[$column] = $max;

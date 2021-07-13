@@ -33,7 +33,7 @@ class MinMaxNormalizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
+        $this->generator = new Blob([0.0, 3000.0, -6.0, 1.0], [1.0, 30.0, 0.001, 0.0]);
 
         $this->transformer = new MinMaxNormalizer(0.0, 1.0);
     }
@@ -65,12 +65,12 @@ class MinMaxNormalizerTest extends TestCase
         $minimums = $this->transformer->minimums();
 
         $this->assertIsArray($minimums);
-        $this->assertCount(3, $minimums);
+        $this->assertCount(4, $minimums);
 
         $maximums = $this->transformer->maximums();
 
         $this->assertIsArray($maximums);
-        $this->assertCount(3, $maximums);
+        $this->assertCount(4, $maximums);
 
         $dataset = $this->generator->generate(1);
 
@@ -80,7 +80,7 @@ class MinMaxNormalizerTest extends TestCase
 
         $sample = $dataset->sample(0);
 
-        $this->assertCount(3, $sample);
+        $this->assertCount(4, $sample);
 
         $this->assertEqualsWithDelta(0.5, $sample[0], 1);
         $this->assertEqualsWithDelta(0.5, $sample[1], 1);
