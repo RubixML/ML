@@ -428,6 +428,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

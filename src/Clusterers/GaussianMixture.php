@@ -592,6 +592,8 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

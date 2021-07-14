@@ -40,7 +40,7 @@ class CSV implements Extractor, Writable
     /**
      * The path to the file on disk.
      *
-     * @var string
+     * @var non-empty-string
      */
     protected string $path;
 
@@ -54,14 +54,14 @@ class CSV implements Extractor, Writable
     /**
      * The character that delineates the values of the columns of the data table.
      *
-     * @var string
+     * @var non-empty-string
      */
     protected string $delimiter;
 
     /**
      * The character used to enclose a cell that contains a delimiter in the body.
      *
-     * @var string
+     * @var non-empty-string
      */
     protected string $enclosure;
 

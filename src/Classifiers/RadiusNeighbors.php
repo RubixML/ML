@@ -313,6 +313,8 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

@@ -156,7 +156,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
      */
     public function update(Dataset $dataset) : void
     {
-        if ($this->minimums === null or $this->maximums === null or $this->scales === null) {
+        if (!isset($this->minimums, $this->maximums, $this->scales)) {
             $this->fit($dataset);
 
             return;
@@ -185,7 +185,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
      */
     public function transform(array &$samples) : void
     {
-        if ($this->scales === null or $this->minimums === null) {
+        if (!isset($this->minimums, $this->scales)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -210,7 +210,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
      */
     public function reverseTransform(array &$samples) : void
     {
-        if ($this->scales === null or $this->minimums === null) {
+        if (!isset($this->minimums, $this->scales)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
@@ -229,6 +229,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
 
     /**
      * Return the string representation of the object.
+     *
+     * @internal
      *
      * @return string
      */

@@ -117,6 +117,8 @@ class RMSProp implements Optimizer, Adaptive
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

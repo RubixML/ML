@@ -55,6 +55,8 @@ class Uniform implements Initializer
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string
