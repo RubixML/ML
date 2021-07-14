@@ -20,7 +20,7 @@ class Whitespace implements Tokenizer
     /**
      * The whitespace character that delimits each token.
      *
-     * @var string
+     * @var non-empty-string
      */
     protected string $delimiter;
 
@@ -48,7 +48,7 @@ class Whitespace implements Tokenizer
      */
     public function tokenize(string $text) : array
     {
-        return explode($this->delimiter, $text) ?: [];
+        return explode($this->delimiter, $text);
     }
 
     /**
