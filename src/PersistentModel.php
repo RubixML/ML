@@ -228,6 +228,8 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

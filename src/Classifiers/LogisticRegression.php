@@ -470,6 +470,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

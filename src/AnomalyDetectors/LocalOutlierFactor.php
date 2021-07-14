@@ -322,6 +322,8 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

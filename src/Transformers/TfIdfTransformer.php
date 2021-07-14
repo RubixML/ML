@@ -230,6 +230,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

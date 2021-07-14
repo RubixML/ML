@@ -67,6 +67,8 @@ class Native implements Serializer
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string

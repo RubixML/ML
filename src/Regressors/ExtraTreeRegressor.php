@@ -190,6 +190,8 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string
