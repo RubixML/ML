@@ -67,12 +67,14 @@ class RandIndex implements Metric
     /**
      * Score a set of predictions.
      *
-     * @param list<string|int> $predictions
-     * @param list<string|int> $labels
+     * @param ScoreInput $input
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(ScoreInput $input) : float
     {
+        $predictions = $input->predictions();
+        $labels = $input->labels();
+
         $table = (new ContingencyTable())->generate($labels, $predictions);
 
         if (empty($table)) {

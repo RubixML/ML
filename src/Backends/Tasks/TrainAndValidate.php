@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 
 /**
  * Train and Validate
@@ -40,7 +41,7 @@ class TrainAndValidate extends Task
 
         $predictions = $estimator->predict($testing);
 
-        $score = $metric->score($predictions, $testing->labels());
+        $score = $metric->score(new ScoreInput($predictions, $testing->labels()));
 
         return $score;
     }

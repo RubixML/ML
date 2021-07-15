@@ -74,14 +74,13 @@ class VMeasure implements Metric
     /**
      * Score a set of predictions.
      *
-     * @param list<string|int> $predictions
-     * @param list<string|int> $labels
+     * @param ScoreInput $input
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(ScoreInput $input) : float
     {
-        $homogeneity = (new Homogeneity())->score($predictions, $labels);
-        $completeness = (new Completeness())->score($predictions, $labels);
+        $homogeneity = (new Homogeneity())->score($input);
+        $completeness = (new Completeness())->score($input);
 
         return (1.0 + $this->beta) * $homogeneity * $completeness
             / (($this->beta * $homogeneity + $completeness) ?: EPSILON);

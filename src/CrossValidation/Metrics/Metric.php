@@ -26,9 +26,8 @@ interface Metric extends Stringable
     /**
      * Score a set of predictions.
      *
-     * @param list<string|int|float> $predictions
-     * @param list<string|int|float> $labels
+     * @param ScoreInput $input
      * @return float
      */
-    public function score(array $predictions, array $labels) : float;
+    public function score(ScoreInput $input) : float;
 }

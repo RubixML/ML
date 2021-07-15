@@ -6,6 +6,7 @@ When actively tuning a model, we will train an estimator with one set of hyper-p
 
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 
 [$training, $testing] = $dataset->randomize()->split(0.8);
@@ -18,7 +19,7 @@ $predictions = $estimator->predict($testing);
 
 $metric = new SMAPE();
 
-$score = $metric->score($predictions, $testing->labels());
+$score = $metric->score(new ScoreInput($predictions, $testing->labels()));
 
 echo $score;
 ```

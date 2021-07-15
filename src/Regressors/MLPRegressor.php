@@ -27,6 +27,7 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -429,7 +430,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             if (!$testing->empty()) {
                 $predictions = $this->predict($testing);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
                 $this->scores[$epoch] = $score;
             }

@@ -13,6 +13,7 @@ use Rubix\ML\Kernels\SVM\Linear;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -128,7 +129,7 @@ class SVRTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

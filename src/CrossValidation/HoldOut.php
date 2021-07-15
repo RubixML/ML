@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -72,7 +73,7 @@ class HoldOut implements Validator
 
         $predictions = $estimator->predict($testing);
 
-        $score = $metric->score($predictions, $testing->labels());
+        $score = $metric->score(new ScoreInput($predictions, $testing->labels()));
 
         return $score;
     }

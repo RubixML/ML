@@ -23,6 +23,7 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -206,7 +207,7 @@ class MultilayerPerceptronTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

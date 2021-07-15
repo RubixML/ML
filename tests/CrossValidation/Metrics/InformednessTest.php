@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -74,7 +75,7 @@ class InformednessTest extends TestCase
     {
         [$min, $max] = $this->metric->range()->list();
 
-        $score = $this->metric->score($predictions, $labels);
+        $score = $this->metric->score(new ScoreInput($predictions, $labels));
 
         $this->assertThat(
             $score,

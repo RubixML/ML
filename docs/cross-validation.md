@@ -29,12 +29,13 @@ Cross validation [Metrics](cross-validation/metrics/api.md) are used to score th
 
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 
 $predictions = $estimator->predict($testing);
 
 $metric = new Accuracy();
 
-$score = $metric->score($predictions, $testing->labels());
+$score = $metric->score(new ScoreInput($predictions, $testing->labels()));
 
 echo $score;
 ```
