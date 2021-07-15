@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -136,7 +137,7 @@ class DBSCANTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

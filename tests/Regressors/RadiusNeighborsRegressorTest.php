@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -135,7 +136,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

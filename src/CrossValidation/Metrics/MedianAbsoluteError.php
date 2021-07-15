@@ -51,13 +51,15 @@ class MedianAbsoluteError implements Metric
     /**
      * Score a set of predictions.
      *
-     * @param list<int|float> $predictions
-     * @param list<int|float> $labels
+     * @param ScoreInput $input
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(ScoreInput $input) : float
     {
+        $predictions = $input->predictions();
+        $labels = $input->labels();
+
         PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
         if (empty($predictions)) {

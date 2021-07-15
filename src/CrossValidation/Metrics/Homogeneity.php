@@ -55,13 +55,15 @@ class Homogeneity implements Metric
     /**
      * Score a set of predictions.
      *
-     * @param list<string|int> $predictions
-     * @param list<string|int> $labels
+     * @param ScoreInput $input
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(ScoreInput $input) : float
     {
+        $predictions = $input->predictions();
+        $labels = $input->labels();
+
         $table = (new ContingencyTable())->generate($predictions, $labels);
 
         if (empty($table)) {

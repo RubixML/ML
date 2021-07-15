@@ -4,17 +4,20 @@ Validation metrics are for used evaluating the performance of an estimator. They
 ### Scoring Predictions
 To compute a validation score, pass in the predictions from an estimator along with the expected labels:
 ```php
-public score(array $predictions, array $labels) : float
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
+
+public score(ScoreInput $input) : float
 ```
 
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 
 $predictions = $estimator->predict($dataset);
 
 $metric = new MeanAbsoluteError();
 
-$score = $metric->score($predictions, $dataset->labels());
+$score = $metric->score(new ScoreInput($predictions, $dataset->labels()));
 
 echo $score;
 ```

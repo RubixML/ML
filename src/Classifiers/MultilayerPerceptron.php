@@ -28,6 +28,7 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
@@ -444,7 +445,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             if (!$testing->empty()) {
                 $predictions = $this->predict($testing);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
                 $this->scores[$epoch] = $score;
             }

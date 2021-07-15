@@ -13,6 +13,7 @@ use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -121,7 +122,7 @@ class BootstrapAggregatorTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

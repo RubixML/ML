@@ -11,6 +11,7 @@ use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -129,7 +130,7 @@ class DummyRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(new ScoreInput($predictions, $testing->labels()));
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

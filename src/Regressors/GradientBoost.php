@@ -16,6 +16,7 @@ use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\ScoreInput;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -443,7 +444,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
                 $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
 
-                $score = $this->metric->score($outTest, $testing->labels());
+                $score = $this->metric->score(new ScoreInput($outTest, $testing->labels()));
 
                 $this->scores[$epoch] = $score;
             }
