@@ -194,10 +194,10 @@ class CSV implements Extractor, Writable
 
             if (isset($header)) {
                 $record = array_combine($header, $record);
-            }
 
-            if (!$record) {
-                throw new RuntimeException("Malformed record on line $line.");
+                if ($record === false) {
+                    throw new RuntimeException("Malformed record on line $line.");
+                }
             }
 
             yield $record;
