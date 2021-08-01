@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Tuple;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Tuple;
 
 use function count;
 
@@ -28,7 +28,7 @@ class MeanSquaredError implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return \Tuple{float,float}
+     * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple
     {

@@ -1,12 +1,24 @@
 <?php
 
+namespace Rubix\ML;
+
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use IteratorAggregate;
+use ArrayAccess;
+use Countable;
+use Generator;
+
+use function count;
+use function func_get_args;
+
 /**
  * Tuple
  *
- * An immutable list with a fixed-length whose elements are indexed by their offset in the list.
+ * An immutable list with a fixed-length that is indexable by offset in the sequence.
  *
- * @category    Data Structures
- * @package     Scienide/Tuple
+ * @category    Machine Learning
+ * @package     Rubix/ML
  * @author      Andrew DalPino
  *
  * @implements ArrayAccess<int, mixed>
@@ -50,12 +62,12 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
-     * @throws \InvalidArgumentException
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
     public function offsetGet($offset)
     {
-        if ($this->offsetExists($offset)) {
+        if (isset($this->elements[$offset])) {
             return $this->elements[$offset];
         }
 
@@ -64,10 +76,10 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param int $offset
-     * @param mixed $value
-     * @throws \RuntimeException
+     * @param mixed[] $values
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($offset, $values) : void
     {
         throw new RuntimeException('Tuples cannot be mutated.');
     }
@@ -85,7 +97,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param int $offset
-     * @throws \RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function offsetUnset($offset) : void
     {
