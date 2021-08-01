@@ -34,7 +34,7 @@ class TextNormalizerTest extends TestCase
             ['with a Dandy   umbrella'],
         ]);
 
-        $this->transformer = new TextNormalizer();
+        $this->transformer = new TextNormalizer(true);
     }
 
     /**
@@ -54,9 +54,8 @@ class TextNormalizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $outcome = [
-            ['the quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of coke'],
-            ['with a dandy   umbrella'],
+            ['THE QUICK BROWN FOX JUMPED OVER THE LAZY MAN SITTING AT A BUS STOP DRINKING A CAN OF COKE'],
+            ['WITH A DANDY   UMBRELLA'],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());

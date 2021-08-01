@@ -13,7 +13,7 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | booster | RegressionTree | Learner | The regressor that will fix up the error residuals of the *weak* base learner. |
+| 1 | booster | RegressionTree | Learner | The regressor used to up the error residuals of the base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 4 | estimators | 1000 | int | The maximum number of boosters to train in the ensemble. |

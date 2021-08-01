@@ -6,7 +6,7 @@ use Rubix\ML\DataType;
 
 use function is_string;
 use function array_walk;
-use function strtolower;
+use function call_user_func;
 
 /**
  * Text Normalizer
@@ -19,6 +19,21 @@ use function strtolower;
  */
 class TextNormalizer implements Transformer
 {
+    /**
+     * The normalization function.
+     *
+     * @var callable-string
+     */
+    protected string $normalize;
+
+    /**
+     * @param bool $uppercase
+     */
+    public function __construct(bool $uppercase = false)
+    {
+        $this->normalize = $uppercase ? 'strtoupper' : 'strtolower';
+    }
+
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -50,7 +65,7 @@ class TextNormalizer implements Transformer
     {
         foreach ($sample as &$value) {
             if (is_string($value)) {
-                $value = strtolower($value);
+                $value = call_user_func($this->normalize, $value);
             }
         }
     }

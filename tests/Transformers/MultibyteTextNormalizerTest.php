@@ -36,7 +36,7 @@ class MultibyteTextNormalizerTest extends TestCase
             ['Working with emoji 🤓'],
         ]);
 
-        $this->transformer = new MultibyteTextNormalizer();
+        $this->transformer = new MultibyteTextNormalizer(false);
     }
 
     /**

@@ -1,3 +1,8 @@
+- 1.2.0
+    - Added Logit Boost classifier
+    - Interval Discretizer variable or equi-depth binning
+    - Text Normalizers now lower or upper case
+
 - 1.1.3
     - Min Max Normalizer compensate for 0 variance features
 

@@ -9,6 +9,7 @@ use Generator;
 use function Rubix\ML\iterator_first;
 use function is_dir;
 use function is_file;
+use function is_array;
 use function is_readable;
 use function is_writable;
 use function fopen;
@@ -194,10 +195,10 @@ class CSV implements Extractor, Writable
 
             if (isset($header)) {
                 $record = array_combine($header, $record);
-            }
 
-            if (!$record) {
-                throw new RuntimeException("Malformed record on line $line.");
+                if (!is_array($record)) {
+                    throw new RuntimeException("Malformed record on line $line.");
+                }
             }
 
             yield $record;
