@@ -4216,7 +4216,7 @@
                 
                 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/MultibyteTextNormalizer.php">[source]</a></span></p>
 <h1 id="multibyte-text-normalizer">Multibyte Text Normalizer<a class="headerlink" href="#multibyte-text-normalizer" title="Permanent link">#</a></h1>
-<p>This transformer converts the characters in all <a href="https://www.php.net/manual/en/intro.mbstring.php">multibyte strings</a> to lowercase. Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of non roman alphabets such as Chinese and Cyrillic.</p>
+<p>This transformer converts the characters in all <a href="https://www.php.net/manual/en/intro.mbstring.php">multibyte strings</a> to the same case. Multibyte strings contain characters such as accents (é, è, à), emojis (😀, 😉) or characters of non roman alphabets such as Chinese and Cyrillic.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>⚠️ We recommend you install the <a href="https://www.php.net/manual/en/book.mbstring.php">mbstring extension</a> for best performance.</p>
@@ -4224,11 +4224,30 @@
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
 <p><strong>Data Type Compatibility:</strong> Categorical</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
-<p>This transformer does not have any parameters.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>uppercase</td>
+<td>false</td>
+<td>bool</td>
+<td>Should the text be converted to uppercase?</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\MultibyteTextNormalizer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MultibyteTextNormalizer</span><span class="p">();</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MultibyteTextNormalizer</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This transformer does not have any additional methods.</p>
@@ -4240,7 +4259,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-25
+      Last update: 2021-07-06
     
   </small>
 </div>
