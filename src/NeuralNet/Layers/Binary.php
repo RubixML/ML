@@ -30,7 +30,7 @@ class Binary implements Output
     /**
      * The labels of either of the possible outcomes.
      *
-     * @var string[]
+     * @var (string|int)[]
      */
     protected array $classes = [
         //
@@ -78,7 +78,9 @@ class Binary implements Output
                 . ' must be 2, ' . count($classes) . ' given.');
         }
 
-        $this->classes = array_flip(array_values($classes));
+        $classes = array_flip(array_values($classes));
+
+        $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->activationFn = new Sigmoid();
     }
