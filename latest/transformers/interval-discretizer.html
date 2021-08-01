@@ -4250,12 +4250,19 @@
 <td>int</td>
 <td>The number of bins per histogram.</td>
 </tr>
+<tr>
+<td>2</td>
+<td>equiWidth</td>
+<td>false</td>
+<td>bool</td>
+<td>Should the bins be equal width?</td>
+</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\IntervalDiscretizer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IntervalDiscretizer</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IntervalDiscretizer</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return the bin intervals of the fitted data:
@@ -4269,7 +4276,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-12
+      Last update: 2021-08-01
     
   </small>
 </div>
