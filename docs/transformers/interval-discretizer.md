@@ -11,12 +11,13 @@ Assigns continuous features to ordered categories using variable width per-featu
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | bins | 5 | int | The number of bins per histogram. |
+| 2 | equiWidth | false | bool | Should the bins be equal width? |
 
 ## Example
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
-$transformer = new IntervalDiscretizer(8);
+$transformer = new IntervalDiscretizer(8, false);
 ```
 
 ## Additional Methods
