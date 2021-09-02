@@ -8,8 +8,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\LoggerAware;
@@ -34,8 +34,6 @@ use function array_map;
 use function array_reduce;
 use function array_slice;
 use function array_fill;
-use function array_intersect;
-use function array_values;
 use function in_array;
 use function round;
 use function max;
@@ -143,13 +141,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
-     * The *weak* base regressor to be boosted.
-     *
-     * @var \Rubix\ML\Learner
-     */
-    protected \Rubix\ML\Learner $base;
-
-    /**
      * An ensemble of weak regressors.
      *
      * @var mixed[]
@@ -180,6 +171,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected ?int $featureCount = null;
 
     /**
+     * The mean of the labels of the training set.
+     *
+     * @var float|null
+     */
+    protected ?float $mu = null;
+
+    /**
      * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
      * @param float $ratio
@@ -188,7 +186,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param int $window
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @param \Rubix\ML\Learner|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
@@ -199,8 +196,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         float $minChange = 1e-4,
         int $window = 10,
         float $holdOut = 0.1,
-        ?Metric $metric = null,
-        ?Learner $base = null
+        ?Metric $metric = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
             throw new InvalidArgumentException('Booster is not compatible'
@@ -241,11 +237,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
-        if ($base and $base->type() != EstimatorType::regressor()) {
-            throw new InvalidArgumentException('Base Estimator must be a'
-                . " regressor, {$base->type()} given.");
-        }
-
         $this->booster = $booster ?? new RegressionTree(3);
         $this->rate = $rate;
         $this->ratio = $ratio;
@@ -254,7 +245,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->metric = $metric ?? new RMSE();
-        $this->base = $base ?? new DummyRegressor(new Mean());
     }
 
     /**
@@ -278,12 +268,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function compatibility() : array
     {
-        $compatibility = array_intersect(
-            $this->booster->compatibility(),
-            $this->base->compatibility()
-        );
-
-        return array_values($compatibility);
+        return $this->booster->compatibility();
     }
 
     /**
@@ -304,7 +289,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'metric' => $this->metric,
-            'base' => $this->base,
         ];
     }
 
@@ -315,7 +299,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function trained() : bool
     {
-        return $this->base->trained() and $this->ensemble;
+        return !empty($this->ensemble);
     }
 
     /**
@@ -377,30 +361,24 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
-
         [$min, $max] = $this->metric->range()->list();
-
         [$m, $n] = $training->shape();
-
-        if ($this->logger) {
-            $this->logger->info("Training {$this->base}");
-        }
-
-        $this->base->train($training);
-
-        $out = $this->base->predict($training);
 
         $targets = $training->labels();
 
+        $mu = Stats::mean($targets);
+
+        $out = array_fill(0, $training->numSamples(), $mu);
+
         if (!$testing->empty()) {
-            $outTest = $this->base->predict($testing);
+            $outTest = array_fill(0, $testing->numSamples(), $mu);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
         $this->featureCount = $n;
-
         $this->ensemble = $this->scores = $this->losses = [];
+        $this->mu = $mu;
 
         $bestScore = $min;
         $bestEpoch = $delta = 0;
@@ -507,7 +485,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $out = $this->base->predict($dataset);
+        $out = array_fill(0, $dataset->numSamples(), $this->mu);
 
         foreach ($this->ensemble as $estimator) {
             $predictions = $estimator->predict($dataset);

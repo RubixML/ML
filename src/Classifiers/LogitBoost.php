@@ -367,9 +367,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
-
         [$min, $max] = $this->metric->range()->list();
-
         [$m, $n] = $training->shape();
 
         $classMap = array_flip($classes);

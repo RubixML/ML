@@ -152,7 +152,6 @@ class GradientBoostTest extends TestCase
             'window' => 10,
             'hold out' => 0.1,
             'metric' => new RMSE(),
-            'base' => new DummyRegressor(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

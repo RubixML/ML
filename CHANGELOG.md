@@ -1,5 +1,6 @@
 -2.0.0
     - Change Token Hashing Vectorizer hashing function
+    - Gradient Boost always uses mean base estimator
 
 - 1.2.0
     - Added Logit Boost classifier
