@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests\CrossValidation;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ class HoldOutTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\DummyClassifier
+     * @var \Rubix\ML\Classifiers\GaussianNB
      */
     protected $estimator;
 
@@ -48,7 +48,7 @@ class HoldOutTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
         ], [0.45, 0.55]);
 
-        $this->estimator = new DummyClassifier();
+        $this->estimator = new GaussianNB();
 
         $this->validator = new HoldOut(0.2);
 

@@ -6,7 +6,7 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Serializers\Native;
 use Rubix\ML\Serializers\Serializer;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -36,7 +36,7 @@ class NativeTest extends TestCase
     {
         $this->serializer = new Native();
 
-        $this->persistable = new DummyClassifier();
+        $this->persistable = new GaussianNB();
     }
 
     /**
@@ -59,7 +59,7 @@ class NativeTest extends TestCase
 
         $persistable = $this->serializer->deserialize($data);
 
-        $this->assertInstanceOf(DummyClassifier::class, $persistable);
+        $this->assertInstanceOf(GaussianNB::class, $persistable);
         $this->assertInstanceOf(Persistable::class, $persistable);
     }
 

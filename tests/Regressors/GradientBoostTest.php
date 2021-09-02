@@ -9,11 +9,11 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -104,7 +104,7 @@ class GradientBoostTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new GradientBoost(new DummyRegressor());
+        new GradientBoost(new Ridge());
     }
 
     /**

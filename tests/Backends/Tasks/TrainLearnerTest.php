@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\Backends\Tasks;
 
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class TrainLearnerTest extends TestCase
      */
     public function compute() : void
     {
-        $estimator = new DummyClassifier();
+        $estimator = new GaussianNB();
 
         $generator = new Agglomerate([
             'male' => new Blob([69.2, 195.7, 40.0], [1.0, 3.0, 0.3]),
@@ -32,7 +32,7 @@ class TrainLearnerTest extends TestCase
 
         $result = $task->compute();
 
-        $this->assertInstanceOf(DummyClassifier::class, $result);
+        $this->assertInstanceOf(GaussianNB::class, $result);
         $this->assertTrue($result->trained());
     }
 }
