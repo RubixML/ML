@@ -21,7 +21,7 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 4 | estimators | 1000 | int | The maximum number of boosters to train in the ensemble. |
 | 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 6 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 6 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 7 | holdOut | 0.1 | float | The proportion of training samples to use for progress monitoring. |
 | 8 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 

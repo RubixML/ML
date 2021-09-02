@@ -183,7 +183,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 3,
+        int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
