@@ -3,18 +3,15 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Tokenizers\Tokenizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function count;
 use function is_string;
 use function array_fill;
 use function array_merge;
 use function array_count_values;
 use function array_walk;
-use function intval;
 use function crc32;
 
 /**
@@ -48,13 +45,6 @@ class TokenHashingVectorizer implements Transformer
     protected int $dimensions;
 
     /**
-     * The proportion of dimensionality being utilized in the output vector space.
-     *
-     * @var float
-     */
-    protected float $scale;
-
-    /**
      * The tokenizer used to extract tokens from blobs of text.
      *
      * @var \Rubix\ML\Tokenizers\Tokenizer
@@ -75,7 +65,6 @@ class TokenHashingVectorizer implements Transformer
         }
 
         $this->dimensions = $dimensions;
-        $this->scale = $dimensions / self::MAX_DIMENSIONS;
         $this->tokenizer = $tokenizer ?? new Word();
     }
 
@@ -117,7 +106,7 @@ class TokenHashingVectorizer implements Transformer
                 $counts = array_count_values($tokens);
 
                 foreach ($counts as $token => $count) {
-                    $offset = intval(crc32($token) * $this->scale);
+                    $offset = crc32($token) % $this->dimensions;
 
                     $template[$offset] += $count;
                 }
