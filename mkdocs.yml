@@ -61,7 +61,6 @@ nav:
     - Classifiers:
       - AdaBoost: classifiers/adaboost.md
       - Classification Tree: classifiers/classification-tree.md
-      - Dummy Classifier: classifiers/dummy-classifier.md
       - Extra Tree Classifier: classifiers/extra-tree-classifier.md
       - Gaussian Naive Bayes: classifiers/gaussian-naive-bayes.md
       - K-d Neighbors: classifiers/kd-neighbors.md
@@ -76,7 +75,6 @@ nav:
       - SVC: classifiers/svc.md
     - Regressors:
       - Adaline: regressors/adaline.md
-      - Dummy Regressor: regressors/dummy-regressor.md
       - Extra Tree Regressor: regressors/extra-tree-regressor.md
       - Gradient Boost: regressors/gradient-boost.md
       - K-d Neighbors Regressor: regressors/kd-neighbors-regressor.md
