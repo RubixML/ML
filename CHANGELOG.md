@@ -1,4 +1,4 @@
--2.0.0
+- 2.0.0
     - Change Token Hashing Vectorizer hashing function
     - Gradient Boost always uses mean base estimator
     - Move dummy estimators to the Extras package

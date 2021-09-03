@@ -39,7 +39,6 @@ use function exp;
 use function get_object_vars;
 
 use const Rubix\ML\TWO_PI;
-use const Rubix\ML\EPSILON;
 
 /**
  * Gaussian Mixture
