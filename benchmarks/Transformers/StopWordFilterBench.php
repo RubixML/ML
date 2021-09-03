@@ -33,7 +33,7 @@ class StopWordFilterBench
         $samples = [];
 
         for ($i = 0; $i < self::DATASET_SIZE; ++$i) {
-            $samples[] = str_split(self::SAMPLE_TEXT, $k) ?: [];
+            $samples[] = str_split(self::SAMPLE_TEXT, $k);
         }
 
         $this->dataset = new Unlabeled($samples);
