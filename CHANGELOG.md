@@ -32,13 +32,13 @@
     - Added Preset cluster seeder
     - Added Concatenator extractor
 
-1.0.3
+- 1.0.3
     - Do not remove `groups` property from symbol table
 
-1.0.2
+- 1.0.2
     - Fix KNN and Hot Deck imputer reset donor samples
 
-1.0.1
+- 1.0.1
     - Fix AdaMax optimizer when tensor extension loaded
     - Prevent certain specification false negatives
     - Add extension minimum version specification
