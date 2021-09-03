@@ -68,7 +68,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * The number of gaussian components to fit to the training set i.e. the target number of clusters.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $k;
 

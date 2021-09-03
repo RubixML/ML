@@ -59,7 +59,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * The target number of clusters.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $k;
 

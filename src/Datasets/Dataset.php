@@ -112,7 +112,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return a 2-tuple containing the shape of the sample matrix i.e the number of rows and columns.
      *
-     * @return int[]
+     * @return array{int<0,max>,int<0,max>}
      */
     public function shape() : array
     {
