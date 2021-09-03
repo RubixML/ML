@@ -122,7 +122,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the number of feature values in the dataset.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function size() : int
     {
@@ -132,7 +132,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the number of rows in the datasets.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function numSamples() : int
     {
@@ -167,7 +167,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the number of feature columns in the dataset.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function numFeatures() : int
     {
