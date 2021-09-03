@@ -85,7 +85,7 @@ abstract class CART implements IteratorAggregate
     /**
      * The number of feature columns in the training set.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected ?int $featureCount = null;
 

@@ -166,7 +166,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * The dimensionality of the training set.
      *
-     * @var int|null
+     * @var int<0,max>|null
      */
     protected ?int $featureCount = null;
 

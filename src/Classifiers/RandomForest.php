@@ -112,7 +112,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     /**
      * The dimensionality of the training set.
      *
-     * @var int|null
+     * @var int<0,max>|null
      */
     protected ?int $featureCount = null;
 

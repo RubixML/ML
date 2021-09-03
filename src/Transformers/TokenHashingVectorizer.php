@@ -40,7 +40,7 @@ class TokenHashingVectorizer implements Transformer
     /**
      * The dimensionality of the vector space.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $dimensions;
 

@@ -484,6 +484,7 @@ class Labeled extends Dataset
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         foreach ($this->_stratify() as $label => $stratum) {
+            /** @var int<0,max> $n */
             $n = (int) floor($ratio * count($stratum));
 
             $leftSamples[] = array_splice($stratum, 0, $n);
@@ -556,6 +557,7 @@ class Labeled extends Dataset
             $samples = $labels = [];
 
             foreach ($this->_stratify() as $label => $stratum) {
+                /** @var int<0,max> $n */
                 $n = (int) floor(count($stratum) / $k);
 
                 $samples[] = array_slice($stratum, $i * $n, $n);
