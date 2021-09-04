@@ -43,8 +43,8 @@ class Normal implements Initializer
      *
      * @internal
      *
-     * @param int $fanIn
-     * @param int $fanOut
+     * @param int<0,max> $fanIn
+     * @param int<0,max> $fanOut
      * @return \Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix

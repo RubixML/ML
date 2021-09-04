@@ -22,7 +22,7 @@ class DenseTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var int
+     * @var int<0,max>
      */
     protected $fanIn;
 

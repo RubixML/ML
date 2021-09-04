@@ -9,14 +9,14 @@ interface Generator
      *
      * @internal
      *
-     * @return int
+     * @return int<0,max>
      */
     public function dimensions() : int;
 
     /**
      * Generate n data points.
      *
-     * @param int $n
+     * @param int<0,max> $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n);

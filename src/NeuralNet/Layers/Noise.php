@@ -35,7 +35,7 @@ class Noise implements Hidden
     /**
      * The width of the layer.
      *
-     * @var int|null
+     * @var int<0,max>|null
      */
     protected ?int $width = null;
 
@@ -59,11 +59,11 @@ class Noise implements Hidden
      * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int
     {
-        if (!$this->width) {
+        if ($this->width === null) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
@@ -76,8 +76,8 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param int $fanIn
-     * @return int
+     * @param int<0,max> $fanIn
+     * @return int<0,max>
      */
     public function initialize(int $fanIn) : int
     {

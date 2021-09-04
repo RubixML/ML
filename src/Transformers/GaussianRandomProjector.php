@@ -32,7 +32,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
     /**
      * The target number of dimensions.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $dimensions;
 

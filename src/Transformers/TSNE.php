@@ -111,7 +111,7 @@ class TSNE implements Transformer, Verbose
     /**
      * The number of dimensions of the target embedding.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $dimensions;
 

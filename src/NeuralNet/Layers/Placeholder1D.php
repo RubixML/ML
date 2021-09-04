@@ -22,7 +22,7 @@ class Placeholder1D implements Input
     /**
      * The number of input nodes. i.e. feature inputs.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $inputs;
 
@@ -41,7 +41,7 @@ class Placeholder1D implements Input
     }
 
     /**
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int
     {
@@ -52,8 +52,8 @@ class Placeholder1D implements Input
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param int $fanIn
-     * @return int
+     * @param int<0,max> $fanIn
+     * @return int<0,max>
      */
     public function initialize(int $fanIn) : int
     {
