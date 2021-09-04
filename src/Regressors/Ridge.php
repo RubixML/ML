@@ -163,7 +163,10 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $x = Matrix::build($dataset->samples())->augmentLeft($biases);
         $y = Vector::build($dataset->labels());
 
-        $alphas = array_fill(0, max(0, $x->n() - 1), $this->alpha) ?: [];
+        /** @var int<0,max> $nHat */
+        $nHat = $x->n() - 1;
+
+        $alphas = array_fill(0, $nHat, $this->alpha);
 
         array_unshift($alphas, 0.0);
 
