@@ -27,7 +27,8 @@ class TextNormalizerBench
 
     public function setUp() : void
     {
-        $k = (int) round(strlen(self::SAMPLE_TEXT) / 8);
+        /** @var int<1,max> $k */
+        $k = (int) (strlen(self::SAMPLE_TEXT) / 8);
 
         $samples = [];
 

@@ -12,7 +12,7 @@ use Rubix\ML\Transformers\TruncatedSVD;
  */
 class TruncatedSVDBench
 {
-    protected const DATASET_SIZE = 10000;
+    protected const DATASET_SIZE = 1000;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled
