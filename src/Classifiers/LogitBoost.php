@@ -57,6 +57,7 @@ use function get_object_vars;
  * [2] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
  * [3] J. H. Friedman. (1999). Stochastic Gradient Boosting.
  * [4] Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.
+ * [5] G. Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -387,7 +388,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
-        $weights = array_fill(0, $m, 0.25);
+        $weights = array_fill(0, $m, 1.0 / $m);
 
         $this->classes = $classes;
         $this->featureCount = $n;
@@ -479,7 +480,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
-                $weights = array_map([$this, 'weightSample'], $out);
+                $weights = array_map('abs', $gradient);
             }
 
             $prevLoss = $loss;
@@ -636,17 +637,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected function updateZ(float $z, float $prevZ) : float
     {
         return $this->rate * $z + $prevZ;
-    }
-
-    /**
-     * Use the derivative of the logistic function to weight the sample.
-     *
-     * @param float $out
-     * @return float
-     */
-    protected function weightSample(float $out) : float
-    {
-        return $out * (1.0 - $out);
     }
 
     /**

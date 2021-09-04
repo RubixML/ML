@@ -60,3 +60,4 @@ public losses() : float[]|null
 [^2]: J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 [^3]: J. H. Friedman. (1999). Stochastic Gradient Boosting.
 [^4]: Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.
+[^5]: G. Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree.

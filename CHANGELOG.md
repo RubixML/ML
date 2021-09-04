@@ -1,4 +1,5 @@
 - 2.0.0
+    - GBM estimators now use gradient-based subsampling
     - Change Token Hashing Vectorizer hashing function
     - Gradient Boost always uses mean base estimator
     - Move dummy estimators to the Extras package

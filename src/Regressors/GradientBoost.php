@@ -48,15 +48,12 @@ use function get_object_vars;
  * series of *weak* base learners. Stochastic gradient boosting is achieved by varying
  * the ratio of samples to subsample uniformly at random from the training set.
  *
- * > **Note**: The default base classifier is a Dummy Classifier using the Mean strategy
- * and the default booster is a Regression Tree with a max height of 3.
- *
  * References:
- * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient
- * Boosting Machine.
+ * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
  * [2] J. H. Friedman. (1999). Stochastic Gradient Boosting.
- * [3] Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms:
- * A general analysis with localized complexities.
+ * [3] Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis
+ * with localized complexities.
+ * [4] G. Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -368,13 +365,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         $mu = Stats::mean($targets);
 
-        $out = array_fill(0, $training->numSamples(), $mu);
+        $out = array_fill(0, $m, $mu);
 
         if (!$testing->empty()) {
             $outTest = array_fill(0, $testing->numSamples(), $mu);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
+
+        $weights = array_fill(0, $m, 1.0 / $m);
 
         $this->featureCount = $n;
         $this->ensemble = $this->scores = $this->losses = [];
@@ -404,7 +403,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $training = Labeled::quick($training->samples(), $gradient);
 
-            $subset = $training->randomSubset($p);
+            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
 
             $booster->train($subset);
 
@@ -412,9 +411,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $out = array_map([$this, 'updateOut'], $predictions, $out);
 
-            $this->losses[$epoch] = $loss;
-
             $this->ensemble[] = $booster;
+            $this->losses[$epoch] = $loss;
 
             if (isset($outTest)) {
                 $predictions = $booster->predict($testing);
@@ -454,6 +452,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break;
             }
 
+            if ($epoch < $this->estimators) {
+                $weights = array_map('abs', $gradient);
+            }
+
             $prevLoss = $loss;
         }
 
@@ -479,7 +481,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->ensemble or !$this->featureCount) {
+        if (!isset($this->ensemble, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -504,7 +506,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function featureImportances() : array
     {
-        if (!$this->ensemble or !$this->featureCount) {
+        if (!isset($this->ensemble, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
