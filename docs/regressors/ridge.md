@@ -10,7 +10,7 @@ L2 regularized linear regression solved using a closed-form solution. The additi
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | alpha | 1.0 | float | The strength of the L2 regularization penalty. |
+| 1 | l2Penalty | 1.0 | float | The strength of the L2 regularization penalty. |
 
 ## Example
 ```php
