@@ -77,7 +77,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * The number of projection/histogram pairs in the ensemble.
      *
-     * @var int
+     * @var int<1,max>
      */
     protected int $estimators;
 

@@ -31,7 +31,7 @@ class Dense implements Hidden, Parametric
     /**
      * The number of nodes in the layer.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $neurons;
 
@@ -121,7 +121,7 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int
     {
@@ -151,8 +151,8 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param int $fanIn
-     * @return int
+     * @param int<0,max> $fanIn
+     * @return int<0,max>
      */
     public function initialize(int $fanIn) : int
     {

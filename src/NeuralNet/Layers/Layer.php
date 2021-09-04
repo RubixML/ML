@@ -11,7 +11,7 @@ interface Layer
      *
      * @internal
      *
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int;
 

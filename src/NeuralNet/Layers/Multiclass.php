@@ -87,7 +87,7 @@ class Multiclass implements Output
     /**
      * Return the width of the layer.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int
     {
@@ -98,9 +98,9 @@ class Multiclass implements Output
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param int $fanIn
+     * @param int<0,max> $fanIn
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return int
+     * @return int<0,max>
      */
     public function initialize(int $fanIn) : int
     {

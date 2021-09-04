@@ -57,7 +57,7 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The width of the layer. i.e. the number of neurons.
      *
-     * @var int|null
+     * @var int<0,max>|null
      */
     protected ?int $width = null;
 
@@ -130,11 +130,11 @@ class BatchNorm implements Hidden, Parametric
      * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return int
+     * @return int<0,max>
      */
     public function width() : int
     {
-        if (!$this->width) {
+        if ($this->width === null) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
@@ -147,8 +147,8 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param int $fanIn
-     * @return int
+     * @param int<0,max> $fanIn
+     * @return int<0,max>
      */
     public function initialize(int $fanIn) : int
     {
