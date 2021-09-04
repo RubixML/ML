@@ -153,7 +153,7 @@ class MLPRegressorTest extends TestCase
             ],
             'batch size' => 10,
             'optimizer' => new Adam(0.01),
-            'alpha' => 1e-4,
+            'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-3,
             'window' => 3,

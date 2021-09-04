@@ -4,6 +4,7 @@
     - Move dummy estimators to the Extras package
     - Increase default MLP window from 3 to 5
     - Decrease default Gradient Boost window from 10 to 5
+    - Rename alpha regularization parameter to L2 penalty 
 
 - 1.2.0
     - Added Logit Boost classifier

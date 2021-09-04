@@ -74,7 +74,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -123,7 +123,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-     * @param float $alpha
+     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
@@ -133,7 +133,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $alpha = 1e-4,
+        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
@@ -144,9 +144,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
         if ($epochs < 1) {
@@ -166,7 +166,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
@@ -211,7 +211,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'alpha' => $this->alpha,
+            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
@@ -279,7 +279,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->alpha, true, new Xavier2())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier2())],
             new Continuous($this->costFn),
             $this->optimizer
         );

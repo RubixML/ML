@@ -90,7 +90,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -167,7 +167,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-     * @param float $alpha
+     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
@@ -180,7 +180,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         array $hiddenLayers = [],
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $alpha = 1e-4,
+        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
@@ -200,9 +200,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
         if ($epochs < 1) {
@@ -232,7 +232,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
@@ -280,7 +280,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'alpha' => $this->alpha,
+            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
@@ -367,7 +367,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), $this->alpha, true, new Xavier1());
+        $hiddenLayers[] = new Dense(count($classes), $this->l2Penalty, true, new Xavier1());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
