@@ -423,20 +423,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $booster->train($subset);
 
-            $zHat = $booster->predict($training);
-
-            $z = array_map([$this, 'updateZ'], $zHat, $z);
-
-            $out = array_map('Rubix\ML\sigmoid', $z);
-
+            $this->boosters[] = $booster;
             $this->losses[$epoch] = $loss;
 
-            $this->boosters[] = $booster;
-
             if (isset($zTest)) {
-                $zHat = $booster->predict($testing);
+                $predictions = $booster->predict($testing);
 
-                $zTest = array_map([$this, 'updateZ'], $zHat, $zTest);
+                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
 
                 $outTest = array_map('Rubix\ML\sigmoid', $zTest);
 
@@ -480,6 +473,12 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($epoch < $this->estimators) {
+                $predictions = $booster->predict($training);
+
+                $z = array_map([$this, 'updateZ'], $predictions, $z);
+
+                $out = array_map('Rubix\ML\sigmoid', $z);
+
                 $weights = array_map('abs', $gradient);
             }
 

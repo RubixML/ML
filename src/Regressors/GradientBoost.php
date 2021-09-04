@@ -407,10 +407,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $booster->train($subset);
 
-            $predictions = $booster->predict($training);
-
-            $out = array_map([$this, 'updateOut'], $predictions, $out);
-
             $this->ensemble[] = $booster;
             $this->losses[$epoch] = $loss;
 
@@ -453,6 +449,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
 
             if ($epoch < $this->estimators) {
+                $predictions = $booster->predict($training);
+
+                $out = array_map([$this, 'updateOut'], $predictions, $out);
+
                 $weights = array_map('abs', $gradient);
             }
 
