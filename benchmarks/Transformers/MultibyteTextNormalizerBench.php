@@ -27,7 +27,7 @@ class MultibyteTextNormalizerBench
 
     public function setUp() : void
     {
-        /** @var int<0,max> $k */
+        /** @var int<1,max> $k */
         $k = (int) (mb_strlen(self::SAMPLE_TEXT) / 8);
 
         $samples = [];
