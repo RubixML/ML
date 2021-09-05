@@ -12,7 +12,7 @@ use function array_fill;
 use function array_merge;
 use function array_count_values;
 use function array_walk;
-use function crc32;
+use function call_user_func;
 
 /**
  * Token Hashing Vectorizer
@@ -38,6 +38,13 @@ class TokenHashingVectorizer implements Transformer
     protected const MAX_DIMENSIONS = 4294967295;
 
     /**
+     * The default hashing function.
+     *
+     * @var callable
+     */
+    protected const DEFAULT_HASH_FUNCTION = 'crc32';
+
+    /**
      * The dimensionality of the vector space.
      *
      * @var int<0,max>
@@ -52,11 +59,19 @@ class TokenHashingVectorizer implements Transformer
     protected \Rubix\ML\Tokenizers\Tokenizer $tokenizer;
 
     /**
+     * The hash function that accepts a string token and returns an integer.
+     *
+     * @var callable
+     */
+    protected $hashFn;
+
+    /**
      * @param int $dimensions
      * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
+     * @param callable|null $hashFn
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $dimensions, ?Tokenizer $tokenizer = null)
+    public function __construct(int $dimensions, ?Tokenizer $tokenizer = null, ?callable $hashFn = null)
     {
         if ($dimensions < 1 or $dimensions > self::MAX_DIMENSIONS) {
             throw new InvalidArgumentException('Dimensions must be'
@@ -66,6 +81,7 @@ class TokenHashingVectorizer implements Transformer
 
         $this->dimensions = $dimensions;
         $this->tokenizer = $tokenizer ?? new Word();
+        $this->hashFn = $hashFn ?? self::DEFAULT_HASH_FUNCTION;
     }
 
     /**
@@ -106,7 +122,9 @@ class TokenHashingVectorizer implements Transformer
                 $counts = array_count_values($tokens);
 
                 foreach ($counts as $token => $count) {
-                    $offset = crc32($token) % $this->dimensions;
+                    $offset = call_user_func($this->hashFn, $token);
+
+                    $offset %= $this->dimensions;
 
                     $template[$offset] += $count;
                 }

@@ -34,7 +34,7 @@ class TokenHashingVectorizerTest extends TestCase
             ['with a dandy umbrella'],
         ]);
 
-        $this->transformer = new TokenHashingVectorizer(20, new Word());
+        $this->transformer = new TokenHashingVectorizer(20, new Word(), 'crc32');
     }
 
     /**
