@@ -46,7 +46,14 @@ trait AutotrackRevisions
                     $stack[] = $value;
                 }
 
-                $tokens[] = $property->getName();
+                $name = $property->getName();
+                $type = $property->getType();
+
+                if ($type === null) {
+                    $type = 'mixed';
+                }
+
+                $tokens[] = "$name:$type";
             }
         }
 

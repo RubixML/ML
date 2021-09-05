@@ -1,12 +1,12 @@
 - 2.0.0
     - GBM estimators now use gradient-based subsampling
     - Token Hashing Vectorizer custom hash functions
-    - Change Token Hashing Vectorizer hashing function
     - Gradient Boost always uses mean base estimator
     - Move dummy estimators to the Extras package
     - Increase default MLP window from 3 to 5
     - Decrease default Gradient Boost window from 10 to 5
-    - Rename alpha regularization parameter to L2 penalty 
+    - Rename alpha regularization parameter to L2 penalty
+    - Added RBX class property type change detection
 
 - 1.2.0
     - Added Logit Boost classifier
