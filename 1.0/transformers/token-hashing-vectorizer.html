@@ -4234,7 +4234,7 @@
 <h1 id="token-hashing-vectorizer">Token Hashing Vectorizer<a class="headerlink" href="#token-hashing-vectorizer" title="Permanent link">#</a></h1>
 <p>Token Hashing Vectorizer builds token count vectors on the fly by employing a <em>hashing trick</em>. It is a stateless transformer that uses the CRC32 (Cyclic Redundancy Check) hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
-<p><strong>Data Type Compatibility:</strong> Continuous only</p>
+<p><strong>Data Type Compatibility:</strong> Categorical</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -4279,7 +4279,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-23
+      Last update: 2021-09-05
     
   </small>
 </div>
