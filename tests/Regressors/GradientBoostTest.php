@@ -147,7 +147,7 @@ class GradientBoostTest extends TestCase
             'booster' => new RegressionTree(3),
             'rate' => 0.3,
             'ratio' => 0.3,
-            'estimators' => 300,
+            'epochs' => 300,
             'min change' => 0.0001,
             'window' => 10,
             'hold out' => 0.1,

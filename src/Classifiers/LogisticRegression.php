@@ -76,8 +76,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $l2Penalty;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate over the training set before
-     * terminating.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
      * @var int
      */
@@ -91,9 +90,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an
+     * early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -154,7 +154,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . " greater than 0, $l2Penalty given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }

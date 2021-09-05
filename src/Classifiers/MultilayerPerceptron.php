@@ -93,10 +93,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected float $l2Penalty;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before terminating.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $epochs;
 
@@ -110,7 +109,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -205,7 +204,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $l2Penalty given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }

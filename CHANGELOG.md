@@ -7,6 +7,7 @@
     - Decrease default Gradient Boost window from 10 to 5
     - Rename alpha regularization parameter to L2 penalty
     - Added RBX class property type change detection
+    - Rename boosting `estimators` param to `epochs`
 
 - 1.2.0
     - Added Logit Boost classifier

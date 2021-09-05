@@ -102,11 +102,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected float $ratio;
 
     /**
-     *  The max number of estimators to train in the ensemble.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
-     * @var int
+     * @var int<0,max>
      */
-    protected int $estimators;
+    protected int $epochs;
 
     /**
      * The minimum change in the training loss necessary to continue training.
@@ -116,10 +116,10 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the validation score to wait
-     * before considering an early stop.
+     * The number of epochs without improvement in the validation score to wait before considering an
+     * early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -178,7 +178,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
      * @param float $ratio
-     * @param int $estimators
+     * @param int $epochs
      * @param float $minChange
      * @param int $window
      * @param float $holdOut
@@ -189,7 +189,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         ?Learner $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
-        int $estimators = 1000,
+        int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
         float $holdOut = 0.1,
@@ -210,9 +210,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . " between 0 and 1, $ratio given.");
         }
 
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Number of estimators'
-                . " must be greater than 0, $estimators given.");
+        if ($epochs < 0) {
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
@@ -237,7 +237,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->booster = $booster ?? new RegressionTree(3);
         $this->rate = $rate;
         $this->ratio = $ratio;
-        $this->estimators = $estimators;
+        $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
         $this->holdOut = $holdOut;
@@ -281,7 +281,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'booster' => $this->booster,
             'rate' => $this->rate,
             'ratio' => $this->ratio,
-            'estimators' => $this->estimators,
+            'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
             'hold out' => $this->holdOut,
@@ -384,37 +384,15 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $score = null;
         $prevLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
-            $booster = clone $this->booster;
-
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $gradient = array_map([$this, 'gradient'], $out, $targets);
-
             $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0);
 
             $loss /= $m;
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
-            $training = Labeled::quick($training->samples(), $gradient);
-
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
-
-            $booster->train($subset);
-
-            $this->ensemble[] = $booster;
             $this->losses[$epoch] = $loss;
 
             if (isset($outTest)) {
-                $predictions = $booster->predict($testing);
-
-                $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
-
                 $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;
@@ -444,17 +422,39 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 }
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->info('Numerical instability detected');
+                }
+
+                break;
+            }
+
             if (abs($prevLoss - $loss) < $this->minChange) {
                 break;
             }
 
-            if ($epoch < $this->estimators) {
-                $predictions = $booster->predict($training);
+            $training = Labeled::quick($training->samples(), $gradient);
 
-                $out = array_map([$this, 'updateOut'], $predictions, $out);
+            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
 
-                $weights = array_map('abs', $gradient);
+            $booster = clone $this->booster;
+
+            $booster->train($subset);
+
+            $this->ensemble[] = $booster;
+
+            $predictions = $booster->predict($training);
+
+            $out = array_map([$this, 'updateOut'], $predictions, $out);
+
+            if (isset($outTest)) {
+                $predictions = $booster->predict($testing);
+
+                $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
             }
+
+            $weights = array_map('abs', $gradient);
 
             $prevLoss = $loss;
         }

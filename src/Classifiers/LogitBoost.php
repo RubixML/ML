@@ -408,11 +408,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $this->losses[$epoch] = $loss;
 
-            if (isset($outTest)) {
+            if (isset($zTest)) {
                 $predictions = [];
 
-                foreach ($outTest as $probability) {
-                    $predictions[] = $probability < 0.5 ? $classes[0] : $classes[1];
+                foreach ($zTest as $value) {
+                    $predictions[] = $value < 0.0 ? $classes[0] : $classes[1];
                 }
 
                 $score = $this->metric->score($predictions, $testing->labels());

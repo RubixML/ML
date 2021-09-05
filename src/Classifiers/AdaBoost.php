@@ -93,7 +93,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var int
      */
-    protected int $estimators;
+    protected int $epochs;
 
     /**
      * The minimum change in the training loss necessary to continue training.
@@ -148,7 +148,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param \Rubix\ML\Learner|null $base
      * @param float $rate
      * @param float $ratio
-     * @param int $estimators
+     * @param int $epochs
      * @param float $minChange
      * @param int $window
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -157,7 +157,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         ?Learner $base = null,
         float $rate = 1.0,
         float $ratio = 0.8,
-        int $estimators = 100,
+        int $epochs = 100,
         float $minChange = 1e-4,
         int $window = 5
     ) {
@@ -176,9 +176,9 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " between 0 and 1, $ratio given.");
         }
 
-        if ($estimators < 1) {
+        if ($epochs < 1) {
             throw new InvalidArgumentException('Number of estimators'
-                . " must be greater than 0, $estimators given.");
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
@@ -194,7 +194,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->base = $base ?? new ClassificationTree(1);
         $this->rate = $rate;
         $this->ratio = $ratio;
-        $this->estimators = $estimators;
+        $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
     }
@@ -236,7 +236,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'base' => $this->base,
             'rate' => $this->rate,
             'ratio' => $this->ratio,
-            'estimators' => $this->estimators,
+            'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
         ];
@@ -321,7 +321,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $prevLoss = $bestLoss = INF;
         $delta = 0;
 
-        for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
 
             $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
@@ -388,7 +388,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break;
             }
 
-            if ($epoch < $this->estimators) {
+            if ($epoch < $this->epochs) {
                 $step = exp($influence);
 
                 foreach ($predictions as $i => $prediction) {
