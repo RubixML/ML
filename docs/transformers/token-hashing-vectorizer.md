@@ -5,7 +5,7 @@ Token Hashing Vectorizer builds token count vectors on the fly by employing a *h
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Continuous only
+**Data Type Compatibility:** Categorical
 
 ## Parameters
 | # | Param | Default | Type | Description |
