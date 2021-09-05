@@ -14,7 +14,8 @@ use function sort;
 /**
  * Autotrack Revisions
  *
- * Automatically update class revision hashes by tracking changes in the object-property definition tree stemming from this instance.
+ * Automatically update class revision hashes by tracking changes to the object-property definition
+ * tree stemming from this instance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -23,7 +24,8 @@ use function sort;
 trait AutotrackRevisions
 {
     /**
-     * Return the revision hash of the class.
+     * Return the class revision hash by traversing the object-property definition tree in depth-first
+     * order.
      *
      * @return string
      */
