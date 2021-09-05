@@ -40,7 +40,7 @@ class TokenHashingVectorizer implements Transformer
     /**
      * The default hashing function.
      *
-     * @var callable
+     * @var callable(string):int
      */
     protected const DEFAULT_HASH_FUNCTION = 'crc32';
 
@@ -61,14 +61,14 @@ class TokenHashingVectorizer implements Transformer
     /**
      * The hash function that accepts a string token and returns an integer.
      *
-     * @var callable
+     * @var callable(string):int
      */
     protected $hashFn;
 
     /**
      * @param int $dimensions
      * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
-     * @param callable|null $hashFn
+     * @param callable(string):int|null $hashFn
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $dimensions, ?Tokenizer $tokenizer = null, ?callable $hashFn = null)
