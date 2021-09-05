@@ -84,7 +84,7 @@ class Amp implements Backend
      * @internal
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable(mixed):void|null $after
+     * @param callable(mixed,mixed):void $after
      * @param mixed $context
      */
     public function enqueue(Task $task, ?callable $after = null, $context = null) : void
