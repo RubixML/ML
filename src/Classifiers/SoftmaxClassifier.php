@@ -54,7 +54,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * The number of training samples to process at a time.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

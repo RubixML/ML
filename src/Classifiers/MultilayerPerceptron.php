@@ -74,7 +74,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The number of training samples to process at a time.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

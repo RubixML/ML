@@ -8,6 +8,7 @@
     - Rename alpha regularization parameter to L2 penalty
     - Added RBX class property type change detection
     - Rename boosting `estimators` param to `epochs`
+    - Neural net-based learners can now train for 0 epochs
 
 - 1.2.0
     - Added Logit Boost classifier

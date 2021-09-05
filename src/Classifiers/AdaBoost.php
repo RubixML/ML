@@ -91,7 +91,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The maximum number of estimators to train in the ensemble.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $epochs;
 
@@ -105,7 +105,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -140,7 +140,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The dimensionality of the training set.
      *
-     * @var int|null
+     * @var int<0,max>|null
      */
     protected ?int $featureCount = null;
 
@@ -176,8 +176,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " between 0 and 1, $ratio given.");
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of estimators'
+        if ($epochs < 0) {
+            throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
 
