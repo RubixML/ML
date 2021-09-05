@@ -3,6 +3,7 @@
 namespace Rubix\ML\Traits;
 
 use ReflectionClass;
+use ReflectionNamedType;
 
 use function is_object;
 use function array_pop;
@@ -46,14 +47,17 @@ trait AutotrackRevisions
                     $stack[] = $value;
                 }
 
-                $name = $property->getName();
                 $type = $property->getType();
 
-                if ($type === null) {
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                } else {
                     $type = 'mixed';
                 }
 
-                $tokens[] = "$name:$type";
+                $name = $property->getName();
+
+                $tokens[] = "$type:$name";
             }
         }
 
