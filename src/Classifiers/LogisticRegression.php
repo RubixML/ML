@@ -76,8 +76,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $l2Penalty;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before terminating.
+     * The maximum number of training epochs. i.e. the number of times to iterate over the training set before
+     * terminating.
      *
      * @var int
      */
