@@ -1,3 +1,6 @@
+- 1.2.1
+    - Refactor stratified methods on Labeled dataset
+
 - 1.2.0
     - Added Logit Boost classifier
     - Interval Discretizer variable or equi-depth binning
