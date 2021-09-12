@@ -76,11 +76,11 @@ continuous
 ### Stratification
 Group samples by their class label and return them in their own dataset:
 ```php
-public stratify() : array
+public stratifyByLabel() : array
 ```
 
 ```php
-$strata = $dataset->stratify();
+$strata = $dataset->stratifyByLabel();
 ```
 
 Split the dataset into left and right subsets such that the proportions of class labels remain intact:

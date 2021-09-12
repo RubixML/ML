@@ -454,9 +454,9 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
-    public function stratify() : void
+    public function stratifyByLabel() : void
     {
-        $strata = $this->dataset->stratify();
+        $strata = $this->dataset->stratifyByLabel();
 
         $this->assertCount(2, $strata['monster']);
         $this->assertCount(4, $strata['not monster']);

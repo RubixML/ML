@@ -135,7 +135,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
 
         $sW = Matrix::zeros($n, $n);
 
-        foreach ($dataset->stratify() as $stratum) {
+        foreach ($dataset->stratifyByLabel() as $stratum) {
             $prior = $stratum->numSamples() / $m;
 
             $sW = Matrix::quick($stratum->samples())
