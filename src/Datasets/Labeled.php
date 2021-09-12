@@ -332,8 +332,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Remove a size n chunk of the dataset starting at offset and return it in
-     * a new dataset.
+     * Remove a size n chunk of the dataset starting at offset and return it in a new dataset.
      *
      * @param int $offset
      * @param int $n
@@ -430,12 +429,21 @@ class Labeled extends Dataset
     {
         $strata = [];
 
-        foreach ($this->_stratify() as $label => $stratum) {
-            $labels = array_fill(0, count($stratum), $label);
-
-            $strata[$label] = self::quick($stratum, $labels);
+        try {
+            foreach ($this->labels as $i => $label) {
+                $strata[$label][] = $this->samples[$i];
+            }
+        } catch (ErrorException $e) {
+            throw new RuntimeException('Label must be a string or integer type.');
         }
 
+        foreach ($strata as $label => &$stratum) {
+            $labels = array_fill(0, count($stratum), $label);
+
+            $stratum = self::quick($stratum, $labels);
+        }
+
+        /** @var self[] $strata */
         return $strata;
     }
 
@@ -481,28 +489,18 @@ class Labeled extends Dataset
                 . " between 0 and 1, $ratio given.");
         }
 
-        $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
+        $leftStrata = $rightStrata = [];
 
-        foreach ($this->_stratify() as $label => $stratum) {
-            /** @var int<0,max> $n */
-            $n = (int) floor($ratio * count($stratum));
+        foreach ($this->stratify() as $stratum) {
+            [$left, $right] = $stratum->split($ratio);
 
-            $leftSamples[] = array_splice($stratum, 0, $n);
-            $leftLabels[] = array_fill(0, $n, $label);
-
-            $rightSamples[] = $stratum;
-            $rightLabels[] = array_fill(0, count($stratum), $label);
+            $leftStrata[] = $left;
+            $rightStrata[] = $right;
         }
 
         return [
-            self::quick(
-                array_merge(...$leftSamples),
-                array_merge(...$leftLabels)
-            ),
-            self::quick(
-                array_merge(...$rightSamples),
-                array_merge(...$rightLabels)
-            ),
+            self::stack($leftStrata),
+            self::stack($rightStrata),
         ];
     }
 
@@ -553,23 +551,17 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        for ($i = 0; $i < $k; ++$i) {
-            $samples = $labels = [];
-
-            foreach ($this->_stratify() as $label => $stratum) {
-                /** @var int<0,max> $n */
-                $n = (int) floor(count($stratum) / $k);
-
-                $samples[] = array_slice($stratum, $i * $n, $n);
-                $labels[] = array_fill(0, $n, $label);
+        foreach ($this->stratify() as $stratum) {
+            foreach ($stratum->fold($k) as $j => $fold) {
+                $folds[$j][] = $fold;
             }
-
-            $folds[] = self::quick(
-                array_merge(...$samples),
-                array_merge(...$labels)
-            );
         }
 
+        foreach ($folds as &$fold) {
+            $fold = self::stack($fold);
+        }
+
+        /** @var list<self> $folds */
         return $folds;
     }
 
@@ -835,27 +827,5 @@ class Labeled extends Dataset
 
             yield $sample;
         }
-    }
-
-    /**
-     * Stratifying subroutine groups samples by their categorical label. Note that integer string
-     * labels will silently be converted to integers by PHP.
-     *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return array[]
-     */
-    protected function _stratify() : array
-    {
-        $strata = [];
-
-        try {
-            foreach ($this->labels as $i => $label) {
-                $strata[$label][] = $this->samples[$i];
-            }
-        } catch (ErrorException $e) {
-            throw new RuntimeException('Label must be a string or integer type.');
-        }
-
-        return $strata;
     }
 }
