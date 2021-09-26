@@ -43,7 +43,7 @@
         "wamania/php-stemmer": "^2.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "2.18.*",
+        "friendsofphp/php-cs-fixer": "3.1.*",
         "phpbench/phpbench": "^1.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.*",
@@ -83,9 +83,9 @@
         "benchmark": "phpbench run --report=aggregate",
         "check": [
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
-            "php-cs-fixer fix --config=.php_cs.dist -v --dry-run --using-cache=no"
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no"
         ],
-        "fix": "php-cs-fixer fix --config=.php_cs.dist",
+        "fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
         "test": "phpunit"
     },
     "config": {

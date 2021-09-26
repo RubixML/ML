@@ -6,7 +6,9 @@ use PhpCsFixer\Config;
 $finder = Finder::create()->in(__DIR__)
     ->exclude('docs');
 
-return Config::create()->setRules([
+$config = new Config();
+
+return $config->setRules([
     '@PSR2' => true,
     'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
@@ -26,9 +28,7 @@ return Config::create()->setRules([
         'position_after_functions_and_oop_constructs' => 'next',
     ],
     'cast_spaces' => ['space' => 'single'],
-    'class_attributes_separation' => [
-        'elements' => ['const', 'property', 'method'],
-    ],
+    'class_attributes_separation' => true,
     'combine_consecutive_issets' => true,
     'combine_consecutive_unsets' => true,
     'compact_nullable_typehint' => true,
@@ -85,14 +85,12 @@ return Config::create()->setRules([
             'method_private_static', 'construct', 'destruct', 'phpunit',
             'method_public', 'method_protected', 'method_private', 'magic',
         ],
-        'sortAlgorithm' => 'none',
+        'sort_algorithm' => 'none',
     ],
     'php_unit_fqcn_annotation' => true,
     'php_unit_method_casing' => ['case' => 'camel_case'],
-    'php_unit_ordered_covers' => true,
     'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
     'phpdoc_align' => ['align' => 'left'],
-    'phpdoc_inline_tag' => true,
     'phpdoc_line_span' => [
         'const' => 'multi',
         'method' => 'multi',
