@@ -17,7 +17,7 @@ Here are a few things to check off before sending in a pull request ...
 We use pull requests as an opportunity to communicate with our contributors. Oftentimes, we can improve code readability, find bugs, and make optimizations during the code review process. Every pull request must have the approval from at least one core engineer before merging into the main codebase.
 
 ### Contributor License Agreement
-To ensure that project maintainers have the legal rights to licence and distribute your code contributions, we ask that every contributor sign our [contributor license agreement](https://github.com/RubixML/Signatures/blob/master/CLA.md) (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement from our CLA bot with your first pull request.
+To ensure that project maintainers have the legal rights to license and distribute your code contributions, we ask that every contributor sign our [contributor license agreement](https://github.com/RubixML/Signatures/blob/master/CLA.md) (CLA). If you are a first-time contributor, you will automatically receive instructions on how to sign the agreement from our CLA bot with your first pull request.
 
 ## Static Analysis
 Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
