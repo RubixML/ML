@@ -9,7 +9,7 @@ namespace Rubix\ML
      *
      * @var string
      */
-    const VERSION = '1.2.2';
+    const VERSION = '1.2.1';
 
     /**
      * A small number used in substitution of 0.
