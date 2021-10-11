@@ -1,3 +1,6 @@
+- 1.2.2
+    - Narrower typehints
+
 - 1.2.1
     - Refactor stratified methods on Labeled dataset
 
