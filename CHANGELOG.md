@@ -10,6 +10,8 @@
     - Rename boosting `estimators` param to `epochs`
     - Neural net-based learners can now train for 0 epochs
     - Rename Labeled `stratify()` to `stratifyByLabel()`
+    - Added Sparse Cosine distance kernel
+    - Cosine distance now optimized for dense vectors
     
 - 1.2.1
     - Refactor stratified methods on Labeled dataset

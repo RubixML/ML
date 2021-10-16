@@ -204,6 +204,7 @@ nav:
         - Manhattan: kernels/distance/manhattan.md
         - Minkowski: kernels/distance/minkowski.md
         - Safe Euclidean: kernels/distance/safe-euclidean.md
+        - Sparse Cosine: kernels/distance/sparse-cosine.md
       - SVM:
         - Linear: kernels/svm/linear.md
         - Polynomial: kernels/svm/polynomial.md

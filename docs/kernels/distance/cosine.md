@@ -7,9 +7,6 @@ $$
 {\displaystyle {\text{Cosine}}=1 - {\mathbf {A} \cdot \mathbf {B}  \over \|\mathbf {A} \|\|\mathbf {B} \|}=1 - {\frac {\sum \limits _{i=1}^{n}{A_{i}B_{i}}}{{\sqrt {\sum \limits _{i=1}^{n}{A_{i}^{2}}}}{\sqrt {\sum \limits _{i=1}^{n}{B_{i}^{2}}}}}}}
 $$
 
-!!! note
-    This distance kernel is optimized for sparse (mainly zeros) coordinate vectors.
-
 **Data Type Compatibility:** Continuous
 
 ## Parameters
