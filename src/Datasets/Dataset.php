@@ -104,10 +104,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset[] $datasets
+     * @param iterable<\Rubix\ML\Datasets\Dataset> $datasets
      * @return static
      */
-    abstract public static function stack(array $datasets) : self;
+    abstract public static function stack(iterable $datasets) : self;
 
     /**
      * Return a 2-tuple containing the shape of the sample matrix i.e the number of rows and columns.

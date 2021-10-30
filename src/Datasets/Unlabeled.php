@@ -68,29 +68,33 @@ class Unlabeled extends Dataset
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset[] $datasets
+     * @param iterable<\Rubix\ML\Datasets\Dataset> $datasets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return self
      */
-    public static function stack(array $datasets) : self
+    public static function stack(iterable $datasets) : self
     {
-        $n = $datasets[array_key_first($datasets)]->numFeatures();
-
         $samples = [];
 
-        foreach ($datasets as $dataset) {
+        foreach ($datasets as $i => $dataset) {
             if (!$dataset instanceof Dataset) {
                 throw new InvalidArgumentException('Dataset must implement'
                     . ' the Dataset interface.');
             }
 
-            if ($dataset->numFeatures() !== $n) {
-                throw new InvalidArgumentException('Dataset must have'
-                    . " the same number of columns, $n expected but"
-                    . " {$dataset->numFeatures()} given.");
+            if ($dataset->empty()) {
+                continue;
+            }
+
+            if (isset($lastNumFeatures) and $dataset->numFeatures() !== $lastNumFeatures) {
+                throw new InvalidArgumentException("Dataset $i must have"
+                    . " the same number of features, $lastNumFeatures"
+                    . " expected but {$dataset->numFeatures()} given.");
             }
 
             $samples[] = $dataset->samples();
+
+            $lastNumFeatures = $dataset->numFeatures();
         }
 
         return self::quick(array_merge(...$samples));
@@ -261,10 +265,10 @@ class Unlabeled extends Dataset
 
         $n = (int) floor($ratio * $this->numSamples());
 
-        return [
-            self::quick(array_slice($this->samples, 0, $n)),
-            self::quick(array_slice($this->samples, $n)),
-        ];
+        $left = self::quick(array_slice($this->samples, 0, $n));
+        $right = self::quick(array_slice($this->samples, $n));
+
+        return [$left, $right];
     }
 
     /**
