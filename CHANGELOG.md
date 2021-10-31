@@ -1,4 +1,5 @@
 - 1.3.0
+    - Switch back to original fork of Tensor
     - Added `maxBins` hyper-parameter to CART-based learners
 
 - 1.2.2
