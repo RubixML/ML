@@ -1,3 +1,6 @@
+- 1.3.0
+    - Added `maxBins` hyper-parameter to CART-based learners
+
 - 1.2.2
     - Allow empty dataset objects in `stack()`
 
