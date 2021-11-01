@@ -1,6 +1,7 @@
 - 1.3.0
     - Switch back to original fork of Tensor
     - Added `maxBins` hyper-parameter to CART-based learners
+    - Added stream Deduplicator extractor
 
 - 1.2.2
     - Allow empty dataset objects in `stack()`

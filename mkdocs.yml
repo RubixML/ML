@@ -44,6 +44,7 @@ nav:
       - Column Picker: extractors/column-picker.md
       - Concatenator: extractors/concatenator.md
       - CSV: extractors/csv.md
+      - Deduplicator: extractors/deduplicator.md
       - NDJSON: extractors/ndjson.md
       - SQL Table: extractors/sql-table.md
     - Dataset Objects:
