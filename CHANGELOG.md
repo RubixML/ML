@@ -2,6 +2,7 @@
     - Switch back to original fork of Tensor
     - Added `maxBins` hyper-parameter to CART-based learners
     - Added stream Deduplicator extractor
+    - Added SiLU activation function from Extras package
 
 - 1.2.2
     - Allow empty dataset objects in `stack()`
