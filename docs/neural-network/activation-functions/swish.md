@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/Swish.php">[source]</a></span>
 
 # Swish
-Swish is a smooth and non-monotonic rectified activation function. The inputs are weighted by the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism. In addition, the `beta` parameter allows you to adjust the gate such that you can interpolate between the ReLU function and the linear function as `beta` goes from 0 to infinity.
+Swish is a smooth and non-monotonic rectified activation function. The inputs are weighted by the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism. In addition, the `beta` parameter allows you to adjust the gate such that you can interpolate between the scaled linear function and ReLU as `beta` goes from 0 to infinity. When `beta` is equal to 1, Swish is equivalent to the Sigmoid-weighted Linear Unit or *SiLU*.
 
 ## Parameters
 ## Parameters
