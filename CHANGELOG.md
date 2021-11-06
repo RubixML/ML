@@ -3,6 +3,9 @@
     - Added `maxBins` hyper-parameter to CART-based learners
     - Added stream Deduplicator extractor
     - Added the SiLU activation function
+    
+- 1.2.3
+    - Fix Multiclass layer cross entropy gradient optimization
 
 - 1.2.2
     - Allow empty dataset objects in `stack()`

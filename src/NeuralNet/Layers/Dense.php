@@ -252,12 +252,16 @@ class Dense implements Hidden, Parametric
             $dW = $dW->add($weights->multiply($this->alpha));
         }
 
-        $this->weights->update($optimizer->step($this->weights, $dW));
+        $step = $optimizer->step($this->weights, $dW);
+
+        $this->weights->update($step);
 
         if ($this->biases) {
             $dB = $dOut->sum();
 
-            $this->biases->update($optimizer->step($this->biases, $dB));
+            $step = $optimizer->step($this->biases, $dB);
+
+            $this->biases->update($step);
         }
 
         $this->input = null;

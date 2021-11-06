@@ -48,7 +48,7 @@ class Multiclass implements Output
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\Softmax
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Softmax $activationFn;
+    protected \Rubix\ML\NeuralNet\ActivationFunctions\Softmax $softmax;
 
     /**
      * The memorized input matrix.
@@ -81,7 +81,7 @@ class Multiclass implements Output
 
         $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
-        $this->activationFn = new Softmax();
+        $this->softmax = new Softmax();
     }
 
     /**
@@ -123,11 +123,12 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
+        $computed = $this->softmax->compute($input);
+
         $this->input = $input;
+        $this->computed = $computed;
 
-        $this->computed = $this->activationFn->compute($input);
-
-        return $this->computed;
+        return $computed;
     }
 
     /**
@@ -139,7 +140,7 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->activationFn->compute($input);
+        return $this->softmax->compute($input);
     }
 
     /**
@@ -194,14 +195,14 @@ class Multiclass implements Output
     public function gradient(Matrix $input, Matrix $computed, Matrix $expected) : Matrix
     {
         if ($this->costFn instanceof CrossEntropy) {
-            $dA = $computed->subtract($expected)
+            return $computed->subtract($expected)
                 ->divide($computed->n());
         }
 
         $dL = $this->costFn->differentiate($computed, $expected)
             ->divide($computed->n());
 
-        return $this->activationFn->differentiate($input, $computed)
+        return $this->softmax->differentiate($input, $computed)
             ->multiply($dL);
     }
 }
