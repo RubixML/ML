@@ -95,9 +95,8 @@ class PReLU implements Hidden, Parametric
 
         $alpha = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->alpha = new Parameter($alpha);
-
         $this->width = $fanOut;
+        $this->alpha = new Parameter($alpha);
 
         return $fanOut;
     }
@@ -157,7 +156,9 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
-        $this->alpha->update($optimizer->step($this->alpha, $dAlpha));
+        $step = $optimizer->step($this->alpha, $dAlpha);
+
+        $this->alpha->update($step);
 
         $z = $this->input;
 
