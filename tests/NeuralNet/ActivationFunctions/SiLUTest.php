@@ -3,19 +3,19 @@
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\Swish;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 /**
  * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\Swish
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\SiLU
  */
-class SwishTest extends TestCase
+class SiLUTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Swish
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\SiLU
      */
     protected $activationFn;
 
@@ -24,7 +24,7 @@ class SwishTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->activationFn = new Swish(1.0);
+        $this->activationFn = new SiLU();
     }
 
     /**
@@ -32,7 +32,7 @@ class SwishTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Swish::class, $this->activationFn);
+        $this->assertInstanceOf(SiLU::class, $this->activationFn);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 

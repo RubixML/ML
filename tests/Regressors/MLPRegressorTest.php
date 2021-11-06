@@ -20,8 +20,8 @@ use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\ActivationFunctions\Swish;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -84,9 +84,9 @@ class MLPRegressorTest extends TestCase
 
         $this->estimator = new MLPRegressor([
             new Dense(10),
-            new Activation(new Swish()),
+            new Activation(new SiLU()),
             new Dense(10),
-            new Activation(new Swish()),
+            new Activation(new SiLU()),
         ], 10, new Adam(0.01), 1e-4, 100, 1e-3, 3, 0.1, new LeastSquares(), new RMSE());
 
         $this->metric = new RSquared();
@@ -147,9 +147,9 @@ class MLPRegressorTest extends TestCase
         $expected = [
             'hidden layers' => [
                 new Dense(10),
-                new Activation(new Swish()),
+                new Activation(new SiLU()),
                 new Dense(10),
-                new Activation(new Swish()),
+                new Activation(new SiLU()),
             ],
             'batch size' => 10,
             'optimizer' => new Adam(0.01),

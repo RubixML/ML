@@ -3,35 +3,24 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use InvalidArgumentException;
 
 /**
- * Swish
+ * SiLU
  *
- * Swish is a smooth and non-monotonic rectified activation function. The inputs are weighted by the [Sigmoid](sigmoid.md)
- * activation function acting as a self-gating mechanism. In addition, the `beta` parameter allows you to adjust the gate
- * such that you can interpolate between the scaled linear function and ReLU as `beta` goes from 0 to infinity. When `beta`
- * is equal to 1, Swish is equivalent to the Sigmoid-weighted Linear Unit or *SiLU*.
+ * Sigmoid Linear Units are smooth and non-monotonic rectified activation functions. Their inputs are weighted by
+ * the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism.
  *
  * References:
  * [1] S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function
  * Approximation in Reinforcement Learning.
  * [2] P. Ramachandran et al. (2017). Swish: A Self-gated Activation Function.
- * [3] P. Ramachandran et al. (2017). Searching for Activation Functions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Swish implements ActivationFunction
+class SiLU implements ActivationFunction
 {
-    /**
-     * The parameter that adjusts the slope of the sigmoid gating mechanism.
-     *
-     * @var float
-     */
-    protected float $beta;
-
     /**
      * The sigmoid activation function.
      *
@@ -39,18 +28,8 @@ class Swish implements ActivationFunction
      */
     protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $sigmoid;
 
-    /**
-     * @param float $beta
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(float $beta = 1.0)
+    public function __construct()
     {
-        if ($beta < 0.0) {
-            throw new InvalidArgumentException('Beta must be greater than'
-                . " 0, $beta given.");
-        }
-
-        $this->beta = $beta;
         $this->sigmoid = new Sigmoid();
     }
 
@@ -62,8 +41,7 @@ class Swish implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $this->sigmoid->compute($z->multiply($this->beta))
-            ->multiply($z);
+        return $this->sigmoid->compute($z)->multiply($z);
     }
 
     /**
@@ -89,6 +67,6 @@ class Swish implements ActivationFunction
      */
     public function __toString() : string
     {
-        return "Swish (beta: {$this->beta})";
+        return 'SiLU';
     }
 }

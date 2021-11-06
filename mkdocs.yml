@@ -169,7 +169,7 @@ nav:
         - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
         - Soft Sign: neural-network/activation-functions/softsign.md
-        - Swish: neural-network/activation-functions/swish.md
+        - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:
         - Cross Entropy: neural-network/cost-functions/cross-entropy.md
