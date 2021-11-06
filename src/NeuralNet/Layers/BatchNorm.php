@@ -5,9 +5,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Tensor\ColumnVector;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -254,8 +254,11 @@ class BatchNorm implements Hidden, Parametric
 
         $gamma = $this->gamma->param();
 
-        $this->beta->update($optimizer->step($this->beta, $dBeta));
-        $this->gamma->update($optimizer->step($this->gamma, $dGamma));
+        $betaStep = $optimizer->step($this->beta, $dBeta);
+        $gammaStep = $optimizer->step($this->gamma, $dGamma);
+
+        $this->beta->update($betaStep);
+        $this->gamma->update($gammaStep);
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;

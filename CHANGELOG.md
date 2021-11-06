@@ -13,6 +13,9 @@
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
     
+- 1.2.3
+    - Fix Multiclass layer cross entropy gradient optimization
+
 - 1.2.2
     - Allow empty dataset objects in `stack()`
 

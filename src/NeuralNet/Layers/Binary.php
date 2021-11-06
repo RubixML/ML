@@ -48,7 +48,7 @@ class Binary implements Output
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $activationFn;
+    protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $sigmoid;
 
     /**
      * The memorized input matrix.
@@ -82,7 +82,7 @@ class Binary implements Output
 
         $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
-        $this->activationFn = new Sigmoid();
+        $this->sigmoid = new Sigmoid();
     }
 
     /**
@@ -121,11 +121,12 @@ class Binary implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
+        $computed = $this->sigmoid->compute($input);
+
         $this->input = $input;
+        $this->computed = $computed;
 
-        $this->computed = $this->activationFn->compute($input);
-
-        return $this->computed;
+        return $computed;
     }
 
     /**
@@ -136,7 +137,7 @@ class Binary implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->activationFn->compute($input);
+        return $this->sigmoid->compute($input);
     }
 
     /**
@@ -192,7 +193,7 @@ class Binary implements Output
         $dL = $this->costFn->differentiate($computed, $expected)
             ->divide($computed->n());
 
-        return $this->activationFn->differentiate($input, $computed)
+        return $this->sigmoid->differentiate($input, $computed)
             ->multiply($dL);
     }
 }
