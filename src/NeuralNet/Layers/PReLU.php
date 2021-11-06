@@ -262,12 +262,12 @@ class PReLU implements Hidden, Parametric
         $gradient = [];
 
         foreach ($z as $i => $row) {
-            $leakage = $alphas[$i];
+            $alpha = $alphas[$i];
 
             $derivative = [];
 
             foreach ($row as $value) {
-                $derivative[] = $value > 0.0 ? 1.0 : $leakage;
+                $derivative[] = $value > 0.0 ? 1.0 : $alpha;
             }
 
             $gradient[] = $derivative;
