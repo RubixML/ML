@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
+use function exp;
+
 /**
  * SiLU
  *
@@ -22,30 +24,22 @@ use Tensor\Matrix;
 class SiLU implements ActivationFunction
 {
     /**
-     * The sigmoid activation function.
-     *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid
-     */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $sigmoid;
-
-    public function __construct()
-    {
-        $this->sigmoid = new Sigmoid();
-    }
-
-    /**
      * Compute the output value.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $z
      * @return \Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $this->sigmoid->compute($z)->multiply($z);
+        return $z->map([$this, '_compute']);
     }
 
     /**
      * Calculate the derivative of the activation function at a given output.
+     *
+     * @internal
      *
      * @param \Tensor\Matrix $z
      * @param \Tensor\Matrix $computed
@@ -58,6 +52,17 @@ class SiLU implements ActivationFunction
         return $computed->divide($z)
             ->multiply($ones->subtract($computed))
             ->add($computed);
+    }
+
+    /**
+     * @internal
+     *
+     * @param float $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z / (1.0 + exp(-$z));
     }
 
     /**
