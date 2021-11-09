@@ -43,9 +43,9 @@ class ThresholdedReLUTest extends TestCase
      * @param \Tensor\Matrix $input
      * @param array[] $expected
      */
-    public function compute(Matrix $input, array $expected) : void
+    public function activate(Matrix $input, array $expected) : void
     {
-        $activations = $this->activationFn->compute($input)->asArray();
+        $activations = $this->activationFn->activate($input)->asArray();
 
         $this->assertEquals($expected, $activations);
     }

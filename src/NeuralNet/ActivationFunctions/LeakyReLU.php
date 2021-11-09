@@ -44,52 +44,56 @@ class LeakyReLU implements ActivationFunction
     }
 
     /**
-     * Compute the output value.
+     * Compute the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    public function activate(Matrix $input) : Matrix
     {
-        return $z->map([$this, '_compute']);
+        return $input->map([$this, '_activate']);
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Calculate the derivative of the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @return \Tensor\Matrix
      */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        return $z->map([$this, '_differentiate']);
+        return $input->map([$this, '_differentiate']);
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $input
      * @return float
      */
-    public function _compute(float $z) : float
+    public function _activate(float $input) : float
     {
-        return $z > 0.0 ? $z : $this->leakage * $z;
+        return $input > 0.0
+            ? $input
+            : $this->leakage * $input;
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $input
      * @return float
      */
-    public function _differentiate(float $z) : float
+    public function _differentiate(float $input) : float
     {
-        return $z > 0.0 ? 1.0 : $this->leakage;
+        return $input > 0.0
+            ? 1.0
+            : $this->leakage;
     }
 
     /**

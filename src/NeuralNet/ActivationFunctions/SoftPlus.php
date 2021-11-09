@@ -20,52 +20,52 @@ use Tensor\Matrix;
 class SoftPlus implements ActivationFunction
 {
     /**
-     * Compute the output value.
+     * Compute the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    public function activate(Matrix $input) : Matrix
     {
-        return $z->map([$this, '_compute']);
+        return $input->map([$this, '_activate']);
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Calculate the derivative of the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @return \Tensor\Matrix
      */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        return $computed->map([$this, '_differentiate']);
+        return $output->map([$this, '_differentiate']);
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $input
      * @return float
      */
-    public function _compute(float $z) : float
+    public function _activate(float $input) : float
     {
-        return log(1.0 + exp($z));
+        return log(1.0 + exp($input));
     }
 
     /**
      * @internal
      *
-     * @param float $computed
+     * @param float $output
      * @return float
      */
-    public function _differentiate(float $computed) : float
+    public function _differentiate(float $output) : float
     {
-        return 1.0 / (1.0 + exp(-$computed));
+        return 1.0 / (1.0 + exp(-$output));
     }
 
     /**

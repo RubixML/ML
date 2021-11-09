@@ -121,7 +121,7 @@ class Binary implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->sigmoid->compute($input);
+        $computed = $this->sigmoid->activate($input);
 
         $this->input = $input;
         $this->computed = $computed;
@@ -137,7 +137,7 @@ class Binary implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->sigmoid->compute($input);
+        return $this->sigmoid->activate($input);
     }
 
     /**
