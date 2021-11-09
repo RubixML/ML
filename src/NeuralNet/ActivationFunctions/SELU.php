@@ -43,52 +43,56 @@ class SELU implements ActivationFunction
     protected const BETA = self::SCALE * self::ALPHA;
 
     /**
-     * Compute the output value.
+     * Compute the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    public function activate(Matrix $input) : Matrix
     {
-        return $z->map([$this, '_compute']);
+        return $input->map([$this, '_activate']);
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Calculate the derivative of the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @return \Tensor\Matrix
      */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        return $computed->map([$this, '_differentiate']);
+        return $output->map([$this, '_differentiate']);
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $input
      * @return float
      */
-    public function _compute(float $z) : float
+    public function _activate(float $input) : float
     {
-        return $z > 0.0 ? self::SCALE * $z : self::BETA * (exp($z) - 1.0);
+        return $input > 0.0
+            ? self::SCALE * $input
+            : self::BETA * (exp($input) - 1.0);
     }
 
     /**
      * @internal
      *
-     * @param float $computed
+     * @param float $output
      * @return float
      */
-    public function _differentiate(float $computed) : float
+    public function _differentiate(float $output) : float
     {
-        return $computed > 0.0 ? self::SCALE : self::SCALE * ($computed + self::ALPHA);
+        return $output > 0.0
+            ? self::SCALE
+            : self::SCALE * ($output + self::ALPHA);
     }
 
     /**

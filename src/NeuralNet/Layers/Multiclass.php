@@ -123,7 +123,7 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->softmax->compute($input);
+        $computed = $this->softmax->activate($input);
 
         $this->input = $input;
         $this->computed = $computed;
@@ -140,7 +140,7 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->softmax->compute($input);
+        return $this->softmax->activate($input);
     }
 
     /**

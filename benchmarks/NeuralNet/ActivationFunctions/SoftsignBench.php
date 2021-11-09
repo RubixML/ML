@@ -40,9 +40,9 @@ class SoftsignBench
      * @Iterations(3)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function compute() : void
+    public function activate() : void
     {
-        $this->activationFn->compute($this->z);
+        $this->activationFn->activate($this->z);
     }
 
     /**

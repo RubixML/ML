@@ -19,16 +19,16 @@ use const Rubix\ML\EPSILON;
 class Softmax extends Sigmoid
 {
     /**
-     * Compute the output value.
+     * Compute the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    public function activate(Matrix $input) : Matrix
     {
-        $zHat = $z->exp()->transpose();
+        $zHat = $input->exp()->transpose();
 
         $total = $zHat->sum()->clipLower(EPSILON);
 
