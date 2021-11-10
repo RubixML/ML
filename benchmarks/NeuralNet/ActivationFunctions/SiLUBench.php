@@ -42,7 +42,7 @@ class SiLUBench
      */
     public function compute() : void
     {
-        $this->activationFn->compute($this->z);
+        $this->activationFn->activate($this->z);
     }
 
     /**

@@ -24,45 +24,45 @@ use function exp;
 class SiLU implements ActivationFunction
 {
     /**
-     * Compute the output value.
+     * Compute the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function compute(Matrix $z) : Matrix
+    public function activate(Matrix $input) : Matrix
     {
-        return $z->map([$this, '_compute']);
+        return $input->map([$this, '_compute']);
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Calculate the derivative of the activation.
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @return \Tensor\Matrix
      */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $ones = Matrix::ones(...$computed->shape());
+        $ones = Matrix::ones(...$output->shape());
 
-        return $computed->divide($z)
-            ->multiply($ones->subtract($computed))
-            ->add($computed);
+        return $output->divide($input)
+            ->multiply($ones->subtract($output))
+            ->add($output);
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $input
      * @return float
      */
-    public function _compute(float $z) : float
+    public function _compute(float $input) : float
     {
-        return $z / (1.0 + exp(-$z));
+        return $input / (1.0 + exp(-$input));
     }
 
     /**

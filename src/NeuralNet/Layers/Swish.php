@@ -245,7 +245,7 @@ class Swish implements Hidden, Parametric
 
         $zHat = $z->multiply($this->beta->param());
 
-        return $this->sigmoid->compute($zHat)
+        return $this->sigmoid->activate($zHat)
             ->multiply($z);
     }
 

@@ -45,7 +45,7 @@ class SiLUTest extends TestCase
      */
     public function compute(Matrix $input, array $expected) : void
     {
-        $activations = $this->activationFn->compute($input)->asArray();
+        $activations = $this->activationFn->activate($input)->asArray();
 
         $this->assertEquals($expected, $activations);
     }
