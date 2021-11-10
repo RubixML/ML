@@ -113,7 +113,7 @@ class PReLU implements Hidden, Parametric
     {
         $this->input = $input;
 
-        return $this->compute($input);
+        return $this->activate($input);
     }
 
     /**
@@ -126,7 +126,7 @@ class PReLU implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->compute($input);
+        return $this->activate($input);
     }
 
     /**
@@ -160,11 +160,11 @@ class PReLU implements Hidden, Parametric
 
         $this->alpha->update($step);
 
-        $z = $this->input;
+        $input = $this->input;
 
         $this->input = null;
 
-        return new Deferred([$this, 'gradient'], [$z, $dOut]);
+        return new Deferred([$this, 'gradient'], [$input, $dOut]);
     }
 
     /**
@@ -172,13 +172,13 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @param \Tensor\Matrix $dOut
      * @return \Tensor\Matrix
      */
-    public function gradient($z, $dOut) : Matrix
+    public function gradient($input, $dOut) : Matrix
     {
-        return $this->differentiate($z)->multiply($dOut);
+        return $this->differentiate($input)->multiply($dOut);
     }
 
     /**
@@ -213,11 +213,11 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function compute(Matrix $z) : Matrix
+    protected function activate(Matrix $input) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -227,7 +227,7 @@ class PReLU implements Hidden, Parametric
 
         $computed = [];
 
-        foreach ($z as $i => $row) {
+        foreach ($input as $i => $row) {
             $alpha = $alphas[$i];
 
             $activations = [];
@@ -247,11 +247,11 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function differentiate(Matrix $z) : Matrix
+    protected function differentiate(Matrix $input) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -261,7 +261,7 @@ class PReLU implements Hidden, Parametric
 
         $gradient = [];
 
-        foreach ($z as $i => $row) {
+        foreach ($input as $i => $row) {
             $alpha = $alphas[$i];
 
             $derivative = [];
