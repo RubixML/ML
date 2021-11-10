@@ -101,7 +101,7 @@ class Activation implements Hidden
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->activationFn->compute($input);
+        $computed = $this->activationFn->activate($input);
 
         $this->input = $input;
         $this->computed = $computed;
@@ -119,7 +119,7 @@ class Activation implements Hidden
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->activationFn->compute($input);
+        return $this->activationFn->activate($input);
     }
 
     /**
