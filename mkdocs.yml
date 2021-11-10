@@ -159,6 +159,7 @@ nav:
         - Dropout: neural-network/hidden-layers/dropout.md
         - Noise: neural-network/hidden-layers/noise.md
         - PReLU: neural-network/hidden-layers/prelu.md
+        - Swish: neural-network/hidden-layers/swish.md
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
