@@ -67,7 +67,7 @@ class Swish implements Hidden, Parametric
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $computed = null;
+    protected ?\Tensor\Matrix $output = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
@@ -126,12 +126,12 @@ class Swish implements Hidden, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->compute($input);
+        $output = $this->activate($input);
 
         $this->input = $input;
-        $this->computed = $computed;
+        $this->output = $output;
 
-        return $computed;
+        return $output;
     }
 
     /**
@@ -144,7 +144,7 @@ class Swish implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->compute($input);
+        return $this->activate($input);
     }
 
     /**
@@ -163,7 +163,7 @@ class Swish implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        if (!$this->input or !$this->computed) {
+        if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
@@ -178,12 +178,12 @@ class Swish implements Hidden, Parametric
 
         $this->beta->update($step);
 
-        $z = $this->input;
-        $computed = $this->computed;
+        $input = $this->input;
+        $output = $this->output;
 
-        $this->input = $this->computed = null;
+        $this->input = $this->output = null;
 
-        return new Deferred([$this, 'gradient'], [$z, $computed, $dOut]);
+        return new Deferred([$this, 'gradient'], [$input, $output, $dOut]);
     }
 
     /**
@@ -191,14 +191,14 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $dOut
      * @return \Tensor\Matrix
      */
-    public function gradient($z, $computed, $dOut) : Matrix
+    public function gradient($input, $output, $dOut) : Matrix
     {
-        return $this->differentiate($z, $computed)->multiply($dOut);
+        return $this->differentiate($input, $output)->multiply($dOut);
     }
 
     /**
@@ -233,41 +233,41 @@ class Swish implements Hidden, Parametric
     /**
      * Compute the Swish activation function and return a matrix.
      *
-     * @param \Tensor\Matrix $z
+     * @param \Tensor\Matrix $input
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function compute(Matrix $z) : Matrix
+    protected function activate(Matrix $input) : Matrix
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $zHat = $z->multiply($this->beta->param());
+        $inputHat = $input->multiply($this->beta->param());
 
-        return $this->sigmoid->activate($zHat)
-            ->multiply($z);
+        return $this->sigmoid->activate($inputHat)
+            ->multiply($input);
     }
 
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $input
+     * @param \Tensor\Matrix $output
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Tensor\Matrix
      */
-    protected function differentiate(Matrix $z, Matrix $computed) : Matrix
+    protected function differentiate(Matrix $input, Matrix $output) : Matrix
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $ones = Matrix::ones(...$computed->shape());
+        $ones = Matrix::ones(...$output->shape());
 
-        return $computed->divide($z)
-            ->multiply($ones->subtract($computed))
-            ->add($computed);
+        return $output->divide($input)
+            ->multiply($ones->subtract($output))
+            ->add($output);
     }
 
     /**
@@ -279,6 +279,6 @@ class Swish implements Hidden, Parametric
      */
     public function __toString() : string
     {
-        return "Swish (beta initializer: {$this->initializer})";
+        return "Swish (initializer: {$this->initializer})";
     }
 }
