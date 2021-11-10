@@ -243,9 +243,9 @@ class Swish implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $inputHat = $input->multiply($this->beta->param());
+        $zHat = $input->multiply($this->beta->param());
 
-        return $this->sigmoid->activate($inputHat)
+        return $this->sigmoid->activate($zHat)
             ->multiply($input);
     }
 
