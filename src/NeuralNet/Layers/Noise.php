@@ -101,7 +101,9 @@ class Noise implements Hidden
         $noise = Matrix::gaussian(...$input->shape())
             ->multiply($this->stdDev);
 
-        return $input->add($noise);
+        $output = $input->add($noise);
+
+        return $output;
     }
 
     /**

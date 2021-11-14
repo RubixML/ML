@@ -254,11 +254,8 @@ class BatchNorm implements Hidden, Parametric
 
         $gamma = $this->gamma->param();
 
-        $betaStep = $optimizer->step($this->beta, $dBeta);
-        $gammaStep = $optimizer->step($this->gamma, $dGamma);
-
-        $this->beta->update($betaStep);
-        $this->gamma->update($gammaStep);
+        $this->beta->update($dBeta, $optimizer);
+        $this->gamma->update($dGamma, $optimizer);
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;

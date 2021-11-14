@@ -114,11 +114,15 @@ class Dropout implements Hidden
      */
     public function forward(Matrix $input) : Matrix
     {
-        $this->mask = Matrix::rand(...$input->shape())
+        $mask = Matrix::rand(...$input->shape())
             ->greater($this->ratio)
             ->multiply($this->scale);
 
-        return $this->mask->multiply($input);
+        $output = $input->multiply($mask);
+
+        $this->mask = $mask;
+
+        return $output;
     }
 
     /**

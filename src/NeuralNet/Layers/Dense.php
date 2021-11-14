@@ -186,15 +186,15 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $z = $this->weights->param()->matmul($input);
+        $output = $this->weights->param()->matmul($input);
 
         if ($this->biases) {
-            $z = $z->add($this->biases->param());
+            $output = $output->add($this->biases->param());
         }
 
         $this->input = $input;
 
-        return $z;
+        return $output;
     }
 
     /**
@@ -212,13 +212,13 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $z = $this->weights->param()->matmul($input);
+        $output = $this->weights->param()->matmul($input);
 
         if ($this->biases) {
-            $z = $z->add($this->biases->param());
+            $output = $output->add($this->biases->param());
         }
 
-        return $z;
+        return $output;
     }
 
     /**
@@ -252,16 +252,12 @@ class Dense implements Hidden, Parametric
             $dW = $dW->add($weights->multiply($this->l2Penalty));
         }
 
-        $step = $optimizer->step($this->weights, $dW);
-
-        $this->weights->update($step);
+        $this->weights->update($dW, $optimizer);
 
         if ($this->biases) {
             $dB = $dOut->sum();
 
-            $step = $optimizer->step($this->biases, $dB);
-
-            $this->biases->update($step);
+            $this->biases->update($dB, $optimizer);
         }
 
         $this->input = null;

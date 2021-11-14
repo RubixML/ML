@@ -13,6 +13,9 @@
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
     
+- 1.2.4
+    - Refactor neural network parameter updates
+
 - 1.2.3
     - Fix Multiclass layer cross entropy gradient optimization
 

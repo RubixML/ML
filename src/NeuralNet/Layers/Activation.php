@@ -46,7 +46,7 @@ class Activation implements Hidden
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $computed = null;
+    protected ?\Tensor\Matrix $output = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFn
@@ -101,12 +101,12 @@ class Activation implements Hidden
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->activationFn->activate($input);
+        $output = $this->activationFn->activate($input);
 
         $this->input = $input;
-        $this->computed = $computed;
+        $this->output = $output;
 
-        return $computed;
+        return $output;
     }
 
     /**
@@ -134,19 +134,19 @@ class Activation implements Hidden
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
-        if (!$this->input or !$this->computed) {
+        if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
         $input = $this->input;
-        $computed = $this->computed;
+        $output = $this->output;
 
-        $this->input = $this->computed = null;
+        $this->input = $this->output = null;
 
         return new Deferred(
             [$this, 'gradient'],
-            [$input, $computed, $prevGradient]
+            [$input, $output, $prevGradient]
         );
     }
 
@@ -156,13 +156,13 @@ class Activation implements Hidden
      * @internal
      *
      * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $output
      * @param \Rubix\ML\Deferred $prevGradient
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $input, Matrix $computed, Deferred $prevGradient) : Matrix
+    public function gradient(Matrix $input, Matrix $output, Deferred $prevGradient) : Matrix
     {
-        return $this->activationFn->differentiate($input, $computed)
+        return $this->activationFn->differentiate($input, $output)
             ->multiply($prevGradient());
     }
 
