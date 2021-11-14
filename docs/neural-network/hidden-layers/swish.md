@@ -17,4 +17,5 @@ $layer = new Swish(new Constant(1.0));
 ```
 
 ## References
-[^1]: P. Ramachandran et al. (2017). Searching for Activation Functions.
+[^1]: P. Ramachandran er al. (2017). Swish: A Self-gated Activation Function.
+[^2]: P. Ramachandran et al. (2017). Searching for Activation Functions.

@@ -13,9 +13,8 @@ use function exp;
  * the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism.
  *
  * References:
- * [1] S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function
- * Approximation in Reinforcement Learning.
- * [2] P. Ramachandran et al. (2017). Swish: A Self-gated Activation Function.
+ * [1] S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in
+ * Reinforcement Learning.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

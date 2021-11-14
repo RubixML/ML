@@ -14,5 +14,4 @@ $activationFunction = new SiLU();
 ```
 
 ### References
->- S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in Reinforcement Learning.
->- P. Ramachandran er al. (2017). Swish: A Self-gated Activation Function.
+[^1]: S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in Reinforcement Learning.

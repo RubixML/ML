@@ -19,7 +19,8 @@ use Generator;
  * *beta* parameter allows each activation function in the layer to tailor its output to the training set by
  * interpolating between the linear function and ReLU.
  *
- * [1] P. Ramachandran et al. (2017). Searching for Activation Functions.
+ * [1] P. Ramachandran et al. (2017). Swish: A Self-gated Activation Function.
+ * [2] P. Ramachandran et al. (2017). Searching for Activation Functions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
