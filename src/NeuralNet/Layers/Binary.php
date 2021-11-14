@@ -62,7 +62,7 @@ class Binary implements Output
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $computed = null;
+    protected ?\Tensor\Matrix $output = null;
 
     /**
      * @param string[] $classes
@@ -121,12 +121,12 @@ class Binary implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $computed = $this->sigmoid->activate($input);
+        $output = $this->sigmoid->activate($input);
 
         $this->input = $input;
-        $this->computed = $computed;
+        $this->output = $output;
 
-        return $computed;
+        return $output;
     }
 
     /**
@@ -150,7 +150,7 @@ class Binary implements Output
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        if (!$this->input or !$this->computed) {
+        if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
@@ -164,13 +164,13 @@ class Binary implements Output
         $expected = Matrix::quick([$expected]);
 
         $input = $this->input;
-        $computed = $this->computed;
+        $output = $this->output;
 
-        $gradient = new Deferred([$this, 'gradient'], [$input, $computed, $expected]);
+        $gradient = new Deferred([$this, 'gradient'], [$input, $output, $expected]);
 
-        $loss = $this->costFn->compute($computed, $expected);
+        $loss = $this->costFn->compute($output, $expected);
 
-        $this->input = $this->computed = null;
+        $this->input = $this->output = null;
 
         return [$gradient, $loss];
     }
@@ -179,21 +179,21 @@ class Binary implements Output
      * Calculate the gradient for the previous layer.
      *
      * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $computed
+     * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $expected
      * @return \Tensor\Matrix
      */
-    public function gradient(Matrix $input, Matrix $computed, Matrix $expected) : Matrix
+    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
         if ($this->costFn instanceof CrossEntropy) {
-            return $computed->subtract($expected)
-                ->divide($computed->n());
+            return $output->subtract($expected)
+                ->divide($output->n());
         }
 
-        $dL = $this->costFn->differentiate($computed, $expected)
-            ->divide($computed->n());
+        $dL = $this->costFn->differentiate($output, $expected)
+            ->divide($output->n());
 
-        return $this->sigmoid->differentiate($input, $computed)
+        return $this->sigmoid->differentiate($input, $output)
             ->multiply($dL);
     }
 }
