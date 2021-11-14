@@ -174,9 +174,7 @@ class Swish implements Hidden, Parametric
 
         $dBeta = $dOut->multiply($dIn)->sum();
 
-        $step = $optimizer->step($this->beta, $dBeta);
-
-        $this->beta->update($step);
+        $this->beta->update($dBeta, $optimizer);
 
         $input = $this->input;
         $output = $this->output;
@@ -198,7 +196,8 @@ class Swish implements Hidden, Parametric
      */
     public function gradient($input, $output, $dOut) : Matrix
     {
-        return $this->differentiate($input, $output)->multiply($dOut);
+        return $this->differentiate($input, $output)
+            ->multiply($dOut);
     }
 
     /**
