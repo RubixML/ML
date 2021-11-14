@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,7 +16,12 @@ class ParameterTest extends TestCase
     /**
      * @var \Rubix\ML\NeuralNet\Parameter
      */
-    protected $param;
+    protected \Rubix\ML\NeuralNet\Parameter $param;
+
+    /**
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
+    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
      * @before
@@ -26,6 +32,8 @@ class ParameterTest extends TestCase
             [5, 4],
             [-2, 6],
         ]));
+
+        $this->optimizer = new Stochastic();
     }
 
     /**
@@ -49,17 +57,17 @@ class ParameterTest extends TestCase
      */
     public function update() : void
     {
-        $step = Matrix::quick([
+        $gradient = Matrix::quick([
             [2, 1],
             [1, -2],
         ]);
 
         $expected = [
-            [3, 3],
-            [-3, 8],
+            [4.98, 3.99],
+            [-2.01, 6.02],
         ];
 
-        $this->param->update($step);
+        $this->param->update($gradient, $this->optimizer);
 
         $this->assertEquals($expected, $this->param->param()->asArray());
     }
