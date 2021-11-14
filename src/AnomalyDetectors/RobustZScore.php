@@ -247,7 +247,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      */
     public function predictSample(array $sample) : int
     {
-        return $this->z($sample) > $this->threshold ? 1 : 0;
+        return $this->zHat($sample) > $this->threshold ? 1 : 0;
     }
 
     /**
@@ -265,7 +265,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
 
         DatasetHasDimensionality::with($dataset, count($this->medians))->check();
 
-        return array_map([$this, 'z'], $dataset->samples());
+        return array_map([$this, 'zHat'], $dataset->samples());
     }
 
     /**
@@ -274,7 +274,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      * @param list<int|float> $sample
      * @return float
      */
-    protected function z(array $sample) : float
+    protected function zHat(array $sample) : float
     {
         $scores = [];
 
