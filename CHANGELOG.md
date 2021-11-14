@@ -7,6 +7,7 @@
     
 - 1.2.4
     - Refactor neural network parameter updates
+    - Allow set null logger
 
 - 1.2.3
     - Fix Multiclass layer cross entropy gradient optimization

@@ -25,9 +25,9 @@ trait LoggerAware
     /**
      * Sets a PSR-3 logger instance.
      *
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface|null $logger
      */
-    public function setLogger(LoggerInterface $logger) : void
+    public function setLogger(?LoggerInterface $logger) : void
     {
         $this->logger = $logger;
     }
