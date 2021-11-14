@@ -41,7 +41,7 @@ class He implements Initializer
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
         $scale = (6.0 / ($fanOut + $fanIn)) ** self::ETA;
-        
+
         return Matrix::uniform($fanOut, $fanIn)
             ->multiply($scale);
     }
