@@ -5,14 +5,14 @@ namespace Rubix\ML\NeuralNet;
 use Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Traversable;
+
+use function array_reverse;
 
 /**
  * Feed Forward
@@ -78,8 +78,8 @@ class FeedForward implements Network
         $this->input = $input;
         $this->hidden = $hidden;
         $this->output = $output;
-        $this->backPass = array_reverse($hidden);
         $this->optimizer = $optimizer;
+        $this->backPass = array_reverse($hidden);
     }
 
     /**
@@ -156,13 +156,13 @@ class FeedForward implements Network
      */
     public function infer(Dataset $dataset) : Matrix
     {
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $input = Matrix::quick($dataset->samples())->transpose();
 
         foreach ($this->layers() as $layer) {
-            $x = $layer->infer($x);
+            $input = $layer->infer($input);
         }
 
-        return $x->transpose();
+        return $input->transpose();
     }
 
     /**
@@ -186,16 +186,16 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations at the output later.
      *
-     * @param \Tensor\Matrix $x
+     * @param \Tensor\Matrix $input
      * @return \Tensor\Matrix
      */
-    public function feed(Matrix $x) : Matrix
+    public function feed(Matrix $input) : Matrix
     {
         foreach ($this->layers() as $layer) {
-            $x = $layer->forward($x);
+            $input = $layer->forward($input);
         }
 
-        return $x;
+        return $input;
     }
 
     /**

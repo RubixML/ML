@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
 
+use function sqrt;
+
 /**
  * Le Cun
  *
@@ -32,8 +34,10 @@ class LeCun implements Initializer
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
+        $scale = sqrt(3 / $fanIn);
+
         return Matrix::uniform($fanOut, $fanIn)
-            ->multiply(sqrt(3 / $fanIn));
+            ->multiply($scale);
     }
 
     /**
