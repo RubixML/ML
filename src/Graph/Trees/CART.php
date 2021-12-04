@@ -105,8 +105,8 @@ abstract class CART extends DecisionTree
 
             $values = array_unique($values);
 
-            if (count($values) > $bins) {
-                if ($type->isContinuous()) {
+            if ($type->isContinuous()) {
+                if (count($values) > $bins) {
                     if (!isset($q)) {
                         $q = linspace(0.0, 1.0, $bins + 1);
 
@@ -141,7 +141,7 @@ abstract class CART extends DecisionTree
             }
         }
 
-        if (!is_int($bestColumn) or $bestValue === null or $bestGroups === null) {
+        if ($bestColumn === null or $bestValue === null or $bestGroups === null) {
             throw new RuntimeException('Could not split dataset.');
         }
 
