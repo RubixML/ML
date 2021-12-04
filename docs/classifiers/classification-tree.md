@@ -14,12 +14,13 @@ A binary tree-based learner that greedily constructs a decision map for classifi
 | 2 | maxLeafSize | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary to continue splitting a subtree. |
 | 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
+| 5 | maxBins | Auto | int | The maximum number of bins to consider when determining a split with a continuous feature as the split point. |
 
 ## Example
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new ClassificationTree(10, 5, 0.001, null);
+$estimator = new ClassificationTree(10, 5, 0.001, null, null);
 ```
 
 ## Additional Methods

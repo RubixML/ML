@@ -47,14 +47,16 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      * @param int $maxLeafSize
      * @param float $minPurityIncrease
      * @param int|null $maxFeatures
+     * @param ?int $maxBins
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
         int $maxLeafSize = 3,
         float $minPurityIncrease = 1e-7,
-        ?int $maxFeatures = null
+        ?int $maxFeatures = null,
+        ?int $maxBins = null
     ) {
-        parent::__construct($maxHeight, $maxLeafSize, $minPurityIncrease, $maxFeatures);
+        parent::__construct($maxHeight, $maxLeafSize, $minPurityIncrease, $maxFeatures, $maxBins);
     }
 
     /**
@@ -98,6 +100,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
             'max leaf size' => $this->maxLeafSize,
             'max features' => $this->maxFeatures,
             'min purity increase' => $this->minPurityIncrease,
+            'max bins' => $this->maxBins,
         ];
     }
 

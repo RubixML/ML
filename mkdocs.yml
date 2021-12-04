@@ -44,6 +44,7 @@ nav:
       - Column Picker: extractors/column-picker.md
       - Concatenator: extractors/concatenator.md
       - CSV: extractors/csv.md
+      - Deduplicator: extractors/deduplicator.md
       - NDJSON: extractors/ndjson.md
       - SQL Table: extractors/sql-table.md
     - Dataset Objects:
@@ -156,6 +157,7 @@ nav:
         - Dropout: neural-network/hidden-layers/dropout.md
         - Noise: neural-network/hidden-layers/noise.md
         - PReLU: neural-network/hidden-layers/prelu.md
+        - Swish: neural-network/hidden-layers/swish.md
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
@@ -166,6 +168,7 @@ nav:
         - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
         - Soft Sign: neural-network/activation-functions/softsign.md
+        - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:
         - Cross Entropy: neural-network/cost-functions/cross-entropy.md

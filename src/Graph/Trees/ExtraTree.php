@@ -4,6 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_int;
@@ -26,8 +27,40 @@ use function rand;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-abstract class ExtraTree extends CART
+abstract class ExtraTree extends DecisionTree
 {
+    /**
+     * The maximum number of features to consider when determining a split.
+     *
+     * @var int|null
+     */
+    protected ?int $maxFeatures = null;
+
+    /**
+     * @internal
+     *
+     * @param int $maxHeight
+     * @param int $maxLeafSize
+     * @param float $minPurityIncrease
+     * @param int|null $maxFeatures
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(
+        int $maxHeight,
+        int $maxLeafSize,
+        float $minPurityIncrease,
+        ?int $maxFeatures
+    ) {
+        parent::__construct($maxHeight, $maxLeafSize, $minPurityIncrease);
+
+        if (isset($maxFeatures) and $maxFeatures < 1) {
+            throw new InvalidArgumentException('Tree must consider at least 1'
+                . " feature to determine a split, $maxFeatures given.");
+        }
+
+        $this->maxFeatures = $maxFeatures;
+    }
+
     /**
      * Randomized algorithm that chooses the split point with the lowest impurity
      * among a random selection of features.

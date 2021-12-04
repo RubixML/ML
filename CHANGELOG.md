@@ -13,6 +13,13 @@
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
     
+- 1.3.0
+    - Switch back to original fork of Tensor
+    - Added `maxBins` hyper-parameter to CART-based learners
+    - Added stream Deduplicator extractor
+    - Added the SiLU activation function
+    - Added Swish activation layer
+    
 - 1.2.4
     - Refactor neural network parameter updates
     - Allow set null logger

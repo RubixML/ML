@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -72,7 +73,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
 
-        $this->estimator = new RegressionTree(10, 2, 1e-7, 3);
+        $this->estimator = new RegressionTree(10, 2, 1e-7, 3, null);
 
         $this->metric = new RSquared();
 
@@ -132,6 +133,7 @@ class RegressionTreeTest extends TestCase
             'max leaf size' => 2,
             'min purity increase' => 1.0E-7,
             'max features' => 3,
+            'max bins' => null,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -140,7 +142,7 @@ class RegressionTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictImportancesRules() : void
+    public function trainPredictImportancesContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -154,6 +156,27 @@ class RegressionTreeTest extends TestCase
         $this->assertIsArray($importances);
         $this->assertCount(2, $importances);
         $this->assertContainsOnly('float', $importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictCategorical() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(5));
+
+        $testing = $training->take(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
