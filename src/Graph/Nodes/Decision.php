@@ -14,7 +14,7 @@ namespace Rubix\ML\Graph\Nodes;
 interface Decision extends BinaryNode
 {
     /**
-     * Return the impurity of the labels as a result of the decision.
+     * Return the impurity of the labels within the node.
      *
      * @return float
      */

@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -29,7 +30,7 @@ class ClassificationTreeTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 350;
 
     /**
      * The number of samples in the validation set.
@@ -78,7 +79,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new ClassificationTree(10, 3, 1e-7, 3);
+        $this->estimator = new ClassificationTree(10, 3, 1e-7, 3, 5);
 
         $this->metric = new Accuracy();
 
@@ -139,6 +140,7 @@ class ClassificationTreeTest extends TestCase
             'max leaf size' => 3,
             'min purity increase' => 1.0E-7,
             'max features' => 3,
+            'max bins' => 5,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -147,7 +149,7 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictImportancesRules() : void
+    public function trainPredictImportancesContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -161,6 +163,27 @@ class ClassificationTreeTest extends TestCase
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
         $this->assertContainsOnly('float', $importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictCategorical() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(5));
+
+        $testing = $training->take(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
