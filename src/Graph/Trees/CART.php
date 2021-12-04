@@ -17,7 +17,6 @@ use function sqrt;
 use function array_slice;
 use function array_unique;
 use function array_rand;
-use function is_int;
 
 /**
  * CART
