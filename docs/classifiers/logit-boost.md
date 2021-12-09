@@ -28,7 +28,7 @@ use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$estimator = new LogitBoost(new RegressionTree(4), 0.1, 1e-4, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
+$estimator = new LogitBoost(new RegressionTree(4), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 ```
 
 ## Additional Methods
