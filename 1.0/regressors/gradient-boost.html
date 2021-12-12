@@ -1174,20 +1174,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../classifiers/dummy-classifier.html" class="md-nav__link">
-        Dummy Classifier
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../classifiers/extra-tree-classifier.html" class="md-nav__link">
         Extra Tree Classifier
       </a>
@@ -1393,20 +1379,6 @@
     <li class="md-nav__item">
       <a href="adaline.html" class="md-nav__link">
         Adaline
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="dummy-regressor.html" class="md-nav__link">
-        Dummy Regressor
       </a>
     </li>
   
@@ -3739,6 +3711,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernels/distance/sparse-cosine.html" class="md-nav__link">
+        Sparse Cosine
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -4971,13 +4957,17 @@
 
 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span></p>
 <h1 id="gradient-boost">Gradient Boost<a class="headerlink" href="#gradient-boost" title="Permanent link">#</a></h1>
-<p>Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training boosters (Decision Trees) to correct the error residuals of a series of <em>weak</em> base learners. The default base regressor is a <a href="dummy-regressor.html">Dummy Regressor</a> using the <a href="../strategies/mean.html">Mean</a> strategy and the default booster is a <a href="regression-tree.html">Regression Tree</a> with a max height of 3.</p>
+<p>Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training boosters (Decision Trees) to correct the error residuals of a base learner.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default booster is a <a href="regression-tree.html">Regression Tree</a> with a max height of 3.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Gradient Boost utilizes progress monitoring via an internal validation set for snapshotting and early stopping. If there are not enough training samples to build an internal validation set given the user-specified holdout ratio then training will proceed with progress monitoring disabled.</p>
 </div>
 <p><strong>Interfaces:</strong> <a href="../estimator.html">Estimator</a>, <a href="../learner.html">Learner</a>, <a href="../verbose.html">Verbose</a>, <a href="../ranks-features.html">Ranks Features</a>, <a href="../persistable.html">Persistable</a></p>
-<p><strong>Data Type Compatibility:</strong> Depends on base learners</p>
+<p><strong>Data Type Compatibility:</strong> Categorical and Continuous</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -5013,10 +5003,10 @@
 </tr>
 <tr>
 <td>4</td>
-<td>estimators</td>
+<td>epochs</td>
 <td>1000</td>
 <td>int</td>
-<td>The maximum number of boosters to train in the ensemble.</td>
+<td>The maximum number of training epochs. i.e. the number of times to iterate before terminating.</td>
 </tr>
 <tr>
 <td>5</td>
@@ -5028,7 +5018,7 @@
 <tr>
 <td>6</td>
 <td>window</td>
-<td>10</td>
+<td>5</td>
 <td>int</td>
 <td>The number of epochs without improvement in the validation score to wait before considering an early stop.</td>
 </tr>
@@ -5046,23 +5036,14 @@
 <td>Metric</td>
 <td>The metric used to score the generalization performance of the model during training.</td>
 </tr>
-<tr>
-<td>9</td>
-<td>base</td>
-<td>DummyRegressor</td>
-<td>Learner</td>
-<td>The <em>weak</em> base learner to be boosted.</td>
-</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Regressors\GradientBoost</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Regressors\RegressionTree</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\SMAPE</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Regressors\DummyRegressor</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Strategies\Constant</span><span class="p">;</span>
 
-<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GradientBoost</span><span class="p">(</span><span class="k">new</span> <span class="nx">RegressionTree</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="k">new</span> <span class="nx">SMAPE</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">DummyRegressor</span><span class="p">(</span><span class="k">new</span> <span class="nx">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)));</span>
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GradientBoost</span><span class="p">(</span><span class="k">new</span> <span class="nx">RegressionTree</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="k">new</span> <span class="nx">SMAPE</span><span class="p">());</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return an iterable progress table with the steps from the last training session:
@@ -5093,6 +5074,9 @@
 <li id="fn:3">
 <p>Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
+<li id="fn:4">
+<p>G. Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
 </ol>
 </div>
 
@@ -5101,7 +5085,7 @@
   <small>
     
       Last update:
-      2021-07-05
+      2021-09-05
     
   </small>
 </div>

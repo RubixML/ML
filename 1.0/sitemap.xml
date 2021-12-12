@@ -2,1097 +2,1092 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://rubixml.com/1.0/index.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/basic-introduction.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/bootstrap-aggregator.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/choosing-an-estimator.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/committee-machine.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/estimator.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/exploring-data.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extracting-data.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/faq.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/grid-search.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/hyper-parameter-tuning.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/inference.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/installation.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/learner.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/model-ensembles.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/model-persistence.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/online.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/parallel.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/persistable.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/persistent-model.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/pipeline.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/preprocessing.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/probabilistic.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/ranks-features.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/representing-your-data.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/scoring.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/training.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/verbose.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/what-is-machine-learning.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/gaussian-mle.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/isolation-forest.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/local-outlier-factor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/loda.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/one-class-svm.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/anomaly-detectors/robust-z-score.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/backends/amp.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/backends/serial.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/adaboost.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/classification-tree.html</loc>
-         <lastmod>2021-12-09</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://rubixml.com/1.0/classifiers/dummy-classifier.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/extra-tree-classifier.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/gaussian-naive-bayes.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/k-nearest-neighbors.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/kd-neighbors.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/logistic-regression.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/logit-boost.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/multilayer-perceptron.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/naive-bayes.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/radius-neighbors.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/random-forest.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/softmax-classifier.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/classifiers/svc.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/dbscan.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/fuzzy-c-means.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/gaussian-mixture.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/k-means.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/mean-shift.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/seeders/k-mc2.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/seeders/plus-plus.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/seeders/preset.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/clusterers/seeders/random.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/hold-out.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/k-fold.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/leave-p-out.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/monte-carlo.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/accuracy.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/completeness.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/f-beta.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/homogeneity.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/informedness.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/mcc.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/mean-absolute-error.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/mean-squared-error.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/median-absolute-error.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/r-squared.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/rand-index.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/rmse.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/smape.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/metrics/v-measure.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/aggregate-report.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/confusion-matrix.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/contingency-table.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/error-analysis.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/cross-validation/reports/multiclass-breakdown.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/labeled.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/unlabeled.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/agglomerate.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/blob.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/circle.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/half-moon.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/hyperplane.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/datasets/generators/swiss-roll.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/column-picker.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/concatenator.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/csv.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/deduplicator.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/ndjson.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/extractors/sql-table.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/graph/trees/ball-tree.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/graph/trees/k-d-tree.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/helpers/params.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/canberra.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/cosine.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/diagonal.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/euclidean.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/hamming.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/jaccard.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/manhattan.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/minkowski.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/distance/safe-euclidean.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://rubixml.com/1.0/kernels/distance/sparse-cosine.html</loc>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/svm/linear.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/svm/polynomial.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/svm/rbf.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/kernels/svm/sigmoidal.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/loggers/screen.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/elu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/hyperbolic-tangent.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/leaky-relu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/relu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/selu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/sigmoid.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/silu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/soft-plus.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/softmax.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/softsign.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/activation-functions/thresholded-relu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/cost-functions/cross-entropy.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/cost-functions/huber-loss.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/cost-functions/least-squares.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/cost-functions/relative-entropy.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/activation.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/batch-norm.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/dense.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/dropout.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/noise.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/prelu.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/hidden-layers/swish.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/constant.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/he.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/lecun.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/normal.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/uniform.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/xavier-1.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/initializers/xavier-2.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/adagrad.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/adam.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/adamax.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/cyclical.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/momentum.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/rms-prop.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/step-decay.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/neural-network/optimizers/stochastic.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/persisters/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/persisters/filesystem.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/adaline.html</loc>
-         <lastmod>2021-12-09</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://rubixml.com/1.0/regressors/dummy-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/extra-tree-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/gradient-boost.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/kd-neighbors-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/knn-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/mlp-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/radius-neighbors-regressor.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/regression-tree.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/ridge.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/svr.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/serializers/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/serializers/gzip.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/serializers/native.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/serializers/rbx.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/constant.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/k-most-frequent.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/mean.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/percentile.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/prior.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/strategies/wild-guess.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/k-skip-n-gram.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/n-gram.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/sentence.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/whitespace.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/word-stemmer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/tokenizers/word.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/api.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/boolean-converter.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/gaussian-random-projector.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/hot-deck-imputer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/image-resizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/image-vectorizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/interval-discretizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/knn-imputer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/l1-normalizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/l2-normalizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/lambda-function.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/linear-discriminant-analysis.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/max-absolute-scaler.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/min-max-normalizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/missing-data-imputer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/multibyte-text-normalizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/numeric-string-converter.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/one-hot-encoder.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/polynomial-expander.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/principal-component-analysis.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/regex-filter.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/robust-standardizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/sparse-random-projector.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/stop-word-filter.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/t-sne.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/text-normalizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/tf-idf-transformer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/token-hashing-vectorizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/truncated-svd.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/word-count-vectorizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://rubixml.com/1.0/transformers/z-scale-standardizer.html</loc>
-         <lastmod>2021-12-09</lastmod>
+         <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

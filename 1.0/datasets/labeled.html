@@ -1272,20 +1272,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../classifiers/dummy-classifier.html" class="md-nav__link">
-        Dummy Classifier
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../classifiers/extra-tree-classifier.html" class="md-nav__link">
         Extra Tree Classifier
       </a>
@@ -1489,20 +1475,6 @@
     <li class="md-nav__item">
       <a href="../regressors/adaline.html" class="md-nav__link">
         Adaline
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../regressors/dummy-regressor.html" class="md-nav__link">
-        Dummy Regressor
       </a>
     </li>
   
@@ -3773,6 +3745,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernels/distance/sparse-cosine.html" class="md-nav__link">
+        Sparse Cosine
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -5121,9 +5107,9 @@
 </code></pre></div>
 <h3 id="stratification">Stratification<a class="headerlink" href="#stratification" title="Permanent link">#</a></h3>
 <p>Group samples by their class label and return them in their own dataset:
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">stratify</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">stratifyByLabel</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
 </code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="nv">$strata</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">stratify</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$strata</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">stratifyByLabel</span><span class="p">();</span>
 </code></pre></div>
 <p>Split the dataset into left and right subsets such that the proportions of class labels remain intact:
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">stratifiedSplit</span><span class="p">(</span><span class="nv">$ratio</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">:</span> <span class="k">array</span>
@@ -5211,7 +5197,7 @@
   <small>
     
       Last update:
-      2021-06-06
+      2021-09-11
     
   </small>
 </div>
