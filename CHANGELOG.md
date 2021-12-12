@@ -1,12 +1,12 @@
 - 2.0.0
-    - GBM estimators now use gradient-based subsampling
-    - Token Hashing Vectorizer custom hash functions
-    - Gradient Boost always uses mean base estimator
+    - Gradient Boost now uses gradient-based subsampling
+    - Allow Token Hashing Vectorizer custom hash functions
+    - Gradient Boost base estimator no longer configurable
     - Move dummy estimators to the Extras package
     - Increase default MLP window from 3 to 5
     - Decrease default Gradient Boost window from 10 to 5
     - Rename alpha regularization parameter to L2 penalty
-    - Added RBX class property type change detection
+    - Added RBX serializer class property type change detection
     - Rename boosting `estimators` param to `epochs`
     - Neural net-based learners can now train for 0 epochs
     - Rename Labeled `stratify()` to `stratifyByLabel()`

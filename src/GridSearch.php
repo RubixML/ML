@@ -268,13 +268,15 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         foreach ($combinations as $params) {
             $estimator = new $this->class(...$params);
 
+            $task = new CrossValidate(
+                $estimator,
+                $dataset,
+                $this->validator,
+                $this->metric
+            );
+
             $this->backend->enqueue(
-                new CrossValidate(
-                    $estimator,
-                    $dataset,
-                    $this->validator,
-                    $this->metric
-                ),
+                $task,
                 [$this, 'afterScore'],
                 $estimator->params()
             );
