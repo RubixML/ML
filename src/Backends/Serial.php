@@ -24,7 +24,7 @@ class Serial implements Backend
     /**
      * A 3-tuple of deferred computations and their optional callbacks and contexts.
      *
-     * @var array[]
+     * @var list<array{Task,callable(mixed,mixed):void|null,mixed|null}>
      */
     protected array $queue = [
         //
@@ -34,8 +34,8 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
-     * @param callable(mixed,mixed):void $after
-     * @param null|mixed $context
+     * @param callable(mixed,mixed):void|null $after
+     * @param mixed|null $context
      */
     public function enqueue(Task $task, ?callable $after = null, $context = null) : void
     {

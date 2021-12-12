@@ -26,12 +26,12 @@ class WordCountVectorizerBench
     protected $transformer;
 
     /**
-     * @var array[]
+     * @var list<list<string>>
      */
     protected $aSamples;
 
     /**
-     * @var array[]
+     * @var list<list<string>>
      */
     protected $bSamples;
 

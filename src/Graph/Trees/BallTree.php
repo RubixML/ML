@@ -176,7 +176,7 @@ class BallTree implements BinaryTree, Spatial
      * @param list<string|int|float> $sample
      * @param int $k
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return array{array[],mixed[],float[]}
+     * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */
     public function nearest(array $sample, int $k = 1) : array
     {
@@ -245,7 +245,7 @@ class BallTree implements BinaryTree, Spatial
      * @param float $radius
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return array{array[],mixed[],float[]}
+     * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */
     public function range(array $sample, float $radius) : array
     {

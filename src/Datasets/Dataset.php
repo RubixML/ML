@@ -96,7 +96,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param iterable<array> $iterator
+     * @param iterable<mixed[]> $iterator
      * @return static
      */
     abstract public static function fromIterator(iterable $iterator) : self;
@@ -188,7 +188,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Rotate the sample matrix so that the values of each feature become rows.
      *
-     * @return array[]
+     * @return mixed[]
      */
     public function features() : array
     {
@@ -199,7 +199,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Return the feature columns that match a given data type.
      *
      * @param \Rubix\ML\DataType $type
-     * @return array[]
+     * @return mixed[]
      */
     public function featuresByType(DataType $type) : array
     {

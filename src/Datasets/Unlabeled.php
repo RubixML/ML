@@ -55,7 +55,7 @@ class Unlabeled extends Dataset
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param iterable<array> $iterator
+     * @param iterable<mixed[]> $iterator
      * @return self
      */
     public static function fromIterator(iterable $iterator) : self
@@ -497,7 +497,7 @@ class Unlabeled extends Dataset
      *
      * @param int $offset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return array[]
+     * @return mixed[]
      */
     public function offsetGet($offset) : array
     {
