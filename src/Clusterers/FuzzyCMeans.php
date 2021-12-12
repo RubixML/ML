@@ -410,7 +410,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Calculate the  sum of distances between all samples and their closest centroid.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param array[] $memberships
      * @return float
      */

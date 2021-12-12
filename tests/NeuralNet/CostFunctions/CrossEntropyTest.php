@@ -52,7 +52,7 @@ class CrossEntropyTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -107,7 +107,7 @@ class CrossEntropyTest extends TestCase
      *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
-     * @param array[] $expected
+     * @param list<list<float>> $expected
      */
     public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
@@ -117,7 +117,7 @@ class CrossEntropyTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {

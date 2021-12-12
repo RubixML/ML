@@ -33,7 +33,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset with validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @return self
      */
     public static function build(array $samples = []) : self
@@ -44,7 +44,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset foregoing validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @return self
      */
     public static function quick(array $samples = []) : self
@@ -511,7 +511,7 @@ class Unlabeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

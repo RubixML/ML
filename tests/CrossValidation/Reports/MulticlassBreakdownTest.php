@@ -56,7 +56,7 @@ class MulticlassBreakdownTest extends TestCase
      *
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels
-     * @param array[] $expected
+     * @param mixed[] $expected
      */
     public function generate(array $predictions, array $labels, array $expected) : void
     {
@@ -67,7 +67,7 @@ class MulticlassBreakdownTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function generateProvider() : Generator
     {

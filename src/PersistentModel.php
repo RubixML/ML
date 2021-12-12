@@ -184,7 +184,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {

@@ -4,5 +4,5 @@ parameters:
         - 'src'
         - 'tests'
         - 'benchmarks'
-    excludes_analyse:
+    excludePaths:
         - src/Backends/Amp.php

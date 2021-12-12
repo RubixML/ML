@@ -67,7 +67,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * The training samples.
      *
-     * @var list<array>
+     * @var list<(string|int|float)[]>
      */
     protected array $samples = [
         //
@@ -228,7 +228,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * the brute force method.
      *
      * @param (string|int|float)[] $sample
-     * @return array[]
+     * @return array<(string|int|float)[]>
      */
     protected function nearest(array $sample) : array
     {

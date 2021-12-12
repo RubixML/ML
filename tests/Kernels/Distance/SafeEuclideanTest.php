@@ -54,7 +54,7 @@ class SafeEuclideanTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {

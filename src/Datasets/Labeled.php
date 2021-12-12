@@ -54,7 +54,7 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset with validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @return self
      */
@@ -66,7 +66,7 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset foregoing validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @return self
      */
@@ -134,7 +134,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @param bool $verify
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -823,7 +823,7 @@ class Labeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

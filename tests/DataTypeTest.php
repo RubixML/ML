@@ -25,7 +25,7 @@ class DataTypeTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function determineProvider() : Generator
     {
@@ -70,7 +70,7 @@ class DataTypeTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function codeProvider() : Generator
     {
