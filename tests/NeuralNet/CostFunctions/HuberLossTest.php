@@ -52,7 +52,7 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -101,7 +101,7 @@ class HuberLossTest extends TestCase
      *
      * @param \Tensor\Matrix $output
      * @param \Tensor\Matrix $target
-     * @param array[] $expected
+     * @param list<list<float>> $expected
      */
     public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
@@ -111,7 +111,7 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {

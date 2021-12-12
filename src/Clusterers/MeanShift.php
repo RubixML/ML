@@ -116,7 +116,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var array[]
+     * @var list<(int|float)[]>
      */
     protected array $centroids = [
         //
@@ -268,7 +268,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array[]
+     * @return list<(int|float)[]>
      */
     public function centroids() : array
     {
@@ -328,6 +328,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $k = max(self::MIN_SEEDS, (int) round($this->ratio * $n));
 
+        /** @var list<list<int|float>> $centroids */
         $centroids = $this->seeder->seed($dataset, $k);
 
         $this->tree->grow($dataset);
@@ -486,8 +487,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Calculate the amount of centroid shift from the previous epoch.
      *
-     * @param array[] $current
-     * @param array[] $previous
+     * @param list<(int|float)[]> $current
+     * @param list<(int|float)[]> $previous
      * @return float
      */
     protected function shift(array $current, array $previous) : float

@@ -41,7 +41,7 @@ class SELUTest extends TestCase
      * @dataProvider computeProvider
      *
      * @param \Tensor\Matrix $input
-     * @param array[] $expected
+     * @param list<list<float>> $expected $expected
      */
     public function activate(Matrix $input, array $expected) : void
     {
@@ -51,7 +51,7 @@ class SELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -84,7 +84,7 @@ class SELUTest extends TestCase
      *
      * @param \Tensor\Matrix $input
      * @param \Tensor\Matrix $activations
-     * @param array[] $expected
+     * @param list<list<float>> $expected $expected
      */
     public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
     {
@@ -94,7 +94,7 @@ class SELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {

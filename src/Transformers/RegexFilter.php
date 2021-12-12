@@ -127,7 +127,7 @@ class RegexFilter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      */
     public function transform(array &$samples) : void
     {

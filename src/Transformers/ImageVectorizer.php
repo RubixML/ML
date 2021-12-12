@@ -36,7 +36,7 @@ class ImageVectorizer implements Transformer, Stateful
     /**
      * The fixed width and height of the images for each image feature column.
      *
-     * @var array[]|null
+     * @var array<int[]>|null
      */
     protected ?array $sizes = null;
 

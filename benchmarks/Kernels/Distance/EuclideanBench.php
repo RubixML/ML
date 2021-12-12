@@ -14,12 +14,12 @@ class EuclideanBench
     protected const NUM_SAMPLES = 10000;
 
     /**
-     * @var array[]
+     * @var list<list<float>>
      */
     protected $aSamples;
 
     /**
-     * @var array[]
+     * @var list<list<float>>
      */
     protected $bSamples;
 

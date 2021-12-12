@@ -107,7 +107,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Get an iterator for the elements in the tuple.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed>
      */
     public function getIterator() : Generator
     {

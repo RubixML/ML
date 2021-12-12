@@ -22,7 +22,7 @@ class ColumnPicker implements Extractor
     /**
      * The base iterator.
      *
-     * @var iterable<array>
+     * @var iterable<mixed[]>
      */
     protected iterable $iterator;
 

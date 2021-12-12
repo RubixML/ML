@@ -63,10 +63,6 @@ class Completeness implements Metric
     {
         $table = (new ContingencyTable())->generate($labels, $predictions);
 
-        if (empty($table)) {
-            return 0.0;
-        }
-
         $score = 0.0;
 
         foreach ($table as $dist) {

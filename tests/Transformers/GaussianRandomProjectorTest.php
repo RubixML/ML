@@ -69,7 +69,7 @@ class GaussianRandomProjectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function minDimensionsProvider() : Generator
     {

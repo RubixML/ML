@@ -20,12 +20,12 @@ class Concatenator implements Extractor
     /**
      * A list of iterators.
      *
-     * @var list<iterable>
+     * @var list<iterable<mixed[]>>
      */
     protected array $iterators;
 
     /**
-     * @param iterable[] $iterators
+     * @param array<iterable<mixed[]>> $iterators
      */
     public function __construct(array $iterators)
     {

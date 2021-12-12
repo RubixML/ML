@@ -316,7 +316,7 @@ class TSNE implements Transformer, Verbose
     /**
      * Transform the dataset in place.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      */
     public function transform(array &$samples) : void
     {
@@ -420,8 +420,8 @@ class TSNE implements Transformer, Verbose
     /**
      * Calculate the pairwise distances for each sample and return them in a 2-d array.
      *
-     * @param array[] $samples
-     * @return array[]
+     * @param array<mixed[]> $samples
+     * @return array<float[]>
      */
     protected function pairwiseDistances(array $samples) : array
     {
@@ -444,8 +444,8 @@ class TSNE implements Transformer, Verbose
      * Compute the conditional probabilities from the distance matrix such that
      * they approximately match the desired perplexity.
      *
-     * @param array[] $distances
-     * @return array[]
+     * @param array<float[]> $distances
+     * @return array<float[]>
      */
     protected function affinities(array $distances) : array
     {

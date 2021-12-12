@@ -183,7 +183,7 @@ class KDTree implements BinaryTree, Spatial
      * @param list<int|float> $sample
      * @param int $k
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return array{array[],mixed[],float[]}
+     * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */
     public function nearest(array $sample, int $k = 1) : array
     {
@@ -253,7 +253,7 @@ class KDTree implements BinaryTree, Spatial
      * @param list<int|float> $sample
      * @param float $radius
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return array{array[],mixed[],float[]}
+     * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */
     public function range(array $sample, float $radius) : array
     {

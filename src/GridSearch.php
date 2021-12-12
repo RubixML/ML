@@ -54,7 +54,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * An array of lists containing the possible values for each of the base learner's constructor parameters.
      *
-     * @var array[]
+     * @var list<list<mixed>>
      */
     protected array $params;
 
@@ -89,13 +89,14 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * Return an array of all possible combinations of parameters. i.e their Cartesian product.
      *
-     * @param mixed[] $params
-     * @return array[]
+     * @param list<list<mixed>> $params
+     * @return list<list<mixed>>
      */
     protected static function combine(array $params) : array
     {
         $combinations = [[]];
 
+        /** @var int<0,max> $i */
         foreach ($params as $i => $params) {
             $append = [];
 
@@ -114,7 +115,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
     /**
      * @param class-string $class
-     * @param array[] $params
+     * @param array<mixed[]> $params
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -266,6 +267,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         $this->backend->flush();
 
         foreach ($combinations as $params) {
+            /** @var \Rubix\ML\Learner $estimator */
             $estimator = new $this->class(...$params);
 
             $this->backend->enqueue(

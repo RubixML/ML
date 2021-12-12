@@ -64,10 +64,6 @@ class Homogeneity implements Metric
     {
         $table = (new ContingencyTable())->generate($predictions, $labels);
 
-        if (empty($table)) {
-            return 0.0;
-        }
-
         $score = 0.0;
 
         foreach ($table as $dist) {

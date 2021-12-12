@@ -85,7 +85,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The means of each feature of the training set conditioned on a class basis.
      *
-     * @var array[]
+     * @var array<list<float>>
      */
     protected array $means = [
         //
@@ -94,7 +94,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The variances of each feature of the training set conditioned by class.
      *
-     * @var array[]
+     * @var array<list<float>>
      */
     protected array $variances = [
         //
@@ -208,7 +208,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the running means of each feature column of the training data by class.
      *
-     * @return array[]|null
+     * @return array<list<float>>|null
      */
     public function means() : ?array
     {
@@ -218,7 +218,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the running variances of each feature column of the training data by class.
      *
-     * @return array[]|null
+     * @return array<list<float>>|null
      */
     public function variances() : ?array
     {

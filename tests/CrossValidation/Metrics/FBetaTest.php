@@ -88,7 +88,7 @@ class FBetaTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function scoreProvider() : Generator
     {
