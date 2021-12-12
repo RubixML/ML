@@ -7,7 +7,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Exception;
 use Generator;
 
 use function count;
@@ -431,13 +430,6 @@ class Labeled extends Dataset
      */
     public function stratify() : array
     {
-        $type = $this->labelType();
-
-        if (!$type->isCategorical()) {
-            throw new RuntimeException('Dataset must have'
-                . " categorical labels, $type given.");
-        }
-
         $strata = [];
 
         foreach ($this->labels as $i => $label) {
