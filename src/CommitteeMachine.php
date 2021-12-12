@@ -289,7 +289,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 
         foreach ($this->experts as $estimator) {
             $task = new Predict($estimator, $dataset);
-            
+
             $this->backend->enqueue($task);
         }
 
