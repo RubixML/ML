@@ -13,6 +13,9 @@
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
     
+- 1.3.1
+    - Update to Ok Bloomer 1.0 stable
+
 - 1.3.0
     - Switch back to original fork of Tensor
     - Added `maxBins` hyper-parameter to CART-based learners
