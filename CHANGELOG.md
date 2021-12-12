@@ -12,6 +12,7 @@
     - Rename Labeled `stratify()` to `stratifyByLabel()`
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
+    - Word Count Vectorizer now uses min count and max ratio DFs
     
 - 1.3.1
     - Update to Ok Bloomer 1.0 stable

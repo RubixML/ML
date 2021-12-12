@@ -44,18 +44,18 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     protected int $maxVocabularySize;
 
     /**
-     * The minimum proportion of documents a word must appear in to be added to the vocabulary.
+     * The minimum number of documents a word must appear in to be added to the vocabulary.
      *
-     * @var float
+     * @var int
      */
-    protected float $minDocumentFrequency;
+    protected int $minDocumentCount;
 
     /**
      * The maximum proportion of documents a word can appear in to be added to the vocabulary.
      *
      * @var float
      */
-    protected float $maxDocumentFrequency;
+    protected float $maxDocumentRatio;
 
     /**
      * The tokenizer used to extract features from blobs of text.
@@ -73,14 +73,14 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
 
     /**
      * @param int $maxVocabularySize
-     * @param float $minDocumentFrequency
-     * @param float $maxDocumentFrequency
+     * @param int $minDocumentCount
+     * @param float $maxDocumentRatio
      * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
      */
     public function __construct(
         int $maxVocabularySize = PHP_INT_MAX,
-        float $minDocumentFrequency = 0.0,
-        float $maxDocumentFrequency = 1.0,
+        int $minDocumentCount = 1,
+        float $maxDocumentRatio = 0.8,
         ?Tokenizer $tokenizer = null
     ) {
         if ($maxVocabularySize < 1) {
@@ -88,24 +88,19 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
                 . " greater than 0, $maxVocabularySize given.");
         }
 
-        if ($minDocumentFrequency < 0.0 or $minDocumentFrequency > 1.0) {
-            throw new InvalidArgumentException('Min document frequency'
-                . " must be between 0 and 1, $minDocumentFrequency given.");
+        if ($minDocumentCount <= 0) {
+            throw new InvalidArgumentException('Min document count'
+                . " must be greater than 0, $minDocumentCount given.");
         }
 
-        if ($maxDocumentFrequency < 0.0 or $maxDocumentFrequency > 1.0) {
-            throw new InvalidArgumentException('Max document frequency'
-                . " must be between 0 and 1, $maxDocumentFrequency given.");
-        }
-
-        if ($maxDocumentFrequency < $minDocumentFrequency) {
-            throw new InvalidArgumentException('Max document frequency'
-                . ' cannot be less than min document frequency.');
+        if ($maxDocumentRatio < 0.0 or $maxDocumentRatio > 1.0) {
+            throw new InvalidArgumentException('Max document ratio'
+                . " must be between 0 and 1, $maxDocumentRatio given.");
         }
 
         $this->maxVocabularySize = $maxVocabularySize;
-        $this->minDocumentFrequency = $minDocumentFrequency;
-        $this->maxDocumentFrequency = $maxDocumentFrequency;
+        $this->minDocumentCount = $minDocumentCount;
+        $this->maxDocumentRatio = $maxDocumentRatio;
         $this->tokenizer = $tokenizer ?? new Word();
     }
 
@@ -153,8 +148,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
 
         $n = $dataset->numSamples();
 
-        $min = (int) round($this->minDocumentFrequency * $n);
-        $max = (int) round($this->maxDocumentFrequency * $n);
+        $maxDocumentCount = (int) round($this->maxDocumentRatio * $n);
 
         $this->vocabularies = [];
 
@@ -180,17 +174,15 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
                     }
                 }
 
-                if ($min > 0 or $max < $n) {
-                    foreach ($dfs as $token => $df) {
-                        if ($df < $min or $df > $max) {
-                            unset($tfs[$token]);
-                        }
+                foreach ($dfs as $token => $df) {
+                    if ($df < $this->minDocumentCount or $df > $maxDocumentCount) {
+                        unset($tfs[$token]);
                     }
                 }
 
                 if (empty($tfs)) {
                     throw new RuntimeException('Cannot create vocabulary'
-                        . ' from tokens given the document frequency'
+                        . ' from corpus with given document frequency'
                         . " constraints on column $column.");
                 }
 
@@ -258,8 +250,8 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     public function __toString() : string
     {
         return "Word Count Vectorizer (max vocabulary size: {$this->maxVocabularySize},"
-            . " min document frequency: {$this->minDocumentFrequency},"
-            . " max document frequency: {$this->maxDocumentFrequency},"
+            . " min document count: {$this->minDocumentCount},"
+            . " max document ratio: {$this->maxDocumentRatio},"
             . " tokenizer: {$this->tokenizer})";
     }
 }
