@@ -1174,6 +1174,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../classifiers/dummy-classifier.html" class="md-nav__link">
+        Dummy Classifier
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../classifiers/extra-tree-classifier.html" class="md-nav__link">
         Extra Tree Classifier
       </a>
@@ -1377,6 +1391,20 @@
     <li class="md-nav__item">
       <a href="../regressors/adaline.html" class="md-nav__link">
         Adaline
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../regressors/dummy-regressor.html" class="md-nav__link">
+        Dummy Regressor
       </a>
     </li>
   
@@ -3706,20 +3734,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kernels/distance/sparse-cosine.html" class="md-nav__link">
-        Sparse Cosine
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -4945,7 +4959,7 @@
 
 <p><span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Transformers/TokenHashingVectorizer.php">[source]</a></span></p>
 <h1 id="token-hashing-vectorizer">Token Hashing Vectorizer<a class="headerlink" href="#token-hashing-vectorizer" title="Permanent link">#</a></h1>
-<p>Token Hashing Vectorizer builds token count vectors on the fly by employing a <em>hashing trick</em>. It is a stateless transformer that uses a hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.</p>
+<p>Token Hashing Vectorizer builds token count vectors on the fly by employing a <em>hashing trick</em>. It is a stateless transformer that uses the CRC32 (Cyclic Redundancy Check) hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
 <p><strong>Data Type Compatibility:</strong> Categorical</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -4974,20 +4988,13 @@
 <td>Tokenizer</td>
 <td>The tokenizer used to extract tokens from blobs of text.</td>
 </tr>
-<tr>
-<td>3</td>
-<td>hashFn</td>
-<td>callable</td>
-<td>'crc32'</td>
-<td>The hash function that accepts a string token and returns an integer.</td>
-</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TokenHashingVectorizer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Tokenizers\NGram</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TokenHashingVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="k">new</span> <span class="nx">NGram</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;crc32&#39;</span><span class="p">);</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TokenHashingVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="k">new</span> <span class="nx">NGram</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This transformer does not have any additional methods.</p>
