@@ -80,9 +80,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * The count of each feature from the training set used for online probability calculation.
+     * The count of each category from the training set on a class basis.
      *
-     * @var array[]
+     * @var array<list<array<int<0,max>>>>
      */
     protected array $counts = [
         //
@@ -91,7 +91,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed negative log likelihoods of each feature conditioned on a particular class label.
      *
-     * @var array[]
+     * @var array<list<float[]>>
      */
     protected array $probs = [
         //
@@ -198,7 +198,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the counts for each category on a per class basis.
      *
-     * @return array[]|null
+     * @return array<list<array<int<0,max>>>>>|null
      */
     public function counts() : ?array
     {

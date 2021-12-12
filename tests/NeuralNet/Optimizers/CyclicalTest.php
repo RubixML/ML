@@ -44,7 +44,7 @@ class CyclicalTest extends TestCase
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
-     * @param array[] $expected
+     * @param list<list<float>> $expected
      */
     public function step(Parameter $param, Tensor $gradient, array $expected) : void
     {
@@ -54,7 +54,7 @@ class CyclicalTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function stepProvider() : Generator
     {

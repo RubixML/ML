@@ -26,7 +26,7 @@ class ExtensionMinimumVersionTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function passesProvider() : Generator
     {

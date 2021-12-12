@@ -18,7 +18,7 @@ interface Hypercube extends Node
     /**
      * Return the minimum bounding box surrounding this node.
      *
-     * @return \Traversable<array>
+     * @return \Traversable<list<int|float>>
      */
     public function sides() : Traversable;
 

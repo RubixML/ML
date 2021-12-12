@@ -38,7 +38,7 @@ class JSON
      *
      * @param mixed $value
      * @param int $options
-     * @param int $depth
+     * @param positive-int $depth
      * @throws \Rubix\ML\Exceptions\JSONException
      * @return string
      */
@@ -58,7 +58,7 @@ class JSON
      *
      * @param string $data
      * @param int $options
-     * @param int $depth
+     * @param positive-int $depth
      * @throws \Rubix\ML\Exceptions\JSONException
      * @return mixed[]
      */

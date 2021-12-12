@@ -105,7 +105,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * The edges and bin counts of each histogram.
      *
-     * @var array[]
+     * @var array{list<float>,list<int<0,max>>}|mixed[]
      */
     protected array $histograms = [
         //

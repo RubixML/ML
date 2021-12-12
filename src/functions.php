@@ -122,8 +122,8 @@ namespace Rubix\ML
      *
      * @internal
      *
-     * @param array[] $table
-     * @return array[]
+     * @param array<mixed[]> $table
+     * @return array<mixed[]>
      */
     function array_transpose(array $table) : array
     {

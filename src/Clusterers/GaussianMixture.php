@@ -111,7 +111,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * The computed means of each feature column for each gaussian.
      *
-     * @var array[]
+     * @var list<list<float>>
      */
     protected array $means = [
         //
@@ -120,7 +120,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * The computed variances of each feature column for each gaussian.
      *
-     * @var array[]
+     * @var list<list<float>>
      */
     protected array $variances = [
         //
@@ -236,7 +236,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return the mean vectors of each component.
      *
-     * @return array[]
+     * @return list<list<float>>
      */
     public function means() : array
     {
@@ -246,7 +246,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return the multivariate variance of each component.
      *
-     * @return array[]
+     * @return list<list<float>>
      */
     public function variances() : array
     {

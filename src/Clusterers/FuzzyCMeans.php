@@ -104,7 +104,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var array[]
+     * @var list<list<int|float>>
      */
     protected array $centroids = [
         //
@@ -215,7 +215,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array[]
+     * @return list<list<int|float>>
      */
     public function centroids() : array
     {
@@ -267,7 +267,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $this->logger->info("$this initialized");
         }
 
-        $this->centroids = $this->seeder->seed($dataset, $this->c);
+        /** @var list<list<int|float>> $seeds */
+        $seeds = $this->seeder->seed($dataset, $this->c);
+
+        $this->centroids = $seeds;
 
         $this->losses = [];
 
@@ -410,8 +413,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     /**
      * Calculate the  sum of distances between all samples and their closest centroid.
      *
-     * @param array[] $samples
-     * @param array[] $memberships
+     * @param list<list<int|float>> $samples
+     * @param list<list<float>> $memberships
      * @return float
      */
     protected function inertia(array $samples, array $memberships) : float

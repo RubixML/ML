@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function get_class;
 
@@ -53,7 +54,7 @@ class Adam implements Optimizer, Adaptive
     /**
      * The parameter cache of running velocity and squared gradients.
      *
-     * @var array[]
+     * @var array<\Tensor\Tensor[]>
      */
     protected array $cache = [
         //
@@ -93,10 +94,15 @@ class Adam implements Optimizer, Adaptive
      * @internal
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
     public function warm(Parameter $param) : void
     {
         $class = get_class($param->param());
+
+        if ($class === false) {
+            throw new RuntimeException('Could not locate parameter class.');
+        }
 
         $zeros = $class::zeros(...$param->param()->shape());
 

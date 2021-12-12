@@ -108,7 +108,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var array[]
+     * @var list<list<int|float>>
      */
     protected array $centroids = [
         //
@@ -236,7 +236,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array[]
+     * @return list<list<int|float>>
      */
     public function centroids() : array
     {
@@ -294,7 +294,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
-        $this->centroids = $this->seeder->seed($dataset, $this->k);
+        /** @var list<list<int|float>> $seeds */
+        $seeds = $this->seeder->seed($dataset, $this->k);
+
+        $this->centroids = $seeds;
 
         $sizes = array_fill(0, $this->k, 0);
         $sizes[0] = $dataset->numSamples();

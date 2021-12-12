@@ -27,7 +27,7 @@ class StatsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function meanProvider() : Generator
     {
@@ -50,7 +50,7 @@ class StatsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function weightedMeanProvider() : Generator
     {
@@ -89,7 +89,7 @@ class StatsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function quantileProvider() : Generator
     {
@@ -130,7 +130,7 @@ class StatsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function centralMomentProvider() : Generator
     {

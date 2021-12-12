@@ -31,7 +31,7 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function passesProvider() : Generator
     {

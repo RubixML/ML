@@ -66,7 +66,7 @@ class ErrorAnalysisTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function generateProvider() : Generator
     {

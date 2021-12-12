@@ -81,7 +81,7 @@ class ParamsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function stringifyProvider() : Generator
     {

@@ -76,7 +76,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The training samples.
      *
-     * @var array[]
+     * @var list<list<string|int|float>>
      */
     protected array $samples = [
         //
@@ -243,7 +243,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return array[]
+     * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -294,7 +294,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * the brute force method.
      *
      * @param list<string|int|float> $sample
-     * @return array[]
+     * @return list<list<string|int|float>>
      */
     protected function nearest(array $sample) : array
     {

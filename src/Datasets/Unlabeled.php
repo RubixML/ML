@@ -33,7 +33,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset with validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @return self
      */
     public static function build(array $samples = []) : self
@@ -44,7 +44,7 @@ class Unlabeled extends Dataset
     /**
      * Build a new unlabeled dataset foregoing validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @return self
      */
     public static function quick(array $samples = []) : self
@@ -55,7 +55,7 @@ class Unlabeled extends Dataset
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param iterable<array> $iterator
+     * @param iterable<mixed[]> $iterator
      * @return self
      */
     public static function fromIterator(iterable $iterator) : self
@@ -497,7 +497,7 @@ class Unlabeled extends Dataset
      *
      * @param int $offset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return array[]
+     * @return mixed[]
      */
     public function offsetGet($offset) : array
     {
@@ -511,7 +511,7 @@ class Unlabeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

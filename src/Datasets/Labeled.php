@@ -7,7 +7,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use ErrorException;
 use Generator;
 
 use function count;
@@ -54,7 +53,7 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset with validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @return self
      */
@@ -66,7 +65,7 @@ class Labeled extends Dataset
     /**
      * Build a new labeled dataset foregoing validation.
      *
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @return self
      */
@@ -78,7 +77,7 @@ class Labeled extends Dataset
     /**
      * Build a dataset with the rows from an iterable data table.
      *
-     * @param iterable<array> $iterator
+     * @param iterable<mixed[]> $iterator
      * @return self
      */
     public static function fromIterator(iterable $iterator) : self
@@ -134,7 +133,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * @param array[] $samples
+     * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @param bool $verify
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
@@ -433,12 +432,8 @@ class Labeled extends Dataset
     {
         $strata = [];
 
-        try {
-            foreach ($this->labels as $i => $label) {
-                $strata[$label][] = $this->samples[$i];
-            }
-        } catch (ErrorException $e) {
-            throw new RuntimeException('Label must be a string or integer type.');
+        foreach ($this->labels as $i => $label) {
+            $strata[$label][] = $this->samples[$i];
         }
 
         foreach ($strata as $label => &$stratum) {
@@ -823,7 +818,7 @@ class Labeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function getIterator() : Generator
     {

@@ -85,7 +85,7 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function sigmoidProvider() : Generator
     {
@@ -112,7 +112,7 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function combProvider() : Generator
     {
@@ -140,7 +140,7 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function linspaceProvider() : Generator
     {
@@ -158,8 +158,8 @@ class FunctionsTest extends TestCase
      * @test
      * @dataProvider arrayTransposeProvider
      *
-     * @param array[] $table
-     * @param array[] $expected
+     * @param list<list<float>> $table
+     * @param list<list<float>> $expected
      */
     public function arrayTranspose(array $table, array $expected) : void
     {
@@ -167,7 +167,7 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function arrayTransposeProvider() : Generator
     {
@@ -256,7 +256,7 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<mixed[]>
      */
     public function iteratorContainsNanProvider() : Generator
     {

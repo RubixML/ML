@@ -67,7 +67,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     /**
      * The vocabularies of each categorical feature column of the fitted dataset.
      *
-     * @var array[]|null
+     * @var array<int[]>|null
      */
     protected ?array $vocabularies = null;
 
@@ -129,7 +129,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
     /**
      * Return an array of words that comprise each of the vocabularies.
      *
-     * @return array[]|null
+     * @return array<string[]>|null
      */
     public function vocabularies() : ?array
     {
