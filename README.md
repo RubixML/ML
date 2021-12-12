@@ -45,6 +45,7 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Color Clusterer](https://github.com/RubixML/Colors)
 - [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
 - [Divorce Predictor](https://github.com/RubixML/Divorce)
+- [DNA Taxonomer](https://github.com/RubixML/DNA)
 - [Dota 2 Game Outcome Predictor](https://github.com/RubixML/Dota2)
 - [Human Activity Recognizer](https://github.com/RubixML/HAR)
 - [Housing Price Predictor](https://github.com/RubixML/Housing)
