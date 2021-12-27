@@ -28,6 +28,15 @@ class BinaryNodeTest extends TestCase
         };
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertEquals(1, $this->node->height());
+        $this->assertEquals(0, $this->node->balance());
+        $this->assertNull($this->node->left());
+        $this->assertNull($this->node->right());
+        $this->assertTrue($this->node->leaf());
+    }
+
     /**
      * @test
      */
@@ -83,14 +92,5 @@ class BinaryNodeTest extends TestCase
         $this->node->detachRight();
 
         $this->assertNull($this->node->right());
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertEquals(1, $this->node->height());
-        $this->assertEquals(0, $this->node->balance());
-        $this->assertNull($this->node->left());
-        $this->assertNull($this->node->right());
-        $this->assertTrue($this->node->leaf());
     }
 }

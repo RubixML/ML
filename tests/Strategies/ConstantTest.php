@@ -26,6 +26,11 @@ class ConstantTest extends TestCase
         $this->strategy = new Constant(42);
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertTrue($this->strategy->fitted());
+    }
+
     /**
      * @test
      */
@@ -55,10 +60,5 @@ class ConstantTest extends TestCase
         $guess = $this->strategy->guess();
 
         $this->assertEquals(42, $guess);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertTrue($this->strategy->fitted());
     }
 }
