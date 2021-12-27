@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 class BatchNormTest extends TestCase
 {
     /**
-     * @var int<0,max>
+     * @var positive-int
      */
     protected $fanIn;
 

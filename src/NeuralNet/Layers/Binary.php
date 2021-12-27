@@ -91,7 +91,7 @@ class Binary implements Output
     /**
      * Return the width of the layer.
      *
-     * @return int<0,max>
+     * @return positive-int
      */
     public function width() : int
     {
@@ -102,9 +102,9 @@ class Binary implements Output
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param int<0,max> $fanIn
+     * @param positive-int $fanIn
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return int<0,max>
+     * @return positive-int
      */
     public function initialize(int $fanIn) : int
     {
@@ -193,10 +193,10 @@ class Binary implements Output
                 ->divide($output->n());
         }
 
-        $dL = $this->costFn->differentiate($output, $expected)
+        $dLoss = $this->costFn->differentiate($output, $expected)
             ->divide($output->n());
 
         return $this->sigmoid->differentiate($input, $output)
-            ->multiply($dL);
+            ->multiply($dLoss);
     }
 }
