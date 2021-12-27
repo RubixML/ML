@@ -35,7 +35,9 @@ trait AutotrackRevisions
 
         $tokens = [];
 
-        while ($current = array_pop($stack)) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             $reflector = new ReflectionClass($current);
 
             $properties = $reflector->getProperties();
