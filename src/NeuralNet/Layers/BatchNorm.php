@@ -57,7 +57,7 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The width of the layer. i.e. the number of neurons.
      *
-     * @var int<0,max>|null
+     * @var positive-int|null
      */
     protected ?int $width = null;
 
@@ -130,7 +130,7 @@ class BatchNorm implements Hidden, Parametric
      * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return int<0,max>
+     * @return positive-int
      */
     public function width() : int
     {
@@ -147,8 +147,8 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @return int<0,max>
+     * @param positive-int $fanIn
+     * @return positive-int
      */
     public function initialize(int $fanIn) : int
     {

@@ -38,7 +38,7 @@ class FeedForward implements Network
     /**
      * The hidden layers of the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @var list<\Rubix\ML\NeuralNet\Layers\Hidden>
      */
     protected array $hidden = [
         //
@@ -47,7 +47,7 @@ class FeedForward implements Network
     /**
      * The pathing of the backward pass through the hidden layers.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @var list<\Rubix\ML\NeuralNet\Layers\Hidden>
      */
     protected array $backPass = [
         //
@@ -75,11 +75,15 @@ class FeedForward implements Network
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
+        $hidden = array_values($hidden);
+
+        $backPass = array_reverse($hidden);
+
         $this->input = $input;
         $this->hidden = $hidden;
         $this->output = $output;
         $this->optimizer = $optimizer;
-        $this->backPass = array_reverse($hidden);
+        $this->backPass = $backPass;
     }
 
     /**
@@ -95,7 +99,7 @@ class FeedForward implements Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @return list<\Rubix\ML\NeuralNet\Layers\Hidden>
      */
     public function hidden() : array
     {
@@ -131,7 +135,7 @@ class FeedForward implements Network
      */
     public function initialize() : void
     {
-        $fanIn = 0;
+        $fanIn = 1;
 
         foreach ($this->layers() as $layer) {
             $fanIn = $layer->initialize($fanIn);

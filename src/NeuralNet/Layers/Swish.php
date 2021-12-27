@@ -45,7 +45,7 @@ class Swish implements Hidden, Parametric
     /**
      * The width of the layer.
      *
-     * @var int<0,max>|null
+     * @var positive-int|null
      */
     protected ?int $width = null;
 
@@ -85,7 +85,7 @@ class Swish implements Hidden, Parametric
      * @internal
      *
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return int<0,max>
+     * @return positive-int
      */
     public function width() : int
     {
@@ -102,8 +102,8 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @return int<0,max>
+     * @param positive-int $fanIn
+     * @return positive-int
      */
     public function initialize(int $fanIn) : int
     {

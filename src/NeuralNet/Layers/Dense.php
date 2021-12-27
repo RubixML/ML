@@ -121,7 +121,7 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @return int<0,max>
+     * @return positive-int
      */
     public function width() : int
     {
@@ -151,8 +151,8 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @return int<0,max>
+     * @param positive-int $fanIn
+     * @return positive-int
      */
     public function initialize(int $fanIn) : int
     {

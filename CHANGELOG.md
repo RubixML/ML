@@ -14,6 +14,9 @@
     - Cosine distance now optimized for dense vectors
     - Word Count Vectorizer now uses min count and max ratio DFs
     
+- 1.3.2
+    - Optimize Binary output layer
+
 - 1.3.1
     - Update to Ok Bloomer 1.0 stable
 

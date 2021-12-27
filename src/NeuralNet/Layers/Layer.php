@@ -11,7 +11,7 @@ interface Layer
      *
      * @internal
      *
-     * @return int<0,max>
+     * @return positive-int
      */
     public function width() : int;
 
@@ -21,8 +21,8 @@ interface Layer
      *
      * @internal
      *
-     * @param int $fanIn
-     * @return int
+     * @param positive-int $fanIn
+     * @return positive-int
      */
     public function initialize(int $fanIn) : int;
 
