@@ -277,15 +277,14 @@ nav:
 extra:
   version:
     provider: mike
+  analytics:
+    provider: google
+    property: UA-136137674-1
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/RubixML
     - icon: fontawesome/brands/telegram
       link: https://t.me/RubixML
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/RubixML
-    - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/groups/8952251/
 
 use_directory_urls: false
 
@@ -309,10 +308,6 @@ markdown_extensions:
   - toc:
       permalink: "#"
   - footnotes
-
-google_analytics:
-  - UA-136137674-1
-  - auto
 
 extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
