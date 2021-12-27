@@ -201,11 +201,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://rubixml.com/1.0/classifiers/dummy-classifier.html</loc>
-         <lastmod>2021-12-27</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://rubixml.com/1.0/classifiers/extra-tree-classifier.html</loc>
          <lastmod>2021-12-27</lastmod>
          <changefreq>daily</changefreq>
@@ -586,6 +581,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://rubixml.com/1.0/kernels/distance/sparse-cosine.html</loc>
+         <lastmod>2021-12-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://rubixml.com/1.0/kernels/svm/linear.html</loc>
          <lastmod>2021-12-27</lastmod>
          <changefreq>daily</changefreq>
@@ -807,11 +807,6 @@
     </url>
     <url>
          <loc>https://rubixml.com/1.0/regressors/adaline.html</loc>
-         <lastmod>2021-12-27</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://rubixml.com/1.0/regressors/dummy-regressor.html</loc>
          <lastmod>2021-12-27</lastmod>
          <changefreq>daily</changefreq>
     </url>

@@ -86,6 +86,13 @@
       <div data-md-component="outdated" hidden>
         <aside class="md-banner md-banner--warning">
           
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You are not viewing the latest version of the docs. View the latest version <a href="../.."></a><strong>here</strong></a>.
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          
         </aside>
       </div>
     
@@ -1184,20 +1191,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../classifiers/dummy-classifier.html" class="md-nav__link">
-        Dummy Classifier
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../classifiers/extra-tree-classifier.html" class="md-nav__link">
         Extra Tree Classifier
       </a>
@@ -1401,20 +1394,6 @@
     <li class="md-nav__item">
       <a href="../regressors/adaline.html" class="md-nav__link">
         Adaline
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../regressors/dummy-regressor.html" class="md-nav__link">
-        Dummy Regressor
       </a>
     </li>
   
@@ -3744,6 +3723,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernels/distance/sparse-cosine.html" class="md-nav__link">
+        Sparse Cosine
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -4993,17 +4986,17 @@
 </tr>
 <tr>
 <td>2</td>
-<td>minDocumentFrequency</td>
-<td>0.0</td>
+<td>minDocumentCount</td>
+<td>1</td>
 <td>float</td>
-<td>The minimum proportion of documents a word must appear in to be added to the vocabulary.</td>
+<td>The minimum number of documents a word must appear in to be added to the vocabulary.</td>
 </tr>
 <tr>
 <td>3</td>
-<td>maxDocumentFrequency</td>
-<td>1.0</td>
+<td>maxDocumentRatio</td>
+<td>0.8</td>
 <td>float</td>
-<td>The maximum proportion of documents a word can appear in to be added to the vocabulary.</td>
+<td>The maximum ratio of documents a word can appear in to be added to the vocabulary.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -5018,7 +5011,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\WordCountVectorizer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Tokenizers\NGram</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WordCountVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="k">new</span> <span class="nx">NGram</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WordCountVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="k">new</span> <span class="nx">NGram</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return an array of words that comprise each of the vocabularies:
@@ -5030,7 +5023,7 @@
   <small>
     
       Last update:
-      2021-04-02
+      2021-12-11
     
   </small>
 </div>
