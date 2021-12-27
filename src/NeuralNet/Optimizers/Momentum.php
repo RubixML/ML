@@ -134,6 +134,6 @@ class Momentum implements Optimizer, Adaptive
     public function __toString() : string
     {
         return "Momentum (rate: {$this->rate}, decay: {$this->decay},"
-            . ' lookahead: ' . Params:: toString($this->lookahead) . ')';
+            . ' lookahead: ' . Params::toString($this->lookahead) . ')';
     }
 }

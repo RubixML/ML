@@ -87,6 +87,11 @@ class NaiveBayesTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
     /**
      * @test
      */
@@ -190,10 +195,5 @@ class NaiveBayesTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 }

@@ -26,6 +26,11 @@ class MeanTest extends TestCase
         $this->strategy = new Mean();
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
+    }
+
     /**
      * @test
      */
@@ -55,10 +60,5 @@ class MeanTest extends TestCase
         $guess = $this->strategy->guess();
 
         $this->assertEquals(3.0, $guess);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->strategy->fitted());
     }
 }

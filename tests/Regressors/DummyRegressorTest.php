@@ -76,6 +76,11 @@ class DummyRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
     /**
      * @test
      */
@@ -132,10 +137,5 @@ class DummyRegressorTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
     }
 }

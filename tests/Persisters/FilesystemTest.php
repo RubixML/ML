@@ -28,6 +28,11 @@ class FilesystemTest extends TestCase
         $this->persister = new Filesystem(self::PATH, true);
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFileDoesNotExist(self::PATH);
+    }
+
     /**
      * @after
      */
@@ -65,10 +70,5 @@ class FilesystemTest extends TestCase
         $encoding = $this->persister->load();
 
         $this->assertInstanceOf(Encoding::class, $encoding);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFileDoesNotExist(self::PATH);
     }
 }

@@ -26,6 +26,11 @@ class KMostFrequentTest extends TestCase
         $this->strategy = new KMostFrequent(2);
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
+    }
+
     /**
      * @test
      */
@@ -57,10 +62,5 @@ class KMostFrequentTest extends TestCase
         $value = $this->strategy->guess();
 
         $this->assertContains($value, $values);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->strategy->fitted());
     }
 }

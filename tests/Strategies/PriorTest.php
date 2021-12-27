@@ -26,6 +26,11 @@ class PriorTest extends TestCase
         $this->strategy = new Prior();
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
+    }
+
     /**
      * @test
      */
@@ -57,10 +62,5 @@ class PriorTest extends TestCase
         $value = $this->strategy->guess();
 
         $this->assertContains($value, $values);
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->strategy->fitted());
     }
 }

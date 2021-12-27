@@ -26,6 +26,11 @@ class WildGuessTest extends TestCase
         $this->strategy = new WildGuess();
     }
 
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->strategy->fitted());
+    }
+
     /**
      * @test
      */
@@ -61,10 +66,5 @@ class WildGuessTest extends TestCase
                 $this->lessThanOrEqual(5)
             )
         );
-    }
-
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->strategy->fitted());
     }
 }
