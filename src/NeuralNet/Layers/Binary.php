@@ -30,7 +30,7 @@ class Binary implements Output
     /**
      * The labels of either of the possible outcomes.
      *
-     * @var (string|int)[]
+     * @var float[]
      */
     protected array $classes = [
         //
@@ -71,14 +71,17 @@ class Binary implements Output
      */
     public function __construct(array $classes, ?ClassificationLoss $costFn = null)
     {
-        $classes = array_unique($classes);
+        $classes = array_values(array_unique($classes));
 
         if (count($classes) !== 2) {
             throw new InvalidArgumentException('Number of classes'
                 . ' must be 2, ' . count($classes) . ' given.');
         }
 
-        $classes = array_flip(array_values($classes));
+        $classes = [
+            $classes[0] => 0.0,
+            $classes[1] => 1.0,
+        ];
 
         $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
