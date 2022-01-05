@@ -1,3 +1,6 @@
+- 1.4.0
+  - Added reversible converter for INF/NAN constants
+    
 - 1.3.2
     - Optimize Binary output layer
 

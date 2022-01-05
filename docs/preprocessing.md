@@ -70,12 +70,13 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 ### Feature Conversion
 Feature converters are transformers that convert feature columns of one data type to another by changing their representation.
 
-| Transformer | From | To | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|---|
-| [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
-| [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
-| [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
-| [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
+| Transformer                                                          | From | To                        | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+|----------------------------------------------------------------------|---|---------------------------|---|---|
+| [Interval Discretizer](transformers/interval-discretizer.md)         | Continuous | Categorical               | ● | |
+| [One Hot Encoder](transformers/one-hot-encoder.md)                   | Categorical | Continuous                | ● | |
+| [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous                | | |
+| [Boolean Converter](transformers/boolean-converter.md)               | Other | Categorical or Continuous | | |
+| [INF/NAN Converter](transformers/inf-nan-converter.md)               | Other | Other                        | | |
 
 ### Dimensionality Reduction
 Dimensionality reduction is a preprocessing technique for projecting a dataset onto a lower dimensional vector space. It allows a learner to train and infer quicker by producing a training set with fewer but more informative features. Dimensionality reducers can also be used to visualize datasets by outputting low (1 - 3) dimensionality embeddings for use in plotting software.
