@@ -15,6 +15,7 @@
     - Word Count Vectorizer now uses min count and max ratio DFs
     - Numeric String Converter now handles NAN and INFs
     - Numeric String Converter is now Reversible
+    - Removed Numeric String Converter NAN_PLACEHOLDER constant
     
 - 1.3.2
     - Optimize Binary output layer
