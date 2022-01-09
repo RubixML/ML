@@ -14,7 +14,6 @@ use function is_numeric;
  * Useful for when extracting from a source that only recognizes data as string
  * types such as CSV.
  *
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
