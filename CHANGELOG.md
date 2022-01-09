@@ -13,6 +13,8 @@
     - Added Sparse Cosine distance kernel
     - Cosine distance now optimized for dense vectors
     - Word Count Vectorizer now uses min count and max ratio DFs
+    - Numeric String Converter now handles NAN and INFs
+    - Numeric String Converter is now Reversible
     
 - 1.3.2
     - Optimize Binary output layer
