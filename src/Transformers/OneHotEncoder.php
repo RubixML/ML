@@ -37,7 +37,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * The set of unique possible categories per feature column of the training set.
      *
-     * @var array<string[]>|null
+     * @var array<int[]>|null
      */
     protected ?array $categories = null;
 
@@ -90,7 +90,10 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
                 $categories = array_values(array_unique($values));
 
-                $this->categories[$column] = array_flip($categories);
+                /** @var int[] $offsets */
+                $offsets = array_flip($categories);
+
+                $this->categories[$column] = $offsets;
             }
         }
     }
