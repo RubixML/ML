@@ -47,7 +47,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     /**
      * The bin intervals of the fitted data.
      *
-     * @var array<float[]>|null
+     * @var array<(int|float)[]>|null
      */
     protected ?array $intervals = null;
 
@@ -92,7 +92,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     /**
      * Return the bin intervals of the fitted data.
      *
-     * @return array<float[]>|null
+     * @return array<(int|float)[]>|null
      */
     public function intervals() : ?array
     {
