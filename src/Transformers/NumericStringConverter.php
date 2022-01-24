@@ -14,21 +14,12 @@ use function is_numeric;
  * Useful for when extracting from a source that only recognizes data as string
  * types such as CSV.
  *
- * **Note:** The string representation of the PHP constant NAN (not a number) is `NaN`.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NumericStringConverter implements Transformer
+class NumericStringConverter implements Transformer, Reversible
 {
-    /**
-     * The numeric string representation of NaN.
-     *
-     * @var string
-     */
-    public const NAN_PLACEHOLDER = 'NAN';
-
     /**
      * Return the data types that this transformer is compatible with.
      *
@@ -48,15 +39,26 @@ class NumericStringConverter implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'convert']);
+        array_walk($samples, [$this, 'convertToNumber']);
     }
 
     /**
-     * Convert the numeric strings to integer and floating point numbers.
+     * Perform the reverse transformation to the samples.
+     *
+     * @param list<list<mixed>> $samples
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     */
+    public function reverseTransform(array &$samples) : void
+    {
+        array_walk($samples, [$this, 'convertToString']);
+    }
+
+    /**
+     * Convert numeric strings to integer and floating point numbers.
      *
      * @param list<mixed> $sample
      */
-    public function convert(array &$sample) : void
+    protected function convertToNumber(array &$sample) : void
     {
         foreach ($sample as &$value) {
             if (is_string($value)) {
@@ -68,9 +70,34 @@ class NumericStringConverter implements Transformer
                     continue;
                 }
 
-                if ($value === self::NAN_PLACEHOLDER) {
-                    $value = NAN;
+                switch ($value) {
+                    case 'NAN':
+                        $value = NAN;
+
+                        break;
+
+                    case 'INF':
+                        $value = INF;
+
+                        break;
+
+                    case '-INF':
+                        $value = -INF;
                 }
+            }
+        }
+    }
+
+    /**
+     * Convert numbers to their numeric string representation.
+     *
+     * @param list<mixed> $sample
+     */
+    protected function convertToString(array &$sample) : void
+    {
+        foreach ($sample as &$value) {
+            if (is_float($value) or is_int($value)) {
+                $value = (string) $value;
             }
         }
     }
