@@ -288,6 +288,34 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
+     * Print a representation of the decision tree suitable to render with the
+     * graphviz tool. For example, writing it to graph.dot then executing:
+     *
+     * dot -Tpng graph.dot
+     *
+     * @param int $maxDepth
+     * @throws RuntimeException
+     * @return string
+     */
+    public function rules(int $maxDepth = -1) : string
+    {
+        if (!$this->root) {
+            throw new RuntimeException('Tree has not been constructed.');
+        }
+
+        $carry = 'digraph Tree {' . PHP_EOL;
+        $carry .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
+        $carry .= '  edge [fontname=helvetica];' . PHP_EOL;
+        $nodeCounter = 0;
+
+        $this->_rules($carry, $nodeCounter, $maxDepth, $this->root);
+
+        $carry .= '}';
+
+        return $carry;
+    }
+
+    /**
      * Find a split point for a given subset of the training set.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -334,5 +362,87 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         }
 
         return $impurity;
+    }
+
+    /**
+     * Recursive function to print out the decision rule at each node
+     * using preorder traversal.
+     *
+     * @param string $carry
+     * @param int $nodeCounter
+     * @param int $maxDepth
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param ?int $parentId
+     * @param ?int $leftRight
+     * @param int $depth
+     * @param int $nodesCounter
+     */
+    protected function _rules(
+        string &$carry,
+        int &$nodesCounter,
+        int $maxDepth = -1,
+        BinaryNode|Split|Decision $node,
+        ?int $parentId = null,
+        ?int $leftRight = null,
+        int $depth = 0
+    ) : void {
+        ++$depth;
+
+        $thisNode = $nodesCounter++;
+
+        if ($depth == $maxDepth) {
+            $carry .= "N$thisNode [label=\"...\"];" . PHP_EOL;
+        } elseif ($node instanceof Split) {
+            $operator = is_string($node->value()) ? '==' : '<';
+            $carry .= "N$thisNode [label=\"Column_{$node->column()} $operator {$node->value()}\"];" . PHP_EOL;
+
+            if ($node->left() !== null) {
+                $this->_rules($carry, $nodesCounter, $maxDepth, $node->left(), $thisNode, 1, $depth);
+            }
+
+            if ($node->right() !== null) {
+                $this->_rules($carry, $nodesCounter, $maxDepth, $node->right(), $thisNode, 2, $depth);
+            }
+        } elseif ($node instanceof Outcome) {
+            $carry .= "N$thisNode [label=\"Outcome={$node->outcome()}";
+
+            if ($node->impurity() > 0.0) {
+                $carry .= "\\nImpurity={$node->impurity()}";
+            }
+            $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
+        }
+
+        if (!is_null($parentId)) {
+            $carry .= "N$parentId -> N$thisNode";
+
+            if ($parentId == 0) {
+                $carry .= ' [labeldistance=2.5, ';
+
+                if ($leftRight == 1) {
+                    $carry .= 'labelangle=45, headlabel="True"]';
+                } else {
+                    $carry .= 'labelangle=-45, headlabel="False"]';
+                }
+            }
+            $carry .= ';' . PHP_EOL;
+        }
+    }
+
+    /**
+     * Return a generator for all the nodes in the tree starting at the root.
+     *
+     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
+     */
+    protected function dump() : Generator
+    {
+        $stack = [$this->root];
+
+        while ($current = array_pop($stack)) {
+            yield $current;
+
+            foreach ($current->children() as $child) {
+                $stack[] = $child;
+            }
+        }
     }
 }
