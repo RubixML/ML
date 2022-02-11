@@ -391,10 +391,10 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         $thisNode = $nodesCounter++;
 
         if ($depth == $maxDepth) {
-            $carry .= "N$thisNode [label=\"...\"];" . PHP_EOL;
+            $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
         } elseif ($node instanceof Split) {
             $operator = is_string($node->value()) ? '==' : '<';
-            $carry .= "N$thisNode [label=\"Column_{$node->column()} $operator {$node->value()}\"];" . PHP_EOL;
+            $carry .= "  N$thisNode [label=\"Column_{$node->column()} $operator {$node->value()}\"];" . PHP_EOL;
 
             if ($node->left() !== null) {
                 $this->_rules($carry, $nodesCounter, $maxDepth, $node->left(), $thisNode, 1, $depth);
@@ -404,7 +404,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $this->_rules($carry, $nodesCounter, $maxDepth, $node->right(), $thisNode, 2, $depth);
             }
         } elseif ($node instanceof Outcome) {
-            $carry .= "N$thisNode [label=\"Outcome={$node->outcome()}";
+            $carry .= "  N$thisNode [label=\"Outcome={$node->outcome()}";
 
             if ($node->impurity() > 0.0) {
                 $carry .= "\\nImpurity={$node->impurity()}";
@@ -413,7 +413,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         }
 
         if (!is_null($parentId)) {
-            $carry .= "N$parentId -> N$thisNode";
+            $carry .= "  N$parentId -> N$thisNode";
 
             if ($parentId == 0) {
                 $carry .= ' [labeldistance=2.5, ';
@@ -425,24 +425,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 }
             }
             $carry .= ';' . PHP_EOL;
-        }
-    }
-
-    /**
-     * Return a generator for all the nodes in the tree starting at the root.
-     *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
-     */
-    protected function dump() : Generator
-    {
-        $stack = [$this->root];
-
-        while ($current = array_pop($stack)) {
-            yield $current;
-
-            foreach ($current->children() as $child) {
-                $stack[] = $child;
-            }
         }
     }
 }
