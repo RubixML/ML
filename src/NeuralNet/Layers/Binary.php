@@ -78,7 +78,7 @@ class Binary implements Output
                 . ' must be 2, ' . count($classes) . ' given.');
         }
 
-        $this->classes = array_flip(array_values($classes));
+        $this->classes = array_map('strval', array_flip(array_values($classes)));
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->activationFn = new Sigmoid();
     }
