@@ -1,3 +1,6 @@
+- 0.4.2
+    - Fix Missing Extension exception class filename
+
 - 0.4.1
     - Optimized CART node splitting for low variance continuous features
     - Fixed RBX serializer string representation
