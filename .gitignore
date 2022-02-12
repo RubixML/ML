@@ -3,6 +3,7 @@ test.model
 /vendor
 composer.lock
 .phpunit.result.cache
+.php-cs-fixer.cache
 .php_cs.cache
 Thumbs.db
 .DS_Store
