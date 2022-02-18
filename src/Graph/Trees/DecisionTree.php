@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
@@ -294,10 +295,11 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * dot -Tpng graph.dot
      *
      * @param int $maxDepth
+     * @param ?String[] $featureNames
      * @throws RuntimeException
      * @return string
      */
-    public function rules(int $maxDepth = -1) : string
+    public function exportGraphviz(int $maxDepth = -1, ?array $featureNames = null) : string
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
@@ -308,7 +310,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         $carry .= '  edge [fontname=helvetica];' . PHP_EOL;
         $nodeCounter = 0;
 
-        $this->_rules($carry, $nodeCounter, $maxDepth, $this->root);
+        $this->_exportGraphviz($carry, $nodeCounter, $this->root, $maxDepth, $featureNames);
 
         $carry .= '}';
 
@@ -369,19 +371,20 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * using preorder traversal.
      *
      * @param string $carry
-     * @param int $nodeCounter
+     * @param int $nodesCounter
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode|\Rubix\ML\Graph\Nodes\Split|\Rubix\ML\Graph\Nodes\Decision $node
      * @param int $maxDepth
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param ?String[] $featureNames
      * @param ?int $parentId
      * @param ?int $leftRight
      * @param int $depth
-     * @param int $nodesCounter
      */
-    protected function _rules(
+    protected function _exportGraphviz(
         string &$carry,
         int &$nodesCounter,
-        int $maxDepth = -1,
         BinaryNode|Split|Decision $node,
+        int $maxDepth = -1,
+        ?array $featureNames = null,
         ?int $parentId = null,
         ?int $leftRight = null,
         int $depth = 0
@@ -390,18 +393,25 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
         $thisNode = $nodesCounter++;
 
-        if ($depth == $maxDepth) {
+        if ($depth === $maxDepth) {
             $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
         } elseif ($node instanceof Split) {
             $operator = is_string($node->value()) ? '==' : '<';
-            $carry .= "  N$thisNode [label=\"Column_{$node->column()} $operator {$node->value()}\"];" . PHP_EOL;
+            $carry .= "  N$thisNode [label=\"";
+
+            if ($featureNames) {
+                $carry .= $featureNames[$node->column()];
+            } else {
+                $carry .= "Column_{$node->column()}";
+            }
+            $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
 
             if ($node->left() !== null) {
-                $this->_rules($carry, $nodesCounter, $maxDepth, $node->left(), $thisNode, 1, $depth);
+                $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
             }
 
             if ($node->right() !== null) {
-                $this->_rules($carry, $nodesCounter, $maxDepth, $node->right(), $thisNode, 2, $depth);
+                $this->_exportGraphviz($carry, $nodesCounter, $node->right(), $maxDepth, $featureNames, $thisNode, 2, $depth);
             }
         } elseif ($node instanceof Outcome) {
             $carry .= "  N$thisNode [label=\"Outcome={$node->outcome()}";
