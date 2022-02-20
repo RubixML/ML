@@ -66,7 +66,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * The size of each mini batch in samples.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

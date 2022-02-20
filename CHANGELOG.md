@@ -17,6 +17,9 @@
     - Numeric String Converter is now Reversible
     - Removed Numeric String Converter NAN_PLACEHOLDER constant
     
+- 1.3.3
+    - Forego unnecessary logistic computation in Logit Boost
+
 - 1.3.2
     - Optimize Binary output layer
 

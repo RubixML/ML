@@ -303,7 +303,7 @@ class Unlabeled extends Dataset
      * not enough samples to fill an entire batch, then the dataset will contain
      * as many samples as possible.
      *
-     * @param int $n
+     * @param positive-int $n
      * @return list<self>
      */
     public function batch(int $n = 50) : array
@@ -453,6 +453,7 @@ class Unlabeled extends Dataset
                 . ' but ' . count($weights) . ' given.');
         }
 
+        /** @var positive-int $numLevels */
         $numLevels = (int) round(sqrt(count($weights)));
 
         $levels = array_chunk($weights, $numLevels, true);

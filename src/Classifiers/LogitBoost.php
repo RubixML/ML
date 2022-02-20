@@ -475,7 +475,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 $predictions = $booster->predict($testing);
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
-                $outTest = array_map('Rubix\ML\sigmoid', $zTest);
             }
 
             $weights = array_map('abs', $gradient);
