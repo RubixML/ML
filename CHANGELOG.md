@@ -1,3 +1,6 @@
+- 1.3.3
+    - Forego unnecessary logistic computation in Logit Boost
+
 - 1.3.2
     - Optimize Binary output layer
 

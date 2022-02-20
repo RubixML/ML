@@ -427,7 +427,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $zHat = $booster->predict($training);
 
             $z = array_map([$this, 'updateZ'], $zHat, $z);
-
             $out = array_map('Rubix\ML\sigmoid', $z);
 
             $this->losses[$epoch] = $loss;
@@ -439,12 +438,10 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
                 $zTest = array_map([$this, 'updateZ'], $zHat, $zTest);
 
-                $outTest = array_map('Rubix\ML\sigmoid', $zTest);
-
                 $predictions = [];
 
-                foreach ($outTest as $probability) {
-                    $predictions[] = $probability < 0.5 ? $classes[0] : $classes[1];
+                foreach ($zTest as $value) {
+                    $predictions[] = $value < 0.0 ? $classes[0] : $classes[1];
                 }
 
                 $score = $this->metric->score($predictions, $testing->labels());

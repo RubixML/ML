@@ -57,7 +57,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The number of training samples to process at a time.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

@@ -73,7 +73,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The number of training samples to process at a time.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

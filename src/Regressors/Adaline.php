@@ -58,7 +58,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The number of training samples to process at a time.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $batchSize;
 

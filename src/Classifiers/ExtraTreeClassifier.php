@@ -213,8 +213,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     }
 
     /**
-     * Terminate the branch by selecting the class outcome with the highest
-     * probability.
+     * Terminate the branch by selecting the class outcome with the highest probability.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Best
@@ -235,9 +234,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $p = $counts[$outcome] / $n;
 
-        $impurity = -($p * log($p));
+        $entropy = -($p * log($p));
 
-        return new Best($outcome, $probabilities, $impurity, $n);
+        return new Best($outcome, $probabilities, $entropy, $n);
     }
 
     /**

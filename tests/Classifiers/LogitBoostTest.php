@@ -76,8 +76,8 @@ class LogitBoostTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
-            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
+            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.4, 0.6]),
+            'female' => new Blob([63.7, 168.5, 38.1], [1.8, 5.0, 0.8]),
         ]);
 
         $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
