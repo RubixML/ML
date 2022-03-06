@@ -224,11 +224,10 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector using
-     * the brute force method.
+     * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
      * @param (string|int|float)[] $sample
-     * @return array<(string|int|float)[]>
+     * @return array{list<string|int|float>,list<float>}
      */
     protected function nearest(array $sample) : array
     {

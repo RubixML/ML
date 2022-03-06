@@ -290,11 +290,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector using
-     * the brute force method.
+     * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
      * @param list<string|int|float> $sample
-     * @return list<list<string|int|float>>
+     * @return array{list<string|int|float>,list<float>}
      */
     protected function nearest(array $sample) : array
     {
