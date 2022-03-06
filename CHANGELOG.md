@@ -18,6 +18,7 @@
     - Removed Numeric String Converter NAN_PLACEHOLDER constant
     - Added MurmurHash3 and FNV1a 32-bit hashing functions to Token Hashing Vectorizer
     - Changed Token Hashing Vectorizer max dimensions to 2,147,483,647
+    - Increase SQL Table Extractor batch size from 100 to 256
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost
