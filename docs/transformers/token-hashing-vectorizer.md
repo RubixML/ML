@@ -3,6 +3,9 @@
 # Token Hashing Vectorizer
 Token Hashing Vectorizer builds token count vectors on the fly by employing a *hashing trick*. It is a stateless transformer that uses a hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.
 
+!!! note
+    The default hashing function is CRC32 and is a good mix between speed and output space utilization. MurmurHash has even greater utilization but at the cost of some speed and it is only available on PHP 8.1 and above. FNV1 is comparable to CRC32 but with slightly more overhead.
+
 **Interfaces:** [Transformer](api.md#transformer)
 
 **Data Type Compatibility:** Categorical
