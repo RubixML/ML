@@ -384,7 +384,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         if (!$testing->empty()) {
             $zTest = array_fill(0, $testing->numSamples(), 0.0);
-            $outTest = array_fill(0, $testing->numSamples(), 0.5);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
