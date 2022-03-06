@@ -17,10 +17,37 @@ Token Hashing Vectorizer builds token count vectors on the fly by employing a *h
 ## Example
 ```php
 use Rubix\ML\Transformers\TokenHashingVectorizer;
-use Rubix\ML\Tokenizers\NGram;
+use Rubix\ML\Tokenizers\Word();
 
-$transformer = new TokenHashingVectorizer(10000, new NGram(1, 2), 'crc32');
+$transformer = new TokenHashingVectorizer(10000, new Word(), TokenHashingVectorizer::MURMUR3);
+```
+
+## Additional Constants
+The CRC32 callback function.
+```php
+public const CRC32 callable(string):int
+```
+
+The MurmurHash3 callback function.
+```php
+public const MURMUR3 callable(string):int
+```
+
+The FNV1 callback function.
+```php
+public const FNV1 callable(string):int
 ```
 
 ## Additional Methods
-This transformer does not have any additional methods.
+The MurmurHash3 hashing function:
+```php
+public static murmur3(string $input) : int
+```
+
+!!! note
+    MurmurHash3 is only available on PHP 8.1 or above.
+
+The FNV1a 32-bit hashing function:
+```php
+public static fnv1a32(string $input) : int
+```

@@ -16,6 +16,7 @@
     - Numeric String Converter now handles NAN and INFs
     - Numeric String Converter is now Reversible
     - Removed Numeric String Converter NAN_PLACEHOLDER constant
+    - Added MurmurHash3 and FNV1a 32-bit hashing functions to Token Hashing Vectorizer
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

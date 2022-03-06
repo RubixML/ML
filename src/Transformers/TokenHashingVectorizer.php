@@ -31,18 +31,32 @@ use function call_user_func;
 class TokenHashingVectorizer implements Transformer
 {
     /**
+     * The CRC32b callback function.
+     *
+     * @var callable(string):int
+     */
+    public const CRC32 = 'crc32';
+
+    /**
+     * The MurmurHash3 callback function.
+     *
+     * @var callable(string):int
+     */
+    public const MURMUR3 = [self::class, 'murmur3'];
+
+    /**
+     * The FNV1 callback function.
+     *
+     * @var callable(string):int
+     */
+    public const FNV1 = [self::class, 'fnv1'];
+
+    /**
      * The maximum number of dimensions supported.
      *
      * @var int
      */
-    protected const MAX_DIMENSIONS = 4294967295;
-
-    /**
-     * The default hashing function.
-     *
-     * @var callable(string):int
-     */
-    protected const DEFAULT_HASH_FUNCTION = 'crc32';
+    protected const MAX_DIMENSIONS = 2147483647;
 
     /**
      * The dimensionality of the vector space.
@@ -66,6 +80,28 @@ class TokenHashingVectorizer implements Transformer
     protected $hashFn;
 
     /**
+     * The 32-bit MurmurHash3 hashing function.
+     *
+     * @param string $input
+     * @return int
+     */
+    public static function murmur3(string $input) : int
+    {
+        return intval(hash('murmur3a', $input), 16);
+    }
+
+    /**
+     * The 32-bit FNV1a hashing function.
+     *
+     * @param string $input
+     * @return int
+     */
+    public static function fnv1(string $input) : int
+    {
+        return intval(hash('fnv1a32', $input), 16);
+    }
+
+    /**
      * @param int $dimensions
      * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
      * @param callable(string):int|null $hashFn
@@ -81,7 +117,7 @@ class TokenHashingVectorizer implements Transformer
 
         $this->dimensions = $dimensions;
         $this->tokenizer = $tokenizer ?? new Word();
-        $this->hashFn = $hashFn ?? self::DEFAULT_HASH_FUNCTION;
+        $this->hashFn = $hashFn ?? self::CRC32;
     }
 
     /**
