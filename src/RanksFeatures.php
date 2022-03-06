@@ -2,8 +2,6 @@
 
 namespace Rubix\ML;
 
-use Stringable;
-
 /**
  * Ranks Features
  *
@@ -11,7 +9,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface RanksFeatures extends Trainable, Stringable
+interface RanksFeatures extends Trainable
 {
     /**
      * Return the importance scores of each feature column of the training set.
