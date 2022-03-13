@@ -259,7 +259,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         $combinations = self::combine($this->params);

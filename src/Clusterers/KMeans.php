@@ -327,7 +327,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         $labels = array_fill(0, $dataset->numSamples(), 0);
@@ -335,7 +335,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $numWorseEpochs = 0;
 
         $this->losses = [];
 
@@ -364,14 +364,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
                 $loss += $this->inertia($batch->samples(), $labels);
 
-                if (is_nan($loss)) {
-                    if ($this->logger) {
-                        $this->logger->info('Numerical instability detected');
-                    }
-
-                    break;
-                }
-
                 foreach ($batch->stratifyByLabel() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
@@ -387,29 +379,45 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
             $loss /= $dataset->numSamples();
 
+            $lossChange = abs($prevLoss - $loss);
+
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Inertia: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "Inertia: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}";
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if ($loss <= 0.0) {
                 break;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $delta = 0;
+                $numWorseEpochs = 0;
             } else {
-                ++$delta;
+                ++$numWorseEpochs;
             }
 
-            if ($delta >= $this->window) {
+            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

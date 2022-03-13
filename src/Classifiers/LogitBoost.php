@@ -364,11 +364,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
-        [$min, $max] = $this->metric->range()->list();
+
+        [$minScore, $maxScore] = $this->metric->range()->list();
+
         [$m, $n] = $training->shape();
 
         $classMap = array_flip($classes);
@@ -384,6 +386,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         if (!$testing->empty()) {
             $zTest = array_fill(0, $testing->numSamples(), 0.0);
+        } elseif ($this->logger) {
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -394,8 +399,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $this->featureCount = $n;
         $this->boosters = $this->scores = $this->losses = [];
 
-        $bestScore = $min;
-        $bestEpoch = $delta = 0;
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -404,6 +409,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $losses = array_map([$this, 'crossEntropy'], $out, $targets);
 
             $loss = Stats::mean($losses);
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
@@ -420,12 +427,26 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: "
-                    . ($score ?? 'n/a') . ", Cross Entropy: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "Cross Entropy: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if (isset($score)) {
-                if ($score >= $max) {
+                if ($score >= $maxScore) {
                     break;
                 }
 
@@ -433,25 +454,17 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $delta = 0;
+                    $numWorseEpochs = 0;
                 } else {
-                    ++$delta;
+                    ++$numWorseEpochs;
                 }
 
-                if ($delta >= $this->window) {
+                if ($numWorseEpochs >= $this->window) {
                     break;
                 }
             }
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 

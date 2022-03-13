@@ -306,9 +306,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $labels = $dataset->labels();
 
         $k = count($classes);
-
-        $lossThreshold = 1.0 - (1.0 / $k);
-
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
         $weights = array_fill(0, $m, 1.0 / $m);
@@ -319,7 +316,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->ensemble = $this->influences = $this->losses = [];
 
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $lossThreshold = 1.0 - (1.0 / $k);
+        $numWorseEpochs = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
@@ -340,26 +338,33 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             if (is_nan($loss)) {
                 if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
+                    $this->logger->warning('Numerical instability detected');
                 }
 
                 break;
             }
 
-            $total = array_sum($weights) ?: EPSILON;
+            $totalWeight = array_sum($weights) ?: EPSILON;
 
-            $loss /= $total;
+            $loss /= $totalWeight;
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Exponential Loss: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "Exponential Loss: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}";
+
+                $this->logger->info($message);
             }
 
             if ($loss > $lossThreshold) {
                 if ($this->logger) {
-                    $this->logger->info('Estimator dropped due'
-                        . ' to high training loss');
+                    $this->logger->notice('Learner dropped due to high training loss');
                 }
 
                 continue;
@@ -372,19 +377,19 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
             if ($loss > $bestLoss) {
                 $bestLoss = $loss;
 
-                $delta = 0;
+                $numWorseEpochs = 0;
             } else {
-                ++$delta;
+                ++$numWorseEpochs;
             }
 
-            if ($delta >= $this->window) {
+            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

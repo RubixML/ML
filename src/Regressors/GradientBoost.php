@@ -354,11 +354,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
-        [$min, $max] = $this->metric->range()->list();
+
+        [$minScore, $maxScore] = $this->metric->range()->list();
+
         [$m, $n] = $training->shape();
 
         $targets = $training->labels();
@@ -369,6 +371,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
         if (!$testing->empty()) {
             $outTest = array_fill(0, $testing->numSamples(), $mu);
+        } elseif ($this->logger) {
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -379,8 +384,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->ensemble = $this->scores = $this->losses = [];
         $this->mu = $mu;
 
-        $bestScore = $min;
-        $bestEpoch = $delta = 0;
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -389,6 +394,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $loss = array_reduce($gradient, [$this, 'l2Loss'], 0.0);
 
             $loss /= $m;
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
@@ -399,12 +406,26 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: "
-                    . ($score ?? 'n/a') . ", L2 Loss: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "L2 Loss: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if (isset($score)) {
-                if ($score >= $max) {
+                if ($score >= $maxScore) {
                     break;
                 }
 
@@ -412,25 +433,17 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $delta = 0;
+                    $numWorseEpochs = 0;
                 } else {
-                    ++$delta;
+                    ++$numWorseEpochs;
                 }
 
-                if ($delta >= $this->window) {
+                if ($numWorseEpochs >= $this->window) {
                     break;
                 }
             }
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 

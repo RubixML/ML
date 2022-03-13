@@ -20,6 +20,8 @@
     - Changed Token Hashing Vectorizer max dimensions to 2,147,483,647
     - Increase SQL Table Extractor batch size from 100 to 256
     - Ranks Features interface no longer extends Stringable
+    - Verbose Learners now log change in loss
+    - Numerical instability logged as warning instead of info
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

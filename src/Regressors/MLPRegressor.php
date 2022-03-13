@@ -389,15 +389,15 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
 
-        [$min, $max] = $this->metric->range()->list();
+        [$minScore, $maxScore] = $this->metric->range()->list();
 
-        $bestScore = $min;
-        $bestEpoch = $delta = 0;
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
         $snapshot = null;
         $prevLoss = INF;
 
@@ -413,17 +413,19 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $loss += $this->network->roundtrip($batch);
             }
 
+            $loss /= count($batches);
+
+            $lossChange = abs($prevLoss - $loss);
+
+            $this->losses[$epoch] = $loss;
+
             if (is_nan($loss)) {
                 if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
+                    $this->logger->warning('Numerical instability detected');
                 }
 
                 break;
             }
-
-            $loss /= count($batches);
-
-            $this->losses[$epoch] = $loss;
 
             if (!$testing->empty()) {
                 $predictions = $this->predict($testing);
@@ -434,12 +436,18 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: "
-                    . ($score ?? 'n/a') . ", {$this->costFn}: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "{$this->costFn}: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
+
+                $this->logger->info($message);
             }
 
             if (isset($score)) {
-                if ($score >= $max) {
+                if ($score >= $maxScore) {
                     break;
                 }
 
@@ -449,17 +457,17 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
                     $snapshot = Snapshot::take($this->network);
 
-                    $delta = 0;
+                    $numWorseEpochs = 0;
                 } else {
-                    ++$delta;
+                    ++$numWorseEpochs;
                 }
 
-                if ($delta >= $this->window) {
+                if ($numWorseEpochs >= $this->window) {
                     break;
                 }
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
@@ -470,7 +478,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $snapshot->restore();
 
             if ($this->logger) {
-                $this->logger->info("Network restored from snapshot at epoch $bestEpoch");
+                $this->logger->info("Model state restored to epoch $bestEpoch");
             }
         }
 
