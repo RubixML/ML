@@ -8,14 +8,14 @@ use Stringable;
 interface ProbabilisticMetric extends Stringable
 {
     /**
-     * Return a tuple of the min and max output value for this metric.
+     * Return a tuple of the min and max score for this metric.
      *
      * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple;
 
     /**
-     * Score a set of predictions.
+     * Return the validation score of a set of probabilities with their ground-truth labels.
      *
      * @param list<array<float>> $probabilities
      * @param list<string|int> $labels
