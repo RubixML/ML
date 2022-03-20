@@ -2,20 +2,10 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Tuple;
-use Stringable;
-
-interface ProbabilisticMetric extends Stringable
+interface ProbabilisticMetric extends DiscreteMetric
 {
     /**
-     * Return a tuple of the min and max score for this metric.
-     *
-     * @return \Rubix\ML\Tuple{float,float}
-     */
-    public function range() : Tuple;
-
-    /**
-     * Return the validation score of a set of probabilities with their ground-truth labels.
+     * Return the validation score of a set of class probabilities with their ground-truth labels.
      *
      * @param list<array<float>> $probabilities
      * @param list<string|int> $labels

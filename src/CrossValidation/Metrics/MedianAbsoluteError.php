@@ -22,7 +22,7 @@ use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MedianAbsoluteError implements Metric
+class MedianAbsoluteError implements RegressionMetric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -32,20 +32,6 @@ class MedianAbsoluteError implements Metric
     public function range() : Tuple
     {
         return new Tuple(-INF, 0.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::regressor(),
-        ];
     }
 
     /**

@@ -27,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FBeta implements Metric
+class FBeta implements ClassMetric
 {
     /**
      * The ratio of weight given precision over recall.
@@ -86,21 +86,6 @@ class FBeta implements Metric
     public function range() : Tuple
     {
         return new Tuple(0.0, 1.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::classifier(),
-            EstimatorType::anomalyDetector(),
-        ];
     }
 
     /**

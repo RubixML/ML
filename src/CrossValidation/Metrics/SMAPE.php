@@ -28,7 +28,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SMAPE implements Metric
+class SMAPE implements RegressionMetric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -38,20 +38,6 @@ class SMAPE implements Metric
     public function range() : Tuple
     {
         return new Tuple(-100.0, 0.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::regressor(),
-        ];
     }
 
     /**

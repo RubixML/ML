@@ -26,7 +26,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Homogeneity implements Metric
+class Homogeneity implements ClusteringMetric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -36,20 +36,6 @@ class Homogeneity implements Metric
     public function range() : Tuple
     {
         return new Tuple(0.0, 1.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::clusterer(),
-        ];
     }
 
     /**

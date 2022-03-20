@@ -23,7 +23,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanSquaredError implements Metric
+class MeanSquaredError implements RegressionMetric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -34,21 +34,7 @@ class MeanSquaredError implements Metric
     {
         return new Tuple(-INF, 0.0);
     }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::regressor(),
-        ];
-    }
-
+    
     /**
      * Score a set of predictions.
      *

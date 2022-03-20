@@ -25,7 +25,7 @@ use function Rubix\ML\comb;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandIndex implements Metric
+class RandIndex implements ClusteringMetric
 {
     /**
      * Compute n choose 2.
@@ -48,20 +48,6 @@ class RandIndex implements Metric
     public function range() : Tuple
     {
         return new Tuple(-1.0, 1.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::clusterer(),
-        ];
     }
 
     /**

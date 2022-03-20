@@ -21,7 +21,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Accuracy implements Metric
+class Accuracy implements ClassMetric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -31,21 +31,6 @@ class Accuracy implements Metric
     public function range() : Tuple
     {
         return new Tuple(0.0, 1.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::classifier(),
-            EstimatorType::anomalyDetector(),
-        ];
     }
 
     /**

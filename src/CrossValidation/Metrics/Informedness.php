@@ -24,7 +24,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Informedness implements Metric
+class Informedness implements ClassMetric
 {
     /**
      * Compute the class Informedness score.
@@ -50,21 +50,6 @@ class Informedness implements Metric
     public function range() : Tuple
     {
         return new Tuple(-1.0, 1.0);
-    }
-
-    /**
-     * The estimator types that this metric is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [
-            EstimatorType::classifier(),
-            EstimatorType::anomalyDetector(),
-        ];
     }
 
     /**
