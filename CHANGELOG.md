@@ -22,6 +22,7 @@
     - Ranks Features interface no longer extends Stringable
     - Verbose Learners now log change in loss
     - Numerical instability logged as warning instead of info
+    - Added `header()` method to CSV Extractor
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

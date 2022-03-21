@@ -24,7 +24,10 @@ $extractor = new CSV('example.csv', true, ',', '"');
 ```
 
 ## Additional Methods
-This extractor does not have any additional methods.
+Return the column titles of the data table.
+```php
+public header() : array
+```
 
 ## References
 [^1]: T. Shafranovich. (2005). Common Format and MIME Type for Comma-Separated Values (CSV) Files.

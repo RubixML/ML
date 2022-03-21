@@ -43,6 +43,18 @@ class CSVTest extends TestCase
     /**
      * @test
      */
+    public function header() : void
+    {
+        $expected = [
+            'attitude', 'texture', 'sociability', 'rating', 'class',
+        ];
+
+        $this->assertEquals($expected, $this->extractor->header());
+    }
+
+    /**
+     * @test
+     */
     public function extractWrite() : void
     {
         $expected = [
