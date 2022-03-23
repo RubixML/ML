@@ -78,6 +78,14 @@ Clustering metrics derive their scores from a contingency table which can be tho
 | [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ | |
 | [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ | |
 
+### Probabilistic metrics
+Probabilistic metrics calculate score based on predicted probabilities and truth labels.
+
+| Name                                                                         | Range   | Notes  |
+|------------------------------------------------------------------------------|---------|--------|
+| [Probabilistic Distance](cross-validation/metrics/probabilistic-distance.md) | [-1, 0] |        |
+
+
 ## Reports
 Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.
 
