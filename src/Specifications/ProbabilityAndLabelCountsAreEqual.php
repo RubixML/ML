@@ -37,7 +37,7 @@ class ProbabilityAndLabelCountsAreEqual
 
     /**
      * @param list<array<string|int,float>> $probabilities
-     * @param (string|int|float)[] $labels
+     * @param (string|int)[] $labels
      */
     public function __construct(array $probabilities, array $labels)
     {

@@ -52,7 +52,7 @@ class ProbabilisticAccuracyTest extends TestCase
      * @test
      * @dataProvider scoreProvider
      *
-     * @param list<array<string|float>> $probabilities
+     * @param list<array<string,int|float>> $probabilities
      * @param list<string|int> $labels
      * @param float $expected
      */
@@ -96,7 +96,7 @@ class ProbabilisticAccuracyTest extends TestCase
                 ['cat' => 0.5, 'frog' => 0.1, 'hamster' => 0.4],
                 ['cat' => 0.0, 'frog' => 0.8, 'hamster' => 0.2],
             ],
-            ['cat', 'frog', 'hamster', "cat", "frog"],
+            ['cat', 'frog', 'hamster', 'cat', 'frog'],
             0.7,
         ];
 

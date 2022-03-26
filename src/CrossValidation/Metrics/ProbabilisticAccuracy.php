@@ -11,7 +11,7 @@ use Rubix\ML\Specifications\ProbabilityAndLabelCountsAreEqual;
  * This metric comes from the sports betting domain, where it's used to measure the accuracy of predictions
  * by looking at the "confidence" of class predictions with a simple formula. The final score is the average
  * of the predicted probabilities of the ground-truth label.
- * 
+ *
  * !!! note
  *   Metric assumes probabilities are between 0 and 1 and their joint distribution sums to 1.
  *
