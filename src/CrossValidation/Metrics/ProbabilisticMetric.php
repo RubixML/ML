@@ -17,7 +17,7 @@ interface ProbabilisticMetric extends Stringable
     /**
      * Return the validation score of a set of probabilities with their ground-truth labels.
      *
-     * @param list<array<float>> $probabilities
+     * @param list<array<string|int,float>> $probabilities
      * @param list<string|int> $labels
      * @return float
      */
