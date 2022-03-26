@@ -52,9 +52,11 @@ Metrics for classification and anomaly detection (a special case of binary class
 | Name | Range | Formula | Notes |
 |---|---|---|---|
 | [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP}{TP + FP}$ | Not suited for imbalanced datasets |
+| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | | |
 | [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | $(1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}$ | |
 | [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ | |
 | [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ | |
+| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | | |
 
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
@@ -77,14 +79,6 @@ Clustering metrics derive their scores from a contingency table which can be tho
 | [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ | Not suited for hyper-parameter tuning |
 | [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ | |
 | [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ | |
-
-### Probabilistic metrics
-Probabilistic metrics calculate score based on predicted probabilities and truth labels.
-
-| Name                                                                         | Range   | Notes  |
-|------------------------------------------------------------------------------|---------|--------|
-| [Probabilistic Distance](cross-validation/metrics/probabilistic-distance.md) | [-1, 0] |        |
-
 
 ## Reports
 Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.
