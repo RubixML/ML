@@ -49,13 +49,7 @@ class ProbabilisticAccuracy implements ProbabilisticMetric
         $scores = [];
 
         foreach ($probabilities as $i => $dist) {
-            foreach ($dist as $class => $probability) {
-                if ($class === $labels[$i]) {
-                    $scores[] = $probability;
-
-                    break;
-                }
-            }
+            $scores[] = $dist[$labels[$i]] ?? 0.0;
         }
 
         return array_sum($scores) / $n;
