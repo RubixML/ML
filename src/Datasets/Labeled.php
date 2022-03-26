@@ -428,7 +428,7 @@ class Labeled extends Dataset
      *
      * @return self[]
      */
-    public function stratify() : array
+    public function stratifyByLabel() : array
     {
         $strata = [];
 
@@ -491,7 +491,7 @@ class Labeled extends Dataset
 
         $leftStrata = $rightStrata = [];
 
-        foreach ($this->stratify() as $stratum) {
+        foreach ($this->stratifyByLabel() as $stratum) {
             [$left, $right] = $stratum->split($ratio);
 
             $leftStrata[] = $left;
@@ -551,7 +551,7 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        foreach ($this->stratify() as $stratum) {
+        foreach ($this->stratifyByLabel() as $stratum) {
             foreach ($stratum->fold($k) as $j => $fold) {
                 $folds[$j][] = $fold;
             }
@@ -793,7 +793,7 @@ class Labeled extends Dataset
     {
         $stats = [];
 
-        foreach ($this->stratify() as $label => $stratum) {
+        foreach ($this->stratifyByLabel() as $label => $stratum) {
             $stats[$label] = $stratum->describe()->toArray();
         }
 

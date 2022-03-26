@@ -323,8 +323,6 @@ class TSNE implements Transformer, Verbose
         SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
-
             $this->logger->info('Computing high-dimensional affinities');
         }
 
@@ -343,7 +341,7 @@ class TSNE implements Transformer, Verbose
 
         $momentum = self::INIT_MOMENTUM;
         $bestLoss = INF;
-        $delta = 0;
+        $numWorseEpochs = 0;
 
         $this->losses = [];
 
@@ -369,18 +367,18 @@ class TSNE implements Transformer, Verbose
 
             $loss = $gradient->l2Norm();
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
             $this->losses[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Gradient: $loss");
+                $this->logger->info("Epoch: $epoch, Gradient: $loss");
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if ($loss < $this->minGradient) {
@@ -390,12 +388,12 @@ class TSNE implements Transformer, Verbose
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $delta = 0;
+                $numWorseEpochs = 0;
             } else {
-                ++$delta;
+                ++$numWorseEpochs;
             }
 
-            if ($delta >= $this->window) {
+            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 
@@ -405,7 +403,7 @@ class TSNE implements Transformer, Verbose
                 $momentum += self::MOMENTUM_BOOST;
 
                 if ($this->logger) {
-                    $this->logger->info('Early exaggeration exhausted');
+                    $this->logger->info('Early exaggeration stage exhausted');
                 }
             }
         }

@@ -34,7 +34,7 @@ class TokenHashingVectorizerTest extends TestCase
             ['with a dandy umbrella'],
         ]);
 
-        $this->transformer = new TokenHashingVectorizer(20, new Word());
+        $this->transformer = new TokenHashingVectorizer(20, new Word(), 'crc32');
     }
 
     /**
@@ -54,8 +54,8 @@ class TokenHashingVectorizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $outcome = [
-            [1, 1, 0, 1, 2, 0, 0, 1, 3, 0, 0, 1, 0, 0, 2, 1, 0, 1, 5, 0],
-            [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 1, 1, 0, 1, 1, 0, 4, 0, 1, 2, 1, 0, 0, 1, 1, 3, 0, 2, 0],
+            [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
         ];
 
         $this->assertEquals($outcome, $this->dataset->samples());

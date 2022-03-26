@@ -148,7 +148,7 @@ class SoftmaxClassifierTest extends TestCase
         $expected = [
             'batch size' => 10,
             'optimizer' => new Adam(0.01),
-            'alpha' => 1e-4,
+            'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
             'window' => 5,

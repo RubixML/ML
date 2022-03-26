@@ -3,6 +3,7 @@
 namespace Rubix\ML\Traits;
 
 use ReflectionClass;
+use ReflectionNamedType;
 
 use function is_object;
 use function array_pop;
@@ -13,7 +14,8 @@ use function sort;
 /**
  * Autotrack Revisions
  *
- * Automatically update class revision hashes by tracking changes in the object-property definition tree stemming from this instance.
+ * Automatically update class revision hashes by tracking changes to the object-property definition
+ * tree stemming from this instance.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,7 +24,8 @@ use function sort;
 trait AutotrackRevisions
 {
     /**
-     * Return the revision hash of the class.
+     * Return the class revision hash by traversing the object-property definition tree in depth-first
+     * order.
      *
      * @return string
      */
@@ -48,7 +51,17 @@ trait AutotrackRevisions
                     $stack[] = $value;
                 }
 
-                $tokens[] = $property->getName();
+                $type = $property->getType();
+
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                } else {
+                    $type = 'mixed';
+                }
+
+                $name = $property->getName();
+
+                $tokens[] = "$type:$name";
             }
         }
 

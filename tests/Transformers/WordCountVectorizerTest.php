@@ -36,7 +36,7 @@ class WordCountVectorizerTest extends TestCase
             ['with a dandy umbrella'],
         ]);
 
-        $this->transformer = new WordCountVectorizer(50, 0.0, 1.0, new Word());
+        $this->transformer = new WordCountVectorizer(50, 1, 1.0, new Word());
     }
 
     /**

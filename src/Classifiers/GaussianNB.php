@@ -253,7 +253,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         $maxVariance = 0.0;
 
-        foreach ($dataset->stratify() as $class => $stratum) {
+        foreach ($dataset->stratifyByLabel() as $class => $stratum) {
             if (isset($this->means[$class])) {
                 $oldMeans = $this->means[$class];
                 $oldVariances = $this->variances[$class];

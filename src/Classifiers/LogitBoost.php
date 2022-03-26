@@ -57,6 +57,7 @@ use function get_object_vars;
  * [2] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
  * [3] J. H. Friedman. (1999). Stochastic Gradient Boosting.
  * [4] Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.
+ * [5] G. Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -98,18 +99,18 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected float $rate;
 
     /**
-     * The ratio of samples to subsample from the training set for each booster.
+     * The ratio of samples to subsample from the training set for each booster.d
      *
      * @var float
      */
     protected float $ratio;
 
     /**
-     *  The max number of estimators to train in the ensemble.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
-     * @var int
+     * @var int<0,max>
      */
-    protected int $estimators;
+    protected int $epochs;
 
     /**
      * The minimum change in the training loss necessary to continue training.
@@ -121,7 +122,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -178,7 +179,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
      * @param float $ratio
-     * @param int $estimators
+     * @param int $epochs
      * @param float $minChange
      * @param int $window
      * @param float $holdOut
@@ -189,7 +190,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         ?Learner $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
-        int $estimators = 1000,
+        int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
         float $holdOut = 0.1,
@@ -210,9 +211,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 . " between 0 and 1, $ratio given.");
         }
 
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Number of estimators'
-                . " must be greater than 0, $estimators given.");
+        if ($epochs < 0) {
+            throw new InvalidArgumentException('Number of epochs'
+                . " must be greater than 0, $epochs given.");
         }
 
         if ($minChange < 0.0) {
@@ -237,7 +238,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $this->booster = $booster ?? new RegressionTree(3);
         $this->rate = $rate;
         $this->ratio = $ratio;
-        $this->estimators = $estimators;
+        $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
         $this->holdOut = $holdOut;
@@ -281,7 +282,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             'booster' => $this->booster,
             'rate' => $this->rate,
             'ratio' => $this->ratio,
-            'estimators' => $this->estimators,
+            'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
             'hold out' => $this->holdOut,
@@ -363,12 +364,12 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         }
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
 
-        [$min, $max] = $this->metric->range()->list();
+        [$minScore, $maxScore] = $this->metric->range()->list();
 
         [$m, $n] = $training->shape();
 
@@ -385,59 +386,35 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         if (!$testing->empty()) {
             $zTest = array_fill(0, $testing->numSamples(), 0.0);
+        } elseif ($this->logger) {
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
-        $weights = array_fill(0, $m, 0.25);
+        $weights = array_fill(0, $m, 1.0 / $m);
 
         $this->classes = $classes;
         $this->featureCount = $n;
-
         $this->boosters = $this->scores = $this->losses = [];
 
-        $bestScore = $min;
-        $bestEpoch = $delta = 0;
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
         $score = null;
         $prevLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->estimators; ++$epoch) {
-            $booster = clone $this->booster;
-
+        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $gradient = array_map([$this, 'gradient'], $out, $targets);
-
             $losses = array_map([$this, 'crossEntropy'], $out, $targets);
 
             $loss = Stats::mean($losses);
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
-            $training = Labeled::quick($training->samples(), $gradient);
-
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
-
-            $booster->train($subset);
-
-            $zHat = $booster->predict($training);
-
-            $z = array_map([$this, 'updateZ'], $zHat, $z);
-            $out = array_map('Rubix\ML\sigmoid', $z);
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
-            $this->boosters[] = $booster;
-
             if (isset($zTest)) {
-                $zHat = $booster->predict($testing);
-
-                $zTest = array_map([$this, 'updateZ'], $zHat, $zTest);
-
                 $predictions = [];
 
                 foreach ($zTest as $value) {
@@ -450,12 +427,26 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->metric}: "
-                    . ($score ?? 'n/a') . ", Cross Entropy: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "Cross Entropy: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if (isset($score)) {
-                if ($score >= $max) {
+                if ($score >= $maxScore) {
                     break;
                 }
 
@@ -463,23 +454,42 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $delta = 0;
+                    $numWorseEpochs = 0;
                 } else {
-                    ++$delta;
+                    ++$numWorseEpochs;
                 }
 
-                if ($delta >= $this->window) {
+                if ($numWorseEpochs >= $this->window) {
                     break;
                 }
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
-            if ($epoch < $this->estimators) {
-                $weights = array_map([$this, 'weightSample'], $out);
+            $training = Labeled::quick($training->samples(), $gradient);
+
+            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+
+            $booster = clone $this->booster;
+
+            $booster->train($subset);
+
+            $this->boosters[] = $booster;
+
+            $predictions = $booster->predict($training);
+
+            $z = array_map([$this, 'updateZ'], $predictions, $z);
+            $out = array_map('Rubix\ML\sigmoid', $z);
+
+            if (isset($zTest)) {
+                $predictions = $booster->predict($testing);
+
+                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
             }
+
+            $weights = array_map('abs', $gradient);
 
             $prevLoss = $loss;
         }
@@ -635,17 +645,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected function updateZ(float $z, float $prevZ) : float
     {
         return $this->rate * $z + $prevZ;
-    }
-
-    /**
-     * Use the derivative of the logistic function to weight the sample.
-     *
-     * @param float $out
-     * @return float
-     */
-    protected function weightSample(float $out) : float
-    {
-        return $out * (1.0 - $out);
     }
 
     /**

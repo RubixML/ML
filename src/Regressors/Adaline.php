@@ -74,13 +74,12 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before terminating.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
-     * @var int
+     * @var int<0,max>
      */
     protected int $epochs;
 
@@ -94,7 +93,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The number of epochs without improvement in the training loss to wait before considering an early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -123,7 +122,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-     * @param float $alpha
+     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
@@ -133,7 +132,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $alpha = 1e-4,
+        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
@@ -144,12 +143,12 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
@@ -166,7 +165,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
@@ -211,7 +210,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'alpha' => $this->alpha,
+            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
@@ -279,7 +278,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->alpha, true, new Xavier2())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier2())],
             new Continuous($this->costFn),
             $this->optimizer
         );
@@ -311,11 +310,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $numWorseEpochs = 0;
 
         $this->losses = [];
 
@@ -328,39 +327,47 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $loss += $this->network->roundtrip($batch);
             }
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical under/overflow detected');
-                }
-
-                break;
-            }
-
             $loss /= count($batches);
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "{$this->costFn}: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}";
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical under/overflow detected');
+                }
+
+                break;
             }
 
             if ($loss <= 0.0) {
                 break;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $delta = 0;
+                $numWorseEpochs = 0;
             } else {
-                ++$delta;
+                ++$numWorseEpochs;
             }
 
-            if ($delta >= $this->window) {
+            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

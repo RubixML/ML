@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Serializers\Gzip;
 use Rubix\ML\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,7 @@ class GzipTest extends TestCase
     {
         $this->serializer = new Gzip(1);
 
-        $this->persistable = new DummyClassifier();
+        $this->persistable = new GaussianNB();
     }
 
     /**
@@ -55,7 +55,7 @@ class GzipTest extends TestCase
 
         $persistable = $this->serializer->deserialize($data);
 
-        $this->assertInstanceOf(DummyClassifier::class, $persistable);
+        $this->assertInstanceOf(GaussianNB::class, $persistable);
         $this->assertInstanceOf(Persistable::class, $persistable);
     }
 }

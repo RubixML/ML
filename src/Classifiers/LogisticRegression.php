@@ -73,11 +73,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before terminating.
+     * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
      * @var int
      */
@@ -91,9 +90,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
+     * The number of epochs without improvement in the training loss to wait before considering an
+     * early stop.
      *
-     * @var int
+     * @var positive-int
      */
     protected int $window;
 
@@ -128,7 +128,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-     * @param float $alpha
+     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
@@ -138,7 +138,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $alpha = 1e-4,
+        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $window = 5,
@@ -149,12 +149,12 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
-        if ($epochs < 1) {
+        if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
@@ -171,7 +171,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->window = $window;
@@ -216,7 +216,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'alpha' => $this->alpha,
+            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'window' => $this->window,
@@ -290,7 +290,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->alpha, true, new Xavier1())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier1())],
             new Binary($classes, $this->costFn),
             $this->optimizer
         );
@@ -324,11 +324,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $numWorseEpochs = 0;
 
         $this->losses = [];
 
@@ -341,39 +341,47 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $loss += $this->network->roundtrip($batch);
             }
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
             $loss /= count($batches);
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - {$this->costFn}: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "{$this->costFn}: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}";
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
             }
 
             if ($loss <= 0.0) {
                 break;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $delta = 0;
+                $numWorseEpochs = 0;
             } else {
-                ++$delta;
+                ++$numWorseEpochs;
             }
 
-            if ($delta >= $this->window) {
+            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

@@ -1,3 +1,29 @@
+- 2.0.0
+    - Gradient Boost now uses gradient-based subsampling
+    - Allow Token Hashing Vectorizer custom hash functions
+    - Gradient Boost base estimator no longer configurable
+    - Move dummy estimators to the Extras package
+    - Increase default MLP window from 3 to 5
+    - Decrease default Gradient Boost window from 10 to 5
+    - Rename alpha regularization parameter to L2 penalty
+    - Added RBX serializer class property type change detection
+    - Rename boosting `estimators` param to `epochs`
+    - Neural net-based learners can now train for 0 epochs
+    - Rename Labeled `stratify()` to `stratifyByLabel()`
+    - Added Sparse Cosine distance kernel
+    - Cosine distance now optimized for dense vectors
+    - Word Count Vectorizer now uses min count and max ratio DFs
+    - Numeric String Converter now handles NAN and INFs
+    - Numeric String Converter is now Reversible
+    - Removed Numeric String Converter NAN_PLACEHOLDER constant
+    - Added MurmurHash3 and FNV1a 32-bit hashing functions to Token Hashing Vectorizer
+    - Changed Token Hashing Vectorizer max dimensions to 2,147,483,647
+    - Increase SQL Table Extractor batch size from 100 to 256
+    - Ranks Features interface no longer extends Stringable
+    - Verbose Learners now log change in loss
+    - Numerical instability logged as warning instead of info
+    - Added `header()` method to CSV Extractor
+    
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost
 

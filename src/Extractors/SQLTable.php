@@ -48,7 +48,7 @@ class SQLTable implements Extractor
      * @param int $batchSize
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(PDO $connection, string $table, int $batchSize = 100)
+    public function __construct(PDO $connection, string $table, int $batchSize = 256)
     {
         ExtensionIsLoaded::with('PDO')->check();
 

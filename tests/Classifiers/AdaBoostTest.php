@@ -145,7 +145,7 @@ class AdaBoostTest extends TestCase
             'base' => new ClassificationTree(1),
             'rate' => 1.0,
             'ratio' => 0.8,
-            'estimators' => 100,
+            'epochs' => 100,
             'min change' => 0.0001,
             'window' => 5,
         ];

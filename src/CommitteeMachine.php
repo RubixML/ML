@@ -251,7 +251,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            $this->backend->enqueue(new TrainLearner($estimator, $dataset));
+            $task = new TrainLearner($estimator, $dataset);
+
+            $this->backend->enqueue($task);
         }
 
         $this->experts = $this->backend->process();
@@ -286,7 +288,9 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            $this->backend->enqueue(new Predict($estimator, $dataset));
+            $task = new Predict($estimator, $dataset);
+
+            $this->backend->enqueue($task);
         }
 
         $aggregate = array_transpose($this->backend->process());

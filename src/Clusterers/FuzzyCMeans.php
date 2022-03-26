@@ -264,7 +264,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         /** @var list<list<int|float>> $seeds */
@@ -283,26 +283,26 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
             $loss = $this->inertia($dataset->samples(), $memberships);
 
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->info('Numerical instability detected');
-                }
-
-                break;
-            }
-
             $loss /= $dataset->numSamples();
+
+            $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch - Inertia: $loss");
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "Inertia: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}";
+
+                $this->logger->info($message);
             }
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 $means = [];
 
-                foreach ($features as $column => $values) {
+                foreach ($features as $values) {
                     $sigma = $total = 0.0;
 
                     foreach ($memberships as $i => $probabilities) {
@@ -318,11 +318,19 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 $centroid = $means;
             }
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
+            }
+
             if ($loss <= 0.0) {
                 break;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if ($lossChange < $this->minChange) {
                 break;
             }
 

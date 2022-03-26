@@ -28,7 +28,7 @@ use function is_null;
  * Ridge
  *
  * L2 regularized least squares linear model solved using a closed-form solution. The addition
- * of regularization, controlled by the *alpha* parameter, makes Ridge less prone to overfitting
+ * of regularization, controlled by the *l2Penalty* parameter, makes Ridge less prone to overfitting
  * than ordinary linear regression.
  *
  * @category    Machine Learning
@@ -44,7 +44,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
      * The y intercept i.e. the bias added to the decision function.
@@ -61,17 +61,17 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     protected ?\Tensor\Vector $coefficients = null;
 
     /**
-     * @param float $alpha
+     * @param float $l2Penalty
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $alpha = 1.0)
+    public function __construct(float $l2Penalty = 1.0)
     {
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
     }
 
     /**
@@ -110,7 +110,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     public function params() : array
     {
         return [
-            'alpha' => $this->alpha,
+            'l2 penalty' => $this->l2Penalty,
         ];
     }
 
@@ -166,11 +166,11 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
 
-        $alphas = array_fill(0, $nHat, $this->alpha);
+        $penalties = array_fill(0, $nHat, $this->l2Penalty);
 
-        array_unshift($alphas, 0.0);
+        array_unshift($penalties, 0.0);
 
-        $penalties = Matrix::diagonal($alphas);
+        $penalties = Matrix::diagonal($penalties);
 
         $xT = $x->transpose();
 

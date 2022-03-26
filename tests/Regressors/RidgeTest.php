@@ -100,7 +100,7 @@ class RidgeTest extends TestCase
     /**
      * @test
      */
-    public function badAlpha() : void
+    public function badL2Penalty() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

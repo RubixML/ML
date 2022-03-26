@@ -47,7 +47,7 @@ class TokenHashingVectorizerBench
 
         $this->dataset = Unlabeled::quick($samples);
 
-        $this->transformer = new TokenHashingVectorizer(1000);
+        $this->transformer = new TokenHashingVectorizer(1000, null, TokenHashingVectorizer::CRC32);
     }
 
     /**

@@ -40,7 +40,7 @@ class Dense implements Hidden, Parametric
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $l2Penalty;
 
     /**
      * Should the layer include a bias parameter?
@@ -86,7 +86,7 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
-     * @param float $alpha
+     * @param float $l2Penalty
      * @param bool $bias
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
@@ -94,7 +94,7 @@ class Dense implements Hidden, Parametric
      */
     public function __construct(
         int $neurons,
-        float $alpha = 0.0,
+        float $l2Penalty = 0.0,
         bool $bias = true,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
@@ -104,13 +104,13 @@ class Dense implements Hidden, Parametric
                 . " must be greater than 0, $neurons given.");
         }
 
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be'
-                . " greater than 0, $alpha given.");
+        if ($l2Penalty < 0.0) {
+            throw new InvalidArgumentException('L2 Penalty must be'
+                . " greater than 0, $l2Penalty given.");
         }
 
         $this->neurons = $neurons;
-        $this->alpha = $alpha;
+        $this->l2Penalty = $l2Penalty;
         $this->bias = $bias;
         $this->weightInitializer = $weightInitializer ?? new He();
         $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
@@ -248,8 +248,8 @@ class Dense implements Hidden, Parametric
 
         $weights = $this->weights->param();
 
-        if ($this->alpha) {
-            $dW = $dW->add($weights->multiply($this->alpha));
+        if ($this->l2Penalty) {
+            $dW = $dW->add($weights->multiply($this->l2Penalty));
         }
 
         $this->weights->update($dW, $optimizer);
@@ -322,7 +322,7 @@ class Dense implements Hidden, Parametric
      */
     public function __toString() : string
     {
-        return "Dense (neurons: {$this->neurons}, alpha: {$this->alpha},"
+        return "Dense (neurons: {$this->neurons}, l2 penalty: {$this->l2Penalty},"
             . ' bias: ' . Params::toString($this->bias) . ','
             . " weight initializer: {$this->weightInitializer},"
             . " bias initializer: {$this->biasInitializer})";

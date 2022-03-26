@@ -259,7 +259,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         ])->check();
 
         if ($this->logger) {
-            $this->logger->info("$this initialized");
+            $this->logger->info("Training $this");
         }
 
         $combinations = self::combine($this->params);
@@ -270,13 +270,15 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             /** @var \Rubix\ML\Learner $estimator */
             $estimator = new $this->class(...$params);
 
+            $task = new CrossValidate(
+                $estimator,
+                $dataset,
+                $this->validator,
+                $this->metric
+            );
+
             $this->backend->enqueue(
-                new CrossValidate(
-                    $estimator,
-                    $dataset,
-                    $this->validator,
-                    $this->metric
-                ),
+                $task,
                 [$this, 'afterScore'],
                 $estimator->params()
             );

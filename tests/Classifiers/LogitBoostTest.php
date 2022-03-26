@@ -138,7 +138,7 @@ class LogitBoostTest extends TestCase
             'booster' => new RegressionTree(3),
             'rate' => 0.1,
             'ratio' => 0.5,
-            'estimators' => 1000,
+            'epochs' => 1000,
             'hold out' => 0.1,
             'metric' => new FBeta(1),
         ];

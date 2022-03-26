@@ -7,7 +7,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\LeavePOut;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class LeavePOutTest extends TestCase
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\DummyClassifier
+     * @var \Rubix\ML\Classifiers\GaussianNB
      */
     protected $estimator;
 
@@ -50,7 +50,7 @@ class LeavePOutTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
         ], [0.45, 0.55]);
 
-        $this->estimator = new DummyClassifier();
+        $this->estimator = new GaussianNB();
 
         $this->validator = new LeavePOut(10);
 

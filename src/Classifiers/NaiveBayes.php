@@ -231,7 +231,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        foreach ($dataset->stratify() as $class => $stratum) {
+        foreach ($dataset->stratifyByLabel() as $class => $stratum) {
             if (isset($this->counts[$class])) {
                 $classCounts = $this->counts[$class];
                 $classProbs = $this->probs[$class];

@@ -202,7 +202,9 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
             $subset = $dataset->randomSubsetWithReplacement($p);
 
-            $this->backend->enqueue(new TrainLearner($estimator, $subset));
+            $task = new TrainLearner($estimator, $subset);
+
+            $this->backend->enqueue($task);
         }
 
         $this->ensemble = $this->backend->process();
@@ -224,7 +226,9 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->backend->flush();
 
         foreach ($this->ensemble as $estimator) {
-            $this->backend->enqueue(new Predict($estimator, $dataset));
+            $task = new Predict($estimator, $dataset);
+
+            $this->backend->enqueue($task);
         }
 
         $aggregate = array_transpose($this->backend->process());
