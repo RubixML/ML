@@ -258,7 +258,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

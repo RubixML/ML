@@ -409,7 +409,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

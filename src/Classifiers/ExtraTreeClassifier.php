@@ -188,7 +188,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -224,6 +224,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
 
         $counts = array_count_values($dataset->labels());
 
+        /** @var string $outcome */
         $outcome = argmax($counts);
 
         $probabilities = [];

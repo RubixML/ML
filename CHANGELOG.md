@@ -23,6 +23,7 @@
     - Verbose Learners now log change in loss
     - Numerical instability logged as warning instead of info
     - Added `header()` method to CSV Extractor
+    - `Argmax()` now throws exception when undefined
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

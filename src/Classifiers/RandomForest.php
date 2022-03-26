@@ -277,6 +277,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $predictions = [];
 
         foreach ($aggregate as $votes) {
+            /** @var list<string> $votes */
             $predictions[] = argmax(array_count_values($votes));
         }
 
@@ -288,7 +289,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

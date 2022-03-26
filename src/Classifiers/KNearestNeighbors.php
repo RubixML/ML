@@ -243,7 +243,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -262,7 +262,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return float[]
+     * @return array<string,float>
      */
     public function probaSample(array $sample) : array
     {
