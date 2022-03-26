@@ -4,32 +4,30 @@ namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function count;
-
 /**
  * @internal
  */
-class LabelsAreCompatibleWithProbabilities extends Specification
+class ProbabilityAndLabelCountsAreEqual
 {
     /**
-     * Predicted probabilities.
+     * The probabilities returned from an estimator.
      *
-     * @var list<array<float>>
+     * @var list<array<string|int,float>>
      */
     protected array $probabilities;
 
     /**
-     * Dataset labels.
+     * The ground-truth labels.
      *
-     * @var list<string|int>
+     * @var (string|int)[]
      */
     protected array $labels;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param list<array<float>> $probabilities
-     * @param list<string|int> $labels
+     * @param list<array<string|int,float>> $probabilities
+     * @param (string|int)[] $labels
      * @return self
      */
     public static function with(array $probabilities, array $labels) : self
@@ -38,8 +36,8 @@ class LabelsAreCompatibleWithProbabilities extends Specification
     }
 
     /**
-     * @param list<array<float>> $probabilities
-     * @param list<string|int> $labels
+     * @param list<array<string|int,float>> $probabilities
+     * @param (string|int|float)[] $labels
      */
     public function __construct(array $probabilities, array $labels)
     {
@@ -48,19 +46,17 @@ class LabelsAreCompatibleWithProbabilities extends Specification
     }
 
     /**
-     * Perform a check of the specification.
+     * Perform a check of the specification and throw an exception if invalid.
      *
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function check() : void
     {
-        $countProbabilities = count($this->probabilities);
-        $countLabels = count($this->labels);
-
-        if ($countProbabilities != $countLabels) {
+        if (count($this->probabilities) !== count($this->labels)) {
             throw new InvalidArgumentException(
-                'Labels are incompatible with predictions'
-                . "($countLabels labels and $countProbabilities probabilities provided)."
+                'Number of probabilities and labels must be equal '
+                . count($this->probabilities) . ' predictions but '
+                . count($this->labels) . ' labels given.'
             );
         }
     }
