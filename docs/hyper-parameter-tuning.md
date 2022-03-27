@@ -31,7 +31,7 @@ echo $score;
 When the algorithm that trains a Learner is *stochastic* or randomized, it may be desirable for the sake of hyper-parameter tuning to isolate the effect of randomness on training. Fortunately, PHP makes it easy to seed the pseudo-random number generator (PRNG) with a known constant so your training sessions are repeatable. To seed the random number generator call the `srand()` function at the start of your training script passing any integer constant. After that point the PRNG will generate the same series of random numbers each time the training script is run.
 
 ```php
-srand(1)
+srand(42)
 ```
 
 ## Hyper-parameter Optimization
