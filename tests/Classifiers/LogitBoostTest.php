@@ -13,11 +13,10 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\LogitBoost;
-use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -66,7 +65,7 @@ class LogitBoostTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
      */
     protected $metric;
 
@@ -76,13 +75,13 @@ class LogitBoostTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.4, 0.6]),
-            'female' => new Blob([63.7, 168.5, 38.1], [1.8, 5.0, 0.8]),
-        ]);
+            'inner' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
+        ], [0.4, 0.6]);
 
         $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
 
-        $this->metric = new Accuracy();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -173,7 +172,7 @@ class LogitBoostTest extends TestCase
         $importances = $this->estimator->featureImportances();
 
         $this->assertIsArray($importances);
-        $this->assertCount(3, $importances);
+        $this->assertCount(2, $importances);
         $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);

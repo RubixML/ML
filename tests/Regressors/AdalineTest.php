@@ -33,14 +33,14 @@ class AdalineTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -76,9 +76,9 @@ class AdalineTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 0.0);
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
 
-        $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, 5, new HuberLoss(1.0));
+        $this->estimator = new Adaline(32, new Adam(0.001), 1e-4, 100, 1e-4, 5, new HuberLoss(1.0));
 
         $this->metric = new RSquared();
 
@@ -140,11 +140,11 @@ class AdalineTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'batch size' => 1,
-            'optimizer' => new Adam(0.01),
+            'batch size' => 32,
+            'optimizer' => new Adam(0.001),
             'l2 penalty' => 1e-4,
             'epochs' => 100,
-            'min change' => 1e-3,
+            'min change' => 1e-4,
             'window' => 5,
             'cost fn' => new HuberLoss(1.0),
         ];

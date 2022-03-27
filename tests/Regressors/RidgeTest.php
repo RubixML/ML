@@ -28,14 +28,14 @@ class RidgeTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -71,7 +71,7 @@ class RidgeTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
 
         $this->estimator = new Ridge(1.0);
 

@@ -10,7 +10,7 @@ use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -28,14 +28,14 @@ class RegressionTreeTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -52,7 +52,7 @@ class RegressionTreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\HalfMoon
+     * @var \Rubix\ML\Datasets\Generators\Hyperplane
      */
     protected $generator;
 
@@ -71,9 +71,9 @@ class RegressionTreeTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 35.0, 1.0);
 
-        $this->estimator = new RegressionTree(10, 2, 1e-7, 3, null);
+        $this->estimator = new RegressionTree(30, 5, 1e-7, 3);
 
         $this->metric = new RSquared();
 
@@ -134,8 +134,8 @@ class RegressionTreeTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'max height' => 10,
-            'max leaf size' => 2,
+            'max height' => 30,
+            'max leaf size' => 5,
             'min purity increase' => 1.0E-7,
             'max features' => 3,
             'max bins' => null,
@@ -159,7 +159,7 @@ class RegressionTreeTest extends TestCase
         $importances = $this->estimator->featureImportances();
 
         $this->assertIsArray($importances);
-        $this->assertCount(2, $importances);
+        $this->assertCount(4, $importances);
         $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);

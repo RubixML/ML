@@ -15,7 +15,7 @@ use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -31,14 +31,14 @@ class AdaBoostTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -65,7 +65,7 @@ class AdaBoostTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
      */
     protected $metric;
 
@@ -80,9 +80,9 @@ class AdaBoostTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.8, 100, 1e-4, 5);
+        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.5, 100, 1e-4, 5);
 
-        $this->metric = new Accuracy();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -144,7 +144,7 @@ class AdaBoostTest extends TestCase
         $expected = [
             'base' => new ClassificationTree(1),
             'rate' => 1.0,
-            'ratio' => 0.8,
+            'ratio' => 0.5,
             'epochs' => 100,
             'min change' => 0.0001,
             'window' => 5,

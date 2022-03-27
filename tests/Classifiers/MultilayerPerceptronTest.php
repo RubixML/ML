@@ -14,15 +14,15 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Dropout;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Optimizers\AdaMax;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -40,7 +40,7 @@ class MultilayerPerceptronTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 500;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
@@ -74,7 +74,7 @@ class MultilayerPerceptronTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
      */
     protected $metric;
 
@@ -90,14 +90,17 @@ class MultilayerPerceptronTest extends TestCase
         ], [3, 3, 4]);
 
         $this->estimator = new MultilayerPerceptron([
-            new Dense(10),
-            new Activation(new LeakyReLU()),
+            new Dense(32),
+            new Activation(new LeakyReLU(0.1)),
             new Dropout(0.1),
-            new Dense(10),
-            new Activation(new LeakyReLU()),
-        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, 3, 0.1, new CrossEntropy(), new FBeta());
+            new Dense(16),
+            new Activation(new LeakyReLU(0.1)),
+            new Noise(1e-5),
+            new Dense(8),
+            new Activation(new LeakyReLU(0.1)),
+        ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 0.1, new CrossEntropy(), new FBeta());
 
-        $this->metric = new Accuracy();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -158,18 +161,21 @@ class MultilayerPerceptronTest extends TestCase
     {
         $expected = [
             'hidden layers' => [
-                new Dense(10),
-                new Activation(new LeakyReLU()),
+                new Dense(32),
+                new Activation(new LeakyReLU(0.1)),
                 new Dropout(0.1),
-                new Dense(10),
-                new Activation(new LeakyReLU()),
+                new Dense(16),
+                new Activation(new LeakyReLU(0.1)),
+                new Noise(1e-5),
+                new Dense(8),
+                new Activation(new LeakyReLU(0.1)),
             ],
-            'batch size' => 10,
-            'optimizer' => new AdaMax(0.01),
+            'batch size' => 32,
+            'optimizer' => new Adam(0.001),
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-3,
-            'window' => 3,
+            'window' => 5,
             'hold out' => 0.1,
             'cost fn' => new CrossEntropy(),
             'metric' => new FBeta(),
