@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Tuple;
-use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
