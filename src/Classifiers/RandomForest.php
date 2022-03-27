@@ -28,6 +28,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function Rubix\ML\array_transpose;
+use function array_count_values;
 use function get_class;
 use function in_array;
 
@@ -277,7 +278,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $predictions = [];
 
         foreach ($aggregate as $votes) {
-            $predictions[] = argmax(array_count_values($votes));
+            /** @var array<string,int> $counts */
+            $counts = array_count_values($votes);
+
+            $predictions[] = argmax($counts);
         }
 
         return $predictions;
@@ -288,7 +292,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

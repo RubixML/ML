@@ -217,6 +217,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
             $weights = array_count_values($labels);
         }
 
+        /** @var array<string,float|int> $weights */
         return argmax($weights);
     }
 
@@ -225,7 +226,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

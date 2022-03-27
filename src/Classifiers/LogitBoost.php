@@ -164,7 +164,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * The unique class labels.
      *
-     * @var mixed[]|null
+     * @var list<string>|null
      */
     protected ?array $classes = null;
 
@@ -356,6 +356,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {
@@ -414,6 +415,14 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $this->losses[$epoch] = $loss;
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
+            }
+
             if (isset($zTest)) {
                 $predictions = [];
 
@@ -435,14 +444,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     . "{$this->metric}: " . ($score ?? 'N/A');
 
                 $this->logger->info($message);
-            }
-
-            if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->warning('Numerical instability detected');
-                }
-
-                break;
             }
 
             if (isset($score)) {
@@ -494,7 +495,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $prevLoss = $loss;
         }
 
-        if ($this->scores and end($this->scores) <= $bestScore) {
+        if ($this->scores and end($this->scores) < $bestScore) {
             $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
 
             if ($this->logger) {
@@ -546,7 +547,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

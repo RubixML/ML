@@ -488,7 +488,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * of each of the gaussian components.
      *
      * @param list<int|float> $sample
-     * @return float[]
+     * @return array<int,float>
      */
     protected function jointLogLikelihood(array $sample) : array
     {

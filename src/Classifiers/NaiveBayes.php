@@ -319,7 +319,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -359,7 +359,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
      * @param list<string> $sample
-     * @return float[]
+     * @return array<string,float>
      */
     protected function jointLogLikelihood(array $sample) : array
     {
