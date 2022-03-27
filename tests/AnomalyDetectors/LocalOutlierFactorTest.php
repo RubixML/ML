@@ -30,14 +30,14 @@ class LocalOutlierFactorTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 350;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -74,8 +74,8 @@ class LocalOutlierFactorTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0.0, 0.0], 0.5),
-            1 => new Circle(0.0, 0.0, 8.0, 0.1),
+            0 => new Blob([0.0, 0.0], 2.0),
+            1 => new Circle(0.0, 0.0, 8.0, 1.0),
         ], [0.9, 0.1]);
 
         $this->estimator = new LocalOutlierFactor(20, 0.1, new KDTree());

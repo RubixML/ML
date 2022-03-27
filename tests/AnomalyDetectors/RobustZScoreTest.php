@@ -29,14 +29,14 @@ class RobustZScoreTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -73,11 +73,11 @@ class RobustZScoreTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0.0, 0.0], 0.5),
-            1 => new Circle(0.0, 0.0, 8.0, 0.1),
+            0 => new Blob([0.0, 0.0], 2.0),
+            1 => new Circle(0.0, 0.0, 8.0, 1.0),
         ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(3.5, 0.5, 1e-9);
+        $this->estimator = new RobustZScore(2.0, 0.5, 1e-9);
 
         $this->metric = new FBeta();
 
@@ -147,7 +147,7 @@ class RobustZScoreTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'threshold' => 3.5,
+            'threshold' => 2.0,
             'beta' => 0.5,
             'smoothing' => 1e-9,
         ];

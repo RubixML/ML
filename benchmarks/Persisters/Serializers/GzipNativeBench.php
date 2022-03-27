@@ -5,18 +5,18 @@ namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Serializers\Gzip;
+use Rubix\ML\Serializers\GzipNative;
 
 /**
  * @Groups({"Serializers"})
  * @BeforeMethods({"setUp"})
  */
-class GzipBench
+class GzipNativeBench
 {
     protected const TRAINING_SIZE = 2500;
 
     /**
-     * @var \Rubix\ML\Serializers\Gzip
+     * @var \Rubix\ML\Serializers\GzipNative
      */
     protected $serializer;
 
@@ -41,7 +41,7 @@ class GzipBench
 
         $this->persistable = $estimator;
 
-        $this->serializer = new Gzip();
+        $this->serializer = new GzipNative();
     }
 
     /**

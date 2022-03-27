@@ -119,21 +119,21 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The amount of influence a particular classifier has in the model.
      *
-     * @var float[]|null
+     * @var list<float>|null
      */
     protected ?array $influences = null;
 
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var float[]|null
+     * @var array<string,float>|null
      */
     protected ?array $classes = null;
 
     /**
      * The loss at each epoch from the last training session.
      *
-     * @var float[]|null
+     * @var list<float>]|null
      */
     protected ?array $losses = null;
 
@@ -432,7 +432,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

@@ -33,14 +33,14 @@ class KMeansTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -82,7 +82,7 @@ class KMeansTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new KMeans(3, 100, 300, 1e-4, 5, new Euclidean(), new PlusPlus());
+        $this->estimator = new KMeans(3, 128, 300, 1e-4, 5, new Euclidean(), new PlusPlus());
 
         $this->metric = new VMeasure();
 
@@ -145,7 +145,7 @@ class KMeansTest extends TestCase
     {
         $expected = [
             'k' => 3,
-            'batch size' => 100,
+            'batch size' => 128,
             'epochs' => 300,
             'min change' => 1e-4,
             'window' => 5,

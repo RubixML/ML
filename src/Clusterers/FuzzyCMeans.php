@@ -395,7 +395,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      * Return the membership of a sample to each of the c centroids.
      *
      * @param list<int|float> $sample
-     * @return float[]
+     * @return array<int,float>
      */
     protected function probaSample(array $sample) : array
     {

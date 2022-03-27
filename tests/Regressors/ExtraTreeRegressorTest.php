@@ -28,14 +28,14 @@ class ExtraTreeRegressorTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -71,9 +71,9 @@ class ExtraTreeRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 35.0, 1.0);
 
-        $this->estimator = new ExtraTreeRegressor(10, 3, 1e-7, 4);
+        $this->estimator = new ExtraTreeRegressor(30, 3, 1e-7, 4);
 
         $this->metric = new RSquared();
 
@@ -134,7 +134,7 @@ class ExtraTreeRegressorTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'max height' => 10,
+            'max height' => 30,
             'max leaf size' => 3,
             'min purity increase' => 1.0E-7,
             'max features' => 4,

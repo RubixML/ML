@@ -59,5 +59,13 @@ class SQLTableTest extends TestCase
         $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
+
+        $expected = [
+            'attitude', 'texture', 'sociability', 'rating', 'class',
+        ];
+
+        $header = $this->extractor->header();
+
+        $this->assertEquals($expected, $header);
     }
 }

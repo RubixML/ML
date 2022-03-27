@@ -413,6 +413,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
+        $loss = 0.0;
         $snapshot = null;
         $prevLoss = INF;
 
@@ -493,7 +494,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $prevLoss = $loss;
         }
 
-        if ($snapshot and end($this->scores) < $bestScore) {
+        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
             $snapshot->restore();
 
             if ($this->logger) {
@@ -522,7 +523,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {

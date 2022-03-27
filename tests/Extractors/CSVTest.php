@@ -43,7 +43,19 @@ class CSVTest extends TestCase
     /**
      * @test
      */
-    public function extractWrite() : void
+    public function header() : void
+    {
+        $expected = [
+            'attitude', 'texture', 'sociability', 'rating', 'class',
+        ];
+
+        $this->assertEquals($expected, $this->extractor->header());
+    }
+
+    /**
+     * @test
+     */
+    public function extractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
@@ -57,6 +69,14 @@ class CSVTest extends TestCase
         $records = iterator_to_array($this->extractor, false);
 
         $this->assertEquals($expected, $records);
+
+        $expected = [
+            'attitude', 'texture', 'sociability', 'rating', 'class',
+        ];
+
+        $header = $this->extractor->header();
+
+        $this->assertEquals($expected, $header);
 
         $this->extractor->export($records);
 

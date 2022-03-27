@@ -28,14 +28,14 @@ class KDNeighborsRegressorTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -71,7 +71,7 @@ class KDNeighborsRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.02);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.25);
 
         $this->estimator = new KDNeighborsRegressor(5, true, new KDTree());
 
