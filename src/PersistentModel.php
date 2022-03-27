@@ -31,7 +31,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     protected \Rubix\ML\Learner $base;
 
     /**
-     * The persister used to interface with the storage medium.
+     * The persister used to interface with the storage layer.
      *
      * @var \Rubix\ML\Persisters\Persister
      */

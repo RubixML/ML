@@ -10,7 +10,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -28,14 +28,14 @@ class RadiusNeighborsRegressorTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -52,7 +52,7 @@ class RadiusNeighborsRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Hyperplane
+     * @var \Rubix\ML\Datasets\Generators\HalfMoon
      */
     protected $generator;
 
@@ -71,9 +71,9 @@ class RadiusNeighborsRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1, 5.5, -7, 0.01], 35.0);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.25);
 
-        $this->estimator = new RadiusNeighborsRegressor(1.5, true, new BallTree());
+        $this->estimator = new RadiusNeighborsRegressor(0.8, true, new BallTree());
 
         $this->metric = new RSquared();
 

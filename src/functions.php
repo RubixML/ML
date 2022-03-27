@@ -3,6 +3,7 @@
 namespace Rubix\ML
 {
     use Rubix\ML\Exceptions\InvalidArgumentException;
+    use Rubix\ML\Exceptions\RuntimeException;
     use Generator;
 
     use function count;
@@ -20,12 +21,20 @@ namespace Rubix\ML
      *
      * @internal
      *
-     * @param (int|float)[] $values
-     * @return mixed
+     * @template T
+     * @param array<T,float|int> $values
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return T
      */
     function argmin(array $values)
     {
-        return array_search(min($values), $values);
+        $index = array_search(min($values), $values);
+
+        if ($index === false) {
+            throw new RuntimeException('Argmin is undefined for this set.');
+        }
+
+        return $index;
     }
 
     /**
@@ -33,12 +42,20 @@ namespace Rubix\ML
      *
      * @internal
      *
-     * @param (int|float)[] $values
-     * @return mixed
+     * @template T
+     * @param array<T,float|int> $values
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return T
      */
     function argmax(array $values)
     {
-        return array_search(max($values), $values);
+        $index = array_search(max($values), $values);
+
+        if ($index === false) {
+            throw new RuntimeException('Argmax is undefined for this set.');
+        }
+
+        return $index;
     }
 
     /**

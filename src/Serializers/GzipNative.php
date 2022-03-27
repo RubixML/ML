@@ -8,9 +8,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
- * Gzip
+ * Gzip Native
  *
- * A compression format based on the DEFLATE algorithm with a header and CRC32 checksum.
+ * Gzip Native wraps the native PHP serialization format in an outer compression layer based on the
+ * DEFLATE algorithm with a header and CRC32 checksum.
  *
  * References:
  * [1] P. Deutsch. (1996). RFC 1951 - DEFLATE Compressed Data Format Specification version.
@@ -19,7 +20,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Gzip implements Serializer
+class GzipNative implements Serializer
 {
     /**
      * The compression level between 0 and 9, 0 meaning no compression.
@@ -48,6 +49,18 @@ class Gzip implements Serializer
 
         $this->level = $level;
         $this->base = new Native();
+    }
+
+    /**
+     * Return the level of compression between 0 and 9.
+     *
+     * @internal
+     *
+     * @return int
+     */
+    public function level() : int
+    {
+        return $this->level;
     }
 
     /**
@@ -96,6 +109,6 @@ class Gzip implements Serializer
      */
     public function __toString() : string
     {
-        return "Gzip (level: {$this->level}, base: {$this->base})";
+        return "Gzip (level: {$this->level})";
     }
 }

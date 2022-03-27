@@ -52,7 +52,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The class prior log probabilities.
      *
-     * @var float[]|null
+     * @var array<string,float>|null
      */
     protected ?array $logPriors = null;
 
@@ -73,16 +73,16 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var float[]
+     * @var array<string,int>
      */
-    protected array $weights = [
+    protected array $classCounts = [
         //
     ];
 
     /**
      * The count of each category from the training set on a class basis.
      *
-     * @var array<list<array<int<0,max>>>>
+     * @var array<string,list<array<int<0,max>>>>
      */
     protected array $counts = [
         //
@@ -91,7 +91,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed negative log likelihoods of each feature conditioned on a particular class label.
      *
-     * @var array<list<float[]>>
+     * @var array<string,list<float[]>>
      */
     protected array $probs = [
         //
@@ -182,7 +182,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function trained() : bool
     {
-        return $this->weights and $this->counts and $this->probs;
+        return $this->classCounts and $this->counts and $this->probs;
     }
 
     /**
@@ -212,7 +212,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        $this->weights = $this->counts = $this->probs = [];
+        $this->classCounts = $this->counts = $this->probs = [];
 
         $this->partial($dataset);
     }
@@ -238,7 +238,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             } else {
                 $classCounts = $classProbs = array_fill(0, $stratum->numFeatures(), []);
 
-                $this->weights[$class] = 0;
+                $this->classCounts[$class] = 0;
             }
 
             foreach ($stratum->features() as $column => $values) {
@@ -269,15 +269,15 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->counts[$class] = $classCounts;
             $this->probs[$class] = $classProbs;
 
-            $this->weights[$class] += $stratum->numSamples();
+            $this->classCounts[$class] += $stratum->numSamples();
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights);
+            $total = array_sum($this->classCounts);
 
             $this->logPriors = [];
 
-            foreach ($this->weights as $class => $weight) {
+            foreach ($this->classCounts as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);
             }
         }
@@ -292,7 +292,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->weights or !$this->probs) {
+        if (!$this->classCounts or !$this->probs) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -319,11 +319,11 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->weights or !$this->probs) {
+        if (!$this->classCounts or !$this->probs) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -359,7 +359,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
      * @param list<string> $sample
-     * @return float[]
+     * @return array<string,float>
      */
     protected function jointLogLikelihood(array $sample) : array
     {

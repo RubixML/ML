@@ -32,14 +32,14 @@ class GradientBoostTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -75,9 +75,9 @@ class GradientBoostTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
+        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 0.3, 300, 1e-4, 10, 0.1, new RMSE());
+        $this->estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.3, 300, 1e-4, 10, 0.1, new RMSE());
 
         $this->metric = new RSquared();
 
@@ -150,7 +150,7 @@ class GradientBoostTest extends TestCase
     {
         $expected = [
             'booster' => new RegressionTree(3),
-            'rate' => 0.3,
+            'rate' => 0.1,
             'ratio' => 0.3,
             'epochs' => 300,
             'min change' => 0.0001,

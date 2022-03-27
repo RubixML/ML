@@ -37,14 +37,14 @@ class MLPRegressorTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 500;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -80,14 +80,16 @@ class MLPRegressorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
+        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
 
         $this->estimator = new MLPRegressor([
-            new Dense(10),
+            new Dense(32),
             new Activation(new SiLU()),
-            new Dense(10),
+            new Dense(16),
             new Activation(new SiLU()),
-        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, 3, 0.1, new LeastSquares(), new RMSE());
+            new Dense(8),
+            new Activation(new SiLU()),
+        ], 32, new Adam(0.01), 1e-4, 100, 1e-4, 5, 0.1, new LeastSquares(), new RMSE());
 
         $this->metric = new RSquared();
 
@@ -151,17 +153,19 @@ class MLPRegressorTest extends TestCase
     {
         $expected = [
             'hidden layers' => [
-                new Dense(10),
+                new Dense(32),
                 new Activation(new SiLU()),
-                new Dense(10),
+                new Dense(16),
+                new Activation(new SiLU()),
+                new Dense(8),
                 new Activation(new SiLU()),
             ],
-            'batch size' => 10,
+            'batch size' => 32,
             'optimizer' => new Adam(0.01),
             'l2 penalty' => 1e-4,
             'epochs' => 100,
-            'min change' => 1e-3,
-            'window' => 3,
+            'min change' => 1e-4,
+            'window' => 5,
             'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
             'metric' => new RMSE(),
