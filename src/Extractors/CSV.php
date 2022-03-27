@@ -104,6 +104,16 @@ class CSV implements Extractor, Writable
     }
 
     /**
+     * Return the column titles of the data table.
+     *
+     * @return array<string|int>
+     */
+    public function header() : array
+    {
+        return array_keys(iterator_first($this));
+    }
+
+    /**
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator

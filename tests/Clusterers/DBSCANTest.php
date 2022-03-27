@@ -8,7 +8,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -25,7 +25,7 @@ class DBSCANTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 250;
+    protected const TEST_SIZE = 512;
 
     /**
      * The minimum validation score required to pass the test.
@@ -62,12 +62,12 @@ class DBSCANTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
-            'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ], [2, 3, 4]);
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
+        ]);
 
-        $this->estimator = new DBSCAN(25.0, 50, new BallTree());
+        $this->estimator = new DBSCAN(1.2, 20, new BallTree());
 
         $this->metric = new VMeasure();
 
@@ -119,8 +119,8 @@ class DBSCANTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 25.0,
-            'min density' => 50,
+            'radius' => 1.2,
+            'min density' => 20,
             'tree' => new BallTree(),
         ];
 

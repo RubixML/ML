@@ -398,7 +398,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $snapshot = null;
+        $loss = 0.0;
+        $score = $snapshot = null;
         $prevLoss = INF;
 
         $this->scores = $this->losses = [];
@@ -407,7 +408,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.0;
-            $score = null;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
@@ -474,7 +474,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $prevLoss = $loss;
         }
 
-        if ($snapshot and end($this->scores) < $bestScore) {
+        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
             $snapshot->restore();
 
             if ($this->logger) {

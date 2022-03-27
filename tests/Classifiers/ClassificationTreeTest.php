@@ -14,7 +14,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -30,14 +30,14 @@ class ClassificationTreeTest extends TestCase
      *
      * @var int
      */
-    protected const TRAIN_SIZE = 350;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 128;
 
     /**
      * The minimum validation score required to pass the test.
@@ -51,7 +51,7 @@ class ClassificationTreeTest extends TestCase
      *
      * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 1;
 
     /**
      * @var \Rubix\ML\Datasets\Generators\Agglomerate
@@ -64,7 +64,7 @@ class ClassificationTreeTest extends TestCase
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
      */
     protected $metric;
 
@@ -77,11 +77,11 @@ class ClassificationTreeTest extends TestCase
             'red' => new Blob([255, 32, 0], 30.0),
             'green' => new Blob([0, 128, 0], 10.0),
             'blue' => new Blob([0, 32, 255], 20.0),
-        ], [2, 3, 4]);
+        ]);
 
-        $this->estimator = new ClassificationTree(10, 3, 1e-7, 3, 5);
+        $this->estimator = new ClassificationTree(10, 32, 1e-7, 3);
 
-        $this->metric = new Accuracy();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -142,10 +142,10 @@ class ClassificationTreeTest extends TestCase
     {
         $expected = [
             'max height' => 10,
-            'max leaf size' => 3,
+            'max leaf size' => 32,
             'min purity increase' => 1.0E-7,
             'max features' => 3,
-            'max bins' => 5,
+            'max bins' => null,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests;
 
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -54,12 +55,45 @@ class FunctionsTest extends TestCase
 
     /**
      * @test
+     * @dataProvider argmaxProvider
+     *
+     * @param float[] $input
+     * @param string|int $expected
      */
-    public function argmax() : void
+    public function argmax(array $input, $expected) : void
     {
-        $value = argmax(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
+        $this->assertEquals($expected, argmax($input));
+    }
 
-        $this->assertEquals('yes', $value);
+    /**
+     * @return \Generator<mixed[]>
+     */
+    public function argmaxProvider() : Generator
+    {
+        yield [
+            ['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0],
+            'yes',
+        ];
+
+        yield [
+            ['yes' => 3.3, 'no' => 3.3, 'maybe' => 3.3],
+            'yes',
+        ];
+
+        yield [
+            ['yes' => 0.8, 'no' => 0.2, 'maybe' => NAN],
+            'yes',
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function argmaxUndefined() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        argmax([NAN, NAN, NAN]);
     }
 
     /**

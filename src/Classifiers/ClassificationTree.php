@@ -190,7 +190,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -227,6 +227,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $counts = array_count_values($dataset->labels());
 
+        /** @var string $outcome */
         $outcome = argmax($counts);
 
         $probabilities = [];

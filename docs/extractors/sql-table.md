@@ -25,8 +25,11 @@ use PDO;
 
 $connection = new PDO('sqlite:/example.sqlite');
 
-$this->extractor = new SQLTable($connection, 'users', 200);
+$this->extractor = new SQLTable($connection, 'users', 256);
 ```
 
 ## Additional Methods
-This extractor does not have any additional methods.
+Return the column titles of the data table.
+```php
+public header() : array
+```

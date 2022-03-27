@@ -60,18 +60,18 @@ class RBX implements Serializer
     protected const EOL = "\n";
 
     /**
-     * The base Gzip serializer.
+     * The base Gzip Native serializer.
      *
-     * @var \Rubix\ML\Serializers\Gzip
+     * @var \Rubix\ML\Serializers\GzipNative
      */
-    protected \Rubix\ML\Serializers\Gzip $base;
+    protected \Rubix\ML\Serializers\GzipNative $base;
 
     /**
-     * @param \Rubix\ML\Serializers\Gzip|null $base
+     * @param int $level
      */
-    public function __construct(?Gzip $base = null)
+    public function __construct(int $level = 6)
     {
-        $this->base = $base ?? new Gzip();
+        $this->base = new GzipNative($level);
     }
 
     /**
@@ -181,6 +181,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return "RBX (base: {$this->base})";
+        return "RBX (level: {$this->base->level()})";
     }
 }

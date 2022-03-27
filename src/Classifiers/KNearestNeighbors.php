@@ -235,6 +235,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
             $weights = array_count_values($labels);
         }
 
+        /** @var array<string,float|int> $weights */
         return argmax($weights);
     }
 
@@ -243,7 +244,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return list<float[]>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -262,7 +263,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return float[]
+     * @return array<string,float>
      */
     public function probaSample(array $sample) : array
     {
