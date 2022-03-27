@@ -43,7 +43,7 @@ class NDJSONTest extends TestCase
     /**
      * @test
      */
-    public function extractWrite() : void
+    public function extractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],

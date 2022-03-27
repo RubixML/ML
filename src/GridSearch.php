@@ -6,7 +6,6 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;

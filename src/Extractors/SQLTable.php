@@ -8,6 +8,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 use PDO;
 
+use function Rubix\ML\iterator_first;
+use function count;
+use function array_keys;
+
 /**
  * SQL Table
  *
@@ -64,6 +68,16 @@ class SQLTable implements Extractor
         $this->connection = $connection;
         $this->table = $connection->quote($table);
         $this->batchSize = $batchSize;
+    }
+
+    /**
+     * Return the column titles of the data table.
+     *
+     * @return array<string|int>
+     */
+    public function header() : array
+    {
+        return array_keys(iterator_first($this));
     }
 
     /**

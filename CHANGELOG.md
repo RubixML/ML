@@ -22,7 +22,7 @@
     - Ranks Features interface no longer extends Stringable
     - Verbose Learners now log change in loss
     - Numerical instability logged as warning instead of info
-    - Added `header()` method to CSV Extractor
+    - Added `header()` method to CSV and SQL Table Extractors
     - `Argmax()` now throws exception when undefined
     - MLP Learners recover from numerical instability with snapshot
     
