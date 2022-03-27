@@ -164,7 +164,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * The unique class labels.
      *
-     * @var mixed[]|null
+     * @var list<string>|null
      */
     protected ?array $classes = null;
 
@@ -356,6 +356,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {

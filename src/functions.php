@@ -20,7 +20,7 @@ namespace Rubix\ML
      * Compute the argmin of the given values.
      *
      * @internal
-     * 
+     *
      * @template T
      * @param array<T,float|int> $values
      * @throws \Rubix\ML\Exceptions\RuntimeException
@@ -31,7 +31,7 @@ namespace Rubix\ML
         $index = array_search(min($values), $values);
 
         if ($index === false) {
-            throw new RuntimeException('Argmin is undefined.');
+            throw new RuntimeException('Argmin is undefined for this set.');
         }
 
         return $index;
@@ -52,7 +52,7 @@ namespace Rubix\ML
         $index = array_search(max($values), $values);
 
         if ($index === false) {
-            throw new RuntimeException('Argmax is undefined.');
+            throw new RuntimeException('Argmax is undefined for this set.');
         }
 
         return $index;

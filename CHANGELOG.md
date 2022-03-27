@@ -24,6 +24,7 @@
     - Numerical instability logged as warning instead of info
     - Added `header()` method to CSV Extractor
     - `Argmax()` now throws exception when undefined
+    - MLP Learners recover from numerical instability with snapshot
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

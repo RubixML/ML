@@ -250,6 +250,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
             $weights = array_count_values($labels);
         }
 
+        /** @var array<string,float|int> $weights */
         return argmax($weights);
     }
 
