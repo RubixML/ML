@@ -30,7 +30,7 @@ use function rtrim;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor, Writable
+class NDJSON implements Extractor, Exporter
 {
     /**
      * The path to the file on disk.

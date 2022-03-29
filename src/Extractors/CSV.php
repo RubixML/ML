@@ -36,7 +36,7 @@ use function strlen;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor, Writable
+class CSV implements Extractor, Exporter
 {
     /**
      * The path to the file on disk.

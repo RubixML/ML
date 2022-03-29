@@ -26,6 +26,8 @@
     - `Argmax()` now throws exception when undefined
     - MLP Learners recover from numerical instability with snapshot
     - Rename Gzip serializer to Gzip Native
+    - Change RBX serializer constructor argument from base to level
+    - Rename Writeable extractor interface to Exporter
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost

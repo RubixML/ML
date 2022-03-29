@@ -3,13 +3,13 @@
 namespace Rubix\ML\Extractors;
 
 /**
- * Writable
+ * Exporter
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Writable
+interface Exporter
 {
     /**
      * Export an iterable data table.

@@ -5,7 +5,7 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Extractors\Writable;
+use Rubix\ML\Extractors\Exporter;
 use Rubix\ML\Transformers\Reversible;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
@@ -448,9 +448,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Write the dataset to the location and format given by a writable extractor.
      *
-     * @param \Rubix\ML\Extractors\Writable $extractor
+     * @param \Rubix\ML\Extractors\Exporter $extractor
      */
-    public function exportTo(Writable $extractor) : void
+    public function exportTo(Exporter $extractor) : void
     {
         $extractor->export($this);
     }
