@@ -217,12 +217,14 @@ nav:
       - Metrics:
         - API Reference: cross-validation/metrics/api.md
         - Accuracy: cross-validation/metrics/accuracy.md
+        - Brier Score: cross-validation/metrics/brier-score.md
         - F Beta: cross-validation/metrics/f-beta.md
         - Informedness: cross-validation/metrics/informedness.md
         - MCC: cross-validation/metrics/mcc.md
         - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
         - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
         - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
+        - Probabilistic Accuracy: cross-validation/metrics/probabilistic-accuracy.md
         - RMSE: cross-validation/metrics/rmse.md
         - R Squared: cross-validation/metrics/r-squared.md
         - SMAPE: cross-validation/metrics/smape.md
