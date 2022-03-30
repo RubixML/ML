@@ -8,7 +8,7 @@ This metric comes from the sports betting domain, where it's used to measure the
 
 **Estimator Compatibility:** Probabilistic Classifier
 
-**Output Range:** -1 to 0
+**Output Range:** 0 to 1
 
 ## Parameters
 This metric does not have any parameters.
