@@ -11,7 +11,7 @@
     - Neural net-based learners can now train for 0 epochs
     - Rename Labeled `stratify()` to `stratifyByLabel()`
     - Added Sparse Cosine distance kernel
-    - Cosine distance now optimized for dense vectors
+    - Cosine distance now optimized for dense and sparse vectors
     - Word Count Vectorizer now uses min count and max ratio DFs
     - Numeric String Converter now handles NAN and INFs
     - Numeric String Converter is now Reversible
