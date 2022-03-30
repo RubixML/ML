@@ -6,27 +6,29 @@ use Rubix\ML\Tuple;
 use Rubix\ML\Specifications\ProbabilityAndLabelCountsAreEqual;
 
 /**
- * Probabilistic Accuracy
+ * Brier Score
  *
- * This metric comes from the sports betting domain, where it's used to measure the accuracy of
- * predictions by looking at the probabilities of class predictions. Accordingly, this metric places
- * additional weight on the "confidence" of each prediction.
+ * Brier Score is a *strictly proper* scoring metric that is equivalent to applying mean squared
+ * error to the probabilities of a probabilistic estimator.
  *
  * !!! note
  *     Metric assumes probabilities are between 0 and 1 and their joint distribution sums to 1.
  *
+ * References:
+ * [1] G. W. Brier. (1950). Verification of Forecasts Expresses in Terms of Probability
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Alex Torchenko
+ * @author      Andrew DalPino
  */
-class ProbabilisticAccuracy implements ProbabilisticMetric
+class BrierScore implements ProbabilisticMetric
 {
     /**
      * {@inheritDoc}
      */
     public function range() : Tuple
     {
-        return new Tuple(0.0, 1.0);
+        return new Tuple(-2.0, 0.0);
     }
 
     /**
@@ -46,13 +48,21 @@ class ProbabilisticAccuracy implements ProbabilisticMetric
             return 0.0;
         }
 
-        $scores = [];
+        $error = 0.0;
 
         foreach ($probabilities as $i => $dist) {
-            $scores[] = $dist[$labels[$i]] ?? 0.0;
+            $label = $labels[$i];
+
+            foreach ($dist as $class => $probability) {
+                $expected = $class == $label ? 1.0 : 0.0;
+
+                $error += ($probability - $expected) ** 2;
+            }
         }
 
-        return array_sum($scores) / $n;
+        $error /= $n;
+
+        return -$error;
     }
 
     /**
@@ -60,6 +70,6 @@ class ProbabilisticAccuracy implements ProbabilisticMetric
      */
     public function __toString() : string
     {
-        return 'Probabilistic Accuracy';
+        return 'Brier Score';
     }
 }

@@ -4,18 +4,18 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\ProbabilisticMetric;
-use Rubix\ML\CrossValidation\Metrics\ProbabilisticAccuracy;
+use Rubix\ML\CrossValidation\Metrics\BrierScore;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 /**
  * @group Metrics
- * @covers \Rubix\ML\CrossValidation\Metrics\ProbabilisticAccuracy
+ * @covers \Rubix\ML\CrossValidation\Metrics\BrierScore
  */
-class ProbabilisticAccuracyTest extends TestCase
+class BrierScoreTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\ProbabilisticAccuracy
+     * @var \Rubix\ML\CrossValidation\Metrics\BrierScore
      */
     protected $metric;
 
@@ -24,7 +24,7 @@ class ProbabilisticAccuracyTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->metric = new ProbabilisticAccuracy();
+        $this->metric = new BrierScore();
     }
 
     /**
@@ -33,7 +33,7 @@ class ProbabilisticAccuracyTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(ProbabilisticMetric::class, $this->metric);
-        $this->assertInstanceOf(ProbabilisticAccuracy::class, $this->metric);
+        $this->assertInstanceOf(BrierScore::class, $this->metric);
     }
 
     /**
@@ -85,7 +85,7 @@ class ProbabilisticAccuracyTest extends TestCase
                 ['U' => 0.2, 'O' => 0.8],
             ],
             ['U', 'O', 'U'],
-            0.5,
+            -0.5933333333333334,
         ];
 
         yield [
@@ -97,7 +97,7 @@ class ProbabilisticAccuracyTest extends TestCase
                 ['cat' => 0.0, 'frog' => 0.8, 'hamster' => 0.2],
             ],
             ['cat', 'frog', 'hamster', 'cat', 'frog'],
-            0.7,
+            -0.19000000000000003,
         ];
 
         yield [
@@ -107,17 +107,17 @@ class ProbabilisticAccuracyTest extends TestCase
                 [1 => 1.0, 2 => 0.0, 3 => 0.0],
             ],
             [3, 2, 1],
-            1.0,
+            0.0,
         ];
 
         yield [
             [
-                [1 => 0.2, 2 => 0.8, 3 => 0.0],
+                [1 => 0.2, 2 => 0.2, 3 => 0.0],
                 [1 => 0.5, 2 => 0.0, 3 => 0.5],
                 [1 => 0.0, 2 => 1.0, 3 => 0.0],
             ],
             [3, 2, 1],
-            0.0,
+            -1.5266666666666666,
         ];
 
         yield [
@@ -126,7 +126,7 @@ class ProbabilisticAccuracyTest extends TestCase
                 ['yes' => 0.0, 'no' => 1.0],
             ],
             ['no', 'yes'],
-            0.0,
+            -2.0,
         ];
 
         yield [
@@ -135,7 +135,7 @@ class ProbabilisticAccuracyTest extends TestCase
                 ['yes' => 0.5, 'no' => 0.5],
             ],
             ['no', 'yes'],
-            0.5,
+            -0.5,
         ];
     }
 }
