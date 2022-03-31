@@ -3878,8 +3878,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#output-range" class="md-nav__link">
-    Output Range
+  <a href="#scoring-probabilities" class="md-nav__link">
+    Scoring Probabilities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#score-range" class="md-nav__link">
+    Score Range
   </a>
   
 </li>
@@ -3901,6 +3908,20 @@
     <li class="md-nav__item">
       <a href="accuracy.html" class="md-nav__link">
         Accuracy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="brier-score.html" class="md-nav__link">
+        Brier Score
       </a>
     </li>
   
@@ -3985,6 +4006,20 @@
     <li class="md-nav__item">
       <a href="median-absolute-error.html" class="md-nav__link">
         Median Absolute Error
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="probabilistic-accuracy.html" class="md-nav__link">
+        Probabilistic Accuracy
       </a>
     </li>
   
@@ -4917,8 +4952,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#output-range" class="md-nav__link">
-    Output Range
+  <a href="#scoring-probabilities" class="md-nav__link">
+    Scoring Probabilities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#score-range" class="md-nav__link">
+    Score Range
   </a>
   
 </li>
@@ -4942,36 +4984,48 @@
 
 
 <h1 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">#</a></h1>
-<p>Validation metrics are for used evaluating the performance of an estimator. They output a score based on the predictions and the ground-truth found in the labels.</p>
+<p>Validation metrics are for used evaluating the generalization performance of an estimator. They output a score based on the predictions and known ground-truth labels.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some regression metrics output the negative of their value to maintain the convention that scores get better as they <em>increase</em>.</p>
+</div>
 <h3 id="scoring-predictions">Scoring Predictions<a class="headerlink" href="#scoring-predictions" title="Permanent link">#</a></h3>
-<p>To compute a validation score, pass in the predictions from an estimator along with the expected labels:
+<p>To compute a validation score, pass in the predictions from an estimator along with their expected labels.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">score</span><span class="p">(</span><span class="k">array</span> <span class="nv">$predictions</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$labels</span><span class="p">)</span> <span class="o">:</span> <span class="nx">float</span>
-</code></pre></div></p>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\FBeta</span><span class="p">;</span>
 
 <span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
-<span class="nv">$metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MeanAbsoluteError</span><span class="p">();</span>
+<span class="nv">$metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FBeta</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
 
 <span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$predictions</span><span class="p">,</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 
 <span class="k">echo</span> <span class="nv">$score</span><span class="p">;</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>-0.99846
+<div class="highlight"><pre><span></span><code>0.88
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Regression metrics output the negative of their value to maintain the notion that cross validation scores should be <em>maximized</em> instead of <em>minimized</em> such as the case with loss functions.</p>
-</div>
-<h3 id="output-range">Output Range<a class="headerlink" href="#output-range" title="Permanent link">#</a></h3>
-<p>Output the minimum and maximum value the validation score can take in a <a href="../../faq.html#what-is-a-tuple">2-tuple</a>:
+<h3 id="scoring-probabilities">Scoring Probabilities<a class="headerlink" href="#scoring-probabilities" title="Permanent link">#</a></h3>
+<p>Metrics that implement the ProbabilisticMetric interface calculate a validation score derived from the estimated probabilities of a <a href="../../probabilistic.html">Probabilistic</a> estimator and their corresponding ground-truth labels.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">score</span><span class="p">(</span><span class="k">array</span> <span class="nv">$probabilities</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$labels</span><span class="p">)</span> <span class="o">:</span> <span class="nx">float</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\ProbabilisticAccuracy</span><span class="p">;</span>
+
+<span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+
+<span class="nv">$metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ProbabilisticAccuracy</span><span class="p">;</span>
+
+<span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">,</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
+</code></pre></div>
+<h3 id="score-range">Score Range<a class="headerlink" href="#score-range" title="Permanent link">#</a></h3>
+<p>Output the minimum and maximum value the validation score can take in a <a href="../../faq.html#what-is-a-tuple">2-tuple</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nb">range</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Rubix\ML\Tuple</span><span class="p">{</span><span class="nx">float</span><span class="p">,</span> <span class="nx">float</span><span class="p">}</span>
-</code></pre></div></p>
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nv">$min</span><span class="p">,</span> <span class="nv">$max</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">range</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">list</span><span class="p">();</span>
 
 <span class="k">echo</span> <span class="s2">&quot;min: </span><span class="si">$min</span><span class="s2">, max: </span><span class="si">$max</span><span class="s2">&quot;</span><span class="p">;</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>min: -INF, max: 0
+<div class="highlight"><pre><span></span><code>min: 0.0, max: 1.0
 </code></pre></div>
 
   <hr>
@@ -4979,7 +5033,7 @@
   <small>
     
       Last update:
-      2021-06-06
+      2022-03-30
     
   </small>
 </div>
