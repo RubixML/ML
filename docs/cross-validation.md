@@ -61,8 +61,8 @@ Instead of their class predictions, these metrics calculate validation scores fr
 
 | Name | Range | Formula | Notes |
 |---|---|---|---|
-| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | | |
-| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | | |
+| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | $\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2$ | |
+| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | $\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}$ | |
 
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
