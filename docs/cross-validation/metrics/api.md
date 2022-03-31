@@ -34,6 +34,9 @@ Metrics that implement the ProbabilisticMetric interface calculate a validation 
 public score(array $probabilities, array $labels) : float
 ```
 
+!!! note
+    Metric assumes probabilities are values between 0 and 1 and their joint distribution sums to exactly 1 for each sample.
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\ProbabilisticAccuracy;
 
