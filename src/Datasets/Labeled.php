@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
+use Traversable;
 
 use function count;
 use function get_class;
@@ -807,6 +807,7 @@ class Labeled extends Dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed[]
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset) : array
     {
         if (isset($this->samples[$offset])) {
@@ -821,7 +822,7 @@ class Labeled extends Dataset
      *
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         foreach ($this->samples as $i => $sample) {
             $sample[] = $this->labels[$i];
