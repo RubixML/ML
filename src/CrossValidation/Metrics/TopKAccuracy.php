@@ -6,8 +6,17 @@ use Rubix\ML\Tuple;
 use Rubix\ML\Specifications\ProbabilityAndLabelCountsAreEqual;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function array_keys;
+use function array_slice;
+use function arsort;
+use function count;
+
 /**
  * Top K Accuracy
+ *
+ * Top K Accuracy looks at the k classes with the highest predicted probabilities when
+ * calculating the accuracy score. If one of the top k classes matches the ground-truth,
+ * then the prediction is considered accurate.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -16,9 +25,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 class TopKAccuracy implements ProbabilisticMetric
 {
     /**
-     * The number of top predicted classes to look for the correct class.
-     * 
-     * @var int $k
+     * The number of classes with the highest predicted probability to consider.
+     *
+     * @var int
      */
     protected int $k;
 
