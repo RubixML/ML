@@ -3,7 +3,7 @@
 namespace Rubix\ML\Extractors;
 
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
+use Traversable;
 
 /**
  * Column Picker
@@ -48,7 +48,7 @@ class ColumnPicker implements Extractor
      *
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         foreach ($this->iterator as $i => $record) {
             $picked = [];

@@ -1,3 +1,6 @@
+- 2.0.1
+    - Compensate for PHP 8.1 backward compatibility issues
+
 - 2.0.0
     - Gradient Boost now uses gradient-based subsampling
     - Allow Token Hashing Vectorizer custom hash functions
