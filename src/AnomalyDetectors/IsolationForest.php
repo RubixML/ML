@@ -216,7 +216,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
             ? max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $n))
             : min(self::DEFAULT_SUBSAMPLE, $n);
 
-        $maxHeight = (int) max(1, round(log($p, 2)));
+        $maxHeight = (int) max(1, round(log($p, 2.0)));
 
         $this->trees = [];
 
