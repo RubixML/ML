@@ -197,9 +197,9 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
         $dot = $this->estimator->exportGraphviz();
-        $this->assertEquals(strlen($dot), 3425);
+        $this->assertEquals(strlen($dot), 3217);
         $this->assertMatchesRegularExpression('/  N13 -> N17/', $dot);
-        $this->assertMatchesRegularExpression('/  N39.*label.*Outcome=blue.*style=.rounded/', $dot);
+        $this->assertMatchesRegularExpression('/  N39.*label.*blue.*style=.rounded/', $dot);
     }
 
     /**

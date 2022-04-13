@@ -227,7 +227,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->column()] < $value) {
+                    if ($sample[$current->column()] <= $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
@@ -318,6 +318,51 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
+     * Produces an image with a graphical representation of the decision tree.
+     *
+     * The graphviz tool needs to be installed, if its command 'dot' is not available in the PATH,
+     * please provide a full path to it in the $executable parameter.
+     *
+     * dot -Tpng graph.dot
+     *
+     * @param string  $outputFileName
+     * @param int $maxDepth
+     * @param ?String[] $featureNames
+     * @param ?String $format
+     * @param ?String $executable
+     * @throws RuntimeException
+     */
+    public function exportImage(
+        string $outputFileName,
+        int $maxDepth = -1,
+        ?array $featureNames = null,
+        ?string $format = "png",
+        ?string $executable = "dot"
+    ) : void {
+        $dot = $this->exportGraphviz($maxDepth, $featureNames);
+
+        $dotfile = tempnam(sys_get_temp_dir(), 'decisiontree.dot');
+        if ($dotfile === false) {
+            throw new \RuntimeException('Unable to get temporary file name for decision tree export');
+        }
+
+        $ret = file_put_contents($dotfile, $dot, LOCK_EX);
+        if ($ret === false) {
+            throw new \RuntimeException('Unable to write decision tree to temporary file');
+        }
+
+        $ret = 0;
+        system(escapeshellarg($executable) .
+               " -T " . escapeshellarg($format) .
+               " "    . escapeshellarg($dotfile) .
+               " -o " . escapeshellarg($outputFileName), $ret);
+        unlink($dotfile);
+        if ($ret !== 0) {
+            throw new \RuntimeException("Failed to invoke '$executable' to create image file '$outputFileName' (code $ret)");
+        }
+    }
+
+    /**
      * Find a split point for a given subset of the training set.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -396,11 +441,15 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         if ($depth === $maxDepth) {
             $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
         } elseif ($node instanceof Split) {
-            $operator = is_string($node->value()) ? '==' : '<';
+            $operator = is_string($node->value()) ? '==' : '<=';
             $carry .= "  N$thisNode [label=\"";
 
             if ($featureNames) {
-                $carry .= $featureNames[$node->column()];
+                $name = $featureNames[$node->column()];
+                if (strlen($name) > 30) {
+                    $name = substr($name, 0, 30) . "...";
+                }
+                $carry .= $name;
             } else {
                 $carry .= "Column_{$node->column()}";
             }
@@ -414,7 +463,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $this->_exportGraphviz($carry, $nodesCounter, $node->right(), $maxDepth, $featureNames, $thisNode, 2, $depth);
             }
         } elseif ($node instanceof Outcome) {
-            $carry .= "  N$thisNode [label=\"Outcome={$node->outcome()}";
+            $carry .= "  N$thisNode [label=\"{$node->outcome()}";
 
             if ($node->impurity() > 0.0) {
                 $carry .= "\\nImpurity={$node->impurity()}";
