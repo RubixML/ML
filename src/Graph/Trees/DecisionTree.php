@@ -269,26 +269,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
-     *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
-     */
-    public function getIterator() : Generator
-    {
-        $stack = [$this->root];
-
-        while ($current = array_pop($stack)) {
-            yield $current;
-
-            foreach ($current->children() as $child) {
-                if ($child instanceof Decision) {
-                    $stack[] = $child;
-                }
-            }
-        }
-    }
-
-    /**
      * Print a representation of the decision tree suitable to render with the
      * graphviz tool. For example, writing it to graph.dot then executing:
      *
@@ -318,47 +298,22 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Produces an image with a graphical representation of the decision tree.
+     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
      *
-     * The graphviz tool needs to be installed, if its command 'dot' is not available in the PATH,
-     * please provide a full path to it in the $executable parameter.
-     *
-     * dot -Tpng graph.dot
-     *
-     * @param string  $outputFileName
-     * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?String $format
-     * @param ?String $executable
-     * @throws RuntimeException
+     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
      */
-    public function exportImage(
-        string $outputFileName,
-        int $maxDepth = -1,
-        ?array $featureNames = null,
-        ?string $format = "png",
-        ?string $executable = "dot"
-    ) : void {
-        $dot = $this->exportGraphviz($maxDepth, $featureNames);
+    public function getIterator() : Generator
+    {
+        $stack = [$this->root];
 
-        $dotfile = tempnam(sys_get_temp_dir(), 'decisiontree.dot');
-        if ($dotfile === false) {
-            throw new \RuntimeException('Unable to get temporary file name for decision tree export');
-        }
+        while ($current = array_pop($stack)) {
+            yield $current;
 
-        $ret = file_put_contents($dotfile, $dot, LOCK_EX);
-        if ($ret === false) {
-            throw new \RuntimeException('Unable to write decision tree to temporary file');
-        }
-
-        $ret = 0;
-        system(escapeshellarg($executable) .
-               " -T " . escapeshellarg($format) .
-               " "    . escapeshellarg($dotfile) .
-               " -o " . escapeshellarg($outputFileName), $ret);
-        unlink($dotfile);
-        if ($ret !== 0) {
-            throw new \RuntimeException("Failed to invoke '$executable' to create image file '$outputFileName' (code $ret)");
+            foreach ($current->children() as $child) {
+                if ($child instanceof Decision) {
+                    $stack[] = $child;
+                }
+            }
         }
     }
 

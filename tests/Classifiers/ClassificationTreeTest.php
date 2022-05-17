@@ -18,6 +18,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Helpers\GraphViz;
 
 /**
  * @group Classifiers
@@ -197,7 +198,8 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
         $dot = $this->estimator->exportGraphviz();
-        $this->assertEquals(strlen($dot), 3217);
+
+        $this->assertStringStartsWith('digraph Tree {', $dot);
         $this->assertMatchesRegularExpression('/  N13 -> N17/', $dot);
         $this->assertMatchesRegularExpression('/  N39.*label.*blue.*style=.rounded/', $dot);
     }
