@@ -8,9 +8,9 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use JsonSerializable;
 use ArrayAccess;
+use Traversable;
 use Stringable;
 use Countable;
-use Generator;
 
 /**
  * Report
@@ -90,6 +90,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if (isset($this->attributes[$key])) {
@@ -113,7 +114,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      *
      * @return \Generator<mixed>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         yield from $this->attributes;
     }

@@ -4,7 +4,7 @@ namespace Rubix\ML\Extractors;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
+use Traversable;
 
 use function Rubix\ML\iterator_first;
 use function is_dir;
@@ -36,7 +36,7 @@ use function strlen;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor, Writable
+class CSV implements Extractor, Exporter
 {
     /**
      * The path to the file on disk.
@@ -168,7 +168,7 @@ class CSV implements Extractor, Writable
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         if (!is_file($this->path)) {
             throw new RuntimeException("Path {$this->path} is not a file.");

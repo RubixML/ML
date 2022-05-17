@@ -1,3 +1,6 @@
+- 2.0.1
+    - Compensate for PHP 8.1 backward compatibility issues
+
 - 2.0.0
     - Gradient Boost now uses gradient-based subsampling
     - Allow Token Hashing Vectorizer custom hash functions
@@ -11,7 +14,7 @@
     - Neural net-based learners can now train for 0 epochs
     - Rename Labeled `stratify()` to `stratifyByLabel()`
     - Added Sparse Cosine distance kernel
-    - Cosine distance now optimized for dense vectors
+    - Cosine distance now optimized for dense and sparse vectors
     - Word Count Vectorizer now uses min count and max ratio DFs
     - Numeric String Converter now handles NAN and INFs
     - Numeric String Converter is now Reversible
@@ -26,6 +29,8 @@
     - `Argmax()` now throws exception when undefined
     - MLP Learners recover from numerical instability with snapshot
     - Rename Gzip serializer to Gzip Native
+    - Change RBX serializer constructor argument from base to level
+    - Rename Writeable extractor interface to Exporter
     
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost
