@@ -5,7 +5,7 @@ namespace Rubix\ML\Extractors;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
+use Traversable;
 use PDO;
 
 use function Rubix\ML\iterator_first;
@@ -85,7 +85,7 @@ class SQLTable implements Extractor
      *
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         $query = "SELECT * FROM {$this->table} LIMIT :offset, {$this->batchSize}";
 

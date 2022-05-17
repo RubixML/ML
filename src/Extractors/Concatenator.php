@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Extractors;
 
-use Generator;
+use Traversable;
 
 use function array_values;
 
@@ -37,7 +37,7 @@ class Concatenator implements Extractor
      *
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         foreach ($this->iterators as $iterator) {
             foreach ($iterator as $record) {

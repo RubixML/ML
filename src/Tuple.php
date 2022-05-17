@@ -6,8 +6,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use ArrayAccess;
+use Traversable;
 use Countable;
-use Generator;
 
 use function count;
 use function func_get_args;
@@ -65,6 +65,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (isset($this->elements[$offset])) {
@@ -109,7 +110,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return \Generator<mixed>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         yield from $this->elements;
     }

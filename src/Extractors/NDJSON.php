@@ -5,7 +5,7 @@ namespace Rubix\ML\Extractors;
 use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
+use Traversable;
 
 use function is_dir;
 use function is_file;
@@ -30,7 +30,7 @@ use function rtrim;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NDJSON implements Extractor, Writable
+class NDJSON implements Extractor, Exporter
 {
     /**
      * The path to the file on disk.
@@ -99,7 +99,7 @@ class NDJSON implements Extractor, Writable
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         if (!is_file($this->path)) {
             throw new InvalidArgumentException("Path {$this->path} is not a file.");
