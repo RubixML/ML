@@ -185,7 +185,7 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictCategorical() : void
+    public function trainPredictCategoricalExportGraphviz() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
             ->apply(new IntervalDiscretizer(5));
@@ -201,6 +201,12 @@ class ClassificationTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
     /**

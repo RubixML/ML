@@ -23,11 +23,11 @@ class GraphViz
      * Produces an image from a "dot" formatted string.
      *
      * @param string $dot
-     * @param string  $path
-     * @param ?string $format
+     * @param string $path
+     * @param string $format
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public static function dotToImage(string $dot, string $path, ?string $format = 'png') : void
+    public static function dotToImage(string $dot, string $path, string $format = 'png') : void
     {
         $tempPath = tempnam(sys_get_temp_dir(), 'graphviz.dot.');
 
@@ -50,7 +50,7 @@ class GraphViz
         system($command, $ret);
 
         unlink($tempPath);
-        
+
         if ($ret !== 0) {
             throw new RuntimeException("Failed to create image file '$path' (code $ret).");
         }

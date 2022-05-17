@@ -400,14 +400,15 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
             if ($featureNames) {
                 $name = $featureNames[$node->column()];
+
                 if (strlen($name) > 30) {
-                    $name = substr($name, 0, 30) . "...";
+                    $name = substr($name, 0, 30) . '...';
                 }
                 $carry .= $name;
             } else {
                 $carry .= "Column_{$node->column()}";
             }
-            
+
             $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
 
             if ($node->left() !== null) {
