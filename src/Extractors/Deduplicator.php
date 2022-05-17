@@ -3,7 +3,7 @@
 namespace Rubix\ML\Extractors;
 
 use OkBloomer\BloomFilter;
-use Generator;
+use Traversable;
 
 use function serialize;
 
@@ -71,7 +71,7 @@ class Deduplicator implements Extractor
      *
      * @return \Generator<mixed[]>
      */
-    public function getIterator() : Generator
+    public function getIterator() : Traversable
     {
         foreach ($this->iterator as $record) {
             $token = serialize($record);

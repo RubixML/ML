@@ -21,8 +21,8 @@ use Rubix\ML\Extractors\NDJSON;
 $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
-## Write to Storage
-Extractors that implement the Writable interface have an additional `export()` method that takes another iterable type and writes it to the storage location specified by the user in the format of the extractor.
+## Export
+Extractors that implement the Exporter interface have an additional `export()` method that takes an iterable type and exports the data to storage.
 
 ```php
 public export(iterable $iterator, ?array $header = null) : void
