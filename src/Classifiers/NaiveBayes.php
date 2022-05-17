@@ -254,7 +254,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     }
                 }
 
-                $total = array_sum($columnCounts) + (count($columnCounts) * $this->smoothing);
+                $total = array_sum($columnCounts) + $this->smoothing * count($columnCounts);
 
                 $probs = [];
 
