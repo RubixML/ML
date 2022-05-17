@@ -326,7 +326,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      *
      * dot -Tpng graph.dot
      *
-     * @param string  $outputFileName
+     * @param string $outputFileName
      * @param int $maxDepth
      * @param ?String[] $featureNames
      * @param ?String $format
@@ -337,27 +337,30 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         string $outputFileName,
         int $maxDepth = -1,
         ?array $featureNames = null,
-        ?string $format = "png",
-        ?string $executable = "dot"
+        ?string $format = 'png',
+        ?string $executable = 'dot'
     ) : void {
         $dot = $this->exportGraphviz($maxDepth, $featureNames);
 
         $dotfile = tempnam(sys_get_temp_dir(), 'decisiontree.dot');
+
         if ($dotfile === false) {
             throw new \RuntimeException('Unable to get temporary file name for decision tree export');
         }
 
         $ret = file_put_contents($dotfile, $dot, LOCK_EX);
+
         if ($ret === false) {
             throw new \RuntimeException('Unable to write decision tree to temporary file');
         }
 
         $ret = 0;
         system(escapeshellarg($executable) .
-               " -T " . escapeshellarg($format) .
-               " "    . escapeshellarg($dotfile) .
-               " -o " . escapeshellarg($outputFileName), $ret);
+               ' -T ' . escapeshellarg($format) .
+               ' ' . escapeshellarg($dotfile) .
+               ' -o ' . escapeshellarg($outputFileName), $ret);
         unlink($dotfile);
+
         if ($ret !== 0) {
             throw new \RuntimeException("Failed to invoke '$executable' to create image file '$outputFileName' (code $ret)");
         }
@@ -447,8 +450,9 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
             if ($featureNames) {
                 $name = $featureNames[$node->column()];
+
                 if (strlen($name) > 30) {
-                    $name = substr($name, 0, 30) . "...";
+                    $name = substr($name, 0, 30) . '...';
                 }
                 $carry .= $name;
             } else {

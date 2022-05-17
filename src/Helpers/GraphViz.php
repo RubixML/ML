@@ -13,7 +13,7 @@ use function unlink;
 
 /**
  * GraphViz
- * 
+ *
  * An interface to the popular GraphViz program for generating graph images.
  *
  * @category    Machine Learning
@@ -23,6 +23,8 @@ class GraphViz
 {
     /**
      * Produces an image from a "dot" formatted string.
+     *
+     * https://graphviz.org/doc/info/lang.html
      *
      * @param string $dot
      * @param string $path
