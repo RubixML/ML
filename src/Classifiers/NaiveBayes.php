@@ -275,8 +275,6 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         if ($this->fitPriors) {
             $total = array_sum($this->classCounts);
 
-            $this->logPriors = [];
-
             foreach ($this->classCounts as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);
             }
