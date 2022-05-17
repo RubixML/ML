@@ -231,6 +231,7 @@ nav:
         - Completeness: cross-validation/metrics/completeness.md
         - Homogeneity: cross-validation/metrics/homogeneity.md
         - Rand Index: cross-validation/metrics/rand-index.md
+        - Top K Accuracy: cross-validation/metrics/top-k-accuracy.md
         - V Measure: cross-validation/metrics/v-measure.md
       - Reports:
         - API Reference: cross-validation/reports/api.md
