@@ -10,7 +10,6 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
-use Traversable;
 use Generator;
 
 use function array_pop;
