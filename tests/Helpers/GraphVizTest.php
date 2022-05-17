@@ -16,6 +16,8 @@ class GraphVizTest extends TestCase
      */
     public function dotToImage() : void
     {
+        $path = __DIR__ . '/graphviz.png';
+
         $dot = 'digraph Tree {
             node [shape=box, fontname=helvetica];
             edge [fontname=helvetica];
@@ -46,12 +48,12 @@ class GraphVizTest extends TestCase
             N0 -> N4 [labeldistance=2.5, labelangle=-45, headlabel="False"];
             }';
 
-        $this->assertFileDoesNotExist('graphviz.png');
+        $this->assertFileDoesNotExist($path);
 
-        GraphViz::dotToImage($dot, 'graphviz.png', 'png');
+        GraphViz::dotToImage($dot, $path, 'png');
 
-        $this->assertFileExists('graphviz.png');
+        $this->assertFileExists($path);
 
-        unlink('graphviz.png');
+        unlink($path);
     }
 }
