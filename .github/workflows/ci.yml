@@ -23,9 +23,6 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo
           ini-values: memory_limit=-1
 
-      - name: Install GraphViz
-        run: sudo apt-get install graphviz
-
       - name: Validate composer.json
         run: composer validate
 
