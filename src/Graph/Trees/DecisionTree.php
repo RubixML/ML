@@ -269,17 +269,15 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Print a representation of the decision tree suitable to render with the
-     * graphviz tool. For example, writing it to graph.dot then executing:
+     * Print a representation of the decision tree in "dot" format suitable to render with
+     * the graphviz tool.
      *
-     * dot -Tpng graph.dot
-     *
+     * @param string[]|null $featureNames
      * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @throws RuntimeException
+     * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */
-    public function exportGraphviz(int $maxDepth = -1, ?array $featureNames = null) : string
+    public function exportGraphviz(?array $featureNames = null, int $maxDepth = -1) : string
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
@@ -288,6 +286,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         $carry = 'digraph Tree {' . PHP_EOL;
         $carry .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
         $carry .= '  edge [fontname=helvetica];' . PHP_EOL;
+
         $nodeCounter = 0;
 
         $this->_exportGraphviz($carry, $nodeCounter, $this->root, $maxDepth, $featureNames);
@@ -408,6 +407,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             } else {
                 $carry .= "Column_{$node->column()}";
             }
+            
             $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
 
             if ($node->left() !== null) {
@@ -423,6 +423,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             if ($node->impurity() > 0.0) {
                 $carry .= "\\nImpurity={$node->impurity()}";
             }
+
             $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
         }
 
@@ -438,6 +439,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                     $carry .= 'labelangle=-45, headlabel="False"]';
                 }
             }
+
             $carry .= ';' . PHP_EOL;
         }
     }

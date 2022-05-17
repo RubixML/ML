@@ -18,7 +18,6 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Helpers\GraphViz;
 
 /**
  * @group Classifiers
@@ -155,7 +154,7 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictImportancesContinuous() : void
+    public function trainPredictImportancesExportGraphvizContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -175,6 +174,12 @@ class ClassificationTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
     /**
@@ -196,12 +201,6 @@ class ClassificationTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $dot = $this->estimator->exportGraphviz();
-
-        $this->assertStringStartsWith('digraph Tree {', $dot);
-        $this->assertMatchesRegularExpression('/  N13 -> N17/', $dot);
-        $this->assertMatchesRegularExpression('/  N39.*label.*blue.*style=.rounded/', $dot);
     }
 
     /**

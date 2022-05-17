@@ -29,7 +29,7 @@ class GraphViz
      */
     public static function dotToImage(string $dot, string $path, ?string $format = 'png') : void
     {
-        $tempPath = tempnam(sys_get_temp_dir(), 'graphviz.dot');
+        $tempPath = tempnam(sys_get_temp_dir(), 'graphviz.dot.');
 
         if ($tempPath === false) {
             throw new RuntimeException('Unable to get temporary filename.');
