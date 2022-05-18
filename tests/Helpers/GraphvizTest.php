@@ -11,13 +11,8 @@ use PHPUnit\Framework\TestCase;
  */
 class GraphvizTest extends TestCase
 {
-    /**
-     * @test
-     */
     public function dotToImage() : void
     {
-        $this->markTestSkipped();
-
         $path = __DIR__ . '/graphviz.png';
 
         $dot = 'digraph Tree {

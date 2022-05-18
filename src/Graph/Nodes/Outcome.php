@@ -15,5 +15,10 @@ use Stringable;
  */
 interface Outcome extends Decision, Stringable
 {
-    //
+    /**
+     * Return the outcome of the decision.
+     *
+     * @return string|int|float
+     */
+    public function outcome();
 }

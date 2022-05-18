@@ -5,11 +5,12 @@ namespace Rubix\ML\Helpers;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_resource;
-use function escapeshellarg;
 use function proc_open;
 use function proc_close;
 use function fwrite;
 use function fclose;
+use function stream_get_contents;
+use function file_put_contents;
 
 /**
  * Graphviz
@@ -25,7 +26,7 @@ class Graphviz
      * Produces an image from a "dot" formatted string.
      *
      * https://graphviz.org/doc/info/lang.html
-     * 
+     *
      * See https://graphviz.org/docs/outputs/ for supported formats
      *
      * @param string $dot

@@ -380,7 +380,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     protected function _exportGraphviz(
         string &$carry,
         int &$nodesCounter,
-        \Rubix\ML\Graph\Nodes\BinaryNode $node,
+        BinaryNode $node,
         ?int $maxDepth = null,
         ?array $featureNames = null,
         ?int $parentId = null,
