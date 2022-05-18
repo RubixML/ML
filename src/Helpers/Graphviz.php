@@ -35,10 +35,11 @@ class Graphviz
      */
     public static function dotToImage(string $dot, string $path, string $format = 'png') : void
     {
-        $command = "dot -T{$format} -o " . escapeshellarg($path);
+        $command = "dot -T{$format}";
 
         $descriptorspec = [
             ['pipe', 'r'],
+            ['pipe', 'w'],
         ];
 
         $process = proc_open($command, $descriptorspec, $pipes);
@@ -50,10 +51,19 @@ class Graphviz
         fwrite($pipes[0], $dot);
         fclose($pipes[0]);
 
+        $data = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
         $ret = proc_close($process);
 
         if ($ret !== 0) {
-            throw new RuntimeException("Failed to create image file '$path' (code $ret).");
+            throw new RuntimeException("Graphviz failed during execution (code $ret).");
+        }
+
+        $success = file_put_contents($path, $data, LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException("Failed to write image to file at '$path'.");
         }
     }
 }
