@@ -366,22 +366,21 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
+     * Recursive function to print out the decision rule at each node using preorder traversal.
      *
      * @param string $carry
      * @param int $nodesCounter
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode|\Rubix\ML\Graph\Nodes\Split|\Rubix\ML\Graph\Nodes\Decision $node
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
      * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?int $parentId
-     * @param ?int $leftRight
+     * @param string[]|null $featureNames
+     * @param int|null $parentId
+     * @param int|null $leftRight
      * @param int $depth
      */
     protected function _exportGraphviz(
         string &$carry,
         int &$nodesCounter,
-        BinaryNode $node,
+        \Rubix\ML\Graph\Nodes\BinaryNode $node,
         int $maxDepth = -1,
         ?array $featureNames = null,
         ?int $parentId = null,
