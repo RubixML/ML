@@ -403,6 +403,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 if (strlen($name) > 30) {
                     $name = substr($name, 0, 30) . '...';
                 }
+                
                 $carry .= $name;
             } else {
                 $carry .= "Column_{$node->column()}";
@@ -427,7 +428,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
         }
 
-        if (!is_null($parentId)) {
+        if ($parentId !== null) {
             $carry .= "  N$parentId -> N$thisNode";
 
             if ($parentId == 0) {
