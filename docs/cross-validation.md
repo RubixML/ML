@@ -56,6 +56,15 @@ Metrics for classification and anomaly detection (a special case of binary class
 | [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ | |
 | [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ | |
 
+### Probabilistic Classification
+Instead of their class predictions, these metrics calculate validation scores from the estimated probabilities of a [Probabilistic](probabilistic.md) classifier.
+
+| Name | Range | Formula | Notes |
+|---|---|---|---|
+| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | $\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2$ | |
+| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | $\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}$ | |
+| [Top K Accuracy](cross-validation/metrics/top-k-accuracy.md) | [0, 1] | | |
+
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
 
