@@ -2,14 +2,14 @@
 
 namespace Rubix\ML\Tests\Helpers;
 
-use Rubix\ML\Helpers\GraphViz;
+use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Helpers
- * @covers \Rubix\ML\Helpers\GraphViz
+ * @covers \Rubix\ML\Helpers\Graphviz
  */
-class GraphVizTest extends TestCase
+class GraphvizTest extends TestCase
 {
     /**
      * @test
@@ -50,7 +50,7 @@ class GraphVizTest extends TestCase
 
         $this->assertFileDoesNotExist($path);
 
-        GraphViz::dotToImage($dot, $path, 'png');
+        Graphviz::dotToImage($dot, $path, 'png');
 
         $this->assertFileExists($path);
 
