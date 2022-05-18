@@ -2,11 +2,12 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
@@ -275,9 +276,9 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @param string[]|null $featureNames
      * @param int $maxDepth
      * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return string
+     * @return \Rubix\ML\Encoding
      */
-    public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : string
+    public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : Encoding
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
@@ -293,7 +294,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
         $carry .= '}';
 
-        return $carry;
+        return new Encoding($carry);
     }
 
     /**
@@ -403,7 +404,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 if (strlen($name) > 30) {
                     $name = substr($name, 0, 30) . '...';
                 }
-                
+
                 $carry .= $name;
             } else {
                 $carry .= "Column_{$node->column()}";

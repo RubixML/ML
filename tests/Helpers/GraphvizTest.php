@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Helpers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
@@ -13,9 +14,7 @@ class GraphvizTest extends TestCase
 {
     public function dotToImage() : void
     {
-        $path = __DIR__ . '/graphviz.png';
-
-        $dot = 'digraph Tree {
+        $dot = new Encoding('digraph Tree {
             node [shape=box, fontname=helvetica];
             edge [fontname=helvetica];
             N0 [label="b <= 28.054665410619"];
@@ -43,14 +42,10 @@ class GraphvizTest extends TestCase
             N8 -> N10;
             N4 -> N8;
             N0 -> N4 [labeldistance=2.5, labelangle=-45, headlabel="False"];
-            }';
+            }');
 
-        $this->assertFileDoesNotExist($path);
+        $encoding = Graphviz::dotToImage($dot, 'png');
 
-        Graphviz::dotToImage($dot, $path, 'png');
-
-        $this->assertFileExists($path);
-
-        unlink($path);
+        $this->assertInstanceOf(Encoding::class, $encoding);
     }
 }

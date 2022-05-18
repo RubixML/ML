@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Helpers;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_resource;
@@ -10,7 +11,6 @@ use function proc_close;
 use function fwrite;
 use function fclose;
 use function stream_get_contents;
-use function file_put_contents;
 
 /**
  * Graphviz
@@ -29,12 +29,12 @@ class Graphviz
      *
      * See https://graphviz.org/docs/outputs/ for supported formats
      *
-     * @param string $dot
-     * @param string $path
+     * @param \Rubix\ML\Encoding $dot
      * @param string $format
      * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\Encoding
      */
-    public static function dotToImage(string $dot, string $path, string $format = 'png') : void
+    public static function dotToImage(Encoding $dot, string $format = 'png') : Encoding
     {
         $command = "dot -T{$format}";
 
@@ -55,16 +55,16 @@ class Graphviz
         $data = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
 
+        if ($data === false) {
+            throw new RuntimeException("Failed to generate image of type '$format.'");
+        }
+
         $ret = proc_close($process);
 
         if ($ret !== 0) {
             throw new RuntimeException("Graphviz failed during execution (code $ret).");
         }
 
-        $success = file_put_contents($path, $data, LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException("Failed to write image to file at '$path'.");
-        }
+        return new Encoding($data);
     }
 }
