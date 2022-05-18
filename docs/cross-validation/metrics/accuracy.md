@@ -9,7 +9,7 @@ $$
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 
-**Score Range:** 0 to 1
+**Output Range:** 0 to 1
 
 ## Parameters
 This metric does not have any parameters.
