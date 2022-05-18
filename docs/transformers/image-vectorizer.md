@@ -19,7 +19,7 @@ Image Vectorizer takes images of the same size and converts them into flat featu
 ```php
 use Rubix\ML\Transformers\ImageVectorizer;
 
-$transformer = new ImageVectorizer(true);
+$transformer = new ImageVectorizer(false);
 ```
 
 ## Additional Methods
