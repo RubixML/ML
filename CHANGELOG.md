@@ -1,8 +1,3 @@
-- 2.1.0
-    - Added Probabilistic Metric interface
-    - Added Probabilistic and Top K Accuracy
-    - Added Brier Score Probabilistic Metric
-
 - 2.0.1
     - Compensate for PHP 8.1 backward compatibility issues
 
