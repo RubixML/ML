@@ -277,7 +277,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return string
      */
-    public function exportGraphviz(?array $featureNames = null, int $maxDepth = -1) : string
+    public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : string
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
@@ -381,7 +381,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         string &$carry,
         int &$nodesCounter,
         \Rubix\ML\Graph\Nodes\BinaryNode $node,
-        int $maxDepth = -1,
+        ?int $maxDepth = null,
         ?array $featureNames = null,
         ?int $parentId = null,
         ?int $leftRight = null,
