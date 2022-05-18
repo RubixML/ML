@@ -254,7 +254,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                     }
                 }
 
-                $total = array_sum($columnCounts) + $this->smoothing * count($columnCounts);
+                $total = array_sum($columnCounts) + (count($columnCounts) * $this->smoothing);
 
                 $probs = [];
 
@@ -274,6 +274,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         if ($this->fitPriors) {
             $total = array_sum($this->classCounts);
+
+            $this->logPriors = [];
 
             foreach ($this->classCounts as $class => $weight) {
                 $this->logPriors[$class] = log($weight / $total);

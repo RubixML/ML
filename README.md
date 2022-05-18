@@ -59,12 +59,12 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Receive Our Newsletter](https://rubixml.com/#get-notified)
 
 ## Funding
-Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the funding platforms listed below.
+Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the core developers listed below.
 
-- [GitHub Sponsors](https://github.com/sponsors/rubixml)
+- [Andrew DalPino](https://github.com/sponsors/andrewdalpino)
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) for a guide.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 The code is licensed [MIT](LICENSE) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

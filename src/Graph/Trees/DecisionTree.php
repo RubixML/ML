@@ -3,7 +3,6 @@
 namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
@@ -228,7 +227,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->column()] <= $value) {
+                    if ($sample[$current->column()] < $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
@@ -290,83 +289,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Print a representation of the decision tree suitable to render with the
-     * graphviz tool. For example, writing it to graph.dot then executing:
-     *
-     * dot -Tpng graph.dot
-     *
-     * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @throws RuntimeException
-     * @return string
-     */
-    public function exportGraphviz(int $maxDepth = -1, ?array $featureNames = null) : string
-    {
-        if (!$this->root) {
-            throw new RuntimeException('Tree has not been constructed.');
-        }
-
-        $carry = 'digraph Tree {' . PHP_EOL;
-        $carry .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
-        $carry .= '  edge [fontname=helvetica];' . PHP_EOL;
-        $nodeCounter = 0;
-
-        $this->_exportGraphviz($carry, $nodeCounter, $this->root, $maxDepth, $featureNames);
-
-        $carry .= '}';
-
-        return $carry;
-    }
-
-    /**
-     * Produces an image with a graphical representation of the decision tree.
-     *
-     * The graphviz tool needs to be installed, if its command 'dot' is not available in the PATH,
-     * please provide a full path to it in the $executable parameter.
-     *
-     * dot -Tpng graph.dot
-     *
-     * @param string $outputFileName
-     * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?String $format
-     * @param ?String $executable
-     * @throws RuntimeException
-     */
-    public function exportImage(
-        string $outputFileName,
-        int $maxDepth = -1,
-        ?array $featureNames = null,
-        ?string $format = 'png',
-        ?string $executable = 'dot'
-    ) : void {
-        $dot = $this->exportGraphviz($maxDepth, $featureNames);
-
-        $dotfile = tempnam(sys_get_temp_dir(), 'decisiontree.dot');
-
-        if ($dotfile === false) {
-            throw new \RuntimeException('Unable to get temporary file name for decision tree export');
-        }
-
-        $ret = file_put_contents($dotfile, $dot, LOCK_EX);
-
-        if ($ret === false) {
-            throw new \RuntimeException('Unable to write decision tree to temporary file');
-        }
-
-        $ret = 0;
-        system(escapeshellarg($executable) .
-               ' -T ' . escapeshellarg($format) .
-               ' ' . escapeshellarg($dotfile) .
-               ' -o ' . escapeshellarg($outputFileName), $ret);
-        unlink($dotfile);
-
-        if ($ret !== 0) {
-            throw new \RuntimeException("Failed to invoke '$executable' to create image file '$outputFileName' (code $ret)");
-        }
-    }
-
-    /**
      * Find a split point for a given subset of the training set.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -413,82 +335,5 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         }
 
         return $impurity;
-    }
-
-    /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
-     *
-     * @param string $carry
-     * @param int $nodesCounter
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode|\Rubix\ML\Graph\Nodes\Split|\Rubix\ML\Graph\Nodes\Decision $node
-     * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?int $parentId
-     * @param ?int $leftRight
-     * @param int $depth
-     */
-    protected function _exportGraphviz(
-        string &$carry,
-        int &$nodesCounter,
-        BinaryNode|Split|Decision $node,
-        int $maxDepth = -1,
-        ?array $featureNames = null,
-        ?int $parentId = null,
-        ?int $leftRight = null,
-        int $depth = 0
-    ) : void {
-        ++$depth;
-
-        $thisNode = $nodesCounter++;
-
-        if ($depth === $maxDepth) {
-            $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
-        } elseif ($node instanceof Split) {
-            $operator = is_string($node->value()) ? '==' : '<=';
-            $carry .= "  N$thisNode [label=\"";
-
-            if ($featureNames) {
-                $name = $featureNames[$node->column()];
-
-                if (strlen($name) > 30) {
-                    $name = substr($name, 0, 30) . '...';
-                }
-                $carry .= $name;
-            } else {
-                $carry .= "Column_{$node->column()}";
-            }
-            $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
-
-            if ($node->left() !== null) {
-                $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
-            }
-
-            if ($node->right() !== null) {
-                $this->_exportGraphviz($carry, $nodesCounter, $node->right(), $maxDepth, $featureNames, $thisNode, 2, $depth);
-            }
-        } elseif ($node instanceof Outcome) {
-            $carry .= "  N$thisNode [label=\"{$node->outcome()}";
-
-            if ($node->impurity() > 0.0) {
-                $carry .= "\\nImpurity={$node->impurity()}";
-            }
-            $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
-        }
-
-        if (!is_null($parentId)) {
-            $carry .= "  N$parentId -> N$thisNode";
-
-            if ($parentId == 0) {
-                $carry .= ' [labeldistance=2.5, ';
-
-                if ($leftRight == 1) {
-                    $carry .= 'labelangle=45, headlabel="True"]';
-                } else {
-                    $carry .= 'labelangle=-45, headlabel="False"]';
-                }
-            }
-            $carry .= ';' . PHP_EOL;
-        }
     }
 }
