@@ -9,7 +9,7 @@ $$
 
 **Estimator Compatibility:** Regressor
 
-**Output Range:** -∞ to 1
+**Score Range:** -∞ to 1
 
 ## Parameters
 This metric does not have any parameters.
