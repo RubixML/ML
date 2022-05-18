@@ -274,7 +274,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * the graphviz tool.
      *
      * @param string[]|null $featureNames
-     * @param int $maxDepth
+     * @param int|null $maxDepth
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Encoding
      */
