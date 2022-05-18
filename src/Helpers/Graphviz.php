@@ -26,7 +26,7 @@ class Graphviz
      *
      * https://graphviz.org/doc/info/lang.html
      * 
-     * See https://graphviz.org/docs/outputs/ for supported 
+     * See https://graphviz.org/docs/outputs/ for supported formats
      *
      * @param string $dot
      * @param string $path
@@ -44,7 +44,7 @@ class Graphviz
         $process = proc_open($command, $descriptorspec, $pipes);
 
         if (!is_resource($process)) {
-            throw new RuntimeException("Graphviz is not installed or in default path.");
+            throw new RuntimeException('Graphviz is not installed or in the default path.');
         }
 
         fwrite($pipes[0], $dot);
