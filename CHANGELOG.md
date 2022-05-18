@@ -2,6 +2,7 @@
     - Added Probabilistic Metric interface
     - Added Probabilistic and Top K Accuracy
     - Added Brier Score Probabilistic Metric
+    - Export Decision Tree-based models in GraphViz "dot" format
 
 - 2.0.1
     - Compensate for PHP 8.1 backward compatibility issues
