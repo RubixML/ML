@@ -9,7 +9,7 @@ $$
 
 **Estimator Compatibility:** Clusterer
 
-**Output Range:** 0 to 1
+**Score Range:** 0 to 1
 
 ## Parameters
 | # | Name | Default | Type | Description |
