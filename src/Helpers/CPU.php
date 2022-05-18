@@ -68,8 +68,7 @@ class CPU
     }
 
     /**
-     * Return the estimated machine epsilon. I.e. the smallest floating point
-     * number that can be operated on by the CPU.
+     * Return the estimated machine epsilon.
      *
      * @return float
      */
