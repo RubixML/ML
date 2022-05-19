@@ -38,12 +38,13 @@ class Graphviz
     {
         $command = "dot -T{$format}";
 
-        $descriptorspec = [
+        $descriptors = [
             ['pipe', 'r'],
+            ['pipe', 'w'],
             ['pipe', 'w'],
         ];
 
-        $process = proc_open($command, $descriptorspec, $pipes);
+        $process = proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {
             throw new RuntimeException('Graphviz is not installed or in the default path.');
@@ -55,14 +56,17 @@ class Graphviz
         $data = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
 
-        if ($data === false) {
-            throw new RuntimeException("Failed to generate image of type '$format.'");
+        $error = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        if ($error) {
+            throw new RuntimeException("Graphviz encountered an error. $error");
         }
 
         $ret = proc_close($process);
 
         if ($ret !== 0) {
-            throw new RuntimeException("Graphviz failed during execution (code $ret).");
+            throw new RuntimeException("Graphviz failed to execute (code $ret).");
         }
 
         return new Encoding($data);

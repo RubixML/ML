@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
  */
 class GraphvizTest extends TestCase
 {
+    /**
+     * @test
+     */
     public function dotToImage() : void
     {
         $dot = new Encoding('digraph Tree {
