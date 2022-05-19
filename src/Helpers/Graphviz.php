@@ -59,7 +59,7 @@ class Graphviz
         $error = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
 
-        if ($error) {
+        if ($error or !$data) {
             throw new RuntimeException("Graphviz encountered an error. $error");
         }
 
