@@ -6,8 +6,6 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
-use function shell_exec;
-
 /**
  * @group Helpers
  * @covers \Rubix\ML\Helpers\Graphviz
