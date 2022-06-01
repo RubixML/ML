@@ -6,14 +6,21 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
+use function shell_exec;
+
 /**
  * @group Helpers
  * @covers \Rubix\ML\Helpers\Graphviz
  */
 class GraphvizTest extends TestCase
 {
+    /**
+     * @test
+     */
     public function dotToImage() : void
     {
+        $this->markTestSkipped();
+
         $dot = new Encoding('digraph Tree {
             node [shape=box, fontname=helvetica];
             edge [fontname=helvetica];
