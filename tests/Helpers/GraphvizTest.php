@@ -19,6 +19,7 @@ class GraphvizTest extends TestCase
      */
     public function dotToImage() : void
     {
+        // Almost always skip this test, needed to appease Stan.
         if (rand() < PHP_INT_MAX) {
             $this->markTestSkipped();
         }
