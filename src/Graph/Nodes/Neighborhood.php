@@ -3,7 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use Traversable;
 
 /**
@@ -18,10 +17,8 @@ use Traversable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood implements BinaryNode, Hypercube
+class Neighborhood implements Hypercube, BinaryNode
 {
-    use HasBinaryChildren;
-
     /**
      * The dataset stored in the node.
      *
@@ -102,5 +99,15 @@ class Neighborhood implements BinaryNode, Hypercube
     public function isPoint() : bool
     {
         return $this->min == $this->max;
+    }
+
+    /**
+     * Return the height of the node in the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return 1;
     }
 }

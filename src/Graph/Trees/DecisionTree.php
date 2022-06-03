@@ -152,7 +152,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $current->cleanup();
 
             ++$depth;
-
+            
             if ($left->empty() or $right->empty()) {
                 $node = $this->terminate($left->merge($right));
 
@@ -280,9 +280,11 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         while ($current = array_pop($stack)) {
             yield $current;
 
-            foreach ($current->children() as $child) {
-                if ($child instanceof Decision) {
-                    $stack[] = $child;
+            if ($current instanceof Split) {
+                foreach ($current->children() as $child) {
+                    if ($child instanceof Decision) {
+                        $stack[] = $child;
+                    }
                 }
             }
         }

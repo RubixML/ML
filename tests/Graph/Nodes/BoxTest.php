@@ -6,7 +6,6 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Hypercube;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -59,7 +58,6 @@ class BoxTest extends TestCase
     {
         $this->assertInstanceOf(Box::class, $this->node);
         $this->assertInstanceOf(Hypercube::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

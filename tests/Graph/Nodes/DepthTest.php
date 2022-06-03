@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,7 +42,6 @@ class DepthTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Depth::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

@@ -6,7 +6,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Split;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -55,7 +54,6 @@ class SplitTest extends TestCase
     {
         $this->assertInstanceOf(Split::class, $this->node);
         $this->assertInstanceOf(Decision::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

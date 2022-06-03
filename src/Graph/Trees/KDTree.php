@@ -89,9 +89,9 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the balance factor of the tree. A balanced tree will have
-     * a factor of 0 whereas an imbalanced tree will either be positive
-     * or negative indicating the direction and degree of the imbalance.
+     * Return the balance factor of the tree. A balanced tree will have  a factor of 0 whereas
+     * an imbalanced tree will either be positive or negative indicating the direction and
+     * degree of the imbalance.
      *
      * @internal
      *
@@ -313,7 +313,7 @@ class KDTree implements BinaryTree, Spatial
      * Return the path of a sample taken from the root node to a leaf node in an array.
      *
      * @param list<int|float> $sample
-     * @return list<\Rubix\ML\Graph\Nodes\BinaryNode|null>
+     * @return list<\Rubix\ML\Graph\Nodes\Node|null>
      */
     protected function path(array $sample) : array
     {

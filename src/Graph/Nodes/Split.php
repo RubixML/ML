@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
+use Traversable;
 
 /**
  * Split
@@ -15,10 +15,8 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Split implements Decision
+class Split implements Decision, BinaryNode
 {
-    use HasBinaryChildren;
-
     /**
      * The feature column offset.
      *
@@ -53,6 +51,20 @@ class Split implements Decision
      * @var int
      */
     protected int $n;
+
+    /**
+     * The left child node.
+     *
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
+     */
+    protected ?\Rubix\ML\Graph\Nodes\BinaryNode $left = null;
+
+    /**
+     * The right child node.
+     *
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
+     */
+    protected ?\Rubix\ML\Graph\Nodes\BinaryNode $right = null;
 
     /**
      * @param int $column
@@ -122,6 +134,63 @@ class Split implements Decision
     }
 
     /**
+     * Return the left child node.
+     *
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     */
+    public function left() : ?BinaryNode
+    {
+        return $this->left;
+    }
+
+    /**
+     * Return the right child node.
+     *
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     */
+    public function right() : ?BinaryNode
+    {
+        return $this->right;
+    }
+
+    /**
+     * Return the children of this node in a generator.
+     *
+     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
+     */
+    public function children() : Traversable
+    {
+        if ($this->left) {
+            yield $this->left;
+        }
+
+        if ($this->right) {
+            yield $this->right;
+        }
+    }
+
+    /**
+     * Recursive function to determine the height of the node in the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return 1 + max($this->left ? $this->left->height() : 0, $this->right ? $this->right->height() : 0);
+    }
+
+    /**
+     * The balance factor of the node. Negative numbers indicate a lean to the left, positive
+     * to the right, and 0 is perfectly balanced.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return ($this->right ? $this->right->height() : 0) - ($this->left ? $this->left->height() : 0);
+    }
+
+    /**
      * Return the decrease in impurity this decision node introduces.
      *
      * @return float
@@ -139,6 +208,26 @@ class Split implements Decision
         }
 
         return $impurity;
+    }
+
+    /**
+     * Set the left child node.
+     *
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     */
+    public function attachLeft(?BinaryNode $node = null) : void
+    {
+        $this->left = $node;
+    }
+
+    /**
+     * Set the right child node.
+     *
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     */
+    public function attachRight(?BinaryNode $node = null) : void
+    {
+        $this->right = $node;
     }
 
     /**

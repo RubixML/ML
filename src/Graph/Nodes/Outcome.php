@@ -15,5 +15,10 @@ use Stringable;
  */
 interface Outcome extends Decision, Stringable
 {
-    //
+    /**
+     * Return the outcome of the decision, depends on the actual class.
+     *
+     * @return mixed
+     */
+    public function outcome();
 }
