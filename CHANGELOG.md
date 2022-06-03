@@ -3,6 +3,9 @@
     - Added Probabilistic and Top K Accuracy
     - Added Brier Score Probabilistic Metric
     - Export Decision Tree-based models in Graphviz "dot" format
+    
+- 2.0.2
+    - Fix Decision Tree max height terminating condition
 
 - 2.0.1
     - Compensate for PHP 8.1 backward compatibility issues
@@ -38,6 +41,9 @@
     - Change RBX serializer constructor argument from base to level
     - Rename Writeable extractor interface to Exporter
     
+- 1.3.4
+    - Fix Decision Tree max height terminating condition
+
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost
 
