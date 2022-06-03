@@ -5,7 +5,6 @@ namespace Rubix\ML\Graph\Trees;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
-use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\HasBinaryChildren;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
