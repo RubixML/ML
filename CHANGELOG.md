@@ -1,3 +1,6 @@
+- 1.3.4
+    - Fix Decision Tree max height terminating condition
+
 - 1.3.3
     - Forego unnecessary logistic computation in Logit Boost
 
