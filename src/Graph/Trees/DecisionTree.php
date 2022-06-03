@@ -152,7 +152,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $current->cleanup();
 
             ++$depth;
-            
+
             if ($left->empty() or $right->empty()) {
                 $node = $this->terminate($left->merge($right));
 
