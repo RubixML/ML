@@ -4,9 +4,12 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
+use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function Rubix\ML\argmax;
+use function min;
+use function max;
 
 /**
  * Box
@@ -39,11 +42,11 @@ class Box implements Hypercube, BinaryNode, HasBinaryChildren
     protected $value;
 
     /**
-     * The left and right splits of the training data.
+     * The left and right subsets of the training data.
      *
-     * @var list<\Rubix\ML\Datasets\Labeled>
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected array $groups;
+    protected array $subsets;
 
     /**
      * The minimum vector containing all the points.
@@ -81,23 +84,23 @@ class Box implements Hypercube, BinaryNode, HasBinaryChildren
 
         $value = 0.5 * ($mins[$column] + $maxs[$column]);
 
-        $groups = $dataset->splitByFeature($column, $value);
+        $subsets = $dataset->splitByFeature($column, $value);
 
-        return new self($column, $value, $groups, $mins, $maxs);
+        return new self($column, $value, $subsets, $mins, $maxs);
     }
 
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param array{Labeled,Labeled} $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @param list<int|float> $min
      * @param list<int|float> $max
      */
-    public function __construct(int $column, $value, array $groups, array $min, array $max)
+    public function __construct(int $column, $value, array $subsets, array $min, array $max)
     {
         $this->column = $column;
         $this->value = $value;
-        $this->groups = $groups;
+        $this->subsets = $subsets;
         $this->min = $min;
         $this->max = $max;
     }
@@ -123,13 +126,19 @@ class Box implements Hypercube, BinaryNode, HasBinaryChildren
     }
 
     /**
-     * Return the left and right splits of the training data.
+     * Return the left and right subsets of the training data.
      *
-     * @return list<\Rubix\ML\Datasets\Labeled>
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    public function groups() : array
+    public function subsets() : array
     {
-        return $this->groups;
+        if (!isset($this->subsets)) {
+            throw new RuntimeException(('Subsets have been removed '
+                . 'from the symbol table.'));
+        }
+
+        return $this->subsets;
     }
 
     /**
@@ -154,10 +163,10 @@ class Box implements Hypercube, BinaryNode, HasBinaryChildren
     }
 
     /**
-     * Remove the left and right splits of the training data.
+     * Remove any variables carried over from the parent node.
      */
     public function cleanup() : void
     {
-        $this->groups = [];
+        unset($this->subsets);
     }
 }

@@ -32,12 +32,12 @@ class IsolatorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $groups = [
+        $subsets = [
             Unlabeled::quick([self::SAMPLES[0]]),
             Unlabeled::quick([self::SAMPLES[1]]),
         ];
 
-        $this->node = new Isolator(self::COLUMN, self::VALUE, $groups);
+        $this->node = new Isolator(self::COLUMN, self::VALUE, $subsets);
     }
 
     /**

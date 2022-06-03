@@ -89,13 +89,13 @@ abstract class CART extends DecisionTree
         [$m, $n] = $dataset->shape();
 
         $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
-        $bins = $this->maxBins ?? 1 + (int) round(log($m, 2.0));
+        $bins = $this->maxBins ?? 1 + (int) round(log($m, 2));
 
         $columns = array_fill(0, $dataset->numFeatures(), null);
 
         $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
-        $bestColumn = $bestValue = $bestGroups = null;
+        $bestColumn = $bestValue = $bestSubsets = null;
         $bestImpurity = INF;
 
         foreach ($columns as $column) {
@@ -123,14 +123,14 @@ abstract class CART extends DecisionTree
             }
 
             foreach ($values as $value) {
-                $groups = $dataset->splitByFeature($column, $value);
+                $subsets = $dataset->splitByFeature($column, $value);
 
-                $impurity = $this->splitImpurity($groups);
+                $impurity = $this->splitImpurity($subsets);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
                     $bestValue = $value;
-                    $bestGroups = $groups;
+                    $bestSubsets = $subsets;
                     $bestImpurity = $impurity;
                 }
 
@@ -140,14 +140,14 @@ abstract class CART extends DecisionTree
             }
         }
 
-        if ($bestColumn === null or $bestValue === null or $bestGroups === null) {
+        if ($bestColumn === null or $bestValue === null or $bestSubsets === null) {
             throw new RuntimeException('Could not split dataset.');
         }
 
         return new Split(
             $bestColumn,
             $bestValue,
-            $bestGroups,
+            $bestSubsets,
             $bestImpurity,
             $m
         );

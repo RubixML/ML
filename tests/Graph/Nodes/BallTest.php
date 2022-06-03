@@ -36,12 +36,12 @@ class BallTest extends TestCase
      */
     protected function setUp() : void
     {
-        $groups = [
+        $subsets = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->node = new Ball(self::CENTER, self::RADIUS, $groups);
+        $this->node = new Ball(self::CENTER, self::RADIUS, $subsets);
     }
 
     /**
@@ -86,13 +86,13 @@ class BallTest extends TestCase
     /**
      * @test
      */
-    public function groups() : void
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->assertEquals($expected, $this->node->groups());
+        $this->assertEquals($expected, $this->node->subsets());
     }
 }

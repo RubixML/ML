@@ -23,7 +23,7 @@ interface Decision extends BinaryNode
     /**
      * Return the number of samples that are represented in the subtree stemming from this node.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function n() : int;
 }
