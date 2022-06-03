@@ -16,7 +16,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Split implements Decision, BinaryNode
+class Split implements Decision, HasBinaryChildren
 {
     use HasBinaryChildrenTrait;
 

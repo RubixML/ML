@@ -23,7 +23,7 @@ use function max;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ball implements Hypersphere, BinaryNode, HasBinaryChildren
+class Ball implements Hypersphere, HasBinaryChildren
 {
     use HasBinaryChildrenTrait;
 

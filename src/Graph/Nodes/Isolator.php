@@ -27,7 +27,7 @@ use function rand;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Isolator implements BinaryNode, HasBinaryChildren
+class Isolator implements HasBinaryChildren
 {
     use HasBinaryChildrenTrait;
 

@@ -23,7 +23,7 @@ use function max;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Box implements Hypercube, BinaryNode, HasBinaryChildren
+class Box implements Hypercube, HasBinaryChildren
 {
     use HasBinaryChildrenTrait;
 

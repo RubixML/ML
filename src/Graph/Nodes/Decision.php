@@ -11,7 +11,7 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Decision extends BinaryNode
+interface Decision
 {
     /**
      * Return the impurity of the labels within the node.
