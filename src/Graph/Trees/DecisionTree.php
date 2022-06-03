@@ -145,7 +145,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
         $this->root = $this->split($dataset);
 
-        $stack = [[$this->root, 1]];
+        $stack = [[$this->root, 0]];
 
         while ($stack) {
             [$current, $depth] = array_pop($stack);
