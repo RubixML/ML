@@ -114,9 +114,7 @@ abstract class CART extends DecisionTree
 
                     $values = Stats::quantiles($values, $q);
                 }
-            }
-
-            if ($type->isCategorical()) {
+            } else {
                 if (count($values) === 2) {
                     $values = array_slice($values, 0, 1);
                 }
