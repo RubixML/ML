@@ -433,7 +433,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             }
 
             if (is_string($outcome)) {
-                $color = dechex(crc32($outcome) % 16777215);
+                $color = substr('00000' . dechex(crc32($outcome) % 16777215), -6);
             } else {
                 $color = 'cccccc';
             }
