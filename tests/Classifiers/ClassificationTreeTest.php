@@ -206,7 +206,7 @@ class ClassificationTreeTest extends TestCase
             'r', 'g', 'b',
         ]);
 
-        Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
