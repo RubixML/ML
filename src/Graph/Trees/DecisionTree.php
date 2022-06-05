@@ -13,8 +13,13 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use Generator;
 
+use function strlen;
+use function substr;
 use function array_pop;
 use function is_string;
+use function hexdec;
+use function dechex;
+use function crc32;
 
 /**
  * Decision Tree
@@ -84,9 +89,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      */
     protected static function brightness(string $color) : int
     {
-        $brightness = 0;
-
-        $brightness += hexdec(substr($color, 0, 2));
+        $brightness = hexdec(substr($color, 0, 2));
         $brightness += hexdec(substr($color, 2, 2));
         $brightness += hexdec(substr($color, 4, 2));
 
@@ -442,12 +445,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
                 $carry .= $name;
             } else {
-                $carry .= "Column {$column}";
+                $carry .= "Feature {$column}";
             }
 
             $operator = is_string($value) ? '==' : '<=';
 
-            $carry .= " $operator {$value}\"];" . PHP_EOL;
+            $carry .= " $operator {$value}\"";
+
+            $carry .= '];' . PHP_EOL;
 
             if ($node->left() !== null) {
                 $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
@@ -469,21 +474,27 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $carry .= '"';
 
             if (is_string($outcome)) {
-                $fillColor = substr('00000' . dechex(crc32($outcome) % self::MAX_COLORS), -6);
+                $hash = crc32($outcome) % self::MAX_COLORS;
 
-                if (self::brightness($fillColor) > 128) {
-                    $fontColor = '000000';
+                $fillColor = substr('00000' . dechex($hash), -6);
+
+                $brightness = self::brightness($fillColor);
+
+                $fillColor = "#{$fillColor}";
+
+                if ($brightness > 128) {
+                    $fontColor = '#000000';
                 } else {
-                    $fontColor = 'ffffff';
+                    $fontColor = '#ffffff';
                 }
             } else {
-                $fillColor = 'cccccc';
-                $fontColor = '000000';
+                $fillColor = '#cccccc';
+                $fontColor = '#000000';
             }
 
             $carry .= ',style="rounded,filled"';
-            $carry .= ",fontcolor=\"#{$fontColor}\"";
-            $carry .= ",fillcolor=\"#{$fillColor}\"";
+            $carry .= ",fontcolor=\"{$fontColor}\"";
+            $carry .= ",fillcolor=\"{$fillColor}\"";
 
             $carry .= ']' . PHP_EOL;
         }
@@ -492,13 +503,17 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $carry .= "  N$parentId -> N$thisNode";
 
             if ($parentId === 0) {
-                $carry .= ' [labeldistance=2.5, ';
+                $carry .= ' [labeldistance=2.5';
 
                 if ($leftRight === 1) {
-                    $carry .= 'labelangle=45,headlabel="True"]';
+                    $carry .= ',labelangle=45';
+                    $carry .= ',headlabel="True"';
                 } else {
-                    $carry .= 'labelangle=-45,headlabel="False"]';
+                    $carry .= ',labelangle=-45';
+                    $carry .= ',headlabel="False"';
                 }
+
+                $carry .= ']';
             }
 
             $carry .= ';' . PHP_EOL;
