@@ -35,11 +35,11 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     protected const MAX_NODE_LABEL_LENGTH = 30;
 
     /**
-     * The maximum number of color values that can be represented in 24 bits.
+     * The maximum color values that can be represented in 24 bits.
      *
      * @var int
      */
-    protected const MAX_RGB_VALUES = 16777215;
+    protected const MAX_COLORS = 16777216;
 
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -75,6 +75,25 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @var int<0,max>
      */
     protected ?int $featureCount = null;
+
+    /**
+     * Return the brightness of a particular color between 0 and 255.
+     *
+     * @param string $color
+     * @return int
+     */
+    protected static function brightness(string $color) : int
+    {
+        $brightness = 0;
+
+        $brightness += hexdec(substr($color, 0, 2));
+        $brightness += hexdec(substr($color, 2, 2));
+        $brightness += hexdec(substr($color, 4, 2));
+
+        $brightness /= 3;
+
+        return (int) round($brightness);
+    }
 
     /**
      * @internal
@@ -447,13 +466,26 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $carry .= "\\nImpurity={$impurity}";
             }
 
+            $carry .= '"';
+
             if (is_string($outcome)) {
-                $fillColor = substr('00000' . dechex(crc32($outcome) % self::MAX_RGB_VALUES), -6);
+                $fillColor = substr('00000' . dechex(crc32($outcome) % self::MAX_COLORS), -6);
+
+                if (self::brightness($fillColor) > 128) {
+                    $fontColor = '000000';
+                } else {
+                    $fontColor = 'ffffff';
+                }
             } else {
                 $fillColor = 'cccccc';
+                $fontColor = '000000';
             }
 
-            $carry .= "\",style=\"rounded,filled\",fillcolor=\"#{$fillColor}\"];" . PHP_EOL;
+            $carry .= ',style="rounded,filled"';
+            $carry .= ",fontcolor=\"#{$fontColor}\"";
+            $carry .= ",fillcolor=\"#{$fillColor}\"";
+
+            $carry .= ']' . PHP_EOL;
         }
 
         if ($parentId !== null) {
@@ -463,9 +495,9 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $carry .= ' [labeldistance=2.5, ';
 
                 if ($leftRight === 1) {
-                    $carry .= 'labelangle=45, headlabel="True"]';
+                    $carry .= 'labelangle=45,headlabel="True"]';
                 } else {
-                    $carry .= 'labelangle=-45, headlabel="False"]';
+                    $carry .= 'labelangle=-45,headlabel="False"]';
                 }
             }
 
