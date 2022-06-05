@@ -1,3 +1,6 @@
+- 2.0.3
+    - Graph subsystem memory and storage optimizations
+
 - 2.0.2
     - Fix Decision Tree max height terminating condition
 
