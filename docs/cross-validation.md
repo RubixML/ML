@@ -56,15 +56,6 @@ Metrics for classification and anomaly detection (a special case of binary class
 | [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ | |
 | [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ | |
 
-### Probabilistic Classification
-Instead of their class predictions, these metrics calculate validation scores from the estimated probabilities of a [Probabilistic](probabilistic.md) classifier.
-
-| Name | Range | Formula | Notes |
-|---|---|---|---|
-| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | $\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2$ | |
-| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | $\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}$ | |
-| [Top K Accuracy](cross-validation/metrics/top-k-accuracy.md) | [0, 1] | | |
-
 ### Regression
 Regression metrics output a score based on the error achieved by comparing continuous-valued predictions and their ground-truth labels.
 
@@ -86,6 +77,32 @@ Clustering metrics derive their scores from a contingency table which can be tho
 | [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ | Not suited for hyper-parameter tuning |
 | [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ | |
 | [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ | |
+
+## Probabilistic Metrics
+These metrics calculate validation scores from the estimated probabilities of a [Probabilistic](probabilistic.md) classifier instead of their class predictions.
+
+
+```php
+use Rubix\ML\CrossValidation\Metrics\TopKAccuracy;
+
+$probabilities = $estimator->proba($testing);
+
+$metric = new TopKAccuracy(5);
+
+$score = $metric->score($probabilities, $testing->labels());
+
+echo $score;
+```
+
+```
+0.95
+```
+
+| Name | Range | Formula | Notes |
+|---|---|---|---|
+| [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | $\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2$ | |
+| [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | $\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}$ | |
+| [Top K Accuracy](cross-validation/metrics/top-k-accuracy.md) | [0, 1] | | |
 
 ## Reports
 Cross validation reports give you a deeper sense for how well a particular model performs with fine-grained information. The `generate()` method on the [Report Generator](cross-validation/reports/api.md#report-generators) interface takes a set of predictions and their corresponding ground-truth labels and returns a [Report](cross-validation/reports/api.md#report-objects) object filled with useful statistics that can be printed directly to the terminal or saved to a file.
