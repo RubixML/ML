@@ -395,11 +395,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         if ($depth === $maxDepth) {
             $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
         } elseif ($node instanceof Split) {
-            $operator = is_string($node->value()) ? '==' : '<=';
+            $column = $node->column();
+            $value = $node->value();
+
+            $operator = is_string($value) ? '==' : '<=';
             $carry .= "  N$thisNode [label=\"";
 
             if ($featureNames) {
-                $name = $featureNames[$node->column()];
+                $name = $featureNames[$column];
 
                 if (strlen($name) > 30) {
                     $name = substr($name, 0, 30) . '...';
@@ -407,10 +410,10 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
                 $carry .= $name;
             } else {
-                $carry .= "Column_{$node->column()}";
+                $carry .= "Column {$column}";
             }
 
-            $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
+            $carry .= " $operator {$value}\"];" . PHP_EOL;
 
             if ($node->left() !== null) {
                 $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
@@ -420,22 +423,31 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $this->_exportGraphviz($carry, $nodesCounter, $node->right(), $maxDepth, $featureNames, $thisNode, 2, $depth);
             }
         } elseif ($node instanceof Outcome) {
-            $carry .= "  N$thisNode [label=\"{$node->outcome()}";
+            $outcome = $node->outcome();
+            $impurity = $node->impurity();
 
-            if ($node->impurity() > 0.0) {
-                $carry .= "\\nImpurity={$node->impurity()}";
+            $carry .= "  N$thisNode [label=\"{$outcome}";
+
+            if ($impurity > 0.0) {
+                $carry .= "\\nImpurity={$impurity}";
             }
 
-            $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
+            if (is_string($outcome)) {
+                $color = dechex(crc32($outcome) % 16777215);
+            } else {
+                $color = 'cccccc';
+            }
+
+            $carry .= '",style="rounded,filled",fillcolor="#' . $color . '"];' . PHP_EOL;
         }
 
         if ($parentId !== null) {
             $carry .= "  N$parentId -> N$thisNode";
 
-            if ($parentId == 0) {
+            if ($parentId === 0) {
                 $carry .= ' [labeldistance=2.5, ';
 
-                if ($leftRight == 1) {
+                if ($leftRight === 1) {
                     $carry .= 'labelangle=45, headlabel="True"]';
                 } else {
                     $carry .= 'labelangle=-45, headlabel="False"]';

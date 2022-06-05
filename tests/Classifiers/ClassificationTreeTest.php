@@ -10,7 +10,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -170,18 +172,20 @@ class ClassificationTreeTest extends TestCase
         $this->assertCount(3, $importances);
         $this->assertContainsOnly('float', $importances);
 
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $dot = $this->estimator->exportGraphviz([
-            'r', 'g', 'b',
-        ]);
-
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
     /**
@@ -198,18 +202,20 @@ class ClassificationTreeTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $dot = $this->estimator->exportGraphviz([
-            'r', 'g', 'b',
-        ]);
-
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
     /**
