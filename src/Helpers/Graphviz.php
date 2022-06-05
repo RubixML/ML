@@ -47,7 +47,7 @@ class Graphviz
         $process = proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {
-            throw new RuntimeException('Graphviz is not installed or in the default path.');
+            throw new RuntimeException('Graphviz process could not be opened.');
         }
 
         fwrite($pipes[0], $dot);
