@@ -28,6 +28,20 @@ use function is_string;
 abstract class DecisionTree implements BinaryTree, IteratorAggregate
 {
     /**
+     * The maximum number of characters before a node label is truncated.
+     *
+     * @var int
+     */
+    protected const MAX_NODE_LABEL_LENGTH = 30;
+
+    /**
+     * The maximum number of color values that can be represented in 24 bits.
+     *
+     * @var int
+     */
+    protected const MAX_RGB_VALUES = 16777215;
+
+    /**
      * The maximum depth of a branch before it is forced to terminate.
      *
      * @var int
@@ -398,20 +412,21 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $column = $node->column();
             $value = $node->value();
 
-            $operator = is_string($value) ? '==' : '<=';
             $carry .= "  N$thisNode [label=\"";
 
             if ($featureNames) {
                 $name = $featureNames[$column];
 
-                if (strlen($name) > 30) {
-                    $name = substr($name, 0, 30) . '...';
+                if (strlen($name) > self::MAX_NODE_LABEL_LENGTH) {
+                    $name = substr($name, 0, self::MAX_NODE_LABEL_LENGTH) . '...';
                 }
 
                 $carry .= $name;
             } else {
                 $carry .= "Column {$column}";
             }
+
+            $operator = is_string($value) ? '==' : '<=';
 
             $carry .= " $operator {$value}\"];" . PHP_EOL;
 
@@ -433,12 +448,12 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             }
 
             if (is_string($outcome)) {
-                $color = substr('00000' . dechex(crc32($outcome) % 16777215), -6);
+                $fillColor = substr('00000' . dechex(crc32($outcome) % self::MAX_RGB_VALUES), -6);
             } else {
-                $color = 'cccccc';
+                $fillColor = 'cccccc';
             }
 
-            $carry .= '",style="rounded,filled",fillcolor="#' . $color . '"];' . PHP_EOL;
+            $carry .= "\",style=\"rounded,filled\",fillcolor=\"#{$fillColor}\"];" . PHP_EOL;
         }
 
         if ($parentId !== null) {
