@@ -23,9 +23,7 @@
     "authors": [
         { 
             "name": "Andrew DalPino",
-            "role": "Project Lead",
-            "homepage": "https://github.com/andrewdalpino",
-            "email": "support@andrewdalpino.com"
+            "homepage": "https://github.com/andrewdalpino"
         },
         {
             "name": "Contributors",
@@ -107,8 +105,7 @@
         "docs": "https://docs.rubixml.com",
         "issues": "https://github.com/RubixML/ML/issues",
         "source": "https://github.com/RubixML/ML",
-        "chat": "https://t.me/RubixML",
-        "email": "support@andrewdalpino.com"
+        "chat": "https://t.me/RubixML"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
