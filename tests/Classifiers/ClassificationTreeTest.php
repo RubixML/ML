@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Encoding;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -179,6 +180,7 @@ class ClassificationTreeTest extends TestCase
             'r', 'g', 'b',
         ]);
 
+        $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
@@ -206,6 +208,7 @@ class ClassificationTreeTest extends TestCase
             'r', 'g', 'b',
         ]);
 
+        $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
     }
 
