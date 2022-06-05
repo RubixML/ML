@@ -59,9 +59,9 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Receive Our Newsletter](https://rubixml.com/#get-notified)
 
 ## Funding
-Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the core developers listed below.
+Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the funding platforms listed below.
 
-- [Andrew DalPino](https://github.com/sponsors/andrewdalpino)
+- [GitHub Sponsors](https://github.com/sponsors/rubixml)
 
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
