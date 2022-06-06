@@ -13,7 +13,12 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Outcome extends Decision, Stringable
+interface Outcome extends Decision, BinaryNode, Stringable
 {
-    //
+    /**
+     * Return the outcome of the decision, depends on the actual class.
+     *
+     * @return mixed
+     */
+    public function outcome();
 }

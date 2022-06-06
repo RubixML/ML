@@ -3,7 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 
 /**
  * Depth
@@ -21,8 +20,6 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  */
 class Depth implements BinaryNode
 {
-    use HasBinaryChildren;
-
     /**
      * The approximated depth of this node.
      *
@@ -79,5 +76,15 @@ class Depth implements BinaryNode
     public function depth() : float
     {
         return $this->depth;
+    }
+
+    /**
+     * Return the height of the node in the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return 1;
     }
 }

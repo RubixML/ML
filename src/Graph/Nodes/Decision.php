@@ -11,7 +11,7 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Decision extends BinaryNode
+interface Decision
 {
     /**
      * Return the impurity of the labels within the node.
@@ -23,7 +23,7 @@ interface Decision extends BinaryNode
     /**
      * Return the number of samples that are represented in the subtree stemming from this node.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function n() : int;
 }

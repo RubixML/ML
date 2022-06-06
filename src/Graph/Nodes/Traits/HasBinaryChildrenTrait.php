@@ -6,7 +6,7 @@ use Rubix\ML\Graph\Nodes\BinaryNode;
 use Traversable;
 
 /**
- * Binary Children
+ * Has Binary Children Trait
  *
  * A node of a binary tree i.e a tree whose nodes have a maximum of two immediate children.
  *
@@ -16,7 +16,7 @@ use Traversable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-trait HasBinaryChildren
+trait HasBinaryChildrenTrait
 {
     /**
      * The left child node.
@@ -92,9 +92,9 @@ trait HasBinaryChildren
     /**
      * Set the left child node.
      *
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode|null $node
      */
-    public function attachLeft(BinaryNode $node) : void
+    public function attachLeft(?BinaryNode $node = null) : void
     {
         $this->left = $node;
     }
@@ -102,36 +102,10 @@ trait HasBinaryChildren
     /**
      * Set the right child node.
      *
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode|null $node
      */
-    public function attachRight(BinaryNode $node) : void
+    public function attachRight(?BinaryNode $node = null) : void
     {
         $this->right = $node;
-    }
-
-    /**
-     * Detach the left child node.
-     */
-    public function detachLeft() : void
-    {
-        $this->left = null;
-    }
-
-    /**
-     * Detach the right child node.
-     */
-    public function detachRight() : void
-    {
-        $this->right = null;
-    }
-
-    /**
-     * Is this a leaf node? i.e no children.
-     *
-     * @return bool
-     */
-    public function leaf() : bool
-    {
-        return !$this->left and !$this->right;
     }
 }

@@ -5,7 +5,6 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 
 use function Rubix\ML\argmax;
 
@@ -20,10 +19,8 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Clique implements BinaryNode, Hypersphere
+class Clique implements Hypersphere, BinaryNode
 {
-    use HasBinaryChildren;
-
     /**
      * The dataset stored in the node.
      *
@@ -125,5 +122,15 @@ class Clique implements BinaryNode, Hypersphere
     public function isPoint() : bool
     {
         return $this->radius === 0.0;
+    }
+
+    /**
+     * Return the height of the node in the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return 1;
     }
 }

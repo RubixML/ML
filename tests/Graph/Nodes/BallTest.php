@@ -5,9 +5,9 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Ball;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,12 +37,12 @@ class BallTest extends TestCase
      */
     protected function setUp() : void
     {
-        $groups = [
+        $subsets = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->node = new Ball(self::CENTER, self::RADIUS, $groups);
+        $this->node = new Ball(self::CENTER, self::RADIUS, $subsets);
     }
 
     /**
@@ -52,7 +52,6 @@ class BallTest extends TestCase
     {
         $this->assertInstanceOf(Ball::class, $this->node);
         $this->assertInstanceOf(Hypersphere::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
@@ -88,13 +87,30 @@ class BallTest extends TestCase
     /**
      * @test
      */
-    public function groups() : void
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->assertEquals($expected, $this->node->groups());
+        $this->assertEquals($expected, $this->node->subsets());
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }

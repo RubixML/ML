@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\HasBinaryChildren;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
@@ -15,6 +15,9 @@ use Generator;
 
 use function array_pop;
 use function is_string;
+use function array_fill;
+use function array_map;
+use function array_sum;
 
 /**
  * Decision Tree
@@ -148,7 +151,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         while ($stack) {
             [$current, $depth] = array_pop($stack);
 
-            [$left, $right] = $current->groups();
+            [$left, $right] = $current->subsets();
 
             $current->cleanup();
 
@@ -272,7 +275,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
      *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
+     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
     public function getIterator() : Traversable
     {
@@ -281,8 +284,8 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         while ($current = array_pop($stack)) {
             yield $current;
 
-            foreach ($current->children() as $child) {
-                if ($child instanceof Decision) {
+            if ($current instanceof HasBinaryChildren) {
+                foreach ($current->children() as $child) {
                     $stack[] = $child;
                 }
             }
@@ -393,19 +396,19 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * Calculate the impurity of a given split.
      *
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @return float
      */
-    protected function splitImpurity(array $groups) : float
+    protected function splitImpurity(array $subsets) : float
     {
-        $n = array_sum(array_map('count', $groups));
+        $n = array_sum(array_map('count', $subsets));
 
         $impurity = 0.0;
 
-        foreach ($groups as $dataset) {
+        foreach ($subsets as $dataset) {
             $nHat = $dataset->numSamples();
 
-            if ($nHat <= 1) {
+            if ($nHat === 0) {
                 continue;
             }
 
