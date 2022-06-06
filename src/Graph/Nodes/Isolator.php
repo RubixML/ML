@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_unique;
 use function array_rand;
@@ -129,7 +129,7 @@ class Isolator implements HasBinaryChildren
     public function subsets() : array
     {
         if (!isset($this->subsets)) {
-            throw new RuntimeException(('Subsets property does not exist.'));
+            throw new RuntimeException('Subsets property does not exist.');
         }
 
         return $this->subsets;

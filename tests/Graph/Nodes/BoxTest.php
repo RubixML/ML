@@ -6,6 +6,7 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Hypercube;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -106,5 +107,22 @@ class BoxTest extends TestCase
     public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }

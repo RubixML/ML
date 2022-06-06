@@ -134,7 +134,7 @@ class Box implements Hypercube, HasBinaryChildren
     public function subsets() : array
     {
         if (!isset($this->subsets)) {
-            throw new RuntimeException(('Subsets property does not exist.'));
+            throw new RuntimeException('Subsets property does not exist.');
         }
 
         return $this->subsets;

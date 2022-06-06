@@ -7,6 +7,7 @@ use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -94,5 +95,22 @@ class BallTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->node->subsets());
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }
