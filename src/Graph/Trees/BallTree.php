@@ -138,7 +138,7 @@ class BallTree implements BinaryTree, Spatial
         $stack = [$this->root];
 
         while ($current = array_pop($stack)) {
-            [$left, $right] = $current->groups();
+            [$left, $right] = $current->subsets();
 
             $current->cleanup();
 

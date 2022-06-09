@@ -6,7 +6,6 @@ use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Trees\BinaryTree;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
@@ -75,7 +74,6 @@ class ITreeTest extends TestCase
         $node = $this->tree->search($sample);
 
         $this->assertInstanceOf(Depth::class, $node);
-        $this->assertInstanceOf(BinaryNode::class, $node);
     }
 
     /**

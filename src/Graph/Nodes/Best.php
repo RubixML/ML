@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
-
 /**
  * Best
  *
@@ -17,8 +15,6 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
  */
 class Best implements Outcome
 {
-    use HasBinaryChildren;
-
     /**
      * The outcome of a decision.
      *
@@ -100,6 +96,16 @@ class Best implements Outcome
     public function n() : int
     {
         return $this->n;
+    }
+
+    /**
+     * Return the height of the node in the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return 1;
     }
 
     /**

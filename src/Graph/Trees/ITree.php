@@ -107,7 +107,7 @@ class ITree implements BinaryTree
         while ($stack) {
             [$current, $depth] = array_pop($stack);
 
-            [$left, $right] = $current->groups();
+            [$left, $right] = $current->subsets();
 
             $current->cleanup();
 

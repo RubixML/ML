@@ -8,13 +8,17 @@ use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\HasBinaryChildren;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
-use Generator;
+use Traversable;
 
 use function array_pop;
 use function is_string;
+use function array_fill;
+use function array_map;
+use function array_sum;
 
 /**
  * Decision Tree
@@ -162,7 +166,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         while ($stack) {
             [$current, $depth] = array_pop($stack);
 
-            [$left, $right] = $current->groups();
+            [$left, $right] = $current->subsets();
 
             $current->cleanup();
 
@@ -291,6 +295,33 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @param int|null $maxDepth
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Encoding
+     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
+     */
+    public function getIterator() : Traversable
+    {
+        $stack = [$this->root];
+
+        while ($current = array_pop($stack)) {
+            yield $current;
+
+            if ($current instanceof HasBinaryChildren) {
+                foreach ($current->children() as $child) {
+                    $stack[] = $child;
+                }
+            }
+        }
+    }
+
+    /**
+     * Print a representation of the decision tree suitable to render with the
+     * graphviz tool. For example, writing it to graph.dot then executing:
+     *
+     * dot -Tpng graph.dot
+     *
+     * @param int $maxDepth
+     * @param ?String[] $featureNames
+     * @throws RuntimeException
+     * @return string
      */
     public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : Encoding
     {
@@ -309,26 +340,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         $carry .= '}';
 
         return new Encoding($carry);
-    }
-
-    /**
-     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
-     *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\Decision>
-     */
-    public function getIterator() : Generator
-    {
-        $stack = [$this->root];
-
-        while ($current = array_pop($stack)) {
-            yield $current;
-
-            foreach ($current->children() as $child) {
-                if ($child instanceof Decision) {
-                    $stack[] = $child;
-                }
-            }
-        }
     }
 
     /**
@@ -358,19 +369,19 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * Calculate the impurity of a given split.
      *
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @return float
      */
-    protected function splitImpurity(array $groups) : float
+    protected function splitImpurity(array $subsets) : float
     {
-        $n = array_sum(array_map('count', $groups));
+        $n = array_sum(array_map('count', $subsets));
 
         $impurity = 0.0;
 
-        foreach ($groups as $dataset) {
+        foreach ($subsets as $dataset) {
             $nHat = $dataset->numSamples();
 
-            if ($nHat <= 1) {
+            if ($nHat === 0) {
                 continue;
             }
 

@@ -6,7 +6,6 @@ use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +46,6 @@ class BestTest extends TestCase
         $this->assertInstanceOf(Best::class, $this->node);
         $this->assertInstanceOf(Outcome::class, $this->node);
         $this->assertInstanceOf(Decision::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

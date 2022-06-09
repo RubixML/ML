@@ -6,7 +6,7 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Hypercube;
-use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,12 +44,12 @@ class BoxTest extends TestCase
      */
     protected function setUp() : void
     {
-        $groups = [
+        $subsets = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->node = new Box(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
+        $this->node = new Box(self::COLUMN, self::VALUE, $subsets, self::MIN, self::MAX);
     }
 
     /**
@@ -59,7 +59,6 @@ class BoxTest extends TestCase
     {
         $this->assertInstanceOf(Box::class, $this->node);
         $this->assertInstanceOf(Hypercube::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
@@ -92,14 +91,14 @@ class BoxTest extends TestCase
     /**
      * @test
      */
-    public function groups() : void
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $this->assertEquals($expected, $this->node->groups());
+        $this->assertEquals($expected, $this->node->subsets());
     }
 
     /**
@@ -108,5 +107,22 @@ class BoxTest extends TestCase
     public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }
