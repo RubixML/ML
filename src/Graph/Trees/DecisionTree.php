@@ -2,22 +2,26 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\HasBinaryChildren;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use Traversable;
-use Generator;
 
+use function strlen;
+use function substr;
 use function array_pop;
 use function is_string;
 use function array_fill;
 use function array_map;
 use function array_sum;
+use function hexdec;
 
 /**
  * Decision Tree
@@ -30,6 +34,13 @@ use function array_sum;
  */
 abstract class DecisionTree implements BinaryTree, IteratorAggregate
 {
+    /**
+     * The maximum number of characters before a node label is truncated.
+     *
+     * @var int
+     */
+    protected const MAX_NODE_LABEL_LENGTH = 30;
+
     /**
      * The maximum depth of a branch before it is forced to terminate.
      *
@@ -64,6 +75,23 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @var int<0,max>
      */
     protected ?int $featureCount = null;
+
+    /**
+     * Return the brightness of a color in hex format.
+     *
+     * @param string $color
+     * @return int
+     */
+    protected static function brightness(string $color) : int
+    {
+        $brightness = hexdec(substr($color, 0, 2));
+        $brightness += hexdec(substr($color, 2, 2));
+        $brightness += hexdec(substr($color, 4, 2));
+
+        $brightness /= 3;
+
+        return (int) round($brightness);
+    }
 
     /**
      * @internal
@@ -273,7 +301,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Return a generator for all the nodes in the tree starting at the root and traversing depth first.
+     * Return an iterator for all the nodes in the tree starting at the root and traversing depth first.
      *
      * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
@@ -298,12 +326,12 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      *
      * dot -Tpng graph.dot
      *
+     * @param string[]|null $featureNames
      * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @throws RuntimeException
-     * @return string
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\Encoding
      */
-    public function exportGraphviz(int $maxDepth = -1, ?array $featureNames = null) : string
+    public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : Encoding
     {
         if (!$this->root) {
             throw new RuntimeException('Tree has not been constructed.');
@@ -312,61 +340,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         $carry = 'digraph Tree {' . PHP_EOL;
         $carry .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
         $carry .= '  edge [fontname=helvetica];' . PHP_EOL;
+
         $nodeCounter = 0;
 
         $this->_exportGraphviz($carry, $nodeCounter, $this->root, $maxDepth, $featureNames);
 
         $carry .= '}';
 
-        return $carry;
-    }
-
-    /**
-     * Produces an image with a graphical representation of the decision tree.
-     *
-     * The graphviz tool needs to be installed, if its command 'dot' is not available in the PATH,
-     * please provide a full path to it in the $executable parameter.
-     *
-     * dot -Tpng graph.dot
-     *
-     * @param string $outputFileName
-     * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?String $format
-     * @param ?String $executable
-     * @throws RuntimeException
-     */
-    public function exportImage(
-        string $outputFileName,
-        int $maxDepth = -1,
-        ?array $featureNames = null,
-        ?string $format = 'png',
-        ?string $executable = 'dot'
-    ) : void {
-        $dot = $this->exportGraphviz($maxDepth, $featureNames);
-
-        $dotfile = tempnam(sys_get_temp_dir(), 'decisiontree.dot');
-
-        if ($dotfile === false) {
-            throw new \RuntimeException('Unable to get temporary file name for decision tree export');
-        }
-
-        $ret = file_put_contents($dotfile, $dot, LOCK_EX);
-
-        if ($ret === false) {
-            throw new \RuntimeException('Unable to write decision tree to temporary file');
-        }
-
-        $ret = 0;
-        system(escapeshellarg($executable) .
-               ' -T ' . escapeshellarg($format) .
-               ' ' . escapeshellarg($dotfile) .
-               ' -o ' . escapeshellarg($outputFileName), $ret);
-        unlink($dotfile);
-
-        if ($ret !== 0) {
-            throw new \RuntimeException("Failed to invoke '$executable' to create image file '$outputFileName' (code $ret)");
-        }
+        return new Encoding($carry);
     }
 
     /**
@@ -419,23 +400,22 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Recursive function to print out the decision rule at each node
-     * using preorder traversal.
+     * Recursive function to print out the decision rule at each node using preorder traversal.
      *
      * @param string $carry
      * @param int $nodesCounter
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode|\Rubix\ML\Graph\Nodes\Split|\Rubix\ML\Graph\Nodes\Decision $node
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
      * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @param ?int $parentId
-     * @param ?int $leftRight
+     * @param string[]|null $featureNames
+     * @param int|null $parentId
+     * @param int|null $leftRight
      * @param int $depth
      */
     protected function _exportGraphviz(
         string &$carry,
         int &$nodesCounter,
-        BinaryNode|Split|Decision $node,
-        int $maxDepth = -1,
+        BinaryNode $node,
+        ?int $maxDepth = null,
         ?array $featureNames = null,
         ?int $parentId = null,
         ?int $leftRight = null,
@@ -448,20 +428,28 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
         if ($depth === $maxDepth) {
             $carry .= "  N$thisNode [label=\"...\"];" . PHP_EOL;
         } elseif ($node instanceof Split) {
-            $operator = is_string($node->value()) ? '==' : '<=';
+            $column = $node->column();
+            $value = $node->value();
+
             $carry .= "  N$thisNode [label=\"";
 
             if ($featureNames) {
-                $name = $featureNames[$node->column()];
+                $name = $featureNames[$column];
 
-                if (strlen($name) > 30) {
-                    $name = substr($name, 0, 30) . '...';
+                if (strlen($name) > self::MAX_NODE_LABEL_LENGTH) {
+                    $name = substr($name, 0, self::MAX_NODE_LABEL_LENGTH) . '...';
                 }
+
                 $carry .= $name;
             } else {
-                $carry .= "Column_{$node->column()}";
+                $carry .= "Feature {$column}";
             }
-            $carry .= " $operator {$node->value()}\"];" . PHP_EOL;
+
+            $operator = is_string($value) ? '==' : '<=';
+
+            $carry .= " $operator {$value}\"";
+
+            $carry .= '];' . PHP_EOL;
 
             if ($node->left() !== null) {
                 $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
@@ -471,26 +459,54 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $this->_exportGraphviz($carry, $nodesCounter, $node->right(), $maxDepth, $featureNames, $thisNode, 2, $depth);
             }
         } elseif ($node instanceof Outcome) {
-            $carry .= "  N$thisNode [label=\"{$node->outcome()}";
+            $outcome = $node->outcome();
+            $impurity = $node->impurity();
 
-            if ($node->impurity() > 0.0) {
-                $carry .= "\\nImpurity={$node->impurity()}";
+            $carry .= "  N$thisNode [label=\"{$outcome}";
+
+            if ($impurity > 0.0) {
+                $carry .= "\\nImpurity: {$impurity}";
             }
-            $carry .= '",style="rounded,filled",fillcolor=gray];' . PHP_EOL;
+
+            $carry .= '"';
+
+            if (is_string($outcome)) {
+                $fillColor = substr(hash('crc32b', $outcome), -6);
+
+                if (self::brightness($fillColor) > 128) {
+                    $fontColor = '000000';
+                } else {
+                    $fontColor = 'ffffff';
+                }
+            } else {
+                $fillColor = 'cccccc';
+                $fontColor = '000000';
+            }
+
+            $carry .= ',style="rounded,filled"';
+            $carry .= ",fontcolor=\"#{$fontColor}\"";
+            $carry .= ",fillcolor=\"#{$fillColor}\"";
+
+            $carry .= ']' . PHP_EOL;
         }
 
-        if (!is_null($parentId)) {
+        if ($parentId !== null) {
             $carry .= "  N$parentId -> N$thisNode";
 
-            if ($parentId == 0) {
-                $carry .= ' [labeldistance=2.5, ';
+            if ($parentId === 0) {
+                $carry .= ' [labeldistance=2.5';
 
-                if ($leftRight == 1) {
-                    $carry .= 'labelangle=45, headlabel="True"]';
+                if ($leftRight === 1) {
+                    $carry .= ',labelangle=45';
+                    $carry .= ',headlabel="True"';
                 } else {
-                    $carry .= 'labelangle=-45, headlabel="False"]';
+                    $carry .= ',labelangle=-45';
+                    $carry .= ',headlabel="False"';
                 }
+
+                $carry .= ']';
             }
+
             $carry .= ';' . PHP_EOL;
         }
     }

@@ -3,13 +3,16 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Encoding;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -154,7 +157,7 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictImportancesContinuous() : void
+    public function trainPredictImportancesExportGraphvizContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -169,6 +172,15 @@ class ClassificationTreeTest extends TestCase
         $this->assertCount(3, $importances);
         $this->assertContainsOnly('float', $importances);
 
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
@@ -179,7 +191,7 @@ class ClassificationTreeTest extends TestCase
     /**
      * @test
      */
-    public function trainPredictCategorical() : void
+    public function trainPredictCategoricalExportGraphviz() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
             ->apply(new IntervalDiscretizer(5));
@@ -189,6 +201,15 @@ class ClassificationTreeTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
+
+        $dot = $this->estimator->exportGraphviz([
+            'r', 'g', 'b',
+        ]);
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
 
         $predictions = $this->estimator->predict($testing);
 

@@ -19,9 +19,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          tools: pecl
+          tools: composer, pecl
           extensions: svm, mbstring, gd, fileinfo
-          ini-values: memory_limit=-1    
+          ini-values: memory_limit=-1
 
       - name: Validate composer.json
         run: composer validate
