@@ -14,11 +14,16 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use Traversable;
 
+use function strlen;
+use function substr;
 use function array_pop;
 use function is_string;
 use function array_fill;
 use function array_map;
 use function array_sum;
+use function hexdec;
+use function dechex;
+use function crc32;
 
 /**
  * Decision Tree
@@ -39,11 +44,11 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     protected const MAX_NODE_LABEL_LENGTH = 30;
 
     /**
-     * The maximum number of color values that can be represented in 24 bits.
+     * The maximum color values that can be represented in 24 bits.
      *
      * @var int
      */
-    protected const MAX_RGB_VALUES = 16777215;
+    protected const MAX_COLORS = 16777216;
 
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -79,6 +84,23 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @var int<0,max>
      */
     protected ?int $featureCount = null;
+
+    /**
+     * Return the brightness of a particular color between 0 and 255.
+     *
+     * @param string $color
+     * @return int
+     */
+    protected static function brightness(string $color) : int
+    {
+        $brightness = hexdec(substr($color, 0, 2));
+        $brightness += hexdec(substr($color, 2, 2));
+        $brightness += hexdec(substr($color, 4, 2));
+
+        $brightness /= 3;
+
+        return (int) round($brightness);
+    }
 
     /**
      * @internal
@@ -434,12 +456,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
                 $carry .= $name;
             } else {
-                $carry .= "Column {$column}";
+                $carry .= "Feature {$column}";
             }
 
             $operator = is_string($value) ? '==' : '<=';
 
-            $carry .= " $operator {$value}\"];" . PHP_EOL;
+            $carry .= " $operator {$value}\"";
+
+            $carry .= '];' . PHP_EOL;
 
             if ($node->left() !== null) {
                 $this->_exportGraphviz($carry, $nodesCounter, $node->left(), $maxDepth, $featureNames, $thisNode, 1, $depth);
@@ -458,26 +482,49 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $carry .= "\\nImpurity={$impurity}";
             }
 
+            $carry .= '"';
+
             if (is_string($outcome)) {
-                $fillColor = substr('00000' . dechex(crc32($outcome) % self::MAX_RGB_VALUES), -6);
+                $hash = crc32($outcome) % self::MAX_COLORS;
+
+                $fillColor = substr('00000' . dechex($hash), -6);
+
+                $brightness = self::brightness($fillColor);
+
+                $fillColor = "#{$fillColor}";
+
+                if ($brightness > 128) {
+                    $fontColor = '#000000';
+                } else {
+                    $fontColor = '#ffffff';
+                }
             } else {
-                $fillColor = 'cccccc';
+                $fillColor = '#cccccc';
+                $fontColor = '#000000';
             }
 
-            $carry .= "\",style=\"rounded,filled\",fillcolor=\"#{$fillColor}\"];" . PHP_EOL;
+            $carry .= ',style="rounded,filled"';
+            $carry .= ",fontcolor=\"{$fontColor}\"";
+            $carry .= ",fillcolor=\"{$fillColor}\"";
+
+            $carry .= ']' . PHP_EOL;
         }
 
         if ($parentId !== null) {
             $carry .= "  N$parentId -> N$thisNode";
 
             if ($parentId === 0) {
-                $carry .= ' [labeldistance=2.5, ';
+                $carry .= ' [labeldistance=2.5';
 
                 if ($leftRight === 1) {
-                    $carry .= 'labelangle=45, headlabel="True"]';
+                    $carry .= ',labelangle=45';
+                    $carry .= ',headlabel="True"';
                 } else {
-                    $carry .= 'labelangle=-45, headlabel="False"]';
+                    $carry .= ',labelangle=-45';
+                    $carry .= ',headlabel="False"';
                 }
+
+                $carry .= ']';
             }
 
             $carry .= ';' . PHP_EOL;
