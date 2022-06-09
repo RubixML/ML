@@ -301,13 +301,8 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     }
 
     /**
-     * Print a representation of the decision tree in "dot" format suitable to render with
-     * the graphviz tool.
+     * Return an iterator for all the nodes in the tree starting at the root and traversing depth first.
      *
-     * @param string[]|null $featureNames
-     * @param int|null $maxDepth
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Encoding
      * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
      */
     public function getIterator() : Traversable
@@ -331,10 +326,10 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      *
      * dot -Tpng graph.dot
      *
+     * @param string[]|null $featureNames
      * @param int $maxDepth
-     * @param ?String[] $featureNames
-     * @throws RuntimeException
-     * @return string
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\Encoding
      */
     public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : Encoding
     {
