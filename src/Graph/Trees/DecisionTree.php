@@ -465,7 +465,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $carry .= "  N$thisNode [label=\"{$outcome}";
 
             if ($impurity > 0.0) {
-                $carry .= "\\nImpurity={$impurity}";
+                $carry .= "\\nImpurity: {$impurity}";
             }
 
             $carry .= '"';
