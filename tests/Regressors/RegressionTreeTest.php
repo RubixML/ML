@@ -167,7 +167,7 @@ class RegressionTreeTest extends TestCase
 
         $dot = $this->estimator->exportGraphviz();
 
-        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
@@ -195,7 +195,7 @@ class RegressionTreeTest extends TestCase
 
         $dot = $this->estimator->exportGraphviz();
 
-        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);

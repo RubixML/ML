@@ -44,6 +44,8 @@ class Graphviz
             ['pipe', 'w'],
         ];
 
+        $pipes = [];
+
         $process = proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {

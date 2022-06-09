@@ -22,8 +22,6 @@ use function array_fill;
 use function array_map;
 use function array_sum;
 use function hexdec;
-use function dechex;
-use function crc32;
 
 /**
  * Decision Tree
@@ -42,13 +40,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @var int
      */
     protected const MAX_NODE_LABEL_LENGTH = 30;
-
-    /**
-     * The maximum color values that can be represented in 24 bits.
-     *
-     * @var int
-     */
-    protected const MAX_COLORS = 16777216;
 
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -86,7 +77,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     protected ?int $featureCount = null;
 
     /**
-     * Return the brightness of a particular color between 0 and 255.
+     * Return the brightness of a color in hex format.
      *
      * @param string $color
      * @return int
@@ -485,27 +476,21 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             $carry .= '"';
 
             if (is_string($outcome)) {
-                $hash = crc32($outcome) % self::MAX_COLORS;
+                $fillColor = substr(hash('crc32b', $outcome), -6);
 
-                $fillColor = substr('00000' . dechex($hash), -6);
-
-                $brightness = self::brightness($fillColor);
-
-                $fillColor = "#{$fillColor}";
-
-                if ($brightness > 128) {
-                    $fontColor = '#000000';
+                if (self::brightness($fillColor) > 128) {
+                    $fontColor = '000000';
                 } else {
-                    $fontColor = '#ffffff';
+                    $fontColor = 'ffffff';
                 }
             } else {
-                $fillColor = '#cccccc';
-                $fontColor = '#000000';
+                $fillColor = 'cccccc';
+                $fontColor = '000000';
             }
 
             $carry .= ',style="rounded,filled"';
-            $carry .= ",fontcolor=\"{$fontColor}\"";
-            $carry .= ",fillcolor=\"{$fillColor}\"";
+            $carry .= ",fontcolor=\"#{$fontColor}\"";
+            $carry .= ",fillcolor=\"#{$fillColor}\"";
 
             $carry .= ']' . PHP_EOL;
         }
