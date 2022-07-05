@@ -66,9 +66,9 @@ abstract class ExtraTree extends DecisionTree
      * among a random selection of features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Split
+     * @return array{\Rubix\ML\Graph\Nodes\Split,array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}}
      */
-    protected function split(Labeled $dataset) : Split
+    protected function split(Labeled $dataset) : array
     {
         [$m, $n] = $dataset->shape();
 
@@ -123,12 +123,14 @@ abstract class ExtraTree extends DecisionTree
             throw new RuntimeException('Could not split dataset.');
         }
 
-        return new Split(
-            $bestColumn,
-            $bestValue,
+        return [
+            new Split(
+                $bestColumn,
+                $bestValue,
+                $bestImpurity,
+                $m
+            ),
             $bestGroups,
-            $bestImpurity,
-            $m
-        );
+        ];
     }
 }

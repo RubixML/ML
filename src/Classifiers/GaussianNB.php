@@ -254,14 +254,14 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         $maxVariance = 0.0;
 
         foreach ($dataset->stratifyByLabel() as $class => $stratum) {
+            $means = $variances = [];
+
             if (isset($this->means[$class])) {
                 $oldMeans = $this->means[$class];
                 $oldVariances = $this->variances[$class];
                 $oldWeight = $this->weights[$class];
 
                 $n = $stratum->numSamples();
-
-                $means = $variances = [];
 
                 foreach ($stratum->features() as $column => $values) {
                     $oldMean = $oldMeans[$column];
@@ -284,8 +284,6 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                 $weight = $oldWeight + $n;
             } else {
-                $means = $variances = [];
-
                 foreach ($stratum->features() as $values) {
                     [$mean, $variance] = Stats::meanVar($values);
 

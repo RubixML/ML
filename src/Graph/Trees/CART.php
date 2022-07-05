@@ -82,9 +82,9 @@ abstract class CART extends DecisionTree
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Split
+     * @return array{\Rubix\ML\Graph\Nodes\Split,array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}}
      */
-    protected function split(Labeled $dataset) : Split
+    protected function split(Labeled $dataset) : array
     {
         [$m, $n] = $dataset->shape();
 
@@ -142,12 +142,14 @@ abstract class CART extends DecisionTree
             throw new RuntimeException('Could not split dataset.');
         }
 
-        return new Split(
-            $bestColumn,
-            $bestValue,
+        return [
+            new Split(
+                $bestColumn,
+                $bestValue,
+                $bestImpurity,
+                $m
+            ),
             $bestSubsets,
-            $bestImpurity,
-            $m
-        );
+        ];
     }
 }

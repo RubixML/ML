@@ -172,18 +172,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
         $this->featureCount = $n;
 
-        $this->root = $this->split($dataset);
+        [$this->root, $subsets] = $this->split($dataset);
 
-        $stack = [[$this->root, 0]];
+        $stack = [[$this->root, $subsets, 0]];
 
         while ($stack) {
-            [$current, $depth] = array_pop($stack);
+            [$current, $subsets, $depth] = array_pop($stack);
 
-            [$left, $right] = $current->subsets();
-
-            $current->cleanup();
-
-            ++$depth;
+            [$left, $right] = $subsets;
 
             if ($left->empty() or $right->empty()) {
                 $node = $this->terminate($left->merge($right));
@@ -202,13 +198,13 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             }
 
             if ($left->numSamples() > $this->maxLeafSize) {
-                $leftNode = $this->split($left);
+                [$leftNode, $leftSubsets] = $this->split($left);
             } else {
                 $leftNode = $this->terminate($left);
             }
 
             if ($right->numSamples() > $this->maxLeafSize) {
-                $rightNode = $this->split($right);
+                [$rightNode, $rightSubsets] = $this->split($right);
             } else {
                 $rightNode = $this->terminate($right);
             }
@@ -218,11 +214,11 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
             if ($current->purityIncrease() >= $this->minPurityIncrease) {
                 if ($leftNode instanceof Split) {
-                    $stack[] = [$leftNode, $depth];
+                    $stack[] = [$leftNode, $leftSubsets, $depth];
                 }
 
                 if ($rightNode instanceof Split) {
-                    $stack[] = [$rightNode, $depth];
+                    $stack[] = [$rightNode, $rightSubsets, $depth];
                 }
             } else {
                 if ($leftNode instanceof Split) {
@@ -354,9 +350,9 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * Find a split point for a given subset of the training set.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Split
+     * @return array{\Rubix\ML\Graph\Nodes\Split,array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}}
      */
-    abstract protected function split(Labeled $dataset) : Split;
+    abstract protected function split(Labeled $dataset) : array;
 
     /**
      * Terminate a branch with an outcome node.

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
-use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Split
@@ -35,13 +34,6 @@ class Split implements Decision, HasBinaryChildren
     protected $value;
 
     /**
-     * The left and right subsets of the training data.
-     *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
-     */
-    protected array $subsets;
-
-    /**
      * The amount of impurity that the split introduces.
      *
      * @var float
@@ -58,16 +50,13 @@ class Split implements Decision, HasBinaryChildren
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @param float $impurity
      * @param int<0,max> $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $subsets, float $impurity, int $n)
+    public function __construct(int $column, $value, float $impurity, int $n)
     {
         $this->column = $column;
         $this->value = $value;
-        $this->subsets = $subsets;
         $this->impurity = $impurity;
         $this->n = $n;
     }
@@ -90,21 +79,6 @@ class Split implements Decision, HasBinaryChildren
     public function value()
     {
         return $this->value;
-    }
-
-    /**
-     * Return the left and right subsets of the training data.
-     *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
-     */
-    public function subsets() : array
-    {
-        if (!isset($this->subsets)) {
-            throw new RuntimeException('Subsets property does not exist.');
-        }
-
-        return $this->subsets;
     }
 
     /**
@@ -145,13 +119,5 @@ class Split implements Decision, HasBinaryChildren
         }
 
         return $impurity;
-    }
-
-    /**
-     * Remove any variables carried over from the parent node.
-     */
-    public function cleanup() : void
-    {
-        unset($this->subsets);
     }
 }
