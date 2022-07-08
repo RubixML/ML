@@ -2,9 +2,11 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,7 +40,12 @@ class SplitTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->node = new Split(self::COLUMN, self::VALUE, self::IMPURITY, self::N);
+        $subsets = [
+            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(self::SAMPLES, self::LABELS),
+        ];
+
+        $this->node = new Split(self::COLUMN, self::VALUE, $subsets, self::IMPURITY, self::N);
     }
 
     /**
@@ -70,6 +77,19 @@ class SplitTest extends TestCase
     /**
      * @test
      */
+    public function subsets() : void
+    {
+        $expected = [
+            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(self::SAMPLES, self::LABELS),
+        ];
+
+        $this->assertEquals($expected, $this->node->subsets());
+    }
+
+    /**
+     * @test
+     */
     public function impurity() : void
     {
         $this->assertSame(self::IMPURITY, $this->node->impurity());
@@ -80,8 +100,8 @@ class SplitTest extends TestCase
      */
     public function purityIncrease() : void
     {
-        $this->node->attachLeft(new Split(2, 0.0, 50.0, 1));
-        $this->node->attachRight(new Split(4, -12.0, 200.0, 3));
+        $this->node->attachLeft(new Split(2, 0.0, [Labeled::quick(), Labeled::quick()], 50.0, 1));
+        $this->node->attachRight(new Split(4, -12.0, [Labeled::quick(), Labeled::quick()], 200.0, 3));
 
         $this->assertSame(237.5, $this->node->purityIncrease());
     }
@@ -92,5 +112,22 @@ class SplitTest extends TestCase
     public function n() : void
     {
         $this->assertSame(self::N, $this->node->n());
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }
