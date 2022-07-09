@@ -43,7 +43,9 @@ class TextNormalizer implements Transformer
      */
     public function compatibility() : array
     {
-        return DataType::all();
+        return [
+            DataType::categorical(),
+        ];
     }
 
     /**
