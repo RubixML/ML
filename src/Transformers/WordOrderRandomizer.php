@@ -42,9 +42,7 @@ class WordOrderRandomizer implements Transformer
      */
     public function compatibility() : array
     {
-        return [
-            DataType::categorical(),
-        ];
+        return DataType::all();
     }
 
     /**

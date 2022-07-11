@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\DataType;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TextNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -45,14 +44,6 @@ class TextNormalizerTest extends TestCase
     {
         $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
-    {
-        $this->assertEquals([DataType::categorical()], $this->transformer->compatibility());
     }
 
     /**
