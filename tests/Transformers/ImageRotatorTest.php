@@ -3,16 +3,16 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\ImageRandomRotationer;
+use Rubix\ML\Transformers\ImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
  * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageRandomRotationer
+ * @covers \Rubix\ML\Transformers\ImageRotator
  */
-class ImageRandomRotationerTest extends TestCase
+class ImageRotatorTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -20,7 +20,7 @@ class ImageRandomRotationerTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\ImageRandomRotationer
+     * @var \Rubix\ML\Transformers\ImageRotator
      */
     protected $transformer;
 
@@ -33,7 +33,7 @@ class ImageRandomRotationerTest extends TestCase
             [imagecreatefrompng('./tests/test.png'), 'whatever'],
         ]);
 
-        $this->transformer = new ImageRandomRotationer();
+        $this->transformer = new ImageRotator();
     }
 
     protected function tearDown() : void
@@ -48,7 +48,7 @@ class ImageRandomRotationerTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(ImageRandomRotationer::class, $this->transformer);
+        $this->assertInstanceOf(ImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -57,7 +57,7 @@ class ImageRandomRotationerTest extends TestCase
      */
     public function transform() : void
     {
-        $mock = $this->createPartialMock(ImageRandomRotationer::class, ['getRotationDegrees']);
+        $mock = $this->createPartialMock(ImageRotator::class, ['getRotationDegrees']);
         $mock->method('getRotationDegrees')
             ->will($this->returnValue(180));
 

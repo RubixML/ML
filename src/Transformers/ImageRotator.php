@@ -17,7 +17,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Stylianos Tzourelis
  */
-class ImageRandomRotationer implements Transformer
+class ImageRotator implements Transformer
 {
     protected int $degrees;
 
@@ -102,6 +102,6 @@ class ImageRandomRotationer implements Transformer
      */
     public function __toString() : string
     {
-        return "Image Random Rotationer with a maximum of {$this->degrees} degrees.";
+        return "Image Rotator (degrees: {$this->degrees})";
     }
 }
