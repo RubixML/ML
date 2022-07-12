@@ -29,7 +29,7 @@ class ImageRotator implements Transformer
     {
         ExtensionIsLoaded::with('gd')->check();
 
-        if ($degrees < 1 or $degrees > 360) {
+        if ($degrees < 1 or $degrees >= 360) {
             throw new InvalidArgumentException('Degrees must be '
                 . " greater than 1, and less than 360 and $degrees given.");
         }
@@ -72,17 +72,19 @@ class ImageRotator implements Transformer
                 $originalWidth = imagesx($value);
                 $originalHeight = imagesy($value);
 
-                $value = imagerotate($value, $this->getRotationDegrees(), 0);
-                $newHeight = imagesy($value);
-                $newWidth = imagesx($value);
+                if ($rotated = imagerotate($value, $this->getRotationDegrees(), 0)) {
+                    $value = $rotated;
+                    $newHeight = imagesy($rotated);
+                    $newWidth = imagesx($rotated);
 
-                if ($originalHeight !== $newHeight || $originalWidth !== $newWidth) {
-                    $value = imagecrop($value, [
-                        'x' => $newWidth / 2 - $originalWidth / 2,
-                        'y' => $newHeight / 2 - $originalHeight / 2,
-                        'width' => $originalWidth,
-                        'height' => $originalHeight
-                    ]);
+                    if ($originalHeight !== $newHeight || $originalWidth !== $newWidth) {
+                        $value = imagecrop($rotated, [
+                            'x' => $newWidth / 2 - $originalWidth / 2,
+                            'y' => $newHeight / 2 - $originalHeight / 2,
+                            'width' => $originalWidth,
+                            'height' => $originalHeight
+                        ]);
+                    }
                 }
             }
         }
