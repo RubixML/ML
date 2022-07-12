@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/TextNormalizer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/WordOrderRandomizer.php">[source]</a></span>
 
 # Word Randomizer
 Splits the given text based on a separator and then shuffles it.
