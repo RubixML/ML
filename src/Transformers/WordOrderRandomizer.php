@@ -55,10 +55,15 @@ class WordOrderRandomizer implements Transformer
         array_walk($samples, [$this, 'randomize']);
     }
 
-    private function randomize(&$sample)
+    /**
+     * Randomize the text in a sample.
+     *
+     * @param list<mixed> $sample
+     */
+    private function randomize(array &$sample) : void
     {
         foreach ($sample as &$value) {
-            if (is_string($value)) {
+            if (is_string($value) && !empty($this->separator)) {
                 $value = explode($this->separator, $value);
                 shuffle($value);
                 $value = implode($this->separator, $value);

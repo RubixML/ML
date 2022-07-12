@@ -11,7 +11,7 @@ use Rubix\ML\Transformers\WordOrderRandomizer;
  * @group Transformers
  * @covers \Rubix\ML\Transformers\WordOrderRandomizer
  */
-class WordOrderRandomizertest extends TestCase
+class WordOrderRandomizerTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
@@ -19,7 +19,7 @@ class WordOrderRandomizertest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TextNormalizer
+     * @var \Rubix\ML\Transformers\WordOrderRandomizer
      */
     protected $transformer;
 
