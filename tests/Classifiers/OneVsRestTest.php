@@ -150,8 +150,8 @@ class OneVsRestTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        var_dump($predictions);
-        var_dump($testing->labels());
+        // var_dump($predictions);
+        // var_dump($testing->labels());
 
         $score = $this->metric->score($predictions, $testing->labels());
 

@@ -144,12 +144,13 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         foreach ($classes as $class) {
             $estimator = clone $this->base;
-
             $subset = clone $dataset;
 
-            $subset->transformLabels(function ($label) use ($class) {
+            $binarize = function ($label) use ($class) {
                 return $label === $class ? 'y' : 'n';
-            });
+            };
+
+            $subset->transformLabels($binarize);
 
             $this->backend->enqueue(new TrainLearner($estimator, $subset));
         }
