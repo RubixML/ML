@@ -5070,6 +5070,16 @@
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ClassificationTree</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
+<p>Export a Graphviz "dot" encoding of the decision tree structure.
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">exportGraphviz</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Encoding</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Helpers\Graphviz</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$dot</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">exportGraphviz</span><span class="p">();</span>
+
+<span class="nx">Graphviz</span><span class="o">::</span><span class="na">dotToImage</span><span class="p">(</span><span class="nv">$dot</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">saveTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;tree.png&#39;</span><span class="p">));</span>
+</code></pre></div>
 <p>Return the number of levels in the tree.
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">height</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="nx">int</span>
 </code></pre></div></p>
