@@ -24,6 +24,20 @@ $estimator = new RegressionTree(20, 2, 1e-3, 10, null);
 ```
 
 ## Additional Methods
+Export a Graphviz "dot" encoding of the decision tree structure.
+```php
+public exportGraphviz() : Encoding
+```
+
+```php
+use Rubix\ML\Helpers\Graphviz;
+use Rubix\ML\Persisters\Filesystem;
+
+$dot = $estimator->exportGraphviz();
+
+Graphviz::dotToImage($dot)->saveTo(new Filesystem('tree.png'));
+```
+
 Return the number of levels in the tree.
 ```php
 public height() : ?int

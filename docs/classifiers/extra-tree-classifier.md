@@ -23,6 +23,11 @@ $estimator = new ExtraTreeClassifier(50, 3, 1e-7, 10);
 ```
 
 ## Additional Methods
+Export a Graphviz "dot" encoding of the decision tree structure.
+```php
+public exportGraphviz() : Encoding
+```
+
 Return the number of levels in the tree.
 ```php
 public height() : ?int
