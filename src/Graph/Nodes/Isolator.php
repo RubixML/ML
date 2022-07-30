@@ -3,7 +3,8 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_unique;
 use function array_rand;
@@ -26,9 +27,9 @@ use function rand;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Isolator implements BinaryNode
+class Isolator implements HasBinaryChildren
 {
-    use HasBinaryChildren;
+    use HasBinaryChildrenTrait;
 
     /**
      * The feature column (index) of the split value.
@@ -45,11 +46,11 @@ class Isolator implements BinaryNode
     protected $value;
 
     /**
-     * The left and right splits of the training data.
+     * The left and right subsets of the training data.
      *
-     * @var list<\Rubix\ML\Datasets\Dataset>
+     * @var array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
-    protected array $groups;
+    protected array $subsets;
 
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.
@@ -81,22 +82,22 @@ class Isolator implements BinaryNode
             $value = $values[$offset];
         }
 
-        $groups = $dataset->splitByFeature($column, $value);
+        $subsets = $dataset->splitByFeature($column, $value);
 
-        return new self($column, $value, $groups);
+        return new self($column, $value, $subsets);
     }
 
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param list<\Rubix\ML\Datasets\Dataset> $groups
+     * @param array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset} $subsets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $groups)
+    public function __construct(int $column, $value, array $subsets)
     {
         $this->column = $column;
         $this->value = $value;
-        $this->groups = $groups;
+        $this->subsets = $subsets;
     }
 
     /**
@@ -120,20 +121,25 @@ class Isolator implements BinaryNode
     }
 
     /**
-     * Return the left and right splits of the training data.
+     * Return the left and right subsets of the training data.
      *
-     * @return list<\Rubix\ML\Datasets\Dataset>
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
-    public function groups() : array
+    public function subsets() : array
     {
-        return $this->groups;
+        if (!isset($this->subsets)) {
+            throw new RuntimeException('Subsets property does not exist.');
+        }
+
+        return $this->subsets;
     }
 
     /**
-     * Remove the left and right splits of the training data.
+     * Remove any variables carried over from the parent node.
      */
     public function cleanup() : void
     {
-        $this->groups = [];
+        unset($this->subsets);
     }
 }

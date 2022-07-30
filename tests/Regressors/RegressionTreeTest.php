@@ -3,12 +3,15 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Encoding;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
@@ -162,6 +165,13 @@ class RegressionTreeTest extends TestCase
         $this->assertCount(4, $importances);
         $this->assertContainsOnly('float', $importances);
 
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
@@ -182,6 +192,13 @@ class RegressionTreeTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
+
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
 
         $predictions = $this->estimator->predict($testing);
 

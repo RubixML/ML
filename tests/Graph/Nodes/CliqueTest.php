@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Clique;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
@@ -49,7 +48,6 @@ class CliqueTest extends TestCase
     {
         $this->assertInstanceOf(Clique::class, $this->node);
         $this->assertInstanceOf(Hypersphere::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

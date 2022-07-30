@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Isolator;
-use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,12 +33,12 @@ class IsolatorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $groups = [
+        $subsets = [
             Unlabeled::quick([self::SAMPLES[0]]),
             Unlabeled::quick([self::SAMPLES[1]]),
         ];
 
-        $this->node = new Isolator(self::COLUMN, self::VALUE, $groups);
+        $this->node = new Isolator(self::COLUMN, self::VALUE, $subsets);
     }
 
     /**
@@ -47,7 +47,6 @@ class IsolatorTest extends TestCase
     public function build() : void
     {
         $this->assertInstanceOf(Isolator::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
@@ -77,5 +76,22 @@ class IsolatorTest extends TestCase
     public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
+    }
+
+    /**
+     * @test
+     */
+    public function cleanup() : void
+    {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
+        $this->node->cleanup();
+
+        $this->expectException(RuntimeException::class);
+
+        $this->node->subsets();
     }
 }

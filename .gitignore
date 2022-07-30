@@ -7,6 +7,7 @@ composer.lock
 Thumbs.db
 .DS_Store
 debug.log
+/test.png
 /.idea
 /.vscode
 /.vs

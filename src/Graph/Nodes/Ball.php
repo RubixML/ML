@@ -5,9 +5,12 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
+use function array_count_values;
+use function max;
 
 /**
  * Ball
@@ -20,9 +23,9 @@ use function Rubix\ML\argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ball implements BinaryNode, Hypersphere
+class Ball implements Hypersphere, HasBinaryChildren
 {
-    use HasBinaryChildren;
+    use HasBinaryChildrenTrait;
 
     /**
      * The center or multivariate mean of the centroid.
@@ -39,11 +42,11 @@ class Ball implements BinaryNode, Hypersphere
     protected float $radius;
 
     /**
-     * The left and right splits of the training data.
+     * The left and right subsets of the training data.
      *
-     * @var list<\Rubix\ML\Datasets\Labeled>
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected array $groups;
+    protected array $subsets;
 
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.
@@ -82,21 +85,21 @@ class Ball implements BinaryNode, Hypersphere
 
         $rightCentroid = $dataset->sample(argmax($distances));
 
-        $groups = $dataset->spatialSplit($leftCentroid, $rightCentroid, $kernel);
+        $subsets = $dataset->spatialSplit($leftCentroid, $rightCentroid, $kernel);
 
-        return new self($center, $radius, $groups);
+        return new self($center, $radius, $subsets);
     }
 
     /**
      * @param list<string|int|float> $center
      * @param float $radius
-     * @param array{Labeled,Labeled} $groups
+     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      */
-    public function __construct(array $center, float $radius, array $groups)
+    public function __construct(array $center, float $radius, array $subsets)
     {
         $this->center = $center;
         $this->radius = $radius;
-        $this->groups = $groups;
+        $this->subsets = $subsets;
     }
 
     /**
@@ -120,16 +123,6 @@ class Ball implements BinaryNode, Hypersphere
     }
 
     /**
-     * Return the left and right splits of the training data.
-     *
-     * @return list<\Rubix\ML\Datasets\Labeled>
-     */
-    public function groups() : array
-    {
-        return $this->groups;
-    }
-
-    /**
      * Does the hypersphere reduce to a single point?
      *
      * @return bool
@@ -140,10 +133,25 @@ class Ball implements BinaryNode, Hypersphere
     }
 
     /**
-     * Remove the left and right splits of the training data.
+     * Return the left and right subsets of the training data.
+     *
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     */
+    public function subsets() : array
+    {
+        if (!isset($this->subsets)) {
+            throw new RuntimeException('Subsets property does not exist.');
+        }
+
+        return $this->subsets;
+    }
+
+    /**
+     * Remove any variables carried over from the parent node.
      */
     public function cleanup() : void
     {
-        $this->groups = [];
+        unset($this->subsets);
     }
 }

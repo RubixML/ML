@@ -1,3 +1,11 @@
+- 2.1.0
+    - Added Probabilistic Metric interface
+    - Added Probabilistic and Top K Accuracy
+    - Added Brier Score Probabilistic Metric
+    - Export Decision Tree-based models in Graphviz "dot" format
+    - Added Graphviz helper class
+    - Graph subsystem memory and storage optimizations
+    
 - 2.0.2
     - Fix Decision Tree max height terminating condition
 
