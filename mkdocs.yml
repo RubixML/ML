@@ -293,7 +293,9 @@ use_directory_urls: false
 
 plugins:
   - search
-  - git-revision-date
+  - git-revision-date-localized:
+      type: date
+      enable_creation_date: true
 
 markdown_extensions:
   - attr_list
@@ -324,4 +326,4 @@ repo_url: https://github.com/RubixML/ML
 site_url: https://rubixml.com
 site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 
-copyright: '&copy; 2021 Rubix ML'
+copyright: '&copy; 2022 The Rubix ML Community'
