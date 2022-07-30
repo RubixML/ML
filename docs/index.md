@@ -31,12 +31,6 @@ Check out these example projects using the Rubix ML library. Many come with inst
 ## Interact With The Community
 
 - [Join Our Telegram Channel](https://t.me/RubixML)
-- [Receive Our Newsletter](https://rubixml.com/#get-notified)
-
-## Funding
-Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the core developers listed below.
-
-- [Andrew DalPino](https://github.com/sponsors/andrewdalpino)
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/ML/blob/master/CONTRIBUTING.md) for guidelines.

@@ -19,3 +19,4 @@ $ composer require rubix/ml
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support
+- [GraphViz](https://graphviz.org/) for graph visualization
