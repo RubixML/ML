@@ -43,9 +43,9 @@ trait AutotrackRevisions
             $properties = $reflector->getProperties();
 
             foreach ($properties as $property) {
+                $property->setAccessible(true);
+                
                 if ($property->isInitialized($current)) {
-                    $property->setAccessible(true);
-
                     $value = $property->getValue($current);
 
                     if (is_object($value)) {
