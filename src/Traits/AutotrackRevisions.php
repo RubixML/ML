@@ -44,7 +44,7 @@ trait AutotrackRevisions
 
             foreach ($properties as $property) {
                 $property->setAccessible(true);
-                
+
                 if ($property->isInitialized($current)) {
                     $value = $property->getValue($current);
 
