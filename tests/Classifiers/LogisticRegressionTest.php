@@ -196,6 +196,8 @@ class LogisticRegressionTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $this->assertEquals('58a6bb3c', $this->estimator->revision());
     }
 
     /**

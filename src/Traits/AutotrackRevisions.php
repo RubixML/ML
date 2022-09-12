@@ -43,25 +43,27 @@ trait AutotrackRevisions
             $properties = $reflector->getProperties();
 
             foreach ($properties as $property) {
-                $property->setAccessible(true);
+                if ($property->isInitialized($current)) {
+                    $property->setAccessible(true);
 
-                $value = $property->getValue($current);
+                    $value = $property->getValue($current);
 
-                if (is_object($value)) {
-                    $stack[] = $value;
+                    if (is_object($value)) {
+                        $stack[] = $value;
+                    }
+
+                    $type = $property->getType();
+
+                    if ($type instanceof ReflectionNamedType) {
+                        $type = $type->getName();
+                    } else {
+                        $type = 'mixed';
+                    }
+
+                    $name = $property->getName();
+
+                    $tokens[] = "$type:$name";
                 }
-
-                $type = $property->getType();
-
-                if ($type instanceof ReflectionNamedType) {
-                    $type = $type->getName();
-                } else {
-                    $type = 'mixed';
-                }
-
-                $name = $property->getName();
-
-                $tokens[] = "$type:$name";
             }
         }
 

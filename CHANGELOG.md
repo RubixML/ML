@@ -1,3 +1,6 @@
+- 2.1.1
+    - Do not consider unset properties when determining revision
+
 - 2.1.0
     - Added Probabilistic Metric interface
     - Added Probabilistic and Top K Accuracy
