@@ -20,10 +20,10 @@ Categorical Naive Bayes is a probability-based classifier that uses counting and
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 
-$estimator = new NaiveBayes(2.5, [
+$estimator = new NaiveBayes([
 	'spam' => 0.3,
 	'not spam' => 0.7,
-]);
+], 2.5);
 ```
 
 ## Additional Methods
