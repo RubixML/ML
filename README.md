@@ -28,6 +28,7 @@ $ composer require rubix/ml
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support
+- [GraphViz](https://graphviz.org/) for graph visualization
 
 ## Documentation
 Read the latest docs [here](https://docs.rubixml.com).
@@ -56,12 +57,6 @@ Check out these example projects using the Rubix ML library. Many come with inst
 ## Interact With The Community
 
 - [Join Our Telegram Channel](https://t.me/RubixML)
-- [Receive Our Newsletter](https://rubixml.com/#get-notified)
-
-## Funding
-Rubix ML is funded by donations from the community. You can support this project by making a contribution to one of the funding platforms listed below.
-
-- [GitHub Sponsors](https://github.com/sponsors/rubixml)
 
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
