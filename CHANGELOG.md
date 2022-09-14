@@ -1,5 +1,6 @@
 - 2.2.0
     - Added Randomized Image Rotator transformer
+    - Calculate the range of continuous features when describing dataset
 
 - 2.1.1
     - Do not consider unset properties when determining revision
