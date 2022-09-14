@@ -70,7 +70,7 @@ class RandomizedImageRotator implements Transformer
 
     /**
      * Randomly rotates and crops the images in a sample to their original size.
-     * 
+     *
      * @internal
      *
      * @param list<mixed> $sample
@@ -107,7 +107,7 @@ class RandomizedImageRotator implements Transformer
 
     /**
      * Return a random rotation angle in degrees.
-     * 
+     *
      * @internal
      *
      * @return float

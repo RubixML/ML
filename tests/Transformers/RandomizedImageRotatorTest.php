@@ -36,13 +36,6 @@ class RandomizedImageRotatorTest extends TestCase
         $this->transformer = new RandomizedImageRotator(90.0);
     }
 
-    protected function tearDown() : void
-    {
-        if (file_exists('./test.png')) {
-            unlink('./test.png');
-        }
-    }
-
     /**
      * @test
      */
