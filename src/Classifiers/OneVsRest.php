@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use Function \Rubix\ML\array_transpose;
+use function \Rubix\ML\array_transpose;
 
 /**
  * One Vs Rest
@@ -64,9 +64,8 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      * @param \Rubix\ML\Learner|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(
-        ?Learner $base = null,
-    ) {
+    public function __construct(?Learner $base = null)
+    {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Learner must be'
                 . ' a classifier.');
