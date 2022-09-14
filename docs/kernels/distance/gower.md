@@ -10,7 +10,7 @@ A robust distance kernel that measures a mix of categorical and continuous data 
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | range | 1.0 | float | The range of the continuous feature columns. |
+| 1 | range | 1.0 | float | The standardized range of the continuous feature columns. |
 
 ## Example
 ```php
