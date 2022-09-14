@@ -1,5 +1,5 @@
 - 2.2.0
-    - Added Image Rotator transformer
+    - Added Randomized Image Rotator transformer
 
 - 2.1.1
     - Do not consider unset properties when determining revision
