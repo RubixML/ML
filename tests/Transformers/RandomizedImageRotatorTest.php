@@ -3,26 +3,26 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\ImageRotator;
+use Rubix\ML\Transformers\RandomizedImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
  * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageRotator
+ * @covers \Rubix\ML\Transformers\RandomizedImageRotator
  */
-class ImageRotatorTest extends TestCase
+class RandomizedImageRotatorTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Unlabeled
      */
-    protected $dataset;
+    protected \Rubix\ML\Datasets\Unlabeled $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\ImageRotator
+     * @var \Rubix\ML\Transformers\RandomizedImageRotator
      */
-    protected $transformer;
+    protected \Rubix\ML\Transformers\RandomizedImageRotator $transformer;
 
     /**
      * @before
@@ -33,7 +33,7 @@ class ImageRotatorTest extends TestCase
             [imagecreatefrompng('./tests/test.png'), 'whatever'],
         ]);
 
-        $this->transformer = new ImageRotator();
+        $this->transformer = new RandomizedImageRotator(90.0);
     }
 
     protected function tearDown() : void
@@ -48,7 +48,7 @@ class ImageRotatorTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(ImageRotator::class, $this->transformer);
+        $this->assertInstanceOf(RandomizedImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -57,15 +57,22 @@ class ImageRotatorTest extends TestCase
      */
     public function transform() : void
     {
-        $mock = $this->createPartialMock(ImageRotator::class, ['getRotationDegrees']);
-        $mock->method('getRotationDegrees')
-            ->will($this->returnValue(180));
+        $mock = $this->createPartialMock(RandomizedImageRotator::class, ['randomRotationAngle']);
+
+        $mock->method('randomRotationAngle')->will($this->returnValue(180.0));
+
+        $expected = file_get_contents('./tests/test_rotated.png');
 
         $this->dataset->apply($mock);
 
         $sample = $this->dataset->sample(0);
-        imagepng($sample[0], './test.png');
 
-        $this->assertEquals(file_get_contents('./tests/test_rotated.png'), file_get_contents('./test.png'));
+        ob_start();
+
+        imagepng($sample[0]);
+
+        $raw = ob_get_clean();
+
+        $this->assertEquals($expected, $raw);
     }
 }
