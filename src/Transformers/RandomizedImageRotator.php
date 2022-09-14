@@ -6,10 +6,14 @@ use Rubix\ML\DataType;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function rand;
+use function array_walk;
+use function getrandmax;
+
 /**
- * Image Random Rotation
+ * Randomized Image Rotator
  *
- * Rotates the image between 0 and a given number of degrees
+ * Randomly rotates the image between 0 and a given number of max degrees.
  *
  * > **Note**: The GD extension is required to use this transformer.
  *
@@ -17,24 +21,29 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Stylianos Tzourelis
  */
-class ImageRotator implements Transformer
+class RandomizedImageRotator implements Transformer
 {
-    protected int $degrees;
+    /**
+     * The angle in degrees to rotate an image anti-clockwise.
+     *
+     * @var float
+     */
+    protected float $maxDegrees;
 
     /**
-     * @param int $degrees
+     * @param float $maxDegrees
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $degrees = 30)
+    public function __construct(float $maxDegrees = 360.0)
     {
         ExtensionIsLoaded::with('gd')->check();
 
-        if ($degrees < 1 or $degrees >= 360) {
+        if ($maxDegrees < 0.0 or $maxDegrees > 360.0) {
             throw new InvalidArgumentException('Degrees must be '
-                . " greater than 1, and less than 360 and $degrees given.");
+                . " greater than 0, and less than 360 and $maxDegrees given.");
         }
 
-        $this->degrees = $degrees;
+        $this->maxDegrees = $maxDegrees;
     }
 
     /**
@@ -56,43 +65,60 @@ class ImageRotator implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'rotate']);
+        array_walk($samples, [$this, 'rotateAndCrop']);
     }
 
     /**
-     * rotates the images in a sample.
+     * Randomly rotates and crops the images in a sample to their original size.
+     *
+     * @internal
      *
      * @param list<mixed> $sample
-     * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function rotate(array &$sample) : void
+    public function rotateAndCrop(array &$sample) : void
     {
         foreach ($sample as &$value) {
             if (DataType::detect($value)->isImage()) {
+                $degrees = $this->randomRotationAngle();
+
                 $originalWidth = imagesx($value);
                 $originalHeight = imagesy($value);
 
-                if ($rotated = imagerotate($value, $this->getRotationDegrees(), 0)) {
-                    $value = $rotated;
+                $rotated = imagerotate($value, $degrees, 0);
+
+                if ($rotated) {
                     $newHeight = imagesy($rotated);
                     $newWidth = imagesx($rotated);
 
-                    if ($originalHeight !== $newHeight || $originalWidth !== $newWidth) {
-                        $value = imagecrop($rotated, [
+                    if ($originalHeight !== $newHeight or $originalWidth !== $newWidth) {
+                        $rotated = imagecrop($rotated, [
                             'x' => $newWidth / 2 - $originalWidth / 2,
                             'y' => $newHeight / 2 - $originalHeight / 2,
                             'width' => $originalWidth,
                             'height' => $originalHeight
                         ]);
                     }
+
+                    $value = $rotated;
                 }
             }
         }
     }
 
-    public function getRotationDegrees() : int
+    /**
+     * Return a random rotation angle in degrees.
+     *
+     * @internal
+     *
+     * @return float
+     */
+    public function randomRotationAngle() : float
     {
-        return mt_rand(0, $this->degrees);
+        $phi = getrandmax() / $this->maxDegrees;
+
+        $mHat = (int) ($this->maxDegrees * $phi);
+
+        return rand(0, $mHat) / $phi;
     }
 
     /**
@@ -104,6 +130,6 @@ class ImageRotator implements Transformer
      */
     public function __toString() : string
     {
-        return "Image Rotator (degrees: {$this->degrees})";
+        return "Randomized Image Rotator (maxDegrees: {$this->maxDegrees})";
     }
 }
