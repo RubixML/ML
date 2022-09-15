@@ -1,5 +1,6 @@
 - 2.2.0
     - Added Randomized Image Rotator transformer
+    - Added One Vs Rest ensemble classifier
 
 - 2.1.1
     - Do not consider unset properties when determining revision

@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
@@ -13,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -78,7 +78,7 @@ class OneVsRestTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new OneVsRest(new LogisticRegression());
+        $this->estimator = new OneVsRest(new LogisticRegression(16, new Stochastic(0.001)));
 
         $this->estimator->setBackend(new Serial());
 
@@ -101,7 +101,6 @@ class OneVsRestTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     /**
@@ -130,7 +129,7 @@ class OneVsRestTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'base' => new LogisticRegression()
+            'base' => new LogisticRegression(16, new Stochastic(0.001)),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -149,9 +148,6 @@ class OneVsRestTest extends TestCase
         $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
-
-        // var_dump($predictions);
-        // var_dump($testing->labels());
 
         $score = $this->metric->score($predictions, $testing->labels());
 

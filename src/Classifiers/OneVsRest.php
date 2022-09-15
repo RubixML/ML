@@ -5,7 +5,6 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
@@ -13,7 +12,6 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -24,18 +22,21 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function \Rubix\ML\array_transpose;
+use function Rubix\ML\array_transpose;
 
 /**
  * One Vs Rest
+ * 
+ * One Vs Rest is an ensemble learning technique that trains one binary classifier for each
+ * potential class label.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persistable
+class OneVsRest implements Estimator, Learner, Probabilistic, Parallel
 {
-    use AutotrackRevisions, Multiprocessing;
+    use Multiprocessing;
 
     /**
      * The base classifier.
@@ -46,7 +47,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
     /**
      * A map of each class to its binary classifier.
-     * 
+     *
      * @var array<\Rubix\ML\Learner>
      */
     protected array $classifiers = [
@@ -64,14 +65,19 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      * @param \Rubix\ML\Learner|null $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(?Learner $base = null)
+    public function __construct(Learner $base)
     {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Learner must be'
                 . ' a classifier.');
         }
 
-        $this->base = $base ?? new LogisticRegression();
+        if (isset($base) and !$base instanceof Probabilistic) {
+            throw new InvalidArgumentException('Base classifier must'
+                . ' implement the Probabilistic interface.');
+        }
+
+        $this->base = $base;
         $this->backend = new Serial();
     }
 
@@ -172,7 +178,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->classifiers) {
+        if (!$this->classifiers or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -190,14 +196,15 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->classifiers) {
+        if (!$this->classifiers or !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         $this->backend->flush();
- 
+
+        /** @var \Rubix\ML\Probabilistic $estimator */
         foreach ($this->classifiers as $estimator) {
             $this->backend->enqueue(new Proba($estimator, $dataset));
         }

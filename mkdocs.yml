@@ -70,6 +70,7 @@ nav:
       - Logit Boost: classifiers/logit-boost.md
       - Multilayer Perceptron: classifiers/multilayer-perceptron.md
       - Naive Bayes: classifiers/naive-bayes.md
+      - One Vs Rest: classifiers/one-vs-rest.md
       - Radius Neighbors: classifiers/radius-neighbors.md
       - Random Forest: classifiers/random-forest.md
       - Softmax Classifier: classifiers/softmax-classifier.md
