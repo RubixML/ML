@@ -26,7 +26,7 @@ use function Rubix\ML\array_transpose;
 
 /**
  * One Vs Rest
- * 
+ *
  * One Vs Rest is an ensemble learning technique that trains one binary classifier for each
  * potential class label.
  *
@@ -62,17 +62,17 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel
     protected ?int $featureCount = null;
 
     /**
-     * @param \Rubix\ML\Learner|null $base
+     * @param \Rubix\ML\Learner $base
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(Learner $base)
     {
-        if ($base and !$base->type()->isClassifier()) {
+        if (!$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Learner must be'
                 . ' a classifier.');
         }
 
-        if (isset($base) and !$base instanceof Probabilistic) {
+        if (!$base instanceof Probabilistic) {
             throw new InvalidArgumentException('Base classifier must'
                 . ' implement the Probabilistic interface.');
         }
