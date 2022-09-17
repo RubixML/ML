@@ -127,7 +127,7 @@ class ImageRotator implements Transformer
     }
 
     /**
-     * Return an angle with a given offset with random jitter in degrees.
+     * Return an angle with a given offset with random jitter in degrees between 0 and 360.
      *
      * @return float
      */
