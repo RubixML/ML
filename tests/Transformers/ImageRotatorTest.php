@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Transformers
  * @requires extension gd
- * @covers \Rubix\ML\Transformers\RandomizedImageRotator
+ * @covers \Rubix\ML\Transformers\ImageRotator
  */
 class RandomizedImageRotatorTest extends TestCase
 {
@@ -20,7 +20,7 @@ class RandomizedImageRotatorTest extends TestCase
     protected \Rubix\ML\Datasets\Unlabeled $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\RandomizedImageRotator
+     * @var \Rubix\ML\Transformers\ImageRotator
      */
     protected \Rubix\ML\Transformers\ImageRotator $transformer;
 
