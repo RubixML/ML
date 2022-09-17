@@ -163,7 +163,9 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
             $subset->transformLabels($binarize);
 
-            $this->backend->enqueue(new TrainLearner($estimator, $subset));
+            $task = new TrainLearner($estimator, $subset);
+
+            $this->backend->enqueue($task);
         }
 
         $classifiers = $this->backend->process();
@@ -206,7 +208,9 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         /** @var \Rubix\ML\Probabilistic $estimator */
         foreach ($this->classifiers as $estimator) {
-            $this->backend->enqueue(new Proba($estimator, $dataset));
+            $task = new Proba($estimator, $dataset);
+            
+            $this->backend->enqueue($task);
         }
 
         $aggregate = $this->backend->process();
