@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
@@ -12,6 +13,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -34,9 +36,9 @@ use function Rubix\ML\array_transpose;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneVsRest implements Estimator, Learner, Probabilistic, Parallel
+class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persistable
 {
-    use Multiprocessing;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The base classifier.
