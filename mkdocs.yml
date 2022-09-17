@@ -146,8 +146,8 @@ nav:
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
       - Images:
         - Image Resizer: transformers/image-resizer.md
+        - Image Rotator: transformers/randomized-image-rotator.md
         - Image Vectorizer: transformers/image-vectorizer.md
-        - Randomized Image Rotator: transformers/randomized-image-rotator.md
       - Other:
         - Lambda Function: transformers/lambda-function.md
     - Neural Network:

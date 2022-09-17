@@ -124,8 +124,8 @@ These transformers operate on the high-level image data type.
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
 | [Image Resizer](transformers/image-resizer.md) | | | |
+| [Image Rotator](transformers/randomized-image-vectorizer.md) | | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
-| [Randomized Image Rotator](transformers/randomized-image-vectorizer.md) | | | |
 
 ## Custom Transformations
 In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom data transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, let's write a callback to *binarize* the continuous features just at column offset 3 of the dataset.
