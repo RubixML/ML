@@ -25,7 +25,7 @@ class ImageRotator implements Transformer
 {
     /**
      * The number of degrees to rotate the image.
-     * 
+     *
      * @var float
      */
     protected float $offset;
