@@ -49,7 +49,7 @@ class ImageRotator implements Transformer
      * @param float $jitter
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $offset = 0.0, float $jitter = 1.0)
+    public function __construct(float $offset, float $jitter = 0.0)
     {
         ExtensionIsLoaded::with('gd')->check();
 
