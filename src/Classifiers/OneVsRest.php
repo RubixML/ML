@@ -25,6 +25,10 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\array_transpose;
+use function array_combine;
+use function array_keys;
+use function array_map;
+use function array_sum;
 
 /**
  * One Vs Rest
@@ -180,12 +184,6 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->classifiers or !$this->featureCount) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
-
         return array_map('\Rubix\ML\argmax', $this->proba($dataset));
     }
 
@@ -211,7 +209,9 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
             $this->backend->enqueue(new Proba($estimator, $dataset));
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $aggregate = $this->backend->process();
+
+        $aggregate = array_transpose($aggregate);
 
         $classes = array_keys($this->classifiers);
 
