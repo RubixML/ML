@@ -24,6 +24,13 @@ use function getrandmax;
 class ImageRotator implements Transformer
 {
     /**
+     * The color of the area of the image filled in after rotation and cropping.
+     * 
+     * @var int
+     */
+    protected const FILL_COLOR = 0;
+
+    /**
      * The number of degrees to rotate the image.
      *
      * @var float
@@ -46,9 +53,9 @@ class ImageRotator implements Transformer
     {
         ExtensionIsLoaded::with('gd')->check();
 
-        if ($offset < 0.0 or $offset > 360.0) {
+        if ($offset < -360.0 or $offset > 360.0) {
             throw new InvalidArgumentException('Offset must be '
-                . " greater than 0, and less than 360 and $offset given.");
+                . " greater than -360, and less than 360 and $offset given.");
         }
 
         if ($jitter < 0.0 or $jitter > 1.0) {
@@ -98,7 +105,7 @@ class ImageRotator implements Transformer
                 $originalWidth = imagesx($value);
                 $originalHeight = imagesy($value);
 
-                $rotated = imagerotate($value, $degrees, 0);
+                $rotated = imagerotate($value, $degrees, self::FILL_COLOR);
 
                 if ($rotated) {
                     $newHeight = imagesy($rotated);
@@ -134,7 +141,15 @@ class ImageRotator implements Transformer
 
         $jitter = rand(-$mHat, $mHat) / $phi;
 
-        return $this->offset + $jitter;
+        $angle = $this->offset + $jitter;
+
+        if ($angle < 0.0) {
+            $angle += 360;
+        } else if ($angle > 360.0) {
+            $angle -= 360;
+        }
+
+        return $angle;
     }
 
     /**
