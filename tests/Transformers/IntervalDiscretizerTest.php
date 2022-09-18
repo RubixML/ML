@@ -50,7 +50,7 @@ class IntervalDiscretizerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $outcomes = ['0', '1', '2', '3', '4'];
+        $outcomes = ['a', 'b', 'c', 'd', 'e'];
 
         $this->transformer->fit($this->generator->generate(30));
 
