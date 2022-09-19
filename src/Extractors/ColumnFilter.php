@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Extractors;
 
-use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 /**
