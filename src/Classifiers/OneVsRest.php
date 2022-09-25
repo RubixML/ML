@@ -209,7 +209,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
         /** @var \Rubix\ML\Probabilistic $estimator */
         foreach ($this->classifiers as $estimator) {
             $task = new Proba($estimator, $dataset);
-            
+
             $this->backend->enqueue($task);
         }
 

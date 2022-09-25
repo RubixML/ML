@@ -48,7 +48,7 @@ class HuberLossTest extends TestCase
     {
         $loss = $this->costFn->compute($output, $target);
 
-        $this->assertEquals($expected, $loss);
+        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
     }
 
     /**

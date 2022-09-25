@@ -48,7 +48,7 @@ class CosineTest extends TestCase
         $distance = $this->kernel->compute($a, $b);
 
         $this->assertGreaterThanOrEqual(0.0, $distance);
-        $this->assertEquals($expected, $distance);
+        $this->assertEqualsWithDelta($expected, $distance, 1e-8);
     }
 
     /**

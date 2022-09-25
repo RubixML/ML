@@ -25,7 +25,7 @@ class ImageRotator implements Transformer
 {
     /**
      * The color of the area of the image filled in after rotation and cropping.
-     * 
+     *
      * @var int
      */
     protected const FILL_COLOR = 0;
@@ -146,7 +146,7 @@ class ImageRotator implements Transformer
         while ($angle < 0.0) {
             $angle += 360.0;
         }
-        
+
         while ($angle >= 360.0) {
             $angle -= 360.0;
         }
