@@ -334,7 +334,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     public function exportGraphviz(?array $featureNames = null, ?int $maxDepth = null) : Encoding
     {
         if (!$this->root) {
-            throw new RuntimeException('Tree has not been constructed.');
+            throw new RuntimeException('Tree has not been constructed, train learner first.');
         }
 
         $carry = 'digraph Tree {' . PHP_EOL;
