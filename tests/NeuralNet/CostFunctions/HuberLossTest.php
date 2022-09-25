@@ -107,7 +107,7 @@ class HuberLossTest extends TestCase
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
-        $this->assertEquals($expected, $gradient);
+        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
     }
 
     /**

@@ -118,7 +118,7 @@ class GaussianRandomProjectorTest extends TestCase
             ->sample(0);
 
         $this->assertCount(5, $sample);
-        $this->assertEquals($expected, $sample);
+        $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
     /**

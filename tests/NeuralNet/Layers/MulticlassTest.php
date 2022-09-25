@@ -87,7 +87,7 @@ class MulticlassTest extends TestCase
         ];
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
         [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
@@ -103,7 +103,7 @@ class MulticlassTest extends TestCase
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
         $infer = $this->layer->infer($this->input);
 
@@ -114,6 +114,6 @@ class MulticlassTest extends TestCase
         ];
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }
