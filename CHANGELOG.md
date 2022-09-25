@@ -1,5 +1,6 @@
 - 2.2.0
     - Added Randomized Image Rotator transformer
+    - Added One Vs Rest ensemble classifier
     - Calculate the range of continuous features when describing dataset
     - Added Gower distance kernel
 
