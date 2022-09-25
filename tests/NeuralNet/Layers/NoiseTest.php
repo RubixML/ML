@@ -99,7 +99,7 @@ class NoiseTest extends TestCase
         $forward = $this->layer->forward($this->input);
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
         $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
