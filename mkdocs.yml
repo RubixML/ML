@@ -41,6 +41,7 @@ nav:
       - Verbose: verbose.md
     - Extractors:
       - API Reference: extractors/api.md
+      - Column Filter: extractors/column-filter.md
       - Column Picker: extractors/column-picker.md
       - Concatenator: extractors/concatenator.md
       - CSV: extractors/csv.md
