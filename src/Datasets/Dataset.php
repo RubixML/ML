@@ -354,7 +354,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                 case DataType::CONTINUOUS:
                     [$mean, $variance] = Stats::meanVar($values);
 
-                    $quantiles = Stats::quantiles($values, [
+                    [$min, $p25, $median, $p75, $max] = Stats::quantiles($values, [
                         0.0, 0.25, 0.5, 0.75, 1.0,
                     ]);
 
@@ -363,11 +363,12 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                         'standard deviation' => sqrt($variance),
                         'skewness' => Stats::skewness($values, $mean),
                         'kurtosis' => Stats::kurtosis($values, $mean),
-                        'min' => $quantiles[0],
-                        '25%' => $quantiles[1],
-                        'median' => $quantiles[2],
-                        '75%' => $quantiles[3],
-                        'max' => $quantiles[4],
+                        'range' => $max - $min,
+                        'min' => $min,
+                        '25%' => $p25,
+                        'median' => $median,
+                        '75%' => $p75,
+                        'max' => $max,
                     ];
 
                     break;

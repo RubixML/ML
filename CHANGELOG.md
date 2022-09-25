@@ -1,5 +1,6 @@
 - 2.2.0
     - Added Randomized Image Rotator transformer
+    - Calculate the range of continuous features when describing dataset
     - Added Gower distance kernel
 
 - 2.1.1
