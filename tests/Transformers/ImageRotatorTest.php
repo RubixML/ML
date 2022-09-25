@@ -3,14 +3,14 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\RandomizedImageRotator;
+use Rubix\ML\Transformers\ImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
  * @requires extension gd
- * @covers \Rubix\ML\Transformers\RandomizedImageRotator
+ * @covers \Rubix\ML\Transformers\ImageRotator
  */
 class RandomizedImageRotatorTest extends TestCase
 {
@@ -20,9 +20,9 @@ class RandomizedImageRotatorTest extends TestCase
     protected \Rubix\ML\Datasets\Unlabeled $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\RandomizedImageRotator
+     * @var \Rubix\ML\Transformers\ImageRotator
      */
-    protected \Rubix\ML\Transformers\RandomizedImageRotator $transformer;
+    protected \Rubix\ML\Transformers\ImageRotator $transformer;
 
     /**
      * @before
@@ -33,7 +33,7 @@ class RandomizedImageRotatorTest extends TestCase
             [imagecreatefrompng('./tests/test.png'), 'whatever'],
         ]);
 
-        $this->transformer = new RandomizedImageRotator(90.0);
+        $this->transformer = new ImageRotator(0.0, 1.0);
     }
 
     /**
@@ -41,7 +41,7 @@ class RandomizedImageRotatorTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(RandomizedImageRotator::class, $this->transformer);
+        $this->assertInstanceOf(ImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -50,9 +50,9 @@ class RandomizedImageRotatorTest extends TestCase
      */
     public function transform() : void
     {
-        $mock = $this->createPartialMock(RandomizedImageRotator::class, ['randomRotationAngle']);
+        $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
 
-        $mock->method('randomRotationAngle')->will($this->returnValue(180.0));
+        $mock->method('rotationAngle')->will($this->returnValue(-180.0));
 
         $expected = file_get_contents('./tests/test_rotated.png');
 

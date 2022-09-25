@@ -21,29 +21,50 @@ use function getrandmax;
  * @package     Rubix/ML
  * @author      Stylianos Tzourelis
  */
-class RandomizedImageRotator implements Transformer
+class ImageRotator implements Transformer
 {
     /**
-     * The angle in degrees to rotate an image anti-clockwise.
+     * The color of the area of the image filled in after rotation and cropping.
+     * 
+     * @var int
+     */
+    protected const FILL_COLOR = 0;
+
+    /**
+     * The number of degrees to rotate the image.
      *
      * @var float
      */
-    protected float $maxDegrees;
+    protected float $offset;
 
     /**
-     * @param float $maxDegrees
+     * The amount of random jitter to add to the rotation.
+     *
+     * @var float
+     */
+    protected float $jitter;
+
+    /**
+     * @param float $offset
+     * @param float $jitter
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $maxDegrees = 360.0)
+    public function __construct(float $offset, float $jitter = 0.0)
     {
         ExtensionIsLoaded::with('gd')->check();
 
-        if ($maxDegrees < 0.0 or $maxDegrees > 360.0) {
-            throw new InvalidArgumentException('Degrees must be '
-                . " greater than 0, and less than 360 and $maxDegrees given.");
+        if ($offset < -360.0 or $offset > 360.0) {
+            throw new InvalidArgumentException('Offset must be '
+                . " greater than -360, and less than 360 and $offset given.");
         }
 
-        $this->maxDegrees = $maxDegrees;
+        if ($jitter < 0.0 or $jitter > 1.0) {
+            throw new InvalidArgumentException('Jitter must be '
+                . " greater than 0, and less than 1 and $jitter given.");
+        }
+
+        $this->offset = $offset;
+        $this->jitter = $jitter;
     }
 
     /**
@@ -75,16 +96,16 @@ class RandomizedImageRotator implements Transformer
      *
      * @param list<mixed> $sample
      */
-    public function rotateAndCrop(array &$sample) : void
+    protected function rotateAndCrop(array &$sample) : void
     {
         foreach ($sample as &$value) {
             if (DataType::detect($value)->isImage()) {
-                $degrees = $this->randomRotationAngle();
+                $degrees = $this->rotationAngle();
 
                 $originalWidth = imagesx($value);
                 $originalHeight = imagesy($value);
 
-                $rotated = imagerotate($value, $degrees, 0);
+                $rotated = imagerotate($value, $degrees, self::FILL_COLOR);
 
                 if ($rotated) {
                     $newHeight = imagesy($rotated);
@@ -106,19 +127,31 @@ class RandomizedImageRotator implements Transformer
     }
 
     /**
-     * Return a random rotation angle in degrees.
-     *
-     * @internal
+     * Return an angle with a given offset with random jitter in degrees between 0 and 360.
      *
      * @return float
      */
-    public function randomRotationAngle() : float
+    protected function rotationAngle() : float
     {
-        $phi = getrandmax() / $this->maxDegrees;
+        $maxDegrees = $this->jitter * 180.0;
 
-        $mHat = (int) ($this->maxDegrees * $phi);
+        $phi = getrandmax() / $maxDegrees;
 
-        return rand(0, $mHat) / $phi;
+        $mHat = intval($maxDegrees * $phi);
+
+        $jitter = rand(-$mHat, $mHat) / $phi;
+
+        $angle = $this->offset + $jitter;
+
+        while ($angle < 0.0) {
+            $angle += 360.0;
+        }
+        
+        while ($angle >= 360.0) {
+            $angle -= 360.0;
+        }
+
+        return $angle;
     }
 
     /**
@@ -130,6 +163,6 @@ class RandomizedImageRotator implements Transformer
      */
     public function __toString() : string
     {
-        return "Randomized Image Rotator (maxDegrees: {$this->maxDegrees})";
+        return "Image Rotator (offset: {$this->offset}, jitter: {$this->jitter})";
     }
 }
