@@ -3,14 +3,14 @@
 namespace Rubix\ML\Benchmarks\Kernels\Distance;
 
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\SafeEuclidean;
+use Rubix\ML\Kernels\Distance\Gower;
 use Rubix\ML\Transformers\LambdaFunction;
 
 /**
  * @Groups({"DistanceKernels"})
  * @BeforeMethods({"setUp"})
  */
-class SafeEuclideanBench
+class GowerBench
 {
     protected const NUM_SAMPLES = 10000;
 
@@ -25,7 +25,7 @@ class SafeEuclideanBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\SafeEuclidean
+     * @var \Rubix\ML\Kernels\Distance\Gower
      */
     protected $kernel;
 
@@ -38,15 +38,22 @@ class SafeEuclideanBench
             $sample[5] = rand(0, 10) === 0 ? NAN : $sample[5];
         }));
 
+        $discretize = new LambdaFunction(function ($sample) {
+            $sample[6] = $sample[6] > 0.0 ? 'over' : 'under';
+            $sample[7] = abs($sample[7]) > 0.5 ? 'big' : 'small';
+        });
+
         $this->aSamples = $generator->generate(self::NUM_SAMPLES)
             ->apply($dropValues)
+            ->apply($discretize)
             ->samples();
 
         $this->bSamples = $generator->generate(self::NUM_SAMPLES)
             ->apply($dropValues)
+            ->apply($discretize)
             ->samples();
 
-        $this->kernel = new SafeEuclidean();
+        $this->kernel = new Gower(5.0);
     }
 
     /**
