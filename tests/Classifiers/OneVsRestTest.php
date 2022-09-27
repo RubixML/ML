@@ -3,8 +3,10 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
@@ -101,6 +103,8 @@ class OneVsRestTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     /**

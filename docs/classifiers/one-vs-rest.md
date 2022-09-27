@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/OneVsRest.php">[source]</a></span>
 
 # One Vs Rest
-One Vs Rest is an ensemble learning technique that trains one binary classifier for each potential class label.
+One Vs Rest is an ensemble learner that trains a binary classifier to predict a particular class vs every other class for every possible class. The final class prediction is the class whose binary classifier returned the highest probability. One of the features of One Vs Rest is that it allows you to build a multiclass classifier out of an ensemble of otherwise binary classifiers.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on the base learner
 

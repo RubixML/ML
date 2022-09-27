@@ -33,8 +33,10 @@ use function array_sum;
 /**
  * One Vs Rest
  *
- * One Vs Rest is an ensemble learning technique that trains one binary classifier for each
- * potential class label.
+ * One Vs Rest is an ensemble learner that trains a binary classifier to predict a particular class
+ * vs every other class for every possible class. The final class prediction is the class whose
+ * binary classifier returned the highest probability. One of the features of One Vs Rest is that
+ * it allows you to build a multiclass classifier out of an ensemble of otherwise binary classifiers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

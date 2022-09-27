@@ -48,7 +48,7 @@ class RelativeEntropyTest extends TestCase
     {
         $loss = $this->costFn->compute($output, $target);
 
-        $this->assertEquals($expected, $loss);
+        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
     }
 
     /**
@@ -113,7 +113,7 @@ class RelativeEntropyTest extends TestCase
     {
         $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
-        $this->assertEquals($expected, $gradient);
+        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
     }
 
     /**
