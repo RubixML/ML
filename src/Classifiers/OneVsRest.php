@@ -172,7 +172,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         $classifiers = $this->backend->process();
 
-        $classifiers = array_combine($classes, $classifiers) ?: [];
+        $classifiers = array_combine($classes, $classifiers);
 
         $this->classifiers = $classifiers;
 
