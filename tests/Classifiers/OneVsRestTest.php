@@ -12,9 +12,8 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -80,7 +79,7 @@ class OneVsRestTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->estimator = new OneVsRest(new LogisticRegression(16, new Stochastic(0.001)));
+        $this->estimator = new OneVsRest(new GaussianNB());
 
         $this->estimator->setBackend(new Serial());
 
@@ -154,6 +153,8 @@ class OneVsRestTest extends TestCase
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
+
+        var_dump($score);
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
