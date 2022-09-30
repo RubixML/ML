@@ -210,6 +210,21 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
+    public function types() : void
+    {
+        $expected = [
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::continuous(),
+        ];
+
+        $this->assertEquals($expected, $this->dataset->types());
+    }
+
+    /**
+     * @test
+     */
     public function filter() : void
     {
         $isFriendly = function ($record) {

@@ -220,6 +220,22 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
+    public function types() : void
+    {
+        $expected = [
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::continuous(),
+            DataType::categorical(),
+        ];
+
+        $this->assertEquals($expected, $this->dataset->types());
+    }
+
+    /**
+     * @test
+     */
     public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);

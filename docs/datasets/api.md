@@ -57,6 +57,11 @@ echo "$m x $n";
 ```
 
 ## Data Types
+Return the data types for each column in the data table:
+```php
+public types() : Rubix\ML\DataType[]
+```
+
 Return the data types for each feature column:
 ```php
 public featureTypes() : Rubix\ML\DataType[]
