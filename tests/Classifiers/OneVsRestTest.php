@@ -14,8 +14,8 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +37,7 @@ class OneVsRestTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -74,10 +74,10 @@ class OneVsRestTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
+            'red' => new Blob([255, 32, 0], 50.0),
             'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ], [2, 3, 4]);
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new OneVsRest(new GaussianNB());
 
@@ -132,7 +132,7 @@ class OneVsRestTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'base' => new LogisticRegression(16, new Stochastic(0.001)),
+            'base' => new GaussianNB(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -141,7 +141,7 @@ class OneVsRestTest extends TestCase
     /**
      * @test
      */
-    public function trainPredict() : void
+    public function trainPredictProba() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -153,8 +153,6 @@ class OneVsRestTest extends TestCase
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
-
-        var_dump($score);
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

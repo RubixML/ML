@@ -47,7 +47,7 @@ class MultilayerPerceptronTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 20;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.

@@ -38,7 +38,7 @@ class RegressionTreeTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -187,7 +187,7 @@ class RegressionTreeTest extends TestCase
         $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
             ->apply(new IntervalDiscretizer(5));
 
-        $testing = $training->take(self::TEST_SIZE);
+        $testing = $training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator->train($training);
 

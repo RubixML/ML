@@ -26,9 +26,9 @@ use PHPUnit\Framework\TestCase;
  */
 class PipelineTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 10;
+    protected const TEST_SIZE = 256;
 
     protected const MIN_SCORE = 0.8;
 
@@ -55,10 +55,10 @@ class PipelineTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 128], 30.0),
+            'red' => new Blob([255, 32, 0], 50.0),
             'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([64, 32, 255], 20.0),
-        ]);
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new Pipeline([
             new PolynomialExpander(2),

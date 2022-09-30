@@ -37,7 +37,7 @@ class RadiusNeighborsTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -74,12 +74,12 @@ class RadiusNeighborsTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
+            'red' => new Blob([255, 32, 0], 50.0),
             'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ]);
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new RadiusNeighbors(50.0, true, '?', new BallTree());
+        $this->estimator = new RadiusNeighbors(60.0, true, '?', new BallTree());
 
         $this->metric = new FBeta();
 
@@ -139,7 +139,7 @@ class RadiusNeighborsTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 50.0,
+            'radius' => 60.0,
             'weighted' => true,
             'outlier class' => '?',
             'tree' => new BallTree(),

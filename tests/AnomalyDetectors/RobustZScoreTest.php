@@ -36,7 +36,7 @@ class RobustZScoreTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.

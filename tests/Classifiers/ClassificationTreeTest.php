@@ -40,7 +40,7 @@ class ClassificationTreeTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -54,7 +54,7 @@ class ClassificationTreeTest extends TestCase
      *
      * @var int
      */
-    protected const RANDOM_SEED = 1;
+    protected const RANDOM_SEED = 0;
 
     /**
      * @var \Rubix\ML\Datasets\Generators\Agglomerate
@@ -77,10 +77,10 @@ class ClassificationTreeTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
+            'red' => new Blob([255, 32, 0], 50.0),
             'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ]);
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new ClassificationTree(10, 32, 1e-7, 3);
 
@@ -194,9 +194,9 @@ class ClassificationTreeTest extends TestCase
     public function trainPredictCategoricalExportGraphviz() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
-            ->apply(new IntervalDiscretizer(5));
+            ->apply(new IntervalDiscretizer(3));
 
-        $testing = $training->take(self::TEST_SIZE);
+        $testing = $training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
