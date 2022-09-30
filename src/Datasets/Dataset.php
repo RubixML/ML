@@ -17,7 +17,6 @@ use ArrayAccess;
 use Countable;
 
 use function Rubix\ML\iterator_first;
-use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
@@ -127,6 +126,18 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     public function size() : int
     {
         return $this->numSamples() * $this->numFeatures();
+    }
+
+    /**
+     * Return the high-level data types of each column in the data table.
+     *
+     * @return list<\Rubix\ML\DataType>
+     */
+    public function types() : array
+    {
+        $firstRow = iterator_first($this);
+
+        return array_map([DataType::class, 'detect'], $firstRow);
     }
 
     /**
@@ -302,7 +313,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($transformer instanceof Stateful) {
             if (!$transformer->fitted()) {
-                throw new RuntimeException('Transformer has not been fitted.');
+                throw new RuntimeException('Stateful transformer has not been fitted.');
             }
         }
 
@@ -338,11 +349,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
         $columns = array_transpose(iterator_to_array($this));
 
-        $types = iterator_map(iterator_first($this), [DataType::class, 'detect']);
-
         $stats = [];
 
-        foreach ($types as $offset => $type) {
+        foreach ($this->types() as $offset => $type) {
             $description = [
                 'offset' => $offset,
                 'type' => (string) $type,
@@ -360,15 +369,16 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
                     $description += [
                         'mean' => $mean,
+                        'variance' => $variance,
                         'standard deviation' => sqrt($variance),
                         'skewness' => Stats::skewness($values, $mean),
                         'kurtosis' => Stats::kurtosis($values, $mean),
-                        'range' => $max - $min,
                         'min' => $min,
                         '25%' => $p25,
                         'median' => $median,
                         '75%' => $p75,
                         'max' => $max,
+                        'range' => $max - $min,
                     ];
 
                     break;

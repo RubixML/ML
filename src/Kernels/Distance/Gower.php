@@ -10,17 +10,16 @@ use function count;
 /**
  * Gower
  *
- * A generalized robust distance kernel that measures a mix of categorical and
- * continuous data types while handling NaN values. When comparing continuous
- * data, the Gower metric is equivalent to the normalized Manhattan distance
- * and when comparing categorical data it is equivalent to the Hamming distance.
+ * A robust distance kernel that measures samples consisting of a mix of categorical and continuous data
+ * types while also handling missing (NaN) values. When comparing continuous data, the Gower metric is
+ * equivalent to the normalized [Manhattan](manhattan.md) distance and when comparing categorical data
+ * it is equivalent to the [Hamming](hamming.md) distance.
  *
- * > **Note:** The Gower metric expects that all continuous variables are on
- * the same scale. By default, the range is between 0 and 1.
+ * > **Note:** The Gower metric expects all continuous variables to have a standardized range. The default
+ * range works for values that have been normalized between 0 and 1.
  *
  * References:
- * [1] J. C. Gower. (1971). A General Coefficient of Similarity and Some of Its
- * Properties.
+ * [1] J. C. Gower. (1971). A General Coefficient of Similarity and Some of Its Properties.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -72,19 +71,19 @@ class Gower implements Distance, NaNSafe
     public function compute(array $a, array $b) : float
     {
         $distance = 0.0;
-        $nn = 0;
+        $numNaNs = 0;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
 
             switch (true) {
                 case is_float($valueA) and is_nan($valueA):
-                    ++$nn;
+                    ++$numNaNs;
 
                     break;
 
                 case is_float($valueB) and is_nan($valueB):
-                    ++$nn;
+                    ++$numNaNs;
 
                     break;
 
@@ -103,11 +102,11 @@ class Gower implements Distance, NaNSafe
 
         $n = count($a);
 
-        if ($nn === $n) {
+        if ($numNaNs === $n) {
             return NAN;
         }
 
-        return $distance / ($n - $nn);
+        return $distance / ($n - $numNaNs);
     }
 
     /**
