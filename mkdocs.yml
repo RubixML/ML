@@ -41,6 +41,7 @@ nav:
       - Verbose: verbose.md
     - Extractors:
       - API Reference: extractors/api.md
+      - Column Filter: extractors/column-filter.md
       - Column Picker: extractors/column-picker.md
       - Concatenator: extractors/concatenator.md
       - CSV: extractors/csv.md
@@ -70,6 +71,7 @@ nav:
       - Logit Boost: classifiers/logit-boost.md
       - Multilayer Perceptron: classifiers/multilayer-perceptron.md
       - Naive Bayes: classifiers/naive-bayes.md
+      - One Vs Rest: classifiers/one-vs-rest.md
       - Radius Neighbors: classifiers/radius-neighbors.md
       - Random Forest: classifiers/random-forest.md
       - Softmax Classifier: classifiers/softmax-classifier.md
@@ -146,6 +148,7 @@ nav:
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
       - Images:
         - Image Resizer: transformers/image-resizer.md
+        - Image Rotator: transformers/randomized-image-rotator.md
         - Image Vectorizer: transformers/image-vectorizer.md
       - Other:
         - Lambda Function: transformers/lambda-function.md
@@ -202,6 +205,7 @@ nav:
         - Cosine: kernels/distance/cosine.md
         - Diagonal: kernels/distance/diagonal.md
         - Euclidean: kernels/distance/euclidean.md
+        - Gower: kernels/distance/gower.md
         - Hamming: kernels/distance/hamming.md
         - Jaccard: kernels/distance/jaccard.md
         - Manhattan: kernels/distance/manhattan.md

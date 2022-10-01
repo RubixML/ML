@@ -47,7 +47,7 @@ class HyperbolicTangentTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->asArray();
 
-        $this->assertEquals($expected, $activations);
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
     /**

@@ -28,6 +28,7 @@ echo $report;
         "standard deviation": 3.129252661934191,
         "skewness": -0.4481030843690633,
         "kurtosis": -1.1330702741786107,
+        "range": 9.0,
         "min": -5,
         "25%": -1.375,
         "median": 0.8,

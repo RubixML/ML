@@ -39,7 +39,7 @@ class MeanShiftTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -76,10 +76,10 @@ class MeanShiftTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
+            'red' => new Blob([255, 32, 0], 50.0),
             'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ], [2, 3, 4]);
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new MeanShift(66, 0.1, 100, 1e-4, new BallTree(), new Random());
 

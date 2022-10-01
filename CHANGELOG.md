@@ -1,3 +1,11 @@
+- 2.2.0
+    - Added Image Rotator transformer
+    - Added One Vs Rest ensemble classifier
+    - Add variance and range to the Dataset `describe()` report
+    - Added Gower distance kernel
+    - Added `types()` method to Dataset
+    - Concatenator now accepts an iterator of iterators
+
 - 2.1.1
     - Do not consider unset properties when determining revision
 

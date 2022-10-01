@@ -65,7 +65,7 @@ class GaussianRandomProjectorTest extends TestCase
      */
     public function minDimensions(int $n, float $maxDistortion, int $expected) : void
     {
-        $this->assertEquals($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion));
+        $this->assertEqualsWithDelta($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion), 1e-8);
     }
 
     /**
@@ -118,7 +118,7 @@ class GaussianRandomProjectorTest extends TestCase
             ->sample(0);
 
         $this->assertCount(5, $sample);
-        $this->assertEquals($expected, $sample);
+        $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
     /**

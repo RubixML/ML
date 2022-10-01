@@ -23,6 +23,7 @@ Classifiers are supervised learners that predict a categorical *class* label. Th
 | [Logit Boost](classifiers/logit-boost.md) | High | ● | | ● | ● | Categorical, Continuous |
 | [Multilayer Perceptron](classifiers/multilayer-perceptron.md) | High | ● | ● | | ● | Continuous |
 | [Naive Bayes](classifiers/naive-bayes.md) | Medium | ● | ● | | | Categorical |
+| [One Vs Rest](classifiers/one-vs-rest.md) | Medium | ● | | | | Depends on base learner |
 | [Radius Neighbors](classifiers/radius-neighbors.md) | Medium | ● | | | | Depends on distance kernel |
 | [Random Forest](classifiers/random-forest.md) | High | ● | | ● | | Categorical, Continuous |
 | [Softmax Classifier](classifiers/softmax-classifier.md) | Low | ● | ● | | ● | Continuous |

@@ -27,9 +27,9 @@ use PHPUnit\Framework\TestCase;
  */
 class CommitteeMachineTest extends TestCase
 {
-    protected const TRAIN_SIZE = 350;
+    protected const TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 10;
+    protected const TEST_SIZE = 256;
 
     protected const MIN_SCORE = 0.9;
 

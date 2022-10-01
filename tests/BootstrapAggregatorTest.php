@@ -22,9 +22,9 @@ use PHPUnit\Framework\TestCase;
  */
 class BootstrapAggregatorTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 10;
+    protected const TEST_SIZE = 256;
 
     protected const MIN_SCORE = 0.9;
 

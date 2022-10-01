@@ -30,7 +30,7 @@ use function rand;
  *
  * A method of imputation that is similar to KNN Imputer but instead of computing a weighted average
  * of the neighbors' feature values, Random Hot Deck picks a value from the neighborhood randomly
- * but weighted by distance. Compared to its KNN counterpart, Hot Deck Imputer is slightly
+ * but optionally weighted by distance. Compared to its KNN counterpart, Hot Deck Imputer is slightly
  * more computationally efficient while satisfying some balancing equations at the same time.
  *
  * **Note:** NaN safe distance kernels, such as Safe Euclidean, are required

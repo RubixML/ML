@@ -210,6 +210,21 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
+    public function types() : void
+    {
+        $expected = [
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::continuous(),
+        ];
+
+        $this->assertEquals($expected, $this->dataset->types());
+    }
+
+    /**
+     * @test
+     */
     public function filter() : void
     {
         $isFriendly = function ($record) {
@@ -520,9 +535,11 @@ class UnlabeledTest extends TestCase
                 'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
+                'variance' => 9.792222222222222,
                 'standard deviation' => 3.129252661934191,
                 'skewness' => -0.4481030843690633,
                 'kurtosis' => -1.1330702741786107,
+                'range' => 9.0,
                 'min' => -5.0,
                 '25%' => -1.375,
                 'median' => 0.8,

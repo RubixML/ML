@@ -4,12 +4,11 @@ namespace Rubix\ML\Extractors;
 
 use Traversable;
 
-use function array_values;
-
 /**
  * Concatenator
  *
- * Concatenates the output of multiple extractors.
+ * Combines multiple iterators by concatenating the output of one iterator with the output of
+ * the next iterator in the series.
  *
  * @category    Machine Learning
  * @package     Rubix\ML
@@ -18,22 +17,22 @@ use function array_values;
 class Concatenator implements Extractor
 {
     /**
-     * A list of iterators.
+     * An iterator of iterators.
      *
-     * @var list<iterable<mixed[]>>
+     * @var iterable<iterable<mixed[]>>
      */
-    protected array $iterators;
+    protected iterable $iterators;
 
     /**
-     * @param array<iterable<mixed[]>> $iterators
+     * @param iterable<iterable<mixed[]>> $iterators
      */
-    public function __construct(array $iterators)
+    public function __construct(iterable $iterators)
     {
-        $this->iterators = array_values($iterators);
+        $this->iterators = $iterators;
     }
 
     /**
-     * Return an iterator for the sequences in a dataset.
+     * Return an iterator for the rows of a data table.
      *
      * @return \Generator<mixed[]>
      */
