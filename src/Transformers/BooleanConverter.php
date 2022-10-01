@@ -25,30 +25,30 @@ class BooleanConverter implements Transformer
      *
      * @var string|int
      */
-    protected $trueValue;
+    protected string|int $trueValue;
 
     /**
      * The value used to replace boolean value `false` with.
      *
      * @var string|int
      */
-    protected $falseValue;
+    protected string|int $falseValue;
 
     /**
-     * @param mixed $trueValue
-     * @param mixed $falseValue
+     * @param string|int $trueValue
+     * @param string|int $falseValue
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct($trueValue = 'true', $falseValue = 'false')
+    public function __construct(string|int $trueValue = 'true', string|int $falseValue = 'false')
     {
-        if (!is_string($trueValue) and !is_int($trueValue)) {
-            throw new InvalidArgumentException('True value must be'
-                . ' a string or numeric type.');
+        if (is_string($trueValue) and !is_string($falseValue)) {
+            throw new InvalidArgumentException('True and false values must'
+                . ' be of the same data type.');
         }
 
-        if (!is_string($falseValue) and !is_int($falseValue)) {
-            throw new InvalidArgumentException('False value must be'
-                . ' a string or numeric type.');
+        if (is_int($trueValue) and !is_int($falseValue)) {
+            throw new InvalidArgumentException('True and false values must'
+                . ' be of the same data type.');
         }
 
         $this->trueValue = $trueValue;
