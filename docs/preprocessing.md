@@ -124,7 +124,7 @@ These transformers operate on the high-level image data type.
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
 | [Image Resizer](transformers/image-resizer.md) | | | |
-| [Image Rotator](transformers/randomized-image-vectorizer.md) | | | |
+| [Image Rotator](transformers/image-rotator.md) | | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
