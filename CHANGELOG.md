@@ -1,3 +1,5 @@
+- 3.0.0
+
 - 2.2.0
     - Added Image Rotator transformer
     - Added One Vs Rest ensemble classifier
