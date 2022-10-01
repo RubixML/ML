@@ -97,7 +97,7 @@ class DataType implements Stringable
      * @param mixed $value
      * @return self
      */
-    public static function detect($value) : self
+    public static function detect(mixed $value) : self
     {
         switch (gettype($value)) {
             case 'double':

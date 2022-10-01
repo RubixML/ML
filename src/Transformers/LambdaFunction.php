@@ -36,7 +36,7 @@ class LambdaFunction implements Transformer
      * @param callable(mixed[],string|int,mixed):void $callback
      * @param mixed $context
      */
-    public function __construct(callable $callback, $context = null)
+    public function __construct(callable $callback, mixed $context = null)
     {
         $this->callback = $callback;
         $this->context = $context;
