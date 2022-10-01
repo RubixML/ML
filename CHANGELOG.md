@@ -1,3 +1,7 @@
+- 3.0.0
+    - Interval Discretizer now assigns base26 category names
+    - RBX format no longer tracks library version number
+
 - 2.2.0
     - Added Image Rotator transformer
     - Added One Vs Rest ensemble classifier

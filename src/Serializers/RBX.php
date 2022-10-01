@@ -16,8 +16,6 @@ use function get_class;
 use function array_pad;
 use function explode;
 
-use const Rubix\ML\VERSION as LIBRARY_VERSION;
-
 /**
  * RBX
  *
@@ -89,9 +87,6 @@ class RBX implements Serializer
         $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
 
         $header = JSON::encode([
-            'library' => [
-                'version' => LIBRARY_VERSION,
-            ],
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
@@ -166,7 +161,7 @@ class RBX implements Serializer
         }
 
         if ($persistable->revision() !== $header['class']['revision']) {
-            throw new ClassRevisionMismatch($header['library']['version']);
+            throw new ClassRevisionMismatch();
         }
 
         return $persistable;
