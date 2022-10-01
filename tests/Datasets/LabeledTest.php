@@ -220,6 +220,22 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
+    public function types() : void
+    {
+        $expected = [
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::categorical(),
+            DataType::continuous(),
+            DataType::categorical(),
+        ];
+
+        $this->assertEquals($expected, $this->dataset->types());
+    }
+
+    /**
+     * @test
+     */
     public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
@@ -619,9 +635,11 @@ class LabeledTest extends TestCase
                 'offset' => 3,
                 'type' => 'continuous',
                 'mean' => 0.3333333333333333,
+                'variance' => 9.792222222222222,
                 'standard deviation' => 3.129252661934191,
                 'skewness' => -0.4481030843690633,
                 'kurtosis' => -1.1330702741786107,
+                'range' => 9.0,
                 'min' => -5.0,
                 '25%' => -1.375,
                 'median' => 0.8,
@@ -682,9 +700,11 @@ class LabeledTest extends TestCase
                     'offset' => 3,
                     'type' => 'continuous',
                     'mean' => 1.125,
+                    'variance' => 12.776875,
                     'standard deviation' => 3.574475485997911,
                     'skewness' => -1.0795676577113944,
                     'kurtosis' => -0.7175867765792474,
+                    'range' => 9.0,
                     'min' => -5.0,
                     '25%' => 0.6999999999999993,
                     'median' => 2.75,
@@ -731,9 +751,11 @@ class LabeledTest extends TestCase
                     'offset' => 3,
                     'type' => 'continuous',
                     'mean' => -1.25,
+                    'variance' => 0.0625,
                     'standard deviation' => 0.25,
                     'skewness' => 0.0,
                     'kurtosis' => -2.0,
+                    'range' => 0.5,
                     'min' => -1.5,
                     '25%' => -1.375,
                     'median' => -1.25,

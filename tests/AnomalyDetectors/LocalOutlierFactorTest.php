@@ -37,7 +37,7 @@ class LocalOutlierFactorTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -78,7 +78,7 @@ class LocalOutlierFactorTest extends TestCase
             1 => new Circle(0.0, 0.0, 8.0, 1.0),
         ], [0.9, 0.1]);
 
-        $this->estimator = new LocalOutlierFactor(20, 0.1, new KDTree());
+        $this->estimator = new LocalOutlierFactor(60, 0.1, new KDTree());
 
         $this->metric = new FBeta();
 
@@ -138,7 +138,7 @@ class LocalOutlierFactorTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'k' => 20,
+            'k' => 60,
             'contamination' => 0.1,
             'tree' => new KDTree(),
 

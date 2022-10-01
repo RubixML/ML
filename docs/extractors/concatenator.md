@@ -1,13 +1,13 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Extractors/Concatenator.php">[source]</a></span>
 
 # Concatenator
-Concatenates multiple iterators by joining the tail of one with the head of another.
+Combines multiple iterators by concatenating the output of one iterator with the output of the next iterator in the series.
 
 **Interfaces:** [Extractor](api.md)
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | iterators | | array | The iterators to concatenate together. |
+| 1 | iterators | | iterable | The iterators to concatenate together. |
 
 ## Example
 ```php

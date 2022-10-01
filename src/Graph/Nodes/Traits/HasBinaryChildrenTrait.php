@@ -75,7 +75,10 @@ trait HasBinaryChildrenTrait
      */
     public function height() : int
     {
-        return 1 + max($this->left ? $this->left->height() : 0, $this->right ? $this->right->height() : 0);
+        return 1 + max(
+            $this->left ? $this->left->height() : 0,
+            $this->right ? $this->right->height() : 0
+        );
     }
 
     /**

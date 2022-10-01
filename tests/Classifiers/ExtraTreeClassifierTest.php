@@ -37,7 +37,7 @@ class ExtraTreeClassifierTest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 128;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
@@ -74,9 +74,10 @@ class ExtraTreeClassifierTest extends TestCase
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
-            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
-        ], [0.45, 0.55]);
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new ExtraTreeClassifier(30, 16, 1e-7, 3);
 
@@ -180,9 +181,9 @@ class ExtraTreeClassifierTest extends TestCase
     public function trainPredictCategorical() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
-            ->apply(new IntervalDiscretizer(5));
+            ->apply(new IntervalDiscretizer(3));
 
-        $testing = $training->take(self::TEST_SIZE);
+        $testing = $training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator->train($training);
 

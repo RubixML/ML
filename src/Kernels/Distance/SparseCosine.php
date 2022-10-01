@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 /**
  * Sparse Cosine
  *
- * A version of the Cosine distance kernel that is specifically optimized for computing sparse vectors.
+ * A version of the Cosine distance kernel that is specifically optimized for sparse vectors.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
