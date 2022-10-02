@@ -17,7 +17,7 @@ use function is_null;
  *
  * Image Vectorizer takes images of the same size and converts them into flat feature vectors
  * of raw color channel intensities. Intensities range from 0 to 255 and can either be read
- * from 1 channel (grayscale) or 3 channels (RGB color) per pixel.
+ * from any of the color channels.
  *
  * > **Note**: The GD extension is required to use this transformer.
  *

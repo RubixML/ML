@@ -33,7 +33,7 @@ class ImageVectorizerBench
 
         $this->dataset = Unlabeled::build($samples);
 
-        $this->transformer = new ImageVectorizer();
+        $this->transformer = new ImageVectorizer(true, true, true);
     }
 
     /**
