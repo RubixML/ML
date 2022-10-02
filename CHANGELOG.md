@@ -1,5 +1,6 @@
 - 3.0.0
     - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
 
 - 2.2.0
     - Added Image Rotator transformer
