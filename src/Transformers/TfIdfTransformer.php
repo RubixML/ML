@@ -236,7 +236,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
      */
     public function __toString() : string
     {
-        return "TF-IDF Transformer (smoothing: {$this->smoothing}, dampening: "
+        return "TF-IDF Transformer (smoothing: {$this->smoothing}, sublinear: "
             . Params::toString($this->sublinear) . ')';
     }
 }
