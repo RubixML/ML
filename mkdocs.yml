@@ -139,6 +139,7 @@ nav:
         - KNN Imputer: transformers/knn-imputer.md
         - Missing Data Imputer: transformers/missing-data-imputer.md
       - Natural Language:
+        - BM25 Transformer: transformers/bm25-transformer.md
         - Regex Filter: transformers/regex-filter.md
         - Text Normalizer: transformers/text-normalizer.md
         - Multibyte Text Normalizer: transformers/multibyte-text-normalizer.md

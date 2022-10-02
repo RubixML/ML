@@ -1,3 +1,6 @@
+- 2.3.0
+    - Added BM25 Transformer
+
 - 2.2.0
     - Added Image Rotator transformer
     - Added One Vs Rest ensemble classifier
