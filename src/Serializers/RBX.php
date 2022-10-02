@@ -151,7 +151,7 @@ class RBX implements Serializer
 
     /**
      * Unpack the message version, checksum, header, and payload.
-     * 
+     *
      * @param \Rubix\ML\Encoding $encoding
      * @return array<mixed>
      */
