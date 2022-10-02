@@ -57,7 +57,7 @@ class Deferred
      *
      * @return mixed
      */
-    public function __invoke()
+    public function __invoke() : mixed
     {
         return $this->compute();
     }
