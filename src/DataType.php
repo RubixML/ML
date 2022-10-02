@@ -114,14 +114,6 @@ class DataType implements Stringable
 
                 return new self(self::OTHER);
 
-            case 'resource':
-                switch (get_resource_type($value)) {
-                    case 'gd':
-                        return new self(self::IMAGE);
-                }
-
-                return new self(self::OTHER);
-
             default:
                 return new self(self::OTHER);
         }
