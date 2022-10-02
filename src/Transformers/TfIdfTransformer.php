@@ -51,7 +51,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
      *
      * @var bool
      */
-    protected bool $dampening;
+    protected bool $sublinear;
 
     /**
      * The document frequencies of each word i.e. the number of times a word appeared in a document.
@@ -76,10 +76,10 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
 
     /**
      * @param float $smoothing
-     * @param bool $dampening
+     * @param bool $sublinear
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $smoothing = 1.0, bool $dampening = false)
+    public function __construct(float $smoothing = 1.0, bool $sublinear = false)
     {
         if ($smoothing <= 0.0) {
             throw new InvalidArgumentException('Smoothing must be'
@@ -87,7 +87,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
         }
 
         $this->smoothing = $smoothing;
-        $this->dampening = $dampening;
+        $this->sublinear = $sublinear;
     }
 
     /**
@@ -192,7 +192,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$value) {
                 if ($value > 0) {
-                    if ($this->dampening) {
+                    if ($this->sublinear) {
                         $value = 1.0 + log($value);
                     }
 
@@ -237,6 +237,6 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
     public function __toString() : string
     {
         return "TF-IDF Transformer (smoothing: {$this->smoothing}, dampening: "
-            . Params::toString($this->dampening) . ')';
+            . Params::toString($this->sublinear) . ')';
     }
 }
