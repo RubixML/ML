@@ -219,7 +219,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
                 if ($value > 0) {
                     $value /= $this->idfs[$column];
 
-                    if ($this->dampening) {
+                    if ($this->sublinear) {
                         $value = exp($value - 1.0);
                     }
                 }
@@ -236,7 +236,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
      */
     public function __toString() : string
     {
-        return "TF-IDF Transformer (smoothing: {$this->smoothing}, dampening: "
+        return "TF-IDF Transformer (smoothing: {$this->smoothing}, sublinear: "
             . Params::toString($this->sublinear) . ')';
     }
 }
