@@ -180,6 +180,8 @@ class ImageVectorizer implements Transformer, Stateful
      */
     public function __toString() : string
     {
-        return 'Image Vectorizer (grayscale: ' . Params::toString($this->grayscale) . ')';
+        return 'Image Vectorizer (red: ' . Params::toString($this->red)
+            . ', green: ' . Params::toString($this->green)
+            . ', blue: ' . Params::toString($this->blue) . ')';
     }
 }
