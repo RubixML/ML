@@ -35,7 +35,7 @@ class ImageVectorizerTest extends TestCase
             [imagecreatefrompng('tests/test.png'), 'something else'],
         ]);
 
-        $this->transformer = new ImageVectorizer(false);
+        $this->transformer = new ImageVectorizer(true, true, true);
     }
 
     /**

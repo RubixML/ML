@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -27,11 +28,25 @@ use function is_null;
 class ImageVectorizer implements Transformer, Stateful
 {
     /**
-     * Encode the images as grayscale?
+     * Encode the red color channel?
      *
      * @var bool
      */
-    protected bool $grayscale;
+    protected bool $red;
+
+    /**
+     * Encode the green color channel?
+     *
+     * @var bool
+     */
+    protected bool $green;
+
+    /**
+     * Encode the blue color channel?
+     *
+     * @var bool
+     */
+    protected bool $blue;
 
     /**
      * The fixed width and height of the images for each image feature column.
@@ -41,13 +56,22 @@ class ImageVectorizer implements Transformer, Stateful
     protected ?array $sizes = null;
 
     /**
-     * @param bool $grayscale
+     * @param bool $red
+     * @param bool $green
+     * @param bool $blue
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(bool $grayscale = false)
+    public function __construct(bool $red = true, bool $green = true, bool $blue = true)
     {
         ExtensionIsLoaded::with('gd')->check();
 
-        $this->grayscale = $grayscale;
+        if (!$red and !$green and !$blue) {
+            throw new InvalidArgumentException('At least one color channel must be true.');
+        }
+
+        $this->red = $red;
+        $this->green = $green;
+        $this->blue = $blue;
     }
 
     /**
@@ -122,10 +146,15 @@ class ImageVectorizer implements Transformer, Stateful
                     for ($y = 0; $y < $height; ++$y) {
                         $pixel = imagecolorat($value, $x, $y);
 
-                        $vector[] = $pixel & 0xFF;
+                        if ($this->red) {
+                            $vector[] = $pixel & 0xFF;
+                        }
 
-                        if (!$this->grayscale) {
+                        if ($this->green) {
                             $vector[] = ($pixel >> 8) & 0xFF;
+                        }
+
+                        if ($this->blue) {
                             $vector[] = ($pixel >> 16) & 0xFF;
                         }
                     }
