@@ -13,7 +13,6 @@ use function strpos;
 use function substr;
 use function hash;
 use function get_class;
-use function array_pad;
 use function explode;
 
 /**
@@ -41,7 +40,7 @@ class RBX implements Serializer
      *
      * @var int
      */
-    protected const VERSION = 1;
+    protected const VERSION = 2;
 
     /**
      * The hashing function used to generate checksums.
@@ -104,8 +103,9 @@ class RBX implements Serializer
 
         $checksum = self::CHECKSUM_HASH_TYPE . ':' . $hash;
 
-        $data = self::IDENTIFIER_STRING;
-        $data .= self::VERSION . self::EOL;
+        $id = self::IDENTIFIER_STRING . self::VERSION;
+
+        $data = $id . self::EOL;
         $data .= $checksum . self::EOL;
         $data .= $header . self::EOL;
         $data .= $encoding;
@@ -124,25 +124,7 @@ class RBX implements Serializer
      */
     public function deserialize(Encoding $encoding) : Persistable
     {
-        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
-            throw new RuntimeException('Unrecognized message format.');
-        }
-
-        $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
-
-        [$version, $checksum, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
-
-        if (!$version or !$checksum or !$header or !$payload) {
-            throw new RuntimeException('Invalid message format.');
-        }
-
-        [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
-
-        if ($hash !== hash($type, $header)) {
-            throw new RuntimeException('Header checksum verification failed.');
-        }
-
-        $header = JSON::decode($header);
+        [$version, $header, $payload] = $this->unpackMessage($encoding);
 
         if (strlen($payload) !== $header['data']['length']) {
             throw new RuntimeException('Data is corrupted.');
@@ -165,6 +147,51 @@ class RBX implements Serializer
         }
 
         return $persistable;
+    }
+
+    /**
+     * Unpack the message version, checksum, header, and payload.
+     * 
+     * @param \Rubix\ML\Encoding $encoding
+     * @return array<mixed>
+     */
+    protected function unpackMessage(Encoding $encoding) : array
+    {
+        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
+            throw new RuntimeException('Unrecognized message identifier.');
+        }
+
+        $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
+
+        $sections = explode(self::EOL, $data, 4);
+
+        if (count($sections) !== 4) {
+            throw new RuntimeException('Invalid message format.');
+        }
+
+        [$version, $checksum, $header, $payload] = $sections;
+
+        if (!is_numeric($version)) {
+            throw new RuntimeException('Invalid message format.');
+        }
+
+        $version = (int) $version;
+
+        $checksum = explode(':', $checksum, 2);
+
+        if (count($checksum) !== 2) {
+            throw new RuntimeException('Invalid message format.');
+        }
+
+        [$type, $hash] = $checksum;
+
+        if ($hash !== hash($type, $header)) {
+            throw new RuntimeException('Header checksum verification failed.');
+        }
+
+        $header = JSON::decode($header);
+
+        return [$version, $header, $payload];
     }
 
     /**
