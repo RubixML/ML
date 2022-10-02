@@ -110,6 +110,7 @@ The library provides a number of transformers for Natural Language Processing (N
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
 |---|---|---|---|
+| [BM25 Transformer](transformers/bm25-transformer.md) | | ● | ● |
 | [Regex Filter](transformers/regex-filter.md) | | | |
 | [Text Normalizer](transformers/text-normalizer.md) | | | |
 | [Multibyte Text Normalizer](transformers/multibyte-text-normalizer.md) | | | |
