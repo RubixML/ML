@@ -160,7 +160,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, JsonSerializab
     /**
      * Return the number of feature columns in the dataset.
      *
-     * @return int
+     * @return int<0,max>
      */
     public function numColumns() : int
     {

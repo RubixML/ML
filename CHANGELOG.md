@@ -1,3 +1,6 @@
+- 0.4.3
+    - Update to Flysystem 2.1 and above
+
 - 0.4.2
     - Fix Missing Extension exception class filename
 
