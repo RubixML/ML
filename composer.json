@@ -95,7 +95,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "process-timeout": 3000
+        "process-timeout": 3000,
+        "allow-plugins": {
+            "phpstan/extension-installer": false
+        }
     },
     "funding": [
         {
