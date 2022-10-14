@@ -79,6 +79,7 @@ abstract class ExtraTree extends DecisionTree
         $columns = (array) array_rand($columns, min($maxFeatures, count($columns)));
 
         $randMax = getrandmax();
+        
         $bestColumn = $bestValue = $bestGroups = null;
         $bestImpurity = INF;
 
@@ -91,14 +92,18 @@ abstract class ExtraTree extends DecisionTree
                 $min = min($values);
                 $max = max($values);
 
-                $phi = $randMax / max(abs($max), abs($min));
+                $maxAbs = max(abs($max), abs($min));
+
+                $phi = $maxAbs != 0.0 ? $randMax / $maxAbs : $randMax;
 
                 $min = (int) floor($min * $phi);
                 $max = (int) ceil($max * $phi);
 
                 $value = rand($min, $max) / $phi;
             } else {
-                $offset = array_rand(array_unique($values));
+                $values = array_unique($values);
+                
+                $offset = array_rand($values);
 
                 $value = $values[$offset];
             }
