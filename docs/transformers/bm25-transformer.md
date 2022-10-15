@@ -1,7 +1,7 @@
-<span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Transformers/BM25Transformer.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/BM25Transformer.php">[source]</a></span>
 
 # BM25 Transformer
-BM25 is a sublinear term frequency weighting scheme that takes term frequency (TF) saturation and document length into account.
+BM25 is a sublinear term frequency weighting scheme that considers term frequency (TF), document frequency (DF), and document length into account.
 
 > **Note:** BM25 Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
 
@@ -12,8 +12,8 @@ BM25 is a sublinear term frequency weighting scheme that takes term frequency (T
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | alpha | 1.2 | float | The term frequency (TF) saturation factor. Lower values will cause TF to saturate quicker. |
-| 2 | beta | 0.75 | float | The importance of document length in normalizing the term frequency. |
+| 1 | dampening | 1.2 | float | The term frequency (TF) dampening factor. Lower values will cause the TF to saturate quicker. |
+| 2 | normalization | 0.75 | float | The importance of document length in normalizing the term frequency. |
 
 ## Example
 ```php
@@ -35,3 +35,4 @@ public averageDocumentLength() : ?float
 
 ### References
 >- S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.
+>- K. Sparck Jones et al. (2000). A probabilistic model of information retrieval: development and comparative experiments.

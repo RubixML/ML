@@ -15,14 +15,16 @@ use function log;
 /**
  * BM25 Transformer
  *
- * BM25 is a sublinear term frequency weighting scheme that takes term frequency (TF)
- * saturation and document length into account.
+ * BM25 is a sublinear term frequency weighting scheme that considers term frequency (TF),
+ * document frequency (DF), and document length into account.
  *
  * > **Note**: BM25 Transformer assumes that its inputs are made up of token frequency
  * vectors such as those created by the Word Count or Token Hashing Vectorizer.
  *
  * References:
  * [1] S. Robertson et al. (2009). The Probabilistic Relevance Framework: BM25 and Beyond.
+ * [2] K. Sparck Jones et al. (2000). A probabilistic model of information retrieval:
+ * development and comparative experiments.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -31,18 +33,18 @@ use function log;
 class BM25Transformer implements Transformer, Stateful, Elastic
 {
     /**
-     * The term frequency (TF) saturation factor. Lower values will cause TF to saturate quicker.
+     * The term frequency (TF) dampening factor. Lower values will cause TF to saturate quicker.
      *
      * @var float
      */
-    protected float $alpha;
+    protected float $dampening;
 
     /**
      * The importance of document length in normalizing the term frequency.
      *
      * @var float
      */
-    protected float $beta;
+    protected float $normalization;
 
     /**
      * The document frequencies of each word i.e. the number of times a word
@@ -64,7 +66,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      *
      * @var int|null
      */
-    protected ?int $tokenCount;
+    protected ?int $totalTokens;
 
     /**
      * The number of documents (samples) that have been fitted so far.
@@ -81,24 +83,24 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     protected ?float $averageDocumentLength;
 
     /**
-     * @param float $alpha
-     * @param float $beta
+     * @param float $dampening
+     * @param float $normalization
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(float $alpha = 1.2, float $beta = 0.75)
+    public function __construct(float $dampening = 1.2, float $normalization = 0.75)
     {
-        if ($alpha < 0.0) {
-            throw new InvalidArgumentException('Alpha must be greater'
-                . " than 0, $alpha given.");
+        if ($dampening < 0.0) {
+            throw new InvalidArgumentException('Dampening must be greater'
+                . " than 0, $dampening given.");
         }
 
-        if ($beta < 0.0 or $beta > 1.0) {
-            throw new InvalidArgumentException('Beta must be between'
-                . " 0 and 1, $beta given.");
+        if ($normalization < 0.0 or $normalization > 1.0) {
+            throw new InvalidArgumentException('Normalization must be between'
+                . " 0 and 1, $normalization given.");
         }
 
-        $this->alpha = $alpha;
-        $this->beta = $beta;
+        $this->dampening = $dampening;
+        $this->normalization = $normalization;
     }
 
     /**
@@ -151,7 +153,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     public function fit(Dataset $dataset) : void
     {
         $this->dfs = array_fill(0, $dataset->numFeatures(), 1);
-        $this->tokenCount = 0;
+        $this->totalTokens = 0;
         $this->n = 1;
 
         $this->update($dataset);
@@ -178,14 +180,14 @@ class BM25Transformer implements Transformer, Stateful, Elastic
                 if ($tf > 0) {
                     ++$this->dfs[$column];
 
-                    $this->tokenCount += $tf;
+                    $this->totalTokens += $tf;
                 }
             }
         }
 
         $this->n += $dataset->numSamples();
 
-        $this->averageDocumentLength = $this->tokenCount / $this->n;
+        $this->averageDocumentLength = $this->totalTokens / $this->n;
 
         $idfs = [];
 
@@ -211,9 +213,9 @@ class BM25Transformer implements Transformer, Stateful, Elastic
         foreach ($samples as &$sample) {
             $delta = array_sum($sample) / $this->averageDocumentLength;
 
-            $delta = 1.0 - $this->beta + $this->beta * $delta;
+            $delta = 1.0 - $this->normalization + $this->normalization * $delta;
 
-            $delta *= $this->alpha;
+            $delta *= $this->dampening;
 
             foreach ($sample as $column => &$tf) {
                 if ($tf > 0) {
@@ -231,6 +233,6 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      */
     public function __toString() : string
     {
-        return "BM25 Transformer (alpha: {$this->alpha}, beta: {$this->beta})";
+        return "BM25 Transformer (dampening: {$this->dampening}, normalization: {$this->normalization})";
     }
 }
