@@ -1,3 +1,6 @@
+- 2.3.0
+    - Add `dropFeature()` method to the dataset object API
+
 - 2.2.0
     - Added Image Rotator transformer
     - Added One Vs Rest ensemble classifier
