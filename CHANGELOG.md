@@ -1,5 +1,9 @@
 - 2.3.0
     - Added BM25 Transformer
+    - Add `dropFeature()` method to the dataset object API
+    
+- 2.2.1
+    - Fix Extra Tree divide by zero when split finding
 
 - 2.2.0
     - Added Image Rotator transformer
