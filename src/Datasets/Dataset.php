@@ -197,6 +197,21 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Drop a feature column at a given offset from the dataset.
+     *
+     * @param int $offset
+     * @return self
+     */
+    public function dropFeature(int $offset) : self
+    {
+        foreach ($this->samples as &$sample) {
+            array_splice($sample, $offset, 1);
+        }
+
+        return $this;
+    }
+
+    /**
      * Rotate the sample matrix so that the values of each feature become rows.
      *
      * @return mixed[]

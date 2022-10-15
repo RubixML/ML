@@ -101,6 +101,12 @@ Select the values of a feature column at a given offset :
 public feature(int $offset) : mixed[]
 ```
 
+## Dropping
+Drop a feature at a given column offset from the dataset:
+```php
+public dropFeature(int $offset) : self
+```
+
 ## Head and Tail
 Return the first *n* rows of data in a new dataset object:
 ```php
