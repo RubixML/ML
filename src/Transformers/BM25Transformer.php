@@ -15,8 +15,9 @@ use function log;
 /**
  * BM25 Transformer
  *
- * BM25 is a sublinear term frequency weighting scheme that considers term frequency (TF),
- * document frequency (DF), and document length into account.
+ * BM25 is a sublinear term weighting scheme that takes term frequency (TF), document frequency (DF),
+ * and document length into account. It is similar to [TF-IDF](tf-idf-transformer.md) but with variable
+ * sublinearity and the addition of document length normalization.
  *
  * > **Note**: BM25 Transformer assumes that its inputs are made up of token frequency
  * vectors such as those created by the Word Count or Token Hashing Vectorizer.
@@ -33,22 +34,24 @@ use function log;
 class BM25Transformer implements Transformer, Stateful, Elastic
 {
     /**
-     * The term frequency (TF) dampening factor. Lower values will cause TF to saturate quicker.
+     * The term frequency (TF) dampening factor i.e. the `K1` parameter in the formula.
+     * Lower values will cause the TF to saturate quicker.
      *
      * @var float
      */
     protected float $dampening;
 
     /**
-     * The importance of document length in normalizing the term frequency.
+     * The importance of document length in normalizing the term frequency i.e. the `b`
+     * parameter in the formula
      *
      * @var float
      */
     protected float $normalization;
 
     /**
-     * The document frequencies of each word i.e. the number of times a word
-     * appeared in a document given the entire corpus.
+     * The document frequencies of each word i.e. the number of times a word appeared in
+     * a document given the entire corpus.
      *
      * @var int[]|null
      */

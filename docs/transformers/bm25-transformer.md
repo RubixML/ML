@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/BM25Transformer.php">[source]</a></span>
 
 # BM25 Transformer
-BM25 is a sublinear term frequency weighting scheme that considers term frequency (TF), document frequency (DF), and document length into account.
+BM25 is a sublinear term weighting scheme that takes term frequency (TF), document frequency (DF), and document length into account. It is similar to [TF-IDF](tf-idf-transformer.md) but with variable sublinearity and the addition of document length normalization.
 
 > **Note:** BM25 Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
 
@@ -12,8 +12,8 @@ BM25 is a sublinear term frequency weighting scheme that considers term frequenc
 ## Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | dampening | 1.2 | float | The term frequency (TF) dampening factor. Lower values will cause the TF to saturate quicker. |
-| 2 | normalization | 0.75 | float | The importance of document length in normalizing the term frequency. |
+| 1 | dampening | 1.2 | float | The term frequency (TF) dampening factor i.e. the `K1` parameter in the formula. Lower values will cause the TF to saturate quicker. |
+| 2 | normalization | 0.75 | float | The importance of document length in normalizing the term frequency i.e. the `b` parameter in the formula. |
 
 ## Example
 ```php
