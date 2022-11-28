@@ -6,6 +6,7 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -37,6 +38,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Encoding;
 
 use function is_nan;
 use function count;
@@ -542,6 +544,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Export the network architecture as a graph in dot format.
+     * 
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\Encoding
+     */
+    public function exportGraphviz() : Encoding
+    {
+        if (!$this->network) {
+            throw new RuntimeException('Must train network first.');
+        }
+
+        return $this->network->exportGraphviz();
     }
 
     /**

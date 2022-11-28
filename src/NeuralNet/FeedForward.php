@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet;
 
 use Tensor\Matrix;
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
@@ -217,5 +218,34 @@ class FeedForward implements Network
         }
 
         return $loss;
+    }
+
+    /**
+     * Export the network architecture as a graph in dot format.
+     * 
+     * @return \Rubix\ML\Encoding
+     */
+    public function exportGraphviz() : Encoding
+    {
+        $dot = 'digraph Tree {' . PHP_EOL;
+        $dot .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
+
+        $layerNum = 0;
+
+        foreach ($this->layers() as $layer) {
+            ++$layerNum;
+
+            $dot .= "  N$layerNum [label=\"$layer\",style=\"rounded\"]" . PHP_EOL;
+
+            if ($layerNum > 1) {
+                $parentId = $layerNum - 1;
+
+                $dot .= "  N{$parentId} -> N{$layerNum};" . PHP_EOL;
+            }
+        }
+
+        $dot .= '}';
+
+        return new Encoding($dot);
     }
 }

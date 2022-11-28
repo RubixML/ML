@@ -88,4 +88,16 @@ class Placeholder1D implements Input
     {
         return $this->forward($input);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Placeholder 1D (inputs: {$this->inputs})";
+    }
 }

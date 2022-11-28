@@ -13,7 +13,7 @@ use Stringable;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface Hidden extends Layer, Stringable
+interface Hidden extends Layer
 {
     /**
      * Calculate the gradient and update the parameters of the layer.
