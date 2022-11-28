@@ -222,7 +222,7 @@ class FeedForward implements Network
 
     /**
      * Export the network architecture as a graph in dot format.
-     * 
+     *
      * @return \Rubix\ML\Encoding
      */
     public function exportGraphviz() : Encoding

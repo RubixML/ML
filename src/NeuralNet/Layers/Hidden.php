@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Stringable;
 
 /**
  * Hidden

@@ -513,7 +513,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
     /**
      * Export the network architecture as a graph in dot format.
-     * 
+     *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Encoding
      */

@@ -38,7 +38,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
-use Rubix\ML\Encoding;
 
 use function is_nan;
 use function count;
@@ -548,7 +547,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
     /**
      * Export the network architecture as a graph in dot format.
-     * 
+     *
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return \Rubix\ML\Encoding
      */
