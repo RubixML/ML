@@ -1,4 +1,5 @@
 - 2.3.0
+    - Added BM25 Transformer
     - Add `dropFeature()` method to the dataset object API
     
 - 2.2.1
