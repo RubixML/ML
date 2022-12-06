@@ -1,3 +1,6 @@
+- 1.3.5
+    - Fix Grid Search best model selection
+
 - 1.3.4
     - Fix Decision Tree max height terminating condition
 

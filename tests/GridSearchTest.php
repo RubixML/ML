@@ -140,5 +140,13 @@ class GridSearchTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $expectedBest = [
+            'k' => 10,
+            'weighted' => true,
+            'kernel' => new Manhattan(),
+        ];
+
+        $this->assertEquals($expectedBest, $this->estimator->base()->params());
     }
 }
