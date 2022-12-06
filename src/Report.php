@@ -90,6 +90,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if (isset($this->attributes[$key])) {

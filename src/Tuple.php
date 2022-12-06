@@ -65,6 +65,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (isset($this->elements[$offset])) {
