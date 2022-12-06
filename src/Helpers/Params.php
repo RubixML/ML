@@ -3,7 +3,6 @@
 namespace Rubix\ML\Helpers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
 use Stringable;
 
 use function count;
@@ -162,13 +161,7 @@ class Params
                     return (string) $value;
                 }
 
-                $class = get_class($value);
-
-                if ($class == false) {
-                    throw new RuntimeException('Could not locate object class.');
-                }
-
-                return self::shortName($class);
+                return self::shortName(get_class($value));
 
             case 'array':
                 return '[' . self::stringify($value, ', ') . ']';

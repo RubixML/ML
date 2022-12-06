@@ -77,7 +77,7 @@ class SparseRandomProjectorTest extends TestCase
             ->sample(0);
 
         $this->assertCount(4, $sample);
-        $this->assertEquals($expected, $sample);
+        $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
     /**
