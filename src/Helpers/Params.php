@@ -164,7 +164,7 @@ class Params
 
                 $class = get_class($value);
 
-                if ($class === false) {
+                if ($class == false) {
                     throw new RuntimeException('Could not locate object class.');
                 }
 
