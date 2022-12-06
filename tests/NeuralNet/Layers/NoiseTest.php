@@ -51,9 +51,9 @@ class NoiseTest extends TestCase
         $this->fanIn = 3;
 
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->prevGrad = new Deferred(function () {
@@ -99,7 +99,7 @@ class NoiseTest extends TestCase
         $forward = $this->layer->forward($this->input);
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
         $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
@@ -110,17 +110,17 @@ class NoiseTest extends TestCase
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
         $expected = [
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.],
+            [0.002, -6.0, -0.5],
         ];
 
         $infer = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

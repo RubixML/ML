@@ -90,7 +90,7 @@ class ZScaleStandardizerTest extends TestCase
 
         $dataset->reverseApply($this->transformer);
 
-        $this->assertEquals($original, $dataset->sample(0));
+        $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
     /**

@@ -51,9 +51,9 @@ class BatchNormTest extends TestCase
         $this->fanIn = 3;
 
         $this->input = Matrix::quick([
-            [1., 2.5, -0.1],
-            [0.1, 0., 3.],
-            [0.002, -6., -0.5],
+            [1.0, 2.5, -0.1],
+            [0.1, 00., 3.0],
+            [0.002, -6.0, -0.5],
         ]);
 
         $this->prevGrad = new Deferred(function () {
@@ -98,7 +98,7 @@ class BatchNormTest extends TestCase
         $forward = $this->layer->forward($this->input);
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
         $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
@@ -109,7 +109,7 @@ class BatchNormTest extends TestCase
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
         $expected = [
             [-0.12607831595417437, 1.2804902385302876, -1.1575619225761131],
@@ -120,6 +120,6 @@ class BatchNormTest extends TestCase
         $infer = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }
