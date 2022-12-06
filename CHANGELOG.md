@@ -1,3 +1,6 @@
+- 2.2.2
+    - Fix Grid Search best model selection
+
 - 2.2.1
     - Fix Extra Tree divide by zero when split finding
 
