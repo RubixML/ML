@@ -226,7 +226,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->column()] < $value) {
+                    if ($sample[$current->column()] <= $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
