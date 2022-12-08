@@ -1,3 +1,6 @@
+- 1.3.6
+    - Fix decision tree off-by-one when searching for leaf node
+
 - 1.3.5
     - Fix Grid Search best model selection
 
