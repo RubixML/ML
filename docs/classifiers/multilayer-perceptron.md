@@ -91,6 +91,8 @@ $dot = $estimator->exportGraphviz();
 Graphviz::dotToImage($dot)->saveTo(new Filesystem('network.png'));
 ```
 
+![Neural Network Graph](https://github.com/RubixML/ML/blob/master/docs/images/neural-network-graph.png?raw=true)
+
 ## References
 [^1]: G. E. Hinton. (1989). Connectionist learning procedures.
 [^2]: L. Prechelt. (1997). Early Stopping - but when?
