@@ -199,4 +199,16 @@ class Binary implements Output
         return $this->sigmoid->differentiate($input, $output)
             ->multiply($dLoss);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Binary (cost function: {$this->costFn})";
+    }
 }

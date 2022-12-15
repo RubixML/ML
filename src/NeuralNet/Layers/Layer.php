@@ -3,8 +3,9 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
+use Stringable;
 
-interface Layer
+interface Layer extends Stringable
 {
     /**
      * The width of the layer. i.e. the number of neurons or computation nodes.

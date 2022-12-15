@@ -137,4 +137,16 @@ class Continuous implements Output
         return $this->costFn->differentiate($input, $expected)
             ->divide($input->n());
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Continuous (cost function: {$this->costFn})";
+    }
 }

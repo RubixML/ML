@@ -77,6 +77,22 @@ Returns the underlying neural network instance or `null` if untrained:
 public network() : Network|null
 ```
 
+Export a Graphviz "dot" encoding of the neural network architecture.
+```php
+public exportGraphviz() : Encoding
+```
+
+```php
+use Rubix\ML\Helpers\Graphviz;
+use Rubix\ML\Persisters\Filesystem;
+
+$dot = $estimator->exportGraphviz();
+
+Graphviz::dotToImage($dot)->saveTo(new Filesystem('network.png'));
+```
+
+![Neural Network Graph](https://github.com/RubixML/ML/blob/master/docs/images/neural-network-graph.png?raw=true)
+
 ## References
 [^1]: G. E. Hinton. (1989). Connectionist learning procedures.
 [^2]: L. Prechelt. (1997). Early Stopping - but when?
