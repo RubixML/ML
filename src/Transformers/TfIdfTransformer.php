@@ -24,7 +24,7 @@ use function log;
  * and is offset by the frequency of the word in the corpus.
  *
  * > **Note**: TF-IDF Transformer assumes that its input is made up of term frequency
- * vectors such as those created by Word Count Vectorizer.
+ * vectors such as those created by Word Count or Token Hashing Vectorizer.
  *
  * References:
  * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical

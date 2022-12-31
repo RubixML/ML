@@ -144,6 +144,25 @@ class LabeledTest extends TestCase
     /**
      * @test
      */
+    public function dropFeature() : void
+    {
+        $expected = [
+            ['nice', 'friendly', 4.0],
+            ['mean', 'loner', -1.5],
+            ['nice', 'friendly', 2.6],
+            ['mean', 'friendly', -1.0],
+            ['nice', 'friendly', 2.9],
+            ['nice', 'loner', -5.0],
+        ];
+
+        $this->dataset->dropFeature(1);
+
+        $this->assertEquals($expected, $this->dataset->samples());
+    }
+
+    /**
+     * @test
+     */
     public function numFeatures() : void
     {
         $this->assertEquals(4, $this->dataset->numFeatures());
