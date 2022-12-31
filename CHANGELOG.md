@@ -3,6 +3,9 @@
     - Add `dropFeature()` method to the dataset object API
     - Add neural network architecture visualization via GraphViz
     
+- 2.2.2
+    - Fix Grid Search best model selection
+
 - 2.2.1
     - Fix Extra Tree divide by zero when split finding
 
