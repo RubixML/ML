@@ -34,6 +34,7 @@ class RegexFilterTest extends TestCase
             ['A man who procrastinates in @his choosing will inevitably have his choice    made for him by #circumstance'],
             ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
             ['Diese äpfel Äpfel schmecken sehr gut'],
+            ['The quick 😀 brown 🦊 jumped over the lazy 🛌 man sitting at a bus stop 🚍 drinking a can of 🥤']
         ]);
 
         $this->transformer = new RegexFilter([
@@ -44,6 +45,7 @@ class RegexFilterTest extends TestCase
             RegexFilter::MENTION,
             RegexFilter::HASHTAG,
             RegexFilter::EXTRA_WHITESPACE,
+            RegexFilter::EMOJIS,
         ]);
     }
 
@@ -69,6 +71,7 @@ class RegexFilterTest extends TestCase
             ['A man who procrastinates in choosing will inevitably have his choice made for him by '],
             ['The quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of cola'],
             ['Diese Äpfel schmecken sehr gut'],
+            ['The quick  brown  jumped over the lazy  man sitting at a bus stop  drinking a can of '],
         ];
 
         $this->assertEquals($expected, $this->dataset->samples());
