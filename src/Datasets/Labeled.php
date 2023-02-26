@@ -192,7 +192,7 @@ class Labeled extends Dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return int|float|string
      */
-    public function label(int $offset)
+    public function label(int $offset) : int|float|string
     {
         if (!isset($this->labels[$offset])) {
             throw new InvalidArgumentException("Row at offset $offset not found.");
@@ -592,7 +592,7 @@ class Labeled extends Dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, $value) : array
+    public function splitByFeature(int $column, string|int|float $value) : array
     {
         $type = $this->featureType($column);
 
