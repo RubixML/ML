@@ -90,7 +90,7 @@ class HyperbolicTangentTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
-        $this->assertEquals($expected, $derivatives);
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 
     /**

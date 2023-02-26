@@ -285,7 +285,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
         $scores = $this->backend->process();
 
-        array_multisort($scores, $combinations, SORT_DESC);
+        array_multisort($scores, SORT_DESC, $combinations);
 
         $best = reset($combinations) ?: [];
 

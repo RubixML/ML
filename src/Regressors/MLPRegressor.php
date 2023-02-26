@@ -6,6 +6,7 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
@@ -508,6 +509,21 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $activations = array_column($activations->asArray(), 0);
 
         return $activations;
+    }
+
+    /**
+     * Export the network architecture as a graph in dot format.
+     *
+     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @return \Rubix\ML\Encoding
+     */
+    public function exportGraphviz() : Encoding
+    {
+        if (!$this->network) {
+            throw new RuntimeException('Must train network first.');
+        }
+
+        return $this->network->exportGraphviz();
     }
 
     /**

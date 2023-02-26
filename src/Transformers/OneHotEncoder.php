@@ -116,13 +116,13 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
             foreach ($this->categories as $column => $categories) {
                 $category = $sample[$column];
 
-                $template = array_fill(0, count($categories), 0);
+                $vector = array_fill(0, count($categories), 0);
 
                 if (isset($categories[$category])) {
-                    $template[$categories[$category]] = 1;
+                    $vector[$categories[$category]] = 1;
                 }
 
-                $vectors[] = $template;
+                $vectors[] = $vector;
 
                 unset($sample[$column]);
             }

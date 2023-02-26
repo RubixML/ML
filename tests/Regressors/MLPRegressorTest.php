@@ -6,12 +6,15 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -192,6 +195,13 @@ class MLPRegressorTest extends TestCase
         $this->estimator->partial($folds[2]);
 
         $this->assertTrue($this->estimator->trained());
+
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
 
         $losses = $this->estimator->losses();
 
