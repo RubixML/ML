@@ -39,6 +39,8 @@
         "rubix/tensor": "^3.0",
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/polyfill-php81": "^1.26",
+        "symfony/polyfill-php82": "^1.27",
+        "symfony/polyfill-php83": "^1.27",
         "wamania/php-stemmer": "^2.0"
     },
     "require-dev": {
