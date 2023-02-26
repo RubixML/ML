@@ -60,9 +60,10 @@ class NDJSON implements Extractor, Exporter
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $overwrite
      * @throws \Rubix\ML\Exceptions\RuntimeException
      */
-    public function export(iterable $iterator) : void
+    public function export(iterable $iterator, bool $overwrite = false) : void
     {
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("Path {$this->path} is not writable.");
@@ -72,7 +73,7 @@ class NDJSON implements Extractor, Exporter
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
-        $handle = fopen($this->path, 'w');
+        $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
