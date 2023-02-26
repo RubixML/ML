@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers
 
@@ -8,6 +9,17 @@
     - Fix PSR-3 log version compatibility issue
     - Check for correct version of RBX format
 
+=======
+- 3.0.0
+    - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
+    - Interval Discretizer now assigns base26 category names
+    - RBX format no longer tracks library version number
+    - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
+    
+>>>>>>> e0e189b9 (Exporter append by default (#277))
 - 2.3.0
     - Added BM25 Transformer
     - Add `dropFeature()` method to the dataset object API
