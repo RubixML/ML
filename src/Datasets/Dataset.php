@@ -590,10 +590,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @internal
      *
      * @param int $offset
-     * @param mixed $value
+     * @param string|int|float $value
      * @return array{self,self}
      */
-    abstract public function splitByFeature(int $offset, $value) : array;
+    abstract public function splitByFeature(int $offset, string|int|float $value) : array;
 
     /**
      * Partition the dataset into left and right subsets based on the samples' distances from two centroids.

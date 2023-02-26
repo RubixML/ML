@@ -155,7 +155,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      * @param list<string|int|float> $sample
      * @return int|float
      */
-    public function predictSample(array $sample)
+    public function predictSample(array $sample) : int|float
     {
         /** @var \Rubix\ML\Graph\Nodes\Average $node */
         $node = $this->search($sample);
