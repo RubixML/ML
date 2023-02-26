@@ -19,6 +19,7 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 - [Color Clusterer](https://github.com/RubixML/Colors)
 - [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
+- [Customer Churn Predictor](https://github.com/RubixML/Churn)
 - [Divorce Predictor](https://github.com/RubixML/Divorce)
 - [DNA Taxonomer](https://github.com/RubixML/DNA)
 - [Dota 2 Game Outcome Predictor](https://github.com/RubixML/Dota2)
