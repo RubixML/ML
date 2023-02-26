@@ -41,9 +41,9 @@ class Isolator implements HasBinaryChildren
     /**
      * The value that the node splits on.
      *
-     * @var int|float|string
+     * @var string|int|float
      */
-    protected $value;
+    protected string|int|float $value;
 
     /**
      * The left and right subsets of the training data.
@@ -93,7 +93,7 @@ class Isolator implements HasBinaryChildren
      * @param array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset} $subsets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $subsets)
+    public function __construct(int $column, string|int|float $value, array $subsets)
     {
         $this->column = $column;
         $this->value = $value;
@@ -113,9 +113,9 @@ class Isolator implements HasBinaryChildren
     /**
      * Return the split value.
      *
-     * @return int|float|string
+     * @return string|int|float
      */
-    public function value()
+    public function value() : string|int|float
     {
         return $this->value;
     }

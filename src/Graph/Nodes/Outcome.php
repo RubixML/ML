@@ -20,5 +20,5 @@ interface Outcome extends Decision, BinaryNode, Stringable
      *
      * @return string|int|float
      */
-    public function outcome();
+    public function outcome() : string|int|float;
 }

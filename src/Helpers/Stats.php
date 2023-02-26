@@ -106,9 +106,9 @@ class Stats
      * @param mixed[] $values
      * @param float $q
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return float
+     * @return int|float
      */
-    public static function quantile(array $values, float $q) : float
+    public static function quantile(array $values, float $q) : int|float
     {
         return current(self::quantiles($values, [$q])) ?: NAN;
     }

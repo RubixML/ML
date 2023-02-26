@@ -205,4 +205,16 @@ class Multiclass implements Output
         return $this->softmax->differentiate($input, $output)
             ->multiply($dLoss);
     }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return "Multiclass (cost function: {$this->costFn})";
+    }
 }

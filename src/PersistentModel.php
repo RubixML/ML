@@ -220,7 +220,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
      * @param mixed[] $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         return $this->base->$name(...$arguments);
     }

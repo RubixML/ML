@@ -4,7 +4,7 @@
 *Term Frequency - Inverse Document Frequency* is a measurement of how important a word is to a document. The TF-IDF value increases with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
 
 !!! note
-    TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count Vectorizer](word-count-vectorizer.md).
+    TF-IDF Transformer assumes that its inputs are token frequency vectors such as those created by [Word Count](word-count-vectorizer.md) or [Token Hashing](token-hashing-vectorizer.md) Vectorizer.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Reversible](api.md#reversible), [Persistable](../persistable.md)
 
@@ -14,7 +14,7 @@
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to add to the IDFs. |
-| 2 | dampening | false | bool | Should we apply a sub-linear function to dampen the effect of recurring tokens? |
+| 2 | sublinear | false | bool | Should we apply a sub-linear function to dampen the effect of recurring tokens? |
 
 ## Example
 ```php

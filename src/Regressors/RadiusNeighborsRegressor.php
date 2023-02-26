@@ -198,7 +198,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @param list<string|int|float> $sample
      * @return int|float
      */
-    public function predictSample(array $sample)
+    public function predictSample(array $sample) : int|float
     {
         [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 

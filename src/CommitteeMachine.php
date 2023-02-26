@@ -311,7 +311,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      * @param list<int|string> $votes
      * @return string|int
      */
-    protected function decideDiscrete(array $votes)
+    protected function decideDiscrete(array $votes) : string|int
     {
         $scores = $this->classes;
 

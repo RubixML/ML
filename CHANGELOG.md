@@ -1,6 +1,20 @@
 - 3.0.0
+    - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
     - Interval Discretizer now assigns base26 category names
     - RBX format no longer tracks library version number
+    
+- 2.3.0
+    - Added BM25 Transformer
+    - Add `dropFeature()` method to the dataset object API
+    - Add neural network architecture visualization via GraphViz
+    
+- 2.2.2
+    - Fix Grid Search best model selection
+
+- 2.2.1
+    - Fix Extra Tree divide by zero when split finding
 
 - 2.2.0
     - Added Image Rotator transformer

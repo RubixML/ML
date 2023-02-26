@@ -285,7 +285,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
         $scores = $this->backend->process();
 
-        array_multisort($scores, $combinations, SORT_DESC);
+        array_multisort($scores, SORT_DESC, $combinations);
 
         $best = reset($combinations) ?: [];
 
@@ -339,7 +339,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * @param mixed[] $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         return $this->base->$name(...$arguments);
     }
