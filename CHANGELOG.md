@@ -1,6 +1,7 @@
 - 3.0.0
     - Dropped support for PHP 7.4
     - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
 
 - 2.2.0
     - Added Image Rotator transformer
