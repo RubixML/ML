@@ -475,10 +475,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Write the dataset to the location and format given by a writable extractor.
      *
      * @param \Rubix\ML\Extractors\Exporter $extractor
+     * @param bool $overwrite
      */
-    public function exportTo(Exporter $extractor) : void
+    public function exportTo(Exporter $extractor, bool $overwrite = false) : void
     {
-        $extractor->export($this);
+        $extractor->export($this, $overwrite);
     }
 
     /**

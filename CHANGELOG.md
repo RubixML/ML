@@ -5,6 +5,7 @@
     - Interval Discretizer now assigns base26 category names
     - RBX format no longer tracks library version number
     - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
     
 - 2.3.0
     - Added BM25 Transformer
