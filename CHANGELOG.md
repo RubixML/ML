@@ -3,6 +3,7 @@
     - Renamed TF-IDF dampening parameter to sublinear
     - Update to PSR-3 Log version 3
     - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
     
 - 2.3.0
     - Added BM25 Transformer

@@ -131,7 +131,7 @@ class CSV implements Extractor, Exporter
         }
 
         $handle = fopen($this->path, $overwrite ? 'w' : 'a');
-        
+
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
