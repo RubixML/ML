@@ -141,6 +141,10 @@ class RBX implements Serializer
             throw new RuntimeException('Invalid message format.');
         }
 
+        if ($version != self::VERSION) {
+            throw new RuntimeException("Incompatible with RBX version $version.");
+        }
+
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
 
         if ($hash !== hash($type, $header)) {
