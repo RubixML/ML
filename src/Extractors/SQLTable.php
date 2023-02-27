@@ -80,18 +80,6 @@ class SQLTable implements Extractor
         return array_keys(iterator_first($this));
     }
 
-        /**
-         * Export an iterable data table.
-         *
-         * @param iterable<mixed[]> $iterator
-         * @param bool $overwrite
-         * @throws \Rubix\ML\Exceptions\RuntimeException
-         */
-    public function export(iterable $iterator, bool $overwrite = false) : void
-    {
-        //
-    }
-
     /**
      * Return an iterator for the records in the data table.
      *
