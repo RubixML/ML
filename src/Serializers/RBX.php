@@ -148,6 +148,10 @@ class RBX implements Serializer
 
         $header = JSON::decode($header);
 
+        if ($version <= 0 or $version > 2) {
+            throw new RuntimeException("Incompatible with RBX version $version.");
+        }
+
         if (strlen($payload) !== $header['data']['length']) {
             throw new RuntimeException('Data is corrupted.');
         }
