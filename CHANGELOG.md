@@ -7,6 +7,9 @@
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
     
+- 2.3.1
+    - Check for correct version of RBX format
+
 - 2.3.0
     - Added BM25 Transformer
     - Add `dropFeature()` method to the dataset object API
