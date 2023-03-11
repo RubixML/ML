@@ -8,6 +8,7 @@
     - Exportable Extractors now append by default with option to overwrite
     
 - 2.3.1
+    - Fix PSR-3 log version compatibility issue
     - Check for correct version of RBX format
 
 - 2.3.0
