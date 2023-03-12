@@ -100,7 +100,6 @@ class SVCTest extends TestCase
         }
     }
 
-
     /**
      * @test
      */
