@@ -91,6 +91,17 @@ class SVCTest extends TestCase
     }
 
     /**
+     * @after
+     */
+    protected function tearDown() : void
+    {
+        if (file_exists('svc.model')) {
+            unlink('svc.model');
+        }
+    }
+
+
+    /**
      * @test
      */
     public function build() : void
@@ -139,7 +150,7 @@ class SVCTest extends TestCase
     /**
      * @test
      */
-    public function trainPredict() : void
+    public function trainSaveLoadPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -150,6 +161,10 @@ class SVCTest extends TestCase
         $this->estimator->train($dataset);
 
         $this->assertTrue($this->estimator->trained());
+
+        $this->estimator->save('svc.model');
+
+        $this->estimator->load('svc.model');
 
         $predictions = $this->estimator->predict($testing);
 
