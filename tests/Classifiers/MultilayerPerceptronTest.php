@@ -101,7 +101,7 @@ class MultilayerPerceptronTest extends TestCase
             new Noise(1e-5),
             new Dense(8),
             new Activation(new LeakyReLU(0.1)),
-        ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 0.1, new CrossEntropy(), new FBeta());
+        ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 5, 0.1, new CrossEntropy(), new FBeta());
 
         $this->metric = new FBeta();
 
@@ -178,6 +178,7 @@ class MultilayerPerceptronTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-3,
+            'validation interval' => 5,
             'window' => 5,
             'hold out' => 0.1,
             'cost fn' => new CrossEntropy(),
