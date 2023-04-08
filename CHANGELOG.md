@@ -6,6 +6,8 @@
     - RBX format no longer tracks library version number
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
+    - Added validation interval parameter to MLPs and GBM Learners
+    - Removed output layer L2 Penalty parameter from MLP Learners
     
 - 2.3.1
     - Fix PSR-3 log version compatibility issue

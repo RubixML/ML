@@ -120,6 +120,13 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected float $minChange;
 
     /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected $evalInterval;
+
+    /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
@@ -181,6 +188,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
@@ -192,6 +200,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-4,
+        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?Metric $metric = null
@@ -221,6 +230,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 . " greater than 0, $minChange given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
@@ -240,6 +254,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->metric = $metric ?? new FBeta();
@@ -284,6 +299,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'metric' => $this->metric,
@@ -423,7 +439,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 break;
             }
 
-            if (isset($zTest)) {
+            if ($epoch % $this->evalInterval === 0 && isset($zTest)) {
                 $predictions = [];
 
                 foreach ($zTest as $value) {
@@ -436,12 +452,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: $epoch, Cross Entropy: $loss";
 
-                $message = "Epoch: $epoch, "
-                    . "Cross Entropy: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
+                if (isset($score)) {
+                    $message .= ", {$this->metric}: $score";
+                }
 
                 $this->logger->info($message);
             }
@@ -463,6 +478,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
+
+                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

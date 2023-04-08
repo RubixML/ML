@@ -79,7 +79,7 @@ class LogitBoostTest extends TestCase
             'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
         ], [0.4, 0.6]);
 
-        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 5, 0.1, new FBeta());
+        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 3, 5, 0.1, new FBeta());
 
         $this->metric = new FBeta();
 
@@ -132,12 +132,13 @@ class LogitBoostTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'min change' => 0.0001,
-            'window' => 5,
             'booster' => new RegressionTree(3),
             'rate' => 0.1,
             'ratio' => 0.5,
             'epochs' => 1000,
+            'min change' => 0.0001,
+            'eval interval' => 3,
+            'window' => 5,
             'hold out' => 0.1,
             'metric' => new FBeta(1),
         ];

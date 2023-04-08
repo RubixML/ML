@@ -77,7 +77,7 @@ class GradientBoostTest extends TestCase
     {
         $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.3, 300, 1e-4, 10, 0.1, new RMSE());
+        $this->estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.3, 300, 1e-4, 3, 10, 0.1, new RMSE());
 
         $this->metric = new RSquared();
 
@@ -154,6 +154,7 @@ class GradientBoostTest extends TestCase
             'ratio' => 0.3,
             'epochs' => 300,
             'min change' => 0.0001,
+            'eval interval' => 3,
             'window' => 10,
             'hold out' => 0.1,
             'metric' => new RMSE(),

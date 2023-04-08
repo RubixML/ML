@@ -92,7 +92,7 @@ class MLPRegressorTest extends TestCase
             new Activation(new SiLU()),
             new Dense(8),
             new Activation(new SiLU()),
-        ], 32, new Adam(0.01), 1e-4, 100, 1e-4, 5, 0.1, new LeastSquares(), new RMSE());
+        ], 32, new Adam(0.01), 100, 1e-4, 3, 5, 0.1, new LeastSquares(), new RMSE());
 
         $this->metric = new RSquared();
 
@@ -165,9 +165,9 @@ class MLPRegressorTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(0.01),
-            'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
+            'eval interval' => 3,
             'window' => 5,
             'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
