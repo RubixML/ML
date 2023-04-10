@@ -10,7 +10,7 @@ $ composer require rubix/ml
 
 **Recommended**
 
-- [Tensor extension](https://github.com/Scien-ide/Tensor) for fast Matrix/Vector computing
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 
 **Optional**
 
