@@ -20,7 +20,7 @@ class Sentence implements Tokenizer
      *
      * @var string
      */
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+    protected const SENTENCE_REGEX = '/([!\.\?⸮؟]+)[ \n("')]/ig';
 
     /**
      * Tokenize a blob of text.
