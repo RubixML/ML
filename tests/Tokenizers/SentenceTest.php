@@ -21,7 +21,7 @@ class SentenceTest extends TestCase
     /**
      * @before
      */
-    protected function setUp(): void
+    protected function setUp() : void
     {
         $this->tokenizer = new Sentence();
     }
@@ -29,7 +29,7 @@ class SentenceTest extends TestCase
     /**
      * @test
      */
-    public function build(): void
+    public function build() : void
     {
         $this->assertInstanceOf(Sentence::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
@@ -39,7 +39,7 @@ class SentenceTest extends TestCase
      * @test
      * @dataProvider tokenizeProvider
      */
-    public function tokenize(string $text, array $expected): void
+    public function tokenize(string $text, array $expected) : void
     {
         $tokens = $this->tokenizer->tokenize($text);
 
@@ -50,7 +50,7 @@ class SentenceTest extends TestCase
     /**
      * @return \Generator<mixed[]>
      */
-    public function tokenizeProvider(): Generator
+    public function tokenizeProvider() : Generator
     {
         /**
          * English
