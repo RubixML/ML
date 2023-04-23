@@ -19,7 +19,7 @@ $ composer require rubix/ml
 - [PHP](https://php.net/manual/en/install.php) 7.4 or above
 
 #### Recommended
-- [Tensor extension](https://github.com/Scien-ide/Tensor) for fast Matrix/Vector computing
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 
 #### Optional
 
