@@ -116,6 +116,13 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     protected float $minChange;
 
     /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected $evalInterval;
+
+    /**
      * The number of epochs without improvement in the validation score to wait before considering an
      * early stop.
      *
@@ -180,6 +187,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
@@ -191,6 +199,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-4,
+        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?Metric $metric = null
@@ -220,6 +229,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . " greater than 0, $minChange given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
@@ -239,6 +253,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->metric = $metric ?? new RMSE();
@@ -283,6 +298,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'metric' => $this->metric,
@@ -399,19 +415,18 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->losses[$epoch] = $loss;
 
-            if (isset($outTest)) {
+            if ($epoch % $this->evalInterval === 0 && isset($outTest)) {
                 $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: $epoch, L2 Loss: $loss";
 
-                $message = "Epoch: $epoch, "
-                    . "L2 Loss: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
+                if (isset($score)) {
+                    $message .= ", {$this->metric}: $score";
+                }
 
                 $this->logger->info($message);
             }
@@ -441,6 +456,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
+
+                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

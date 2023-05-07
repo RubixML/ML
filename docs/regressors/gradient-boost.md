@@ -21,9 +21,10 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate before terminating. |
 | 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 6 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 7 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 8 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
+| 6 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 7 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
+| 9 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
 ```php
@@ -31,7 +32,7 @@ use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 
-$estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 10, 0.1, new SMAPE());
+$estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 10, 0.1, new SMAPE());
 ```
 
 ## Additional Methods
