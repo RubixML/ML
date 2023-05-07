@@ -87,13 +87,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
-     * The amount of L2 regularization applied to the weights of the output layer.
-     *
-     * @var float
-     */
-    protected float $l2Penalty;
-
-    /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
      * @var int<0,max>
@@ -106,6 +99,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float
      */
     protected float $minChange;
+
+    /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -167,9 +167,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
@@ -180,9 +180,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         array $hiddenLayers = [],
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
+        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
@@ -200,11 +200,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($l2Penalty < 0.0) {
-            throw new InvalidArgumentException('L2 Penalty must be'
-                . " greater than 0, $l2Penalty given.");
-        }
-
         if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
@@ -213,6 +208,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
+        }
+
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
         }
 
         if ($window < 1) {
@@ -232,9 +232,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new CrossEntropy();
@@ -280,9 +280,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
@@ -367,7 +367,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), $this->l2Penalty, true, new Xavier1());
+        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
@@ -448,7 +448,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            if (!$testing->empty()) {
+            if ($epoch % $this->evalInterval === 0 && !$testing->empty()) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
@@ -457,12 +457,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                $message = "Epoch: $epoch, "
-                    . "{$this->costFn}: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
+                if (isset($score)) {
+                    $message .= ", {$this->metric}: $score";
+                }
 
                 $this->logger->info($message);
             }
@@ -486,6 +485,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
+
+                unset($score);
             }
 
             if ($lossChange < $this->minChange) {
