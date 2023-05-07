@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Loggers;
 
+use Stringable;
+
 /**
  * Black Hole
  *
@@ -20,7 +22,7 @@ class BlackHole extends Logger
      * @param string $message
      * @param mixed[] $context
      */
-    public function log($level, $message, array $context = []) : void
+    public function log($level, string|Stringable $message, array $context = []) : void
     {
         // ⬤
     }

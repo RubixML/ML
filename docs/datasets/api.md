@@ -369,13 +369,14 @@ public deduplicate() : self
 ```
 
 ## Exporting
-Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor:
+Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor. If `overwrite` is true then the current samples will be overwritten, otherwise they will be appended if the file or database already exists.
+
 ```php
-public exportTo(Writable $extractor) : void
+public exportTo(Writable $extractor, bool $overwrite = false) : void
 ```
 
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset->exportTo(new NDJSON('example.ndjson'));
+$dataset->exportTo(new NDJSON('example.ndjson'), false);
 ```

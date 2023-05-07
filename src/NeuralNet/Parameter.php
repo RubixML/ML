@@ -82,7 +82,7 @@ class Parameter
     /**
      * Perform a deep copy of the object upon cloning.
      */
-    public function __clone()
+    public function __clone() : void
     {
         $this->param = clone $this->param;
     }

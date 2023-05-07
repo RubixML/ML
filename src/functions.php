@@ -165,11 +165,13 @@ namespace Rubix\ML
      * @param iterable<mixed> $iterator
      * @return mixed
      */
-    function iterator_first(iterable $iterator)
+    function iterator_first(iterable $iterator) : mixed
     {
         foreach ($iterator as $element) {
             return $element;
         }
+
+        throw new RuntimeException('Iterator did not return any elements.');
     }
 
     /**

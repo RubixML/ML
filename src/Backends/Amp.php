@@ -87,7 +87,7 @@ class Amp implements Backend
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
+    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void
     {
         $task = new CallableTask($task, []);
 
@@ -106,7 +106,7 @@ class Amp implements Backend
      * @param mixed $context
      * @return \Generator<\Amp\Promise>
      */
-    public function coroutine(AmpTask $task, ?callable $after = null, $context = null) : Generator
+    public function coroutine(AmpTask $task, ?callable $after = null, mixed $context = null) : Generator
     {
         $result = yield $this->pool->enqueue($task);
 

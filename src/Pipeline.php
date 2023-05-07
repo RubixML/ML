@@ -258,7 +258,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      * @param mixed[] $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         foreach ($arguments as $argument) {
             if ($argument instanceof Dataset) {

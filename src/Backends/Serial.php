@@ -35,9 +35,9 @@ class Serial implements Backend
      *
      * @param \Rubix\ML\Backends\Tasks\Task $task
      * @param callable(mixed,mixed):void|null $after
-     * @param mixed|null $context
+     * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
+    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void
     {
         $this->queue[] = [$task, $after, $context];
     }

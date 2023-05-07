@@ -1,6 +1,16 @@
+- 3.0.0
+    - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
+    - Interval Discretizer now assigns base26 category names
+    - RBX format no longer tracks library version number
+    - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
+    - Add numParams() method to Network object
+
 - 2.3.2
     - Update PHP Stemmer to version 3
-
+    
 - 2.3.1
     - Fix PSR-3 log version compatibility issue
     - Check for correct version of RBX format

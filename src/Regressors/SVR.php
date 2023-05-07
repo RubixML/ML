@@ -230,7 +230,7 @@ class SVR implements Estimator, Learner
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return int|float
      */
-    public function predictSample(array $sample)
+    public function predictSample(array $sample) : int|float
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
