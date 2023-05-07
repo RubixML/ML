@@ -7,6 +7,9 @@
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
     
+- 2.3.2
+    - Update PHP Stemmer to version 3
+
 - 2.3.1
     - Fix PSR-3 log version compatibility issue
     - Check for correct version of RBX format
