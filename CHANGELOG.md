@@ -8,6 +8,7 @@
     - Exportable Extractors now append by default with option to overwrite
     - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
+    - Remove Network interface
     
 - 2.3.2
     - Update PHP Stemmer to version 3

@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -17,9 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\FeedForward
+ * @covers \Rubix\ML\NeuralNet\Network
  */
-class FeedForwardTest extends TestCase
+class NetworkTest extends TestCase
 {
     /**
      * @var \Rubix\ML\Datasets\Labeled
@@ -27,7 +26,7 @@ class FeedForwardTest extends TestCase
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\NeuralNet\FeedForward
+     * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 
@@ -69,7 +68,7 @@ class FeedForwardTest extends TestCase
 
         $this->output = new Multiclass(['yes', 'no', 'maybe'], new CrossEntropy());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
+        $this->network = new Network($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
     /**
@@ -77,7 +76,7 @@ class FeedForwardTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(FeedForward::class, $this->network);
+        $this->assertInstanceOf(Network::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
 

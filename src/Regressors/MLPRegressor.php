@@ -14,7 +14,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -137,9 +137,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\FeedForward|null
+     * @var \Rubix\ML\NeuralNet\Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
+    protected ?\Rubix\ML\NeuralNet\Network $network = null;
 
     /**
      * The validation scores at each epoch from the last training session.
@@ -335,9 +335,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\FeedForward|null
+     * @return \Rubix\ML\NeuralNet\Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
     }
@@ -355,7 +355,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier2());
 
-        $this->network = new FeedForward(
+        $this->network = new Network(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),

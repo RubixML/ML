@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Activation;
@@ -34,7 +34,7 @@ class SnapshotTest extends TestCase
      */
     public function take() : void
     {
-        $network = new FeedForward(new Placeholder1D(1), [
+        $network = new Network(new Placeholder1D(1), [
             new Dense(10),
             new Activation(new ELU()),
             new Dense(5),

@@ -14,7 +14,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -107,9 +107,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\FeedForward|null
+     * @var \Rubix\ML\NeuralNet\Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
+    protected ?\Rubix\ML\NeuralNet\Network $network = null;
 
     /**
      * The unique class labels.
@@ -266,9 +266,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\FeedForward|null
+     * @return \Rubix\ML\NeuralNet\Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
     }
@@ -288,7 +288,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(
+        $this->network = new Network(
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new Xavier1())],
             new Binary($classes, $this->costFn),
