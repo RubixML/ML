@@ -59,7 +59,7 @@ class Parameter
     /**
      * Return the wrapped parameter.
      *
-     * @return mixed
+     * @return \Tensor\Tensor
      */
     public function param()
     {
