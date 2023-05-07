@@ -82,7 +82,7 @@ class FeedForwardTest extends TestCase
     }
 
     /**
-     * @testS
+     * @test
      */
     public function layers() : void
     {
