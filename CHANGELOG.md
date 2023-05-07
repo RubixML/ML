@@ -20,6 +20,7 @@
     - Exportable Extractors now append by default with option to overwrite
     - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
+    - Added GELU activation function
     
 >>>>>>> e0e189b9 (Exporter append by default (#277))
 - 2.3.0

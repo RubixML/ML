@@ -164,6 +164,7 @@ nav:
         - Swish: neural-network/hidden-layers/swish.md
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
+        - GELU: neural-network/activation-functions/gelu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
         - Leaky ReLU: neural-network/activation-functions/leaky-relu.md
         - ReLU: neural-network/activation-functions/relu.md
