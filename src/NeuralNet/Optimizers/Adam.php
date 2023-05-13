@@ -122,11 +122,15 @@ class Adam implements Optimizer, Adaptive
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply(1.0 - $this->momentumDecay)
-            ->add($gradient->multiply($this->momentumDecay));
+        $vHat = $gradient->subtract($velocity)
+            ->multiply($this->momentumDecay);
 
-        $norm = $norm->multiply(1.0 - $this->normDecay)
-            ->add($gradient->square()->multiply($this->normDecay));
+        $velocity = $velocity->add($vHat);
+
+        $nHat = $gradient->square()->subtract($norm)
+            ->multiply($this->normDecay);
+
+        $norm = $norm->add($nHat);
 
         $this->cache[$param->id()] = [$velocity, $norm];
 

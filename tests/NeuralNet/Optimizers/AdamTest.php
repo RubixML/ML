@@ -54,7 +54,7 @@ class AdamTest extends TestCase
 
         $step = $this->optimizer->step($param, $gradient);
 
-        $this->assertEquals($expected, $step->asArray());
+        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
     }
 
     /**
