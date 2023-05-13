@@ -86,7 +86,7 @@ class FeedForwardTest extends TestCase
      */
     public function layers() : void
     {
-        $this->assertCount(7, iterator_to_array($this->network->layers()));
+        $this->assertCount(7, $this->network->layers());
     }
 
     /**
