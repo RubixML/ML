@@ -124,19 +124,9 @@ class RBX implements Serializer
      */
     public function deserialize(Encoding $encoding) : Persistable
     {
-        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
-            throw new RuntimeException('Unrecognized message format.');
-        }
+        [$version, $header, $payload] = $this->unpackMessage($encoding);
 
-        $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
-
-        [$version, $checksum, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
-
-        if (!$version or !$checksum or !$header or !$payload) {
-            throw new RuntimeException('Invalid message format.');
-        }
-
-        if ($version != self::VERSION) {
+        if ($version <= 0 or $version > 2) {
             throw new RuntimeException("Incompatible with RBX version $version.");
         }
 
