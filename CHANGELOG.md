@@ -1,3 +1,6 @@
+- 2.4.0
+    - Add GELU activation function
+
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers
 
