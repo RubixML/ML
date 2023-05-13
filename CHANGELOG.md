@@ -1,4 +1,6 @@
 - 2.4.0
+    - Add numParams() method to Network
+    - MLPs now log number of parameters in network
     - Add GELU activation function
 
 - 2.3.3

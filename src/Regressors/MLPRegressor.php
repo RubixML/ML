@@ -41,6 +41,7 @@ use Generator;
 use function is_nan;
 use function count;
 use function get_object_vars;
+use function number_format;
 
 /**
  * MLP Regressor
@@ -391,6 +392,10 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info("Training $this");
+
+            $numParams = number_format($this->network->numParams());
+
+            $this->logger->info("Model has {$numParams} parameters");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
