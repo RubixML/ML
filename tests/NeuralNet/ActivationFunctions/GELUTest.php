@@ -47,7 +47,7 @@ class GELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->asArray();
 
-        $this->assertEquals($expected, $activations);
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
     /**
@@ -61,6 +61,17 @@ class GELUTest extends TestCase
             ]),
             [
                 [0.841191990607477, -0.15428599017516514, 0.0, 20.0, -0.0],
+            ],
+        ];
+
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+                [2.0, 0.5, 0.00001, -20.0, 1.0],
+            ]),
+            [
+                [0.841191990607477, -0.15428599017516514, 0.0, 20.0, -0.0],
+                [1.9545976940871754, 0.34571400982483486, 5.0000398942280396E-6, 0.0, 0.841191990607477],
             ],
         ];
     }
@@ -77,7 +88,7 @@ class GELUTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
-        $this->assertEquals($expected, $derivatives);
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 
     /**
