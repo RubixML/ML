@@ -1,7 +1,7 @@
 - 2.4.0
-    - Add numParams() method to Network
-    - MLPs now log number of parameters in network
     - Add GELU activation function
+    - Add numParams() method to Network
+    - MLPs now log number of trainable parameters in network
 
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers

@@ -143,7 +143,7 @@ class FeedForward implements Network
         foreach ($this->layers() as $layer) {
             if ($layer instanceof Parametric) {
                 foreach ($layer->parameters() as $parameter) {
-                    $numParams += array_product($parameter->param()->shape());
+                    $numParams += $parameter->param()->size();
                 }
             }
         }
