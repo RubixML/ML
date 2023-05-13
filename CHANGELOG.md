@@ -1,3 +1,6 @@
+- 2.3.3
+    - Optimize Adam and AdaMax Optimizers
+
 - 2.3.2
     - Update PHP Stemmer to version 3
 
