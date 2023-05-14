@@ -2,6 +2,7 @@
     - Add GELU activation function
     - Add numParams() method to Network
     - Neural Network Learners now report number of trainable parameters
+    - Regex Filter added pattern to match unicode emojis
 
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers
