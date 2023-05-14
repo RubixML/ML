@@ -395,7 +395,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("Model has {$numParams} parameters");
+            $this->logger->info("{$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);

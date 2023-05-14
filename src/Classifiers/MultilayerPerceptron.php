@@ -410,7 +410,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("Model has {$numParams} parameters");
+            $this->logger->info("{$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
