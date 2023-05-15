@@ -104,9 +104,10 @@ class GELU implements ActivationFunction
      */
     public function _differentiate(float $z) : float
     {
-        $alpha = self::TAU[0] * $z ** 3 + self::ALPHA * $z;
+        $zHat = $z ** 3;
 
-        $beta = self::TAU[1] * $z ** 3 + self::TAU[2] * $z;
+        $alpha = self::TAU[0] * $zHat + self::ALPHA * $z;
+        $beta = self::TAU[1] * $zHat + self::TAU[2] * $z;
 
         return 0.5 * tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
     }
