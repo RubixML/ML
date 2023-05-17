@@ -92,10 +92,6 @@ class CSV implements Extractor, Exporter
             throw new InvalidArgumentException('Path cannot be empty.');
         }
 
-        if (empty($escape)) {
-            throw new InvalidArgumentException('Escape character cannot be empty.');
-        }
-
         if (is_dir($path)) {
             throw new InvalidArgumentException('Path must be to a file, folder given.');
         }
@@ -108,6 +104,11 @@ class CSV implements Extractor, Exporter
         if (strlen($enclosure) !== 1) {
             throw new InvalidArgumentException('Enclosure must be'
                 . ' a single character, ' . strlen($enclosure) . ' given.');
+        }
+
+        if (strlen($escape) !== 1) {
+            throw new InvalidArgumentException('Escape character must be'
+                . ' a single character, ' . strlen($escape) . ' given.');
         }
 
         $this->path = $path;
