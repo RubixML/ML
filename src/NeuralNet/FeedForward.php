@@ -148,7 +148,7 @@ class FeedForward implements Network
             }
         }
 
-        return (int) $numParams;
+        return $numParams;
     }
 
     /**
