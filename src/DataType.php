@@ -53,7 +53,7 @@ class DataType implements Stringable
     /**
      * The human-readable string representations of the high-level data types.
      *
-     * @var string[]
+     * @var literal-string[]
      */
     protected const TYPE_STRINGS = [
         self::OTHER => 'other',
