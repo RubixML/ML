@@ -1,3 +1,6 @@
+- 2.3.4
+    - Add string literal type-hints
+
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers
 

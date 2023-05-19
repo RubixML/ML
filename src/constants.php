@@ -7,7 +7,7 @@ namespace Rubix\ML
      *
      * @internal
      *
-     * @var string
+     * @var literal-string
      */
     const VERSION = '2.3';
 
