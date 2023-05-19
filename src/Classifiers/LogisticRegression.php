@@ -37,6 +37,7 @@ use Generator;
 use function is_nan;
 use function count;
 use function get_object_vars;
+use function number_format;
 
 /**
  * Logistic Regression
@@ -325,6 +326,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         if ($this->logger) {
             $this->logger->info("Training $this");
+
+            $numParams = number_format($this->network->numParams());
+
+            $this->logger->info("{$numParams} trainable parameters");
         }
 
         $prevLoss = $bestLoss = INF;

@@ -10,6 +10,16 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - Remove Network interface
     
+- 2.4.0
+    - Add GELU activation function
+    - Add numParams() method to Network
+    - Neural Network Learners now report number of trainable parameters
+    - Regex Filter added pattern to match unicode emojis
+    - Custom escape character for CSV Extractor
+    
+- 2.3.4
+    - Add string literal type-hints
+
 - 2.3.3
     - Optimize Adam and AdaMax Optimizers
 

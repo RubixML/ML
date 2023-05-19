@@ -36,6 +36,7 @@ use Generator;
 use function is_nan;
 use function count;
 use function get_object_vars;
+use function number_format;
 
 /**
  * Adaline
@@ -311,6 +312,10 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         if ($this->logger) {
             $this->logger->info("Training $this");
+
+            $numParams = number_format($this->network->numParams());
+
+            $this->logger->info("{$numParams} trainable parameters");
         }
 
         $prevLoss = $bestLoss = INF;

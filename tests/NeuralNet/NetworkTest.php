@@ -115,6 +115,16 @@ class NetworkTest extends TestCase
     /**
      * @test
      */
+    public function numParams() : void
+    {
+        $this->network->initialize();
+
+        $this->assertEquals(103, $this->network->numParams());
+    }
+
+    /**
+     * @test
+     */
     public function roundtrip() : void
     {
         $this->network->initialize();
