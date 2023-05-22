@@ -21,6 +21,7 @@ use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
+use function Rubix\ML\iterator_map;
 
 /**
  * Dataset
@@ -346,6 +347,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     public function filter(callable $callback) : self
     {
         return static::fromIterator(iterator_filter($this, $callback));
+    }
+
+    /**
+     * Map the records of the dataset using a callback function.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function map(callable $callback) : self
+    {
+        return static::fromIterator(iterator_map($this, $callback));
     }
 
     /**

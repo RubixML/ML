@@ -265,6 +265,27 @@ class UnlabeledTest extends TestCase
     /**
      * @test
      */
+    public function map() : void
+    {
+        $filtered = $this->dataset->map(function ($record) {
+            $record[2] = 'loner';
+
+            return $record;
+        });
+
+        $this->assertEquals([
+            ['nice', 'furry', 'loner', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['nice', 'rough', 'loner', 2.6],
+            ['mean', 'rough', 'loner', -1.0],
+            ['nice', 'rough', 'loner', 2.9],
+            ['nice', 'furry', 'loner', -5.0],
+        ], $filtered->samples());
+    }
+
+    /**
+     * @test
+     */
     public function sort() : void
     {
         $dataset = $this->dataset->sort(function ($recordA, $recordB) {
