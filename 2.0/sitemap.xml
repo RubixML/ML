@@ -646,6 +646,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://rubixml.com/2.0/neural-network/activation-functions/gelu.html</loc>
+         <lastmod>2023-05-26</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://rubixml.com/2.0/neural-network/activation-functions/hyperbolic-tangent.html</loc>
          <lastmod>2023-05-26</lastmod>
          <changefreq>daily</changefreq>

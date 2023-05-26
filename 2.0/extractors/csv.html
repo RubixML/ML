@@ -3020,6 +3020,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../neural-network/activation-functions/gelu.html" class="md-nav__link">
+        GELU
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../neural-network/activation-functions/hyperbolic-tangent.html" class="md-nav__link">
         Hyperbolic Tangent
       </a>
@@ -5173,12 +5187,19 @@
 <td>string</td>
 <td>The character used to enclose a cell that contains a delimiter in the body.</td>
 </tr>
+<tr>
+<td>5</td>
+<td>escape</td>
+<td>'\'</td>
+<td>string</td>
+<td>The character used as an escape character (one character only).</td>
+</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
 
-<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">);</span>
+<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="s1">&#39;\\&#39;</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return the column titles of the data table.
@@ -5199,7 +5220,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 21, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 26, 2023</span>
       
         <br>
         Created:
