@@ -88,7 +88,7 @@ We use [Mkdocs](https://www.mkdocs.org) and [Mike](https://github.com/jimporter/
 Make sure to have the following Python dependencies installed.
 
 ```sh
-$ pip install mike mkdocs mkdocs-material mkdocs-git-revision-date-plugin
+$ pip install mike mkdocs mkdocs-material mkdocs-git-revision-date-localized-plugin
 ```
 
 To serve the documentation site locally for development you can run the following commands from the terminal. Then, you'll be able to view the docs by navigating to `http://127.0.0.1:8000` in your browser.
