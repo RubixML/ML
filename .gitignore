@@ -8,6 +8,7 @@ Thumbs.db
 .DS_Store
 debug.log
 /test.png
+.venv
 .idea
 .vscode
 .vs

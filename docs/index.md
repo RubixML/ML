@@ -28,6 +28,7 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Iris Flower Classifier](https://github.com/RubixML/Iris)
 - [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
+- [Titanic Survival Predictor](https://github.com/Jenutka/titanic_php)
 
 ## Interact With The Community
 
