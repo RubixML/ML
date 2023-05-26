@@ -132,6 +132,26 @@ class FeedForward implements Network
     }
 
     /**
+     * Return the number of trainable parameters in the network.
+     *
+     * @return int
+     */
+    public function numParams() : int
+    {
+        $numParams = 0;
+
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    $numParams += $parameter->param()->size();
+                }
+            }
+        }
+
+        return $numParams;
+    }
+
+    /**
      * Initialize the parameters of the layers and warm the optimizer cache.
      */
     public function initialize() : void

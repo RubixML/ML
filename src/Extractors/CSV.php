@@ -67,17 +67,26 @@ class CSV implements Extractor, Exporter
     protected string $enclosure;
 
     /**
+     * The character used as an escape character (one character only). Defaults as a backslash.
+     *
+     * @var non-empty-string
+     */
+    protected string $escape;
+
+    /**
      * @param string $path
      * @param bool $header
      * @param string $delimiter
      * @param string $enclosure
+     * @param string $escape
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(
         string $path,
         bool $header = false,
         string $delimiter = ',',
-        string $enclosure = '"'
+        string $enclosure = '"',
+        string $escape = '\\'
     ) {
         if (empty($path)) {
             throw new InvalidArgumentException('Path cannot be empty.');
@@ -97,10 +106,16 @@ class CSV implements Extractor, Exporter
                 . ' a single character, ' . strlen($enclosure) . ' given.');
         }
 
+        if (strlen($escape) !== 1) {
+            throw new InvalidArgumentException('Escape character must be'
+                . ' a single character, ' . strlen($escape) . ' given.');
+        }
+
         $this->path = $path;
         $this->header = $header;
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
+        $this->escape = $escape;
     }
 
     /**
@@ -140,7 +155,7 @@ class CSV implements Extractor, Exporter
         if ($this->header) {
             $header = array_keys(iterator_first($iterator));
 
-            $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure);
+            $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
                 throw new RuntimeException("Could not write header on line $line.");
@@ -150,7 +165,7 @@ class CSV implements Extractor, Exporter
         }
 
         foreach ($iterator as $row) {
-            $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure);
+            $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");
@@ -187,7 +202,7 @@ class CSV implements Extractor, Exporter
         $line = 1;
 
         if ($this->header) {
-            $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
+            $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
 
             if (!$header) {
                 throw new RuntimeException("Header not found on line $line.");
@@ -197,7 +212,7 @@ class CSV implements Extractor, Exporter
         }
 
         while (!feof($handle)) {
-            $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure);
+            $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
 
             if (empty($record)) {
                 continue;

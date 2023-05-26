@@ -76,6 +76,13 @@ class RegexFilter implements Transformer
     public const EXTRA_WHITESPACE = '/\s(?=\s+)/';
 
     /**
+     * A pattern to match unicode emojis.
+     *
+     * @var literal-string
+     */
+    public const EMOJIS = '/[\x{1F300}-\x{1F5FF}\x{1F900}-\x{1F9FF}\x{1F600}-\x{1F64F}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u';
+
+    /**
      * A pattern to match Twitter-style mentions (ex. @RubixML).
      *
      * @var literal-string
