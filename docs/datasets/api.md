@@ -239,22 +239,7 @@ $dataset->apply($transformer);
 $dataset->reverseApply($transformer);
 ```
 
-## Mapping and Filtering
-Map a callback function over the records of the dataset and return the result in a new dataset object:
-```php
-public map(callable $callback) : self 
-```
-
-```php
-$addMeanColumn = function ($record) {
-    $record[] = array_sum($record) / count($record);
-
-    return $record;
-};
-
-$dataset = $dataset->map($addMeanColumn);
-```
-
+## Filtering
 Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset:
 ```php
 public filter(callable $callback) : self
