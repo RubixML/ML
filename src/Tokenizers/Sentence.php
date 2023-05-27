@@ -20,7 +20,7 @@ class Sentence implements Tokenizer
      *
      * @var string
      */
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+    protected const SENTENCE_REGEX = '/(?<=[\.\?\⸮\؟\!\n])(\n+|\s+|\b(?=\D))(?=[\'\"\w])/iu';
 
     /**
      * Tokenize a blob of text.
@@ -30,7 +30,7 @@ class Sentence implements Tokenizer
      */
     public function tokenize(string $text) : array
     {
-        return preg_split(self::SENTENCE_REGEX, $text) ?: [];
+        return preg_split(self::SENTENCE_REGEX, $text, -1, PREG_SPLIT_NO_EMPTY) ?: [];
     }
 
     /**
