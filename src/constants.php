@@ -12,7 +12,7 @@ namespace Rubix\ML
     const VERSION = '3';
 
     /**
-     * A small number used in substitution of 0.
+     * A very small positive number, sometimes used in substitution of 0.
      *
      * @internal
      *
