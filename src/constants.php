@@ -3,13 +3,13 @@
 namespace Rubix\ML
 {
     /**
-     * The current version of the library.
+     * The current major version of the library.
      *
      * @internal
      *
      * @var string
      */
-    const VERSION = '2.3';
+    const VERSION = '3';
 
     /**
      * A small number used in substitution of 0.
@@ -18,7 +18,7 @@ namespace Rubix\ML
      *
      * @var float
      */
-    const EPSILON = 1e-8;
+    const EPSILON = 1e-16;
 
     /**
      * The natural logarithm of the epsilon constant.

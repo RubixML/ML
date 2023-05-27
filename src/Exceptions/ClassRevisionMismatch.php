@@ -22,7 +22,7 @@ class ClassRevisionMismatch extends RuntimeException
     {
         $direction = version_compare($createdWithVersion, VERSION) >= 0 ? 'up' : 'down';
 
-        parent::__construct('Object incompatible with class revision,'
+        parent::__construct('Serialized object is incompatible with this class revision,'
             . " {$direction}grade to version $createdWithVersion.");
 
         $this->createdWithVersion = $createdWithVersion;
