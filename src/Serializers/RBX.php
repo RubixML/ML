@@ -13,7 +13,10 @@ use function strpos;
 use function substr;
 use function hash;
 use function get_class;
+use function array_pad;
 use function explode;
+
+use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
 /**
  * RBX
@@ -40,7 +43,7 @@ class RBX implements Serializer
      *
      * @var int
      */
-    protected const VERSION = 2;
+    protected const VERSION = 1;
 
     /**
      * The hashing function used to generate checksums.
@@ -86,6 +89,9 @@ class RBX implements Serializer
         $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
 
         $header = JSON::encode([
+            'library' => [
+                'version' => LIBRARY_VERSION,
+            ],
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
@@ -103,9 +109,8 @@ class RBX implements Serializer
 
         $checksum = self::CHECKSUM_HASH_TYPE . ':' . $hash;
 
-        $id = self::IDENTIFIER_STRING . self::VERSION;
-
-        $data = $id . self::EOL;
+        $data = self::IDENTIFIER_STRING;
+        $data .= self::VERSION . self::EOL;
         $data .= $checksum . self::EOL;
         $data .= $header . self::EOL;
         $data .= $encoding;
@@ -124,7 +129,25 @@ class RBX implements Serializer
      */
     public function deserialize(Encoding $encoding) : Persistable
     {
-        [$version, $header, $payload] = $this->unpackMessage($encoding);
+        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
+            throw new RuntimeException('Unrecognized message format.');
+        }
+
+        $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
+
+        [$version, $checksum, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
+
+        if (!$version or !$checksum or !$header or !$payload) {
+            throw new RuntimeException('Invalid message format.');
+        }
+
+        [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
+
+        if ($hash !== hash($type, $header)) {
+            throw new RuntimeException('Header checksum verification failed.');
+        }
+
+        $header = JSON::decode($header);
 
         if ($version <= 0 or $version > 2) {
             throw new RuntimeException("Incompatible with RBX version $version.");
@@ -147,55 +170,10 @@ class RBX implements Serializer
         }
 
         if ($persistable->revision() !== $header['class']['revision']) {
-            throw new ClassRevisionMismatch();
+            throw new ClassRevisionMismatch($header['library']['version']);
         }
 
         return $persistable;
-    }
-
-    /**
-     * Unpack the message version, checksum, header, and payload.
-     *
-     * @param \Rubix\ML\Encoding $encoding
-     * @return array<mixed>
-     */
-    protected function unpackMessage(Encoding $encoding) : array
-    {
-        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
-            throw new RuntimeException('Unrecognized message identifier.');
-        }
-
-        $data = substr($encoding, strlen(self::IDENTIFIER_STRING));
-
-        $sections = explode(self::EOL, $data, 4);
-
-        if (count($sections) !== 4) {
-            throw new RuntimeException('Invalid message format.');
-        }
-
-        [$version, $checksum, $header, $payload] = $sections;
-
-        if (!is_numeric($version)) {
-            throw new RuntimeException('Invalid message format.');
-        }
-
-        $version = (int) $version;
-
-        $checksum = explode(':', $checksum, 2);
-
-        if (count($checksum) !== 2) {
-            throw new RuntimeException('Invalid message format.');
-        }
-
-        [$type, $hash] = $checksum;
-
-        if ($hash !== hash($type, $header)) {
-            throw new RuntimeException('Header checksum verification failed.');
-        }
-
-        $header = JSON::decode($header);
-
-        return [$version, $header, $payload];
     }
 
     /**

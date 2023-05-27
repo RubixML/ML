@@ -3,6 +3,15 @@
 namespace Rubix\ML
 {
     /**
+     * The current version of the library.
+     *
+     * @internal
+     *
+     * @var string
+     */
+    const VERSION = '2.3';
+
+    /**
      * A small number used in substitution of 0.
      *
      * @internal
