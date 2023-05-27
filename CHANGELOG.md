@@ -10,6 +10,9 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - Remove Network interface
     
+- 2.4.1
+    - Sentence Tokenizer fix Arabic and Farsi language support
+
 - 2.4.0
     - Add GELU activation function
     - Add numParams() method to Network

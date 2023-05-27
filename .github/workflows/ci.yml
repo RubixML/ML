@@ -35,5 +35,5 @@ jobs:
       - name: Unit Tests
         run: composer test
 
-      - name: Coding Style
+      - name: Check Coding Style
         run: composer check

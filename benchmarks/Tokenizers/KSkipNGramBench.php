@@ -24,7 +24,7 @@ class KSkipNGramBench
 
     /**
      * @Subject
-     * @revs(30)
+     * @revs(1000)
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
