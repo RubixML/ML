@@ -1,3 +1,6 @@
+- 2.5.0
+    - Blob Generator can now `simulate()` a Dataset object
+
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support
 
