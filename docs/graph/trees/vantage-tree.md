@@ -1,6 +1,6 @@
-<span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Graph/Trees/VPTree.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Graph/Trees/VPTree.php">[source]</a></span>
 
-# VP Tree
+# Vantage Tree
 A Vantage Point Tree is a binary spatial tree that divides samples by their distance from the center of a cluster called the *vantage point*. Samples that are closer to the vantage point will be put into one branch of the tree while samples that are farther away will be put into the other branch.
 
 **Interfaces:** Binary Tree, Spatial
@@ -15,10 +15,10 @@ A Vantage Point Tree is a binary spatial tree that divides samples by their dist
 
 ## Example
 ```php
-use Rubix\ML\Graph\Trees\VPTree;
+use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$tree = new VPTree(30, new Euclidean());
+$tree = new VantageTree(30, new Euclidean());
 ```
 
 ## Additional Methods
