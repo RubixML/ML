@@ -9,6 +9,7 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
+use function max;
 
 /**
  * Vantage Point
