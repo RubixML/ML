@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  * @Groups({"Trees"})
  * @BeforeMethods({"setUp"})
  */
-class VPTreeBench
+class VantageTreeBench
 {
     protected const DATASET_SIZE = 10000;
 
