@@ -280,7 +280,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $proportion = $n / $this->n;
 
-        $this->threshold = (1.0 - $proportion) * $this->threshold + $proportion * $threshold;
+        $this->threshold = $proportion * $threshold + (1.0 - $proportion) * $this->threshold;
     }
 
     /**
