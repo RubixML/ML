@@ -244,6 +244,8 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $n = $dataset->numSamples();
 
+        $weight = $this->n + $n;
+
         foreach ($dataset->features() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
 
@@ -253,13 +255,13 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $oldVariance -= $this->epsilon;
 
             $this->means[$column] = (($this->n * $oldMean)
-                + ($n * $mean)) / ($this->n + $n);
+                + ($n * $mean)) / $weight;
 
             $this->variances[$column] = ($this->n
                 * $oldVariance + ($n * $variance)
-                + ($this->n / ($n * ($this->n + $n)))
+                + ($this->n / ($n * $weight))
                 * ($n * $oldMean - $n * $mean) ** 2)
-                / ($this->n + $n);
+                / $weight;
         }
 
         $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
@@ -270,15 +272,15 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         $this->epsilon = $epsilon;
 
-        $this->n += $n;
+        $this->n = $weight;
 
         $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
 
         $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
 
-        $weight = $n / $this->n;
+        $proportion = $n / $this->n;
 
-        $this->threshold = (1.0 - $weight) * $this->threshold + $weight * $threshold;
+        $this->threshold = (1.0 - $proportion) * $this->threshold + $proportion * $threshold;
     }
 
     /**

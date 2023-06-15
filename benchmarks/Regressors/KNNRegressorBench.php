@@ -11,7 +11,7 @@ use Rubix\ML\Datasets\Generators\Hyperplane;
  */
 class KNNRegressorBench
 {
-    protected const TRAINING_SIZE = 2500;
+    protected const TRAINING_SIZE = 10000;
 
     protected const TESTING_SIZE = 10000;
 
