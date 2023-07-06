@@ -164,6 +164,8 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, 
 
         $n = $dataset->numSamples();
 
+        $weight = $this->n + $n;
+
         foreach ($this->means as $column => $oldMean) {
             $oldVariance = $this->variances[$column];
 
@@ -172,16 +174,16 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, 
             [$mean, $variance] = Stats::meanVar($values);
 
             $this->means[$column] = (($this->n * $oldMean)
-                + ($n * $mean)) / ($this->n + $n);
+                + ($n * $mean)) / $weight;
 
             $this->variances[$column] = ($this->n
                 * $oldVariance + ($n * $variance)
-                + ($this->n / ($n * ($this->n + $n)))
+                + ($this->n / ($n * $weight))
                 * ($n * $oldMean - $n * $mean) ** 2)
-                / ($this->n + $n);
+                / $weight;
         }
 
-        $this->n += $n;
+        $this->n = $weight;
     }
 
     /**
