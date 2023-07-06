@@ -1,5 +1,6 @@
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support
+    - Optimize online variance updating
 
 - 2.4.0
     - Add GELU activation function
