@@ -17,8 +17,16 @@ A normally distributed (Gaussian) n-dimensional blob of samples centered at a gi
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
-$generator = new Blob([-1.2, -5., 2.6, 0.8, 10.], 0.25);
+$generator = new Blob([-1.2, -5.0, 2.6, 0.8, 10.0], 0.25);
 ```
 
 ## Additional Methods
-This generator does not have any additional methods.
+Fit a Blob generator to the samples in a dataset.
+```php
+public static simulate(Dataset $dataset) : self
+```
+
+Return the center coordinates of the Blob.
+```php
+public center() : array
+```
