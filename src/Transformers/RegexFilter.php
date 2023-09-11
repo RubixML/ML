@@ -59,7 +59,7 @@ class RegexFilter implements Transformer
      *
      * @var literal-string
      */
-    public const EXTRA_CHARACTERS = '/([^\w\s])(?=[^\w\s]*\1)/';
+    public const EXTRA_CHARACTERS = '/([^\w\s])(?=[^\w\s]*\1)/u';
 
     /**
      * Matches consecutively repeated words.
@@ -73,7 +73,7 @@ class RegexFilter implements Transformer
      *
      * @var literal-string
      */
-    public const EXTRA_WHITESPACE = '/\s(?=\s+)/';
+    public const EXTRA_WHITESPACE = '/\s(?=\s+)/u';
 
     /**
      * A pattern to match unicode emojis.
@@ -87,14 +87,14 @@ class RegexFilter implements Transformer
      *
      * @var literal-string
      */
-    public const MENTION = '/(@\w+)/';
+    public const MENTION = '/(@\w+)/u';
 
     /**
      * A pattern to match Twitter-style hashtags (ex. #MachineLearning).
      *
      * @var literal-string
      */
-    public const HASHTAG = '/(#\w+)/';
+    public const HASHTAG = '/(#\w+)/u';
 
     /**
      * A list of regular expression patterns used to filter the text columns of the dataset.
