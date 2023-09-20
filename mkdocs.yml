@@ -201,6 +201,7 @@ nav:
       - Trees:
         - Ball Tree: graph/trees/ball-tree.md
         - K-d Tree: graph/trees/k-d-tree.md
+        - Vantage Tree: graph/trees/vantage-tree.md
     - Kernels:
       - Distance:
         - Canberra: kernels/distance/canberra.md
