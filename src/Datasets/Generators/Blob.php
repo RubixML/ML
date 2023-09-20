@@ -4,10 +4,14 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Tensor\Matrix;
 use Tensor\Vector;
+use Rubix\ML\DataType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
+use function sqrt;
 
 /**
  * Blob
@@ -36,6 +40,34 @@ class Blob implements Generator
      * @var \Tensor\Vector|int|float
      */
     protected $stdDev;
+
+    /**
+     * Fit a Blob generator to the samples in a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @return self
+     */
+    public static function simulate(Dataset $dataset) : self
+    {
+        $features = $dataset->featuresByType(DataType::continuous());
+
+        if (count($features) !== $dataset->numFeatures()) {
+            throw new InvalidArgumentException('Dataset must only contain'
+                . ' continuous features.');
+        }
+
+        $means = $stdDevs = [];
+
+        foreach ($features as $values) {
+            [$mean, $variance] = Stats::meanVar($values);
+
+            $means[] = $mean;
+            $stdDevs[] = sqrt($variance);
+        }
+
+        return new self($means, $stdDevs);
+    }
 
     /**
      * @param (int|float)[] $center
@@ -72,6 +104,16 @@ class Blob implements Generator
 
         $this->center = Vector::quick($center);
         $this->stdDev = $stdDev;
+    }
+
+    /**
+     * Return the center coordinates of the Blob.
+     *
+     * @return list<int|float>
+     */
+    public function center() : array
+    {
+        return $this->center->asArray();
     }
 
     /**

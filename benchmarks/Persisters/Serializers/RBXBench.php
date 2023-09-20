@@ -13,7 +13,7 @@ use Rubix\ML\Serializers\RBX;
  */
 class RBXBench
 {
-    protected const TRAINING_SIZE = 2500;
+    protected const TRAINING_SIZE = 10000;
 
     /**
      * @var \Rubix\ML\Serializers\RBX
