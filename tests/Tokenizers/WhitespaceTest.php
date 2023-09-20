@@ -46,9 +46,9 @@ class WhitespaceTest extends TestCase
         $this->assertEquals($expected, $tokens);
     }
 
-        /**
-         * @return \Generator<mixed[]>
-         */
+    /**
+     * @return \Generator<mixed[]>
+     */
     public function tokenizeProvider() : Generator
     {
         /**
