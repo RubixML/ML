@@ -35,6 +35,7 @@ class RegexFilterTest extends TestCase
             ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
             ['Diese äpfel Äpfel schmecken sehr gut'],
             ['The quick 😀 brown 🦊 jumped over the lazy 🛌 man sitting at a bus stop 🚍 drinking a can of 🥤']
+            ['Diese₂ äpfel Äpfel schmecken sehr gut'],
         ]);
 
         $this->transformer = new RegexFilter([
@@ -70,8 +71,8 @@ class RegexFilterTest extends TestCase
             ['Too weird to live, too rare to die '],
             ['A man who procrastinates in choosing will inevitably have his choice made for him by '],
             ['The quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of cola'],
-            ['Diese Äpfel schmecken sehr gut'],
             ['The quick  brown  jumped over the lazy  man sitting at a bus stop  drinking a can of '],
+            ['Diese₂ Äpfel schmecken sehr gut'],
         ];
 
         $this->assertEquals($expected, $this->dataset->samples());

@@ -51,7 +51,7 @@ class Mean implements Strategy
      * Fit the guessing strategy to a set of values.
      *
      * @internal
-     *  @param list<int|float> $values
+     * @param list<int|float> $values
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(array $values) : void

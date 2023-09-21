@@ -261,6 +261,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                 $n = $stratum->numSamples();
 
+                $weight = $oldWeight + $n;
+
                 $means = $variances = [];
 
                 foreach ($stratum->features() as $column => $values) {
@@ -273,16 +275,14 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                     $means[] = (($n * $mean)
                         + ($oldWeight * $oldMean))
-                        / ($oldWeight + $n);
+                        / $weight;
 
                     $variances[] = ($oldWeight
                         * $oldVariance + ($n * $variance)
-                        + ($oldWeight / ($n * ($oldWeight + $n)))
+                        + ($oldWeight / ($n * $weight))
                         * ($n * $oldMean - $n * $mean) ** 2)
-                        / ($oldWeight + $n);
+                        / $weight;
                 }
-
-                $weight = $oldWeight + $n;
             } else {
                 $means = $variances = [];
 
