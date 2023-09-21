@@ -28,14 +28,6 @@ class MultibyteTextNormalizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            ['The quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of Coke'],
-            ['with a Dandy   umbrella'],
-            ['Depuis qu’il avait emménagé à côté de chez elle, il y a de ça cinq ans.'],
-            ['Working with emoji 🤓'],
-        ]);
-
         $this->transformer = new MultibyteTextNormalizer(false);
     }
 
@@ -53,9 +45,17 @@ class MultibyteTextNormalizerTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = Unlabeled::quick([
+            ['The quick brown fox jumped over the lazy man sitting at a bus'
+                . ' stop drinking a can of Coke'],
+            ['with a Dandy   umbrella'],
+            ['Depuis qu’il avait emménagé à côté de chez elle, il y a de ça cinq ans.'],
+            ['Working with emoji 🤓'],
+        ]);
 
-        $outcome = [
+        $dataset->apply($this->transformer);
+
+        $expected = [
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
             ['with a dandy   umbrella'],
@@ -63,6 +63,6 @@ class MultibyteTextNormalizerTest extends TestCase
             ['working with emoji 🤓'],
         ];
 
-        $this->assertEquals($outcome, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class L2NormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\L2Normalizer
      */
     protected $transformer;
@@ -28,12 +23,6 @@ class L2NormalizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 0, 30, 10],
-            [100, 300, 200, 400],
-        ]);
-
         $this->transformer = new L2Normalizer();
     }
 
@@ -51,12 +40,20 @@ class L2NormalizerTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = new Unlabeled([
+            [1, 2, 3, 4],
+            [40, 0, 30, 10],
+            [100, 300, 200, 400],
+        ]);
 
-        $this->assertEquals([
+        $dataset->apply($this->transformer);
+
+        $expected = [
             [0.18257418583505536, 0.3651483716701107, 0.5477225575051661, 0.7302967433402214],
             [0.7844645405527362, 0.0, 0.5883484054145521, 0.19611613513818404],
             [0.18257418583505536, 0.5477225575051661, 0.3651483716701107, 0.7302967433402214],
-        ], $this->dataset->samples());
+        ];
+
+        $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
     }
 }

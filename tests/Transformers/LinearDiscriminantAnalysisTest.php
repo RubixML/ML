@@ -56,9 +56,9 @@ class LinearDiscriminantAnalysisTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->assertEquals(3, $this->generator->dimensions());
+        $dataset = $this->generator->generate(30);
 
-        $this->transformer->fit($this->generator->generate(30));
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 

@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class LambdaFunctionTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\LambdaFunction
      */
     protected $transformer;
@@ -28,12 +23,6 @@ class LambdaFunctionTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 20, 30, 10],
-            [100, 300, 200, 400],
-        ]);
-
         $callback = function (&$sample, $index, $context) {
             $sample = [$index, array_sum($sample), $context];
         };
@@ -55,12 +44,18 @@ class LambdaFunctionTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = new Unlabeled([
+            [1, 2, 3, 4],
+            [40, 20, 30, 10],
+            [100, 300, 200, 400],
+        ]);
+
+        $dataset->apply($this->transformer);
 
         $expected = [
             [0, 10, 'context'], [1, 100, 'context'], [2, 1000, 'context'],
         ];
 
-        $this->assertEquals($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }
