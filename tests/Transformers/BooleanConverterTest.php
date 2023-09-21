@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class BooleanConverterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\BooleanConverter
      */
     protected $transformer;
@@ -28,12 +23,7 @@ class BooleanConverterTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [true, 'true', '1', 1],
-            [false, 'false', '0', 0],
-        ]);
-
-        $this->transformer = new BooleanConverter('::true::', '::false::');
+        $this->transformer = new BooleanConverter('!true!', '!false!');
     }
 
     /**
@@ -50,11 +40,18 @@ class BooleanConverterTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = new Unlabeled([
+            [true, 'true', '1', 1],
+            [false, 'false', '0', 0],
+        ]);
 
-        $this->assertEquals([
-            ['::true::', 'true', '1', 1],
-            ['::false::', 'false', '0', 0],
-        ], $this->dataset->samples());
+        $dataset->apply($this->transformer);
+
+        $expected = [
+            ['!true!', 'true', '1', 1],
+            ['!false!', 'false', '0', 0],
+        ];
+
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

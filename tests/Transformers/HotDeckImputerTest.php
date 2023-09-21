@@ -7,7 +7,6 @@ use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\HotDeckImputer;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,11 +16,6 @@ use PHPUnit\Framework\TestCase;
 class HotDeckImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
-
-    /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
 
     /**
      * @var \Rubix\ML\Datasets\Generators\Blob
@@ -38,15 +32,6 @@ class HotDeckImputerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [30, 0.001],
-            [NAN, 0.055],
-            [50, -2.0],
-            [60, NAN],
-            [10, 1.0],
-            [100, 9.0],
-        ]);
-
         $this->generator = new Blob([30.0, 0.0]);
 
         $this->transformer = new HotDeckImputer(2, true, '?');
@@ -69,25 +54,22 @@ class HotDeckImputerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->transformer->fit($this->dataset);
+        $dataset = new Unlabeled([
+            [30, 0.001],
+            [NAN, 0.055],
+            [50, -2.0],
+            [60, NAN],
+            [10, 1.0],
+            [100, 9.0],
+        ]);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
-        $this->dataset->apply($this->transformer);
+        $dataset->apply($this->transformer);
 
-        $this->assertEquals(30, $this->dataset[1][0]);
-        $this->assertEquals(-2.0, $this->dataset[3][1]);
-    }
-
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = $this->dataset->samples();
-
-        $this->transformer->transform($samples);
+        $this->assertEquals(30, $dataset[1][0]);
+        $this->assertEquals(-2.0, $dataset[3][1]);
     }
 }

@@ -17,11 +17,6 @@ use PHPUnit\Framework\TestCase;
 class ImageVectorizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\ImageVectorizer
      */
     protected $transformer;
@@ -31,10 +26,6 @@ class ImageVectorizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            [imagecreatefrompng('tests/test.png'), 'something else'],
-        ]);
-
         $this->transformer = new ImageVectorizer(false);
     }
 
@@ -48,22 +39,24 @@ class ImageVectorizerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    // Commented out due to GD extension bug.
-    //
-    // /**
-    //  * @test
-    //  */
-    // public function fitTransform() : void
-    // {
-    //     $this->dataset->apply(new ImageResizer(3, 3));
+    /**
+     * @test
+     */
+    public function fitTransform() : void
+    {
+        $dataset = Unlabeled::quick([
+            [imagecreatefrompng('tests/test.png'), 'something else'],
+        ]);
 
-    //     $this->dataset->apply($this->transformer);
+        $dataset->apply(new ImageResizer(3, 3));
 
-    //     $expected = [
-    //         ['something else', 46, 51, 66, 130, 135, 134, 118, 119, 116, 25, 26, 45, 149, 154, 154, 180,
-    //             183, 170, 39, 39, 54, 77, 80, 89, 141, 140, 132],
-    //     ];
+        $dataset->apply($this->transformer);
 
-    //     $this->assertEquals($expected, $this->dataset->samples());
-    // }
+        $expected = [
+            ['something else', 46, 51, 66, 130, 135, 134, 118, 119, 116, 25, 26, 45, 149, 154, 154, 180,
+                183, 170, 39, 39, 54, 77, 80, 89, 141, 140, 132],
+        ];
+
+        $this->assertEquals($expected, $dataset->samples());
+    }
 }

@@ -15,11 +15,6 @@ use PHPUnit\Framework\TestCase;
 class RandomizedImageRotatorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected \Rubix\ML\Datasets\Unlabeled $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\ImageRotator
      */
     protected \Rubix\ML\Transformers\ImageRotator $transformer;
@@ -29,10 +24,6 @@ class RandomizedImageRotatorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            [imagecreatefrompng('./tests/test.png'), 'whatever'],
-        ]);
-
         $this->transformer = new ImageRotator(0.0, 1.0);
     }
 
@@ -50,21 +41,25 @@ class RandomizedImageRotatorTest extends TestCase
      */
     public function transform() : void
     {
+        $dataset = Unlabeled::quick([
+            [imagecreatefrompng('./tests/test.png'), 'whatever', 69],
+        ]);
+
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
 
         $mock->method('rotationAngle')->will($this->returnValue(-180.0));
 
-        $expected = file_get_contents('./tests/test_rotated.png');
+        $dataset->apply($mock);
 
-        $this->dataset->apply($mock);
-
-        $sample = $this->dataset->sample(0);
+        $sample = $dataset->sample(0);
 
         ob_start();
 
         imagepng($sample[0]);
 
         $raw = ob_get_clean();
+
+        $expected = file_get_contents('./tests/test_rotated.png');
 
         $this->assertEquals($expected, $raw);
     }

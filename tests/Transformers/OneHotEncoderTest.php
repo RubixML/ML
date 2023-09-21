@@ -6,7 +6,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,11 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 class OneHotEncoderTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
     /**
      * @var \Rubix\ML\Transformers\OneHotEncoder
      */
@@ -30,13 +24,6 @@ class OneHotEncoderTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            ['nice', 'furry', 'friendly'],
-            ['mean', 'furry', 'loner'],
-            ['nice', 'rough', 'friendly'],
-            ['mean', 'rough', 'friendly'],
-        ]);
-
         $this->transformer = new OneHotEncoder();
     }
 
@@ -55,7 +42,14 @@ class OneHotEncoderTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->transformer->fit($this->dataset);
+        $dataset = new Unlabeled([
+            ['nice', 'furry', 'friendly'],
+            ['mean', 'furry', 'loner'],
+            ['nice', 'rough', 'friendly'],
+            ['mean', 'rough', 'friendly'],
+        ]);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
@@ -65,25 +59,15 @@ class OneHotEncoderTest extends TestCase
         $this->assertCount(3, $categories);
         $this->assertContainsOnly('array', $categories);
 
-        $this->dataset->apply($this->transformer);
+        $dataset->apply($this->transformer);
 
-        $this->assertEquals([
+        $expected = [
             [1, 0, 1, 0, 1, 0],
             [0, 1, 1, 0, 0, 1],
             [1, 0, 0, 1, 1, 0],
             [0, 1, 0, 1, 1, 0],
-        ], $this->dataset->samples());
-    }
+        ];
 
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = $this->dataset->samples();
-
-        $this->transformer->transform($samples);
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

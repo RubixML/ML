@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class RegexFilterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\RegexFilter
      */
     protected $transformer;
@@ -28,16 +23,6 @@ class RegexFilterTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],
-            ['Too weird to live, support@rubixml.com too rare to die https://rubixml.com'],
-            ['A man who procrastinates in @his choosing will inevitably have his choice    made for him by #circumstance'],
-            ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
-            ['Diese äpfel Äpfel schmecken sehr gut'],
-            ['The quick 😀 brown 🦊 jumped over the lazy 🛌 man sitting at a bus stop 🚍 drinking a can of 🥤']
-            ['Diese₂ äpfel Äpfel schmecken sehr gut'],
-        ]);
-
         $this->transformer = new RegexFilter([
             RegexFilter::URL,
             RegexFilter::EMAIL,
@@ -64,7 +49,15 @@ class RegexFilterTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = Unlabeled::quick([
+            ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],
+            ['Too weird to live, support@rubixml.com too rare to die https://rubixml.com'],
+            ['A man who procrastinates in @his choosing will inevitably have his choice    made for him by #circumstance'],
+            ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
+            ['Diese₂ äpfel Äpfel schmecken sehr gut'],
+        ]);
+
+        $dataset->apply($this->transformer);
 
         $expected = [
             ['I was not proud of what I had learned, but I never doubted that it was worth $ knowing.'],
@@ -75,6 +68,6 @@ class RegexFilterTest extends TestCase
             ['Diese₂ Äpfel schmecken sehr gut'],
         ];
 
-        $this->assertEquals($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

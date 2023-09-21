@@ -50,9 +50,9 @@ class IntervalDiscretizerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $outcomes = ['a', 'b', 'c', 'd', 'e'];
+        $dataset = $this->generator->generate(30);
 
-        $this->transformer->fit($this->generator->generate(30));
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
@@ -68,10 +68,12 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->assertCount(4, $sample);
 
-        $this->assertContains($sample[0], $outcomes);
-        $this->assertContains($sample[1], $outcomes);
-        $this->assertContains($sample[2], $outcomes);
-        $this->assertContains($sample[3], $outcomes);
+        $expected = ['0', '1', '2', '3', '4'];
+
+        $this->assertContains($sample[0], $expected);
+        $this->assertContains($sample[1], $expected);
+        $this->assertContains($sample[2], $expected);
+        $this->assertContains($sample[3], $expected);
     }
 
     /**

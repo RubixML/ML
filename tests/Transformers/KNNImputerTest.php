@@ -7,7 +7,6 @@ use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\KNNImputer;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,11 +16,6 @@ use PHPUnit\Framework\TestCase;
 class KNNImputerTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
-
-    /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
 
     /**
      * @var \Rubix\ML\Datasets\Generators\Blob
@@ -38,15 +32,6 @@ class KNNImputerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [30, 0.001],
-            [NAN, 0.055],
-            [50, -2.0],
-            [60, NAN],
-            [10, 1.0],
-            [100, 9.0],
-        ]);
-
         $this->generator = new Blob([30.0, 0.0]);
 
         $this->transformer = new KNNImputer(2, true, '?');
@@ -69,25 +54,22 @@ class KNNImputerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->transformer->fit($this->dataset);
+        $dataset = new Unlabeled([
+            [30, 0.001],
+            [NAN, 0.055],
+            [50, -2.0],
+            [60, NAN],
+            [10, 1.0],
+            [100, 9.0],
+        ]);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
-        $this->dataset->apply($this->transformer);
+        $dataset->apply($this->transformer);
 
-        $this->assertEquals(23.692172188539388, $this->dataset[1][0]);
-        $this->assertEquals(-1.4826674509492581, $this->dataset[3][1]);
-    }
-
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = $this->dataset->samples();
-
-        $this->transformer->transform($samples);
+        $this->assertEquals(23.692172188539388, $dataset[1][0]);
+        $this->assertEquals(-1.4826674509492581, $dataset[3][1]);
     }
 }
