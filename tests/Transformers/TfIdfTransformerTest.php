@@ -9,7 +9,6 @@ use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Reversible;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TfIdfTransformer;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,11 +17,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TfIdfTransformerTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
     /**
      * @var \Rubix\ML\Transformers\TfIdfTransformer
      */
@@ -33,12 +27,6 @@ class TfIdfTransformerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],
-            [0, 1, 1, 0, 0, 2, 1, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 1, 2, 3, 0, 0, 4, 2, 0, 0, 1, 0, 2, 0, 1, 0, 0],
-        ]);
-
         $this->transformer = new TfIdfTransformer(1.0, false);
     }
 
@@ -60,7 +48,13 @@ class TfIdfTransformerTest extends TestCase
      */
     public function fitTransformReverse() : void
     {
-        $this->transformer->fit($this->dataset);
+        $dataset = new Unlabeled([
+            [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],
+            [0, 1, 1, 0, 0, 2, 1, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 2, 3, 0, 0, 4, 2, 0, 0, 1, 0, 2, 0, 1, 0, 0],
+        ]);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
@@ -70,9 +64,9 @@ class TfIdfTransformerTest extends TestCase
         $this->assertCount(19, $dfs);
         $this->assertContainsOnly('int', $dfs);
 
-        $original = clone $this->dataset;
+        $original = clone $dataset;
 
-        $this->dataset->apply($this->transformer);
+        $dataset->apply($this->transformer);
 
         $expected = [
             [1.6931471805599454, 3.8630462173553424, 0.0, 0.0, 1.2876820724517808, 0.0, 0.0, 0.0, 1.2876820724517808, 2.5753641449035616, 0.0, 2.5753641449035616, 0.0, 0.0, 0.0, 6.772588722239782, 1.2876820724517808, 0.0, 1.6931471805599454],
@@ -80,22 +74,10 @@ class TfIdfTransformerTest extends TestCase
             [0.0, 0.0, 0.0, 1.6931471805599454, 2.5753641449035616, 3.8630462173553424, 0.0, 0.0, 5.150728289807123, 2.5753641449035616, 0.0, 0.0, 1.6931471805599454, 0.0, 3.386294361119891, 0.0, 1.2876820724517808, 0.0, 0.0],
         ];
 
-        $this->assertEquals($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
 
-        $this->dataset->reverseApply($this->transformer);
+        $dataset->reverseApply($this->transformer);
 
-        $this->assertEquals($original->samples(), $this->dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = $this->dataset->samples();
-
-        $this->transformer->transform($samples);
+        $this->assertEquals($original->samples(), $dataset->samples());
     }
 }

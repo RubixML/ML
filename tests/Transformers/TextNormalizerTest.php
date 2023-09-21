@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class TextNormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\TextNormalizer
      */
     protected $transformer;
@@ -28,12 +23,6 @@ class TextNormalizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            ['The quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of Coke'],
-            ['with a Dandy   umbrella'],
-        ]);
-
         $this->transformer = new TextNormalizer(true);
     }
 
@@ -51,13 +40,19 @@ class TextNormalizerTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = Unlabeled::quick([
+            ['The quick brown fox jumped over the lazy man sitting at a bus'
+                . ' stop drinking a can of Coke'],
+            ['with a Dandy   umbrella'],
+        ]);
 
-        $outcome = [
+        $dataset->apply($this->transformer);
+
+        $expected = [
             ['THE QUICK BROWN FOX JUMPED OVER THE LAZY MAN SITTING AT A BUS STOP DRINKING A CAN OF COKE'],
             ['WITH A DANDY   UMBRELLA'],
         ];
 
-        $this->assertEquals($outcome, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

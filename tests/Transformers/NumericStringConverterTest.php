@@ -15,11 +15,6 @@ use PHPUnit\Framework\TestCase;
 class NumericStringConverterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\NumericStringConverter
      */
     protected $transformer;
@@ -29,12 +24,6 @@ class NumericStringConverterTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            ['1', '2', 3, 4, 'NAN'],
-            ['4.0', '2.0', 3.0, 1.0, 'INF'],
-            ['100', '3.0', 200, 2.5, '-INF'],
-        ]);
-
         $this->transformer = new NumericStringConverter();
     }
 
@@ -53,9 +42,15 @@ class NumericStringConverterTest extends TestCase
      */
     public function transformReverse() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = new Unlabeled([
+            ['1', '2', 3, 4, 'NAN'],
+            ['4.0', '2.0', 3.0, 1.0, 'INF'],
+            ['100', '3.0', 200, 2.5, '-INF'],
+        ]);
 
-        $samples = $this->dataset->samples();
+        $dataset->apply($this->transformer);
+
+        $samples = $dataset->samples();
 
         $this->assertEquals(1, $samples[0][0]);
         $this->assertEquals(4.0, $samples[1][0]);
@@ -64,7 +59,7 @@ class NumericStringConverterTest extends TestCase
         $this->assertInfinite($samples[1][4]);
         $this->assertInfinite($samples[2][4]);
 
-        $this->dataset->reverseApply($this->transformer);
+        $dataset->reverseApply($this->transformer);
 
         $expected = [
             ['1', '2', 3, 4, 'NAN'],
@@ -72,6 +67,6 @@ class NumericStringConverterTest extends TestCase
             ['100', '3', 200, 2.5, '-INF'],
         ];
 
-        $this->assertEquals($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

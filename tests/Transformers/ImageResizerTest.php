@@ -15,11 +15,6 @@ use PHPUnit\Framework\TestCase;
 class ImageResizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\ImageResizer
      */
     protected $transformer;
@@ -29,10 +24,6 @@ class ImageResizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            [imagecreatefrompng('./tests/test.png'), 'whatever'],
-        ]);
-
         $this->transformer = new ImageResizer(32, 32);
     }
 
@@ -50,9 +41,13 @@ class ImageResizerTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = Unlabeled::quick([
+            [imagecreatefrompng('./tests/test.png'), 'whatever', 69],
+        ]);
 
-        $sample = $this->dataset->sample(0);
+        $dataset->apply($this->transformer);
+
+        $sample = $dataset->sample(0);
 
         $image = $sample[0];
 

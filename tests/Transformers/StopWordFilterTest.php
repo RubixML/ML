@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class StopWordFilterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\StopWordFilter
      */
     protected $transformer;
@@ -28,13 +23,6 @@ class StopWordFilterTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            ['the quick brown fox jumped over the lazy man sitting at a bus'
-                . ' stop drinking a can of coke'],
-            ['with a dandy umbrella'],
-            ['salle à manger'],
-        ]);
-
         $this->transformer = new StopWordFilter(['a', 'quick', 'pig', 'à']);
     }
 
@@ -52,7 +40,14 @@ class StopWordFilterTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = Unlabeled::quick([
+            ['the quick brown fox jumped over the lazy man sitting at a bus'
+                . ' stop drinking a can of coke'],
+            ['with a dandy umbrella'],
+            ['salle à manger'],
+        ]);
+
+        $dataset->apply($this->transformer);
 
         $expected = [
             ['the  brown fox jumped over the lazy man sitting at  bus stop drinking  can of coke'],
@@ -60,6 +55,6 @@ class StopWordFilterTest extends TestCase
             ['salle  manger'],
         ];
 
-        $this->assertEquals($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 }

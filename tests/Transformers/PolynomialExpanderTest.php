@@ -14,11 +14,6 @@ use PHPUnit\Framework\TestCase;
 class PolynomialExpanderTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
-    /**
      * @var \Rubix\ML\Transformers\PolynomialExpander
      */
     protected $transformer;
@@ -28,12 +23,6 @@ class PolynomialExpanderTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 20, 30, 10],
-            [100, 300, 200, 400],
-        ]);
-
         $this->transformer = new PolynomialExpander(2);
     }
 
@@ -51,14 +40,20 @@ class PolynomialExpanderTest extends TestCase
      */
     public function transform() : void
     {
-        $this->dataset->apply($this->transformer);
+        $dataset = new Unlabeled([
+            [1, 2, 3, 4],
+            [40, 20, 30, 10],
+            [100, 300, 200, 400],
+        ]);
 
-        $outcome = [
+        $dataset->apply($this->transformer);
+
+        $expected = [
             [1, 1, 2, 4, 3, 9, 4, 16],
             [40, 1600, 20, 400, 30, 900, 10, 100],
             [100, 10000, 300, 90000, 200, 40000, 400, 160000],
         ];
 
-        $this->assertEquals($outcome, $this->dataset->samples());
+        $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
     }
 }

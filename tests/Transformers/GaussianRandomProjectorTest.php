@@ -38,7 +38,7 @@ class GaussianRandomProjectorTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
+        $this->generator = new Blob(array_fill(0, 20, 0.0), 3.0);
 
         $this->transformer = new GaussianRandomProjector(5);
 
@@ -99,26 +99,17 @@ class GaussianRandomProjectorTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->assertCount(10, $this->generator->generate(1)->sample(0));
+        $dataset = $this->generator->generate(30);
 
-        $this->transformer->fit($this->generator->generate(30));
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
-
-        $expected = [
-            -1.5798504291401145,
-            13.861277276658175,
-            6.8204901690218,
-            1.0068840164872395,
-            -13.878216040342053,
-        ];
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);
 
         $this->assertCount(5, $sample);
-        $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
     /**

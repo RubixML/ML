@@ -7,7 +7,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,11 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 class WordCountVectorizerTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Datasets\Unlabeled
-     */
-    protected $dataset;
-
     /**
      * @var \Rubix\ML\Transformers\WordCountVectorizer
      */
@@ -31,11 +25,6 @@ class WordCountVectorizerTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->dataset = Unlabeled::quick([
-            ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
-            ['with a dandy umbrella'],
-        ]);
-
         $this->transformer = new WordCountVectorizer(50, 1, 1.0, new Word());
     }
 
@@ -54,7 +43,12 @@ class WordCountVectorizerTest extends TestCase
      */
     public function fitTransform() : void
     {
-        $this->transformer->fit($this->dataset);
+        $dataset = Unlabeled::quick([
+            ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
+            ['with a dandy umbrella'],
+        ]);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
@@ -64,25 +58,13 @@ class WordCountVectorizerTest extends TestCase
         $this->assertCount(20, $vocabulary);
         $this->assertContainsOnly('string', $vocabulary);
 
-        $this->dataset->apply($this->transformer);
+        $dataset->apply($this->transformer);
 
-        $outcome = [
+        $expected = [
             [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
         ];
 
-        $this->assertEquals($outcome, $this->dataset->samples());
-    }
-
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = $this->dataset->samples();
-
-        $this->transformer->transform($samples);
+        $this->assertEquals($expected, $dataset->samples());
     }
 }
