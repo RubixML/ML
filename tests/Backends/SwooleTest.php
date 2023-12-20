@@ -37,8 +37,6 @@ class SwooleTest extends TestCase
             $this->markTestSkipped(
                 'Swoole/OpenSwoole extension is not available.'
             );
-
-            return;
         }
 
         $this->backend = new Swoole();
