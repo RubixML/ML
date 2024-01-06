@@ -1,7 +1,8 @@
 <?php
 
-namespace Rubix\ML\Backends;
+namespace Rubix\ML\Backends\Swoole;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 
 use function Swoole\Coroutine\batch;
@@ -14,7 +15,7 @@ use function Swoole\Coroutine\batch;
  * @category    Machine Learning
  * @package     Rubix/ML
  */
-class Swoole implements Backend
+class Coroutine implements Backend
 {
     /**
      * The queue of tasks to be processed in parallel.
@@ -87,6 +88,6 @@ class Swoole implements Backend
      */
     public function __toString() : string
     {
-        return 'Swoole';
+        return 'Swoole\\Coroutine';
     }
 }

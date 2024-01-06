@@ -1,21 +1,22 @@
 <?php
 
-namespace Rubix\ML\Tests\Backends;
+namespace Rubix\ML\Tests\Backends\Swoole;
 
-use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Backends\Swoole\Coroutine as SwooleCoroutineBackend;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
+use Swoole\Event;
 
 /**
  * @group Backends
  * @group Swoole
  * @covers \Rubix\ML\Backends\Swoole
  */
-class SwooleTest extends TestCase
+class CoroutineTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Swoole
+     * @var \Rubix\ML\Backends\Swoole\Coroutine
      */
     protected $backend;
 
@@ -39,7 +40,15 @@ class SwooleTest extends TestCase
             );
         }
 
-        $this->backend = new Swoole();
+        $this->backend = new SwooleCoroutineBackend();
+    }
+
+    /**
+     * @after
+     */
+    protected function tearDown(): void
+    {
+        Event::wait();
     }
 
     /**
@@ -47,7 +56,7 @@ class SwooleTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(Swoole::class, $this->backend);
+        $this->assertInstanceOf(SwooleCoroutineBackend::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
