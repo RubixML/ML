@@ -80,16 +80,16 @@ class RandomForestBench
         $this->estimator->predict($this->testing);
     }
 
-    // /**
-    //  * @Subject
-    //  * @Iterations(5)
-    //  * @BeforeMethods({"setUpCategorical"})
-    //  * @OutputTimeUnit("seconds", precision=3)
-    //  */
-    // public function categorical() : void
-    // {
-    //     $this->estimator->train($this->training);
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @BeforeMethods({"setUpCategorical"})
+     * @OutputTimeUnit("seconds", precision=3)
+     */
+    public function categorical() : void
+    {
+        $this->estimator->train($this->training);
 
-    //     $this->estimator->predict($this->testing);
-    // }
+        $this->estimator->predict($this->testing);
+    }
 }
