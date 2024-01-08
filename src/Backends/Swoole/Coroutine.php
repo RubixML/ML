@@ -4,8 +4,8 @@ namespace Rubix\ML\Backends\Swoole;
 
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
-
-use function Swoole\Coroutine\batch;
+use RuntimeException;
+use Swoole\Coroutine\Scheduler;
 
 /**
  * Swoole
@@ -25,13 +25,6 @@ class Coroutine implements Backend
     protected array $queue = [
         //
     ];
-
-    protected float $timeout;
-
-    public function __construct(float $timeout = -1)
-    {
-        $this->timeout = $timeout;
-    }
 
     /**
      * Queue up a deferred task for backend processing.
@@ -64,7 +57,23 @@ class Coroutine implements Backend
      */
     public function process() : array
     {
-        $results = batch($this->queue, $this->timeout);
+        /**
+         * Swoole promises that all the coroutines added to the root of the
+         * scheduler will be executed in parallel.
+         */
+        $scheduler = new Scheduler();
+
+        $results = [];
+
+        foreach ($this->queue as $callback) {
+            $scheduler->add(function () use ($callback, &$results) {
+                $results[] = $callback();
+            });
+        }
+
+        if (!$scheduler->start()) {
+            throw new RuntimeException('Not all coroutines finished successfully');
+        }
 
         $this->queue = [];
 
