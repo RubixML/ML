@@ -83,6 +83,9 @@ class Process implements Backend
 
         $pool->on('WorkerStart', function (Pool $pool, $workerId) use ($resultsTable, $workersTable) {
             try {
+                $process = $pool->getProcess();
+                $process->setAffinity([$workerId]);
+
                 if (!$workersTable->exist($workerId)) {
                     if (!$workersTable->set($workerId, [
                         'working' => 1,
