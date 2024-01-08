@@ -28,15 +28,14 @@ class Process implements Backend
      */
     protected array $queue = [];
 
-    private int $serialiedRowLength;
+    private int $cpus;
 
-    private int $workersCount;
+    private int $serialiedRowLength;
 
     private Serializer $serializer;
 
     public function __construct(
         int $serialiedRowLength = 65536,
-        ?int $workersCount = null,
         ?Serializer $serializer = null,
     ) {
         if ($serializer) {
@@ -50,7 +49,6 @@ class Process implements Backend
         }
 
         $this->serialiedRowLength = $serialiedRowLength;
-        $this->workersCount = $workersCount ?? swoole_cpu_num();
     }
 
     /**
@@ -88,15 +86,19 @@ class Process implements Backend
         $resultsTable->column('result', Table::TYPE_STRING, $this->serialiedRowLength);
         $resultsTable->create();
 
-        $workersTable = new Table($this->workersCount, self::HASH_COLLISIONS_ALLOWED);
+        $workersTable = new Table($this->cpus, self::HASH_COLLISIONS_ALLOWED);
         $workersTable->column('working', Table::TYPE_INT);
         $workersTable->create();
 
-        $pool = new Pool($this->workersCount);
+        $pool = new Pool($this->cpus);
 
         $pool->on('WorkerStart', function (Pool $pool, $workerId) use ($resultsTable, $workersTable) {
             try {
                 $process = $pool->getProcess();
+
+                // Worker id is an integer that goes from 0 to the number of
+                // workers. There are "$this->cpu" workers spawned, so worker
+                // id should correspond to a specific core.
                 $process->setAffinity([$workerId]);
 
                 if (!$workersTable->exist($workerId)) {
@@ -106,7 +108,7 @@ class Process implements Backend
                         throw new RuntimeException('Unable to store worker status in the shared memory table');
                     }
 
-                    for ($i = $workerId; $i < count($this->queue); $i += $this->workersCount) {
+                    for ($i = $workerId; $i < count($this->queue); $i += $this->cpus) {
                         if (!$resultsTable->exist($i)) {
                             $result = $this->queue[$i]();
                             $serialized = $this->serializer->serialize($result);
