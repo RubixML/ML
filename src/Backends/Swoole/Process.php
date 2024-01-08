@@ -32,10 +32,23 @@ class Process implements Backend
 
     private int $workersCount;
 
+    private Serializer $serializer;
+
     public function __construct(
         int $serialiedRowLength = 65536,
         ?int $workersCount = null,
+        ?Serializer $serializer = null,
     ) {
+        if ($serializer) {
+            $this->serializer = $serializer;
+        } else {
+            if (extension_loaded('igbinary')) {
+                $this->serializer = new IgbinarySerializer();
+            } else {
+                $this->serializer = new PhpSerializer();
+            }
+        }
+
         $this->serialiedRowLength = $serialiedRowLength;
         $this->workersCount = $workersCount ?? swoole_cpu_num();
     }
@@ -96,9 +109,10 @@ class Process implements Backend
                     for ($i = $workerId; $i < count($this->queue); $i += $this->workersCount) {
                         if (!$resultsTable->exist($i)) {
                             $result = $this->queue[$i]();
+                            $serialized = $this->serializer->serialize($result);
 
                             if (!$resultsTable->set($i, [
-                                'result' => serialize($result),
+                                'result' => $serialized,
                             ])) {
                                 throw new RuntimeException('Unable to store task result in the shared memory table');
                             }
@@ -119,7 +133,7 @@ class Process implements Backend
 
         for ($i = 0; $i < count($this->queue); $i += 1) {
             $serialized = $resultsTable->get($i, 'result');
-            $unserialized = unserialize($serialized);
+            $unserialized = $this->serializer->unserialize($serialized);
 
             if (false === $unserialized) {
                 // Task needs to be repeated due to hash collision in the Table
