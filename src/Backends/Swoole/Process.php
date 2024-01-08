@@ -38,6 +38,8 @@ class Process implements Backend
         int $serialiedRowLength = 65536,
         ?Serializer $serializer = null,
     ) {
+        $this->cpus = swoole_cpu_num();
+
         if ($serializer) {
             $this->serializer = $serializer;
         } else {
