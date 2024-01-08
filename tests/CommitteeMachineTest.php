@@ -8,7 +8,6 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -20,6 +19,8 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group MetaEstimators
@@ -27,6 +28,8 @@ use PHPUnit\Framework\TestCase;
  */
 class CommitteeMachineTest extends TestCase
 {
+    use BackendProviderTrait;
+
     protected const TRAIN_SIZE = 512;
 
     protected const TEST_SIZE = 256;
@@ -131,11 +134,13 @@ class CommitteeMachineTest extends TestCase
     }
 
     /**
+     * @dataProvider provideBackends
      * @test
+     * @param Backend $backend
      */
-    public function trainPredict() : void
+    public function trainPredict(Backend $backend) : void
     {
-        $this->estimator->setBackend(new Serial());
+        $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);

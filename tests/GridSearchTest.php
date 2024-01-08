@@ -9,7 +9,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -20,6 +19,8 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group MetaEstimators
@@ -27,6 +28,8 @@ use PHPUnit\Framework\TestCase;
  */
 class GridSearchTest extends TestCase
 {
+    use BackendProviderTrait;
+
     protected const TRAIN_SIZE = 512;
 
     protected const TEST_SIZE = 256;
@@ -121,12 +124,14 @@ class GridSearchTest extends TestCase
     }
 
     /**
+     * @dataProvider provideBackends
      * @test
+     * @param Backend $backend
      */
-    public function trainPredictBest() : void
+    public function trainPredictBest(Backend $backend) : void
     {
         $this->estimator->setLogger(new BlackHole());
-        $this->estimator->setBackend(new Serial());
+        $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);

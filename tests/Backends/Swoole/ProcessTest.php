@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Backends\Swoole;
 
-use Rubix\ML\Backends\Swoole\Coroutine as SwooleCoroutineBackend;
+use Rubix\ML\Backends\Swoole\Process as SwooleProcessBackend;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
@@ -13,10 +13,10 @@ use Swoole\Event;
  * @group Swoole
  * @covers \Rubix\ML\Backends\Swoole
  */
-class CoroutineTest extends TestCase
+class ProcessTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Swoole\Coroutine
+     * @var \Rubix\ML\Backends\Swoole\Process
      */
     protected $backend;
 
@@ -40,7 +40,7 @@ class CoroutineTest extends TestCase
             );
         }
 
-        $this->backend = new SwooleCoroutineBackend();
+        $this->backend = new SwooleProcessBackend();
     }
 
     /**
@@ -56,7 +56,7 @@ class CoroutineTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(SwooleCoroutineBackend::class, $this->backend);
+        $this->assertInstanceOf(SwooleProcessBackend::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
