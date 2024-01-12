@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Backends\Swoole\Process as SwooleProcessBackend;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole as SwooleBackend;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
@@ -46,7 +47,8 @@ class RandomForestBench
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
         $this->estimator = new RandomForest(new ClassificationTree(30));
-        // $this->estimator->setBackend(new SwooleProcessBackend());
+        $this->estimator->setBackend(new SwooleBackend());
+        // $this->estimator->setBackend(new Amp());
     }
 
     public function setUpCategorical() : void
@@ -80,16 +82,16 @@ class RandomForestBench
         $this->estimator->predict($this->testing);
     }
 
-    /**
-     * @Subject
-     * @Iterations(5)
-     * @BeforeMethods({"setUpCategorical"})
-     * @OutputTimeUnit("seconds", precision=3)
-     */
-    public function categorical() : void
-    {
-        $this->estimator->train($this->training);
+    // /**
+    //  * @Subject
+    //  * @Iterations(5)
+    //  * @BeforeMethods({"setUpCategorical"})
+    //  * @OutputTimeUnit("seconds", precision=3)
+    //  */
+    // public function categorical() : void
+    // {
+    //     $this->estimator->train($this->training);
 
-        $this->estimator->predict($this->testing);
-    }
+    //     $this->estimator->predict($this->testing);
+    // }
 }

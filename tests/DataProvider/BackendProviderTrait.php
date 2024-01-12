@@ -4,9 +4,9 @@ namespace Rubix\ML\Tests\DataProvider;
 
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Amp as AmpBackend;
-use Rubix\ML\Backends\Swoole\Coroutine as SwooleCoroutineBackend;
-use Rubix\ML\Backends\Swoole\Process as SwooleProcessBackend;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 trait BackendProviderTrait
 {
@@ -20,14 +20,11 @@ trait BackendProviderTrait
         $serialBackend = new Serial();
         $backends[(string) $serialBackend] = [$serialBackend];
 
-        $ampBackend = new AmpBackend();
+        $ampBackend = new Amp();
         $backends[(string) $ampBackend] = [$ampBackend];
 
-        if (extension_loaded('swoole') || extension_loaded('openswoole')) {
-            $swooleCoroutineBackend = new SwooleCoroutineBackend();
-            $backends[(string) $swooleCoroutineBackend] = [$swooleCoroutineBackend];
-
-            $swooleProcessBackend = new SwooleProcessBackend();
+        if (SwooleExtensionIsLoaded::create()->passes()) {
+            $swooleProcessBackend = new Swoole();
             $backends[(string) $swooleProcessBackend] = [$swooleProcessBackend];
         }
 

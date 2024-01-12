@@ -1,11 +1,12 @@
 <?php
 
-namespace Rubix\ML\Tests\Backends\Swoole;
+namespace Rubix\ML\Tests\Backends;
 
-use Rubix\ML\Backends\Swoole\Coroutine as SwooleCoroutineBackend;
+use Rubix\ML\Backends\Swoole as SwooleBackend;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 use Swoole\Event;
 
 /**
@@ -13,10 +14,10 @@ use Swoole\Event;
  * @group Swoole
  * @covers \Rubix\ML\Backends\Swoole
  */
-class CoroutineTest extends TestCase
+class SwooleTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Swoole\Coroutine
+     * @var \Rubix\ML\Backends\Swoole\Process
      */
     protected $backend;
 
@@ -34,13 +35,13 @@ class CoroutineTest extends TestCase
      */
     protected function setUp() : void
     {
-        if (!extension_loaded('openswoole') && !extension_loaded('swoole')) {
+        if (!SwooleExtensionIsLoaded::create()->passes()) {
             $this->markTestSkipped(
                 'Swoole/OpenSwoole extension is not available.'
             );
         }
 
-        $this->backend = new SwooleCoroutineBackend();
+        $this->backend = new SwooleBackend();
     }
 
     /**
@@ -56,7 +57,7 @@ class CoroutineTest extends TestCase
      */
     public function build() : void
     {
-        $this->assertInstanceOf(SwooleCoroutineBackend::class, $this->backend);
+        $this->assertInstanceOf(SwooleBackend::class, $this->backend);
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
