@@ -84,17 +84,18 @@ class Swoole implements Backend
 
         while (($queueItem = array_shift($this->queue))) {
             $workerProcess = new Process(
-                callback: function (Process $worker) use ($queueItem) {
+                function (Process $worker) use ($queueItem) {
                     $worker->exportSocket()->send(igbinary_serialize($queueItem()));
                 },
-                enable_coroutine: true,
-                pipe_type: 1,
-                redirect_stdin_and_stdout: false,
+                // redirect_stdin_and_stdout
+                false,
+                // pipe_type
+                SOCK_STREAM,
+                // enable_coroutine
+                true,
             );
 
-            $workerProcess->setAffinity([
-                $currentCpu,
-            ]);
+            $workerProcess->setAffinity([$currentCpu]);
             $workerProcess->setBlocking(false);
             $workerProcess->start();
 
