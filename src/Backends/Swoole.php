@@ -2,18 +2,13 @@
 
 namespace Rubix\ML\Backends;
 
-use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
-use Rubix\ML\Encoding;
 use Rubix\ML\Serializers\Serializer;
 use Rubix\ML\Serializers\Igbinary;
 use Rubix\ML\Serializers\Native;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use RuntimeException;
 use Swoole\Atomic;
 use Swoole\Process;
-use Swoole\Process\Pool;
-use Swoole\Table;
 
 use function Swoole\Coroutine\run;
 
