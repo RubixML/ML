@@ -7,7 +7,6 @@ use Rubix\ML\Serializers\Serializer;
 use Rubix\ML\Serializers\Igbinary;
 use Rubix\ML\Serializers\Native;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Swoole\Atomic;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
@@ -22,11 +21,6 @@ use function Swoole\Coroutine\run;
  */
 class Swoole implements Backend
 {
-    /**
-     * Swoole accepts values between 0.2 and 1
-     */
-    const CONFLICT_PROPORTION = 0.25;
-
     /**
      * The queue of tasks to be processed in parallel.
      */
@@ -84,26 +78,14 @@ class Swoole implements Backend
     {
         $results = [];
 
-        $finishedTasksAtomic = new Atomic();
-        $waitingAtomic = new Atomic();
-
-        $scheduledTasksTotal = count($this->queue);
         $workerProcesses = [];
 
         $currentCpu = 0;
 
         while (($queueItem = array_shift($this->queue))) {
             $workerProcess = new Process(
-                callback: function (Process $worker) use ($finishedTasksAtomic, $queueItem, $scheduledTasksTotal, $waitingAtomic) {
-                    try {
-                        $worker->exportSocket()->send(igbinary_serialize($queueItem()));
-                    } finally {
-                        $finishedTasksAtomic->add(1);
-
-                        if ($scheduledTasksTotal <= $finishedTasksAtomic->get()) {
-                            $waitingAtomic->wakeup();
-                        }
-                    }
+                callback: function (Process $worker) use ($queueItem) {
+                    $worker->exportSocket()->send(igbinary_serialize($queueItem()));
                 },
                 enable_coroutine: true,
                 pipe_type: 1,
@@ -120,8 +102,6 @@ class Swoole implements Backend
 
             $currentCpu = ($currentCpu + 1) % $this->cpus;
         }
-
-        $waitingAtomic->wait(-1);
 
         run(function () use (&$results, $workerProcesses) {
             foreach ($workerProcesses as $workerProcess) {
