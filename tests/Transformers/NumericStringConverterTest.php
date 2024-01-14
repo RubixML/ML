@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class NumericStringConverterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\NumericStringConverter
+     * @var NumericStringConverter
      */
     protected $transformer;
 

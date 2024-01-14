@@ -24,7 +24,7 @@ class ManhattanBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Manhattan
+     * @var Manhattan
      */
     protected $kernel;
 

@@ -19,12 +19,12 @@ use PHPUnit\Framework\TestCase;
 class MaxAbsoluteScalerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\MaxAbsoluteScaler
+     * @var MaxAbsoluteScaler
      */
     protected $transformer;
 

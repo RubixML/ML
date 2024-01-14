@@ -17,14 +17,14 @@ interface Persister extends Stringable
     /**
      * Save an encoding.
      *
-     * @param \Rubix\ML\Encoding $encoding
+     * @param Encoding $encoding
      */
     public function save(Encoding $encoding) : void;
 
     /**
      * Load a persisted encoding.
      *
-     * @return \Rubix\ML\Encoding
+     * @return Encoding
      */
     public function load() : Encoding;
 }

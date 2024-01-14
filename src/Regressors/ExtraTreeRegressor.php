@@ -62,7 +62,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -115,7 +115,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -132,8 +132,8 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -157,7 +157,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      */
     public function predictSample(array $sample)
     {
-        /** @var \Rubix\ML\Graph\Nodes\Average $node */
+        /** @var Average $node */
         $node = $this->search($sample);
 
         return $node->outcome();
@@ -166,8 +166,8 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
     /**
      * Terminate the branch with the most likely Average.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Average
+     * @param Labeled $dataset
+     * @return Average
      */
     protected function terminate(Labeled $dataset) : Average
     {

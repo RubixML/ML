@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class WordCountVectorizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\WordCountVectorizer
+     * @var WordCountVectorizer
      */
     protected $transformer;
 

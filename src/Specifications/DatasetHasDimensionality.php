@@ -14,7 +14,7 @@ class DatasetHasDimensionality extends Specification
     /**
      * The dataset that contains samples under validation.
      *
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
     protected \Rubix\ML\Datasets\Dataset $dataset;
 
@@ -28,7 +28,7 @@ class DatasetHasDimensionality extends Specification
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $dimensions
      * @return self
      */
@@ -38,9 +38,9 @@ class DatasetHasDimensionality extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $dimensions
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(Dataset $dataset, int $dimensions)
     {
@@ -56,7 +56,7 @@ class DatasetHasDimensionality extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\IncorrectDatasetDimensionality
+     * @throws IncorrectDatasetDimensionality
      */
     public function check() : void
     {

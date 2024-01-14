@@ -75,7 +75,7 @@ class ImageVectorizer implements Transformer, Stateful
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
@@ -102,7 +102,7 @@ class ImageVectorizer implements Transformer, Stateful
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

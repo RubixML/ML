@@ -16,7 +16,7 @@ class FilesystemTest extends TestCase
     protected const PATH = __DIR__ . '/test.model';
 
     /**
-     * @var \Rubix\ML\Persisters\Filesystem
+     * @var Filesystem
      */
     protected $persister;
 

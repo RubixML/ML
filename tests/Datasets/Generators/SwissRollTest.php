@@ -17,7 +17,7 @@ class SwissRollTest extends TestCase
     protected const DATASET_SIZE = 30;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\SwissRoll
+     * @var SwissRoll
      */
     protected $generator;
 

@@ -23,7 +23,7 @@ class Activation implements Hidden
     /**
      * The function that computes the output of the layer.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var ActivationFunction
      */
     protected \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFn;
 
@@ -49,7 +49,7 @@ class Activation implements Hidden
     protected ?\Tensor\Matrix $output = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFn
+     * @param ActivationFunction $activationFn
      */
     public function __construct(ActivationFunction $activationFn)
     {
@@ -61,7 +61,7 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return positive-int
      */
     public function width() : int
@@ -96,8 +96,8 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -114,8 +114,8 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -127,10 +127,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Deferred
+     * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
+     * @throws RuntimeException
+     * @return Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -155,10 +155,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $output
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @param Matrix $output
+     * @param Deferred $prevGradient
+     * @return Matrix
      */
     public function gradient(Matrix $input, Matrix $output, Deferred $prevGradient) : Matrix
     {

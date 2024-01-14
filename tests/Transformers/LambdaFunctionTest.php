@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class LambdaFunctionTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\LambdaFunction
+     * @var LambdaFunction
      */
     protected $transformer;
 

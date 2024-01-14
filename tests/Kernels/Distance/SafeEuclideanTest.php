@@ -15,7 +15,7 @@ use Generator;
 class SafeEuclideanTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\SafeEuclidean
+     * @var SafeEuclidean
      */
     protected $kernel;
 

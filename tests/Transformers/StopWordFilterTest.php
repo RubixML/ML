@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class StopWordFilterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\StopWordFilter
+     * @var StopWordFilter
      */
     protected $transformer;
 

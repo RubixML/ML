@@ -16,22 +16,22 @@ class LabelsAreCompatibleWithLearner extends Specification
     /**
      * The dataset that contains the labels under validation.
      *
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
     protected \Rubix\ML\Datasets\Labeled $dataset;
 
     /**
      * The learner instance.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $estimator;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\Learner $estimator
+     * @param Labeled $dataset
+     * @param Learner $estimator
      * @return self
      */
     public static function with(Labeled $dataset, Learner $estimator) : self
@@ -40,8 +40,8 @@ class LabelsAreCompatibleWithLearner extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\Learner $estimator
+     * @param Labeled $dataset
+     * @param Learner $estimator
      */
     public function __construct(Labeled $dataset, Learner $estimator)
     {
@@ -52,7 +52,7 @@ class LabelsAreCompatibleWithLearner extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function check() : void
     {

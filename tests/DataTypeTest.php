@@ -17,7 +17,7 @@ class DataTypeTest extends TestCase
      * @dataProvider determineProvider
      *
      * @param mixed $value
-     * @param \Rubix\ML\DataType $expected
+     * @param DataType $expected
      */
     public function determine($value, DataType $expected) : void
     {
@@ -61,7 +61,7 @@ class DataTypeTest extends TestCase
      * @test
      * @dataProvider codeProvider
      *
-     * @param \Rubix\ML\DataType $type
+     * @param DataType $type
      * @param int $expected
      */
     public function code(DataType $type, int $expected) : void

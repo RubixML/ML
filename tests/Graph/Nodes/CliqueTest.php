@@ -27,7 +27,7 @@ class CliqueTest extends TestCase
     protected const RADIUS = 1.5;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Clique
+     * @var Clique
      */
     protected $node;
 

@@ -15,7 +15,7 @@ use Traversable;
 class DeduplicatorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Extractors\Deduplicator
+     * @var Deduplicator
      */
     protected $extractor;
 

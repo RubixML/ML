@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class PresetTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Clusterers\Seeders\Preset
+     * @var Preset
      */
     protected $seeder;
 

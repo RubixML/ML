@@ -21,10 +21,10 @@ class CrossValidate extends Task
     /**
      * Cross validate a learner with a given dataset and return the score.
      *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Validator $validator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Learner $estimator
+     * @param Labeled $dataset
+     * @param Validator $validator
+     * @param Metric $metric
      * @return float
      */
     public static function score(
@@ -37,10 +37,10 @@ class CrossValidate extends Task
     }
 
     /**
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Validator $validator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Learner $estimator
+     * @param Labeled $dataset
+     * @param Validator $validator
+     * @param Metric $metric
      */
     public function __construct(
         Learner $estimator,

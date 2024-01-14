@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class WildGuessTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\WildGuess
+     * @var WildGuess
      */
     protected $strategy;
 

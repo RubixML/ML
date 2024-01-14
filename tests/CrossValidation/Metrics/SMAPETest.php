@@ -16,7 +16,7 @@ use Generator;
 class SMAPETest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\SMAPE
+     * @var SMAPE
      */
     protected $metric;
 

@@ -32,7 +32,7 @@ class NeighborhoodTest extends TestCase
     ];
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Neighborhood
+     * @var Neighborhood
      */
     protected $node;
 

@@ -77,7 +77,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
     /**
      * @param float $smoothing
      * @param bool $dampening
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $smoothing = 1.0, bool $dampening = false)
     {
@@ -127,7 +127,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -140,8 +140,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function update(Dataset $dataset) : void
     {
@@ -181,7 +181,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {
@@ -206,7 +206,7 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
      * Perform the reverse transformation to the samples.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function reverseTransform(array &$samples) : void
     {

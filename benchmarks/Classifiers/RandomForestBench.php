@@ -28,7 +28,7 @@ class RandomForestBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\RandomForest
+     * @var RandomForest
      */
     protected $estimator;
 

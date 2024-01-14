@@ -51,7 +51,7 @@ class MonteCarlo implements Validator, Parallel
     /**
      * @param int $simulations
      * @param float $ratio
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $simulations = 10, float $ratio = 0.2)
     {
@@ -73,10 +73,10 @@ class MonteCarlo implements Validator, Parallel
     /**
      * Test the estimator with the supplied dataset and return a validation score.
      *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Learner $estimator
+     * @param Labeled $dataset
+     * @param Metric $metric
+     * @throws RuntimeException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float

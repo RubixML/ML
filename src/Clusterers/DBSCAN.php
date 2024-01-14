@@ -71,7 +71,7 @@ class DBSCAN implements Estimator
     /**
      * The spatial tree used to run range searches.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @var Spatial
      */
     protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
@@ -79,7 +79,7 @@ class DBSCAN implements Estimator
      * @param float $radius
      * @param int $minDensity
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
     {
@@ -101,7 +101,7 @@ class DBSCAN implements Estimator
     /**
      * Return the estimator type.
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -135,7 +135,7 @@ class DBSCAN implements Estimator
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array

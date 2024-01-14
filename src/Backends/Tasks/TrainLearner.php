@@ -21,9 +21,9 @@ class TrainLearner extends Task
     /**
      * Train a learner and return the instance.
      *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Learner
+     * @param Learner $estimator
+     * @param Dataset $dataset
+     * @return Learner
      */
     public static function train(Learner $estimator, Dataset $dataset) : Learner
     {
@@ -33,8 +33,8 @@ class TrainLearner extends Task
     }
 
     /**
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Learner $estimator
+     * @param Dataset $dataset
      */
     public function __construct(Learner $estimator, Dataset $dataset)
     {

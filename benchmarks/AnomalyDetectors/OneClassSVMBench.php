@@ -27,7 +27,7 @@ class OneClassSVMBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\OneClassSVM
+     * @var OneClassSVM
      */
     protected $estimator;
 

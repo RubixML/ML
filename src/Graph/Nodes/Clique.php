@@ -24,7 +24,7 @@ class Clique implements Hypersphere, BinaryNode
     /**
      * The dataset stored in the node.
      *
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
     protected \Rubix\ML\Datasets\Labeled $dataset;
 
@@ -45,8 +45,8 @@ class Clique implements Hypersphere, BinaryNode
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Labeled $dataset
+     * @param Distance $kernel
      * @return self
      */
     public static function terminate(Labeled $dataset, Distance $kernel) : self
@@ -73,7 +73,7 @@ class Clique implements Hypersphere, BinaryNode
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      * @param list<string|int|float> $center
      * @param float $radius
      */
@@ -87,7 +87,7 @@ class Clique implements Hypersphere, BinaryNode
     /**
      * Return the dataset stored in the node.
      *
-     * @return \Rubix\ML\Datasets\Labeled
+     * @return Labeled
      */
     public function dataset() : Labeled
     {

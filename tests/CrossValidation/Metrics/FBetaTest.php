@@ -16,7 +16,7 @@ use Generator;
 class FBetaTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
+     * @var FBeta
      */
     protected $metric;
 

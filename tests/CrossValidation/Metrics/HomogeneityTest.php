@@ -16,7 +16,7 @@ use Generator;
 class HomogeneityTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Homogeneity
+     * @var Homogeneity
      */
     protected $metric;
 

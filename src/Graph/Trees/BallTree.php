@@ -45,7 +45,7 @@ class BallTree implements BinaryTree, Spatial
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
@@ -59,7 +59,7 @@ class BallTree implements BinaryTree, Spatial
     /**
      * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)
     {
@@ -115,7 +115,7 @@ class BallTree implements BinaryTree, Spatial
      *
      * @internal
      *
-     * @return \Rubix\ML\Kernels\Distance\Distance
+     * @return Distance
      */
     public function kernel() : Distance
     {
@@ -128,8 +128,8 @@ class BallTree implements BinaryTree, Spatial
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Labeled $dataset
+     * @throws InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -175,7 +175,7 @@ class BallTree implements BinaryTree, Spatial
      *
      * @param list<string|int|float> $sample
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */
     public function nearest(array $sample, int $k = 1) : array
@@ -243,7 +243,7 @@ class BallTree implements BinaryTree, Spatial
      *
      * @param list<string|int|float> $sample
      * @param float $radius
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return array{list<list<mixed>>,list<mixed>,list<float>}
      */

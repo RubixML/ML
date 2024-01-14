@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\GELU;
 class GELUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\GELU
+     * @var GELU
      */
     protected $activationFn;
 

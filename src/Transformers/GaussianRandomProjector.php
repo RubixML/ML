@@ -49,7 +49,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      *
      * @param int $n
      * @param float $maxDistortion
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.5) : int
@@ -71,7 +71,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
 
     /**
      * @param int $dimensions
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $dimensions)
     {
@@ -110,8 +110,8 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -124,7 +124,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

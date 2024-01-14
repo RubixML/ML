@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class LeCunTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\LeCun
+     * @var LeCun
      */
     protected $initializer;
 

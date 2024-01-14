@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ConstantTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\Constant
+     * @var Constant
      */
     protected $strategy;
 

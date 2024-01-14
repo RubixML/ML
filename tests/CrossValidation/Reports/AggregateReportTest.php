@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class AggregateReportTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\AggregateReport
+     * @var AggregateReport
      */
     protected $report;
 

@@ -27,7 +27,7 @@ class RobustZScoreBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\RobustZScore
+     * @var RobustZScore
      */
     protected $estimator;
 

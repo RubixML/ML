@@ -47,7 +47,7 @@ class MulticlassBreakdown implements ReportGenerator
      *
      * @param list<string|int> $predictions
      * @param list<string|int> $labels
-     * @return \Rubix\ML\Report
+     * @return Report
      */
     public function generate(array $predictions, array $labels) : Report
     {

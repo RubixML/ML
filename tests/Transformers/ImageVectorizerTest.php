@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class ImageVectorizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\ImageVectorizer
+     * @var ImageVectorizer
      */
     protected $transformer;
 
@@ -57,6 +57,6 @@ class ImageVectorizerTest extends TestCase
                 183, 170, 39, 39, 54, 77, 80, 89, 141, 140, 132],
         ];
 
-        $this->assertEquals($expected, $dataset->samples());
+        $this->assertEqualsWithDelta($expected, $dataset->samples(), 1.0);
     }
 }

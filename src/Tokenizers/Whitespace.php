@@ -26,7 +26,7 @@ class Whitespace implements Tokenizer
 
     /**
      * @param string $delimiter
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $delimiter = ' ')
     {

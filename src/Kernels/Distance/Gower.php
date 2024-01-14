@@ -36,7 +36,7 @@ class Gower implements Distance, NaNSafe
 
     /**
      * @param float $range
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $range = 1.0)
     {

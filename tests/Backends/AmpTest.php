@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class AmpTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Amp
+     * @var Amp
      */
     protected $backend;
 

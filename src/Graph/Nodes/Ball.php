@@ -51,8 +51,8 @@ class Ball implements Hypersphere, HasBinaryChildren
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Labeled $dataset
+     * @param Distance $kernel
      * @return self
      */
     public static function split(Labeled $dataset, Distance $kernel) : self
@@ -135,7 +135,7 @@ class Ball implements Hypersphere, HasBinaryChildren
     /**
      * Return the left and right subsets of the training data.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     public function subsets() : array

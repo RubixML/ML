@@ -22,7 +22,7 @@ interface Spatial extends Tree, Stringable
      *
      * @internal
      *
-     * @return \Rubix\ML\Kernels\Distance\Distance
+     * @return Distance
      */
     public function kernel() : Distance;
 
@@ -31,7 +31,7 @@ interface Spatial extends Tree, Stringable
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function grow(Labeled $dataset) : void;
 

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class ImageResizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\ImageResizer
+     * @var ImageResizer
      */
     protected $transformer;
 

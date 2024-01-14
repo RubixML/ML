@@ -33,7 +33,7 @@ class Serial implements Backend
     /**
      * Queue up a deferred computation for backend processing.
      *
-     * @param \Rubix\ML\Backends\Tasks\Task $task
+     * @param Task $task
      * @param callable(mixed,mixed):void|null $after
      * @param mixed|null $context
      */

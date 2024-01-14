@@ -18,7 +18,7 @@ use Generator;
 class AdaMaxTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\AdaMax
+     * @var AdaMax
      */
     protected $optimizer;
 
@@ -44,7 +44,7 @@ class AdaMaxTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */

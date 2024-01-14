@@ -25,7 +25,7 @@ class GowerBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Gower
+     * @var Gower
      */
     protected $kernel;
 

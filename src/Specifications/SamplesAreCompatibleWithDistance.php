@@ -16,22 +16,22 @@ class SamplesAreCompatibleWithDistance extends Specification
     /**
      * The dataset that contains samples under validation.
      *
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
     protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * The distance kernel.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Dataset $dataset
+     * @param Distance $kernel
      * @return self
      */
     public static function with(Dataset $dataset, Distance $kernel) : self
@@ -40,8 +40,8 @@ class SamplesAreCompatibleWithDistance extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Dataset $dataset
+     * @param Distance $kernel
      */
     public function __construct(Dataset $dataset, Distance $kernel)
     {
@@ -52,7 +52,7 @@ class SamplesAreCompatibleWithDistance extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function check() : void
     {

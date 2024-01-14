@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 class SiLUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\SiLU
+     * @var SiLU
      */
     protected $activationFn;
 

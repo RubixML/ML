@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class DeferredTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $deferred;
 

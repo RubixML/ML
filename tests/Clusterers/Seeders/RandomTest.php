@@ -15,12 +15,12 @@ use PHPUnit\Framework\TestCase;
 class RandomTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Clusterers\Seeders\Random
+     * @var Random
      */
     protected $seeder;
 

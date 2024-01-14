@@ -18,7 +18,7 @@ class EncodingTest extends TestCase
     ];
 
     /**
-     * @var \Rubix\ML\Encoding
+     * @var Encoding
      */
     protected $encoding;
 

@@ -55,17 +55,17 @@ class RegressionTreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Hyperplane
+     * @var Hyperplane
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Regressors\RegressionTree
+     * @var RegressionTree
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

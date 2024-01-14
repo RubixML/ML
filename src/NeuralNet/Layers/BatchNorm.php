@@ -43,14 +43,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The initializer for the beta parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     * @var Initializer
      */
     protected \Rubix\ML\NeuralNet\Initializers\Initializer $betaInitializer;
 
     /**
      * The initializer for the gamma parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     * @var Initializer
      */
     protected \Rubix\ML\NeuralNet\Initializers\Initializer $gammaInitializer;
 
@@ -107,7 +107,7 @@ class BatchNorm implements Hidden, Parametric
      * @param float $decay
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $betaInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $gammaInitializer
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         float $decay = 0.1,
@@ -129,7 +129,7 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return positive-int
      */
     public function width() : int
@@ -170,9 +170,9 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @throws RuntimeException
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -209,9 +209,9 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @throws RuntimeException
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -231,10 +231,10 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Deferred
+     * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
+     * @throws RuntimeException
+     * @return Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -273,11 +273,11 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Tensor\Matrix $dOut
-     * @param \Tensor\ColumnVector $gamma
-     * @param \Tensor\ColumnVector $stdInv
-     * @param \Tensor\Matrix $xHat
-     * @return \Tensor\Matrix
+     * @param Matrix $dOut
+     * @param ColumnVector $gamma
+     * @param ColumnVector $stdInv
+     * @param Matrix $xHat
+     * @return Matrix
      */
     public function gradient(Matrix $dOut, ColumnVector $gamma, ColumnVector $stdInv, Matrix $xHat) : Matrix
     {
@@ -298,7 +298,7 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator

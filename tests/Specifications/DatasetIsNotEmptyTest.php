@@ -17,7 +17,7 @@ class DatasetIsNotEmptyTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\DatasetIsNotEmpty $specification
+     * @param DatasetIsNotEmpty $specification
      * @param bool $expected
      */
     public function passes(DatasetIsNotEmpty $specification, bool $expected) : void

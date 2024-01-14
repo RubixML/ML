@@ -19,7 +19,7 @@ class StopWordFilter extends RegexFilter
 {
     /**
      * @param string[] $stopWords
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $stopWords = [])
     {

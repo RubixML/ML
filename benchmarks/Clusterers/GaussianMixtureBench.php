@@ -27,7 +27,7 @@ class GaussianMixtureBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\GaussianMixture
+     * @var GaussianMixture
      */
     protected $estimator;
 

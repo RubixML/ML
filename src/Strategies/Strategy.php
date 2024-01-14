@@ -17,7 +17,7 @@ interface Strategy extends Stringable
     /**
      * Return the data type the strategy handles.
      *
-     * @return \Rubix\ML\DataType
+     * @return DataType
      */
     public function type() : DataType;
 

@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 class SoftsignBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Softsign
+     * @var Softsign
      */
     protected $activationFn;
 

@@ -37,7 +37,7 @@ class HuberLoss implements RegressionLoss
 
     /**
      * @param float $alpha
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $alpha = 0.9)
     {
@@ -55,8 +55,8 @@ class HuberLoss implements RegressionLoss
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
     public function compute(Matrix $output, Matrix $target) : float
@@ -69,9 +69,9 @@ class HuberLoss implements RegressionLoss
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
-     * @return \Tensor\Matrix
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix
     {

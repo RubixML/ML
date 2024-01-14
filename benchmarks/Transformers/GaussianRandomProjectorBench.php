@@ -20,7 +20,7 @@ class GaussianRandomProjectorBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\GaussianRandomProjector
+     * @var GaussianRandomProjector
      */
     protected $transformer;
 

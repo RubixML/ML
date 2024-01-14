@@ -27,7 +27,7 @@ class ClassificationTreeBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\ClassificationTree
+     * @var ClassificationTree
      */
     protected $estimator;
 

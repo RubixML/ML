@@ -26,7 +26,7 @@ class Blob implements Generator
     /**
      * The center vector of the blob.
      *
-     * @var \Tensor\Vector
+     * @var Vector
      */
     protected \Tensor\Vector $center;
 
@@ -40,7 +40,7 @@ class Blob implements Generator
     /**
      * @param (int|float)[] $center
      * @param int|float|(int|float)[] $stdDev
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $center = [0, 0], $stdDev = 1.0)
     {
@@ -90,7 +90,7 @@ class Blob implements Generator
      * Generate n data points.
      *
      * @param int<0,max> $n
-     * @return \Rubix\ML\Datasets\Unlabeled
+     * @return Unlabeled
      */
     public function generate(int $n) : Unlabeled
     {

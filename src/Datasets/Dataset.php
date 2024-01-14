@@ -54,7 +54,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * @param mixed[] $samples
      * @param bool $verify
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $samples = [], bool $verify = true)
     {
@@ -224,7 +224,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature columns that match a given data type.
      *
-     * @param \Rubix\ML\DataType $type
+     * @param DataType $type
      * @return mixed[]
      */
     public function featuresByType(DataType $type) : array
@@ -244,9 +244,9 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Get the data type for a feature column at the given offset.
      *
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\DataType
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @return DataType
      */
     public function featureType(int $offset) : DataType
     {
@@ -301,7 +301,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Apply a transformation to the dataset.
      *
-     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @param Transformer $transformer
      * @return static
      */
     public function apply(Transformer $transformer) : self
@@ -320,8 +320,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Reverse a transformation that was applied to the dataset.
      *
-     * @param \Rubix\ML\Transformers\Reversible $transformer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Reversible $transformer
+     * @throws RuntimeException
      * @return static
      */
     public function reverseApply(Reversible $transformer) : self
@@ -353,8 +353,8 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * and shape of each continuous feature column and the joint probabilities
      * of every categorical feature column.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Report
+     * @throws RuntimeException
+     * @return Report
      */
     public function describe() : Report
     {
@@ -474,7 +474,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Write the dataset to the location and format given by a writable extractor.
      *
-     * @param \Rubix\ML\Extractors\Exporter $extractor
+     * @param Exporter $extractor
      */
     public function exportTo(Exporter $extractor) : void
     {
@@ -545,7 +545,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Merge another dataset with this dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return static
      */
     abstract public function merge(Dataset $dataset) : self;
@@ -553,7 +553,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Join the columns of this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return static
      */
     abstract public function join(Dataset $dataset) : self;
@@ -602,7 +602,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Distance $kernel
      * @return array{self,self}
      */
     abstract public function spatialSplit(array $leftCentroid, array $rightCentroid, Distance $kernel);
@@ -652,7 +652,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * @param int $offset
      * @param mixed[] $values
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetSet($offset, $values) : void
     {
@@ -672,7 +672,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetUnset($offset) : void
     {

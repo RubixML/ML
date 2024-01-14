@@ -44,7 +44,7 @@ class ErrorAnalysis implements ReportGenerator
      *
      * @param list<int|float> $predictions
      * @param list<int|float> $labels
-     * @return \Rubix\ML\Report
+     * @return Report
      */
     public function generate(array $predictions, array $labels) : Report
     {

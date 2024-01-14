@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class SerialTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Serial
+     * @var Serial
      */
     protected $backend;
 

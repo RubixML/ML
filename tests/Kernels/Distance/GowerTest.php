@@ -15,7 +15,7 @@ use Generator;
 class GowerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Gower
+     * @var Gower
      */
     protected $kernel;
 

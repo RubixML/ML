@@ -20,7 +20,7 @@ class MulticlassTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
@@ -35,7 +35,7 @@ class MulticlassTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Multiclass
+     * @var Multiclass
      */
     protected $layer;
 

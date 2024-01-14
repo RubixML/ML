@@ -27,7 +27,7 @@ class KMeansBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\KMeans
+     * @var KMeans
      */
     protected $estimator;
 

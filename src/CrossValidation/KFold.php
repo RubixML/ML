@@ -41,7 +41,7 @@ class KFold implements Validator, Parallel
 
     /**
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $k = 5)
     {
@@ -57,10 +57,10 @@ class KFold implements Validator, Parallel
     /**
      * Test the estimator with the supplied dataset and return a validation score.
      *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Learner $estimator
+     * @param Labeled $dataset
+     * @param Metric $metric
+     * @throws InvalidArgumentException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float

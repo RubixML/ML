@@ -20,12 +20,12 @@ use function serialize;
 class NativeTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Persistable
+     * @var Persistable
      */
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Serializers\Native
+     * @var Native
      */
     protected $serializer;
 

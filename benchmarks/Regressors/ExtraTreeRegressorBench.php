@@ -26,7 +26,7 @@ class ExtraTreeRegressorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\ExtraTreeRegressor
+     * @var ExtraTreeRegressor
      */
     protected $estimator;
 

@@ -27,7 +27,7 @@ class LodaBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\Loda
+     * @var Loda
      */
     protected $estimator;
 

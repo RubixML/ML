@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 class ReLUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ReLU
+     * @var ReLU
      */
     protected $activationFn;
 

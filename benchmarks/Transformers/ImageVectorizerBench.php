@@ -19,7 +19,7 @@ class ImageVectorizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\ImageVectorizer
+     * @var ImageVectorizer
      */
     protected $transformer;
 

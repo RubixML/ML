@@ -20,7 +20,7 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer $specification
+     * @param SamplesAreCompatibleWithTransformer $specification
      * @param bool $expected
      */
     public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void

@@ -20,7 +20,7 @@ class BallTreeBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Graph\Trees\BallTree
+     * @var BallTree
      */
     protected $tree;
 

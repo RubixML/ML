@@ -18,7 +18,7 @@ interface Adaptive extends Optimizer
     /**
      * Warm the parameter cache.
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      */
     public function warm(Parameter $param) : void;
 }

@@ -23,8 +23,8 @@ class Softmax extends Sigmoid
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function activate(Matrix $input) : Matrix
     {

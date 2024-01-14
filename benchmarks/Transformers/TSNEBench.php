@@ -20,7 +20,7 @@ class TSNEBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Transformers\TSNE
+     * @var TSNE
      */
     protected $embedder;
 

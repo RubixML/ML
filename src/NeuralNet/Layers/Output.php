@@ -19,7 +19,7 @@ interface Output extends Layer
      * Compute the gradient and loss at the output.
      *
      * @param (string|int|float)[] $labels
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
+     * @param Optimizer $optimizer
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */

@@ -14,7 +14,7 @@ use Generator;
 class KSkipNGramTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\KSkipNGram
+     * @var KSkipNGram
      */
     protected $tokenizer;
 

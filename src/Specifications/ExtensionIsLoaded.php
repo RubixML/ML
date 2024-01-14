@@ -40,7 +40,7 @@ class ExtensionIsLoaded extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\MissingExtension
+     * @throws MissingExtension
      */
     public function check() : void
     {

@@ -27,7 +27,7 @@ class MeanShiftBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\MeanShift
+     * @var MeanShift
      */
     protected $estimator;
 

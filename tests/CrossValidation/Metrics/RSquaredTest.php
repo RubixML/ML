@@ -16,7 +16,7 @@ use Generator;
 class RSquaredTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

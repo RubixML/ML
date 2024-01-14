@@ -100,7 +100,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * @param float[]|null $priors
      * @param float $smoothing
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(?array $priors = null, float $smoothing = 1.0)
     {
@@ -139,7 +139,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -284,8 +284,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -315,8 +315,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array

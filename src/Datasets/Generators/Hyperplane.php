@@ -25,7 +25,7 @@ class Hyperplane implements Generator
     /**
      * The n coefficients of the hyperplane where n is the dimensionality.
      *
-     * @var \Tensor\Vector
+     * @var Vector
      */
     protected \Tensor\Vector $coefficients;
 
@@ -47,7 +47,7 @@ class Hyperplane implements Generator
      * @param (int|float)[] $coefficients
      * @param float $intercept
      * @param float $noise
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         array $coefficients = [1, -1],
@@ -85,7 +85,7 @@ class Hyperplane implements Generator
      * Generate n data points.
      *
      * @param int<0,max> $n
-     * @return \Rubix\ML\Datasets\Labeled
+     * @return Labeled
      */
     public function generate(int $n) : Labeled
     {

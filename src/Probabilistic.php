@@ -16,7 +16,7 @@ interface Probabilistic extends Estimator
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array;

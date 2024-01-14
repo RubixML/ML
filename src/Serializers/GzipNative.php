@@ -32,13 +32,13 @@ class GzipNative implements Serializer
     /**
      * The base serializer.
      *
-     * @var \Rubix\ML\Serializers\Native
+     * @var Native
      */
     protected \Rubix\ML\Serializers\Native $base;
 
     /**
      * @param int $level
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $level = 6)
     {
@@ -66,8 +66,8 @@ class GzipNative implements Serializer
     /**
      * Serialize a persistable object and return the data.
      *
-     * @param \Rubix\ML\Persistable $persistable
-     * @return \Rubix\ML\Encoding
+     * @param Persistable $persistable
+     * @return Encoding
      */
     public function serialize(Persistable $persistable) : Encoding
     {
@@ -85,9 +85,9 @@ class GzipNative implements Serializer
     /**
      * Deserialize a persistable object and return it.
      *
-     * @param \Rubix\ML\Encoding $encoding
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Persistable
+     * @param Encoding $encoding
+     * @throws RuntimeException
+     * @return Persistable
      */
     public function deserialize(Encoding $encoding) : Persistable
     {

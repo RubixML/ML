@@ -16,7 +16,7 @@ use Generator;
 class InformednessTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Informedness
+     * @var Informedness
      */
     protected $metric;
 
