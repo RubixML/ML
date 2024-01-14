@@ -16,7 +16,7 @@ use Generator;
 class AccuracyTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var Accuracy
      */
     protected $metric;
 

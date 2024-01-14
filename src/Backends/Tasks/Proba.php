@@ -21,8 +21,8 @@ class Proba extends Task
     /**
      * Return the probabilities outputted by the estimator.
      *
-     * @param \Rubix\ML\Probabilistic $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Probabilistic $estimator
+     * @param Dataset $dataset
      * @return list<float[]>
      */
     public static function proba(Probabilistic $estimator, Dataset $dataset) : array
@@ -31,8 +31,8 @@ class Proba extends Task
     }
 
     /**
-     * @param \Rubix\ML\Probabilistic $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Probabilistic $estimator
+     * @param Dataset $dataset
      */
     public function __construct(Probabilistic $estimator, Dataset $dataset)
     {

@@ -98,7 +98,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * @param float $contamination
      * @param float $smoothing
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $contamination = 0.1, float $smoothing = 1e-9)
     {
@@ -121,7 +121,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -190,7 +190,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -226,7 +226,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -286,7 +286,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -316,8 +316,8 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

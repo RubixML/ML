@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class HeTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\He
+     * @var He
      */
     protected $initializer;
 

@@ -60,7 +60,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * The distance kernel to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
@@ -86,7 +86,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = false, ?Distance $kernel = null)
     {
@@ -105,7 +105,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -183,8 +183,8 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

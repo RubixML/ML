@@ -94,14 +94,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * The cluster centroid seeder.
      *
-     * @var \Rubix\ML\Clusterers\Seeders\Seeder
+     * @var Seeder
      */
     protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
 
@@ -137,8 +137,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Seeders\Seeder|null $seeder
+     * @throws InvalidArgumentException
      */
     public function __construct(
         int $k,
@@ -186,7 +186,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Return the estimator type.
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -285,7 +285,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -310,7 +310,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -434,8 +434,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -477,8 +477,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array

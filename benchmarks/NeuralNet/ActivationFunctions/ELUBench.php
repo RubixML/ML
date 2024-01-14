@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 class ELUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ELU
+     * @var ELU
      */
     protected $activationFn;
 

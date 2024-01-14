@@ -27,7 +27,7 @@ class FuzzyCMeansBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\FuzzyCMeans
+     * @var FuzzyCMeans
      */
     protected $estimator;
 

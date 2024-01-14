@@ -18,12 +18,12 @@ use PHPUnit\Framework\TestCase;
 class LinearDiscriminantAnalysisTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\LinearDiscriminantAnalysis
+     * @var LinearDiscriminantAnalysis
      */
     protected $transformer;
 

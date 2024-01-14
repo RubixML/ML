@@ -97,7 +97,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      * @param float $threshold
      * @param float $beta
      * @param float $smoothing
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $threshold = 3.5, float $beta = 0.5, float $smoothing = 1e-9)
     {
@@ -126,7 +126,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -196,7 +196,7 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -224,8 +224,8 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -253,8 +253,8 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

@@ -41,7 +41,7 @@ class CPU
     /**
      * Return the number of cpu cores or 0 if unable to detect.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return int
      */
     public static function cores() : int

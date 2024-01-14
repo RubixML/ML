@@ -33,7 +33,7 @@ class Snapshot
     protected array $parameters;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Network $network
+     * @param Network $network
      */
     public static function take(Network $network) : self
     {
@@ -58,7 +58,7 @@ class Snapshot
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Parametric[] $layers
      * @param list<\Rubix\ML\NeuralNet\Parameter[]> $parameters
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $layers, array $parameters)
     {

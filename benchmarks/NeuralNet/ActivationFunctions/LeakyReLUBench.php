@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 class LeakyReLUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU
+     * @var LeakyReLU
      */
     protected $activationFn;
 

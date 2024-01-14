@@ -58,8 +58,8 @@ class GELU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param \Tensor\Matrix $z
-     * @return \Tensor\Matrix
+     * @param Matrix $z
+     * @return Matrix
      */
     public function activate(Matrix $z) : Matrix
     {
@@ -71,9 +71,9 @@ class GELU implements ActivationFunction
      *
      * @internal
      *
-     * @param \Tensor\Matrix $z
-     * @param \Tensor\Matrix $computed
-     * @return \Tensor\Matrix
+     * @param Matrix $z
+     * @param Matrix $computed
+     * @return Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {

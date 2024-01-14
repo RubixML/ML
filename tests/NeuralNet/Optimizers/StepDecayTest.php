@@ -17,7 +17,7 @@ use Generator;
 class StepDecayTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\StepDecay
+     * @var StepDecay
      */
     protected $optimizer;
 
@@ -42,7 +42,7 @@ class StepDecayTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */

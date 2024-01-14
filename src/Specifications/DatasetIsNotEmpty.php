@@ -13,14 +13,14 @@ class DatasetIsNotEmpty extends Specification
     /**
      * The dataset.
      *
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
     protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return self
      */
     public static function with(Dataset $dataset) : self
@@ -29,7 +29,7 @@ class DatasetIsNotEmpty extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function __construct(Dataset $dataset)
     {
@@ -39,7 +39,7 @@ class DatasetIsNotEmpty extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\EmptyDataset
+     * @throws EmptyDataset
      */
     public function check() : void
     {

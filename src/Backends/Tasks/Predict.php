@@ -21,8 +21,8 @@ class Predict extends Task
     /**
      * Return the predictions outputted by an estimator.
      *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Estimator $estimator
+     * @param Dataset $dataset
      * @return list<string|int|float>
      */
     public static function predict(Estimator $estimator, Dataset $dataset) : array
@@ -31,8 +31,8 @@ class Predict extends Task
     }
 
     /**
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Estimator $estimator
+     * @param Dataset $dataset
      */
     public function __construct(Estimator $estimator, Dataset $dataset)
     {

@@ -22,12 +22,12 @@ class KDTreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Graph\Trees\KDTree
+     * @var KDTree
      */
     protected $tree;
 

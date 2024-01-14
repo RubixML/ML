@@ -25,7 +25,7 @@ class SafeEuclideanBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\SafeEuclidean
+     * @var SafeEuclidean
      */
     protected $kernel;
 

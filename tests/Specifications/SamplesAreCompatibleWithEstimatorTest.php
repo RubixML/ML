@@ -20,7 +20,7 @@ class SamplesAreCompatibleWithEstimatorTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator $specification
+     * @param SamplesAreCompatibleWithEstimator $specification
      * @param bool $expected
      */
     public function passes(SamplesAreCompatibleWithEstimator $specification, bool $expected) : void

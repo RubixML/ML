@@ -62,7 +62,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return mixed
      */
     #[\ReturnTypeWillChange]
@@ -78,7 +78,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     /**
      * @param int $offset
      * @param mixed[] $values
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetSet($offset, $values) : void
     {
@@ -98,7 +98,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetUnset($offset) : void
     {

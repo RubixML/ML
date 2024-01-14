@@ -32,7 +32,7 @@ class FeedForward implements Network
     /**
      * The input layer to the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Input
+     * @var Input
      */
     protected \Rubix\ML\NeuralNet\Layers\Input $input;
 
@@ -57,22 +57,22 @@ class FeedForward implements Network
     /**
      * The output layer of the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Output
+     * @var Output
      */
     protected \Rubix\ML\NeuralNet\Layers\Output $output;
 
     /**
      * The gradient descent optimizer used to train the network.
      *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Layers\Input $input
+     * @param Input $input
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
-     * @param \Rubix\ML\NeuralNet\Layers\Output $output
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
+     * @param Output $output
+     * @param Optimizer $optimizer
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
@@ -90,7 +90,7 @@ class FeedForward implements Network
     /**
      * Return the input layer.
      *
-     * @return \Rubix\ML\NeuralNet\Layers\Input
+     * @return Input
      */
     public function input() : Input
     {
@@ -110,7 +110,7 @@ class FeedForward implements Network
     /**
      * Return the output layer.
      *
-     * @return \Rubix\ML\NeuralNet\Layers\Output
+     * @return Output
      */
     public function output() : Output
     {
@@ -176,8 +176,8 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Tensor\Matrix
+     * @param Dataset $dataset
+     * @return Matrix
      */
     public function infer(Dataset $dataset) : Matrix
     {
@@ -194,7 +194,7 @@ class FeedForward implements Network
      * Perform a forward and backward pass of the network in one call. Returns
      * the loss from the backward pass.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      * @return float
      */
     public function roundtrip(Labeled $dataset) : float
@@ -211,8 +211,8 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations at the output later.
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function feed(Matrix $input) : Matrix
     {
@@ -243,7 +243,7 @@ class FeedForward implements Network
     /**
      * Export the network architecture as a graph in dot format.
      *
-     * @return \Rubix\ML\Encoding
+     * @return Encoding
      */
     public function exportGraphviz() : Encoding
     {

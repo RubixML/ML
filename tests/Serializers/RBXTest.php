@@ -20,12 +20,12 @@ use function serialize;
 class RBXTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Persistable
+     * @var Persistable
      */
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Serializers\RBX
+     * @var RBX
      */
     protected $serializer;
 

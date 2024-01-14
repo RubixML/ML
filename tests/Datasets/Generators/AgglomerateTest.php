@@ -18,7 +18,7 @@ class AgglomerateTest extends TestCase
     protected const DATASET_SIZE = 30;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 

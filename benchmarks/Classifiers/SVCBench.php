@@ -28,7 +28,7 @@ class SVCBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\SVC
+     * @var SVC
      */
     protected $estimator;
 

@@ -41,7 +41,7 @@ class Noise implements Hidden
 
     /**
      * @param float $stdDev
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $stdDev)
     {
@@ -58,7 +58,7 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return positive-int
      */
     public function width() : int
@@ -93,8 +93,8 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -111,8 +111,8 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -124,9 +124,9 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @return \Rubix\ML\Deferred
+     * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
+     * @return Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {

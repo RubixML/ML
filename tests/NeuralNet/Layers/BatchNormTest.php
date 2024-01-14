@@ -24,12 +24,12 @@ class BatchNormTest extends TestCase
     protected $fanIn;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $prevGrad;
 
@@ -39,7 +39,7 @@ class BatchNormTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\BatchNorm
+     * @var BatchNorm
      */
     protected $layer;
 

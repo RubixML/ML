@@ -67,7 +67,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -87,7 +87,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -112,7 +112,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {
@@ -131,7 +131,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
      * Perform the reverse transformation to the samples.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function reverseTransform(array &$samples) : void
     {

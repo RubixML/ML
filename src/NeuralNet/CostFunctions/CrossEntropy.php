@@ -27,8 +27,8 @@ class CrossEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
     public function compute(Matrix $output, Matrix $target) : float
@@ -43,9 +43,9 @@ class CrossEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
-     * @return \Tensor\Matrix
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix
     {

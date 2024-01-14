@@ -28,7 +28,7 @@ class AdaBoostBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\AdaBoost
+     * @var AdaBoost
      */
     protected $estimator;
 

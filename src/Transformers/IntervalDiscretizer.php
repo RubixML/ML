@@ -54,7 +54,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     /**
      * @param int $bins
      * @param bool $equiWidth
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $bins = 5, bool $equiWidth = false)
     {
@@ -102,8 +102,8 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -143,7 +143,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

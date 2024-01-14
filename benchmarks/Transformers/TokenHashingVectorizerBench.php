@@ -21,7 +21,7 @@ class TokenHashingVectorizerBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TokenHashingVectorizer
+     * @var TokenHashingVectorizer
      */
     protected $transformer;
 

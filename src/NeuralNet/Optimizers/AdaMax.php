@@ -28,9 +28,9 @@ class AdaMax extends Adam
     /**
      * Return the element-wise maximum of two tensors.
      *
-     * @param \Tensor\Tensor $a
-     * @param \Tensor\Tensor $b
-     * @return \Tensor\Tensor
+     * @param Tensor $a
+     * @param Tensor $b
+     * @return Tensor
      */
     protected static function maximum(Tensor $a, Tensor $b) : Tensor
     {
@@ -74,7 +74,7 @@ class AdaMax extends Adam
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

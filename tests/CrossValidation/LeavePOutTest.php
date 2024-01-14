@@ -21,22 +21,22 @@ class LeavePOutTest extends TestCase
     protected const DATASET_SIZE = 50;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\GaussianNB
+     * @var GaussianNB
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\LeavePOut
+     * @var LeavePOut
      */
     protected $validator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var Accuracy
      */
     protected $metric;
 

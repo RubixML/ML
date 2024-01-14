@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 class SoftPlusBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus
+     * @var SoftPlus
      */
     protected $activationFn;
 

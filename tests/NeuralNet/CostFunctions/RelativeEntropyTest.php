@@ -15,7 +15,7 @@ use Generator;
 class RelativeEntropyTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy
+     * @var RelativeEntropy
      */
     protected $costFn;
 
@@ -40,8 +40,8 @@ class RelativeEntropyTest extends TestCase
      * @test
      * @dataProvider computeProvider
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @param float $expected
      */
     public function compute(Matrix $output, Matrix $target, float $expected) : void
@@ -105,8 +105,8 @@ class RelativeEntropyTest extends TestCase
      * @test
      * @dataProvider differentiateProvider
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @param list<list<float>> $expected
      */
     public function differentiate(Matrix $output, Matrix $target, array $expected) : void

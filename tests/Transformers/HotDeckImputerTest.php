@@ -18,12 +18,12 @@ class HotDeckImputerTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\HotDeckImputer
+     * @var HotDeckImputer
      */
     protected $transformer;
 

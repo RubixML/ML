@@ -27,7 +27,7 @@ class LogisticRegressionBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\LogisticRegression
+     * @var LogisticRegression
      */
     protected $estimator;
 

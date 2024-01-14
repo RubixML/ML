@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
 class GzipNativeTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Persistable
+     * @var Persistable
      */
     protected $persistable;
 
     /**
-     * @var \Rubix\ML\Serializers\GzipNative
+     * @var GzipNative
      */
     protected $serializer;
 

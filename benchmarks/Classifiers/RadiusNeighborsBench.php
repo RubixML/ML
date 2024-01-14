@@ -27,7 +27,7 @@ class RadiusNeighborsBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\RadiusNeighbors
+     * @var RadiusNeighbors
      */
     protected $estimator;
 

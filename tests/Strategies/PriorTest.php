@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class PriorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\Prior
+     * @var Prior
      */
     protected $strategy;
 

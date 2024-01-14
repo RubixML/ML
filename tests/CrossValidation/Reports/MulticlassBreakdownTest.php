@@ -16,7 +16,7 @@ use Generator;
 class MulticlassBreakdownTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\MulticlassBreakdown
+     * @var MulticlassBreakdown
      */
     protected $report;
 

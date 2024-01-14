@@ -20,7 +20,7 @@ class RobustStandardizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\RobustStandardizer
+     * @var RobustStandardizer
      */
     protected $transformer;
 

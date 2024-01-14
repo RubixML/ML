@@ -64,7 +64,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -117,7 +117,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -134,8 +134,8 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -159,7 +159,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      */
     public function predictSample(array $sample)
     {
-        /** @var \Rubix\ML\Graph\Nodes\Average $node */
+        /** @var Average $node */
         $node = $this->search($sample);
 
         return $node->outcome();
@@ -168,8 +168,8 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
     /**
      * Terminate the branch with the most likely Average.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Average
+     * @param Labeled $dataset
+     * @return Average
      */
     protected function terminate(Labeled $dataset) : Average
     {

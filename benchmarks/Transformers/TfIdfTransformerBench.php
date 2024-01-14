@@ -15,12 +15,12 @@ class TfIdfTransformerBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
+     * @var Unlabeled
      */
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TfIdfTransformer
+     * @var TfIdfTransformer
      */
     protected $transformer;
 

@@ -53,7 +53,7 @@ class Filesystem implements Persister
     /**
      * @param string $path
      * @param bool $history
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $path, bool $history = false)
     {
@@ -72,7 +72,7 @@ class Filesystem implements Persister
     /**
      * Save an encoding.
      *
-     * @param \Rubix\ML\Encoding $encoding
+     * @param Encoding $encoding
      * @throws \RuntimeException
      */
     public function save(Encoding $encoding) : void
@@ -116,7 +116,7 @@ class Filesystem implements Persister
      * Load a persisted encoding.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\Encoding
+     * @return Encoding
      */
     public function load() : Encoding
     {

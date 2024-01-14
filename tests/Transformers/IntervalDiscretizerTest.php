@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
 class IntervalDiscretizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\IntervalDiscretizer
+     * @var IntervalDiscretizer
      */
     protected $transformer;
 

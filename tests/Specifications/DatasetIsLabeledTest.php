@@ -18,7 +18,7 @@ class DatasetIsLabeledTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\DatasetIsLabeled $specification
+     * @param DatasetIsLabeled $specification
      * @param bool $expected
      */
     public function passes(DatasetIsLabeled $specification, bool $expected) : void

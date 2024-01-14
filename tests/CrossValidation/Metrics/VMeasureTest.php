@@ -16,7 +16,7 @@ use Generator;
 class VMeasureTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\VMeasure
+     * @var VMeasure
      */
     protected $metric;
 

@@ -96,7 +96,7 @@ class Labeled extends Dataset
      * Stack a number of datasets on top of each other to form a single dataset.
      *
      * @param iterable<\Rubix\ML\Datasets\Labeled> $datasets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public static function stack(iterable $datasets) : self
@@ -136,7 +136,7 @@ class Labeled extends Dataset
      * @param array<mixed[]> $samples
      * @param (string|int|float)[] $labels
      * @param bool $verify
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $samples = [], array $labels = [], bool $verify = true)
     {
@@ -189,7 +189,7 @@ class Labeled extends Dataset
      * Return a label at the given row offset.
      *
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int|float|string
      */
     public function label(int $offset)
@@ -204,8 +204,8 @@ class Labeled extends Dataset
     /**
      * Return the integer encoded data type of the label or null if empty.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\DataType
+     * @throws RuntimeException
+     * @return DataType
      */
     public function labelType() : DataType
     {
@@ -220,7 +220,7 @@ class Labeled extends Dataset
      * Map labels to their new values and return self for method chaining.
      *
      * @param callable $callback
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return self
      */
     public function transformLabels(callable $callback) : self
@@ -253,7 +253,7 @@ class Labeled extends Dataset
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function head(int $n = 10) : self
@@ -270,7 +270,7 @@ class Labeled extends Dataset
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function tail(int $n = 10) : self
@@ -288,7 +288,7 @@ class Labeled extends Dataset
      * dataset.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function take(int $n = 1) : self
@@ -306,7 +306,7 @@ class Labeled extends Dataset
      * dataset.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function leave(int $n = 1) : self
@@ -352,8 +352,8 @@ class Labeled extends Dataset
     /**
      * Merge the rows of this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      * @return self
      */
     public function merge(Dataset $dataset) : self
@@ -380,8 +380,8 @@ class Labeled extends Dataset
     /**
      * Join the columns of this dataset with another dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      * @return self
      */
     public function join(Dataset $dataset) : self
@@ -450,7 +450,7 @@ class Labeled extends Dataset
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array{self,self}
      */
     public function split(float $ratio = 0.5) : array
@@ -479,7 +479,7 @@ class Labeled extends Dataset
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param float $ratio
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array{self,self}
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
@@ -508,7 +508,7 @@ class Labeled extends Dataset
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return list<self>
      */
     public function fold(int $k = 10) : array
@@ -539,7 +539,7 @@ class Labeled extends Dataset
      * Fold the dataset into k equal sized stratified datasets.
      *
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return list<self>
      */
     public function stratifiedFold(int $k = 10) : array
@@ -589,7 +589,7 @@ class Labeled extends Dataset
      *
      * @param int $column
      * @param string|int|float $value
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array{self,self}
      */
     public function splitByFeature(int $column, $value) : array
@@ -633,7 +633,7 @@ class Labeled extends Dataset
      *
      * @param (string|int|float)[] $leftCentroid
      * @param (string|int|float)[] $rightCentroid
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param Distance $kernel
      * @return array{self,self}
      */
     public function spatialSplit(array $leftCentroid, array $rightCentroid, Distance $kernel)
@@ -663,7 +663,7 @@ class Labeled extends Dataset
      * Generate a random subset without replacement.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function randomSubset(int $n) : self
@@ -696,7 +696,7 @@ class Labeled extends Dataset
      * Generate a random subset with replacement.
      *
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function randomSubsetWithReplacement(int $n) : self
@@ -725,7 +725,7 @@ class Labeled extends Dataset
      *
      * @param int $n
      * @param (int|float)[] $weights
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return self
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
@@ -787,7 +787,7 @@ class Labeled extends Dataset
     /**
      * Describe the features of the dataset broken down by label.
      *
-     * @return \Rubix\ML\Report
+     * @return Report
      */
     public function describeByLabel() : Report
     {
@@ -804,7 +804,7 @@ class Labeled extends Dataset
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return mixed[]
      */
     #[\ReturnTypeWillChange]

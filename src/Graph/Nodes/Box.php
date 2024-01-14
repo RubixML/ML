@@ -66,7 +66,7 @@ class Box implements Hypercube, HasBinaryChildren
      * Factory method to build a coordinate node from a labeled dataset
      * using the column with the highest range as the column for the split.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      * @return self
      */
     public static function split(Labeled $dataset) : self
@@ -128,7 +128,7 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * Return the left and right subsets of the training data.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     public function subsets() : array

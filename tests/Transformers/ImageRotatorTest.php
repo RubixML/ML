@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class RandomizedImageRotatorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\ImageRotator
+     * @var ImageRotator
      */
     protected \Rubix\ML\Transformers\ImageRotator $transformer;
 

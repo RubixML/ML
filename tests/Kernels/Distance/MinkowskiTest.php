@@ -14,7 +14,7 @@ use Generator;
 class MinkowskiTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Minkowski
+     * @var Minkowski
      */
     protected $kernel;
 

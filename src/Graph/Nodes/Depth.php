@@ -50,7 +50,7 @@ class Depth implements BinaryNode
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $depth
      * @return self
      */

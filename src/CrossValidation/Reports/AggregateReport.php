@@ -37,7 +37,7 @@ class AggregateReport implements ReportGenerator
 
     /**
      * @param \Rubix\ML\CrossValidation\Reports\ReportGenerator[] $reports
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $reports)
     {
@@ -86,7 +86,7 @@ class AggregateReport implements ReportGenerator
      *
      * @param list<string|int|float> $predictions
      * @param list<string|int|float> $labels
-     * @return \Rubix\ML\Report
+     * @return Report
      */
     public function generate(array $predictions, array $labels) : Report
     {

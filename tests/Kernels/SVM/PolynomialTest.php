@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class PolynomialTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\SVM\Polynomial
+     * @var Polynomial
      */
     protected $kernel;
 

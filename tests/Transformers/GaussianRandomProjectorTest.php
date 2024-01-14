@@ -24,12 +24,12 @@ class GaussianRandomProjectorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\GaussianRandomProjector
+     * @var GaussianRandomProjector
      */
     protected $transformer;
 

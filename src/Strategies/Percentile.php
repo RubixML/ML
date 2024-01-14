@@ -34,7 +34,7 @@ class Percentile implements Strategy
 
     /**
      * @param float $p
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $p = 50.0)
     {
@@ -49,7 +49,7 @@ class Percentile implements Strategy
     /**
      * Return the data type the strategy handles.
      *
-     * @return \Rubix\ML\DataType
+     * @return DataType
      */
     public function type() : DataType
     {
@@ -74,7 +74,7 @@ class Percentile implements Strategy
      * @internal
      *
      * @param list<int|float> $values
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -91,7 +91,7 @@ class Percentile implements Strategy
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return float
      */
     public function guess() : float

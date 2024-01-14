@@ -16,22 +16,22 @@ class EstimatorIsCompatibleWithMetric extends Specification
     /**
      * The estimator.
      *
-     * @var \Rubix\ML\Estimator
+     * @var Estimator
      */
     protected \Rubix\ML\Estimator $estimator;
 
     /**
      * The validation metric.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var Metric
      */
     protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Estimator $estimator
+     * @param Metric $metric
      * @return self
      */
     public static function with(Estimator $estimator, Metric $metric) : self
@@ -40,8 +40,8 @@ class EstimatorIsCompatibleWithMetric extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Estimator $estimator
+     * @param Metric $metric
      */
     public function __construct(Estimator $estimator, Metric $metric)
     {

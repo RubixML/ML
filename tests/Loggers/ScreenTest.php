@@ -15,7 +15,7 @@ use Psr\Log\LogLevel;
 class ScreenTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Loggers\Screen
+     * @var Screen
      */
     protected $logger;
 

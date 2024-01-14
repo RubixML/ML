@@ -27,7 +27,7 @@ class LogitBoostBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\LogitBoost
+     * @var LogitBoost
      */
     protected $estimator;
 

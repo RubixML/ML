@@ -62,7 +62,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
     /**
      * @param float $l2Penalty
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $l2Penalty = 1.0)
     {
@@ -79,7 +79,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -187,8 +187,8 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -208,7 +208,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     /**
      * Return the importance scores of each feature column of the training set.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

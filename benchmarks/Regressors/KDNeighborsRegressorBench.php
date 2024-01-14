@@ -26,7 +26,7 @@ class KDNeighborsRegressorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\KDNeighborsRegressor
+     * @var KDNeighborsRegressor
      */
     protected $estimator;
 

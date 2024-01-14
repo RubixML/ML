@@ -129,7 +129,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * @param float $contamination
      * @param int $estimators
      * @param int|null $bins
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $contamination = 0.1, int $estimators = 100, ?int $bins = null)
     {
@@ -159,7 +159,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -209,7 +209,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -273,7 +273,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -326,7 +326,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -337,8 +337,8 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array

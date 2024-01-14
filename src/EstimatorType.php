@@ -131,7 +131,7 @@ class EstimatorType implements Stringable
 
     /**
      * @param int $code
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $code)
     {

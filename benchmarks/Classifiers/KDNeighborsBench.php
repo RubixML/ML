@@ -27,7 +27,7 @@ class KDNeighborsBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\KDNeighbors
+     * @var KDNeighbors
      */
     protected $estimator;
 

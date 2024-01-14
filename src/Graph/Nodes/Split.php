@@ -95,7 +95,7 @@ class Split implements Decision, HasBinaryChildren
     /**
      * Return the left and right subsets of the training data.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
     public function subsets() : array

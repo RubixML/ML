@@ -24,7 +24,7 @@ class JaccardBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Jaccard
+     * @var Jaccard
      */
     protected $kernel;
 

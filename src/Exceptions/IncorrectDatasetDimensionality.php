@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 class IncorrectDatasetDimensionality extends InvalidArgumentException
 {
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $dimensions
      */
     public function __construct(Dataset $dataset, int $dimensions)

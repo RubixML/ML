@@ -43,7 +43,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      * Return a JSON representation of the report.
      *
      * @param bool $pretty
-     * @return \Rubix\ML\Encoding
+     * @return Encoding
      */
     public function toJSON(bool $pretty = true) : Encoding
     {
@@ -65,7 +65,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
     /**
      * @param string|int $key
      * @param mixed[] $values
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetSet($key, $values) : void
     {
@@ -87,7 +87,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      * Return an attribute from the report with the given key.
      *
      * @param string|int $key
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return mixed
      */
     #[\ReturnTypeWillChange]
@@ -102,7 +102,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
 
     /**
      * @param string|int $key
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function offsetUnset($key) : void
     {

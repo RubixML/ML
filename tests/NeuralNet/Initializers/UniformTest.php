@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class UniformTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\Uniform
+     * @var Uniform
      */
     protected $initializer;
 

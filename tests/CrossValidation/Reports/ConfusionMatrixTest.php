@@ -16,7 +16,7 @@ use Generator;
 class ConfusionMatrixTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\ConfusionMatrix
+     * @var ConfusionMatrix
      */
     protected $report;
 

@@ -41,7 +41,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * An instance of a base estimator to receive the transformed data.
      *
-     * @var \Rubix\ML\Estimator
+     * @var Estimator
      */
     protected \Rubix\ML\Estimator $base;
 
@@ -54,9 +54,9 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
 
     /**
      * @param \Rubix\ML\Transformers\Transformer[] $transformers
-     * @param \Rubix\ML\Estimator $base
+     * @param Estimator $base
      * @param bool $elastic
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $transformers, Estimator $base, bool $elastic = true)
     {
@@ -77,7 +77,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -127,7 +127,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Return the base estimator instance.
      *
-     * @return \Rubix\ML\Estimator
+     * @return Estimator
      */
     public function base() : Estimator
     {
@@ -138,7 +138,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      * Run the training dataset through all transformers in order and use the
      * transformed dataset to train the estimator.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -158,7 +158,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Perform a partial train.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -182,8 +182,8 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Preprocess the dataset and return predictions from the estimator.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
@@ -200,8 +200,8 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
@@ -223,8 +223,8 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array
@@ -242,7 +242,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
     /**
      * Apply the transformer stack to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     protected function preprocess(Dataset $dataset) : void
     {

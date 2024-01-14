@@ -19,7 +19,7 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\SamplesAreCompatibleWithDistance $specification
+     * @param SamplesAreCompatibleWithDistance $specification
      * @param bool $expected
      */
     public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void

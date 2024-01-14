@@ -27,7 +27,7 @@ class GaussianNBBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\GaussianNB
+     * @var GaussianNB
      */
     protected $estimator;
 

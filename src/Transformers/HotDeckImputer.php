@@ -71,7 +71,7 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
     /**
      * The spatial tree used to run nearest neighbor searches.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @var Spatial
      */
     protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
@@ -80,7 +80,7 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
      * @param bool $weighted
      * @param string $categoricalPlaceholder
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         int $k = 5,
@@ -137,8 +137,8 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -175,7 +175,7 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

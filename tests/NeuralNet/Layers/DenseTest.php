@@ -27,12 +27,12 @@ class DenseTest extends TestCase
     protected $fanIn;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $prevGrad;
 
@@ -42,7 +42,7 @@ class DenseTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Dense
+     * @var Dense
      */
     protected $layer;
 

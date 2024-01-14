@@ -24,12 +24,12 @@ class NoiseTest extends TestCase
     protected $fanIn;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $prevGrad;
 
@@ -39,7 +39,7 @@ class NoiseTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Noise
+     * @var Noise
      */
     protected $layer;
 

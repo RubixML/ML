@@ -82,7 +82,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -135,7 +135,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -154,8 +154,8 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -179,7 +179,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function predictSample(array $sample) : string
     {
-        /** @var \Rubix\ML\Graph\Nodes\Best $node */
+        /** @var Best $node */
         $node = $this->search($sample);
 
         return $node->outcome();
@@ -188,8 +188,8 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
@@ -205,7 +205,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $probabilities = [];
 
         foreach ($dataset->samples() as $sample) {
-            /** @var \Rubix\ML\Graph\Nodes\Best $node */
+            /** @var Best $node */
             $node = $this->search($sample);
 
             $probabilities[] = array_replace($template, $node->probabilities());
@@ -218,8 +218,8 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * Terminate the branch by selecting the class outcome with the highest
      * probability.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Best
+     * @param Labeled $dataset
+     * @return Best
      */
     protected function terminate(Labeled $dataset) : Best
     {

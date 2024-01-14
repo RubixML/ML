@@ -23,7 +23,7 @@ class CosineBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Cosine
+     * @var Cosine
      */
     protected $kernel;
 

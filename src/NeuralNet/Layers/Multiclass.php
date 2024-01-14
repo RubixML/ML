@@ -39,14 +39,14 @@ class Multiclass implements Output
     /**
      * The function that computes the loss of erroneous activations.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
+     * @var ClassificationLoss
      */
     protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
 
     /**
      * The softmax activation function.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\Softmax
+     * @var Softmax
      */
     protected \Rubix\ML\NeuralNet\ActivationFunctions\Softmax $softmax;
 
@@ -67,7 +67,7 @@ class Multiclass implements Output
     /**
      * @param string[] $classes
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $classes, ?ClassificationLoss $costFn = null)
     {
@@ -99,7 +99,7 @@ class Multiclass implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return positive-int
      */
     public function initialize(int $fanIn) : int
@@ -118,8 +118,8 @@ class Multiclass implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -134,9 +134,9 @@ class Multiclass implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @throws RuntimeException
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -147,8 +147,8 @@ class Multiclass implements Output
      * Compute the gradient and loss at the output.
      *
      * @param string[] $labels
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Optimizer $optimizer
+     * @throws RuntimeException
      * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
@@ -187,10 +187,10 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $expected
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @param Matrix $output
+     * @param Matrix $expected
+     * @return Matrix
      */
     public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {

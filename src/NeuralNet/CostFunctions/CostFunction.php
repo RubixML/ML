@@ -19,8 +19,8 @@ interface CostFunction extends Stringable
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
     public function compute(Matrix $output, Matrix $target) : float;
@@ -30,9 +30,9 @@ interface CostFunction extends Stringable
      *
      * @internal
      *
-     * @param \Tensor\Matrix $output
-     * @param \Tensor\Matrix $target
-     * @return \Tensor\Matrix
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix;
 }

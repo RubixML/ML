@@ -26,7 +26,7 @@ class RadiusNeighborsRegressorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\RadiusNeighborsRegressor
+     * @var RadiusNeighborsRegressor
      */
     protected $estimator;
 

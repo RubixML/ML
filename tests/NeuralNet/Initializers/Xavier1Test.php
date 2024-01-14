@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class Xavier1Test extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\Xavier1
+     * @var Xavier1
      */
     protected $initializer;
 

@@ -26,7 +26,7 @@ class RidgeBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\Ridge
+     * @var Ridge
      */
     protected $estimator;
 

@@ -29,7 +29,7 @@ class OneVsRestBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\OneVsRest
+     * @var OneVsRest
      */
     protected $estimator;
 

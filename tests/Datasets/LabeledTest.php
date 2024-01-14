@@ -49,7 +49,7 @@ class LabeledTest extends TestCase
     protected const RANDOM_SEED = 1;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
     protected $dataset;
 

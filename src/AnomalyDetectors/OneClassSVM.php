@@ -42,7 +42,7 @@ class OneClassSVM implements Estimator, Learner
     /**
      * The support vector machine instance.
      *
-     * @var \svm
+     * @var svm
      */
     protected \svm $svm;
 
@@ -66,7 +66,7 @@ class OneClassSVM implements Estimator, Learner
      * @param bool $shrinking
      * @param float $tolerance
      * @param float $cacheSize
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         float $nu = 0.5,
@@ -127,7 +127,7 @@ class OneClassSVM implements Estimator, Learner
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -173,7 +173,7 @@ class OneClassSVM implements Estimator, Learner
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -188,7 +188,7 @@ class OneClassSVM implements Estimator, Learner
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
@@ -202,7 +202,7 @@ class OneClassSVM implements Estimator, Learner
      * @internal
      *
      * @param list<int|float> $sample
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return int
      */
     public function predictSample(array $sample) : int
@@ -218,7 +218,7 @@ class OneClassSVM implements Estimator, Learner
      * Save the model data to the filesystem.
      *
      * @param string $path
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function save(string $path) : void
     {

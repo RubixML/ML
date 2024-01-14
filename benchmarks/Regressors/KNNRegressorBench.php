@@ -26,7 +26,7 @@ class KNNRegressorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\KNNRegressor
+     * @var KNNRegressor
      */
     protected $estimator;
 

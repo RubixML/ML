@@ -28,7 +28,7 @@ class Placeholder1D implements Input
 
     /**
      * @param int $inputs
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $inputs)
     {
@@ -63,9 +63,9 @@ class Placeholder1D implements Input
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @throws InvalidArgumentException
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -81,8 +81,8 @@ class Placeholder1D implements Input
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

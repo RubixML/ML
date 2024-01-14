@@ -16,7 +16,7 @@ class NativeBench
     protected const TRAINING_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Serializers\Native
+     * @var Native
      */
     protected $serializer;
 

@@ -20,7 +20,7 @@ class NumericStringConverterBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\NumericStringConverter
+     * @var NumericStringConverter
      */
     protected $transformer;
 

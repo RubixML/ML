@@ -27,7 +27,7 @@ class IsolationForestBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\IsolationForest
+     * @var IsolationForest
      */
     protected $estimator;
 
