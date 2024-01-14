@@ -44,8 +44,8 @@ class Blob implements Generator
     /**
      * Fit a Blob generator to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      * @return self
      */
     public static function simulate(Dataset $dataset) : self

@@ -28,7 +28,7 @@ class VantagePointTest extends TestCase
     protected const RADIUS = 1.5;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\VantagePoint
+     * @var VantagePoint
      */
     protected $node;
 
