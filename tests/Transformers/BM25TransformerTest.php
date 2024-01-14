@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class BM25TransformerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\BM25Transformer
+     * @var BM25Transformer
      */
     protected $transformer;
 

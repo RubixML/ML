@@ -26,12 +26,12 @@ class SwishTest extends TestCase
     protected $fanIn;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $prevGrad;
 
@@ -41,7 +41,7 @@ class SwishTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Swish
+     * @var Swish
      */
     protected $layer;
 

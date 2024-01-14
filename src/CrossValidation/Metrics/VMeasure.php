@@ -34,7 +34,7 @@ class VMeasure implements Metric
 
     /**
      * @param float $beta
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $beta = 1.0)
     {

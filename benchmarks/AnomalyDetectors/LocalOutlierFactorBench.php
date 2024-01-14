@@ -27,7 +27,7 @@ class LocalOutlierFactorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\LocalOutlierFactor
+     * @var LocalOutlierFactor
      */
     protected $estimator;
 

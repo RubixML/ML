@@ -20,7 +20,7 @@ class ZScaleStandardizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\ZScaleStandardizer
+     * @var ZScaleStandardizer
      */
     protected $transformer;
 

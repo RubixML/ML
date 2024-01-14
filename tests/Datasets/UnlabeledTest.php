@@ -43,7 +43,7 @@ class UnlabeledTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
+     * @var Unlabeled
      */
     protected $dataset;
 

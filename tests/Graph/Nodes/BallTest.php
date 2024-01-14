@@ -28,7 +28,7 @@ class BallTest extends TestCase
     protected const RADIUS = 1.5;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Ball
+     * @var Ball
      */
     protected $node;
 

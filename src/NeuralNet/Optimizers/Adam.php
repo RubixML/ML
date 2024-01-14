@@ -64,7 +64,7 @@ class Adam implements Optimizer, Adaptive
      * @param float $rate
      * @param float $momentumDecay
      * @param float $normDecay
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
@@ -93,8 +93,8 @@ class Adam implements Optimizer, Adaptive
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Parameter $param
+     * @throws RuntimeException
      */
     public function warm(Parameter $param) : void
     {
@@ -114,7 +114,7 @@ class Adam implements Optimizer, Adaptive
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

@@ -81,8 +81,8 @@ abstract class CART extends DecisionTree
     /**
      * Greedy algorithm to choose the best split point for a given dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Split
+     * @param Labeled $dataset
+     * @return Split
      */
     protected function split(Labeled $dataset) : Split
     {

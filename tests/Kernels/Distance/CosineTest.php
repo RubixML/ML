@@ -14,7 +14,7 @@ use Generator;
 class CosineTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Cosine
+     * @var Cosine
      */
     protected $kernel;
 

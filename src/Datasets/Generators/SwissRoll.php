@@ -31,7 +31,7 @@ class SwissRoll implements Generator
     /**
      * The center vector of the swiss roll.
      *
-     * @var \Tensor\Vector
+     * @var Vector
      */
     protected \Tensor\Vector $center;
 
@@ -63,7 +63,7 @@ class SwissRoll implements Generator
      * @param float $scale
      * @param float $depth
      * @param float $noise
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         float $x = 0.0,
@@ -110,7 +110,7 @@ class SwissRoll implements Generator
      * Generate n data points.
      *
      * @param int<0,max> $n
-     * @return \Rubix\ML\Datasets\Labeled
+     * @return Labeled
      */
     public function generate(int $n) : Labeled
     {

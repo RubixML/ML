@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class MissingDataImputerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\MissingDataImputer
+     * @var MissingDataImputer
      */
     protected $transformer;
 

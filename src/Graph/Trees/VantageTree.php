@@ -44,7 +44,7 @@ class VantageTree implements BinaryTree, Spatial
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected $kernel;
 
@@ -106,7 +106,7 @@ class VantageTree implements BinaryTree, Spatial
     /**
      * Return the distance kernel used to compute distances.
      *
-     * @return \Rubix\ML\Kernels\Distance\Distance
+     * @return Distance
      */
     public function kernel() : Distance
     {
@@ -119,8 +119,8 @@ class VantageTree implements BinaryTree, Spatial
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Labeled $dataset
+     * @throws InvalidArgumentException
      */
     public function grow(Labeled $dataset) : void
     {
@@ -169,7 +169,7 @@ class VantageTree implements BinaryTree, Spatial
      *
      * @param (string|int|float)[] $sample
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array<array<mixed>>
      */
     public function nearest(array $sample, int $k = 1) : array
@@ -240,7 +240,7 @@ class VantageTree implements BinaryTree, Spatial
      *
      * @param (string|int|float)[] $sample
      * @param float $radius
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return array<array<mixed>>
      */
     public function range(array $sample, float $radius) : array

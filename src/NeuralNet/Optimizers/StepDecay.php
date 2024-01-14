@@ -51,7 +51,7 @@ class StepDecay implements Optimizer
      * @param float $rate
      * @param int $losses
      * @param float $decay
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $rate = 0.01, int $losses = 100, float $decay = 1e-3)
     {
@@ -80,7 +80,7 @@ class StepDecay implements Optimizer
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

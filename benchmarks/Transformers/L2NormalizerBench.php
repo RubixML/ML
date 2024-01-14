@@ -20,7 +20,7 @@ class L2NormalizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\L2Normalizer
+     * @var L2Normalizer
      */
     protected $transformer;
 

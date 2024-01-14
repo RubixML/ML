@@ -66,7 +66,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The gradient descent optimizer used to update the network parameters.
      *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
@@ -102,7 +102,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * The function that computes the loss associated with an erroneous
      * activation during training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
+     * @var RegressionLoss
      */
     protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
 
@@ -128,7 +128,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         int $batchSize = 128,
@@ -178,7 +178,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -387,8 +387,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -409,7 +409,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the importance scores of each feature column of the training set.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

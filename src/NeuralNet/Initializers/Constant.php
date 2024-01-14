@@ -25,7 +25,7 @@ class Constant implements Initializer
 
     /**
      * @param float $value
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $value = 0.0)
     {
@@ -44,7 +44,7 @@ class Constant implements Initializer
      *
      * @param int<0,max> $fanIn
      * @param int<0,max> $fanOut
-     * @return \Tensor\Matrix
+     * @return Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {

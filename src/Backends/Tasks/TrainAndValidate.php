@@ -24,10 +24,10 @@ class TrainAndValidate extends Task
     /**
      * Train the learner and then return its validation score.
      *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $training
-     * @param \Rubix\ML\Datasets\Labeled $testing
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Learner $estimator
+     * @param Dataset $training
+     * @param Labeled $testing
+     * @param Metric $metric
      * @return float
      */
     public static function score(
@@ -46,10 +46,10 @@ class TrainAndValidate extends Task
     }
 
     /**
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $training
-     * @param \Rubix\ML\Datasets\Labeled $testing
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Learner $estimator
+     * @param Dataset $training
+     * @param Labeled $testing
+     * @param Metric $metric
      */
     public function __construct(
         Learner $estimator,

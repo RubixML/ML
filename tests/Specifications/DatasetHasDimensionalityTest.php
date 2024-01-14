@@ -17,7 +17,7 @@ class DatasetHasDimensionalityTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\DatasetHasDimensionality $specification
+     * @param DatasetHasDimensionality $specification
      * @param bool $expected
      * @param DatasetHasDimensionality $specification
      */

@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class PercentileTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\Percentile
+     * @var Percentile
      */
     protected $strategy;
 

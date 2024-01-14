@@ -105,7 +105,7 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -129,7 +129,7 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {
@@ -154,7 +154,7 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
      * Perform the reverse transformation to the samples.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function reverseTransform(array &$samples) : void
     {

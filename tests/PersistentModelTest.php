@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 class PersistentModelTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\PersistentModel
+     * @var PersistentModel
      */
     protected $estimator;
 

@@ -35,7 +35,7 @@ class BoxTest extends TestCase
     ];
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Box
+     * @var Box
      */
     protected $node;
 

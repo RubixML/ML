@@ -15,7 +15,7 @@ use Generator;
 class BrierScoreTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\BrierScore
+     * @var BrierScore
      */
     protected $metric;
 

@@ -14,7 +14,7 @@ use Generator;
 class ManhattanTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Manhattan
+     * @var Manhattan
      */
     protected $kernel;
 

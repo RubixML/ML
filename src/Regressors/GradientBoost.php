@@ -83,7 +83,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * The regressor that will fix up the error residuals of the *weak* base learner.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $booster;
 
@@ -140,7 +140,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * The metric used to score the generalization performance of the model during training.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var Metric
      */
     protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
@@ -191,7 +191,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param int $window
      * @param float $holdOut
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         ?Learner $booster = null,
@@ -264,7 +264,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -358,7 +358,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -505,8 +505,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Make a prediction from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
@@ -531,7 +531,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Return the importance scores of each feature column of the training set.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

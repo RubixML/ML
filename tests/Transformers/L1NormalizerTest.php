@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class L1NormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\L1Normalizer
+     * @var L1Normalizer
      */
     protected $transformer;
 

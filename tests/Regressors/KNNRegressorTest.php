@@ -53,17 +53,17 @@ class KNNRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\HalfMoon
+     * @var HalfMoon
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Regressors\KNNRegressor
+     * @var KNNRegressor
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

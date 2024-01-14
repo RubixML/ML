@@ -12,17 +12,17 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 class SELUBench
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $computed;
 
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\SELU
+     * @var SELU
      */
     protected $activationFn;
 

@@ -23,7 +23,7 @@ class SparseCosineBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\SparseCosine
+     * @var SparseCosine
      */
     protected $kernel;
 

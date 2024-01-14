@@ -70,7 +70,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The base classifier to be boosted.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $base;
 
@@ -151,7 +151,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param int $epochs
      * @param float $minChange
      * @param int $window
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         ?Learner $base = null,
@@ -204,7 +204,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -420,7 +420,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -431,7 +431,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
@@ -458,8 +458,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the influence scores for each sample in the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float[]>
      */
     protected function score(Dataset $dataset) : array

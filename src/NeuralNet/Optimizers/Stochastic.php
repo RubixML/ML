@@ -26,7 +26,7 @@ class Stochastic implements Optimizer
 
     /**
      * @param float $rate
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $rate = 0.01)
     {
@@ -43,7 +43,7 @@ class Stochastic implements Optimizer
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

@@ -37,14 +37,14 @@ class KMC2 implements Seeder
     /**
      * The distance kernel used to compute the distance between samples.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
     /**
      * @param int $m
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $m = 50, ?Distance $kernel = null)
     {
@@ -62,7 +62,7 @@ class KMC2 implements Seeder
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $k
      * @return list<list<string|int|float>>
      */

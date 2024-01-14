@@ -52,17 +52,17 @@ class KDNeighborsRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\HalfMoon
+     * @var HalfMoon
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Regressors\KDNeighborsRegressor
+     * @var KDNeighborsRegressor
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

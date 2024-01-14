@@ -55,7 +55,7 @@ class Isolator implements HasBinaryChildren
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return self
      */
     public static function split(Dataset $dataset) : self
@@ -123,7 +123,7 @@ class Isolator implements HasBinaryChildren
     /**
      * Return the left and right subsets of the training data.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
      */
     public function subsets() : array

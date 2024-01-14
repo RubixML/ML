@@ -79,7 +79,7 @@ class CSV implements Extractor, Exporter
      * @param string $delimiter
      * @param string $enclosure
      * @param string $escape
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         string $path,
@@ -133,7 +133,7 @@ class CSV implements Extractor, Exporter
      *
      * @param iterable<mixed[]> $iterator
      * @param bool $overwrite
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function export(iterable $iterator, bool $overwrite = false) : void
     {
@@ -181,7 +181,7 @@ class CSV implements Extractor, Exporter
     /**
      * Return an iterator for the records in the data table.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Traversable

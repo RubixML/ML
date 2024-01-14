@@ -20,7 +20,7 @@ class VantageTreeBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Graph\Trees\VantageTree
+     * @var VantageTree
      */
     protected $tree;
 

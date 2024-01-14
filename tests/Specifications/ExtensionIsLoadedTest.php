@@ -17,7 +17,7 @@ class ExtensionIsLoadedTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\ExtensionIsLoaded $specification
+     * @param ExtensionIsLoaded $specification
      * @param bool $expected
      */
     public function passes(ExtensionIsLoaded $specification, bool $expected) : void

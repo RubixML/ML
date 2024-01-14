@@ -26,30 +26,30 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * The persistable base learner.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $base;
 
     /**
      * The persister used to interface with the storage layer.
      *
-     * @var \Rubix\ML\Persisters\Persister
+     * @var Persister
      */
     protected \Rubix\ML\Persisters\Persister $persister;
 
     /**
      * The object serializer.
      *
-     * @var \Rubix\ML\Serializers\Serializer
+     * @var Serializer
      */
     protected \Rubix\ML\Serializers\Serializer $serializer;
 
     /**
      * Factory method to restore the model from persistence.
      *
-     * @param \Rubix\ML\Persisters\Persister $persister
-     * @param \Rubix\ML\Serializers\Serializer|null $serializer
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Persister $persister
+     * @param Serializers\Serializer|null $serializer
+     * @throws InvalidArgumentException
      * @return self
      */
     public static function load(Persister $persister, ?Serializer $serializer = null) : self
@@ -67,10 +67,10 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     }
 
     /**
-     * @param \Rubix\ML\Learner $base
-     * @param \Rubix\ML\Persisters\Persister $persister
-     * @param \Rubix\ML\Serializers\Serializer|null $serializer
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Learner $base
+     * @param Persister $persister
+     * @param Serializers\Serializer|null $serializer
+     * @throws InvalidArgumentException
      */
     public function __construct(Learner $base, Persister $persister, ?Serializer $serializer = null)
     {
@@ -89,7 +89,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -137,7 +137,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Return the base estimator instance.
      *
-     * @return \Rubix\ML\Estimator
+     * @return Estimator
      */
     public function base() : Estimator
     {
@@ -161,7 +161,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -171,7 +171,7 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
@@ -182,8 +182,8 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<float[]>
      */
     public function proba(Dataset $dataset) : array
@@ -199,8 +199,8 @@ class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return float[]
      */
     public function score(Dataset $dataset) : array

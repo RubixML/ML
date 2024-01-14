@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class RegexFilterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\RegexFilter
+     * @var RegexFilter
      */
     protected $transformer;
 

@@ -71,7 +71,7 @@ class Cyclical implements Optimizer
      * @param float $upper
      * @param int $losses
      * @param float $decay
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         float $lower = 0.001,
@@ -111,7 +111,7 @@ class Cyclical implements Optimizer
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

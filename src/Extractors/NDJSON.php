@@ -41,7 +41,7 @@ class NDJSON implements Extractor, Exporter
 
     /**
      * @param string $path
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $path)
     {
@@ -61,7 +61,7 @@ class NDJSON implements Extractor, Exporter
      *
      * @param iterable<mixed[]> $iterator
      * @param bool $overwrite
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function export(iterable $iterator, bool $overwrite = false) : void
     {
@@ -97,7 +97,7 @@ class NDJSON implements Extractor, Exporter
     /**
      * Return an iterator for the records in the data table.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return \Generator<mixed[]>
      */
     public function getIterator() : Traversable

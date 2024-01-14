@@ -30,7 +30,7 @@ class PlusPlus implements Seeder
     /**
      * The distance kernel used to compute the distance between samples.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
@@ -47,7 +47,7 @@ class PlusPlus implements Seeder
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $k
      * @return list<list<string|int|float>>
      */

@@ -16,7 +16,7 @@ use Generator;
 class CompletenessTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Completeness
+     * @var Completeness
      */
     protected $metric;
 

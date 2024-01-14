@@ -30,7 +30,7 @@ class MultilayerPerceptronBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\MultilayerPerceptron
+     * @var MultilayerPerceptron
      */
     protected $estimator;
 

@@ -20,7 +20,7 @@ class BinaryTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
@@ -35,7 +35,7 @@ class BinaryTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Binary
+     * @var Binary
      */
     protected $layer;
 

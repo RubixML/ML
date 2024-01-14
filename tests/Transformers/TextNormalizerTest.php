@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class TextNormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\TextNormalizer
+     * @var TextNormalizer
      */
     protected $transformer;
 

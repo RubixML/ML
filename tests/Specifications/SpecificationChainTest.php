@@ -19,7 +19,7 @@ class SpecificationChainTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\SpecificationChain $specification
+     * @param SpecificationChain $specification
      * @param bool $expected
      */
     public function passes(SpecificationChain $specification, bool $expected) : void

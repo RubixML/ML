@@ -19,12 +19,12 @@ use PHPUnit\Framework\TestCase;
 class ZScaleStandardizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\ZScaleStandardizer
+     * @var ZScaleStandardizer
      */
     protected $transformer;
 

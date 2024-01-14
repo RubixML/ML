@@ -24,7 +24,7 @@ class DiagonalBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Diagonal
+     * @var Diagonal
      */
     protected $kernel;
 

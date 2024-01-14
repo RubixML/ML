@@ -31,7 +31,7 @@ class SplitTest extends TestCase
     protected const N = 4;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Split
+     * @var Split
      */
     protected $node;
 

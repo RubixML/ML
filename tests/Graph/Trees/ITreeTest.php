@@ -21,12 +21,12 @@ class ITreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Graph\Trees\ITree
+     * @var ITree
      */
     protected $tree;
 

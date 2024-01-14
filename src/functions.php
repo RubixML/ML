@@ -23,7 +23,7 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return T
      */
     function argmin(array $values)
@@ -44,7 +44,7 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return T
      */
     function argmax(array $values)

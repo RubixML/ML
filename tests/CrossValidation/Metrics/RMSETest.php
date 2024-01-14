@@ -16,7 +16,7 @@ use Generator;
 class RMSETest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RMSE
+     * @var RMSE
      */
     protected $metric;
 

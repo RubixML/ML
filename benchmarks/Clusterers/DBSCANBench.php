@@ -20,7 +20,7 @@ class DBSCANBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Clusterers\DBSCAN
+     * @var DBSCAN
      */
     protected $estimator;
 

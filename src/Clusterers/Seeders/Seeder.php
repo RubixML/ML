@@ -19,7 +19,7 @@ interface Seeder extends Stringable
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $k
      * @return list<list<string|int|float>>
      */

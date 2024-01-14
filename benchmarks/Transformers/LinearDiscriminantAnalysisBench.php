@@ -20,7 +20,7 @@ class LinearDiscriminantAnalysisBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\LinearDiscriminantAnalysis
+     * @var LinearDiscriminantAnalysis
      */
     protected $transformer;
 

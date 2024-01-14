@@ -47,7 +47,7 @@ class ImageRotator implements Transformer
     /**
      * @param float $offset
      * @param float $jitter
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $offset, float $jitter = 0.0)
     {

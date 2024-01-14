@@ -20,7 +20,7 @@ class PrincipalComponentAnalysisBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\PrincipalComponentAnalysis
+     * @var PrincipalComponentAnalysis
      */
     protected $transformer;
 

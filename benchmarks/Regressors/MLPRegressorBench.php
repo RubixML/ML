@@ -29,7 +29,7 @@ class MLPRegressorBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\MLPRegressor
+     * @var MLPRegressor
      */
     protected $estimator;
 

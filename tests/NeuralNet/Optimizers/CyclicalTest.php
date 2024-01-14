@@ -17,7 +17,7 @@ use Generator;
 class CyclicalTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Cyclical
+     * @var Cyclical
      */
     protected $optimizer;
 
@@ -42,7 +42,7 @@ class CyclicalTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */

@@ -8,8 +8,8 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 class EstimatorIncompatibleWithMetric extends InvalidArgumentException
 {
     /**
-     * @param \Rubix\ML\Estimator $estimator
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @param Estimator $estimator
+     * @param Metric $metric
      */
     public function __construct(Estimator $estimator, Metric $metric)
     {

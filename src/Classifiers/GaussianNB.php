@@ -110,7 +110,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * @param float[]|null $priors
      * @param float $smoothing
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(?array $priors = null, float $smoothing = 1e-9)
     {
@@ -149,7 +149,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -325,8 +325,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Calculate the likelihood of the sample being a member of a class and choose the class with the highest likelihood as the prediction.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -356,8 +356,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array

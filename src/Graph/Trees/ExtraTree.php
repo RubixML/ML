@@ -65,8 +65,8 @@ abstract class ExtraTree extends DecisionTree
      * Randomized algorithm that chooses the split point with the lowest impurity
      * among a random selection of features.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Split
+     * @param Labeled $dataset
+     * @return Split
      */
     protected function split(Labeled $dataset) : Split
     {

@@ -16,7 +16,7 @@ use Generator;
 class ContingencyTableTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\ContingencyTable
+     * @var ContingencyTable
      */
     protected $report;
 

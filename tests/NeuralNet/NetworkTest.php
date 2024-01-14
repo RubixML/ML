@@ -21,12 +21,12 @@ use PHPUnit\Framework\TestCase;
 class NetworkTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Network
+     * @var Network
      */
     protected $network;
 
@@ -41,7 +41,7 @@ class NetworkTest extends TestCase
     protected $hidden;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Output
+     * @var Output
      */
     protected $output;
 

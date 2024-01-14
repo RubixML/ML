@@ -20,7 +20,7 @@ class KDTreeBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Graph\Trees\KDTree
+     * @var KDTree
      */
     protected $tree;
 

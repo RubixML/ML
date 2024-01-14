@@ -26,7 +26,7 @@ class RegressionTreeBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\RegressionTree
+     * @var RegressionTree
      */
     protected $estimator;
 

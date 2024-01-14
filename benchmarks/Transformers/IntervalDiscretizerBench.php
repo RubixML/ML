@@ -20,7 +20,7 @@ class IntervalDiscretizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\IntervalDiscretizer
+     * @var IntervalDiscretizer
      */
     protected $transformer;
 

@@ -14,7 +14,7 @@ use Generator;
 class DiagonalTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Diagonal
+     * @var Diagonal
      */
     protected $kernel;
 

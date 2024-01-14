@@ -26,7 +26,7 @@ class BestTest extends TestCase
     protected const N = 6;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Best
+     * @var Best
      */
     protected $node;
 

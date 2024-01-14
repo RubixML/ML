@@ -29,10 +29,10 @@ class Graphviz
      *
      * See https://graphviz.org/docs/outputs/ for supported formats
      *
-     * @param \Rubix\ML\Encoding $dot
+     * @param Encoding $dot
      * @param string $format
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Encoding
+     * @throws RuntimeException
+     * @return Encoding
      */
     public static function dotToImage(Encoding $dot, string $format = 'png') : Encoding
     {

@@ -62,7 +62,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * The base learner.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $base;
 
@@ -90,10 +90,10 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     ];
 
     /**
-     * @param \Rubix\ML\Learner $base
+     * @param Learner $base
      * @param int $estimators
      * @param float $ratio
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
@@ -124,7 +124,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -173,8 +173,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -213,8 +213,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

@@ -64,17 +64,17 @@ class MLPRegressorTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\SwissRoll
+     * @var SwissRoll
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Regressors\MLPRegressor
+     * @var MLPRegressor
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

@@ -60,21 +60,21 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * The validation metric used to score the estimator.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var Metric
      */
     protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
     /**
      * The validator used to test the estimator.
      *
-     * @var \Rubix\ML\CrossValidation\Validator
+     * @var Validator
      */
     protected \Rubix\ML\CrossValidation\Validator $validator;
 
     /**
      * The base estimator instance.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $base;
 
@@ -115,9 +115,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * @param class-string $class
      * @param array<mixed[]> $params
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @param \Rubix\ML\CrossValidation\Validator|null $validator
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param CrossValidation\Metrics\Metric|null $metric
+     * @param CrossValidation\Validator|null $validator
+     * @throws InvalidArgumentException
      */
     public function __construct(
         string $class,
@@ -184,7 +184,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -235,7 +235,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * Return the base learner instance.
      *
-     * @return \Rubix\ML\Estimator
+     * @return Estimator
      */
     public function base() : Estimator
     {
@@ -246,7 +246,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Datasets\Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -266,7 +266,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         $this->backend->flush();
 
         foreach ($combinations as $params) {
-            /** @var \Rubix\ML\Learner $estimator */
+            /** @var Learner $estimator */
             $estimator = new $this->class(...$params);
 
             $task = new CrossValidate(
@@ -307,8 +307,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

@@ -26,7 +26,7 @@ class GradientBoostBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\GradientBoost
+     * @var GradientBoost
      */
     protected $estimator;
 

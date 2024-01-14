@@ -86,7 +86,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * @param \Rubix\ML\Learner[] $experts
      * @param (int|float)[]|null $influences
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $experts, ?array $influences = null)
     {
@@ -161,7 +161,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -228,8 +228,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * Train all the experts with the dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
@@ -276,7 +276,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class SigmoidalTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\SVM\Sigmoidal
+     * @var Sigmoidal
      */
     protected $kernel;
 

@@ -20,7 +20,7 @@ class SparseRandomProjectorBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\SparseRandomProjector
+     * @var SparseRandomProjector
      */
     protected $transformer;
 

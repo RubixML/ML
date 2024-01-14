@@ -14,12 +14,12 @@ use PHPUnit\Framework\TestCase;
 class MultibyteTextNormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Unlabeled
+     * @var Unlabeled
      */
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\MultibyteTextNormalizer
+     * @var MultibyteTextNormalizer
      */
     protected $transformer;
 

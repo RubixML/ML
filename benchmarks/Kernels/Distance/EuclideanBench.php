@@ -24,7 +24,7 @@ class EuclideanBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Euclidean
+     * @var Euclidean
      */
     protected $kernel;
 

@@ -16,10 +16,10 @@ use Traversable;
 use function array_reverse;
 
 /**
- * Network
+ * Feed Forward
  *
- * A  neural network implementation consisting of an input and output layer and any number
- * of intermediate hidden layers.
+ * A feed forward neural network implementation consisting of an input and
+ * output layer and any number of intermediate hidden layers.
  *
  * @internal
  *
@@ -27,7 +27,7 @@ use function array_reverse;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Network
+class FeedForward implements Network
 {
     /**
      * The input layer to the network.

@@ -83,7 +83,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The gradient descent optimizer used to update the network parameters.
      *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
@@ -125,14 +125,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
+     * @var ClassificationLoss
      */
     protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
 
     /**
      * The validation metric used to score the generalization performance of the model during training.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var Metric
      */
     protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
 
@@ -175,7 +175,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         array $hiddenLayers = [],
@@ -247,7 +247,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -517,7 +517,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -528,8 +528,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
@@ -554,8 +554,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Export the network architecture as a graph in dot format.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Encoding
+     * @throws RuntimeException
+     * @return Encoding
      */
     public function exportGraphviz() : Encoding
     {

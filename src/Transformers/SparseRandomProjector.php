@@ -47,7 +47,7 @@ class SparseRandomProjector extends GaussianRandomProjector
     /**
      * @param int $dimensions
      * @param float|null $sparsity
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
@@ -64,8 +64,8 @@ class SparseRandomProjector extends GaussianRandomProjector
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {

@@ -16,7 +16,7 @@ use Generator;
 class MeanAbsoluteErrorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError
+     * @var MeanAbsoluteError
      */
     protected $metric;
 

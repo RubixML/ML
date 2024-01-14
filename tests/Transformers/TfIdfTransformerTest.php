@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 class TfIdfTransformerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\TfIdfTransformer
+     * @var TfIdfTransformer
      */
     protected $transformer;
 

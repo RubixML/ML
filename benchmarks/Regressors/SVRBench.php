@@ -26,7 +26,7 @@ class SVRBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\SVR
+     * @var SVR
      */
     protected $estimator;
 

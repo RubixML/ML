@@ -19,7 +19,7 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\LabelsAreCompatibleWithLearner $specification
+     * @param LabelsAreCompatibleWithLearner $specification
      * @param bool $expected
      */
     public function passes(LabelsAreCompatibleWithLearner $specification, bool $expected) : void

@@ -14,7 +14,7 @@ use Generator;
 class HammingTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Hamming
+     * @var Hamming
      */
     protected $kernel;
 

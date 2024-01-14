@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ParameterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var Parameter
      */
     protected \Rubix\ML\NeuralNet\Parameter $param;
 

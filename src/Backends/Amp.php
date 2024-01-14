@@ -54,7 +54,7 @@ class Amp implements Backend
 
     /**
      * @param int|null $workers
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(?int $workers = null)
     {
@@ -83,7 +83,7 @@ class Amp implements Backend
      *
      * @internal
      *
-     * @param \Rubix\ML\Backends\Tasks\Task $task
+     * @param Task $task
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
      */
@@ -101,7 +101,7 @@ class Amp implements Backend
      *
      * @internal
      *
-     * @param \Amp\Parallel\Worker\Task $task
+     * @param AmpTask $task
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
      * @return \Generator<\Amp\Promise>

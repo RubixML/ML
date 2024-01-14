@@ -65,7 +65,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The gradient descent optimizer used to update the network parameters.
      *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
@@ -101,7 +101,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
+     * @var ClassificationLoss
      */
     protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
 
@@ -134,7 +134,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * @param float $minChange
      * @param int $window
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         int $batchSize = 128,
@@ -184,7 +184,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -401,7 +401,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -412,8 +412,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
@@ -445,7 +445,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return the importance scores of each feature column of the training set.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return float[]
      */
     public function featureImportances() : array

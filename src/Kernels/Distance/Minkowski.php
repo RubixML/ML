@@ -36,7 +36,7 @@ class Minkowski implements Distance
 
     /**
      * @param float $lambda
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $lambda = 3.0)
     {

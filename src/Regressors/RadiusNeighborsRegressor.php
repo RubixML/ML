@@ -64,7 +64,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * The spatial tree used to run range searches.
      *
-     * @var \Rubix\ML\Graph\Trees\Spatial
+     * @var Spatial
      */
     protected \Rubix\ML\Graph\Trees\Spatial $tree;
 
@@ -79,7 +79,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @param float $radius
      * @param bool $weighted
      * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $radius = 1.0, bool $weighted = false, ?Spatial $tree = null)
     {
@@ -98,7 +98,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -146,7 +146,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Return the base spatial tree instance.
      *
-     * @return \Rubix\ML\Graph\Trees\Spatial
+     * @return Spatial
      */
     public function tree() : Spatial
     {
@@ -156,7 +156,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -175,8 +175,8 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array

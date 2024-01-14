@@ -16,7 +16,7 @@ class GzipNativeBench
     protected const TRAINING_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Serializers\GzipNative
+     * @var GzipNative
      */
     protected $serializer;
 

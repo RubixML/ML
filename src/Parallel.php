@@ -16,7 +16,7 @@ interface Parallel
     /**
      * Set the parallel processing backend.
      *
-     * @param \Rubix\ML\Backends\Backend $backend
+     * @param Backend $backend
      */
     public function setBackend(Backend $backend) : void;
 }

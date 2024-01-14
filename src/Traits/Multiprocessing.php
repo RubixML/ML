@@ -25,14 +25,14 @@ trait Multiprocessing
     /**
      * The parallel processing backend.
      *
-     * @var \Rubix\ML\Backends\Backend
+     * @var Backend
      */
     protected \Rubix\ML\Backends\Backend $backend;
 
     /**
      * Set the parallel processing backend.
      *
-     * @param \Rubix\ML\Backends\Backend $backend
+     * @param Backend $backend
      */
     public function setBackend(Backend $backend) : void
     {

@@ -37,7 +37,7 @@ class BooleanConverter implements Transformer
     /**
      * @param string|int $trueValue
      * @param string|int $falseValue
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string|int $trueValue = 'true', string|int $falseValue = 'false')
     {
