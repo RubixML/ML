@@ -162,13 +162,13 @@ class OneVsRestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    // /**
-    //  * @test
-    //  */
-    // public function predictUntrained() : void
-    // {
-    //     $this->expectException(RuntimeException::class);
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
 
-    //     $this->estimator->predict(Unlabeled::quick());
-    // }
+        $this->estimator->predict(Unlabeled::quick());
+    }
 }
