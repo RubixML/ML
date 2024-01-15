@@ -26,7 +26,7 @@ class Normal implements Initializer
 
     /**
      * @param float $stdDev
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $stdDev = 0.05)
     {
@@ -45,7 +45,7 @@ class Normal implements Initializer
      *
      * @param int<0,max> $fanIn
      * @param int<0,max> $fanOut
-     * @return \Tensor\Matrix
+     * @return Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {

@@ -20,7 +20,7 @@ class TruncatedSVDBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\TruncatedSVD
+     * @var TruncatedSVD
      */
     protected $transformer;
 

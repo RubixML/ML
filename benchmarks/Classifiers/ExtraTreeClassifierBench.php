@@ -27,7 +27,7 @@ class ExtraTreeClassifierBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\ExtraTreeClassifier
+     * @var ExtraTreeClassifier
      */
     protected $estimator;
 

@@ -16,7 +16,7 @@ use Generator;
 class ErrorAnalysisTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Reports\ErrorAnalysis
+     * @var ErrorAnalysis
      */
     protected $report;
 

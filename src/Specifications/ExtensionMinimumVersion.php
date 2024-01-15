@@ -51,7 +51,7 @@ class ExtensionMinimumVersion extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function check() : void
     {

@@ -16,22 +16,22 @@ class SamplesAreCompatibleWithTransformer extends Specification
     /**
      * The dataset that contains samples under validation.
      *
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
     protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * The transformer.
      *
-     * @var \Rubix\ML\Transformers\Transformer
+     * @var Transformer
      */
     protected \Rubix\ML\Transformers\Transformer $transformer;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @param Dataset $dataset
+     * @param Transformer $transformer
      * @return self
      */
     public static function with(Dataset $dataset, Transformer $transformer) : self
@@ -40,8 +40,8 @@ class SamplesAreCompatibleWithTransformer extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @param Dataset $dataset
+     * @param Transformer $transformer
      */
     public function __construct(Dataset $dataset, Transformer $transformer)
     {
@@ -52,7 +52,7 @@ class SamplesAreCompatibleWithTransformer extends Specification
     /**
      * Perform a check of the specification.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function check() : void
     {

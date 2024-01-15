@@ -37,7 +37,7 @@ class KMostFrequent implements Strategy
 
     /**
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $k = 1)
     {
@@ -52,7 +52,7 @@ class KMostFrequent implements Strategy
     /**
      * Return the data type the strategy handles.
      *
-     * @return \Rubix\ML\DataType
+     * @return DataType
      */
     public function type() : DataType
     {
@@ -77,7 +77,7 @@ class KMostFrequent implements Strategy
      * @internal
      *
      * @param list<string> $values
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -100,7 +100,7 @@ class KMostFrequent implements Strategy
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return string
      */
     public function guess() : string

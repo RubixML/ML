@@ -21,7 +21,7 @@ class AverageTest extends TestCase
     protected const N = 3;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Average
+     * @var Average
      */
     protected $node;
 

@@ -17,12 +17,12 @@ use PHPUnit\Framework\TestCase;
 class PrincipalComponentAnalysisTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\PrincipalComponentAnalysis
+     * @var PrincipalComponentAnalysis
      */
     protected $transformer;
 

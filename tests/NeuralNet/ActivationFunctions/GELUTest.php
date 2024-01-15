@@ -15,7 +15,7 @@ use Generator;
 class GELUTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\GELU
+     * @var GELU
      */
     protected $activationFn;
 
@@ -40,7 +40,7 @@ class GELUTest extends TestCase
      * @test
      * @dataProvider computeProvider
      *
-     * @param \Tensor\Matrix $input
+     * @param Matrix $input
      * @param array<array<mixed>> $expected
      */
     public function compute(Matrix $input, array $expected) : void
@@ -80,8 +80,8 @@ class GELUTest extends TestCase
      * @test
      * @dataProvider differentiateProvider
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $activations
+     * @param Matrix $input
+     * @param Matrix $activations
      * @param array<array<mixed>> $expected
      */
     public function differentiate(Matrix $input, Matrix $activations, array $expected) : void

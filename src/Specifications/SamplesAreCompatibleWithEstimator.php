@@ -16,22 +16,22 @@ class SamplesAreCompatibleWithEstimator extends Specification
     /**
      * The dataset that contains samples under validation.
      *
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
     protected \Rubix\ML\Datasets\Dataset $dataset;
 
     /**
      * The estimator.
      *
-     * @var \Rubix\ML\Estimator
+     * @var Estimator
      */
     protected \Rubix\ML\Estimator $estimator;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Estimator $estimator
+     * @param Dataset $dataset
+     * @param Estimator $estimator
      * @return self
      */
     public static function with(Dataset $dataset, Estimator $estimator) : self
@@ -40,8 +40,8 @@ class SamplesAreCompatibleWithEstimator extends Specification
     }
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param \Rubix\ML\Estimator $estimator
+     * @param Dataset $dataset
+     * @param Estimator $estimator
      */
     public function __construct(Dataset $dataset, Estimator $estimator)
     {
@@ -52,7 +52,7 @@ class SamplesAreCompatibleWithEstimator extends Specification
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function check() : void
     {

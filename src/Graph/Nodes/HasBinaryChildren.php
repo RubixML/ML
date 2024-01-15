@@ -18,14 +18,14 @@ interface HasBinaryChildren extends BinaryNode
     /**
      * Return the left child node.
      *
-     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * @return BinaryNode|null
      */
     public function left() : ?BinaryNode;
 
     /**
      * Return the right child node.
      *
-     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * @return BinaryNode|null
      */
     public function right() : ?BinaryNode;
 
@@ -47,14 +47,14 @@ interface HasBinaryChildren extends BinaryNode
     /**
      * Set the left child node.
      *
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode|null $node
+     * @param BinaryNode|null $node
      */
     public function attachLeft(?BinaryNode $node = null) : void;
 
     /**
      * Set the right child node.
      *
-     * @param \Rubix\ML\Graph\Nodes\BinaryNode|null $node
+     * @param BinaryNode|null $node
      */
     public function attachRight(?BinaryNode $node = null) : void;
 }

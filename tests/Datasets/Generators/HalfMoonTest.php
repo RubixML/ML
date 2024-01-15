@@ -17,7 +17,7 @@ class HalfMoonTest extends TestCase
     protected const DATASET_SIZE = 30;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\HalfMoon
+     * @var HalfMoon
      */
     protected $generator;
 

@@ -19,7 +19,7 @@ interface Estimator extends Stringable
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType;
 
@@ -44,7 +44,7 @@ interface Estimator extends Stringable
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @return list<string|int|float>
      */
     public function predict(Dataset $dataset) : array;

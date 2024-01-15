@@ -27,7 +27,7 @@ class GaussianMLEBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\AnomalyDetectors\GaussianMLE
+     * @var GaussianMLE
      */
     protected $estimator;
 

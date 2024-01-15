@@ -17,7 +17,7 @@ class ExtensionMinimumVersionTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\ExtensionMinimumVersion $specification
+     * @param ExtensionMinimumVersion $specification
      * @param bool $expected
      */
     public function passes(ExtensionMinimumVersion $specification, bool $expected) : void

@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class SnapshotTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Snapshot
+     * @var Snapshot
      */
     protected $snapshot;
 

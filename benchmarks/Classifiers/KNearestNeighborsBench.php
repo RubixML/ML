@@ -27,7 +27,7 @@ class KNearestNeighborsBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\KNearestNeighbors
+     * @var KNearestNeighbors
      */
     protected $estimator;
 

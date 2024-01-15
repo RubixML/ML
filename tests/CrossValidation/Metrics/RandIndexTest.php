@@ -16,7 +16,7 @@ use Generator;
 class RandIndexTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RandIndex
+     * @var RandIndex
      */
     protected $metric;
 

@@ -21,7 +21,7 @@ class WordCountVectorizerBench
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\WordCountVectorizer
+     * @var WordCountVectorizer
      */
     protected $transformer;
 

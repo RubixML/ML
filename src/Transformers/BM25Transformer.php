@@ -88,7 +88,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     /**
      * @param float $dampening
      * @param float $normalization
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $dampening = 1.2, float $normalization = 0.75)
     {
@@ -151,7 +151,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -165,8 +165,8 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function update(Dataset $dataset) : void
     {
@@ -205,7 +205,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      * Transform the dataset in place.
      *
      * @param array<array<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

@@ -26,7 +26,7 @@ class Uniform implements Initializer
 
     /**
      * @param float $beta
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $beta = 0.5)
     {
@@ -45,7 +45,7 @@ class Uniform implements Initializer
      *
      * @param int<0,max> $fanIn
      * @param int<0,max> $fanOut
-     * @return \Tensor\Matrix
+     * @return Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {

@@ -33,12 +33,12 @@ class Parameter
     /**
      * The parameter.
      *
-     * @var \Tensor\Tensor
+     * @var Tensor
      */
     protected \Tensor\Tensor $param;
 
     /**
-     * @param \Tensor\Tensor $param
+     * @param Tensor $param
      */
     public function __construct(Tensor $param)
     {
@@ -69,8 +69,8 @@ class Parameter
     /**
      * Update the parameter.
      *
-     * @param \Tensor\Tensor $gradient
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
+     * @param Tensor $gradient
+     * @param Optimizer $optimizer
      */
     public function update(Tensor $gradient, Optimizer $optimizer) : void
     {

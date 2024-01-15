@@ -27,7 +27,7 @@ class PolynomialExpander implements Transformer
 
     /**
      * @param int $degree
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $degree = 2)
     {

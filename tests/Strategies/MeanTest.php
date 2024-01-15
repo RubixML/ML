@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class MeanTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\Mean
+     * @var Mean
      */
     protected $strategy;
 

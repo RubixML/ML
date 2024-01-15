@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class RBFTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\SVM\RBF
+     * @var RBF
      */
     protected $kernel;
 

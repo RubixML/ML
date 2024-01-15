@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class PolynomialExpanderTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\PolynomialExpander
+     * @var PolynomialExpander
      */
     protected $transformer;
 

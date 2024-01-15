@@ -57,17 +57,17 @@ class ClassificationTreeTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\ClassificationTree
+     * @var ClassificationTree
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
+     * @var FBeta
      */
     protected $metric;
 

@@ -14,7 +14,7 @@ use Generator;
 class SentenceTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\Sentence
+     * @var Sentence
      */
     protected $tokenizer;
 

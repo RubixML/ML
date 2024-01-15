@@ -33,7 +33,7 @@ class ELU implements ActivationFunction
 
     /**
      * @param float $alpha
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $alpha = 1.0)
     {
@@ -50,8 +50,8 @@ class ELU implements ActivationFunction
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function activate(Matrix $input) : Matrix
     {
@@ -63,9 +63,9 @@ class ELU implements ActivationFunction
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $output
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {

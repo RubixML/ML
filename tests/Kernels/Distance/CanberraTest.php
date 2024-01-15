@@ -14,7 +14,7 @@ use Generator;
 class CanberraTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Canberra
+     * @var Canberra
      */
     protected $kernel;
 

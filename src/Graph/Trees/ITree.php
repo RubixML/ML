@@ -47,7 +47,7 @@ class ITree implements BinaryTree
 
     /**
      * @param int $maxHeight
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $maxHeight = PHP_INT_MAX)
     {
@@ -95,7 +95,7 @@ class ITree implements BinaryTree
      * Insert a root node and recursively split the dataset until a
      * terminating condition is met.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      */
     public function grow(Dataset $dataset) : void
     {

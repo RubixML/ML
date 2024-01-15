@@ -24,7 +24,7 @@ class CanberraBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Canberra
+     * @var Canberra
      */
     protected $kernel;
 

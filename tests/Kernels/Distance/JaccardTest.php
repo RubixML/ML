@@ -14,7 +14,7 @@ use Generator;
 class JaccardTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\Distance\Jaccard
+     * @var Jaccard
      */
     protected $kernel;
 

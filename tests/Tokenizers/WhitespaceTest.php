@@ -14,7 +14,7 @@ use Generator;
 class WhitespaceTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\Whitespace
+     * @var Whitespace
      */
     protected $tokenizer;
 

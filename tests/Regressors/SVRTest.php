@@ -53,17 +53,17 @@ class SVRTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Hyperplane
+     * @var Hyperplane
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Regressors\SVR
+     * @var SVR
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\RSquared
+     * @var RSquared
      */
     protected $metric;
 

@@ -22,12 +22,12 @@ use PHPUnit\Framework\TestCase;
 class FeedForwardTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
     protected $dataset;
 
     /**
-     * @var \Rubix\ML\NeuralNet\FeedForward
+     * @var FeedForward
      */
     protected $network;
 
@@ -42,7 +42,7 @@ class FeedForwardTest extends TestCase
     protected $hidden;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Output
+     * @var Output
      */
     protected $output;
 

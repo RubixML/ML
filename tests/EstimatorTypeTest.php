@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class EstimatorTypeTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\EstimatorType
+     * @var EstimatorType
      */
     protected $type;
 

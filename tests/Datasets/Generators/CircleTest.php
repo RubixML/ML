@@ -17,7 +17,7 @@ class CircleTest extends TestCase
     protected const DATASET_SIZE = 30;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Circle
+     * @var Circle
      */
     protected $generator;
 

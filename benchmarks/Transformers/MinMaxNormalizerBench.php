@@ -20,7 +20,7 @@ class MinMaxNormalizerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\MinMaxNormalizer
+     * @var MinMaxNormalizer
      */
     protected $transformer;
 

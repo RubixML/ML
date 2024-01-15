@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class BooleanConverterTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\BooleanConverter
+     * @var BooleanConverter
      */
     protected $transformer;
 

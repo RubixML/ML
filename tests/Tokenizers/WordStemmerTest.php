@@ -15,7 +15,7 @@ use Generator;
 class WordStemmerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\WordStemmer
+     * @var WordStemmer
      */
     protected $tokenizer;
 

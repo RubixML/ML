@@ -16,7 +16,7 @@ use Generator;
 class ELUTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ELU
+     * @var ELU
      */
     protected $activationFn;
 
@@ -51,7 +51,7 @@ class ELUTest extends TestCase
      * @test
      * @dataProvider computeProvider
      *
-     * @param \Tensor\Matrix $input
+     * @param Matrix $input
      * @param list<list<float>> $expected $expected
      */
     public function activate(Matrix $input, array $expected) : void
@@ -93,8 +93,8 @@ class ELUTest extends TestCase
      * @test
      * @dataProvider differentiateProvider
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $activations
+     * @param Matrix $input
+     * @param Matrix $activations
      * @param list<list<float>> $expected $expected
      */
     public function differentiate(Matrix $input, Matrix $activations, array $expected) : void

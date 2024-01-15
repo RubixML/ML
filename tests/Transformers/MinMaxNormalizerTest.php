@@ -19,12 +19,12 @@ use PHPUnit\Framework\TestCase;
 class MinMaxNormalizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Transformers\MinMaxNormalizer
+     * @var MinMaxNormalizer
      */
     protected $transformer;
 

@@ -15,12 +15,12 @@ use PHPUnit\Framework\TestCase;
 class Placeholder1DTest extends TestCase
 {
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Placeholder1D
+     * @var Placeholder1D
      */
     protected $layer;
 

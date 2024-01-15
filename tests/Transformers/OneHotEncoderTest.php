@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class OneHotEncoderTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\OneHotEncoder
+     * @var OneHotEncoder
      */
     protected $transformer;
 

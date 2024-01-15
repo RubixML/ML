@@ -27,7 +27,7 @@ class SoftmaxClassifierBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\SoftmaxClassifier
+     * @var SoftmaxClassifier
      */
     protected $estimator;
 

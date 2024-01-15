@@ -49,7 +49,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * The base classifier.
      *
-     * @var \Rubix\ML\Learner
+     * @var Learner
      */
     protected \Rubix\ML\Learner $base;
 
@@ -70,8 +70,8 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     protected ?int $featureCount = null;
 
     /**
-     * @param \Rubix\ML\Learner $base
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Learner $base
+     * @throws InvalidArgumentException
      */
     public function __construct(Learner $base)
     {
@@ -94,7 +94,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -182,8 +182,8 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<string>
      */
     public function predict(Dataset $dataset) : array
@@ -194,8 +194,8 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
@@ -208,7 +208,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         $this->backend->flush();
 
-        /** @var \Rubix\ML\Probabilistic $estimator */
+        /** @var Probabilistic $estimator */
         foreach ($this->classifiers as $estimator) {
             $task = new Proba($estimator, $dataset);
 

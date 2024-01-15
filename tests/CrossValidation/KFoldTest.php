@@ -24,22 +24,22 @@ class KFoldTest extends TestCase
     protected const DATASET_SIZE = 50;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\GaussianNB
+     * @var GaussianNB
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\KFold
+     * @var KFold
      */
     protected $validator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\Accuracy
+     * @var Accuracy
      */
     protected $metric;
 

@@ -14,7 +14,7 @@ use Generator;
 class WordTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\Word
+     * @var Word
      */
     protected $tokenizer;
 

@@ -16,7 +16,7 @@ use Generator;
 class MeanSquaredErrorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\MeanSquaredError
+     * @var MeanSquaredError
      */
     protected $metric;
 

@@ -18,7 +18,7 @@ use Generator;
 class RMSPropTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\RMSProp
+     * @var RMSProp
      */
     protected $optimizer;
 
@@ -44,7 +44,7 @@ class RMSPropTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */

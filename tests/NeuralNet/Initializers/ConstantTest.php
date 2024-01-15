@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ConstantTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\Constant
+     * @var Constant
      */
     protected $initializer;
 

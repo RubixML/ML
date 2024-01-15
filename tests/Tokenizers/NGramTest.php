@@ -14,7 +14,7 @@ use Generator;
 class NGramTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Tokenizers\NGram
+     * @var NGram
      */
     protected $tokenizer;
 

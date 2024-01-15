@@ -56,17 +56,17 @@ class FuzzyCMeansTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Clusterers\FuzzyCMeans
+     * @var FuzzyCMeans
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\VMeasure
+     * @var VMeasure
      */
     protected $metric;
 

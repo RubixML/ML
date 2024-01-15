@@ -62,7 +62,7 @@ class RBX implements Serializer
     /**
      * The base Gzip Native serializer.
      *
-     * @var \Rubix\ML\Serializers\GzipNative
+     * @var GzipNative
      */
     protected \Rubix\ML\Serializers\GzipNative $base;
 
@@ -79,8 +79,8 @@ class RBX implements Serializer
      *
      * @internal
      *
-     * @param \Rubix\ML\Persistable $persistable
-     * @return \Rubix\ML\Encoding
+     * @param Persistable $persistable
+     * @return Encoding
      */
     public function serialize(Persistable $persistable) : Encoding
     {
@@ -123,9 +123,9 @@ class RBX implements Serializer
      *
      * @internal
      *
-     * @param \Rubix\ML\Encoding $encoding
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Persistable
+     * @param Encoding $encoding
+     * @throws RuntimeException
+     * @return Persistable
      */
     public function deserialize(Encoding $encoding) : Persistable
     {

@@ -18,7 +18,7 @@ use Generator;
 class MomentumTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Momentum
+     * @var Momentum
      */
     protected $optimizer;
 
@@ -44,7 +44,7 @@ class MomentumTest extends TestCase
      * @test
      * @dataProvider stepProvider
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */

@@ -28,7 +28,7 @@ class NaiveBayesBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Classifiers\NaiveBayes
+     * @var NaiveBayes
      */
     protected $estimator;
 

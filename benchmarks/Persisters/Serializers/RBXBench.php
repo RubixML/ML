@@ -16,7 +16,7 @@ class RBXBench
     protected const TRAINING_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Serializers\RBX
+     * @var RBX
      */
     protected $serializer;
 

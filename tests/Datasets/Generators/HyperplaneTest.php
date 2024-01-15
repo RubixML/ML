@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class HyperplaneTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Hyperplane
+     * @var Hyperplane
      */
     protected $generator;
 

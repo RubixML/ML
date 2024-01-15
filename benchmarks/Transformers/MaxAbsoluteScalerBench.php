@@ -20,7 +20,7 @@ class MaxAbsoluteScalerBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\MaxAbsoluteScaler
+     * @var MaxAbsoluteScaler
      */
     protected $transformer;
 

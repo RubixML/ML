@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class TokenHashingVectorizerTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Transformers\TokenHashingVectorizer
+     * @var TokenHashingVectorizer
      */
     protected $transformer;
 

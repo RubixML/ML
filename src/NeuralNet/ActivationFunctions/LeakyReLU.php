@@ -31,7 +31,7 @@ class LeakyReLU implements ActivationFunction
 
     /**
      * @param float $leakage
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $leakage = 0.1)
     {
@@ -48,8 +48,8 @@ class LeakyReLU implements ActivationFunction
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function activate(Matrix $input) : Matrix
     {
@@ -61,9 +61,9 @@ class LeakyReLU implements ActivationFunction
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $output
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {

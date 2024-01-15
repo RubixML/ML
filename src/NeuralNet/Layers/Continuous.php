@@ -26,7 +26,7 @@ class Continuous implements Output
     /**
      * The function that computes the loss of erroneous activations.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
+     * @var RegressionLoss
      */
     protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
 
@@ -60,7 +60,7 @@ class Continuous implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return positive-int
      */
     public function initialize(int $fanIn) : int
@@ -76,8 +76,8 @@ class Continuous implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -89,8 +89,8 @@ class Continuous implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -101,8 +101,8 @@ class Continuous implements Output
      * Compute the gradient and loss at the output.
      *
      * @param (int|float)[] $labels
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Optimizer $optimizer
+     * @throws RuntimeException
      * @return (\Rubix\ML\Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
@@ -128,9 +128,9 @@ class Continuous implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param \Tensor\Matrix $input
-     * @param \Tensor\Matrix $expected
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @param Matrix $expected
+     * @return Matrix
      */
     public function gradient(Matrix $input, Matrix $expected) : Matrix
     {

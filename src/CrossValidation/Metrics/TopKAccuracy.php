@@ -33,7 +33,7 @@ class TopKAccuracy implements ProbabilisticMetric
 
     /**
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $k = 3)
     {

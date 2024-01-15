@@ -39,7 +39,7 @@ class JSON
      * @param mixed $value
      * @param int $options
      * @param positive-int $depth
-     * @throws \Rubix\ML\Exceptions\JSONException
+     * @throws JSONException
      * @return string
      */
     public static function encode($value, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : string
@@ -59,7 +59,7 @@ class JSON
      * @param string $data
      * @param int $options
      * @param positive-int $depth
-     * @throws \Rubix\ML\Exceptions\JSONException
+     * @throws JSONException
      * @return mixed[]
      */
     public static function decode(string $data, int $options = self::DEFAULT_OPTIONS, int $depth = self::DEFAULT_DEPTH) : array

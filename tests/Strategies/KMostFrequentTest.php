@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class KMostFrequentTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Strategies\KMostFrequent
+     * @var KMostFrequent
      */
     protected $strategy;
 

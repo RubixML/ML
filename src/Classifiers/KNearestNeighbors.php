@@ -60,7 +60,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var Distance
      */
     protected \Rubix\ML\Kernels\Distance\Distance $kernel;
 
@@ -95,7 +95,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      * @param int $k
      * @param bool $weighted
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = false, ?Distance $kernel = null)
     {
@@ -114,7 +114,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @internal
      *
-     * @return \Rubix\ML\EstimatorType
+     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -198,8 +198,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Make predictions from a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return string[]
      */
     public function predict(Dataset $dataset) : array
@@ -242,8 +242,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     /**
      * Estimate the joint probabilities for each possible outcome.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @param Dataset $dataset
+     * @throws RuntimeException
      * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array

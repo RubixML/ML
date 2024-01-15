@@ -20,7 +20,7 @@ interface Optimizer extends Stringable
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param Parameter $param
      * @param \Tensor\Tensor<int|float|array> $gradient
      * @return \Tensor\Tensor<int|float|array>
      */

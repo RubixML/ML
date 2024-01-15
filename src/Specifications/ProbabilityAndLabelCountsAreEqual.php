@@ -48,7 +48,7 @@ class ProbabilityAndLabelCountsAreEqual
     /**
      * Perform a check of the specification and throw an exception if invalid.
      *
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function check() : void
     {

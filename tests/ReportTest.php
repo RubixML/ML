@@ -17,7 +17,7 @@ use Stringable;
 class ReportTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Report
+     * @var Report
      */
     protected $results;
 

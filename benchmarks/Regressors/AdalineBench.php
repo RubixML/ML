@@ -26,7 +26,7 @@ class AdalineBench
     protected $testing;
 
     /**
-     * @var \Rubix\ML\Regressors\Adaline
+     * @var Adaline
      */
     protected $estimator;
 

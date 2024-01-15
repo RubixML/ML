@@ -22,7 +22,7 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
      * @test
      * @dataProvider passesProvider
      *
-     * @param \Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric $specification
+     * @param EstimatorIsCompatibleWithMetric $specification
      * @param bool $expected
      */
     public function passes(EstimatorIsCompatibleWithMetric $specification, bool $expected) : void

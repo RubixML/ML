@@ -10,7 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -54,17 +54,17 @@ class RadiusNeighborsTest extends TestCase
     protected const RANDOM_SEED = 0;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Classifiers\RadiusNeighbors
+     * @var RadiusNeighbors
      */
     protected $estimator;
 
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\FBeta
+     * @var FBeta
      */
     protected $metric;
 
@@ -79,7 +79,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 30.0),
         ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new RadiusNeighbors(60.0, true, '?', new BallTree());
+        $this->estimator = new RadiusNeighbors(60.0, true, '?', new VantageTree());
 
         $this->metric = new FBeta();
 
@@ -142,7 +142,7 @@ class RadiusNeighborsTest extends TestCase
             'radius' => 60.0,
             'weighted' => true,
             'outlier class' => '?',
-            'tree' => new BallTree(),
+            'tree' => new VantageTree(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

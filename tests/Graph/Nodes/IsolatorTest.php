@@ -24,7 +24,7 @@ class IsolatorTest extends TestCase
     ];
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Isolator
+     * @var Isolator
      */
     protected $node;
 

@@ -32,14 +32,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The guessing strategy to use when imputing continuous values.
      *
-     * @var \Rubix\ML\Strategies\Strategy
+     * @var Strategy
      */
     protected \Rubix\ML\Strategies\Strategy $continuous;
 
     /**
      * The guessing strategy to use when imputing categorical values.
      *
-     * @var \Rubix\ML\Strategies\Strategy
+     * @var Strategy
      */
     protected \Rubix\ML\Strategies\Strategy $categorical;
 
@@ -68,7 +68,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
      * @param \Rubix\ML\Strategies\Strategy|null $continuous
      * @param \Rubix\ML\Strategies\Strategy|null $categorical
      * @param string $categoricalPlaceholder
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         ?Strategy $continuous = null,
@@ -115,8 +115,8 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * Fit the transformer to a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
      */
     public function fit(Dataset $dataset) : void
     {
@@ -173,7 +173,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
      * Transform the dataset in place.
      *
      * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      */
     public function transform(array &$samples) : void
     {

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class LinearTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Kernels\SVM\Linear
+     * @var Linear
      */
     protected $kernel;
 

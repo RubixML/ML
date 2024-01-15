@@ -39,7 +39,7 @@ class Preset implements Seeder
 
     /**
      * @param array<(string|int|float)[]> $centroids
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $centroids)
     {
@@ -71,9 +71,9 @@ class Preset implements Seeder
      *
      * @internal
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param Dataset $dataset
      * @param int $k
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return list<list<string|int|float>>
      */
     public function seed(Dataset $dataset, int $k) : array

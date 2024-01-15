@@ -17,7 +17,7 @@ class BlobTest extends TestCase
     protected const DATASET_SIZE = 30;
 
     /**
-     * @var \Rubix\ML\Datasets\Generators\Blob
+     * @var Blob
      */
     protected $generator;
 
@@ -32,10 +32,31 @@ class BlobTest extends TestCase
     /**
      * @test
      */
+    public function simulate() : void
+    {
+        $dataset = $this->generator->generate(100);
+
+        $generator = Blob::simulate($dataset);
+
+        $this->assertInstanceOf(Blob::class, $generator);
+        $this->assertInstanceOf(Generator::class, $generator);
+    }
+
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Blob::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
+    }
+
+    /**
+     * @test
+     */
+    public function center() : void
+    {
+        $this->assertEquals([0, 0, 0], $this->generator->center());
     }
 
     /**

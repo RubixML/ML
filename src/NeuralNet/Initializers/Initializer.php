@@ -21,7 +21,7 @@ interface Initializer extends Stringable
      *
      * @param int<0,max> $fanIn
      * @param int<0,max> $fanOut
-     * @return \Tensor\Matrix
+     * @return Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix;
 }

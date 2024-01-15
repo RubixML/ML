@@ -24,7 +24,7 @@ class MinkowskiBench
     protected $bSamples;
 
     /**
-     * @var \Rubix\ML\Kernels\Distance\Minkowski
+     * @var Minkowski
      */
     protected $kernel;
 

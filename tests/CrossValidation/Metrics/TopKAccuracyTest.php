@@ -15,7 +15,7 @@ use Generator;
 class TopKAccuracyTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\TopKAccuracy
+     * @var TopKAccuracy
      */
     protected $metric;
 

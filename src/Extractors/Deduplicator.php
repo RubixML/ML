@@ -29,7 +29,7 @@ class Deduplicator implements Extractor
     /**
      * The Bloom filter.
      *
-     * @var \OkBloomer\BloomFilter
+     * @var BloomFilter
      */
     protected BloomFilter $filter;
 

@@ -16,7 +16,7 @@ use Generator;
 class MedianAbsoluteErrorTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError
+     * @var MedianAbsoluteError
      */
     protected $metric;
 

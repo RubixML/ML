@@ -24,7 +24,7 @@ class DepthTest extends TestCase
     protected const C = 8.207392357589622;
 
     /**
-     * @var \Rubix\ML\Graph\Nodes\Depth
+     * @var Depth
      */
     protected $node;
 

@@ -36,7 +36,7 @@ class Prior implements Strategy
     /**
      * Return the data type the strategy handles.
      *
-     * @return \Rubix\ML\DataType
+     * @return DataType
      */
     public function type() : DataType
     {
@@ -61,7 +61,7 @@ class Prior implements Strategy
      * @internal
      *
      * @param list<string> $values
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function fit(array $values) : void
     {
@@ -79,7 +79,7 @@ class Prior implements Strategy
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return string
      */
     public function guess() : string

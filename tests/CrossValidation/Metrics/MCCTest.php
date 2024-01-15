@@ -16,7 +16,7 @@ use Generator;
 class MCCTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\CrossValidation\Metrics\MCC
+     * @var MCC
      */
     protected $metric;
 

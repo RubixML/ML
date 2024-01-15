@@ -23,12 +23,12 @@ class ActivationTest extends TestCase
     protected $fanIn;
 
     /**
-     * @var \Tensor\Matrix
+     * @var Matrix
      */
     protected $input;
 
     /**
-     * @var \Rubix\ML\Deferred
+     * @var Deferred
      */
     protected $prevGrad;
 
@@ -38,7 +38,7 @@ class ActivationTest extends TestCase
     protected $optimizer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Activation
+     * @var Activation
      */
     protected $layer;
 

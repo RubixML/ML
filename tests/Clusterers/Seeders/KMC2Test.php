@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
 class KMC2Test extends TestCase
 {
     /**
-     * @var \Rubix\ML\Datasets\Generators\Agglomerate
+     * @var Agglomerate
      */
     protected $generator;
 
     /**
-     * @var \Rubix\ML\Clusterers\Seeders\KMC2
+     * @var KMC2
      */
     protected $seeder;
 

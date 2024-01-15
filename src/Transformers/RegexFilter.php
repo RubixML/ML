@@ -105,7 +105,7 @@ class RegexFilter implements Transformer
 
     /**
      * @param string[] $patterns
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $patterns)
     {

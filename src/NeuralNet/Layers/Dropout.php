@@ -56,7 +56,7 @@ class Dropout implements Hidden
 
     /**
      * @param float $ratio
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(float $ratio = 0.5)
     {
@@ -74,7 +74,7 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return positive-int
      */
     public function width() : int
@@ -109,8 +109,8 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -130,8 +130,8 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param \Tensor\Matrix $input
-     * @return \Tensor\Matrix
+     * @param Matrix $input
+     * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -143,10 +143,10 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     * @return \Rubix\ML\Deferred
+     * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
+     * @throws RuntimeException
+     * @return Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -166,9 +166,9 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param \Rubix\ML\Deferred $prevGradient
-     * @param \Tensor\Matrix $mask
-     * @return \Tensor\Matrix
+     * @param Deferred $prevGradient
+     * @param Matrix $mask
+     * @return Matrix
      */
     public function gradient(Deferred $prevGradient, Matrix $mask)
     {

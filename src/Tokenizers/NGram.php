@@ -44,22 +44,22 @@ class NGram implements Tokenizer
     /**
      * The word tokenizer.
      *
-     * @var \Rubix\ML\Tokenizers\Word
+     * @var Word
      */
     protected \Rubix\ML\Tokenizers\Word $wordTokenizer;
 
     /**
      * The sentence tokenizer.
      *
-     * @var \Rubix\ML\Tokenizers\Sentence
+     * @var Sentence
      */
     protected \Rubix\ML\Tokenizers\Sentence $sentenceTokenizer;
 
     /**
      * @param int $min
      * @param int $max
-     * @param \Rubix\ML\Tokenizers\Word|null $wordTokenizer
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
+     * @param Word|null $wordTokenizer
+     * @throws InvalidArgumentException
      */
     public function __construct(int $min = 2, int $max = 2, ?Word $wordTokenizer = null)
     {

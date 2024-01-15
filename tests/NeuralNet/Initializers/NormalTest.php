@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class NormalTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\Initializers\Normal
+     * @var Normal
      */
     protected $initializer;
 

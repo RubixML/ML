@@ -20,7 +20,7 @@ class PolynomialExpanderBench
     public $dataset;
 
     /**
-     * @var \Rubix\ML\Transformers\PolynomialExpander
+     * @var PolynomialExpander
      */
     protected $transformer;
 
