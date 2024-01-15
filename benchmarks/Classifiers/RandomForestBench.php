@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Backends\Amp;
-use Rubix\ML\Backends\Swoole as SwooleBackend;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
@@ -15,6 +15,8 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
  */
 class RandomForestBench
 {
+    use BackendProviderTrait;
+
     protected const TRAINING_SIZE = 10000;
 
     protected const TESTING_SIZE = 10000;
@@ -47,8 +49,6 @@ class RandomForestBench
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
         $this->estimator = new RandomForest(new ClassificationTree(30));
-        $this->estimator->setBackend(new SwooleBackend());
-        // $this->estimator->setBackend(new Amp());
     }
 
     public function setUpCategorical() : void
@@ -74,24 +74,32 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function continuous() : void
+    public function continuous(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);
     }
 
-    // /**
-    //  * @Subject
-    //  * @Iterations(5)
-    //  * @BeforeMethods({"setUpCategorical"})
-    //  * @OutputTimeUnit("seconds", precision=3)
-    //  */
-    // public function categorical() : void
-    // {
-    //     $this->estimator->train($this->training);
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @BeforeMethods({"setUpCategorical"})
+     * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
+     */
+    public function categorical(array $params) : void
+    {
+        $this->estimator->setBackend($params['backend']);
 
-    //     $this->estimator->predict($this->testing);
-    // }
+        $this->estimator->train($this->training);
+
+        $this->estimator->predict($this->testing);
+    }
 }

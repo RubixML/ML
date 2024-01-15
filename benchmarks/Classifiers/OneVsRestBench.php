@@ -2,11 +2,13 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @Groups({"Classifiers"})
@@ -14,6 +16,8 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class OneVsRestBench
 {
+    use BackendProviderTrait;
+
     protected const TRAINING_SIZE = 10000;
 
     protected const TESTING_SIZE = 10000;
@@ -52,9 +56,13 @@ class OneVsRestBench
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function trainPredict() : void
+    public function trainPredict(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

@@ -3,10 +3,10 @@
 namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
-use Rubix\ML\Serializers\Serializer;
-use Rubix\ML\Serializers\Igbinary;
-use Rubix\ML\Serializers\Native;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
+use RuntimeException;
+use Swoole\Atomic;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
@@ -28,21 +28,14 @@ class Swoole implements Backend
 
     private int $cpus;
 
-    private Serializer $serializer;
+    private int $hasIgbinary;
 
-    public function __construct(?Serializer $serializer = null)
+    public function __construct()
     {
-        $this->cpus = swoole_cpu_num();
+        SwooleExtensionIsLoaded::create()->check();
 
-        if ($serializer) {
-            $this->serializer = $serializer;
-        } else {
-            if (ExtensionIsLoaded::with('igbinary')->passes()) {
-                $this->serializer = new Igbinary();
-            } else {
-                $this->serializer = new Native();
-            }
-        }
+        $this->cpus = swoole_cpu_num();
+        $this->hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
     }
 
     /**
@@ -78,19 +71,29 @@ class Swoole implements Backend
     {
         $results = [];
 
+        $maxMessageLength = new Atomic(0);
         $workerProcesses = [];
 
         $currentCpu = 0;
 
-        while (($queueItem = array_shift($this->queue))) {
+        foreach ($this->queue as $index => $queueItem) {
             $workerProcess = new Process(
-                function (Process $worker) use ($queueItem) {
-                    $worker->exportSocket()->send(igbinary_serialize($queueItem()));
+                function (Process $worker) use ($maxMessageLength, $queueItem) {
+                    $serialized = $this->serialize($queueItem());
+
+                    $serializedLength = strlen($serialized);
+                    $currentMaxSerializedLength = $maxMessageLength->get();
+
+                    if ($serializedLength > $currentMaxSerializedLength) {
+                        $maxMessageLength->set($serializedLength);
+                    }
+
+                    $worker->exportSocket()->send($serialized);
                 },
                 // redirect_stdin_and_stdout
                 false,
                 // pipe_type
-                SOCK_STREAM,
+                SOCK_DGRAM,
                 // enable_coroutine
                 true,
             );
@@ -99,15 +102,29 @@ class Swoole implements Backend
             $workerProcess->setBlocking(false);
             $workerProcess->start();
 
-            $workerProcesses[] = $workerProcess;
+            $workerProcesses[$index] = $workerProcess;
 
             $currentCpu = ($currentCpu + 1) % $this->cpus;
         }
 
-        run(function () use (&$results, $workerProcesses) {
-            foreach ($workerProcesses as $workerProcess) {
-                $receivedData = $workerProcess->exportSocket()->recv();
-                $unserialized = igbinary_unserialize($receivedData);
+        run(function () use ($maxMessageLength, &$results, $workerProcesses) {
+            foreach ($workerProcesses as $index => $workerProcess) {
+                $status = $workerProcess->wait();
+
+                if (0 !== $status['code']) {
+                    throw new RuntimeException('Worker process exited with an error');
+                }
+
+                $socket = $workerProcess->exportSocket();
+
+                if ($socket->isClosed()) {
+                    throw new RuntimeException('Coroutine socket is closed');
+                }
+
+                $maxMessageLengthValue = $maxMessageLength->get();
+
+                $receivedData = $socket->recv($maxMessageLengthValue);
+                $unserialized = $this->unserialize($receivedData);
 
                 $results[] = $unserialized;
             }
@@ -124,6 +141,24 @@ class Swoole implements Backend
         $this->queue = [];
     }
 
+    private function serialize(mixed $data) : string
+    {
+        if ($this->hasIgbinary) {
+            return igbinary_serialize($data);
+        }
+
+        return serialize($data);
+    }
+
+    private function unserialize(string $serialized) : mixed
+    {
+        if ($this->hasIgbinary) {
+            return igbinary_unserialize($serialized);
+        }
+
+        return unserialize($serialized);
+    }
+
     /**
      * Return the string representation of the object.
      *
@@ -133,6 +168,6 @@ class Swoole implements Backend
      */
     public function __toString() : string
     {
-        return 'Swoole\\Process';
+        return 'Swoole';
     }
 }
