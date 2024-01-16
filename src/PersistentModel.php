@@ -10,6 +10,7 @@ use Rubix\ML\Serializers\Serializer;
 use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Traits\WrapperAware;
 
 /**
  * Persistent Model
@@ -23,12 +24,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class PersistentModel implements Wrapper, Learner, Probabilistic, Scoring
 {
-    /**
-     * The persistable base learner.
-     *
-     * @var Learner
-     */
-    protected \Rubix\ML\Learner $base;
+    use WrapperAware;
 
     /**
      * The persister used to interface with the storage layer.
@@ -85,30 +81,6 @@ class PersistentModel implements Wrapper, Learner, Probabilistic, Scoring
     }
 
     /**
-     * Return the estimator type.
-     *
-     * @internal
-     *
-     * @return EstimatorType
-     */
-    public function type() : EstimatorType
-    {
-        return $this->base->type();
-    }
-
-    /**
-     * Return the data types that the estimator is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\DataType>
-     */
-    public function compatibility() : array
-    {
-        return $this->base->compatibility();
-    }
-
-    /**
      * Return the settings of the hyper-parameters in an associative array.
      *
      * @internal
@@ -135,16 +107,6 @@ class PersistentModel implements Wrapper, Learner, Probabilistic, Scoring
     }
 
     /**
-     * Return the base estimator instance.
-     *
-     * @return Estimator
-     */
-    public function base() : Estimator
-    {
-        return $this->base;
-    }
-
-    /**
      * Save the model to storage.
      */
     public function save() : void
@@ -166,17 +128,6 @@ class PersistentModel implements Wrapper, Learner, Probabilistic, Scoring
     public function train(Dataset $dataset) : void
     {
         $this->base->train($dataset);
-    }
-
-    /**
-     * Make a prediction on a given sample dataset.
-     *
-     * @param Dataset $dataset
-     * @return mixed[]
-     */
-    public function predict(Dataset $dataset) : array
-    {
-        return $this->base->predict($dataset);
     }
 
     /**
