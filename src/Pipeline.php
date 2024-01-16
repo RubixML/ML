@@ -25,7 +25,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Probabilistic, Scoring, Persistable
+class Pipeline implements Online, Probabilistic, Scoring, Persistable, Wrapper
 {
     use AutotrackRevisions;
 
