@@ -21,7 +21,7 @@ trait WrapperAware
     /**
      * The base estimator.
      *
-     * @var Learner
+     * @var Estimator
      */
     protected Estimator $base;
 
