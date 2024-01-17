@@ -4,7 +4,6 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\WrapperAware;
 use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
@@ -28,7 +27,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  */
 class Pipeline implements Online, Probabilistic, Scoring, Persistable, Wrapper
 {
-    use AutotrackRevisions, WrapperAware;
+    use AutotrackRevisions;
 
     /**
      * A list of transformers to be applied in series.
@@ -38,6 +37,13 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Wrapper
     protected array $transformers = [
         //
     ];
+
+    /**
+     * An instance of a base estimator to receive the transformed data.
+     *
+     * @var Estimator
+     */
+    protected \Rubix\ML\Estimator $base;
 
     /**
      * Should we update the elastic transformers during partial train?
@@ -67,6 +73,30 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Wrapper
     }
 
     /**
+     * Return the estimator type.
+     *
+     * @internal
+     *
+     * @return EstimatorType
+     */
+    public function type() : EstimatorType
+    {
+        return $this->base->type();
+    }
+
+    /**
+     * Return the data types that the estimator is compatible with.
+     *
+     * @internal
+     *
+     * @return list<\Rubix\ML\DataType>
+     */
+    public function compatibility() : array
+    {
+        return $this->base->compatibility();
+    }
+
+    /**
      * Return the settings of the hyper-parameters in an associative array.
      *
      * @internal
@@ -92,6 +122,16 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Wrapper
         return $this->base instanceof Learner
             ? $this->base->trained()
             : true;
+    }
+
+    /**
+     * Return the base estimator instance.
+     *
+     * @return Estimator
+     */
+    public function base() : Estimator
+    {
+        return $this->base;
     }
 
     /**

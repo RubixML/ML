@@ -23,7 +23,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Traits\WrapperAware;
 
 /**
  * Grid Search
@@ -42,7 +41,7 @@ use Rubix\ML\Traits\WrapperAware;
  */
 class GridSearch implements Wrapper, Learner, Parallel, Verbose, Persistable
 {
-    use AutotrackRevisions, Multiprocessing, LoggerAware, WrapperAware;
+    use AutotrackRevisions, Multiprocessing, LoggerAware;
 
     /**
      * The class name of the base estimator.
@@ -71,6 +70,13 @@ class GridSearch implements Wrapper, Learner, Parallel, Verbose, Persistable
      * @var Validator
      */
     protected \Rubix\ML\CrossValidation\Validator $validator;
+
+    /**
+     * The base estimator instance.
+     *
+     * @var Learner
+     */
+    protected \Rubix\ML\Learner $base;
 
     /**
      * The validation scores obtained from the last search.
@@ -174,6 +180,18 @@ class GridSearch implements Wrapper, Learner, Parallel, Verbose, Persistable
     }
 
     /**
+     * Return the estimator type.
+     *
+     * @internal
+     *
+     * @return EstimatorType
+     */
+    public function type() : EstimatorType
+    {
+        return $this->base->type();
+    }
+
+    /**
      * Return the data types that the estimator is compatible with.
      *
      * @internal
@@ -212,6 +230,16 @@ class GridSearch implements Wrapper, Learner, Parallel, Verbose, Persistable
     public function trained() : bool
     {
         return $this->base->trained();
+    }
+
+    /**
+     * Return the base learner instance.
+     *
+     * @return Estimator
+     */
+    public function base() : Estimator
+    {
+        return $this->base;
     }
 
     /**
@@ -274,6 +302,18 @@ class GridSearch implements Wrapper, Learner, Parallel, Verbose, Persistable
         if ($this->logger) {
             $this->logger->info('Training complete');
         }
+    }
+
+    /**
+     * Make a prediction on a given sample dataset.
+     *
+     * @param Dataset $dataset
+     * @throws Exceptions\RuntimeException
+     * @return mixed[]
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        return $this->base->predict($dataset);
     }
 
     /**
