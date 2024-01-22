@@ -30,7 +30,7 @@ class SQLTable implements Extractor
      *
      * @var PDO
      */
-    protected \PDO $connection;
+    protected PDO $connection;
 
     /**
      * The name of the table to select from.

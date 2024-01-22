@@ -68,7 +68,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var Optimizer
      */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
@@ -104,14 +104,14 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var RegressionLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
+    protected RegressionLoss $costFn;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
-    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The loss at each epoch from the last training session.

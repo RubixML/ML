@@ -20,7 +20,7 @@ trait LoggerAware
      *
      * @var \Psr\Log\LoggerInterface|null
      */
-    protected ?\Psr\Log\LoggerInterface $logger = null;
+    protected ?LoggerInterface $logger = null;
 
     /**
      * Sets a PSR-3 logger instance.

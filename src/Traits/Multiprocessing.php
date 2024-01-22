@@ -27,7 +27,7 @@ trait Multiprocessing
      *
      * @var Backend
      */
-    protected \Rubix\ML\Backends\Backend $backend;
+    protected Backend $backend;
 
     /**
      * Set the parallel processing backend.

@@ -70,7 +70,7 @@ class TokenHashingVectorizer implements Transformer
      *
      * @var Tokenizer
      */
-    protected \Rubix\ML\Tokenizers\Tokenizer $tokenizer;
+    protected Tokenizer $tokenizer;
 
     /**
      * The hash function that accepts a string token and returns an integer.

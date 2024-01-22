@@ -73,7 +73,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * The number of learners to train in the ensemble.

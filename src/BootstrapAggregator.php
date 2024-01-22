@@ -64,7 +64,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * The number of base learners to train in the ensemble.

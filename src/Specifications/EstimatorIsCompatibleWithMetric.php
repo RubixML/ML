@@ -18,14 +18,14 @@ class EstimatorIsCompatibleWithMetric extends Specification
      *
      * @var Estimator
      */
-    protected \Rubix\ML\Estimator $estimator;
+    protected Estimator $estimator;
 
     /**
      * The validation metric.
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * Build a specification object with the given arguments.

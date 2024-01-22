@@ -28,7 +28,7 @@ class Blob implements Generator
      *
      * @var Vector
      */
-    protected \Tensor\Vector $center;
+    protected Vector $center;
 
     /**
      * The standard deviation of the blob.

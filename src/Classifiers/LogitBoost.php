@@ -89,7 +89,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $booster;
+    protected Learner $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -138,7 +138,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * The ensemble of boosters.
