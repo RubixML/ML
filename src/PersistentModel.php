@@ -21,7 +21,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Wrapper, Learner, Probabilistic, Scoring
+class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scoring
 {
     /**
      * The persistable base learner.

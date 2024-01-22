@@ -7,14 +7,14 @@ namespace Rubix\ML;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Andrew DalPino
+ * @author      Ronan Giron
  */
-interface Wrapper extends Estimator
+interface EstimatorWrapper extends Estimator
 {
     /**
      * Return the base estimator instance.
      *
      * @return Estimator
      */
-    public function base(): Estimator;
+    public function base() : Estimator;
 }
