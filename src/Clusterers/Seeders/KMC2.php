@@ -39,7 +39,7 @@ class KMC2 implements Seeder
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * @param int $m

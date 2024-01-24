@@ -45,14 +45,14 @@ class BatchNorm implements Hidden, Parametric
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $betaInitializer;
+    protected Initializer $betaInitializer;
 
     /**
      * The initializer for the gamma parameter.
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $gammaInitializer;
+    protected Initializer $gammaInitializer;
 
     /**
      * The width of the layer. i.e. the number of neurons.
@@ -66,14 +66,14 @@ class BatchNorm implements Hidden, Parametric
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $beta = null;
+    protected ?Parameter $beta = null;
 
     /**
      * The learnable scaling parameter.
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $gamma = null;
+    protected ?Parameter $gamma = null;
 
     /**
      * The running mean of each input dimension.
@@ -101,7 +101,7 @@ class BatchNorm implements Hidden, Parametric
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $xHat = null;
+    protected ?Matrix $xHat = null;
 
     /**
      * @param float $decay

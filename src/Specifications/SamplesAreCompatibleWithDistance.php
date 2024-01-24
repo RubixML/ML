@@ -18,14 +18,14 @@ class SamplesAreCompatibleWithDistance extends Specification
      *
      * @var Dataset
      */
-    protected \Rubix\ML\Datasets\Dataset $dataset;
+    protected Dataset $dataset;
 
     /**
      * The distance kernel.
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * Build a specification object with the given arguments.

@@ -62,7 +62,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      *
      * @var Tokenizer
      */
-    protected \Rubix\ML\Tokenizers\Tokenizer $tokenizer;
+    protected Tokenizer $tokenizer;
 
     /**
      * The vocabularies of each categorical feature column of the fitted dataset.

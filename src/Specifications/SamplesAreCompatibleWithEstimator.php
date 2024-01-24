@@ -18,14 +18,14 @@ class SamplesAreCompatibleWithEstimator extends Specification
      *
      * @var Dataset
      */
-    protected \Rubix\ML\Datasets\Dataset $dataset;
+    protected Dataset $dataset;
 
     /**
      * The estimator.
      *
      * @var Estimator
      */
-    protected \Rubix\ML\Estimator $estimator;
+    protected Estimator $estimator;
 
     /**
      * Build a specification object with the given arguments.

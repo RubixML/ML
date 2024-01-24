@@ -47,14 +47,14 @@ class BallTree implements BinaryTree, Spatial
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The root node of the tree.
      *
      * @var \Rubix\ML\Graph\Nodes\Ball|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\Ball $root = null;
+    protected ?Ball $root = null;
 
     /**
      * @param int $maxLeafSize

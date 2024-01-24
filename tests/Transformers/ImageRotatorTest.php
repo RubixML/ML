@@ -17,7 +17,7 @@ class ImageRotatorTest extends TestCase
     /**
      * @var ImageRotator
      */
-    protected \Rubix\ML\Transformers\ImageRotator $transformer;
+    protected ImageRotator $transformer;
 
     /**
      * @before

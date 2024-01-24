@@ -25,7 +25,7 @@ class Activation implements Hidden
      *
      * @var ActivationFunction
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFn;
+    protected ActivationFunction $activationFn;
 
     /**
      * The width of the layer.
@@ -39,14 +39,14 @@ class Activation implements Hidden
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param ActivationFunction $activationFn

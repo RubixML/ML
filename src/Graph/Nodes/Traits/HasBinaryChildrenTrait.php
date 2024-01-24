@@ -23,14 +23,14 @@ trait HasBinaryChildrenTrait
      *
      * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\BinaryNode $left = null;
+    protected ?BinaryNode $left = null;
 
     /**
      * The right child node.
      *
      * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\BinaryNode $right = null;
+    protected ?BinaryNode $right = null;
 
     /**
      * Return the children of this node in a generator.

@@ -33,7 +33,7 @@ class SwissRoll implements Generator
      *
      * @var Vector
      */
-    protected \Tensor\Vector $center;
+    protected Vector $center;
 
     /**
      * The scaling factor of the swiss roll.

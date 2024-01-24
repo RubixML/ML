@@ -54,35 +54,35 @@ class Dense implements Hidden, Parametric
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $weightInitializer;
+    protected Initializer $weightInitializer;
 
     /**
      * The bias initializer.
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $biasInitializer;
+    protected Initializer $biasInitializer;
 
     /**
      * The weights.
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $weights = null;
+    protected ?Parameter $weights = null;
 
     /**
      * The biases.
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $biases = null;
+    protected ?Parameter $biases = null;
 
     /**
      * The memorized inputs to the layer.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * @param int $neurons

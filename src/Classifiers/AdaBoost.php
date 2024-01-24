@@ -72,7 +72,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.

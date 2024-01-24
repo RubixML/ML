@@ -100,7 +100,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $r = null;
+    protected ?Matrix $r = null;
 
     /**
      * The edges and bin counts of each histogram.

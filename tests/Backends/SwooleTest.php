@@ -17,7 +17,7 @@ use Swoole\Event;
 class SwooleTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\Backends\Swoole
+     * @var SwooleBackend
      */
     protected $backend;
 

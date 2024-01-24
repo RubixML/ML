@@ -43,7 +43,7 @@ class Swoole implements Backend
      *
      * @internal
      *
-     * @param \Rubix\ML\Backends\Tasks\Task $task
+     * @param Task $task
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
      */

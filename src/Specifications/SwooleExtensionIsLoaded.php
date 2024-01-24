@@ -15,7 +15,7 @@ class SwooleExtensionIsLoaded extends Specification
     }
 
     /**
-     * @throws \Rubix\ML\Exceptions\MissingExtension
+     * @throws MissingExtension
      */
     public function check() : void
     {

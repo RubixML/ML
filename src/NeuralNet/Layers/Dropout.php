@@ -52,7 +52,7 @@ class Dropout implements Hidden
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $mask = null;
+    protected ?Matrix $mask = null;
 
     /**
      * @param float $ratio

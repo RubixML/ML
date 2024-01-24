@@ -43,7 +43,7 @@ class ITree implements BinaryTree
      *
      * @var \Rubix\ML\Graph\Nodes\Isolator|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\Isolator $root = null;
+    protected ?Isolator $root = null;
 
     /**
      * @param int $maxHeight
