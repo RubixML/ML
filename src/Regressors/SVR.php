@@ -50,7 +50,7 @@ class SVR implements Estimator, Learner
      *
      * @var svm
      */
-    protected \svm $svm;
+    protected svm $svm;
 
     /**
      * The memoized hyper-parameters of the model.
@@ -64,7 +64,7 @@ class SVR implements Estimator, Learner
      *
      * @var \svmmodel|null
      */
-    protected ?\svmmodel $model = null;
+    protected ?svmmodel $model = null;
 
     /**
      * @param float $c

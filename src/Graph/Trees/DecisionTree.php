@@ -67,7 +67,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      *
      * @var \Rubix\ML\Graph\Nodes\Split|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\Split $root = null;
+    protected ?Split $root = null;
 
     /**
      * The number of feature columns in the training set.

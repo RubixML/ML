@@ -58,7 +58,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @var \Tensor\Vector|null
      */
-    protected ?\Tensor\Vector $coefficients = null;
+    protected ?Vector $coefficients = null;
 
     /**
      * @param float $l2Penalty

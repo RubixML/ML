@@ -25,7 +25,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Probabilistic, Scoring, Persistable
+class Pipeline implements Online, Probabilistic, Scoring, Persistable, EstimatorWrapper
 {
     use AutotrackRevisions;
 
@@ -43,7 +43,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      *
      * @var Estimator
      */
-    protected \Rubix\ML\Estimator $base;
+    protected Estimator $base;
 
     /**
      * Should we update the elastic transformers during partial train?

@@ -39,7 +39,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
+class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
 
@@ -62,21 +62,21 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * The validator used to test the estimator.
      *
      * @var Validator
      */
-    protected \Rubix\ML\CrossValidation\Validator $validator;
+    protected Validator $validator;
 
     /**
      * The base estimator instance.
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * The validation scores obtained from the last search.

@@ -21,28 +21,28 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
+class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scoring
 {
     /**
      * The persistable base learner.
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * The persister used to interface with the storage layer.
      *
      * @var Persister
      */
-    protected \Rubix\ML\Persisters\Persister $persister;
+    protected Persister $persister;
 
     /**
      * The object serializer.
      *
      * @var Serializer
      */
-    protected \Rubix\ML\Serializers\Serializer $serializer;
+    protected Serializer $serializer;
 
     /**
      * Factory method to restore the model from persistence.

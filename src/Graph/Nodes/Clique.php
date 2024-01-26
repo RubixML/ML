@@ -26,7 +26,7 @@ class Clique implements Hypersphere, BinaryNode
      *
      * @var Labeled
      */
-    protected \Rubix\ML\Datasets\Labeled $dataset;
+    protected Labeled $dataset;
 
     /**
      * The centroid or multivariate mean of the cluster.

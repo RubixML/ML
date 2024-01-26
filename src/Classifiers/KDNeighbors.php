@@ -60,7 +60,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * The zero vector for the possible class outcomes.
