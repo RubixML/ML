@@ -9,7 +9,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -19,6 +18,8 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Classifiers
@@ -26,6 +27,8 @@ use PHPUnit\Framework\TestCase;
  */
 class RandomForestTest extends TestCase
 {
+    use BackendProviderTrait;
+
     /**
      * The number of samples in the training set.
      *
@@ -81,8 +84,6 @@ class RandomForestTest extends TestCase
         ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new RandomForest(new ClassificationTree(3), 50, 0.2, true);
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 
@@ -154,10 +155,14 @@ class RandomForestTest extends TestCase
     }
 
     /**
+     * @dataProvider provideBackends
      * @test
+     * @param Backend $backend
      */
-    public function trainPredictImportances() : void
+    public function trainPredictImportances(Backend $backend) : void
     {
+        $this->estimator->setBackend($backend);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
