@@ -44,11 +44,6 @@
         "wamania/php-stemmer": "^3.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "phpbench/phpbench": "^1.0",
-        "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^9.0"
     },
     "suggest": {
@@ -73,28 +68,43 @@
         }
     },
     "scripts": {
+        "phpbench-install": "@composer install --working-dir ./tools/phpbench",
+        "phpbench": [
+            "@phpbench-install",
+            "@php ./tools/phpbench/vendor/bin/phpbench run --report=aggregate"
+        ],
+        "php-cs-fixer-install": "@composer install --working-dir ./tools/php-cs-fixer",
+        "php-cs-fixer-check": [
+            "@php-cs-fixer-install",
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "@php ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no"
+        ],
+        "php-cs-fixer-fix": [
+            "@php-cs-fixer-install",
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "@php ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+        ],
+        "phpstan-install": "@composer install --working-dir ./tools/phpstan",
+        "phpstan": [
+            "@phpstan-install",
+            "@php ./tools/phpstan/vendor/bin/phpstan analyse -c phpstan.neon"
+        ],
+
+        "analyze": "@phpstan",
         "build": [
             "@composer install",
             "@analyze",
             "@test",
             "@check"
         ],
-        "analyze": "phpstan analyse -c phpstan.neon",
-        "benchmark": "phpbench run --report=aggregate",
-        "check": [
-            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
-            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no"
-        ],
-        "fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "benchmark": "@phpbench",
+        "check": "@php-cs-fixer-check",
+        "fix": "@php-cs-fixer-fix",
         "test": "phpunit"
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true,
-        "process-timeout": 3000,
-        "allow-plugins": {
-            "phpstan/extension-installer": true
-        }
+        "sort-packages": true
     },
     "funding": [
         {
