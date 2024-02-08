@@ -190,7 +190,7 @@ class TSNE implements Transformer, Verbose
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The loss at each epoch from the last embedding.

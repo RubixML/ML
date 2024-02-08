@@ -62,7 +62,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The zero vector for the possible class outcomes.

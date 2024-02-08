@@ -35,7 +35,7 @@ class Parameter
      *
      * @var Tensor
      */
-    protected \Tensor\Tensor $param;
+    protected Tensor $param;
 
     /**
      * @param Tensor $param

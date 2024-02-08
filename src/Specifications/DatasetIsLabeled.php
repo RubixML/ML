@@ -16,7 +16,7 @@ class DatasetIsLabeled extends Specification
      *
      * @var Dataset
      */
-    protected \Rubix\ML\Datasets\Dataset $dataset;
+    protected Dataset $dataset;
 
     /**
      * Build a specification object with the given arguments.

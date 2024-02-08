@@ -85,7 +85,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $booster;
+    protected Learner $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -135,7 +135,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * An ensemble of weak regressors.

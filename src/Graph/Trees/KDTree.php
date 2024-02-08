@@ -46,14 +46,14 @@ class KDTree implements BinaryTree, Spatial
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The root node of the tree.
      *
      * @var \Rubix\ML\Graph\Nodes\Box|null
      */
-    protected ?\Rubix\ML\Graph\Nodes\Box $root = null;
+    protected ?Box $root = null;
 
     /**
      * @param int $maxLeafSize

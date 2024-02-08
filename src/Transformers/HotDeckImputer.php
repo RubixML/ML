@@ -73,7 +73,7 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * @param int $k

@@ -16,7 +16,7 @@ class DatasetHasDimensionality extends Specification
      *
      * @var Dataset
      */
-    protected \Rubix\ML\Datasets\Dataset $dataset;
+    protected Dataset $dataset;
 
     /**
      * The target dimensionality.
