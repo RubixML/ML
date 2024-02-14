@@ -9,6 +9,7 @@ use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use NDArray as nd;
 
 use function count;
 use function sqrt;
@@ -32,14 +33,12 @@ class Blob implements Generator
      *
      * @var Vector
      */
-    protected \Tensor\Vector $center;
+    protected nd $center;
 
     /**
      * The standard deviation of the blob.
-     *
-     * @var \Tensor\Vector|int|float
      */
-    protected $stdDev;
+    protected int|float|nd $stdDev;
 
     /**
      * Fit a Blob generator to the samples in a dataset.
@@ -94,7 +93,7 @@ class Blob implements Generator
                 }
             }
 
-            $stdDev = Vector::quick($stdDev);
+            $stdDev = nd::array($stdDev);
         } else {
             if ($stdDev < 0) {
                 throw new InvalidArgumentException('Standard deviation'
@@ -102,7 +101,7 @@ class Blob implements Generator
             }
         }
 
-        $this->center = Vector::quick($center);
+        $this->center = nd::array($center);
         $this->stdDev = $stdDev;
     }
 
@@ -113,7 +112,7 @@ class Blob implements Generator
      */
     public function center() : array
     {
-        return $this->center->asArray();
+        return $this->center->toArray();
     }
 
     /**
@@ -125,7 +124,7 @@ class Blob implements Generator
      */
     public function dimensions() : int
     {
-        return $this->center->n();
+        return $this->center->size();
     }
 
     /**
@@ -138,11 +137,10 @@ class Blob implements Generator
     {
         $d = $this->dimensions();
 
-        $samples = Matrix::gaussian($n, $d)
-            ->multiply($this->stdDev)
-            ->add($this->center)
-            ->asArray();
+        $samples = nd::normal([$n, $d]);
+        $samplesMul = nd::multiply($samples, $this->stdDev);
+        $samplesMulAddCenter = nd::add($samplesMul, $this->center);
 
-        return Unlabeled::quick($samples);
+        return Unlabeled::quick($samplesMulAddCenter->toArray());
     }
 }
