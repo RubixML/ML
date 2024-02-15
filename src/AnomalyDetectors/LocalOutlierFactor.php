@@ -67,7 +67,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * The precomputed k distances between each training sample and its k'th nearest neighbor.

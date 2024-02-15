@@ -34,14 +34,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
      *
      * @var Strategy
      */
-    protected \Rubix\ML\Strategies\Strategy $continuous;
+    protected Strategy $continuous;
 
     /**
      * The guessing strategy to use when imputing categorical values.
      *
      * @var Strategy
      */
-    protected \Rubix\ML\Strategies\Strategy $categorical;
+    protected Strategy $categorical;
 
     /**
      * The placeholder category that denotes missing values.

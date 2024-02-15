@@ -41,28 +41,28 @@ class Multiclass implements Output
      *
      * @var ClassificationLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
+    protected ClassificationLoss $costFn;
 
     /**
      * The softmax activation function.
      *
      * @var Softmax
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Softmax $softmax;
+    protected Softmax $softmax;
 
     /**
      * The memorized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param string[] $classes

@@ -84,7 +84,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var Optimizer
      */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
@@ -126,21 +126,25 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var RegressionLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss $costFn;
+    protected RegressionLoss $costFn;
 
     /**
      * The metric used to score the generalization performance of the model during training.
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
+<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
+=======
+    protected ?FeedForward $network = null;
+>>>>>>> 2.5
 
     /**
      * The validation scores at each epoch from the last training session.

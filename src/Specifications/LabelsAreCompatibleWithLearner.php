@@ -18,14 +18,14 @@ class LabelsAreCompatibleWithLearner extends Specification
      *
      * @var Labeled
      */
-    protected \Rubix\ML\Datasets\Labeled $dataset;
+    protected Labeled $dataset;
 
     /**
      * The learner instance.
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $estimator;
+    protected Learner $estimator;
 
     /**
      * Build a specification object with the given arguments.

@@ -34,7 +34,7 @@ class GzipNative implements Serializer
      *
      * @var Native
      */
-    protected \Rubix\ML\Serializers\Native $base;
+    protected Native $base;
 
     /**
      * @param int $level

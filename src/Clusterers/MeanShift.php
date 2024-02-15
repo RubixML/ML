@@ -104,14 +104,14 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * The cluster centroid seeder.
      *
      * @var Seeder
      */
-    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
+    protected Seeder $seeder;
 
     /**
      * The computed centroid vectors of the training data.

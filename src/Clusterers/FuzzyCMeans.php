@@ -92,14 +92,14 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The cluster centroid seeder.
      *
      * @var Seeder
      */
-    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
+    protected Seeder $seeder;
 
     /**
      * The computed centroid vectors of the training data.

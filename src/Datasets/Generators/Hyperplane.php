@@ -27,7 +27,7 @@ class Hyperplane implements Generator
      *
      * @var Vector
      */
-    protected \Tensor\Vector $coefficients;
+    protected Vector $coefficients;
 
     /**
      * The y intercept term.

@@ -16,7 +16,7 @@ class ParameterTest extends TestCase
     /**
      * @var Parameter
      */
-    protected \Rubix\ML\NeuralNet\Parameter $param;
+    protected Parameter $param;
 
     /**
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\CrossValidation;
 
 use Rubix\ML\Parallel;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\Validator;
@@ -11,6 +10,8 @@ use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Validators
@@ -18,6 +19,8 @@ use PHPUnit\Framework\TestCase;
  */
 class KFoldTest extends TestCase
 {
+    use BackendProviderTrait;
+
     protected const DATASET_SIZE = 50;
 
     /**
@@ -54,8 +57,6 @@ class KFoldTest extends TestCase
 
         $this->validator = new KFold(10);
 
-        $this->validator->setBackend(new Serial());
-
         $this->metric = new Accuracy();
     }
 
@@ -70,10 +71,14 @@ class KFoldTest extends TestCase
     }
 
     /**
+     * @dataProvider provideBackends
      * @test
+     * @param Backend $backend
      */
-    public function test() : void
+    public function test(Backend $backend) : void
     {
+        $this->validator->setBackend($backend);
+
         [$min, $max] = $this->metric->range()->list();
 
         $dataset = $this->generator->generate(self::DATASET_SIZE);

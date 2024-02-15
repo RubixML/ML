@@ -32,7 +32,7 @@ class PReLU implements Hidden, Parametric
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $initializer;
+    protected Initializer $initializer;
 
     /**
      * The width of the layer.
@@ -46,14 +46,14 @@ class PReLU implements Hidden, Parametric
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $alpha = null;
+    protected ?Parameter $alpha = null;
 
     /**
      * The memoized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer

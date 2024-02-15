@@ -58,7 +58,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * The dimensionality of the training set.

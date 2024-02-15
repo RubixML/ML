@@ -63,7 +63,7 @@ class NeighborhoodTest extends TestCase
     {
         $node = Neighborhood::terminate(Labeled::quick(self::SAMPLES, self::LABELS));
 
-        $this->assertInstanceOf(NeighborHood::class, $node);
+        $this->assertInstanceOf(Neighborhood::class, $node);
         $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
