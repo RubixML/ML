@@ -41,28 +41,28 @@ class Binary implements Output
      *
      * @var ClassificationLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
+    protected ClassificationLoss $costFn;
 
     /**
      * The sigmoid activation function.
      *
      * @var Sigmoid
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $sigmoid;
+    protected Sigmoid $sigmoid;
 
     /**
      * The memorized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param string[] $classes

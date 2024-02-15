@@ -51,7 +51,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @var Learner
      */
-    protected \Rubix\ML\Learner $base;
+    protected Learner $base;
 
     /**
      * A map of each class to its binary classifier.

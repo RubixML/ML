@@ -49,7 +49,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $components = null;
+    protected ?Matrix $components = null;
 
     /**
      * The proportion of information lost due to the transformation.

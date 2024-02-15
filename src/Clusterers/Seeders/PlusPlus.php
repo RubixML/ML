@@ -32,7 +32,7 @@ class PlusPlus implements Seeder
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel

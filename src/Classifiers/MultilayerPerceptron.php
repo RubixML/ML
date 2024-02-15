@@ -85,7 +85,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var Optimizer
      */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
@@ -127,21 +127,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var ClassificationLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
+    protected ClassificationLoss $costFn;
 
     /**
      * The validation metric used to score the generalization performance of the model during training.
      *
      * @var Metric
      */
-    protected \Rubix\ML\CrossValidation\Metrics\Metric $metric;
+    protected Metric $metric;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
-    protected ?\Rubix\ML\NeuralNet\FeedForward $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The unique class labels.

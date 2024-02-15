@@ -64,7 +64,7 @@ class RBX implements Serializer
      *
      * @var GzipNative
      */
-    protected \Rubix\ML\Serializers\GzipNative $base;
+    protected GzipNative $base;
 
     /**
      * @param int $level

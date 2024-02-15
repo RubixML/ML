@@ -97,7 +97,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      *
      * @var Seeder
      */
-    protected \Rubix\ML\Clusterers\Seeders\Seeder $seeder;
+    protected Seeder $seeder;
 
     /**
      * The precomputed log prior probabilities of each cluster.

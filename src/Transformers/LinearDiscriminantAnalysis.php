@@ -49,7 +49,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $eigenvectors = null;
+    protected ?Matrix $eigenvectors = null;
 
     /**
      * The percentage of information lost due to the transformation.

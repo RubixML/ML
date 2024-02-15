@@ -43,7 +43,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable
      *
      * @var Estimator
      */
-    protected \Rubix\ML\Estimator $base;
+    protected Estimator $base;
 
     /**
      * Should we update the elastic transformers during partial train?
