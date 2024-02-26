@@ -9,7 +9,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -18,6 +17,8 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Classifiers
@@ -25,6 +26,8 @@ use PHPUnit\Framework\TestCase;
  */
 class OneVsRestTest extends TestCase
 {
+    use BackendProviderTrait;
+
     /**
      * The number of samples in the training set.
      *
@@ -80,8 +83,6 @@ class OneVsRestTest extends TestCase
         ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new OneVsRest(new GaussianNB());
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 
@@ -139,10 +140,14 @@ class OneVsRestTest extends TestCase
     }
 
     /**
+     * @dataProvider provideBackends
      * @test
+     * @param Backend $backend
      */
-    public function trainPredictProba() : void
+    public function trainPredictProba(Backend $backend) : void
     {
+        $this->estimator->setBackend($backend);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

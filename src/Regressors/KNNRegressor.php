@@ -62,7 +62,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      *
      * @var Distance
      */
-    protected \Rubix\ML\Kernels\Distance\Distance $kernel;
+    protected Distance $kernel;
 
     /**
      * The training samples.

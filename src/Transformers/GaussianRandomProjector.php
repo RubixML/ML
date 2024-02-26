@@ -41,7 +41,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $r = null;
+    protected ?Matrix $r = null;
 
     /**
      * Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n*

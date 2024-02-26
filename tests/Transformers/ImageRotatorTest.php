@@ -12,12 +12,12 @@ use PHPUnit\Framework\TestCase;
  * @requires extension gd
  * @covers \Rubix\ML\Transformers\ImageRotator
  */
-class RandomizedImageRotatorTest extends TestCase
+class ImageRotatorTest extends TestCase
 {
     /**
      * @var ImageRotator
      */
-    protected \Rubix\ML\Transformers\ImageRotator $transformer;
+    protected ImageRotator $transformer;
 
     /**
      * @before

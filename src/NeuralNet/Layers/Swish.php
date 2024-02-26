@@ -33,14 +33,14 @@ class Swish implements Hidden, Parametric
      *
      * @var Initializer
      */
-    protected \Rubix\ML\NeuralNet\Initializers\Initializer $initializer;
+    protected Initializer $initializer;
 
     /**
      * The sigmoid activation function.
      *
      * @var Sigmoid
      */
-    protected \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid $sigmoid;
+    protected Sigmoid $sigmoid;
 
     /**
      * The width of the layer.
@@ -54,21 +54,21 @@ class Swish implements Hidden, Parametric
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected ?\Rubix\ML\NeuralNet\Parameter $beta = null;
+    protected ?Parameter $beta = null;
 
     /**
      * The memoized input matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var \Tensor\Matrix|null
      */
-    protected ?\Tensor\Matrix $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer

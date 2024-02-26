@@ -12,6 +12,9 @@
 - 2.5.0
     - Added Vantage Point Spatial tree
     - Blob Generator can now `simulate()` a Dataset object
+    - Added Wrapper interface
+    - Added Swoole Backend
+    - Plus Plus added check for min number of sample seeds
 
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support

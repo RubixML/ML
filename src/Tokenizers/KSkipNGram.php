@@ -57,14 +57,14 @@ class KSkipNGram implements Tokenizer
      *
      * @var Word
      */
-    protected \Rubix\ML\Tokenizers\Word $wordTokenizer;
+    protected Word $wordTokenizer;
 
     /**
      * The sentence tokenizer.
      *
      * @var Sentence
      */
-    protected \Rubix\ML\Tokenizers\Sentence $sentenceTokenizer;
+    protected Sentence $sentenceTokenizer;
 
     /**
      * @param int $min

@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
@@ -13,6 +15,8 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
  */
 class RandomForestBench
 {
+    use BackendProviderTrait;
+
     protected const TRAINING_SIZE = 10000;
 
     protected const TESTING_SIZE = 10000;
@@ -70,9 +74,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function continuous() : void
+    public function continuous(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);
@@ -83,9 +91,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpCategorical"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function categorical() : void
+    public function categorical(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

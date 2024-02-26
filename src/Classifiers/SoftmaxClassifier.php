@@ -64,7 +64,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @var Optimizer
      */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
@@ -99,14 +99,18 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @var ClassificationLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
+    protected ClassificationLoss $costFn;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
+<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
+=======
+    protected ?FeedForward $network = null;
+>>>>>>> 2.5
 
     /**
      * The unique class labels.

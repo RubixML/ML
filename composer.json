@@ -44,7 +44,8 @@
         "wamania/php-stemmer": "^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "swoole/ide-helper": "^5.1"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
@@ -104,7 +105,11 @@
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "process-timeout": 3000,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     },
     "funding": [
         {

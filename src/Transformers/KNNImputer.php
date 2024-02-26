@@ -73,7 +73,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * The data types of the fitted feature columns.

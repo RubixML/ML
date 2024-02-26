@@ -67,7 +67,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @var Optimizer
      */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
@@ -103,14 +103,18 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @var ClassificationLoss
      */
-    protected \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss $costFn;
+    protected ClassificationLoss $costFn;
 
     /**
      * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
+<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
+=======
+    protected ?FeedForward $network = null;
+>>>>>>> 2.5
 
     /**
      * The unique class labels.
@@ -490,5 +494,21 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function __toString() : string
     {
         return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
+    }
+
+    /**
+     * Without this method, causes errors with Swoole backend + Igbinary
+     * serialization.
+     *
+     * Can be removed if it's no longer the case.
+     *
+     * @internal
+     * @param array<string,mixed> $data
+     */
+    public function __unserialize(array $data) : void
+    {
+        foreach ($data as $propertyName => $propertyValue) {
+            $this->{$propertyName} = $propertyValue;
+        }
     }
 }

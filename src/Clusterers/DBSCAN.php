@@ -73,7 +73,7 @@ class DBSCAN implements Estimator
      *
      * @var Spatial
      */
-    protected \Rubix\ML\Graph\Trees\Spatial $tree;
+    protected Spatial $tree;
 
     /**
      * @param float $radius

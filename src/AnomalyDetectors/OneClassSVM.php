@@ -44,7 +44,7 @@ class OneClassSVM implements Estimator, Learner
      *
      * @var svm
      */
-    protected \svm $svm;
+    protected svm $svm;
 
     /**
      * The hyper-parameters of the model.
@@ -58,7 +58,7 @@ class OneClassSVM implements Estimator, Learner
      *
      * @var \svmmodel|null
      */
-    protected ?\svmmodel $model = null;
+    protected ?svmmodel $model = null;
 
     /**
      * @param float $nu
