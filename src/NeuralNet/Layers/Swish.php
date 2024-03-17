@@ -52,26 +52,26 @@ class Swish implements Hidden, Parametric
     /**
      * The parameterized scaling factors.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $beta = null;
 
     /**
      * The memoized input matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $output = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
+     * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
     {

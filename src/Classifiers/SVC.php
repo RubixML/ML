@@ -58,7 +58,7 @@ class SVC implements Estimator, Learner
     /**
      * The trained model instance.
      *
-     * @var \svmmodel|null
+     * @var svmmodel|null
      */
     protected $model;
 
@@ -73,7 +73,7 @@ class SVC implements Estimator, Learner
 
     /**
      * @param float $c
-     * @param \Rubix\ML\Kernels\SVM\Kernel|null $kernel
+     * @param Kernel|null $kernel
      * @param bool $shrinking
      * @param float $tolerance
      * @param float $cacheSize

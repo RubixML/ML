@@ -51,13 +51,13 @@ class VantageTree implements BinaryTree, Spatial
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\VantagePoint|null
+     * @var VantagePoint|null
      */
     protected $root;
 
     /**
      * @param int $maxLeafSize
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      * @throws \InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)

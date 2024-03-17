@@ -41,7 +41,7 @@ class ITree implements BinaryTree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Isolator|null
+     * @var Isolator|null
      */
     protected ?Isolator $root = null;
 
@@ -155,7 +155,7 @@ class ITree implements BinaryTree
      * Search the tree for a leaf node.
      *
      * @param list<string|int|float> $sample
-     * @return \Rubix\ML\Graph\Nodes\Depth|null
+     * @return Depth|null
      */
     public function search(array $sample) : ?Depth
     {

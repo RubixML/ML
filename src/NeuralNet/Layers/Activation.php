@@ -37,14 +37,14 @@ class Activation implements Hidden
     /**
      * The memorized input matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $output = null;
 

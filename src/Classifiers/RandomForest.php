@@ -118,7 +118,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     protected ?int $featureCount = null;
 
     /**
-     * @param \Rubix\ML\Learner|null $base
+     * @param Learner|null $base
      * @param int $estimators
      * @param float $ratio
      * @param bool $balanced

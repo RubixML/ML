@@ -145,7 +145,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected ?int $featureCount = null;
 
     /**
-     * @param \Rubix\ML\Learner|null $base
+     * @param Learner|null $base
      * @param float $rate
      * @param float $ratio
      * @param int $epochs

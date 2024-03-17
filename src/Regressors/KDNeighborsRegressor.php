@@ -70,7 +70,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * @param int $k
      * @param bool $weighted
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = false, ?Spatial $tree = null)

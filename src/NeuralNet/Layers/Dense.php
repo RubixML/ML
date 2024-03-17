@@ -66,21 +66,21 @@ class Dense implements Hidden, Parametric
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $weights = null;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $biases = null;
 
     /**
      * The memorized inputs to the layer.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
@@ -88,8 +88,8 @@ class Dense implements Hidden, Parametric
      * @param int $neurons
      * @param float $l2Penalty
      * @param bool $bias
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
+     * @param Initializer|null $weightInitializer
+     * @param Initializer|null $biasInitializer
      * @throws InvalidArgumentException
      */
     public function __construct(

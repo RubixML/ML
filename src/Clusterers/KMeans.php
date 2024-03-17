@@ -136,8 +136,8 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param int $epochs
      * @param float $minChange
      * @param int $window
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @param Seeders\Seeder|null $seeder
+     * @param Distance|null $kernel
+     * @param Seeder|null $seeder
      * @throws InvalidArgumentException
      */
     public function __construct(

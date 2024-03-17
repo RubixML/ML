@@ -65,7 +65,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Split|null
+     * @var Split|null
      */
     protected ?Split $root = null;
 
@@ -242,7 +242,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return \Rubix\ML\Graph\Nodes\Outcome|null
+     * @return Outcome|null
      */
     public function search(array $sample) : ?Outcome
     {

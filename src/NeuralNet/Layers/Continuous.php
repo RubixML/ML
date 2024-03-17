@@ -33,12 +33,12 @@ class Continuous implements Output
     /**
      * The memorized input matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
+     * @param RegressionLoss|null $costFn
      */
     public function __construct(?RegressionLoss $costFn = null)
     {
