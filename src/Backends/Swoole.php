@@ -98,7 +98,10 @@ class Swoole implements Backend
                 true,
             );
 
-            $workerProcess->setAffinity([$currentCpu]);
+            if (method_exists($workerProcess, 'setAffinity')) {
+                $workerProcess->setAffinity([$currentCpu]);
+            }
+
             $workerProcess->setBlocking(false);
             $workerProcess->start();
 
