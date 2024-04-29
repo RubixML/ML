@@ -23,6 +23,13 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
+      - name: Install OpenBLA
+        run: |
+          git clone https://github.com/OpenMathLib/OpenBLAS.git
+          cd OpenBLAS
+          make
+          make install
+
       - name: Install NumPower
         run: |
           git clone https://github.com/NumPower/numpower.git
