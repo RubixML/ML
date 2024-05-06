@@ -53,20 +53,20 @@ class Binary implements Output
     /**
      * The memorized input matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $output = null;
 
     /**
      * @param string[] $classes
-     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
+     * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
     public function __construct(array $classes, ?ClassificationLoss $costFn = null)

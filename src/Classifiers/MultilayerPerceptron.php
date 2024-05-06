@@ -139,7 +139,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\FeedForward|null
+     * @var FeedForward|null
      */
     protected ?FeedForward $network = null;
 
@@ -167,14 +167,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param Optimizer|null $optimizer
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
      * @param float $holdOut
-     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
+     * @param ClassificationLoss|null $costFn
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -344,7 +344,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\FeedForward|null
+     * @return FeedForward|null
      */
     public function network() : ?FeedForward
     {

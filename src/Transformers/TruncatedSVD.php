@@ -47,7 +47,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     /**
      * The transposed right singular vectors of the decomposition.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $components = null;
 

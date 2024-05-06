@@ -65,8 +65,8 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     protected ?array $types = null;
 
     /**
-     * @param \Rubix\ML\Strategies\Strategy|null $continuous
-     * @param \Rubix\ML\Strategies\Strategy|null $categorical
+     * @param Strategy|null $continuous
+     * @param Strategy|null $categorical
      * @param string $categoricalPlaceholder
      * @throws InvalidArgumentException
      */

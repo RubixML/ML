@@ -75,7 +75,7 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
      * @param int $maxVocabularySize
      * @param int $minDocumentCount
      * @param float $maxDocumentRatio
-     * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
+     * @param Tokenizer|null $tokenizer
      */
     public function __construct(
         int $maxVocabularySize = PHP_INT_MAX,

@@ -18,14 +18,14 @@ trait LoggerAware
     /**
      * The PSR-3 logger instance.
      *
-     * @var \Psr\Log\LoggerInterface|null
+     * @var LoggerInterface|null
      */
     protected ?LoggerInterface $logger = null;
 
     /**
      * Sets a PSR-3 logger instance.
      *
-     * @param \Psr\Log\LoggerInterface|null $logger
+     * @param LoggerInterface|null $logger
      */
     public function setLogger(?LoggerInterface $logger) : void
     {
@@ -35,7 +35,7 @@ trait LoggerAware
     /**
      * Return the PSR-3 logger instance.
      *
-     * @return \Psr\Log\LoggerInterface|null
+     * @return LoggerInterface|null
      */
     public function logger() : ?LoggerInterface
     {

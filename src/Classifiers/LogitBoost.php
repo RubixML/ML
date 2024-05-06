@@ -176,14 +176,14 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     protected ?int $featureCount = null;
 
     /**
-     * @param \Rubix\ML\Learner|null $booster
+     * @param Learner|null $booster
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
      * @param int $window
      * @param float $holdOut
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(

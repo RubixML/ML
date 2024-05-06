@@ -51,7 +51,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * The matrix of eigenvectors computed at fitting.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $eigenvectors = null;
 

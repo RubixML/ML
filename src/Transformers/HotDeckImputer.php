@@ -79,7 +79,7 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
      * @param int $k
      * @param bool $weighted
      * @param string $categoricalPlaceholder
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(

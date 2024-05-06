@@ -39,7 +39,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
     /**
      * The random matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $r = null;
 

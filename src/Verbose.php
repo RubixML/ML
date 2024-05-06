@@ -17,7 +17,7 @@ interface Verbose extends LoggerAwareInterface
     /**
      * Return the logger or null if not set.
      *
-     * @return \Psr\Log\LoggerInterface|null
+     * @return LoggerInterface|null
      */
     public function logger() : ?LoggerInterface;
 }

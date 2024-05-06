@@ -104,7 +104,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
     /**
      * @param int $k
      * @param float|null $contamination
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)

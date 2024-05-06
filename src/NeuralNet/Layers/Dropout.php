@@ -50,7 +50,7 @@ class Dropout implements Hidden
     /**
      * The memoized dropout mask.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $mask = null;
 

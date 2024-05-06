@@ -103,7 +103,7 @@ class TokenHashingVectorizer implements Transformer
 
     /**
      * @param int $dimensions
-     * @param \Rubix\ML\Tokenizers\Tokenizer|null $tokenizer
+     * @param Tokenizer|null $tokenizer
      * @param callable(string):int|null $hashFn
      * @throws InvalidArgumentException
      */

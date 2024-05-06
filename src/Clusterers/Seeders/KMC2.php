@@ -43,7 +43,7 @@ class KMC2 implements Seeder
 
     /**
      * @param int $m
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
     public function __construct(int $m = 50, ?Distance $kernel = null)
