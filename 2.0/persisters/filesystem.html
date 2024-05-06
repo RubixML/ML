@@ -6641,6 +6641,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-methods" class="md-nav__link">
     <span class="md-ellipsis">
       Additional Methods
@@ -7262,6 +7271,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-methods" class="md-nav__link">
     <span class="md-ellipsis">
       Additional Methods
@@ -7317,20 +7335,35 @@
 <td>bool</td>
 <td>Should we keep a history of past saves?</td>
 </tr>
-<tr>
-<td>3</td>
-<td>serializer</td>
-<td>RBX</td>
-<td>Serializer</td>
-<td>The serializer used to convert to and from storage format.</td>
-</tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\KNearestNeighbors</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Kernels\Distance\Manhattan</span><span class="p">;</span>
 
-<span class="nv">$persister</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;/path/to/example.model&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">());</span>
+<span class="nv">$persistable</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">KNearestNeighbors</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Manhattan</span><span class="p">());</span>
+
+<span class="nv">$persister</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;/path/to/example.rbx&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+
+<span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$persistable</span><span class="p">);</span>
+
+<span class="nv">$persister</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="nv">$encoding</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
+
+<span class="nv">$persister</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;/path/to/example.rbx&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$persister</span><span class="o">-&gt;</span><span class="na">load</span><span class="p">();</span>
+
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RBX</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+
+<span class="nv">$persistable</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">deserialize</span><span class="p">(</span><span class="nv">$encoding</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This persister does not have any additional methods.</p>
@@ -7356,7 +7389,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 1, 2021</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 6, 2024</span>
   </span>
 
     
