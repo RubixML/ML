@@ -104,9 +104,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\Network $network = null;
+    protected ?Network $network = null;
 
     /**
      * The unique class labels.
@@ -263,7 +263,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return Network|null
      */
     public function network() : ?Network
     {

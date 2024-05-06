@@ -138,9 +138,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\Network $network = null;
+    protected ?Network $network = null;
 
     /**
      * The validation scores at each epoch from the last training session.
@@ -159,7 +159,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param Optimizer|null $optimizer
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
@@ -336,7 +336,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return Network|null
      */
     public function network() : ?Network
     {

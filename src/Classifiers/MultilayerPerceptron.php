@@ -139,9 +139,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\Network $network = null;
+    protected ?Network $network = null;
 
     /**
      * The unique class labels.
@@ -167,12 +167,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
-<<<<<<< HEAD
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
-=======
      * @param Optimizer|null $optimizer
-     * @param float $l2Penalty
->>>>>>> 2.5
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
@@ -349,7 +344,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return Network|null
      */
     public function network() : ?Network
     {

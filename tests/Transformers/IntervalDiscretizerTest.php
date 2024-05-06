@@ -68,7 +68,7 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->assertCount(4, $sample);
 
-        $expected = ['0', '1', '2', '3', '4'];
+        $expected = ['a', 'b', 'c', 'd', 'e'];
 
         $this->assertContains($sample[0], $expected);
         $this->assertContains($sample[1], $expected);

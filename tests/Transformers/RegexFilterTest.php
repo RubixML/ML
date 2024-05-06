@@ -64,7 +64,6 @@ class RegexFilterTest extends TestCase
             ['Too weird to live, too rare to die '],
             ['A man who procrastinates in choosing will inevitably have his choice made for him by '],
             ['The quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of cola'],
-            ['The quick  brown  jumped over the lazy  man sitting at a bus stop  drinking a can of '],
             ['Diese₂ Äpfel schmecken sehr gut'],
         ];
 

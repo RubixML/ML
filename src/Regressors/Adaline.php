@@ -109,9 +109,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The underlying neural network instance.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var Network|null
      */
-    protected ?\Rubix\ML\NeuralNet\Network $network = null;
+    protected ?Network $network = null;
 
     /**
      * The loss at each epoch from the last training session.
@@ -261,7 +261,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return Network|null
      */
     public function network() : ?Network
     {
