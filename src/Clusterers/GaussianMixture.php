@@ -138,7 +138,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
      * @param float $smoothing
      * @param int $epochs
      * @param float $minChange
-     * @param Seeders\Seeder|null $seeder
+     * @param Seeder|null $seeder
      * @throws InvalidArgumentException
      */
     public function __construct(

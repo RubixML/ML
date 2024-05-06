@@ -141,11 +141,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
-<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
-=======
-    protected ?FeedForward $network = null;
->>>>>>> 2.5
 
     /**
      * The unique class labels.
@@ -171,14 +167,19 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
      * @param int $batchSize
+<<<<<<< HEAD
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+=======
+     * @param Optimizer|null $optimizer
+     * @param float $l2Penalty
+>>>>>>> 2.5
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
-     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
+     * @param ClassificationLoss|null $costFn
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(

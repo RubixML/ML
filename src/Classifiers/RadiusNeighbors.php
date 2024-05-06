@@ -89,7 +89,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param float $radius
      * @param bool $weighted
      * @param string $outlierClass
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(

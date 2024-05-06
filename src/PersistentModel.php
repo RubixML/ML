@@ -48,7 +48,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
      * Factory method to restore the model from persistence.
      *
      * @param Persister $persister
-     * @param Serializers\Serializer|null $serializer
+     * @param Serializer|null $serializer
      * @throws InvalidArgumentException
      * @return self
      */
@@ -69,7 +69,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
     /**
      * @param Learner $base
      * @param Persister $persister
-     * @param Serializers\Serializer|null $serializer
+     * @param Serializer|null $serializer
      * @throws InvalidArgumentException
      */
     public function __construct(Learner $base, Persister $persister, ?Serializer $serializer = null)

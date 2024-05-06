@@ -64,14 +64,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The learnable centering parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $beta = null;
 
     /**
      * The learnable scaling parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $gamma = null;
 
@@ -99,14 +99,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * A cache of normalized inputs to the layer.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $xHat = null;
 
     /**
      * @param float $decay
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $betaInitializer
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $gammaInitializer
+     * @param Initializer|null $betaInitializer
+     * @param Initializer|null $gammaInitializer
      * @throws InvalidArgumentException
      */
     public function __construct(

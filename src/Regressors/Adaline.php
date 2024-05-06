@@ -111,11 +111,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
-<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
-=======
-    protected ?FeedForward $network = null;
->>>>>>> 2.5
 
     /**
      * The loss at each epoch from the last training session.
@@ -126,12 +122,12 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
     /**
      * @param int $batchSize
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param Optimizer|null $optimizer
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
-     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
+     * @param RegressionLoss|null $costFn
      * @throws InvalidArgumentException
      */
     public function __construct(

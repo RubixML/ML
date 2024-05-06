@@ -36,7 +36,7 @@ class PlusPlus implements Seeder
     protected Distance $kernel;
 
     /**
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      */
     public function __construct(?Distance $kernel = null)
     {

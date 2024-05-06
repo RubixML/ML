@@ -207,7 +207,7 @@ class TSNE implements Transformer, Verbose
      * @param int $epochs
      * @param float $minGradient
      * @param int $window
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
     public function __construct(

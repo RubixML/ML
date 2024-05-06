@@ -85,7 +85,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * @param int $k
      * @param bool $weighted
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
     public function __construct(int $k = 5, bool $weighted = false, ?Distance $kernel = null)

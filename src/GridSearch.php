@@ -115,8 +115,8 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     /**
      * @param class-string $class
      * @param array<mixed[]> $params
-     * @param CrossValidation\Metrics\Metric|null $metric
-     * @param CrossValidation\Validator|null $validator
+     * @param Metric|null $metric
+     * @param Validator|null $validator
      * @throws InvalidArgumentException
      */
     public function __construct(

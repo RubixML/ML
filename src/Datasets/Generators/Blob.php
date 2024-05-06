@@ -37,7 +37,7 @@ class Blob implements Generator
     /**
      * The standard deviation of the blob.
      *
-     * @var \Tensor\Vector|int|float
+     * @var Vector|int|float
      */
     protected $stdDev;
 

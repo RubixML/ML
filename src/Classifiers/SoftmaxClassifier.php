@@ -106,11 +106,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
-<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
-=======
-    protected ?FeedForward $network = null;
->>>>>>> 2.5
 
     /**
      * The unique class labels.
@@ -128,12 +124,12 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
     /**
      * @param int $batchSize
-     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param Optimizer|null $optimizer
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
      * @param int $window
-     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
+     * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
     public function __construct(

@@ -78,7 +78,7 @@ class DBSCAN implements Estimator
     /**
      * @param float $radius
      * @param int $minDensity
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)

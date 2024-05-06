@@ -139,7 +139,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      *
      * @param Dataset $dataset
      * @param float $percentile
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      * @return float
      */
@@ -175,8 +175,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @param float $ratio
      * @param int $epochs
      * @param float $minShift
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
-     * @param Seeders\Seeder|null $seeder
+     * @param Spatial|null $tree
+     * @param Seeder|null $seeder
      * @throws InvalidArgumentException
      */
     public function __construct(

@@ -44,19 +44,19 @@ class PReLU implements Hidden, Parametric
     /**
      * The parameterized leakage coefficients.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var Parameter|null
      */
     protected ?Parameter $alpha = null;
 
     /**
      * The memoized input matrix.
      *
-     * @var \Tensor\Matrix|null
+     * @var Matrix|null
      */
     protected ?Matrix $input = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
+     * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
     {

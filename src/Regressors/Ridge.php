@@ -56,7 +56,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     /**
      * The computed coefficients of the regression line.
      *
-     * @var \Tensor\Vector|null
+     * @var Vector|null
      */
     protected ?Vector $coefficients = null;
 

@@ -78,7 +78,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * @param float $radius
      * @param bool $weighted
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
     public function __construct(float $radius = 1.0, bool $weighted = false, ?Spatial $tree = null)

@@ -140,11 +140,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var \Rubix\ML\NeuralNet\Network|null
      */
-<<<<<<< HEAD
     protected ?\Rubix\ML\NeuralNet\Network $network = null;
-=======
-    protected ?FeedForward $network = null;
->>>>>>> 2.5
 
     /**
      * The validation scores at each epoch from the last training session.
@@ -169,8 +165,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
-     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
+     * @param RegressionLoss|null $costFn
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
