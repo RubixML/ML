@@ -8,14 +8,37 @@ Filesystems are local or remote storage drives that are organized by files and f
 |---|---|---|---|---|
 | 1 | path | | string | The path to the model file on the filesystem. |
 | 2 | history | false | bool | Should we keep a history of past saves? |
-| 3 | serializer | RBX | Serializer | The serializer used to convert to and from storage format. |
+
+## Example
+```php
+use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Manhattan;
+
+$persistable = new KNearestNeighbors(3, false, new Manhattan());
+
+$persister = new Filesystem('/path/to/example.rbx', true);
+
+$serializer = new RBX(6);
+
+$encoding = $serializer->serialize($persistable);
+
+$persister->save($encoding);
+```
 
 ## Example
 ```php
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Serializers\RBX;
 
-$persister = new Filesystem('/path/to/example.model', true, new RBX());
+$persister = new Filesystem('/path/to/example.rbx', true);
+
+$encoding = $persister->load();
+
+$serializer = new RBX(6);
+
+$persistable = $serializer->deserialize($encoding);
 ```
 
 ## Additional Methods
