@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Backends;
 
 use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Amp2;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
@@ -11,10 +12,10 @@ use PHPUnit\Framework\TestCase;
  * @group Backends
  * @covers \Rubix\ML\Backends\Amp
  */
-class AmpTest extends TestCase
+abstract class AbstractAmp extends TestCase
 {
     /**
-     * @var Amp
+     * @var Amp|Amp2
      */
     protected $backend;
 
@@ -25,23 +26,6 @@ class AmpTest extends TestCase
     public static function foo(int $i) : array
     {
         return [$i * 2, microtime(true)];
-    }
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->backend = new Amp(4);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Amp::class, $this->backend);
-        $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
     /**
@@ -64,5 +48,6 @@ class AmpTest extends TestCase
         $results = $this->backend->process();
 
         $this->assertCount(10, $results);
+        array_map([$this, 'assertIsArray'], $results);
     }
 }
