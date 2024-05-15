@@ -138,10 +138,10 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $values = $dataset->feature($column);
 
                 /** @var int|float $min */
-                $min = min(array_filter($values, 'is_finite'));
+                $min = min(array_filter($values, 'is_finite') ?: [0]);
 
                 /** @var int|float $max */
-                $max = max(array_filter($values, 'is_finite'));
+                $max = max(array_filter($values, 'is_finite') ?: [0]);
 
                 $scale = ($this->max - $this->min) / (($max - $min) ?: EPSILON);
 
