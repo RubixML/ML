@@ -23,12 +23,10 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
-      - name: Install OpenBLA
+      - name: Install OpenBLAS
         run: |
-          git clone https://github.com/OpenMathLib/OpenBLAS.git
-          cd OpenBLAS
-          make
-          make install
+          apt-get update -q
+          apt-get install -qy libopenblas-dev
 
       - name: Install NumPower
         run: |
