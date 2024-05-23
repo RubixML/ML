@@ -287,7 +287,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
     {
         [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
 
-        $lrd = $this->localReachabilityDensity($indices, $distances);
+        $lrd = $this->localReachabilityDensity($indices, $distances) ?: EPSILON;
 
         $ratios = [];
 
