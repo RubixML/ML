@@ -20,7 +20,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           tools: composer, pecl
-          extensions: svm, mbstring, gd, fileinfo, swoole
+          extensions: svm, mbstring, gd, fileinfo
           ini-values: memory_limit=-1
 
       - name: Validate composer.json

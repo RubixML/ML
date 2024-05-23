@@ -19,8 +19,6 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group MetaEstimators
@@ -28,8 +26,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class CommitteeMachineTest extends TestCase
 {
-    use BackendProviderTrait;
-
     protected const TRAIN_SIZE = 512;
 
     protected const TEST_SIZE = 256;
@@ -134,14 +130,10 @@ class CommitteeMachineTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function trainPredict(Backend $backend) : void
+    public function trainPredict() : void
     {
-        $this->estimator->setBackend($backend);
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

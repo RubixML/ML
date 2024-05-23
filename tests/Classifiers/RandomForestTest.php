@@ -18,8 +18,6 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Classifiers
@@ -27,8 +25,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class RandomForestTest extends TestCase
 {
-    use BackendProviderTrait;
-
     /**
      * The number of samples in the training set.
      *
@@ -155,14 +151,10 @@ class RandomForestTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function trainPredictImportances(Backend $backend) : void
+    public function trainPredictImportances() : void
     {
-        $this->estimator->setBackend($backend);
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

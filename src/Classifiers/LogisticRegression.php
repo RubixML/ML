@@ -491,20 +491,4 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     {
         return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
     }
-
-    /**
-     * Without this method, causes errors with Swoole backend + Igbinary
-     * serialization.
-     *
-     * Can be removed if it's no longer the case.
-     *
-     * @internal
-     * @param array<string,mixed> $data
-     */
-    public function __unserialize(array $data) : void
-    {
-        foreach ($data as $propertyName => $propertyValue) {
-            $this->{$propertyName} = $propertyValue;
-        }
-    }
 }

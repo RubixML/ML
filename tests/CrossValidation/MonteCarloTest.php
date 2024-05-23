@@ -10,8 +10,6 @@ use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Validators
@@ -19,8 +17,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class MonteCarloTest extends TestCase
 {
-    use BackendProviderTrait;
-
     protected const DATASET_SIZE = 50;
 
     /**
@@ -71,14 +67,10 @@ class MonteCarloTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function test(Backend $backend) : void
+    public function test() : void
     {
-        $this->validator->setBackend($backend);
-
         [$min, $max] = $this->metric->range()->list();
 
         $dataset = $this->generator->generate(self::DATASET_SIZE);

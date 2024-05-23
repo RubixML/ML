@@ -17,8 +17,6 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group Classifiers
@@ -26,8 +24,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class OneVsRestTest extends TestCase
 {
-    use BackendProviderTrait;
-
     /**
      * The number of samples in the training set.
      *
@@ -140,14 +136,10 @@ class OneVsRestTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function trainPredictProba(Backend $backend) : void
+    public function trainPredictProba() : void
     {
-        $this->estimator->setBackend($backend);
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

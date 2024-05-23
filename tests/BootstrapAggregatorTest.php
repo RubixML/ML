@@ -14,8 +14,6 @@ use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group MetaEstimators
@@ -23,8 +21,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class BootstrapAggregatorTest extends TestCase
 {
-    use BackendProviderTrait;
-
     protected const TRAIN_SIZE = 512;
 
     protected const TEST_SIZE = 256;
@@ -114,14 +110,10 @@ class BootstrapAggregatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function trainPredict(Backend $backend) : void
+    public function trainPredict() : void
     {
-        $this->estimator->setBackend($backend);
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

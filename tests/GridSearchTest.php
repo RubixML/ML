@@ -19,8 +19,6 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
 /**
  * @group MetaEstimators
@@ -28,8 +26,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class GridSearchTest extends TestCase
 {
-    use BackendProviderTrait;
-
     protected const TRAIN_SIZE = 512;
 
     protected const TEST_SIZE = 256;
@@ -124,14 +120,11 @@ class GridSearchTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
      * @test
-     * @param Backend $backend
      */
-    public function trainPredictBest(Backend $backend) : void
+    public function trainPredictBest() : void
     {
         $this->estimator->setLogger(new BlackHole());
-        $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);

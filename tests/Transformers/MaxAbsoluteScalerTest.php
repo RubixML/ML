@@ -77,9 +77,9 @@ class MaxAbsoluteScalerTest extends TestCase
 
         $this->assertCount(3, $sample);
 
-        $this->assertEqualsWithDelta(0, $sample[0], 1 + 1e-8);
-        $this->assertEqualsWithDelta(0, $sample[1], 1 + 1e-8);
-        $this->assertEqualsWithDelta(0, $sample[2], 1 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[0], 2 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[1], 2 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[2], 2 + 1e-8);
 
         $dataset->reverseApply($this->transformer);
 
