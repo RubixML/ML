@@ -9,7 +9,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -80,8 +79,6 @@ class OneVsRestTest extends TestCase
         ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new OneVsRest(new GaussianNB());
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 

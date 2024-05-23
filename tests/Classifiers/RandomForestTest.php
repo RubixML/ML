@@ -9,7 +9,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -81,8 +80,6 @@ class RandomForestTest extends TestCase
         ], [0.5, 0.2, 0.3]);
 
         $this->estimator = new RandomForest(new ClassificationTree(3), 50, 0.2, true);
-
-        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 
