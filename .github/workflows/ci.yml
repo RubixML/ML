@@ -23,6 +23,21 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
+      - name: Install OpenBLAS
+        run: |
+          apt-get update -q
+          apt-get install -qy libopenblas-dev
+
+      - name: Install NumPower
+        run: |
+          git clone https://github.com/NumPower/numpower.git
+          cd numpower
+          phpize
+          ./configure
+          make
+          make install
+          echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
+
       - name: Validate composer.json
         run: composer validate
 
