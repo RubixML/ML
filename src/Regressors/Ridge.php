@@ -21,6 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use NDArray as nd;
 
 use function is_null;
 
@@ -59,6 +60,8 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      * @var Vector|null
      */
     protected ?Vector $coefficients = null;
+
+    protected ?nd $coefficientsNd = null;
 
     /**
      * @param float $l2Penalty
@@ -161,7 +164,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
         $x = Matrix::build($dataset->samples())->augmentLeft($biases);
-        $y = Vector::build($dataset->labels());
+        $y = nd::array($dataset->labels());
 
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
@@ -170,15 +173,18 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         array_unshift($penalties, 0.0);
 
-        $penalties = Matrix::diagonal($penalties);
+        $penalties = nd::array(Matrix::diagonal($penalties)->asArray());
 
-        $xT = $x->transpose();
+        $xNp = nd::array($x->asArray());
+        $xT = nd::transpose($xNp);
 
-        $coefficients = $xT->matmul($x)
-            ->add($penalties)
-            ->inverse()
-            ->dot($xT->dot($y))
-            ->asArray();
+        $xMul = nd::matmul($xT, $xNp);
+        $xMulAdd = nd::add($xMul, $penalties);
+        $xMulAddInv = nd::inv($xMulAdd);
+        $xtDotY = nd::dot($xT, $y);
+
+        $this->coefficientsNd = nd::dot($xMulAddInv, $xtDotY);
+        $coefficients = $this->coefficientsNd->toArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = Vector::quick($coefficients);
@@ -199,10 +205,10 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
-        return Matrix::build($dataset->samples())
-            ->dot($this->coefficients)
-            ->add($this->bias)
-            ->asArray();
+        $datasetNd = nd::array($dataset->samples());
+        $datasetDotCoefficients = nd::dot($datasetNd, $this->coefficientsNd);
+
+        return nd::add($datasetDotCoefficients, $this->bias)->toArray();
     }
 
     /**
