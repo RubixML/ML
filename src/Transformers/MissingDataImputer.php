@@ -157,11 +157,6 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
                 continue;
             }
 
-            if (empty($donors)) {
-                throw new InvalidArgumentException('Dataset must contain'
-                    . ' at least 1 donor per feature column.');
-            }
-
             $strategy->fit($donors);
 
             $this->strategies[$column] = $strategy;
