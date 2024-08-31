@@ -237,9 +237,11 @@ class SVR implements Estimator, Learner
         }
         //As SVM needs to have the same keys and order between training samples and those to predict we need to put an offset to the keys
         $sampleWithOffset = [];
-        foreach($sample as $key=>$value){
-            $sampleWithOffset[$key+1] = $value;
+
+        foreach ($sample as $key => $value) {
+            $sampleWithOffset[$key + 1] = $value;
         }
+
         return $this->model->predict($sampleWithOffset);
     }
 

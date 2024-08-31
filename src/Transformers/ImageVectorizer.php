@@ -91,8 +91,8 @@ class ImageVectorizer implements Transformer, Stateful
                 $value = $sample[$column];
 
                 $this->sizes[$column] = [
-                    imagesx($value) ?: 0,
-                    imagesy($value) ?: 0,
+                    imagesx($value),
+                    imagesy($value),
                 ];
             }
         }

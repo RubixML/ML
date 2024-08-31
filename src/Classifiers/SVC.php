@@ -237,8 +237,9 @@ class SVC implements Estimator, Learner
         }
 
         $sampleWithOffset = [];
-        foreach($sample as $key=>$value){
-            $sampleWithOffset[$key+1] = $value;
+
+        foreach ($sample as $key => $value) {
+            $sampleWithOffset[$key + 1] = $value;
         }
 
         $index = $this->model->predict($sampleWithOffset);
