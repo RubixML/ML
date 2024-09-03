@@ -42,11 +42,25 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     protected ?array $categories = null;
 
     /**
+     * The categories that should be ignored
+     *
+     * @var array<string>
+     */
+    protected array $drop = [];
+
+    /**
+     * @param string|array $drop The categories to drop during encoding
+     */
+    public function __construct($drop = [])
+    {
+        $this->drop = is_array($drop) ? $drop : [$drop];
+    }
+
+    /**
      * Return the data types that this transformer is compatible with.
      *
-     * @internal
-     *
      * @return list<\Rubix\ML\DataType>
+     * @internal
      */
     public function compatibility() : array
     {
@@ -87,6 +101,8 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
                 $values = $dataset->feature($column);
+
+                $values = array_diff($values, $this->drop);
 
                 $categories = array_values(array_unique($values));
 
