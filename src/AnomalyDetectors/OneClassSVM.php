@@ -186,9 +186,8 @@ class OneClassSVM implements Estimator, Learner
         $data = [];
 
         foreach ($dataset->samples() as $sample) {
-            $sample_array = $sample;
-            array_unshift($sample_array, 1);
-            $data[] = $sample_array;
+            array_unshift($sample, 1);
+            $data[] = $sample;
         }
 
         $this->model = $this->svm->train($data);
