@@ -1,3 +1,6 @@
+- 2.5.2
+    - Fix bug in One-class SVM inferencing
+
 - 2.5.1
     - Fix bug in SVM (SVC and SVR) inferencing
 
