@@ -421,7 +421,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<int|string>
      */
     public function predict(Dataset $dataset) : array
     {

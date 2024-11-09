@@ -7,7 +7,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\Polynomial;
+use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
@@ -43,7 +43,7 @@ class OneClassSVMTest extends TestCase
      *
      * @var float
      */
-    protected const MIN_SCORE = 0.5;
+    protected const MIN_SCORE = 0.7;
 
     /**
      * Constant used to see the random number generator.
@@ -77,7 +77,7 @@ class OneClassSVMTest extends TestCase
             1 => new Circle(0.0, 0.0, 8.0, 1.0),
         ], [0.9, 0.1]);
 
-        $this->estimator = new OneClassSVM(0.01, new Polynomial(4, 1e-3), true, 1e-4);
+        $this->estimator = new OneClassSVM(0.3, new RBF(), true, 1e-4);
 
         $this->metric = new FBeta();
 
@@ -125,8 +125,8 @@ class OneClassSVMTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'nu' => 0.01,
-            'kernel' => new Polynomial(4, 1e-3),
+            'nu' => 0.3,
+            'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 0.0001,
             'cache size' => 100.0,

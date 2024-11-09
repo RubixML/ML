@@ -79,7 +79,6 @@ class OneClassSVM implements Estimator, Learner
             new ExtensionIsLoaded('svm'),
             new ExtensionMinimumVersion('svm', '0.2.0'),
         ])->check();
-        
 
         if ($nu < 0.0 or $nu > 1.0) {
             throw new InvalidArgumentException('Nu must be between'
