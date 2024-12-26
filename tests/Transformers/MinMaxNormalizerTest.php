@@ -102,4 +102,15 @@ class MinMaxNormalizerTest extends TestCase
 
         $this->transformer->transform($samples);
     }
+
+    /**
+     * @test
+     */
+    public function skipsNonFinite(): void
+    {
+        $samples = Unlabeled::build([[0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001]]);
+        $this->transformer->fit($samples);
+        $this->assertNan($samples[0][2]);
+        $this->assertNan($samples[1][2]);
+    }
 }
