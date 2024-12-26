@@ -56,7 +56,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
-     * @var list<\Rubix\ML\Learner>
+     * @var list<Learner>
      */
     protected array $experts;
 
@@ -70,7 +70,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * The data types that the committee is compatible with.
      *
-     * @var list<\Rubix\ML\DataType>
+     * @var list<DataType>
      */
     protected array $compatibility;
 
@@ -84,7 +84,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     ];
 
     /**
-     * @param \Rubix\ML\Learner[] $experts
+     * @param Learner[] $experts
      * @param (int|float)[]|null $influences
      * @throws InvalidArgumentException
      */
@@ -173,7 +173,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -208,7 +208,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * Return the learner instances of the committee.
      *
-     * @return list<\Rubix\ML\Learner>
+     * @return list<Learner>
      */
     public function experts() : array
     {

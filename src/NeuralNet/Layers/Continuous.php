@@ -103,7 +103,7 @@ class Continuous implements Output
      * @param (int|float)[] $labels
      * @param Optimizer $optimizer
      * @throws RuntimeException
-     * @return (\Rubix\ML\Deferred|float)[]
+     * @return (Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {

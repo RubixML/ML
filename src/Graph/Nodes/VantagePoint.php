@@ -129,7 +129,7 @@ class VantagePoint implements Hypersphere, HasBinaryChildren
      * Return the left and right subsets of the training data.
      *
      * @throws RuntimeException
-     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @return array{Labeled,Labeled}
      */
     public function subsets() : array
     {

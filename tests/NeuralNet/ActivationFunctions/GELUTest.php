@@ -51,7 +51,7 @@ class GELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<array<mixed>>
+     * @return Generator<array<mixed>>
      */
     public function computeProvider() : Generator
     {
@@ -92,7 +92,7 @@ class GELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<array<mixed>>
+     * @return Generator<array<mixed>>
      */
     public function differentiateProvider() : Generator
     {

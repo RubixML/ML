@@ -74,7 +74,7 @@ class OneHotEncoderTest extends TestCase
     /**
      * @test
      */
-    public function fitTransformNone() : void
+    public function fitTransformWithExcluded() : void
     {
         $dataset = new Unlabeled([
             ['nice', 'furry', 'friendly'],
@@ -83,7 +83,7 @@ class OneHotEncoderTest extends TestCase
             ['mean', 'rough', 'friendly'],
         ]);
 
-        $this->transformer = new OneHotEncoder('furry');
+        $this->transformer = new OneHotEncoder(['furry']);
 
         $this->transformer->fit($dataset);
 

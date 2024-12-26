@@ -54,7 +54,7 @@ class GowerTest extends TestCase
     }
 
     /**
-     * @return \Generator<array<mixed>>
+     * @return Generator<array<mixed>>
      */
     public function computeProvider() : Generator
     {

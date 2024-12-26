@@ -35,7 +35,7 @@ trait HasBinaryChildrenTrait
     /**
      * Return the children of this node in a generator.
      *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
+     * @return \Generator<BinaryNode>
      */
     public function children() : Traversable
     {

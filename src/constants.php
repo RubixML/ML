@@ -9,7 +9,7 @@ namespace Rubix\ML
      *
      * @var literal-string
      */
-    const VERSION = '2.5';
+    const VERSION = '2.6';
 
     /**
      * A very small positive number, sometimes used in substitution of 0.

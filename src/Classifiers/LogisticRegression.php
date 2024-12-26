@@ -196,7 +196,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -238,7 +238,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {

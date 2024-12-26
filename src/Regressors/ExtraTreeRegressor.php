@@ -74,7 +74,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

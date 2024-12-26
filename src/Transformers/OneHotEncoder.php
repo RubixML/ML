@@ -35,6 +35,13 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
+     * The categories that should be ignored.
+     *
+     * @var array<string>
+     */
+    protected array $excluded = [];
+
+    /**
      * The set of unique possible categories per feature column of the training set.
      *
      * @var array<int[]>|null
@@ -42,25 +49,19 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     protected ?array $categories = null;
 
     /**
-     * The categories that should be ignored
-     *
-     * @var array<string>
+     * @param list<string> $excluded The categories to drop during encoding.
      */
-    protected array $drop = [];
-
-    /**
-     * @param string|array $drop The categories to drop during encoding
-     */
-    public function __construct($drop = [])
+    public function __construct(array $excluded = [])
     {
-        $this->drop = is_array($drop) ? $drop : [$drop];
+        $this->excluded = $excluded;
     }
 
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return list<\Rubix\ML\DataType>
      * @internal
+     *
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -102,7 +103,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
             if ($type->isCategorical()) {
                 $values = $dataset->feature($column);
 
-                $values = array_diff($values, $this->drop);
+                $values = array_diff($values, $this->excluded);
 
                 $categories = array_values(array_unique($values));
 

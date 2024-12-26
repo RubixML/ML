@@ -21,14 +21,14 @@ class Snapshot
     /**
      * The parametric layers of the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Parametric[]
+     * @var Parametric[]
      */
     protected array $layers;
 
     /**
      * The parameters corresponding to each layer in the network at the time of the snapshot.
      *
-     * @var list<\Rubix\ML\NeuralNet\Parameter[]>
+     * @var list<Parameter[]>
      */
     protected array $parameters;
 
@@ -56,8 +56,8 @@ class Snapshot
     }
 
     /**
-     * @param \Rubix\ML\NeuralNet\Layers\Parametric[] $layers
-     * @param list<\Rubix\ML\NeuralNet\Parameter[]> $parameters
+     * @param Parametric[] $layers
+     * @param list<Parameter[]> $parameters
      * @throws InvalidArgumentException
      */
     public function __construct(array $layers, array $parameters)

@@ -51,7 +51,7 @@ class Gower implements Distance, NaNSafe
     /**
      * Return the data types that this kernel is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return DataType[]
      */
     public function compatibility() : array
     {

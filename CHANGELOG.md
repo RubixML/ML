@@ -1,3 +1,6 @@
+- 2.6.0
+    - You can now exclude certain categories from one-hot encoding.
+
 - 2.5.2
     - Fix bug in One-class SVM inferencing
 

@@ -44,7 +44,7 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @var array{Labeled,Labeled}
      */
     protected array $subsets;
 
@@ -92,7 +92,7 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
+     * @param array{Labeled,Labeled} $subsets
      * @param list<int|float> $min
      * @param list<int|float> $max
      */
@@ -129,7 +129,7 @@ class Box implements Hypercube, HasBinaryChildren
      * Return the left and right subsets of the training data.
      *
      * @throws RuntimeException
-     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @return array{Labeled,Labeled}
      */
     public function subsets() : array
     {
