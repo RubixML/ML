@@ -515,7 +515,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

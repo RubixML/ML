@@ -475,7 +475,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }
