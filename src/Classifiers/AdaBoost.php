@@ -494,7 +494,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

@@ -587,7 +587,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }

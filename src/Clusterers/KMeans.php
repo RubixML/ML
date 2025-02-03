@@ -551,7 +551,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }
