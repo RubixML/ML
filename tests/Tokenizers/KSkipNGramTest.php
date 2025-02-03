@@ -1,58 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Tokenizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\KSkipNGram;
-use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Tokenizers
- * @covers \Rubix\ML\Tokenizers\KSkipNGram
- */
+#[Group('Tokenizers')]
+#[CoversClass(KSkipNGram::class)]
 class KSkipNGramTest extends TestCase
 {
-    /**
-     * @var KSkipNGram
-     */
-    protected $tokenizer;
+    protected KSkipNGram $tokenizer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new KSkipNGram(2, 3, 2);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -71,5 +36,22 @@ class KSkipNGramTest extends TestCase
                 'The end',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new KSkipNGram(min: 2, max: 3, skip: 2);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    public function testTokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

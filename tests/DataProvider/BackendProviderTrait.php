@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\DataProvider;
 
 use Generator;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
@@ -22,12 +23,6 @@ trait BackendProviderTrait
         yield (string) $serialBackend => [
             'backend' => $serialBackend,
         ];
-
-        // $ampBackend = new Amp();
-
-        // yield (string) $ampBackend => [
-        //     'backend' => $ampBackend,
-        // ];
 
         if (
             SwooleExtensionIsLoaded::create()->passes()

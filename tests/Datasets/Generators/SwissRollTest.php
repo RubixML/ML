@@ -1,55 +1,35 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\SwissRoll;
-use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Generators
- * @covers \Rubix\ML\Datasets\Generators\SwissRoll
- */
+#[Group('Generators')]
+#[CoversClass(SwissRoll::class)]
 class SwissRollTest extends TestCase
 {
-    protected const DATASET_SIZE = 30;
+    protected const int DATASET_SIZE = 30;
 
-    /**
-     * @var SwissRoll
-     */
-    protected $generator;
+    protected SwissRoll $generator;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(0.0, 0.0, 0.0, 1.0, 12.0, 0.3);
+        $this->generator = new SwissRoll(x: 0.0, y: 0.0, z: 0.0, scale: 1.0, depth: 12.0, noise: 0.3);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(SwissRoll::class, $this->generator);
-        $this->assertInstanceOf(Generator::class, $this->generator);
-    }
-
-    /**
-     * @test
-     */
-    public function dimensions() : void
+    public function testDimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    /**
-     * @test
-     */
-    public function generate() : void
+    public function testGenerate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

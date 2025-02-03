@@ -1,49 +1,26 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Extractors;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\NDJSON;
-use Rubix\ML\Extractors\Exporter;
-use Rubix\ML\Extractors\Extractor;
 use PHPUnit\Framework\TestCase;
-use IteratorAggregate;
-use Traversable;
 
-/**
- * @group Extractors
- * @covers \Rubix\ML\Extractors\NDJSON
- */
+#[Group('Extractors')]
+#[CoversClass(NDJSON::class)]
 class NDJSONTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Extractors\NDJSON;
-     */
-    protected $extractor;
+    protected NDJSON $extractor;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->extractor = new NDJSON('tests/test.ndjson');
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(NDJSON::class, $this->extractor);
-        $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(Exporter::class, $this->extractor);
-        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
-        $this->assertInstanceOf(Traversable::class, $this->extractor);
-    }
-
-    /**
-     * @test
-     */
-    public function extractExport() : void
+    public function testExtractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],

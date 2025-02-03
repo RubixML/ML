@@ -286,7 +286,7 @@ class TSNE implements Transformer, Verbose
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {

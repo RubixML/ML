@@ -48,7 +48,7 @@ class Isolator implements HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
+     * @var array{Dataset,Dataset}
      */
     protected array $subsets;
 
@@ -90,7 +90,7 @@ class Isolator implements HasBinaryChildren
     /**
      * @param int $column
      * @param string|int|float $value
-     * @param array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset} $subsets
+     * @param array{Dataset,Dataset} $subsets
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $column, string|int|float $value, array $subsets)
@@ -124,7 +124,7 @@ class Isolator implements HasBinaryChildren
      * Return the left and right subsets of the training data.
      *
      * @throws RuntimeException
-     * @return array{\Rubix\ML\Datasets\Dataset,\Rubix\ML\Datasets\Dataset}
+     * @return array{Dataset,Dataset}
      */
     public function subsets() : array
     {

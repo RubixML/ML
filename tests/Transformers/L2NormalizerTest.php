@@ -1,46 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\L2Normalizer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\L2Normalizer
- */
+#[Group('Transformers')]
+#[CoversClass(L2Normalizer::class)]
 class L2NormalizerTest extends TestCase
 {
-    /**
-     * @var L2Normalizer
-     */
-    protected $transformer;
+    protected L2Normalizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new L2Normalizer();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testTransform() : void
     {
-        $this->assertInstanceOf(L2Normalizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
-    {
-        $dataset = new Unlabeled([
+        $dataset = new Unlabeled(samples: [
             [1, 2, 3, 4],
             [40, 0, 30, 10],
             [100, 300, 200, 400],

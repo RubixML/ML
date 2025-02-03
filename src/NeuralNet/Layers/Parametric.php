@@ -18,7 +18,7 @@ interface Parametric
     /**
      * Return the parameters of the layer.
      *
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
+     * @return Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator;
 

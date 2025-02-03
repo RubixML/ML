@@ -285,7 +285,7 @@ class Dense implements Hidden, Parametric
      * @internal
      *
      * @throws RuntimeException
-     * @return \Generator<\Rubix\ML\NeuralNet\Parameter>
+     * @return Generator<Parameter>
      */
     public function parameters() : Generator
     {
@@ -305,7 +305,7 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
+     * @param Parameter[] $parameters
      */
     public function restore(array $parameters) : void
     {

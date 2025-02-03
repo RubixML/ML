@@ -21,8 +21,8 @@ interface Optimizer extends Stringable
      * @internal
      *
      * @param Parameter $param
-     * @param \Tensor\Tensor<int|float|array> $gradient
-     * @return \Tensor\Tensor<int|float|array>
+     * @param Tensor<int|float|array> $gradient
+     * @return Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor;
 }

@@ -1,26 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\RegexFilter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\RegexFilter
- */
+#[Group('Transformers')]
+#[CoversClass(RegexFilter::class)]
 class RegexFilterTest extends TestCase
 {
-    /**
-     * @var RegexFilter
-     */
-    protected $transformer;
+    protected RegexFilter $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new RegexFilter([
@@ -35,19 +30,7 @@ class RegexFilterTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(RegexFilter::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
+    public function testTransform() : void
     {
         $dataset = Unlabeled::quick([
             ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],

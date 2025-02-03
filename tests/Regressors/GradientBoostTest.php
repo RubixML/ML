@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Verbose;
-use Rubix\ML\Learner;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Loggers\BlackHole;
@@ -21,63 +20,58 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\GradientBoost
- */
+#[Group('Regressors')]
+#[CoversClass(GradientBoost::class)]
 class GradientBoostTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var SwissRoll
-     */
-    protected $generator;
+    protected SwissRoll $generator;
 
-    /**
-     * @var GradientBoost
-     */
-    protected $estimator;
+    protected GradientBoost $estimator;
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
+        $this->generator = new SwissRoll(
+            x: 4.0,
+            y: -7.0,
+            z: 0.0,
+            scale: 1.0,
+            depth: 21.0,
+            noise: 0.5
+        );
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.3, 300, 1e-4, 3, 10, 0.1, new RMSE());
+        $this->estimator = new GradientBoost(
+            booster: new RegressionTree(maxHeight: 3),
+            rate: 0.1,
+            ratio: 0.3,
+            epochs: 300,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 10,
+            holdOut: 0.1,
+            metric: new RMSE()
+        );
 
         $this->metric = new RSquared();
 
@@ -89,51 +83,26 @@ class GradientBoostTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(GradientBoost::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function incompatibleBooster() : void
+    public function testIncompatibleBooster() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new GradientBoost(new Ridge());
+        new GradientBoost(booster: new Ridge());
     }
 
-    /**
-     * @test
-     */
-    public function badLearningRate() : void
+    public function testBadLearningRate() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new GradientBoost(null, -1e-3);
+        new GradientBoost(booster: null, rate: -1e-3);
     }
 
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -143,13 +112,10 @@ class GradientBoostTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
-            'booster' => new RegressionTree(3),
+            'booster' => new RegressionTree(maxHeight: 3),
             'rate' => 0.1,
             'ratio' => 0.3,
             'epochs' => 300,
@@ -163,10 +129,7 @@ class GradientBoostTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPredictImportances() : void
+    public function testTrainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -180,30 +143,32 @@ class GradientBoostTest extends TestCase
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
 
         $scores = $this->estimator->scores();
 
         $this->assertIsArray($scores);
-        $this->assertContainsOnly('float', $scores);
+        $this->assertContainsOnlyFloat($scores);
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
-        $this->assertContainsOnly('float', $importances);
+        $this->assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
+
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

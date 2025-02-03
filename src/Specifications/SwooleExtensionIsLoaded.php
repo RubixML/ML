@@ -19,10 +19,7 @@ class SwooleExtensionIsLoaded extends Specification
      */
     public function check() : void
     {
-        if (
-            ExtensionIsLoaded::with('swoole')->passes()
-            || ExtensionIsLoaded::with('openswoole')->passes()
-        ) {
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
             return;
         }
 

@@ -1,129 +1,105 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Split
- */
+#[Group('Nodes')]
+#[CoversClass(Split::class)]
 class SplitTest extends TestCase
 {
-    protected const COLUMN = 1;
+    protected const int COLUMN = 1;
 
-    protected const VALUE = 3.0;
+    protected const float VALUE = 3.0;
 
-    protected const SAMPLES = [
+    protected const array SAMPLES = [
         [5.0, 2.0, -3],
         [6.0, 4.0, -5],
     ];
 
-    protected const LABELS = [22, 13];
+    protected const array LABELS = [22, 13];
 
-    protected const IMPURITY = 400.0;
+    protected const float IMPURITY = 400.0;
 
-    protected const N = 4;
+    protected const int N = 4;
 
-    /**
-     * @var Split
-     */
-    protected $node;
+    protected Split $node;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $subsets = [
-            Labeled::quick(self::SAMPLES, self::LABELS),
-            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(samples: self::SAMPLES, labels: self::LABELS),
+            Labeled::quick(samples: self::SAMPLES, labels: self::LABELS),
         ];
 
-        $this->node = new Split(self::COLUMN, self::VALUE, $subsets, self::IMPURITY, self::N);
+        $this->node = new Split(
+            column: self::COLUMN,
+            value: self::VALUE,
+            subsets: $subsets,
+            impurity: self::IMPURITY,
+            n: self::N
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Split::class, $this->node);
-        $this->assertInstanceOf(Decision::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
-    }
-
-    /**
-     * @test
-     */
-    public function column() : void
+    public function testColumn() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    /**
-     * @test
-     */
-    public function value() : void
+    public function testValue() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    /**
-     * @test
-     */
-    public function subsets() : void
+    public function testSubsets() : void
     {
         $expected = [
-            Labeled::quick(self::SAMPLES, self::LABELS),
-            Labeled::quick(self::SAMPLES, self::LABELS),
+            Labeled::quick(samples: self::SAMPLES, labels: self::LABELS),
+            Labeled::quick(samples: self::SAMPLES, labels: self::LABELS),
         ];
 
         $this->assertEquals($expected, $this->node->subsets());
     }
 
-    /**
-     * @test
-     */
-    public function impurity() : void
+    public function testImpurity() : void
     {
         $this->assertSame(self::IMPURITY, $this->node->impurity());
     }
 
-    /**
-     * @test
-     */
-    public function purityIncrease() : void
+    public function testPurityIncrease() : void
     {
-        $this->node->attachLeft(new Split(2, 0.0, [Labeled::quick(), Labeled::quick()], 50.0, 1));
-        $this->node->attachRight(new Split(4, -12.0, [Labeled::quick(), Labeled::quick()], 200.0, 3));
+        $this->node->attachLeft(new Split(
+            column: 2,
+            value: 0.0,
+            subsets: [Labeled::quick(), Labeled::quick()],
+            impurity: 50.0,
+            n: 1
+        ));
+        $this->node->attachRight(new Split(
+            column: 4,
+            value: -12.0,
+            subsets: [Labeled::quick(), Labeled::quick()],
+            impurity: 200.0,
+            n: 3
+        ));
 
         $this->assertSame(237.5, $this->node->purityIncrease());
     }
 
-    /**
-     * @test
-     */
-    public function n() : void
+    public function testN() : void
     {
         $this->assertSame(self::N, $this->node->n());
     }
 
-    /**
-     * @test
-     */
-    public function cleanup() : void
+    public function testCleanup() : void
     {
-        $subsets = $this->node->subsets();
-
-        $this->assertIsArray($subsets);
-        $this->assertCount(2, $subsets);
-
         $this->node->cleanup();
 
         $this->expectException(RuntimeException::class);

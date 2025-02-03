@@ -103,7 +103,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
      *
-     * @param iterable<\Rubix\ML\Datasets\Dataset> $datasets
+     * @param iterable<Dataset> $datasets
      * @return static
      */
     abstract public static function stack(iterable $datasets) : self;
@@ -131,7 +131,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the high-level data types of each column in the data table.
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function types() : array
     {
@@ -267,7 +267,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return an array of feature column data types autodetected using the first sample in the dataset.
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function featureTypes() : array
     {
@@ -281,7 +281,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the unique feature types.
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function uniqueTypes() : array
     {

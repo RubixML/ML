@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Specifications;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -9,28 +14,11 @@ use Rubix\ML\Specifications\SpecificationChain;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Specifications
- * @covers \Rubix\ML\Specifications\DatasetIsNotEmpty
- */
+#[Group('Specifications')]
+#[CoversClass(DatasetIsNotEmpty::class)]
 class SpecificationChainTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider passesProvider
-     *
-     * @param SpecificationChain $specification
-     * @param bool $expected
-     */
-    public function passes(SpecificationChain $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function passesProvider() : Generator
+    public static function passesProvider() : Generator
     {
         $dataset = Unlabeled::quick([
             ['swamp', 'island', 'black knight', 'counter spell'],
@@ -50,5 +38,15 @@ class SpecificationChainTest extends TestCase
             ]),
             false,
         ];
+    }
+
+    /**
+     * @param SpecificationChain $specification
+     * @param bool $expected
+     */
+    #[DataProvider('passesProvider')]
+    public function testPasses(SpecificationChain $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
     }
 }

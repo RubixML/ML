@@ -1,51 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\BatchNorm
- */
+#[Group('Layers')]
+#[CoversClass(BatchNorm::class)]
 class BatchNormTest extends TestCase
 {
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected Matrix $input;
 
-    /**
-     * @var Deferred
-     */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var BatchNorm
-     */
-    protected $layer;
+    protected BatchNorm $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -56,7 +41,7 @@ class BatchNormTest extends TestCase
             [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
+        $this->prevGrad = new Deferred(fn: function () {
             return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
@@ -66,24 +51,14 @@ class BatchNormTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
+        $this->layer = new BatchNorm(
+            decay: 0.9,
+            betaInitializer: new Constant(0.),
+            gammaInitializer: new Constant(1.)
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(BatchNorm::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -97,10 +72,12 @@ class BatchNormTest extends TestCase
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer->back(
+            prevGradient: $this->prevGrad,
+            optimizer: $this->optimizer
+        )->compute();
 
         $expected = [
             [-0.06445877134888621, 0.027271018647605647, 0.03718775270128047],
@@ -119,7 +96,6 @@ class BatchNormTest extends TestCase
 
         $infer = $this->layer->infer($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

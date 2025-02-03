@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Specifications;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Hamming;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -9,28 +14,11 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Specifications
- * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithDistance
- */
+#[Group('Specifications')]
+#[CoversClass(SamplesAreCompatibleWithDistance::class)]
 class SamplesAreCompatibleWithDistanceTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider passesProvider
-     *
-     * @param SamplesAreCompatibleWithDistance $specification
-     * @param bool $expected
-     */
-    public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function passesProvider() : Generator
+    public static function passesProvider() : Generator
     {
         yield [
             SamplesAreCompatibleWithDistance::with(
@@ -71,5 +59,15 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
             ),
             true,
         ];
+    }
+
+    /**
+     * @param SamplesAreCompatibleWithDistance $specification
+     * @param bool $expected
+     */
+    #[DataProvider('passesProvider')]
+    public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
     }
 }

@@ -1,49 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\WordCountVectorizer
- */
+#[Group('Transformers')]
+#[CoversClass(WordCountVectorizer::class)]
 class WordCountVectorizerTest extends TestCase
 {
-    /**
-     * @var WordCountVectorizer
-     */
-    protected $transformer;
+    protected WordCountVectorizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new WordCountVectorizer(50, 1, 1.0, new Word());
+        $this->transformer = new WordCountVectorizer(
+            maxVocabularySize: 50,
+            minDocumentCount: 1,
+            maxDocumentRatio: 1.0,
+            tokenizer: new Word()
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testFitTransform() : void
     {
-        $this->assertInstanceOf(WordCountVectorizer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitTransform() : void
-    {
-        $dataset = Unlabeled::quick([
+        $dataset = Unlabeled::quick(samples: [
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
             ['with a dandy umbrella'],
         ]);
@@ -56,7 +42,7 @@ class WordCountVectorizerTest extends TestCase
 
         $this->assertIsArray($vocabulary);
         $this->assertCount(20, $vocabulary);
-        $this->assertContainsOnly('string', $vocabulary);
+        $this->assertContainsOnlyString($vocabulary);
 
         $dataset->apply($this->transformer);
 

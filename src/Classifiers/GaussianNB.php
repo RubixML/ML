@@ -161,7 +161,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

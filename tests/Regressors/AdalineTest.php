@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
@@ -22,110 +20,77 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\Adaline
- */
+#[Group('Regressors')]
+#[CoversClass(Adaline::class)]
 class AdalineTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Hyperplane
-     */
-    protected $generator;
+    protected Hyperplane $generator;
 
-    /**
-     * @var Adaline
-     */
-    protected $estimator;
+    protected Adaline $estimator;
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
+        $this->generator = new Hyperplane(
+            coefficients: [1.0, 5.5, -7, 0.01],
+            intercept: 0.0,
+            noise: 1.0
+        );
 
-        $this->estimator = new Adaline(32, new Adam(0.001), 1e-4, 100, 1e-4, 5, new HuberLoss(1.0));
+        $this->estimator = new Adaline(
+            batchSize: 32,
+            optimizer: new Adam(rate: 0.001),
+            l2Penalty: 1e-4,
+            epochs: 100,
+            minChange: 1e-4,
+            window: 5,
+            costFn: new HuberLoss(1.0)
+        );
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Adaline::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function badBatchSize() : void
+    public function testBadBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Adaline(-100);
     }
 
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -134,10 +99,7 @@ class AdalineTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'batch size' => 32,
@@ -152,10 +114,7 @@ class AdalineTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPredictImportances() : void
+    public function testTrainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -169,35 +128,33 @@ class AdalineTest extends TestCase
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertIsArray($importances);
         $this->assertCount(4, $importances);
-        $this->assertContainsOnly('float', $importances);
+        $this->assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
+    public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']], [2]));
+        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -95,7 +95,7 @@ class Labeled extends Dataset
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
      *
-     * @param iterable<\Rubix\ML\Datasets\Labeled> $datasets
+     * @param iterable<Labeled> $datasets
      * @throws InvalidArgumentException
      * @return self
      */

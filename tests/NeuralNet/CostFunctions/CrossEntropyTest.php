@@ -1,60 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group CostFunctions
- * @covers \Rubix\ML\NeuralNet\CostFunctions\CrossEntropy
- */
+#[Group('CostFunctions')]
+#[CoversClass(CrossEntropy::class)]
 class CrossEntropyTest extends TestCase
 {
-    /**
-     * @var CrossEntropy
-     */
-    protected $costFn;
+    protected CrossEntropy $costFn;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->costFn = new CrossEntropy();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(CrossEntropy::class, $this->costFn);
-        $this->assertInstanceOf(CostFunction::class, $this->costFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param float $expected
-     */
-    public function compute(Matrix $output, Matrix $target, float $expected) : void
-    {
-        $loss = $this->costFn->compute($output, $target);
-
-        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -101,25 +65,7 @@ class CrossEntropyTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param list<list<float>> $expected
-     */
-    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
-    {
-        $gradient = $this->costFn->differentiate($output, $target)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -174,5 +120,36 @@ class CrossEntropyTest extends TestCase
                 [1.111111111111111, 1.4285714285714286, -1.6666666666666667],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->costFn = new CrossEntropy();
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param float $expected
+     */
+    #[DataProvider('computeProvider')]
+    public function testCompute(Matrix $output, Matrix $target, float $expected) : void
+    {
+        $loss = $this->costFn->compute(output: $output, target: $target);
+
+        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(Matrix $output, Matrix $target, array $expected) : void
+    {
+        $gradient = $this->costFn->differentiate(output: $output, target: $target)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
     }
 }

@@ -1,57 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Strategies;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Strategies\Strategy;
 use Rubix\ML\Strategies\WildGuess;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Strategies
- * @covers \Rubix\ML\Strategies\WildGuess
- */
+#[Group('Strategies')]
+#[CoversClass(WildGuess::class)]
 class WildGuessTest extends TestCase
 {
-    /**
-     * @var WildGuess
-     */
-    protected $strategy;
+    protected WildGuess $strategy;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->strategy = new WildGuess();
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(WildGuess::class, $this->strategy);
-        $this->assertInstanceOf(Strategy::class, $this->strategy);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
-    /**
-     * @test
-     */
-    public function fitGuess() : void
+    public function testFitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 

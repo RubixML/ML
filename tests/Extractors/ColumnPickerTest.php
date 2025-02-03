@@ -1,50 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Extractors;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
-use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\ColumnPicker;
 use PHPUnit\Framework\TestCase;
-use IteratorAggregate;
-use Traversable;
 
-/**
- * @group Extractors
- * @covers \Rubix\ML\Extractors\ColumnPicker
- */
+#[Group('Extractors')]
+#[CoversClass(ColumnPicker::class)]
 class ColumnPickerTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Extractors\ColumnPicker;
-     */
-    protected $extractor;
+    protected ColumnPicker $extractor;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->extractor = new ColumnPicker(new CSV('tests/test.csv', true), [
-            'attitude', 'texture', 'class', 'rating',
-        ]);
+        $this->extractor = new ColumnPicker(
+            iterator: new CSV(path: 'tests/test.csv', header: true),
+            columns: [
+                'attitude', 'texture', 'class', 'rating',
+            ]
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ColumnPicker::class, $this->extractor);
-        $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
-        $this->assertInstanceOf(Traversable::class, $this->extractor);
-    }
-
-    /**
-     * @test
-     */
-    public function extract() : void
+    public function testExtract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'class' => 'not monster', 'rating' => '4'],

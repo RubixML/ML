@@ -1,29 +1,21 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\Encoding;
 use PHPUnit\Framework\TestCase;
-use IteratorAggregate;
-use JsonSerializable;
-use ArrayAccess;
-use Stringable;
 
-/**
- * @group Results
- * @covers \Rubix\ML\Report
- */
+#[Group('Results')]
+#[CoversClass(Report::class)]
 class ReportTest extends TestCase
 {
-    /**
-     * @var Report
-     */
-    protected $results;
+    protected Report $results;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->results = new Report([
@@ -33,22 +25,7 @@ class ReportTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Report::class, $this->results);
-        $this->assertInstanceOf(ArrayAccess::class, $this->results);
-        $this->assertInstanceOf(JsonSerializable::class, $this->results);
-        $this->assertInstanceOf(IteratorAggregate::class, $this->results);
-        $this->assertInstanceOf(Stringable::class, $this->results);
-    }
-
-    /**
-     * @test
-     */
-    public function toArray() : void
+    public function testToArray() : void
     {
         $expected = [
             'accuracy' => 0.9,
@@ -59,10 +36,7 @@ class ReportTest extends TestCase
         $this->assertEquals($expected, $this->results->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function toJSON() : void
+    public function testToJSON() : void
     {
         $expected = '{"accuracy":0.9,"f1_score":0.75,"cardinality":5}';
 
@@ -72,10 +46,7 @@ class ReportTest extends TestCase
         $this->assertEquals($expected, (string) $encoding);
     }
 
-    /**
-     * @test
-     */
-    public function arrayAccess() : void
+    public function testArrayAccess() : void
     {
         $this->assertEquals(0.9, $this->results['accuracy']);
         $this->assertEquals(0.75, $this->results['f1_score']);

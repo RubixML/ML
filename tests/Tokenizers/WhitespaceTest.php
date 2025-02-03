@@ -1,55 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Tokenizers;
 
-use Rubix\ML\Tokenizers\Tokenizer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Tokenizers
- * @covers \Rubix\ML\Tokenizers\Whitespace
- */
+#[Group('Tokenizers')]
+#[CoversClass(Whitespace::class)]
 class WhitespaceTest extends TestCase
 {
-    /**
-     * @var Whitespace
-     */
-    protected $tokenizer;
+    protected Whitespace $tokenizer;
 
-    protected function setUp() : void
-    {
-        $this->tokenizer = new Whitespace();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Whitespace::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -94,5 +62,22 @@ class WhitespaceTest extends TestCase
                 'Même', 'si', '-', 'le', 'résultat', 'probable', 'est', 'l’échec.',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new Whitespace();
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    public function testTokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

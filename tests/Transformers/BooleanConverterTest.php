@@ -1,44 +1,27 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\BooleanConverter;
-use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\BooleanConverterTest
- */
+#[Group('Transformers')]
+#[CoversClass(BooleanConverter::class)]
 class BooleanConverterTest extends TestCase
 {
-    /**
-     * @var BooleanConverter
-     */
-    protected $transformer;
+    protected BooleanConverter $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new BooleanConverter('!true!', '!false!');
+        $this->transformer = new BooleanConverter(trueValue: '!true!', falseValue: '!false!');
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(BooleanConverter::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
+    public function testTransform() : void
     {
         $dataset = new Unlabeled([
             [true, 'true', '1', 1],

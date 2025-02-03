@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
@@ -22,94 +23,71 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
-/**
- * @group MetaEstimators
- * @covers \Rubix\ML\GridSearch
- */
+#[Group('MetaEstimators')]
+#[CoversClass(GridSearch::class)]
 class GridSearchTest extends TestCase
 {
     use BackendProviderTrait;
 
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var GridSearch
-     */
-    protected $estimator;
+    protected GridSearch $estimator;
 
-    /**
-     * @var Accuracy
-     */
-    protected $metric;
+    protected Accuracy $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 1.0, 0.5),
-            'middle' => new Circle(0.0, 0.0, 5.0, 1.0),
-            'outer' => new Circle(0.0, 0.0, 10.0, 2.0),
-        ]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'inner' => new Circle(x: 0.0, y: 0.0, scale: 1.0, noise: 0.5),
+                'middle' => new Circle(x: 0.0, y: 0.0, scale: 5.0, noise: 1.0),
+                'outer' => new Circle(x: 0.0, y: 0.0, scale: 10.0, noise: 2.0),
+            ]
+        );
 
-        $this->estimator = new GridSearch(KNearestNeighbors::class, [
-            [1, 5, 10], [true], [new Euclidean(), new Manhattan()],
-        ], new FBeta(), new HoldOut(0.2));
+        $this->estimator = new GridSearch(
+            class: KNearestNeighbors::class,
+            params: [
+                [1, 5, 10],
+                [true],
+                [
+                    new Euclidean(),
+                    new Manhattan()
+                ],
+            ],
+            metric: new FBeta(),
+            validator: new HoldOut(0.2)
+        );
 
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(GridSearch::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $this->assertEquals(DataType::all(), $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'class' => KNearestNeighbors::class,
@@ -124,11 +102,10 @@ class GridSearchTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
-     * @test
      * @param Backend $backend
      */
-    public function trainPredictBest(Backend $backend) : void
+    #[DataProvider('provideBackends')]
+    public function testTrainPredictBest(Backend $backend) : void
     {
         $this->estimator->setLogger(new BlackHole());
         $this->estimator->setBackend($backend);
@@ -140,9 +117,16 @@ class GridSearchTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        /** @var list<int|string> $predictions */
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<int|string> $labels */
+        $labels = $testing->labels();
+
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 

@@ -1,60 +1,26 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Kernels\Distance;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Kernels\Distance\Canberra;
-use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Distances
- * @covers \Rubix\ML\Kernels\Distance\Canberra
- */
+#[Group('Distances')]
+#[CoversClass(Canberra::class)]
 class CanberraTest extends TestCase
 {
-    /**
-     * @var Canberra
-     */
-    protected $kernel;
+    protected Canberra $kernel;
 
     /**
-     * @before
+     * @return Generator<array<int, int|float|list<int>|list<float>>>
      */
-    protected function setUp() : void
-    {
-        $this->kernel = new Canberra();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Canberra::class, $this->kernel);
-        $this->assertInstanceOf(Distance::class, $this->kernel);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param (int|float)[] $a
-     * @param (int|float)[] $b
-     * @param float $expected
-     */
-    public function compute(array $a, array $b, float $expected) : void
-    {
-        $distance = $this->kernel->compute($a, $b);
-
-        $this->assertGreaterThanOrEqual(0.0, $distance);
-        $this->assertEquals($expected, $distance);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             [2, 1, 4, 0], [-2, 1, 8, -2],
@@ -70,5 +36,24 @@ class CanberraTest extends TestCase
             [1000, -2000, 3000], [1000, -2000, 3000],
             0.0,
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->kernel = new Canberra();
+    }
+
+    /**
+     * @param list<float|int> $a
+     * @param list<float|int> $b
+     * @param float $expected
+     */
+    #[DataProvider('computeProvider')]
+    public function testCompute(array $a, array $b, float $expected) : void
+    {
+        $distance = $this->kernel->compute(a: $a, b: $b);
+
+        $this->assertGreaterThanOrEqual(0.0, $distance);
+        $this->assertEquals($expected, $distance);
     }
 }

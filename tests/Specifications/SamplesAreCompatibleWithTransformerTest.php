@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Specifications;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\L1Normalizer;
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -10,28 +15,14 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Specifications
- * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer
- */
+#[Group('Specifications')]
+#[CoversClass(SamplesAreCompatibleWithTransformer::class)]
 class SamplesAreCompatibleWithTransformerTest extends TestCase
 {
     /**
-     * @test
-     * @dataProvider passesProvider
-     *
-     * @param SamplesAreCompatibleWithTransformer $specification
-     * @param bool $expected
+     * @return Generator<mixed[]>
      */
-    public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function passesProvider() : Generator
+    public static function passesProvider() : Generator
     {
         yield [
             SamplesAreCompatibleWithTransformer::with(
@@ -72,5 +63,15 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
             ),
             false,
         ];
+    }
+
+    /**
+     * @param SamplesAreCompatibleWithTransformer $specification
+     * @param bool $expected
+     */
+    #[DataProvider('passesProvider')]
+    public function testPasses(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
     }
 }

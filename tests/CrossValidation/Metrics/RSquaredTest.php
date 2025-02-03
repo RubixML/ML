@@ -1,95 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Metrics
- * @covers \Rubix\ML\CrossValidation\Metrics\RSquared
- */
+#[Group('Metrics')]
+#[CoversClass(RSquared::class)]
 class RSquaredTest extends TestCase
 {
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->metric = new RSquared();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(RSquared::class, $this->metric);
-        $this->assertInstanceOf(Metric::class, $this->metric);
-    }
-
-    /**
-     * @test
-     */
-    public function range() : void
-    {
-        $tuple = $this->metric->range();
-
-        $this->assertInstanceOf(Tuple::class, $tuple);
-        $this->assertCount(2, $tuple);
-        $this->assertGreaterThan($tuple[0], $tuple[1]);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
-    {
-        $expected = [
-            EstimatorType::regressor(),
-        ];
-
-        $this->assertEquals($expected, $this->metric->compatibility());
-    }
-
-    /**
-     * @test
-     * @dataProvider scoreProvider
-     *
-     * @param (int|float)[] $predictions
-     * @param (int|float)[] $labels
-     * @param float $expected
-     */
-    public function score(array $predictions, array $labels, float $expected) : void
-    {
-        [$min, $max] = $this->metric->range()->list();
-
-        $score = $this->metric->score($predictions, $labels);
-
-        $this->assertThat(
-            $score,
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-            )
-        );
-
-        $this->assertEquals($expected, $score);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function scoreProvider() : Generator
+    public static function scoreProvider() : Generator
     {
         yield [
             [7, 9.5, -20, -500, .079],
@@ -108,5 +41,54 @@ class RSquaredTest extends TestCase
             [10, 10.0, 6, -1400, .08],
             1.0,
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->metric = new RSquared();
+    }
+
+    public function testRange() : void
+    {
+        $tuple = $this->metric->range();
+
+        $this->assertInstanceOf(Tuple::class, $tuple);
+        $this->assertCount(2, $tuple);
+        $this->assertGreaterThan($tuple[0], $tuple[1]);
+    }
+
+    public function testCompatibility() : void
+    {
+        $expected = [
+            EstimatorType::regressor(),
+        ];
+
+        $this->assertEquals($expected, $this->metric->compatibility());
+    }
+
+    /**
+     * @param (int|float)[] $predictions
+     * @param (int|float)[] $labels
+     * @param float $expected
+     */
+    #[DataProvider('scoreProvider')]
+    public function testScore(array $predictions, array $labels, float $expected) : void
+    {
+        [$min, $max] = $this->metric->range()->list();
+
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
+        );
+
+        $this->assertEquals($expected, $score);
     }
 }

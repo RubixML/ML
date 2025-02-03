@@ -1,51 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Noise;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Noise
- */
+#[Group('Layers')]
+#[CoversClass(Noise::class)]
 class NoiseTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var Noise
-     */
-    protected $layer;
+    protected Noise $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -56,7 +48,7 @@ class NoiseTest extends TestCase
             [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
+        $this->prevGrad = new Deferred(fn: function () {
             return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
@@ -71,20 +63,7 @@ class NoiseTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Noise::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -98,10 +77,12 @@ class NoiseTest extends TestCase
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer->back(
+            prevGradient: $this->prevGrad,
+            optimizer: $this->optimizer
+        )->compute();
 
         $expected = [
             [0.25, 0.7, 0.1],
@@ -120,7 +101,6 @@ class NoiseTest extends TestCase
 
         $infer = $this->layer->infer($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

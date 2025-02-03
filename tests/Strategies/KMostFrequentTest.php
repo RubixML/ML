@@ -1,57 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Strategies;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Strategies\Strategy;
 use Rubix\ML\Strategies\KMostFrequent;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Strategies
- * @covers \Rubix\ML\Strategies\KMostFrequent
- */
+#[Group('Strategies')]
+#[CoversClass(KMostFrequent::class)]
 class KMostFrequentTest extends TestCase
 {
-    /**
-     * @var KMostFrequent
-     */
-    protected $strategy;
+    protected KMostFrequent $strategy;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->strategy = new KMostFrequent(2);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(KMostFrequent::class, $this->strategy);
-        $this->assertInstanceOf(Strategy::class, $this->strategy);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(DataType::categorical(), $this->strategy->type());
     }
 
-    /**
-     * @test
-     */
-    public function fitGuess() : void
+    public function testFitGuess() : void
     {
         $values = ['a', 'a', 'b', 'b', 'c'];
 

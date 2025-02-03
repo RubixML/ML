@@ -1,59 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\Softsign
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(Softsign::class)]
 class SoftsignTest extends TestCase
 {
-    /**
-     * @var Softsign
-     */
-    protected $activationFn;
+    protected Softsign $activationFn;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->activationFn = new Softsign();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Softsign::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEquals($expected, $activations);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -78,25 +43,7 @@ class SoftsignTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEquals($expected, $derivatives);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -127,5 +74,35 @@ class SoftsignTest extends TestCase
                 [0.9070294784580498, 0.4328254847645429, 0.42165626581210996],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->activationFn = new Softsign();
+    }
+
+    /**
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    #[DataProvider('computeProvider')]
+    public function testActivate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEquals($expected, $activations);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate(input: $input, output: $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
     }
 }

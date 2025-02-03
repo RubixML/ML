@@ -1,63 +1,42 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Transformer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\SparseRandomProjector
- */
+#[Group('Transformers')]
+#[CoversClass(SparseRandomProjector::class)]
 class SparseRandomProjectorTest extends TestCase
 {
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @var SparseRandomProjector
-     */
-    protected $transformer;
+    protected SparseRandomProjector $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Blob(array_fill(0, 10, 0.0), 3.0);
+        $this->generator = new Blob(
+            center: array_fill(start_index: 0, count: 10, value: 0.0),
+            stdDev: 3.0
+        );
 
-        $this->transformer = new SparseRandomProjector(4);
+        $this->transformer = new SparseRandomProjector(dimensions: 4);
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitTransform() : void
+    public function testFitTransform() : void
     {
         $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
@@ -80,10 +59,7 @@ class SparseRandomProjectorTest extends TestCase
         $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
+    public function testTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

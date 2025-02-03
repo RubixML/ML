@@ -1,47 +1,36 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Binary
- */
+#[Group('Layers')]
+#[CoversClass(Binary::class)]
 class BinaryTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var string[]
      */
-    protected $labels;
+    protected array $labels;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var Binary
-     */
-    protected $layer;
+    protected Binary $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -52,25 +41,12 @@ class BinaryTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Binary(['hot', 'cold'], new CrossEntropy());
+        $this->layer = new Binary(classes: ['hot', 'cold'], costFn: new CrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Binary::class, $this->layer);
-        $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize(1);
 
@@ -82,10 +58,9 @@ class BinaryTest extends TestCase
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -105,7 +80,6 @@ class BinaryTest extends TestCase
 
         $infer = $this->layer->infer($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

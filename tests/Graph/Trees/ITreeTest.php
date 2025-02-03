@@ -1,69 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Trees\Tree;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
-use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Trees
- * @covers \Rubix\ML\Graph\Trees\ITree
- */
+#[Group('Trees')]
+#[CoversClass(ITree::class)]
 class ITreeTest extends TestCase
 {
-    protected const DATASET_SIZE = 100;
+    protected const int DATASET_SIZE = 100;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var ITree
-     */
-    protected $tree;
+    protected ITree $tree;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'east' => new Blob([5, -2, -2]),
-            'west' => new Blob([0, 5, -3]),
-        ], [0.5, 0.5]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'east' => new Blob(center: [5, -2, -2]),
+                'west' => new Blob(center: [0, 5, -3]),
+            ],
+            weights: [0.5, 0.5]
+        );
 
         $this->tree = new ITree();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ITree::class, $this->tree);
-        $this->assertInstanceOf(BinaryTree::class, $this->tree);
-        $this->assertInstanceOf(Tree::class, $this->tree);
-    }
-
-    /**
-     * @test
-     */
-    public function growSearch() : void
+    public function testGrowSearch() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
@@ -76,13 +57,10 @@ class ITreeTest extends TestCase
         $this->assertInstanceOf(Depth::class, $node);
     }
 
-    /**
-     * @test
-     */
-    public function growWithSameSamples() : void
+    public function testGrowWithSameSamples() : void
     {
-        $generator = new Agglomerate([
-            'east' => new Blob([5, -2, 10], 0.0),
+        $generator = new Agglomerate(generators: [
+            'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),
         ]);
 
         $dataset = $generator->generate(self::DATASET_SIZE);

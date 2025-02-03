@@ -301,7 +301,7 @@ class BallTree implements BinaryTree, Spatial
      * Return the path of a sample taken from the root node to a leaf node in an array.
      *
      * @param list<string|int|float> $sample
-     * @return list<\Rubix\ML\Graph\Nodes\Hypersphere>
+     * @return list<Hypersphere>
      */
     protected function path(array $sample) : array
     {

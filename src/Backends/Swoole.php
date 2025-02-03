@@ -9,8 +9,6 @@ use RuntimeException;
 use Swoole\Atomic;
 use Swoole\Process;
 
-use function Swoole\Coroutine\run;
-
 /**
  * Swoole
  *
@@ -110,7 +108,7 @@ class Swoole implements Backend
             $currentCpu = ($currentCpu + 1) % $this->cpus;
         }
 
-        run(function () use ($maxMessageLength, &$results, $workerProcesses) {
+        Coroutine::run(function () use ($maxMessageLength, &$results, $workerProcesses) {
             foreach ($workerProcesses as $index => $workerProcess) {
                 $status = $workerProcess->wait();
 

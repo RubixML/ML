@@ -123,7 +123,7 @@ class TokenHashingVectorizer implements Transformer
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return DataType[]
      */
     public function compatibility() : array
     {

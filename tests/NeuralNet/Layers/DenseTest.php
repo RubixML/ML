@@ -1,54 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Initializers\He;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Dense
- */
+#[Group('Layer')]
+#[CoversClass(Dense::class)]
 class DenseTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected Matrix $input;
 
-    /**
-     * @var Deferred
-     */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var Dense
-     */
-    protected $layer;
+    protected Dense $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -59,7 +44,7 @@ class DenseTest extends TestCase
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
+        $this->prevGrad = new Deferred(fn: function () {
             return Matrix::quick([
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
@@ -68,26 +53,18 @@ class DenseTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Dense(2, 0.0, true, new He(), new Constant(0.0));
+        $this->layer = new Dense(
+            neurons: 2,
+            l2Penalty: 0.0,
+            bias: true,
+            weightInitializer: new He(),
+            biasInitializer: new Constant(0.0)
+        );
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Dense::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -100,10 +77,12 @@ class DenseTest extends TestCase
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer->back(
+            prevGradient: $this->prevGrad,
+            optimizer: $this->optimizer
+        )->compute();
 
         $expected = [
             [0.2513486032877107, 0.10053944131508427, 0.698223970571707],
@@ -121,7 +100,6 @@ class DenseTest extends TestCase
 
         $infer = $this->layer->infer($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

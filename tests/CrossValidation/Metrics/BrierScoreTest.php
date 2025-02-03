@@ -1,82 +1,27 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
-use Rubix\ML\CrossValidation\Metrics\ProbabilisticMetric;
 use Rubix\ML\CrossValidation\Metrics\BrierScore;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Metrics
- * @covers \Rubix\ML\CrossValidation\Metrics\BrierScore
- */
+#[Group('Metrics')]
+#[CoversClass(BrierScore::class)]
 class BrierScoreTest extends TestCase
 {
-    /**
-     * @var BrierScore
-     */
-    protected $metric;
+    protected BrierScore $metric;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->metric = new BrierScore();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ProbabilisticMetric::class, $this->metric);
-        $this->assertInstanceOf(BrierScore::class, $this->metric);
-    }
-
-    /**
-     * @test
-     */
-    public function range() : void
-    {
-        $tuple = $this->metric->range();
-
-        $this->assertInstanceOf(Tuple::class, $tuple);
-        $this->assertCount(2, $tuple);
-        $this->assertGreaterThan($tuple[0], $tuple[1]);
-    }
-
-    /**
-     * @test
-     * @dataProvider scoreProvider
-     *
-     * @param list<array<string,int|float>> $probabilities
-     * @param list<string|int> $labels
-     * @param float $expected
-     */
-    public function score(array $probabilities, array $labels, float $expected) : void
-    {
-        [$min, $max] = $this->metric->range()->list();
-
-        $score = $this->metric->score($probabilities, $labels);
-
-        $this->assertThat(
-            $score,
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-            )
-        );
-
-        $this->assertEqualsWithDelta($expected, $score, 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function scoreProvider() : Generator
+    public static function scoreProvider() : Generator
     {
         yield [
             [
@@ -137,5 +82,45 @@ class BrierScoreTest extends TestCase
             ['no', 'yes'],
             -0.5,
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->metric = new BrierScore();
+    }
+
+    public function testRange() : void
+    {
+        $tuple = $this->metric->range();
+
+        $this->assertInstanceOf(Tuple::class, $tuple);
+        $this->assertCount(2, $tuple);
+        $this->assertGreaterThan($tuple[0], $tuple[1]);
+    }
+
+    /**
+     * @param list<array<string,int|float>> $probabilities
+     * @param list<string|int> $labels
+     * @param float $expected
+     */
+    #[DataProvider('scoreProvider')]
+    public function testScore(array $probabilities, array $labels, float $expected) : void
+    {
+        [$min, $max] = $this->metric->range()->list();
+
+        $score = $this->metric->score(
+            probabilities: $probabilities,
+            labels: $labels
+        );
+
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
+        );
+
+        $this->assertEqualsWithDelta($expected, $score, 1e-8);
     }
 }

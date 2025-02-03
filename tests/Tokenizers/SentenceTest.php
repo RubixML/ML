@@ -1,58 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Tokenizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Sentence;
-use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Tokenizers
- * @covers \Rubix\ML\Tokenizers\Sentence
- */
+#[Group('Tokenizers')]
+#[CoversClass(Sentence::class)]
 class SentenceTest extends TestCase
 {
-    /**
-     * @var Sentence
-     */
-    protected $tokenizer;
+    protected Sentence $tokenizer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new Sentence();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Sentence::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -237,5 +202,22 @@ class SentenceTest extends TestCase
                 'لأن الأشخاص المجانين بما يكفي للاعتقاد بأنهم يستطيعون تغيير العالم ، هم الذين يفعلون ذلك.',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new Sentence();
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    public function testTokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

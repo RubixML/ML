@@ -1,53 +1,33 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Generators
- * @covers \Rubix\ML\Datasets\Generators\Hyperplane
- */
+#[Group('Generators')]
+#[CoversClass(Hyperplane::class)]
 class HyperplaneTest extends TestCase
 {
-    /**
-     * @var Hyperplane
-     */
-    protected $generator;
+    protected Hyperplane $generator;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([0.001, -4.0, 12], 5.0);
+        $this->generator = new Hyperplane(coefficients: [0.001, -4.0, 12], intercept: 5.0);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Hyperplane::class, $this->generator);
-        $this->assertInstanceOf(Generator::class, $this->generator);
-    }
-
-    /**
-     * @test
-     */
-    public function dimensions() : void
+    public function testDimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    /**
-     * @test
-     */
-    public function generate() : void
+    public function testGenerate() : void
     {
         $dataset = $this->generator->generate(30);
 

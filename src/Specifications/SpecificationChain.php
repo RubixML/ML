@@ -10,14 +10,14 @@ class SpecificationChain extends Specification
     /**
      * A list of specifications to check in order.
      *
-     * @var iterable<\Rubix\ML\Specifications\Specification>
+     * @var iterable<Specification>
      */
     protected iterable $specifications;
 
     /**
      * Build a specification object with the given arguments.
      *
-     * @param iterable<\Rubix\ML\Specifications\Specification> $specifications
+     * @param iterable<Specification> $specifications
      * @return self
      */
     public static function with(iterable $specifications) : self
@@ -26,7 +26,7 @@ class SpecificationChain extends Specification
     }
 
     /**
-     * @param iterable<\Rubix\ML\Specifications\Specification> $specifications
+     * @param iterable<Specification> $specifications
      * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(iterable $specifications)
