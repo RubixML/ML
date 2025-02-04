@@ -27,7 +27,7 @@ jobs:
         if: matrix.operating-system == 'ubuntu-latest'
         run: |
           sudo apt-get update -q
-          sudo apt-get install -qy libopenblas-dev
+          sudo apt-get install -qy libopenblas-dev liblapacke-dev
 
       - name: Install NumPower
         run: |
