@@ -451,28 +451,10 @@ parameters:
 			path: src/Graph/Nodes/Ball.php
 
 		-
-			message: '#^Method Rubix\\ML\\Graph\\Nodes\\Best\:\:__construct\(\) has Rubix\\ML\\Exceptions\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Graph/Nodes/Best.php
-
-		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Graph/Nodes/Clique.php
-
-		-
-			message: '#^Method Rubix\\ML\\Graph\\Nodes\\Depth\:\:__construct\(\) has Rubix\\ML\\Exceptions\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Graph/Nodes/Depth.php
-
-		-
-			message: '#^Method Rubix\\ML\\Graph\\Nodes\\Isolator\:\:__construct\(\) has Rubix\\ML\\Exceptions\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Graph/Nodes/Isolator.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
@@ -485,12 +467,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Graph/Nodes/Isolator.php
-
-		-
-			message: '#^Method Rubix\\ML\\Graph\\Nodes\\Split\:\:__construct\(\) has Rubix\\ML\\Exceptions\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Graph/Nodes/Split.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\> given\.$#'
@@ -623,12 +599,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Regressors/MLPRegressor.php
-
-		-
-			message: '#^Method Rubix\\ML\\Specifications\\SpecificationChain\:\:__construct\(\) has Rubix\\ML\\Exceptions\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Specifications/SpecificationChain.php
 
 		-
 			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\BooleanConverter\), ''convert''\} given\.$#'
