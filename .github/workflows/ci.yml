@@ -36,8 +36,8 @@ jobs:
           phpize
           ./configure
           make
-          make install
-          echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
+          sudo make install
+          sudo echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
 
       - name: Validate composer.json
         run: composer validate
