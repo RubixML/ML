@@ -24,9 +24,10 @@ jobs:
           ini-values: memory_limit=-1
 
       - name: Install OpenBLAS
+        if: matrix.operating-system == 'ubuntu-latest'
         run: |
-          apt-get update -q
-          apt-get install -qy libopenblas-dev
+          sudo apt-get update -q
+          sudo apt-get install -qy libopenblas-dev
 
       - name: Install NumPower
         run: |
