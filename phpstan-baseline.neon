@@ -1607,21 +1607,3 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Helpers/ParamsTest.php
-
-		-
-			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\NeuralNet\\\\Initializers\\\\LegacyConstant'' and Rubix\\ML\\NeuralNet\\Initializers\\LegacyConstant will always evaluate to true\.$#'
-			identifier: method.alreadyNarrowedType
-			count: 1
-			path: tests/NeuralNet/Initializers/LegacyConstantTest.php
-
-		-
-			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\NeuralNet\\\\Initializers\\\\LegacyInitializer'' and Rubix\\ML\\NeuralNet\\Initializers\\LegacyConstant will always evaluate to true\.$#'
-			identifier: method.alreadyNarrowedType
-			count: 1
-			path: tests/NeuralNet/Initializers/LegacyConstantTest.php
-
-		-
-			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Tensor\\\\Matrix'' and Tensor\\Matrix will always evaluate to true\.$#'
-			identifier: method.alreadyNarrowedType
-			count: 1
-			path: tests/NeuralNet/Initializers/LegacyConstantTest.php
