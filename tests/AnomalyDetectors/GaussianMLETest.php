@@ -144,7 +144,7 @@ class GaussianMLETest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([['bad']]));
+        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
     public function testPredictUntrained() : void

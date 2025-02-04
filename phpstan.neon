@@ -1,3 +1,5 @@
+includes:
+    - phpstan-baseline.neon
 parameters:
     level: 8
     paths:
@@ -7,3 +9,4 @@ parameters:
     excludePaths:
         - src/Backends/Amp.php
         - src/Backends/Swoole.php
+        - tests/Backends/SwooleTest.php

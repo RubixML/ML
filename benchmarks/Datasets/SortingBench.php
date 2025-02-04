@@ -14,7 +14,7 @@ class SortingBench
     protected const DATASET_SIZE = 2500;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $dataset;
 
