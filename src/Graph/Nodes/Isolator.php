@@ -91,7 +91,6 @@ class Isolator implements HasBinaryChildren
      * @param int $column
      * @param string|int|float $value
      * @param array{Dataset,Dataset} $subsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $column, string|int|float $value, array $subsets)
     {

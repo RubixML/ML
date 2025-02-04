@@ -61,7 +61,6 @@ class Split implements Decision, HasBinaryChildren
      * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @param float $impurity
      * @param int<0,max> $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(int $column, string|int|float $value, array $subsets, float $impurity, int $n)
     {
