@@ -1,89 +1,22 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Helpers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Helpers
- * @covers \Rubix\ML\Helpers\Params
- */
+#[Group('Helpers')]
+#[CoversClass(Params::class)]
 class ParamsTest extends TestCase
 {
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        ini_set('precision', '14');
-    }
-
-    /**
-     * @test
-     */
-    public function ints() : void
-    {
-        $values = Params::ints(0, 100, 5);
-
-        $this->assertContainsOnly('int', $values);
-
-        $this->assertEquals(array_unique($values), $values);
-
-        foreach ($values as $value) {
-            $this->assertThat(
-                $value,
-                $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100))
-            );
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function floats() : void
-    {
-        $values = Params::floats(0.0, 100.0, 5);
-
-        $this->assertContainsOnly('float', $values);
-
-        foreach ($values as $value) {
-            $this->assertThat(
-                $value,
-                $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100))
-            );
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function grid() : void
-    {
-        $values = Params::grid(0, 100, 5);
-
-        $this->assertEquals(range(0, 100, 25), $values);
-    }
-
-    /**
-     * @test
-     * @dataProvider stringifyProvider
-     *
-     * @param mixed[] $params
-     * @param string $separator
-     * @param string $expected
-     */
-    public function stringify(array $params, string $separator, string $expected) : void
-    {
-        $this->assertEquals($expected, Params::stringify($params, $separator));
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function stringifyProvider() : Generator
+    public static function stringifyProvider() : Generator
     {
         yield [
             [
@@ -116,10 +49,60 @@ class ParamsTest extends TestCase
         ];
     }
 
+    protected function setUp() : void
+    {
+        ini_set('precision', '14');
+    }
+
+    public function testInts() : void
+    {
+        $values = Params::ints(min: 0, max: 100, n: 5);
+
+        $this->assertContainsOnlyInt($values);
+
+        $this->assertEquals(array_unique($values), $values);
+
+        foreach ($values as $value) {
+            $this->assertThat(
+                $value,
+                $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100))
+            );
+        }
+    }
+
+    public function testFloats() : void
+    {
+        $values = Params::floats(min: 0.0, max: 100.0, n: 5);
+
+        $this->assertContainsOnlyFloat($values);
+
+        foreach ($values as $value) {
+            $this->assertThat(
+                $value,
+                $this->logicalAnd($this->greaterThanOrEqual(0), $this->lessThanOrEqual(100))
+            );
+        }
+    }
+
+    public function testGrid() : void
+    {
+        $values = Params::grid(min: 0, max: 100, n: 5);
+
+        $this->assertEquals(range(0, 100, 25), $values);
+    }
+
     /**
-     * @test
+     * @param array $params
+     * @param string $separator
+     * @param string $expected
      */
-    public function shortName() : void
+    #[DataProvider('stringifyProvider')]
+    public function stringify(array $params, string $separator, string $expected) : void
+    {
+        $this->assertEquals($expected, Params::stringify(params: $params, separator: $separator));
+    }
+
+    public function testSortName() : void
     {
         $this->assertEquals('KNearestNeighbors', Params::shortName(KNearestNeighbors::class));
     }

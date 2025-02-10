@@ -6,6 +6,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
@@ -18,24 +19,15 @@ class OneVsRestBench
 {
     use BackendProviderTrait;
 
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
 
-    /**
-     * @var OneVsRest
-     */
-    protected $estimator;
+    protected OneVsRest $estimator;
 
     public function setUp() : void
     {

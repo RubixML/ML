@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [windows-latest, ubuntu-latest, macos-latest]
-        php-versions: ['8.0', '8.1', '8.2']
+        php-versions: ['8.4']
 
     steps:
       - name: Checkout
@@ -24,9 +24,10 @@ jobs:
           ini-values: memory_limit=-1
 
       - name: Install OpenBLAS
+        if: matrix.operating-system == 'ubuntu-latest'
         run: |
-          apt-get update -q
-          apt-get install -qy libopenblas-dev
+          sudo apt-get update -q
+          sudo apt-get install -qy libopenblas-dev liblapacke-dev
 
       - name: Install NumPower
         run: |
@@ -35,8 +36,8 @@ jobs:
           phpize
           ./configure
           make
-          make install
-          echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
+          sudo make install
+          sudo echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
 
       - name: Validate composer.json
         run: composer validate

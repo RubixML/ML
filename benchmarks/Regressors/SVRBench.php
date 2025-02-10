@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 
@@ -11,24 +12,15 @@ use Rubix\ML\Datasets\Generators\Hyperplane;
  */
 class SVRBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
 
-    /**
-     * @var SVR
-     */
-    protected $estimator;
+    protected SVR $estimator;
 
     public function setUp() : void
     {

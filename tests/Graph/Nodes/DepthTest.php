@@ -1,54 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use Rubix\ML\Graph\Nodes\Node;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Depth
- */
+#[Group('Nodes')]
+#[CoversClass(Depth::class)]
 class DepthTest extends TestCase
 {
-    protected const SAMPLES = [
+    protected const array SAMPLES = [
         [5.0, 2.0, -3],
         [6.0, 4.0, -5],
         [-0.01, 0.1, -7],
     ];
 
-    protected const DEPTH = 8;
+    protected const int DEPTH = 8;
 
-    protected const C = 8.207392357589622;
+    protected const float C = 8.207392357589622;
 
-    /**
-     * @var Depth
-     */
-    protected $node;
+    protected Depth $node;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->node = new Depth(self::C);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Depth::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
-    }
-
-    /**
-     * @test
-     */
-    public function c() : void
+    public function testC() : void
     {
         $this->assertEquals(3.748880484475505, Depth::c(10));
         $this->assertEquals(8.364671030072245, Depth::c(100));
@@ -57,22 +40,16 @@ class DepthTest extends TestCase
         $this->assertEquals(22.180282259643523, Depth::c(100000));
     }
 
-    /**
-     * @test
-     */
-    public function terminate() : void
+    public function testTerminate() : void
     {
-        $dataset = Unlabeled::quick(self::SAMPLES);
+        $dataset = Unlabeled::quick(samples: self::SAMPLES);
 
-        $node = Depth::terminate($dataset, self::DEPTH);
+        $node = Depth::terminate(dataset: $dataset, depth: self::DEPTH);
 
         $this->assertEquals(self::C, $node->depth());
     }
 
-    /**
-     * @test
-     */
-    public function depth() : void
+    public function testDepth() : void
     {
         $this->assertEquals(self::C, $this->node->depth());
     }

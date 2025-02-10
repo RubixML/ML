@@ -1,0 +1,1579 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method Rubix\\ML\\BootstrapAggregator\:\:params\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/BootstrapAggregator.php
+
+		-
+			message: '#^Method Rubix\\ML\\BootstrapAggregator\:\:predict\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/BootstrapAggregator.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:losses\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:predict\(\) should return list\<string\> but returns list\<int\|string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:score\(\) should return list\<array\<float\>\> but returns array\<int\<0, max\>, array\<int\|string, float\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:steps\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^PHPDoc tag @return contains unresolvable type\.$#'
+			identifier: return.unresolvableType
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^PHPDoc tag @var for property Rubix\\ML\\Classifiers\\AdaBoost\:\:\$losses contains unresolvable type\.$#'
+			identifier: property.unresolvableType
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^PHPDoc tag @var for property Rubix\\ML\\Classifiers\\AdaBoost\:\:\$losses with type mixed is not subtype of native type array\|null\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Property Rubix\\ML\\Classifiers\\AdaBoost\:\:\$losses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Property Rubix\\ML\\Classifiers\\ClassificationTree\:\:\$classes \(list\<string\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Classifiers/ClassificationTree.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Classifiers\\GaussianNB\:\:jointLogLikelihood\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Classifiers/GaussianNB.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\KNearestNeighbors\:\:nearest\(\) should return array\{list\<float\|int\|string\>, list\<float\>\} but returns array\{array\<int\<0, max\>, string\>, array\<int\<0, max\>, float\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Classifiers/KNearestNeighbors.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Classifiers/LogitBoost.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\NeuralNet\\Layers\\Hidden and Rubix\\ML\\NeuralNet\\Layers\\Hidden will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Classifiers/MultilayerPerceptron.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Classifiers/MultilayerPerceptron.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\NaiveBayes\:\:counts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(array\<list\<array\<int\<0,max\>\>\>\>\>\|null\)\: Unexpected token "\>", expected TOKEN_HORIZONTAL_WS at offset 121 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
+		-
+			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$counts \(array\<string, list\<array\<int\<0, max\>\>\>\>\) does not accept non\-empty\-array\<array\<array\<int\<0, max\>\>\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
+		-
+			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$probs \(array\<string, list\<array\<float\>\>\>\) does not accept non\-empty\-array\<array\<array\<float\>\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
+		-
+			message: '#^Method Rubix\\ML\\Classifiers\\RandomForest\:\:proba\(\) should return list\<array\<string, float\>\> but returns array\<int, non\-empty\-array\<float\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Classifiers/RandomForest.php
+
+		-
+			message: '#^PHPDoc tag @var with type array\<string, int\> is not subtype of native type array\<int\<1, max\>\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Classifiers/RandomForest.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<int\<1, max\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Classifiers/RandomForest.php
+
+		-
+			message: '#^Property Rubix\\ML\\Classifiers\\RandomForest\:\:\$trees \(list\<Rubix\\ML\\Classifiers\\ClassificationTree\|Rubix\\ML\\Classifiers\\ExtraTreeClassifier\>\|null\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Classifiers/RandomForest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Clusterers\\DBSCAN\:\:predict\(\) should return list\<int\> but returns array\<int, int\<\-1, max\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Clusterers/DBSCAN.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\FuzzyCMeans\:\:probaSample\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/FuzzyCMeans.php
+
+		-
+			message: '#^Parameter \#2 \$memberships of method Rubix\\ML\\Clusterers\\FuzzyCMeans\:\:inertia\(\) expects list\<list\<float\>\>, list\<array\<int, float\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/FuzzyCMeans.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\GaussianMixture\:\:jointLogLikelihood\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/KMeans.php
+
+		-
+			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#2 \$previous of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Property Rubix\\ML\\Clusterers\\Seeders\\Preset\:\:\$centroids \(list\<list\<float\|int\|string\>\>\) does not accept non\-empty\-list\<array\<float\|int\|string\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Clusterers/Seeders/Preset.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Learner and Rubix\\ML\\Learner will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/CommitteeMachine.php
+
+		-
+			message: '#^Property Rubix\\ML\\CommitteeMachine\:\:\$experts \(list\<Rubix\\ML\\Learner\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/CommitteeMachine.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/CrossValidation/HoldOut.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/Accuracy.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/Completeness.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/FBeta.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/Homogeneity.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/Informedness.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/MCC.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/MeanAbsoluteError.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/MeanSquaredError.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/MedianAbsoluteError.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 105 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/Metric.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 105 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/ProbabilisticMetric.php
+
+		-
+			message: '#^Parameter \#1 \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\MeanSquaredError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/CrossValidation/Metrics/RMSE.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\MeanSquaredError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/CrossValidation/Metrics/RMSE.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/RSquared.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/RandIndex.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/SMAPE.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(\\Rubix\\ML\\Tuple\{float,float\}\)\: Unexpected token "\{", expected TOKEN_HORIZONTAL_WS at offset 112 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: src/CrossValidation/Metrics/VMeasure.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\CrossValidation\\Reports\\ReportGenerator and Rubix\\ML\\CrossValidation\\Reports\\ReportGenerator will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/CrossValidation/Reports/AggregateReport.php
+
+		-
+			message: '#^Method Rubix\\ML\\CrossValidation\\Reports\\AggregateReport\:\:compatibility\(\) should return list\<Rubix\\ML\\EstimatorType\> but returns array\<Rubix\\ML\\EstimatorType\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/CrossValidation/Reports/AggregateReport.php
+
+		-
+			message: '#^Method Rubix\\ML\\Datasets\\Dataset\:\:types\(\) should return list\<Rubix\\ML\\DataType\> but returns array\<Rubix\\ML\\DataType\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Method Rubix\\ML\\Datasets\\Dataset\:\:uniqueTypes\(\) should return list\<Rubix\\ML\\DataType\> but returns array\<int\<0, max\>, Rubix\\ML\\DataType\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Offset 0 on non\-empty\-list\<list\<mixed\>\> on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Property Rubix\\ML\\Datasets\\Dataset\:\:\$samples \(list\<list\<mixed\>\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Datasets\\Generators\\Generator and Rubix\\ML\\Datasets\\Generators\\Generator will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Datasets/Generators/Agglomerate.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: src/Datasets/Generators/Agglomerate.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Datasets\\Labeled and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Datasets/Labeled.php
+
+		-
+			message: '#^PHPDoc tag @var with type array\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Datasets/Labeled.php
+
+		-
+			message: '#^PHPDoc tag @var with type list\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Datasets/Labeled.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Datasets/Labeled.php
+
+		-
+			message: '#^Property Rubix\\ML\\Datasets\\Labeled\:\:\$labels \(list\<float\|int\|string\>\) does not accept array\<float\|int\|string\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Datasets/Labeled.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Datasets\\Dataset and Rubix\\ML\\Datasets\\Dataset will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Datasets/Unlabeled.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Datasets/Unlabeled.php
+
+		-
+			message: '#^Call to function is_array\(\) with non\-empty\-array\<string, string\|null\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Extractors/CSV.php
+
+		-
+			message: '#^Parameter \#1 \$keys of function array_combine expects array\<int\|string\>, list\<string\|null\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Extractors/CSV.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Nodes/Ball.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Nodes/Clique.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Nodes/VantagePoint.php
+
+		-
+			message: '#^Method Rubix\\ML\\Graph\\Trees\\BallTree\:\:nearest\(\) should return array\{list\<list\<mixed\>\>, list\<mixed\>, list\<float\>\} but returns array\{list\<list\<mixed\>\>, array\<mixed\>, list\<float\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Graph/Trees/BallTree.php
+
+		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\Graph\\Trees\\DecisionTree\:\:impurity\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Trees/DecisionTree.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Trees/ExtraTree.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Graph/Trees/ExtraTree.php
+
+		-
+			message: '#^Method Rubix\\ML\\Graph\\Trees\\KDTree\:\:nearest\(\) should return array\{list\<list\<mixed\>\>, list\<mixed\>, list\<float\>\} but returns array\{list\<list\<mixed\>\>, array\<mixed\>, list\<float\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Graph/Trees/KDTree.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Datasets\\Labeled and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Graph/Trees/VantageTree.php
+
+		-
+			message: '#^Parameter \#1 \$a of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Graph/Trees/VantageTree.php
+
+		-
+			message: '#^Method Rubix\\ML\\GridSearch\:\:combine\(\) should return list\<list\<mixed\>\> but returns list\<array\<int\<0, max\>, mixed\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/GridSearch.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<mixed\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: src/GridSearch.php
+
+		-
+			message: '#^Property Rubix\\ML\\GridSearch\:\:\$params \(list\<list\<mixed\>\>\) does not accept list\<array\<mixed\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/GridSearch.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, list\<float\|int\<0, max\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Kernels/Distance/Diagonal.php
+
+		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\Network\:\:backpropagate\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/NeuralNet/Network.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\Transformers\\Transformer and Rubix\\ML\\Transformers\\Transformer will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Pipeline.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/GradientBoost.php
+
+		-
+			message: '#^Method Rubix\\ML\\Regressors\\KNNRegressor\:\:nearest\(\) should return array\{list\<float\|int\|string\>, list\<float\>\} but returns array\{array\<int\<0, max\>, float\|int\>, array\<int\<0, max\>, float\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Regressors/KNNRegressor.php
+
+		-
+			message: '#^Parameter \#1 \$a of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/KNNRegressor.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<float\|int\|string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: src/Regressors/KNNRegressor.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/KNNRegressor.php
+
+		-
+			message: '#^Property Rubix\\ML\\Regressors\\KNNRegressor\:\:\$labels \(list\<float\|int\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Regressors/KNNRegressor.php
+
+		-
+			message: '#^Instanceof between Rubix\\ML\\NeuralNet\\Layers\\Hidden and Rubix\\ML\\NeuralNet\\Layers\\Hidden will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Regressors/MLPRegressor.php
+
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/MLPRegressor.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\BooleanConverter\), ''convert''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/BooleanConverter.php
+
+		-
+			message: '#^Parameter \#1 \$width of function imagecreatetruecolor expects int\<1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/ImageResizer.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\ImageResizer\), ''resize''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/ImageResizer.php
+
+		-
+			message: '#^Parameter \#2 \$height of function imagecreatetruecolor expects int\<1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/ImageResizer.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 2
+			path: src/Transformers/ImageResizer.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 2
+			path: src/Transformers/ImageVectorizer.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/IntervalDiscretizer.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/IntervalDiscretizer.php
+
+		-
+			message: '#^Property Rubix\\ML\\Transformers\\MissingDataImputer\:\:\$strategies \(list\<Rubix\\ML\\Strategies\\Strategy\>\|null\) does not accept non\-empty\-array\<int\<0, max\>, Rubix\\ML\\Strategies\\Strategy\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Transformers/MissingDataImputer.php
+
+		-
+			message: '#^Property Rubix\\ML\\Transformers\\MissingDataImputer\:\:\$types \(list\<Rubix\\ML\\DataType\>\|null\) does not accept non\-empty\-array\<int\<0, max\>, Rubix\\ML\\DataType\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Transformers/MissingDataImputer.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\MultibyteTextNormalizer\), ''normalize''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/MultibyteTextNormalizer.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Transformers/RegexFilter.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Transformers/StopWordFilter.php
+
+		-
+			message: '#^Parameter \#1 \$a of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/TSNE.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/TSNE.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\TextNormalizer\), ''normalize''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/TextNormalizer.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_walk expects callable\(array\<mixed\>, int\|string\)\: mixed, array\{\$this\(Rubix\\ML\\Transformers\\TokenHashingVectorizer\), ''vectorize''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/TokenHashingVectorizer.php
+
+		-
+			message: '#^Parameter &\$sample by\-ref type of method Rubix\\ML\\Transformers\\TokenHashingVectorizer\:\:vectorize\(\) expects list\<mixed\>, array\<int\<0, max\>, mixed\> given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/Transformers/TokenHashingVectorizer.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<\(int&T\)\|\(string&T\), float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<\(int&T\)\|\(string&T\), float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/functions.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<float\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/AnomalyDetectors/LodaTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\RSquared\:\:score\(\) expects list\<float\|int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Base/BootstrapAggregatorTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Encoding'' and Rubix\\ML\\Encoding will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Base/ReportTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/AdaBoostTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Encoding'' and Rubix\\ML\\Encoding will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Classifiers/ClassificationTreeTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/ClassificationTreeTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Classifiers/ClassificationTreeTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/ExtraTreeClassifierTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Classifiers/ExtraTreeClassifierTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/GaussianNBTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/KDNeighborsTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/KNearestNeighborsTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/KNearestNeighborsTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/LogisticRegressionTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/LogisticRegressionTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/LogitBoostTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/LogitBoostTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Encoding'' and Rubix\\ML\\Encoding will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/MultilayerPerceptronTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/MultilayerPerceptronTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/NaiveBayesTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/OneVsRestTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/RadiusNeighborsTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Classifiers/RandomForestTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/RandomForestTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/SVCTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Classifiers/SoftmaxClassifierTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Clusterers/DBSCANTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with list\<list\<float\|int\>\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/FuzzyCMeansTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Clusterers/FuzzyCMeansTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<float\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/GaussianMixtureTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with list\<list\<float\>\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Clusterers/GaussianMixtureTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Clusterers/GaussianMixtureTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<int\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/KMeansTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with list\<list\<float\|int\>\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/KMeansTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Clusterers/KMeansTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with list\<array\<float\|int\>\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/MeanShiftTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsFloat\(\) with float will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Clusterers/MeanShiftTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Clusterers/MeanShiftTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/AccuracyTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\AccuracyTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/AccuracyTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Accuracy\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/AccuracyTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\Accuracy\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/AccuracyTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/BrierScoreTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\BrierScoreTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/BrierScoreTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/CompletenessTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\CompletenessTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/CompletenessTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Completeness\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/CompletenessTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\Completeness\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/CompletenessTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/FBetaTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\FBetaTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/FBetaTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/FBetaTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\FBeta\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/FBetaTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/HomogeneityTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\HomogeneityTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/HomogeneityTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Homogeneity\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/HomogeneityTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\Homogeneity\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/HomogeneityTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/InformednessTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\InformednessTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/InformednessTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Informedness\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/InformednessTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\Informedness\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/InformednessTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/MCCTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\MCCTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/MCCTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\MCC\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MCCTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\MCC\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MCCTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanAbsoluteErrorTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\MeanAbsoluteErrorTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanAbsoluteErrorTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\MeanAbsoluteError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanAbsoluteErrorTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\MeanAbsoluteError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanAbsoluteErrorTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanSquaredErrorTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\MeanSquaredErrorTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanSquaredErrorTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\MeanSquaredError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanSquaredErrorTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\MeanSquaredError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MeanSquaredErrorTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/MedianAbsoluteErrorTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\MedianAbsoluteErrorTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/MedianAbsoluteErrorTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\MedianAbsoluteError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MedianAbsoluteErrorTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\MedianAbsoluteError\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/MedianAbsoluteErrorTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/ProbabilisticAccuracyTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\ProbabilisticAccuracyTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/ProbabilisticAccuracyTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/RMSETest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\RMSETest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/RMSETest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/RSquaredTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\RSquaredTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/RSquaredTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\RSquared\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/RSquaredTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\RSquared\:\:score\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/RSquaredTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/RandIndexTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\RandIndexTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/RandIndexTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\RandIndex\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/RandIndexTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\RandIndex\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/RandIndexTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\SMAPETest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\SMAPETest\:\:testScore\(\) has parameter \$labels with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\SMAPETest\:\:testScore\(\) has parameter \$predictions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\SMAPE\:\:score\(\) expects list\<float\|int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\SMAPE\:\:score\(\) expects list\<float\|int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/SMAPETest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\TopKAccuracyTest\:\:score\(\) has parameter \$labels with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\TopKAccuracyTest\:\:score\(\) has parameter \$probabilities with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\TopKAccuracyTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\TopKAccuracy\:\:score\(\) expects list\<int\|string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Parameter \$probabilities of method Rubix\\ML\\CrossValidation\\Metrics\\TopKAccuracy\:\:score\(\) expects list\<array\<int\|string, float\>\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/TopKAccuracyTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Tuple'' and Rubix\\ML\\Tuple will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Metrics/VMeasureTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Metrics\\VMeasureTest\:\:scoreProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Metrics/VMeasureTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/VMeasureTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Metrics\\VMeasure\:\:score\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Metrics/VMeasureTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Reports/AggregateReportTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Reports/ConfusionMatrixTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\ConfusionMatrixTest\:\:generateProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/ConfusionMatrixTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\ConfusionMatrixTest\:\:testGenerate\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/ConfusionMatrixTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Reports\\ConfusionMatrix\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ConfusionMatrixTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Reports\\ConfusionMatrix\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ConfusionMatrixTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Reports/ContingencyTableTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\ContingencyTableTest\:\:generateProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/ContingencyTableTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\ContingencyTableTest\:\:testGenerate\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/ContingencyTableTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Reports\\ContingencyTable\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ContingencyTableTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Reports\\ContingencyTable\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ContingencyTableTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Reports/ErrorAnalysisTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\ErrorAnalysisTest\:\:generateProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/ErrorAnalysisTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Reports\\ErrorAnalysis\:\:generate\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ErrorAnalysisTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Reports\\ErrorAnalysis\:\:generate\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/ErrorAnalysisTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/CrossValidation/Reports/MulticlassBreakdownTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\MulticlassBreakdownTest\:\:generateProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/MulticlassBreakdownTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\CrossValidation\\Reports\\MulticlassBreakdownTest\:\:testGenerate\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/CrossValidation/Reports/MulticlassBreakdownTest.php
+
+		-
+			message: '#^Parameter \$labels of method Rubix\\ML\\CrossValidation\\Reports\\MulticlassBreakdown\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/MulticlassBreakdownTest.php
+
+		-
+			message: '#^Parameter \$predictions of method Rubix\\ML\\CrossValidation\\Reports\\MulticlassBreakdown\:\:generate\(\) expects list\<int\|string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/CrossValidation/Reports/MulticlassBreakdownTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/AgglomerateTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/AgglomerateTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Unlabeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/BlobTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Generators\\\\Blob'' and Rubix\\ML\\Datasets\\Generators\\Blob will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/BlobTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Generators\\\\Generator'' and Rubix\\ML\\Datasets\\Generators\\Blob will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/BlobTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Unlabeled'' and Rubix\\ML\\Datasets\\Unlabeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/BlobTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/CircleTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/CircleTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/HalfMoonTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/HalfMoonTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/HyperplaneTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/HyperplaneTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Dataset'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/SwissRollTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Datasets/Generators/SwissRollTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Datasets\\\\Labeled'' and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 8
+			path: tests/Datasets/LabeledTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Report'' and Rubix\\ML\\Report will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Datasets/LabeledTest.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<array\<mixed\>\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: tests/Extractors/NDJSONTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Rubix\\\\ML\\\\Encoding'' and Rubix\\ML\\Encoding will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Helpers/GraphvizTest.php
+
+		-
+			message: '#^Method Rubix\\ML\\Tests\\Helpers\\ParamsTest\:\:stringify\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Helpers/ParamsTest.php

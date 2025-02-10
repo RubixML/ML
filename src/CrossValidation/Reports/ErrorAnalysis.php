@@ -30,7 +30,7 @@ class ErrorAnalysis implements ReportGenerator
      *
      * @internal
      *
-     * @return list<\Rubix\ML\EstimatorType>
+     * @return list<EstimatorType>
      */
     public function compatibility() : array
     {

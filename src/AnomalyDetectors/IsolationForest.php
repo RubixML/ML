@@ -97,7 +97,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
     /**
      * The isolation trees that make up the forest.
      *
-     * @var \Rubix\ML\Graph\Trees\ITree[]
+     * @var ITree[]
      */
     protected array $trees = [
         //
@@ -162,7 +162,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

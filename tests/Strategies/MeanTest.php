@@ -1,57 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Strategies;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\Mean;
-use Rubix\ML\Strategies\Strategy;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Strategies
- * @covers \Rubix\ML\Strategies\Mean
- */
+#[Group('Strategies')]
+#[CoversClass(Mean::class)]
 class MeanTest extends TestCase
 {
-    /**
-     * @var Mean
-     */
-    protected $strategy;
+    protected Mean $strategy;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->strategy = new Mean();
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Mean::class, $this->strategy);
-        $this->assertInstanceOf(Strategy::class, $this->strategy);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
-    /**
-     * @test
-     */
-    public function fitGuess() : void
+    public function testFitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 

@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
@@ -20,103 +18,84 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Classifiers
- * @covers \Rubix\ML\Classifiers\LogitBoost
- */
+#[Group('Classifiers')]
+#[CoversClass(LogitBoost::class)]
 class LogitBoostTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var LogitBoost
-     */
-    protected $estimator;
+    protected LogitBoost $estimator;
 
-    /**
-     * @var FBeta
-     */
-    protected $metric;
+    protected FBeta $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 5.0, 0.05),
-            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
-        ], [0.4, 0.6]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'inner' => new Circle(
+                    x: 0.0,
+                    y: 0.0,
+                    scale: 5.0,
+                    noise: 0.05
+                ),
+                'outer' => new Circle(
+                    x: 0.0,
+                    y: 0.0,
+                    scale: 10.0,
+                    noise: 0.1
+                ),
+            ],
+            weights: [0.4, 0.6]
+        );
 
-        $this->estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 3, 5, 0.1, new FBeta());
+        $this->estimator = new LogitBoost(
+            booster: new RegressionTree(3),
+            rate: 0.1,
+            ratio: 0.5,
+            epochs: 1000,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            metric: new FBeta()
+        );
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(LogitBoost::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -126,10 +105,7 @@ class LogitBoostTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'booster' => new RegressionTree(3),
@@ -146,10 +122,7 @@ class LogitBoostTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPredict() : void
+    public function testTrainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -163,30 +136,30 @@ class LogitBoostTest extends TestCase
         $scores = $this->estimator->losses();
 
         $this->assertIsArray($scores);
-        $this->assertContainsOnly('float', $scores);
+        $this->assertContainsOnlyFloat($scores);
 
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
 
         $importances = $this->estimator->featureImportances();
 
         $this->assertIsArray($importances);
         $this->assertCount(2, $importances);
-        $this->assertContainsOnly('float', $importances);
+        $this->assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

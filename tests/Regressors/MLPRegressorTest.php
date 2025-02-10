@@ -1,20 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -29,70 +25,59 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\MLPRegressor
- */
+#[Group('Regressors')]
+#[CoversClass(MLPRegressor::class)]
 class MLPRegressorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var SwissRoll
-     */
-    protected $generator;
+    protected SwissRoll $generator;
 
-    /**
-     * @var MLPRegressor
-     */
-    protected $estimator;
+    protected MLPRegressor $estimator;
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
+        $this->generator = new SwissRoll(x: 4.0, y: -7.0, z: 0.0, scale: 1.0, depth: 21.0, noise: 0.5);
 
-        $this->estimator = new MLPRegressor([
-            new Dense(32),
-            new Activation(new SiLU()),
-            new Dense(16),
-            new Activation(new SiLU()),
-            new Dense(8),
-            new Activation(new SiLU()),
-        ], 32, new Adam(0.01), 100, 1e-4, 3, 5, 0.1, new LeastSquares(), new RMSE());
+        $this->estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(32),
+                new Activation(new SiLU()),
+                new Dense(16),
+                new Activation(new SiLU()),
+                new Dense(8),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(0.01),
+            epochs: 100,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            costFn: new LeastSquares(),
+            metric: new RMSE()
+        );
 
         $this->metric = new RSquared();
 
@@ -101,46 +86,24 @@ class MLPRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function badBatchSize() : void
+    public function testBadBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MLPRegressor([], -100);
+        new MLPRegressor(hiddenLayers: [], batchSize: -100);
     }
 
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -149,10 +112,7 @@ class MLPRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'hidden layers' => [
@@ -177,10 +137,7 @@ class MLPRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPartialPredict() : void
+    public function testTrainPartialPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -200,40 +157,38 @@ class MLPRegressorTest extends TestCase
 
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
+        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
 
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
 
         $scores = $this->estimator->scores();
 
         $this->assertIsArray($scores);
-        $this->assertContainsOnly('float', $scores);
+        $this->assertContainsOnlyFloat($scores);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<int|float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
+    public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']], [2]));
+        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

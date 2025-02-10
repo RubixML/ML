@@ -1,74 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
 use Rubix\ML\Report;
-use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Reports
- * @covers \Rubix\ML\CrossValidation\Reports\ErrorAnalysis
- */
+#[Group('Reports')]
+#[CoversClass(ErrorAnalysis::class)]
 class ErrorAnalysisTest extends TestCase
 {
-    /**
-     * @var ErrorAnalysis
-     */
-    protected $report;
+    protected ErrorAnalysis $report;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->report = new ErrorAnalysis();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ErrorAnalysis::class, $this->report);
-        $this->assertInstanceOf(ReportGenerator::class, $this->report);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
-    {
-        $expected = [
-            EstimatorType::regressor(),
-        ];
-
-        $this->assertEquals($expected, $this->report->compatibility());
-    }
-
-    /**
-     * @test
-     * @dataProvider generateProvider
-     *
-     * @param (int|float)[] $predictions
-     * @param (int|float)[] $labels
-     * @param (int|float)[] $expected
-     */
-    public function generate(array $predictions, array $labels, array $expected) : void
-    {
-        $results = $this->report->generate($predictions, $labels);
-
-        $this->assertInstanceOf(Report::class, $results);
-        $this->assertEquals($expected, $results->toArray());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function generateProvider() : Generator
+    public static function generateProvider() : Generator
     {
         yield [
             [10, 12, 15, 42, 56, 12, 17, 9, 1, 7],
@@ -117,5 +71,36 @@ class ErrorAnalysisTest extends TestCase
                 'cardinality' => 5,
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->report = new ErrorAnalysis();
+    }
+
+    public function testCompatibility() : void
+    {
+        $expected = [
+            EstimatorType::regressor(),
+        ];
+
+        $this->assertEquals($expected, $this->report->compatibility());
+    }
+
+    /**
+     * @param (int|float)[] $predictions
+     * @param (int|float)[] $labels
+     * @param (int|float)[] $expected
+     */
+    #[DataProvider('generateProvider')]
+    public function testGenerate(array $predictions, array $labels, array $expected) : void
+    {
+        $results = $this->report->generate(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        $this->assertInstanceOf(Report::class, $results);
+        $this->assertEquals($expected, $results->toArray());
     }
 }

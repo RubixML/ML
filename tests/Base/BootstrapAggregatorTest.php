@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Learner;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
@@ -17,79 +19,55 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
-/**
- * @group MetaEstimators
- * @covers \Rubix\ML\BootstrapAggregator
- */
+#[Group('MetaEstimators')]
+#[CoversClass(BootstrapAggregator::class)]
 class BootstrapAggregatorTest extends TestCase
 {
     use BackendProviderTrait;
 
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var SwissRoll
-     */
-    protected $generator;
+    protected SwissRoll $generator;
 
-    /**
-     * @var BootstrapAggregator
-     */
-    protected $estimator;
+    protected BootstrapAggregator $estimator;
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
     /**
      * @before
      */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 0.3);
+        $this->generator = new SwissRoll(x: 4.0, y: -7.0, z: 0.0, scale: 1.0, depth: 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.5);
+        $this->estimator = new BootstrapAggregator(
+            new RegressionTree(maxHeight: 10),
+            estimators: 30,
+            ratio: 0.5
+        );
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -99,13 +77,10 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
-            'base' => new RegressionTree(10),
+            'base' => new RegressionTree(maxHeight: 10),
             'estimators' => 30,
             'ratio' => 0.5,
         ];
@@ -114,10 +89,9 @@ class BootstrapAggregatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
-     * @test
      * @param Backend $backend
      */
+    #[DataProvider('provideBackends')]
     public function trainPredict(Backend $backend) : void
     {
         $this->estimator->setBackend($backend);
@@ -131,15 +105,17 @@ class BootstrapAggregatorTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<int|float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

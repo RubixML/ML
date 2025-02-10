@@ -1,50 +1,35 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Strategies\Mean;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\MissingDataImputer
- */
+#[Group('Transformers')]
+#[CoversClass(MissingDataImputer::class)]
 class MissingDataImputerTest extends TestCase
 {
-    /**
-     * @var MissingDataImputer
-     */
-    protected $transformer;
+    protected MissingDataImputer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new MissingDataImputer(new Mean(), new KMostFrequent(), '?');
+        $this->transformer = new MissingDataImputer(
+            continuous: new Mean(),
+            categorical: new KMostFrequent(),
+            categoricalPlaceholder: '?'
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testFitTransform() : void
     {
-        $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitTransform() : void
-    {
-        $dataset = new Unlabeled([
+        $dataset = new Unlabeled(samples: [
             [30, 'friendly'],
             [NAN, 'mean'],
             [50, 'friendly'],

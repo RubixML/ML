@@ -1,75 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
-use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Reports
- * @covers \Rubix\ML\CrossValidation\Reports\MulticlassBreakdown
- */
+#[Group('Reports')]
+#[CoversClass(MulticlassBreakdown::class)]
 class MulticlassBreakdownTest extends TestCase
 {
-    /**
-     * @var MulticlassBreakdown
-     */
-    protected $report;
+    protected MulticlassBreakdown $report;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->report = new MulticlassBreakdown();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MulticlassBreakdown::class, $this->report);
-        $this->assertInstanceOf(ReportGenerator::class, $this->report);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
-    {
-        $expected = [
-            EstimatorType::classifier(),
-            EstimatorType::anomalyDetector(),
-        ];
-
-        $this->assertEquals($expected, $this->report->compatibility());
-    }
-
-    /**
-     * @test
-     * @dataProvider generateProvider
-     *
-     * @param (string|int)[] $predictions
-     * @param (string|int)[] $labels
-     * @param mixed[] $expected
-     */
-    public function generate(array $predictions, array $labels, array $expected) : void
-    {
-        $results = $this->report->generate($predictions, $labels);
-
-        $this->assertInstanceOf(Report::class, $results);
-        $this->assertEquals($expected, $results->toArray());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function generateProvider() : Generator
+    public static function generateProvider() : Generator
     {
         yield [
             ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
@@ -218,5 +171,37 @@ class MulticlassBreakdownTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->report = new MulticlassBreakdown();
+    }
+
+    public function testCompatibility() : void
+    {
+        $expected = [
+            EstimatorType::classifier(),
+            EstimatorType::anomalyDetector(),
+        ];
+
+        $this->assertEquals($expected, $this->report->compatibility());
+    }
+
+    /**
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
+     * @param array $expected
+     */
+    #[DataProvider('generateProvider')]
+    public function testGenerate(array $predictions, array $labels, array $expected) : void
+    {
+        $results = $this->report->generate(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        $this->assertInstanceOf(Report::class, $results);
+        $this->assertEquals($expected, $results->toArray());
     }
 }

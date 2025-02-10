@@ -1,51 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\MultibyteTextNormalizer;
-use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\MultibyteTextNormalizer
- */
+#[Group('Transformers')]
+#[CoversClass(MultibyteTextNormalizer::class)]
 class MultibyteTextNormalizerTest extends TestCase
 {
-    /**
-     * @var Unlabeled
-     */
-    protected $dataset;
+    protected Unlabeled $dataset;
 
-    /**
-     * @var MultibyteTextNormalizer
-     */
-    protected $transformer;
+    protected MultibyteTextNormalizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new MultibyteTextNormalizer(false);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testTransform() : void
     {
-        $this->assertInstanceOf(MultibyteTextNormalizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
-    {
-        $dataset = Unlabeled::quick([
+        $dataset = Unlabeled::quick(samples: [
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
             ['with a Dandy   umbrella'],

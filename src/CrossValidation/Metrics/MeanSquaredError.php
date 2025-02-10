@@ -39,7 +39,7 @@ class MeanSquaredError implements Metric
      *
      * @internal
      *
-     * @return list<\Rubix\ML\EstimatorType>
+     * @return list<EstimatorType>
      */
     public function compatibility() : array
     {

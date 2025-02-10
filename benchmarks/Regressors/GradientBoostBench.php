@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
@@ -11,24 +12,15 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
  */
 class GradientBoostBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
 
-    /**
-     * @var GradientBoost
-     */
-    protected $estimator;
+    protected GradientBoost $estimator;
 
     public function setUpContinuous() : void
     {

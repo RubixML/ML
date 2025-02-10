@@ -112,7 +112,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var \Rubix\ML\Learner[]|null
+     * @var Learner[]|null
      */
     protected ?array $ensemble = null;
 
@@ -133,7 +133,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The loss at each epoch from the last training session.
      *
-     * @var list<float>]|null
+     * @var list<float,int>|null
      */
     protected ?array $losses = null;
 
@@ -255,7 +255,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<array>
      */
     public function steps() : Generator
     {
@@ -274,7 +274,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the loss at each epoch of the last training session.
      *
-     * @return float[]|null
+     * @return list<float,int>|null
      */
     public function losses() : ?array
     {
@@ -337,9 +337,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             }
 
             if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->warning('Numerical instability detected');
-                }
+                $this->logger?->warning('Numerical instability detected');
 
                 break;
             }

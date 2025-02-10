@@ -1,48 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
-use Tensor\Matrix;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Initializers
- * @covers \Rubix\ML\NeuralNet\Initializers\Xavier2
- */
+#[Group('Initializers')]
+#[CoversClass(Xavier2::class)]
 class Xavier2Test extends TestCase
 {
-    /**
-     * @var Xavier2
-     */
-    protected $initializer;
+    protected Xavier2 $initializer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->initializer = new Xavier2();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testInitialize() : void
     {
-        $this->assertInstanceOf(Xavier2::class, $this->initializer);
-        $this->assertInstanceOf(Initializer::class, $this->initializer);
-    }
+        $w = $this->initializer->initialize(fanIn: 4, fanOut:  3);
 
-    /**
-     * @test
-     */
-    public function initialize() : void
-    {
-        $w = $this->initializer->initialize(4, 3);
-
-        $this->assertInstanceOf(Matrix::class, $w);
-        $this->assertEquals([3, 4], $w->shape());
+        $this->assertSame([3, 4], $w->shape());
     }
 }

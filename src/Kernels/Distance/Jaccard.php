@@ -24,7 +24,7 @@ class Jaccard implements Distance
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

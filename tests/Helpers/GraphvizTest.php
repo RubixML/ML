@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Helpers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Helpers
- * @covers \Rubix\ML\Helpers\Graphviz
- */
+#[Group('Helpers')]
+#[CoversClass(GraphvizTest::class)]
 class GraphvizTest extends TestCase
 {
     /**

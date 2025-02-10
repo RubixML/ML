@@ -1,59 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Datasets\Generators\Generator;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Generators
- * @covers \Rubix\ML\Datasets\Generators\Agglomerate
- */
+#[Group('Generators')]
+#[CoversClass(Agglomerate::class)]
 class AgglomerateTest extends TestCase
 {
-    protected const DATASET_SIZE = 30;
+    protected const int DATASET_SIZE = 30;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'one' => new Blob([-5.0, 3.0], 0.2),
-            'two' => new Blob([5.0, -3.0], 0.2),
-        ], [1, 0.5]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'one' => new Blob(
+                    center: [-5.0, 3.0],
+                    stdDev: 0.2
+                ),
+                'two' => new Blob(
+                    center: [5.0, -3.0],
+                    stdDev: 0.2
+                ),
+            ],
+            weights: [1, 0.5]
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Agglomerate::class, $this->generator);
-        $this->assertInstanceOf(Generator::class, $this->generator);
-    }
-
-    /**
-     * @test
-     */
-    public function dimensions() : void
+    public function testDimensions() : void
     {
         $this->assertEquals(2, $this->generator->dimensions());
     }
 
-    /**
-     * @test
-     */
-    public function generate() : void
+    public function testGenerate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

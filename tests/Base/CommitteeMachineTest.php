@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Parallel;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Unlabeled;
@@ -22,88 +23,62 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 
-/**
- * @group MetaEstimators
- * @covers \Rubix\ML\CommitteeMachine
- */
+#[Group('MetaEstimators')]
+#[CoversClass(CommitteeMachine::class)]
 class CommitteeMachineTest extends TestCase
 {
     use BackendProviderTrait;
 
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var CommitteeMachine
-     */
-    protected $estimator;
+    protected CommitteeMachine $estimator;
 
-    /**
-     * @var Accuracy
-     */
-    protected $metric;
+    protected Accuracy $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
-            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
-            'outer' => new Circle(0.0, 0.0, 10.0, 0.15),
-        ], [3, 3, 4]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'inner' => new Circle(x: 0.0, y: 0.0, scale: 1.0, noise: 0.01),
+                'middle' => new Circle(x: 0.0, y: 0.0, scale: 5.0, noise: 0.05),
+                'outer' => new Circle(x: 0.0, y: 0.0, scale: 10.0, noise: 0.15),
+            ],
+            weights: [3, 3, 4]
+        );
 
-        $this->estimator = new CommitteeMachine([
-            new ClassificationTree(10, 3, 2),
-            new KNearestNeighbors(3),
-            new GaussianNB(),
-        ], [3, 4, 5]);
+        $this->estimator = new CommitteeMachine(
+            experts: [
+                new ClassificationTree(maxHeight: 10, maxLeafSize: 3, minPurityIncrease: 2),
+                new KNearestNeighbors(k: 3),
+                new GaussianNB(),
+            ],
+            influences: [3, 4, 5]
+        );
 
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Parallel::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -112,15 +87,12 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'experts' => [
-                new ClassificationTree(10, 3, 2),
-                new KNearestNeighbors(3),
+                new ClassificationTree(maxHeight: 10, maxLeafSize: 3, minPurityIncrease: 2),
+                new KNearestNeighbors(k: 3),
                 new GaussianNB(),
             ],
             'influences' => [
@@ -134,11 +106,10 @@ class CommitteeMachineTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBackends
-     * @test
      * @param Backend $backend
      */
-    public function trainPredict(Backend $backend) : void
+    #[DataProvider('provideBackends')]
+    public function testTrainPredict(Backend $backend) : void
     {
         $this->estimator->setBackend($backend);
 
@@ -149,27 +120,27 @@ class CommitteeMachineTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        /** @var list<int> $predictions */
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<int|string> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
+    public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([['bad']]));
+        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

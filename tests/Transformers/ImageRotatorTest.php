@@ -1,45 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\ImageRotator;
-use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageRotator
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ImageRotator::class)]
 class ImageRotatorTest extends TestCase
 {
-    /**
-     * @var ImageRotator
-     */
     protected ImageRotator $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new ImageRotator(0.0, 1.0);
+        $this->transformer = new ImageRotator(offset: 0.0, jitter: 1.0);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ImageRotator::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
+    public function testTransform() : void
     {
         $dataset = Unlabeled::quick([
             [imagecreatefrompng('./tests/test.png'), 'whatever', 69],

@@ -1,77 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Transformer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\GaussianRandomProjector;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\GaussianRandomProjector
- */
+#[Group('Transformers')]
+#[CoversClass(GaussianRandomProjector::class)]
 class GaussianRandomProjectorTest extends TestCase
 {
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @var GaussianRandomProjector
-     */
-    protected $transformer;
+    protected GaussianRandomProjector $transformer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->generator = new Blob(array_fill(0, 20, 0.0), 3.0);
-
-        $this->transformer = new GaussianRandomProjector(5);
-
-        srand(self::RANDOM_SEED);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(GaussianRandomProjector::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     * @dataProvider minDimensionsProvider
-     *
-     * @param int $n
-     * @param float $maxDistortion
-     * @param int $expected
-     */
-    public function minDimensions(int $n, float $maxDistortion, int $expected) : void
-    {
-        $this->assertEqualsWithDelta($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion), 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function minDimensionsProvider() : Generator
+    public static function minDimensionsProvider() : Generator
     {
         yield [10, 0.1, 1974];
 
@@ -94,10 +49,30 @@ class GaussianRandomProjectorTest extends TestCase
         yield [10000, 0.99, 221];
     }
 
+    protected function setUp() : void
+    {
+        $this->generator = new Blob(
+            center: array_fill(start_index: 0, count: 20, value: 0.0),
+            stdDev: 3.0
+        );
+
+        $this->transformer = new GaussianRandomProjector(5);
+
+        srand(self::RANDOM_SEED);
+    }
+
     /**
-     * @test
+     * @param int $n
+     * @param float $maxDistortion
+     * @param int $expected
      */
-    public function fitTransform() : void
+    #[DataProvider('minDimensionsProvider')]
+    public function testMinDimensions(int $n, float $maxDistortion, int $expected) : void
+    {
+        $this->assertEqualsWithDelta($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion), 1e-8);
+    }
+
+    public function testFitTransform() : void
     {
         $dataset = $this->generator->generate(30);
 
@@ -112,10 +87,7 @@ class GaussianRandomProjectorTest extends TestCase
         $this->assertCount(5, $sample);
     }
 
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
+    public function testTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

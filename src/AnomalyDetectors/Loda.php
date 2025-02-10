@@ -171,7 +171,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -239,6 +239,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->asArray();
 
         foreach ($projections as $values) {
+            /** @var non-empty-array<float|int> $values */
             $min = (float) min($values);
             $max = (float) max($values);
 
@@ -327,7 +328,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<int>
+     * @return array<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -339,7 +340,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<float>
+     * @return array<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -362,7 +363,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * created during training.
      *
      * @param list<list<float>> $projections
-     * @return list<float>
+     * @return array<float>
      */
     protected function densities(array $projections) : array
     {

@@ -1,66 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Tensor;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\AdaMax;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Optimizers
- * @covers \Rubix\ML\NeuralNet\Optimizers\AdaMax
- */
+#[Group('Optimizers')]
+#[CoversClass(AdaMax::class)]
 class AdaMaxTest extends TestCase
 {
-    /**
-     * @var AdaMax
-     */
-    protected $optimizer;
+    protected AdaMax $optimizer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->optimizer = new AdaMax(0.001, 0.1, 0.001);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(AdaMax::class, $this->optimizer);
-        $this->assertInstanceOf(Adaptive::class, $this->optimizer);
-        $this->assertInstanceOf(Optimizer::class, $this->optimizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider stepProvider
-     *
-     * @param Parameter $param
-     * @param \Tensor\Tensor<int|float> $gradient
-     * @param list<list<float>> $expected
-     */
-    public function step(Parameter $param, Tensor $gradient, array $expected) : void
-    {
-        $this->optimizer->warm($param);
-
-        $step = $this->optimizer->step($param, $gradient);
-
-        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function stepProvider() : Generator
+    public static function stepProvider() : Generator
     {
         yield [
             new Parameter(Matrix::quick([
@@ -79,5 +39,29 @@ class AdaMaxTest extends TestCase
                 [0.0001, -0.0001, -0.0001],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->optimizer = new AdaMax(
+            rate: 0.001,
+            momentumDecay: 0.1,
+            normDecay: 0.001
+        );
+    }
+
+    /**
+     * @param Parameter $param
+     * @param Tensor<int|float> $gradient
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('stepProvider')]
+    public function testStep(Parameter $param, Tensor $gradient, array $expected) : void
+    {
+        $this->optimizer->warm($param);
+
+        $step = $this->optimizer->step(param: $param, gradient: $gradient);
+
+        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
     }
 }

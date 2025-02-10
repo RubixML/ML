@@ -1,50 +1,33 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\LambdaFunction;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\LambdaFunction
- */
+#[Group('Transformers')]
+#[CoversClass(LambdaFunction::class)]
 class LambdaFunctionTest extends TestCase
 {
-    /**
-     * @var LambdaFunction
-     */
-    protected $transformer;
+    protected LambdaFunction $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $callback = function (&$sample, $index, $context) {
             $sample = [$index, array_sum($sample), $context];
         };
 
-        $this->transformer = new LambdaFunction($callback, 'context');
+        $this->transformer = new LambdaFunction(callback: $callback, context: 'context');
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testTransform() : void
     {
-        $this->assertInstanceOf(LambdaFunction::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
-    {
-        $dataset = new Unlabeled([
+        $dataset = new Unlabeled(samples: [
             [1, 2, 3, 4],
             [40, 20, 30, 10],
             [100, 300, 200, 400],

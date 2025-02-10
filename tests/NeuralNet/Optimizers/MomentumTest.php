@@ -1,66 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Tensor;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Optimizers
- * @covers \Rubix\ML\NeuralNet\Optimizers\Momentum
- */
+#[Group('Optimizers')]
+#[CoversClass(Momentum::class)]
 class MomentumTest extends TestCase
 {
-    /**
-     * @var Momentum
-     */
-    protected $optimizer;
+    protected Momentum $optimizer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->optimizer = new Momentum(0.001, 0.1, false);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Momentum::class, $this->optimizer);
-        $this->assertInstanceOf(Adaptive::class, $this->optimizer);
-        $this->assertInstanceOf(Optimizer::class, $this->optimizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider stepProvider
-     *
-     * @param Parameter $param
-     * @param \Tensor\Tensor<int|float> $gradient
-     * @param list<list<float>> $expected
-     */
-    public function step(Parameter $param, Tensor $gradient, array $expected) : void
-    {
-        $this->optimizer->warm($param);
-
-        $step = $this->optimizer->step($param, $gradient);
-
-        $this->assertEquals($expected, $step->asArray());
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function stepProvider() : Generator
+    public static function stepProvider() : Generator
     {
         yield [
             new Parameter(Matrix::quick([
@@ -79,5 +39,25 @@ class MomentumTest extends TestCase
                 [4e-5, -1e-5, -0.0005],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->optimizer = new Momentum(rate: 0.001, decay: 0.1, lookahead: false);
+    }
+
+    /**
+     * @param Parameter $param
+     * @param Tensor<int|float> $gradient
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('stepProvider')]
+    public function testStep(Parameter $param, Tensor $gradient, array $expected) : void
+    {
+        $this->optimizer->warm($param);
+
+        $step = $this->optimizer->step(param: $param, gradient: $gradient);
+
+        $this->assertEquals($expected, $step->asArray());
     }
 }

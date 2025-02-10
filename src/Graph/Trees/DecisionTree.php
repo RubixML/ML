@@ -303,7 +303,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * Return an iterator for all the nodes in the tree starting at the root and traversing depth first.
      *
-     * @return \Generator<\Rubix\ML\Graph\Nodes\BinaryNode>
+     * @return \Generator<BinaryNode>
      */
     public function getIterator() : Traversable
     {
@@ -377,7 +377,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
     /**
      * Calculate the impurity of a given split.
      *
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
+     * @param array{Labeled,Labeled} $subsets
      * @return float
      */
     protected function splitImpurity(array $subsets) : float

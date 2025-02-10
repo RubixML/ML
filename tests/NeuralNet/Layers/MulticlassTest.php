@@ -1,47 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Multiclass
- */
+#[Group('Layers')]
+#[CoversClass(Multiclass::class)]
 class MulticlassTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var string[]
      */
-    protected $labels;
+    protected array $labels;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var Multiclass
-     */
-    protected $layer;
+    protected Multiclass $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -54,25 +43,15 @@ class MulticlassTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new CrossEntropy());
+        $this->layer = new Multiclass(
+            classes: ['hot', 'cold', 'ice cold'],
+            costFn: new CrossEntropy()
+        );
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Multiclass::class, $this->layer);
-        $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize(3);
 
@@ -86,10 +65,12 @@ class MulticlassTest extends TestCase
             [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(
+            labels: $this->labels,
+            optimizer: $this->optimizer
+        );
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -113,7 +94,6 @@ class MulticlassTest extends TestCase
             [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 }

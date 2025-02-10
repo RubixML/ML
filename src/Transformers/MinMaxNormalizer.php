@@ -85,7 +85,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

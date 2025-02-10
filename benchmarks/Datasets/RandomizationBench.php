@@ -17,7 +17,7 @@ class RandomizationBench
     protected const SUBSAMPLE_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $dataset;
 

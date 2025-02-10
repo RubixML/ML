@@ -38,7 +38,7 @@ class AdaGrad implements Optimizer, Adaptive
     /**
      * The cache of sum of squared gradients.
      *
-     * @var \Tensor\Tensor[]
+     * @var Tensor[]
      */
     protected array $cache = [
         //
@@ -83,8 +83,8 @@ class AdaGrad implements Optimizer, Adaptive
      * @internal
      *
      * @param Parameter $param
-     * @param \Tensor\Tensor<int|float|array> $gradient
-     * @return \Tensor\Tensor<int|float|array>
+     * @param Tensor<int|float|array> $gradient
+     * @return Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor
     {

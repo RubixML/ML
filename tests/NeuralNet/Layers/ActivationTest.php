@@ -1,50 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Activation
- */
+#[Group('Layers')]
+#[CoversClass(Activation::class)]
 class ActivationTest extends TestCase
 {
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected Matrix $input;
 
-    /**
-     * @var Deferred
-     */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @var Activation
-     */
-    protected $layer;
+    protected Activation $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -55,7 +41,7 @@ class ActivationTest extends TestCase
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
+        $this->prevGrad = new Deferred(fn: function () {
             return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
@@ -68,20 +54,7 @@ class ActivationTest extends TestCase
         $this->layer = new Activation(new ReLU());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Activation::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
-    }
-
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    public function testInitializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -95,10 +68,11 @@ class ActivationTest extends TestCase
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer
+            ->back(prevGradient: $this->prevGrad, optimizer:  $this->optimizer)
+            ->compute();
 
         $expected = [
             [0.25, 0.7, 0.0],
@@ -116,8 +90,6 @@ class ActivationTest extends TestCase
         ];
 
         $infer = $this->layer->infer($this->input);
-
-        $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());
     }
 }

@@ -1,57 +1,39 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Other
- * @covers \Rubix\ML\Encoding
- */
+#[Group('Other')]
+#[CoversClass(Encoding::class)]
 class EncodingTest extends TestCase
 {
-    protected const TEST_DATA = [
+    protected const array TEST_DATA = [
         'breakfast' => 'pancakes',
         'lunch' => 'croque monsieur',
         'dinner' => 'new york strip steak',
     ];
 
-    /**
-     * @var Encoding
-     */
-    protected $encoding;
+    protected Encoding $encoding;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->encoding = new Encoding(json_encode(self::TEST_DATA) ?: '');
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Encoding::class, $this->encoding);
-    }
-
-    /**
-     * @test
-     */
-    public function data() : void
+    public function testData() : void
     {
         $expected = '{"breakfast":"pancakes","lunch":"croque monsieur","dinner":"new york strip steak"}';
 
         $this->assertEquals($expected, $this->encoding->data());
     }
 
-    /**
-     * @test
-     */
-    public function bytes() : void
+    public function tstBytes() : void
     {
         $this->assertSame(82, $this->encoding->bytes());
     }

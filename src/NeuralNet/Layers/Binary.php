@@ -149,7 +149,7 @@ class Binary implements Output
      * @param string[] $labels
      * @param Optimizer $optimizer
      * @throws RuntimeException
-     * @return (\Rubix\ML\Deferred|float)[]
+     * @return (Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {

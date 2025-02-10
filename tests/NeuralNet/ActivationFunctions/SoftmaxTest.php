@@ -1,59 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\Softmax
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(Softmax::class)]
 class SoftmaxTest extends TestCase
 {
-    /**
-     * @var Softmax
-     */
-    protected $activationFn;
+    protected Softmax $activationFn;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->activationFn = new Softmax();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Softmax::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -82,25 +47,7 @@ class SoftmaxTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -139,5 +86,35 @@ class SoftmaxTest extends TestCase
                 [0.17551715422394046, 0.157271649661325, 0.24959408707069664],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->activationFn = new Softmax();
+    }
+
+    /**
+     * @param Matrix $input
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('computeProvider')]
+    public function testActivate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate(input: $input, output: $activations)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }

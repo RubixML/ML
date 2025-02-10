@@ -1,59 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\GELU;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\GELU
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(GELU::class)]
 class GELUTest extends TestCase
 {
-    /**
-     * @var GELU
-     */
-    protected $activationFn;
+    protected GELU $activationFn;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->activationFn = new GELU();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(GELU::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param array<array<mixed>> $expected
-     */
-    public function compute(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
-    }
-
-    /**
-     * @return \Generator<array<mixed>>
-     */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -76,25 +41,7 @@ class GELUTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param array<array<mixed>> $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
-    }
-
-    /**
-     * @return \Generator<array<mixed>>
-     */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -107,5 +54,35 @@ class GELUTest extends TestCase
                 [1.082963928002244, 0.13263021771495387, 0.5, 1.0, 0.0],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->activationFn = new GELU();
+    }
+
+    /**
+     * @param Matrix $input
+     * @param array<list<float>> $expected
+     */
+    #[DataProvider('computeProvider')]
+    public function testCompute(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param array<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate(z: $input, computed: $activations)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }

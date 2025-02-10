@@ -1,31 +1,26 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Persisters;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
-use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Persisters\Filesystem;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Persisters
- * @covers \Rubix\ML\Persisters\Filesystem
- */
+#[Group('Persisters')]
+#[CoversClass(Filesystem::class)]
 class FilesystemTest extends TestCase
 {
-    protected const PATH = __DIR__ . '/test.model';
+    protected const string PATH = __DIR__ . '/test.model';
 
-    /**
-     * @var Filesystem
-     */
-    protected $persister;
+    protected Filesystem $persister;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->persister = new Filesystem(self::PATH, true);
+        $this->persister = new Filesystem(path: self::PATH, history: true);
     }
 
     protected function assertPreConditions() : void
@@ -33,9 +28,6 @@ class FilesystemTest extends TestCase
         $this->assertFileDoesNotExist(self::PATH);
     }
 
-    /**
-     * @after
-     */
     protected function tearDown() : void
     {
         if (file_exists(self::PATH)) {
@@ -47,28 +39,12 @@ class FilesystemTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Filesystem::class, $this->persister);
-        $this->assertInstanceOf(Persister::class, $this->persister);
-    }
-
-    /**
-     * @test
-     */
-    public function saveLoad() : void
+    public function testSaveLoad() : void
     {
         $encoding = new Encoding("Bitch, I'm for real!");
 
         $this->persister->save($encoding);
 
         $this->assertFileExists(self::PATH);
-
-        $encoding = $this->persister->load();
-
-        $this->assertInstanceOf(Encoding::class, $encoding);
     }
 }

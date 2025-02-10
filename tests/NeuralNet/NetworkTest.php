@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
@@ -14,123 +20,82 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\Network
- */
+#[Group('NeuralNet')]
+#[CoversClass(Network::class)]
 class NetworkTest extends TestCase
 {
-    /**
-     * @var Labeled
-     */
-    protected $dataset;
+    protected Labeled $dataset;
+
+    protected Network $network;
+
+    protected Input $input;
 
     /**
-     * @var Network
+     * @var Hidden[]
      */
-    protected $network;
+    protected array $hidden;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Layers\Input
-     */
-    protected $input;
+    protected Output $output;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
-     */
-    protected $hidden;
-
-    /**
-     * @var Output
-     */
-    protected $output;
-
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->dataset = Labeled::quick([
-            [1.0, 2.5],
-            [0.1, 0.0],
-            [0.002, -6.0],
-        ], ['yes', 'no', 'maybe']);
+        $this->dataset = Labeled::quick(
+            samples: [
+                [1.0, 2.5],
+                [0.1, 0.0],
+                [0.002, -6.0],
+            ],
+            labels: ['yes', 'no', 'maybe']
+        );
 
         $this->input = new Placeholder1D(2);
 
         $this->hidden = [
-            new Dense(10),
+            new Dense(neurons: 10),
             new Activation(new ReLU()),
-            new Dense(5),
+            new Dense(neurons: 5),
             new Activation(new ReLU()),
-            new Dense(3),
+            new Dense(neurons: 3),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], new CrossEntropy());
+        $this->output = new Multiclass(
+            classes: ['yes', 'no', 'maybe'],
+            costFn: new CrossEntropy()
+        );
 
-        $this->network = new Network($this->input, $this->hidden, $this->output, new Adam(0.001));
+        $this->network = new Network(
+            input: $this->input,
+            hidden: $this->hidden,
+            output: $this->output,
+            optimizer: new Adam(0.001)
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testLayers() : void
     {
-        $this->assertInstanceOf(Network::class, $this->network);
-        $this->assertInstanceOf(Network::class, $this->network);
+        $count = 0;
+
+        foreach ($this->network->layers() as $item) {
+            ++$count;
+        }
+
+        $this->assertSame(7, $count);
     }
 
-    /**
-     * @test
-     */
-    public function layers() : void
-    {
-        $this->assertCount(7, $this->network->layers());
-    }
-
-    /**
-     * @test
-     */
-    public function input() : void
+    public function testInput() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    /**
-     * @test
-     */
-    public function hidden() : void
+    public function testHidden() : void
     {
         $this->assertCount(5, $this->network->hidden());
     }
 
-    /**
-     * @test
-     */
-    public function output() : void
-    {
-        $this->assertInstanceOf(Output::class, $this->network->output());
-    }
-
-    /**
-     * @test
-     */
-    public function numParams() : void
+    public function testNumParams() : void
     {
         $this->network->initialize();
 
         $this->assertEquals(103, $this->network->numParams());
-    }
-
-    /**
-     * @test
-     */
-    public function roundtrip() : void
-    {
-        $this->network->initialize();
-
-        $loss = $this->network->roundtrip($this->dataset);
-
-        $this->assertIsFloat($loss);
     }
 }

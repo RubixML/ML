@@ -1,58 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Tokenizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\NGram;
-use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Tokenizers
- * @covers \Rubix\ML\Tokenizers\NGram
- */
+#[Group('Tokenizers')]
+#[CoversClass(NGram::class)]
 class NGramTest extends TestCase
 {
-    /**
-     * @var NGram
-     */
-    protected $tokenizer;
+    protected NGram $tokenizer;
 
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new NGram(1, 2);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(NGram::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @return \Generator<mixed[]>
-     */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -65,5 +30,22 @@ class NGramTest extends TestCase
                 'on', 'on impact', 'impact', 'The', 'The end', 'end',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new NGram(min: 1, max: 2);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    public function testTokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

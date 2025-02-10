@@ -68,7 +68,7 @@ class Unlabeled extends Dataset
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
      *
-     * @param iterable<\Rubix\ML\Datasets\Dataset> $datasets
+     * @param iterable<Dataset> $datasets
      * @throws InvalidArgumentException
      * @return self
      */

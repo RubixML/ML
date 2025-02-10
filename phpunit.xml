@@ -2,31 +2,32 @@
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   backupGlobals="false"
-  backupStaticAttributes="false"
   bootstrap="vendor/autoload.php"
   colors="true"
-  convertErrorsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertWarningsToExceptions="true"
-  forceCoversAnnotation="true"
+  displayDetailsOnTestsThatTriggerDeprecations="true"
+  displayDetailsOnTestsThatTriggerNotices="true"
+  displayDetailsOnTestsThatTriggerWarnings="true"
+  displayDetailsOnTestsThatTriggerErrors="true"
+  displayDetailsOnSkippedTests="true"
   processIsolation="true"
   stopOnFailure="false"
+  testdox="true"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
-  <coverage processUncoveredFiles="true">
+  <source>
     <include>
       <directory suffix=".php">src</directory>
     </include>
-  </coverage>
+  </source>
   <testsuites>
-    <testsuite name="Base">
-      <directory>tests</directory>
-    </testsuite>
     <testsuite name="Anomaly Detectors">
       <directory>tests/AnomalyDetectors</directory>
     </testsuite>
     <testsuite name="Backends">
       <directory>tests/Backends</directory>
+    </testsuite>
+    <testsuite name="Base">
+      <directory>tests/Base</directory>
     </testsuite>
     <testsuite name="Classifiers">
       <directory>tests/Classifiers</directory>
@@ -55,7 +56,7 @@
     <testsuite name="Loggers">
       <directory>tests/Loggers</directory>
     </testsuite>
-    <testsuite name="Neural Net">
+    <testsuite name="NeuralNet">
       <directory>tests/NeuralNet</directory>
     </testsuite>
     <testsuite name="Persisters">
@@ -64,6 +65,9 @@
     <testsuite name="Regressors">
       <directory>tests/Regressors</directory>
     </testsuite>
+    <testsuite name="Serializers">
+      <directory>tests/Serializers</directory>
+    </testsuite>
     <testsuite name="Specifications">
       <directory>tests/Specifications</directory>
     </testsuite>
@@ -71,7 +75,7 @@
       <directory>tests/Strategies</directory>
     </testsuite>
     <testsuite name="Tokenizers">
-      <directory>tests/Transformers</directory>
+      <directory>tests/Tokenizers</directory>
     </testsuite>
     <testsuite name="Transformers">
       <directory>tests/Transformers</directory>

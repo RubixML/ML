@@ -133,7 +133,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -208,9 +208,11 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $this->variances[$column] = $variance;
         }
 
-        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
+        /** @var non-empty-array<float> $variances */
+        $variances = $this->variances;
+        $epsilon = max($this->smoothing * max($variances), CPU::epsilon());
 
-        foreach ($this->variances as &$variance) {
+        foreach ($variances as &$variance) {
             $variance += $epsilon;
         }
 

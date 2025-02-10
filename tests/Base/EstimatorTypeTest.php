@@ -1,72 +1,50 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Other
- * @covers \Rubix\ML\EstimatorType
- */
+#[Group('Other')]
+#[CoversClass(EstimatorType::class)]
 class EstimatorTypeTest extends TestCase
 {
-    /**
-     * @var EstimatorType
-     */
-    protected $type;
+    protected EstimatorType $type;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->type = new EstimatorType(EstimatorType::CLUSTERER);
     }
 
-    /**
-     * @test
-     */
-    public function code() : void
+    public function testCode() : void
     {
         $this->assertSame(EstimatorType::CLUSTERER, $this->type->code());
     }
 
-    /**
-     * @test
-     */
-    public function isClassifier() : void
+    public function testIsClassifier() : void
     {
         $this->assertFalse($this->type->isClassifier());
     }
 
-    /**
-     * @test
-     */
-    public function isRegressor() : void
+    public function testIsRegressor() : void
     {
         $this->assertFalse($this->type->isRegressor());
     }
 
-    /**
-     * @test
-     */
-    public function isClusterer() : void
+    public function testIsClusterer() : void
     {
         $this->assertTrue($this->type->isClusterer());
     }
 
-    /**
-     * @test
-     */
-    public function isAnomalyDetector() : void
+    public function testIsAnomalyDetector() : void
     {
         $this->assertFalse($this->type->isAnomalyDetector());
     }
 
-    /**
-     * @test
-     */
     public function testToString() : void
     {
         $this->assertEquals('clusterer', (string) $this->type);

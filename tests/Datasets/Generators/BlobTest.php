@@ -1,38 +1,31 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Generators
- * @covers \Rubix\ML\Datasets\Generators\Blob
- */
+#[Group('Generators')]
+#[CoversClass(Blob::class)]
 class BlobTest extends TestCase
 {
-    protected const DATASET_SIZE = 30;
+    protected const int DATASET_SIZE = 30;
 
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0, 0, 0], 1.0);
+        $this->generator = new Blob(center: [0, 0, 0], stdDev: 1.0);
     }
 
-    /**
-     * @test
-     */
-    public function simulate() : void
+    public function testSimulate() : void
     {
         $dataset = $this->generator->generate(100);
 
@@ -42,35 +35,17 @@ class BlobTest extends TestCase
         $this->assertInstanceOf(Generator::class, $generator);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Blob::class, $this->generator);
-        $this->assertInstanceOf(Generator::class, $this->generator);
-    }
-
-    /**
-     * @test
-     */
-    public function center() : void
+    public function testCenter() : void
     {
         $this->assertEquals([0, 0, 0], $this->generator->center());
     }
 
-    /**
-     * @test
-     */
-    public function dimensions() : void
+    public function testDimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    /**
-     * @test
-     */
-    public function generate() : void
+    public function testGenerate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

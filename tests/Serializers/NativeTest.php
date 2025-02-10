@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Persisters\Serializers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Serializers\Native;
-use Rubix\ML\Serializers\Serializer;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -13,60 +17,18 @@ use stdClass;
 
 use function serialize;
 
-/**
- * @group Serializers
- * @covers \Rubix\ML\Serializers\Native
- */
+#[Group('Serializers')]
+#[CoversClass(Native::class)]
 class NativeTest extends TestCase
 {
-    /**
-     * @var Persistable
-     */
-    protected $persistable;
+    protected Persistable $persistable;
+
+    protected Native $serializer;
 
     /**
-     * @var Native
+     * @return array<array<int>|array<object>>
      */
-    protected $serializer;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->serializer = new Native();
-
-        $this->persistable = new GaussianNB();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Native::class, $this->serializer);
-        $this->assertInstanceOf(Serializer::class, $this->serializer);
-    }
-
-    /**
-     * @test
-     */
-    public function serializeDeserialize() : void
-    {
-        $data = $this->serializer->serialize($this->persistable);
-
-        $this->assertInstanceOf(Encoding::class, $data);
-
-        $persistable = $this->serializer->deserialize($data);
-
-        $this->assertInstanceOf(GaussianNB::class, $persistable);
-        $this->assertInstanceOf(Persistable::class, $persistable);
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function deserializeInvalidData() : array
+    public static function deserializeInvalidData() : array
     {
         return [
             [3],
@@ -74,14 +36,27 @@ class NativeTest extends TestCase
         ];
     }
 
+    protected function setUp() : void
+    {
+        $this->serializer = new Native();
+
+        $this->persistable = new GaussianNB();
+    }
+
+    public function testSerializeDeserialize() : void
+    {
+        $data = $this->serializer->serialize($this->persistable);
+
+        $persistable = $this->serializer->deserialize($data);
+
+        $this->assertInstanceOf(GaussianNB::class, $persistable);
+    }
+
     /**
-     * @test
-     *
-     * @param mixed $obj
-     *
-     * @dataProvider deserializeInvalidData
+     * @param int|object $obj
      */
-    public function deserializeBadData($obj) : void
+    #[DataProvider('deserializeInvalidData')]
+    public function testDeserializeBadData(mixed $obj) : void
     {
         $data = new Encoding(serialize($obj));
 
