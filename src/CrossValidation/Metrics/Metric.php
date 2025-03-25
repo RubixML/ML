@@ -12,16 +12,15 @@ interface Metric extends Stringable
      *
      * @return \Rubix\ML\Tuple{float,float}
      */
-    public function range(): Tuple;
+    public function range() : Tuple;
 
     /**
      * The estimator types that this metric is compatible with.
      *
      * @return list<\Rubix\ML\EstimatorType>
      * @internal
-     *
      */
-    public function compatibility(): array;
+    public function compatibility() : array;
 
     /**
      * Score a set of predictions and their ground-truth labels.
@@ -30,5 +29,5 @@ interface Metric extends Stringable
      * @param list<string|int|float> $labels
      * @return float
      */
-    public function score(array $predictions, array $labels): float;
+    public function score(array $predictions, array $labels) : float;
 }

@@ -42,6 +42,7 @@ class TrainAndValidate extends Task
 
         /** @var list<float|int|string> $labels */
         $labels = $testing->labels();
+
         return $metric->score(
             predictions: $predictions,
             labels: $labels
