@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\Initializers\Base\Contracts;
 
-use NumPower;
+use NDArray;
 use Stringable;
 use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanInException;
 use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanOutException;
@@ -26,7 +26,7 @@ interface Initializer extends Stringable
      * @param int<1, max> $fanOut The number of output connections per neuron
      * @throws InvalidFanInException Initializer parameter `fanIn` is less than 1
      * @throws InvalidFanOutException Initializer parameter `fanOut` is less than 1
-     * @return NumPower The initialized weight matrix of shape [fanOut, fanIn]
+     * @return NDArray The initialized weight matrix of shape [fanOut, fanIn]
      */
-    public function initialize(int $fanIn, int $fanOut) : NumPower;
+    public function initialize(int $fanIn, int $fanOut) : NDArray;
 }

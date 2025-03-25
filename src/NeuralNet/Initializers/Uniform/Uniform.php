@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\NeuralNet\Initializers\Uniform;
 
 use NumPower;
+use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Initializers\Base\Contracts\AbstractInitializer;
 use Rubix\ML\NeuralNet\Initializers\Uniform\Exceptions\InvalidBetaException;
@@ -38,7 +39,7 @@ class Uniform extends AbstractInitializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NumPower
+    public function initialize(int $fanIn, int $fanOut) : NDArray
     {
         $this->validateInitParams(fanIn: $fanIn, fanOut: $fanOut);
 
