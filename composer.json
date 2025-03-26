@@ -33,7 +33,7 @@
     "require": {
         "php": ">=8.4",
         "ext-json": "*",
-        "ext-numpower": ">=0.6",
+        "ext-rubixnumpower": ">=0.7",
         "amphp/parallel": "^1.3",
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
