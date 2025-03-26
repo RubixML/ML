@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts;
 
-use NumPower;
+use NDArray;
 use Stringable;
 
 /**
@@ -20,16 +20,17 @@ interface ActivationFunction extends Stringable
     /**
      * Compute the activation.
      *
-     * @param NumPower $input Input matrix
-     * @return NumPower Output matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Output matrix
      */
-    public function activate(NumPower $input) : NumPower;
+    public function activate(NDArray $input) : NDArray;
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @param NumPower $input Input matrix
-     * @return NumPower Direvative matrix
+     * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
+     * @return NDArray Direvative matrix
      */
-    public function differentiate(NumPower $input) : NumPower;
+    public function differentiate(NDArray $input, NDArray $output) : NDArray;
 }

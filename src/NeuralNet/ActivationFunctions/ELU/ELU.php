@@ -43,7 +43,7 @@ class ELU implements ActivationFunction
     /**
      * @inheritdoc
      */
-    public function activate(NumPower $input) : NumPower
+    public function activate(NDArray $input) : NDArray
     {
         return NumPower::maximum($input, 0) + (NumPower::exp(NumPower::minimum($input, 0)) - 1) * $this->alpha;
     }
@@ -51,9 +51,9 @@ class ELU implements ActivationFunction
     /**
      * @inheritdoc
      */
-    public function differentiate(NumPower $input) : NumPower
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        return NumPower::greater($input, 0) + NumPower::lessEqual($input, 0) * NumPower::exp($input) * $this->alpha;
+        return NumPower::greater($output, 0) + NumPower::lessEqual($output, 0) * NumPower::exp($output) * $this->alpha;
     }
 
     /**
