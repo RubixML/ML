@@ -31,7 +31,7 @@ jobs:
 
       - name: Install NumPower
         run: |
-          git clone https://github.com/NumPower/numpower.git
+          git clone https://github.com/RubixML/numpower.git
           cd numpower
           phpize
           ./configure
