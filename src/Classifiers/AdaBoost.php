@@ -255,7 +255,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
