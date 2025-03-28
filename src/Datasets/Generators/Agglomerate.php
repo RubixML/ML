@@ -104,7 +104,7 @@ class Agglomerate implements Generator
         }
 
         $this->generators = $generators;
-        $this->weights = array_combine(array_keys($generators), $weights) ?: [];
+        $this->weights = array_combine(array_keys($generators), $weights);
         $this->dimensions = $dimensions;
     }
 

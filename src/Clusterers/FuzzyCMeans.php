@@ -449,7 +449,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

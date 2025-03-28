@@ -419,7 +419,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<int|string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -492,7 +492,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }
