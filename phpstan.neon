@@ -4,7 +4,6 @@ parameters:
     level: 8
     paths:
         - 'src'
-        - 'tests'
         - 'benchmarks'
     excludePaths:
         - src/Backends/Amp.php
