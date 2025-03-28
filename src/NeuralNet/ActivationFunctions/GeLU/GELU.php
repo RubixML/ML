@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 class GELU implements ActivationFunction
 {
@@ -36,18 +37,6 @@ class GELU implements ActivationFunction
      * @var float
      */
     protected const BETA = 0.044715;
-
-    /**
-     * Calculate the squared hyperbolic secant of a number.
-     */
-    protected static function sech2(NDArray $value) : NDArray
-    {
-        $cosh = NumPower::cosh($value);
-
-        $sech = 1.0 / $cosh;
-
-        return $sech ** 2;
-    }
 
     /**
      * @inheritdoc
@@ -67,24 +56,9 @@ class GELU implements ActivationFunction
 
         $alpha = 0.0356774 * $zHat + self::ALPHA * $input;
         $beta = 0.0535161 * $zHat + 0.398942 * $input;
+        $sech2 = (1 / NumPower::cosh($value)) ** 2;
 
-        return 0.5 * NumPower::tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $z
-     * @return float
-     */
-    public function _differentiate(float $z) : float
-    {
-        $zHat = $z ** 3;
-
-        $alpha = 0.0356774 * $zHat + self::ALPHA * $z;
-        $beta = 0.0535161 * $zHat + 0.398942 * $z;
-
-        return 0.5 * tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
+        return 0.5 * NumPower::tanh($alpha) + $beta * $sech2 + 0.5;
     }
 
     /**

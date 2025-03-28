@@ -45,7 +45,7 @@ class ELU implements ActivationFunction
      */
     public function activate(NDArray $input) : NDArray
     {
-        return NumPower::maximum($input, 0) + (NumPower::exp(NumPower::minimum($input, 0)) - 1) * $this->alpha;
+        return NumPower::maximum($input, 0) + NumPower::expm1(NumPower::minimum($input, 0)) * $this->alpha;
     }
 
     /**
