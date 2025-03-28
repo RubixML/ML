@@ -229,7 +229,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -278,7 +278,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {

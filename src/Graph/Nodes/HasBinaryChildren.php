@@ -32,7 +32,7 @@ interface HasBinaryChildren extends BinaryNode
     /**
      * Return the children of this node in an iterator.
      *
-     * @return \Traversable<\Rubix\ML\Graph\Nodes\BinaryNode>
+     * @return Traversable<BinaryNode>
      */
     public function children() : Traversable;
 

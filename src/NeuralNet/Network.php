@@ -18,7 +18,7 @@ interface Network
     /**
      * Return the layers of the network.
      *
-     * @return \Traversable<\Rubix\ML\NeuralNet\Layers\Layer>
+     * @return Traversable<Layers\Layer>
      */
     public function layers() : Traversable;
 }

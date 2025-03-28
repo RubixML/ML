@@ -66,7 +66,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * An array composing the user-specified hidden layers of the network in order.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @var Hidden[]
      */
     protected array $hiddenLayers = [
         //
@@ -157,7 +157,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
+     * @param Hidden[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
@@ -251,7 +251,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -296,7 +296,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {

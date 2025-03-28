@@ -39,7 +39,7 @@ class FeedForward implements Network
     /**
      * The hidden layers of the network.
      *
-     * @var list<\Rubix\ML\NeuralNet\Layers\Hidden>
+     * @var list<Layers\Hidden>
      */
     protected array $hidden = [
         //
@@ -48,7 +48,7 @@ class FeedForward implements Network
     /**
      * The pathing of the backward pass through the hidden layers.
      *
-     * @var list<\Rubix\ML\NeuralNet\Layers\Hidden>
+     * @var list<Layers\Hidden>
      */
     protected array $backPass = [
         //
@@ -70,7 +70,7 @@ class FeedForward implements Network
 
     /**
      * @param Input $input
-     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hidden
+     * @param Layers\Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
      */
@@ -100,7 +100,7 @@ class FeedForward implements Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return list<\Rubix\ML\NeuralNet\Layers\Hidden>
+     * @return list<Layers\Hidden>
      */
     public function hidden() : array
     {
@@ -120,7 +120,7 @@ class FeedForward implements Network
     /**
      * Return all the layers in the network.
      *
-     * @return \Traversable<\Rubix\ML\NeuralNet\Layers\Layer>
+     * @return Traversable<Layers\Layer>
      */
     public function layers() : Traversable
     {

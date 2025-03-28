@@ -51,7 +51,7 @@ class SELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -94,7 +94,7 @@ class SELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {

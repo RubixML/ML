@@ -87,7 +87,7 @@ class VMeasureTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function scoreProvider() : Generator
     {

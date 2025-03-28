@@ -109,7 +109,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
     /**
      * Return the data types that this transformer is compatible with.
      *
-     * @return \Rubix\ML\DataType[]
+     * @return DataType[]
      */
     public function compatibility() : array
     {

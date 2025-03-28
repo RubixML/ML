@@ -52,7 +52,7 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -111,7 +111,7 @@ class HuberLossTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {

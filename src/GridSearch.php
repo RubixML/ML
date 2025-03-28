@@ -196,7 +196,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

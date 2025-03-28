@@ -43,7 +43,7 @@ class StochasticTest extends TestCase
      * @dataProvider stepProvider
      *
      * @param Parameter $param
-     * @param \Tensor\Tensor<int|float> $gradient
+     * @param Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */
     public function step(Parameter $param, Tensor $gradient, array $expected) : void
@@ -54,7 +54,7 @@ class StochasticTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function stepProvider() : Generator
     {

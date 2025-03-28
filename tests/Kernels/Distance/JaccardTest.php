@@ -52,7 +52,7 @@ class JaccardTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {

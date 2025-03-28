@@ -66,7 +66,7 @@ class ContingencyTableTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function generateProvider() : Generator
     {

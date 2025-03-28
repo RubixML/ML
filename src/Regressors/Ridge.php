@@ -91,7 +91,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

@@ -52,7 +52,7 @@ class RelativeEntropyTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function computeProvider() : Generator
     {
@@ -117,7 +117,7 @@ class RelativeEntropyTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function differentiateProvider() : Generator
     {
