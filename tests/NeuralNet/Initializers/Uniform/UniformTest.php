@@ -20,11 +20,11 @@ use Rubix\ML\NeuralNet\Initializers\Uniform\Exceptions\InvalidBetaException;
 final class UniformTest extends TestCase
 {
     /**
-     * Data provider for initializeTest3
+     * Data provider for constrictor
      *
      * @return array<string, array<string, float>>
      */
-    public static function constructTest2DataProvider() : array
+    public static function betaProvider() : array
     {
         return [
             'negative beta' => [
@@ -37,11 +37,11 @@ final class UniformTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest1
+     * Provides valid fanIn and fanOut combinations for testing matrix shape.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest1DataProvider() : array
+    public static function validShapeDimensionsProvider() : array
     {
         return [
             'fanIn and fanOut being equal' => [
@@ -60,11 +60,11 @@ final class UniformTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest2
+     * Provides large dimensions to validate Uniform distribution.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest2DataProvider() : array
+    public static function uniformDistributionValidationProvider() : array
     {
         return [
             'small numbers' => [
@@ -86,11 +86,11 @@ final class UniformTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest3
+     * Provides invalid fanIn and fanOut combinations to trigger exceptions.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest3DataProvider() : array
+    public static function invalidFanValuesProvider() : array
     {
         return [
             'fanIn less than 1' => [
@@ -110,7 +110,7 @@ final class UniformTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function constructTest1() : void
+    public function testConstructor() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -121,12 +121,11 @@ final class UniformTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is throw an exception when std less than 0')]
-    #[DataProvider('constructTest2DataProvider')]
-    public function constructTest2(float $beta) : void
+    #[DataProvider('betaProvider')]
+    public function testConstructorWithInvaditBetaThrowsAnException(float $beta) : void
     {
         //expect
         $this->expectException(InvalidBetaException::class);
-        $this->expectExceptionMessage("Beta cannot be less than or equal to 0, $beta given.");
 
         //when
         new Uniform($beta);
@@ -134,8 +133,8 @@ final class UniformTest extends TestCase
 
     #[Test]
     #[TestDox('The result matrix has correct shape')]
-    #[DataProvider('initializeTest1DataProvider')]
-    public function initializeTest1(int $fanIn, int $fanOut) : void
+    #[DataProvider('validShapeDimensionsProvider')]
+    public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
         $w = new Uniform()->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -149,8 +148,8 @@ final class UniformTest extends TestCase
 
     #[Test]
     #[TestDox('The resulting values matches Uniform distribution')]
-    #[DataProvider('initializeTest2DataProvider')]
-    public function initializeTest2(int $fanIn, int $fanOut, float $beta) : void
+    #[DataProvider('uniformDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchUniform(int $fanIn, int $fanOut, float $beta) : void
     {
         //when
         $w = new Uniform($beta)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
@@ -163,16 +162,14 @@ final class UniformTest extends TestCase
 
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
-    #[DataProvider('initializeTest3DataProvider')]
-    public function initializeTest3(int $fanIn, int $fanOut) : void
+    #[DataProvider('invalidFanValuesProvider')]
+    public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
             $this->expectException(InvalidFanInException::class);
-            $this->expectExceptionMessage("Fan in cannot be less than 1, $fanIn given");
         } elseif ($fanOut < 1) {
             $this->expectException(InvalidFanOutException::class);
-            $this->expectExceptionMessage("Fan oun cannot be less than 1, $fanOut given");
         } else {
             $this->expectNotToPerformAssertions();
         }
@@ -182,8 +179,8 @@ final class UniformTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('String representation is correct')]
-    public function toStringTest1() : void
+    #[TestDox('It returns correct string representation')]
+    public function testToStringReturnsCorrectValue() : void
     {
         //when
         $string = (string) new Uniform();

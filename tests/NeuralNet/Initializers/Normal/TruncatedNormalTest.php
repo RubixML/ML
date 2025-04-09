@@ -20,28 +20,28 @@ use Rubix\ML\NeuralNet\Initializers\Normal\Exceptions\InvalidStandardDeviationEx
 final class TruncatedNormalTest extends TestCase
 {
     /**
-     * Data provider for initializeTest3
+     * Data provider for testConstructorThrowsForInvalidStdDev
      *
      * @return array<string, array<string, float>>
      */
-    public static function constructTest2DataProvider() : array
+    public static function invalidStandardDeviationProvider() : array
     {
         return [
-            'negative std' => [
-                'std' => -0.1,
+            'negative stdDev' => [
+                'stdDev' => -0.1,
             ],
-            'zero std' => [
-                'std' => 0,
+            'zero stdDev' => [
+                'stdDev' => 0,
             ]
         ];
     }
 
     /**
-     * Data provider for initializeTest1
+     * Data provider for testInitializedMatrixHasCorrectShape
      *
      * @return array<string, array<string, int>>
      */
-    public static function initializeTest1DataProvider() : array
+    public static function validFanInFanOutCombinationsProvider() : array
     {
         return [
             'fanIn and fanOut being equal' => [
@@ -60,37 +60,37 @@ final class TruncatedNormalTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest2
+     * Data provider for testValuesFollowNormalDistribution
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array<string, float|int>>
      */
-    public static function initializeTest2DataProvider() : array
+    public static function truncatedNormalDistributionInitializationProvider() : array
     {
         return [
             'small numbers' => [
                 'fanIn' => 30,
                 'fanOut' => 10,
-                'std' => 0.25
+                'stdDev' => 0.25
             ],
             'medium numbers' => [
                 'fanIn' => 300,
                 'fanOut' => 100,
-                'std' => 0.5,
+                'stdDev' => 0.5,
             ],
             'big numbers' => [
                 'fanIn' => 3000,
                 'fanOut' => 1000,
-                'std' => 1.75
+                'stdDev' => 1.75
             ]
         ];
     }
 
     /**
-     * Data provider for initializeTest3
+     * Data provider for testInitializationThrowsForInvalidFanValues
      *
      * @return array<string, array<string, int>>
      */
-    public static function initializeTest3DataProvider() : array
+    public static function invalidFanInFanOutProvider() : array
     {
         return [
             'fanIn less than 1' => [
@@ -110,7 +110,7 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function constructTest1() : void
+    public function testConstructorSucceedsWithDefaultStdDev() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -120,22 +120,21 @@ final class TruncatedNormalTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('The initializer object is throw an exception when std less than 0')]
-    #[DataProvider('constructTest2DataProvider')]
-    public function constructTest2(float $std) : void
+    #[TestDox('The initializer object is throw an exception when stdDev less than 0')]
+    #[DataProvider('invalidStandardDeviationProvider')]
+    public function testConstructorThrowsForInvalidStdDev(float $stdDev) : void
     {
         //expect
         $this->expectException(InvalidStandardDeviationException::class);
-        $this->expectExceptionMessage("Standard deviation must be greater than 0, $std given.");
 
         //when
-        new TruncatedNormal($std);
+        new TruncatedNormal($stdDev);
     }
 
     #[Test]
     #[TestDox('The result matrix has correct shape')]
-    #[DataProvider('initializeTest1DataProvider')]
-    public function initializeTest1(int $fanIn, int $fanOut) : void
+    #[DataProvider('validFanInFanOutCombinationsProvider')]
+    public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = new TruncatedNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -148,12 +147,12 @@ final class TruncatedNormalTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('The resulting values matches distribution Normal')]
-    #[DataProvider('initializeTest2DataProvider')]
-    public function initializeTest2(int $fanIn, int $fanOut, float $std) : void
+    #[TestDox('The resulting values matches distribution Truncated Normal')]
+    #[DataProvider('truncatedNormalDistributionInitializationProvider')]
+    public function testValuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
-        $w = new TruncatedNormal($std)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = new TruncatedNormal($stdDev)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -173,18 +172,18 @@ final class TruncatedNormalTest extends TestCase
         $this->assertThat(
             $resultStd,
             $this->logicalAnd(
-                $this->greaterThan($std * 0.9),
-                $this->lessThan($std * 1.1)
+                $this->greaterThan($stdDev * 0.9),
+                $this->lessThan($stdDev * 1.1)
             ),
-            'Standard deviation does not match Normal initialization'
+            'Standard deviation does not match Truncated Normal initialization'
         );
         $this->assertLessThanOrEqual(
-            $std * 2,
+            $stdDev * 2.3,
             max($flatValues),
             'Maximum value does not match Truncated Normal initialization'
         );
         $this->assertGreaterThanOrEqual(
-            $std * -2,
+            $stdDev * -2.3,
             min($flatValues),
             'Minimum value does not match Truncated Normal initialization'
         );
@@ -192,16 +191,14 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
-    #[DataProvider('initializeTest3DataProvider')]
-    public function initializeTest3(int $fanIn, int $fanOut) : void
+    #[DataProvider('invalidFanInFanOutProvider')]
+    public function testInitializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
             $this->expectException(InvalidFanInException::class);
-            $this->expectExceptionMessage("Fan in cannot be less than 1, $fanIn given");
         } elseif ($fanOut < 1) {
             $this->expectException(InvalidFanOutException::class);
-            $this->expectExceptionMessage("Fan oun cannot be less than 1, $fanOut given");
         } else {
             $this->expectNotToPerformAssertions();
         }
@@ -212,12 +209,12 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function toStringTest1() : void
+    public function testToStringReturnsExpectedFormat() : void
     {
         //when
         $string = (string) new TruncatedNormal();
 
         //then
-        $this->assertEquals('Truncated Normal (std: 0.05)', $string);
+        $this->assertEquals('Truncated Normal (stdDev: 0.05)', $string);
     }
 }

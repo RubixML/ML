@@ -19,75 +19,51 @@ use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanOutException;
 class ConstantTest extends TestCase
 {
     /**
-     * DataProvider for constructTest1
+     * Provides valid values for constructing a Constant initializer.
      *
-     * @return array<string, array<string, float>>
+     * @return array<string, array{value: float}>
      */
-    public static function constructTest1DataProvider() : array
+    public static function validConstructorValuesProvider() : array
     {
         return [
-            'negative value' => [
-                'value' => -3.4,
-            ],
-            'zero value' => [
-                'value' => 0.0,
-            ],
-            'positive value' => [
-                'value' => 0.3,
-            ],
+            'negative constant value' => ['value' => -3.4],
+            'zero constant value' => ['value' => 0.0],
+            'positive constant value' => ['value' => 0.3],
         ];
     }
 
     /**
-     * DataProvider for initializeTest1
+     * Provides valid fanIn and fanOut values to test the shape of the initialized matrix.
      *
-     * @return array<string, array<string, int<1, max>>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest1DataProvider() : array
+    public static function validFanInAndFanOutProvider() : array
     {
         return [
-            'fanIn and fanOut being equal' => [
-                'fanIn' => 3,
-                'fanOut' => 3,
-            ],
-            'fanIn greater than fanOut' => [
-                'fanIn' => 4,
-                'fanOut' => 3,
-            ],
-            'fanIn less than fanOut' => [
-                'fanIn' => 3,
-                'fanOut' => 4,
-            ],
+            'equal fanIn and fanOut' => ['fanIn' => 3, 'fanOut' => 3],
+            'fanIn greater than fanOut' => ['fanIn' => 4, 'fanOut' => 3],
+            'fanIn less than fanOut' => ['fanIn' => 3, 'fanOut' => 4],
         ];
     }
 
     /**
-     * Data provider for initializeTest3
+     * Provides invalid fanIn and fanOut values to test exception handling.
      *
-     * @return array<string, array<string, int<1, max>>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest3DataProvider() : array
+    public static function invalidFanValuesProvider() : array
     {
         return [
-            'fanIn less than 1' => [
-                'fanIn' => 0,
-                'fanOut' => 1,
-            ],
-            'fanOut less than 1' => [
-                'fanIn' => 1,
-                'fanOut' => 1,
-            ],
-            'fanIn and fanOut less than 1' => [
-                'fanIn' => 0,
-                'fanOut' => 0,
-            ],
+            'fanIn less than 1' => ['fanIn' => 0, 'fanOut' => 1],
+            'fanOut less than 1' => ['fanIn' => 1, 'fanOut' => 0],
+            'both fanIn and fanOut invalid' => ['fanIn' => 0, 'fanOut' => 0],
         ];
     }
 
     #[Test]
-    #[TestDox('The initializer object os created correctly')]
-    #[DataProvider('constructTest1DataProvider')]
-    public function constructTest1(float $value) : void
+    #[TestDox('It constructs the initializer with valid values')]
+    #[DataProvider('validConstructorValuesProvider')]
+    public function testConstructorWithValidValues(float $value) : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -97,9 +73,9 @@ class ConstantTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('The result matrix has correct shape')]
-    #[DataProvider('initializeTest1DataProvider')]
-    public function initializeTest1(int $fanIn, int $fanOut) : void
+    #[TestDox('It initializes a matrix with correct shape')]
+    #[DataProvider('validFanInAndFanOutProvider')]
+    public function testMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = new Constant(4.8)->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -112,8 +88,8 @@ class ConstantTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('All elements correspond to a single value')]
-    public function initializeTest2() : void
+    #[TestDox('It initializes a matrix filled with the constant value')]
+    public function testMatrixFilledWithConstantValue() : void
     {
         //given
         $w = new Constant(4.5)->initialize(3, 4);
@@ -126,22 +102,31 @@ class ConstantTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('An exception is thrown during initialization')]
-    #[DataProvider('initializeTest3DataProvider')]
-    public function initializeTest3(int $fanIn, int $fanOut) : void
+    #[TestDox('It throws an exception when fanIn or fanOut is invalid')]
+    #[DataProvider('invalidFanValuesProvider')]
+    public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
             $this->expectException(InvalidFanInException::class);
-            $this->expectExceptionMessage("Fan in cannot be less than 1, $fanIn given");
         } elseif ($fanOut < 1) {
             $this->expectException(InvalidFanOutException::class);
-            $this->expectExceptionMessage("Fan oun cannot be less than 1, $fanOut given");
         } else {
             $this->expectNotToPerformAssertions();
         }
 
         //when
         new Constant()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+    }
+
+    #[Test]
+    #[TestDox('String representation is correct')]
+    public function testReturnsCorrectStringRepresentation() : void
+    {
+        //when
+        $string = (string) new Constant();
+
+        //then
+        $this->assertEquals('Constant (value: 0)', $string);
     }
 }

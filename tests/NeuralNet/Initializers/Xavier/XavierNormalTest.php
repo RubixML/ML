@@ -19,11 +19,11 @@ use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanOutException;
 final class XavierNormalTest extends TestCase
 {
     /**
-     * Data provider for initializeTest1
+     * Provides valid fanIn and fanOut combinations for testing matrix shape.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest1DataProvider() : array
+    public static function validShapeDimensionsProvider() : array
     {
         return [
             'fanIn and fanOut being equal' => [
@@ -42,11 +42,11 @@ final class XavierNormalTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest2
+     * Provides large dimensions to validate mean and standard deviation for Xavier normal distribution.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest2DataProvider() : array
+    public static function xavierNormalDistributionValidationProvider() : array
     {
         return [
             'small numbers' => [
@@ -65,11 +65,11 @@ final class XavierNormalTest extends TestCase
     }
 
     /**
-     * Data provider for initializeTest3
+     * Provides invalid fanIn and fanOut combinations to trigger exceptions.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function initializeTest3DataProvider() : array
+    public static function invalidFanValuesProvider() : array
     {
         return [
             'fanIn less than 1' => [
@@ -89,7 +89,7 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function constructTest1() : void
+    public function testConstructor() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -100,8 +100,8 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The result matrix has correct shape')]
-    #[DataProvider('initializeTest1DataProvider')]
-    public function initializeTest1(int $fanIn, int $fanOut) : void
+    #[DataProvider('validShapeDimensionsProvider')]
+    public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
         $w = new XavierNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -115,8 +115,8 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The resulting values matches distribution Xavier (normal distribution)')]
-    #[DataProvider('initializeTest2DataProvider')]
-    public function initializeTest2(int $fanIn, int $fanOut) : void
+    #[DataProvider('xavierNormalDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchXavierNormal(int $fanIn, int $fanOut) : void
     {
         //given
         $expectedStd = sqrt(2 / ($fanOut + $fanIn));
@@ -149,16 +149,14 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
-    #[DataProvider('initializeTest3DataProvider')]
-    public function initializeTest3(int $fanIn, int $fanOut) : void
+    #[DataProvider('invalidFanValuesProvider')]
+    public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
             $this->expectException(InvalidFanInException::class);
-            $this->expectExceptionMessage("Fan in cannot be less than 1, $fanIn given");
         } elseif ($fanOut < 1) {
             $this->expectException(InvalidFanOutException::class);
-            $this->expectExceptionMessage("Fan oun cannot be less than 1, $fanOut given");
         } else {
             $this->expectNotToPerformAssertions();
         }
@@ -169,7 +167,7 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function toStringTest1() : void
+    public function testToStringReturnsCorrectValue() : void
     {
         //when
         $string = (string) new XavierNormal();

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\Initializers\Base\Contracts;
+namespace Rubix\ML\NeuralNet\Initializers\Base;
 
 use NDArray;
 use Stringable;

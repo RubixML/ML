@@ -6,7 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers\Xavier;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\Initializers\Base\Contracts\AbstractInitializer;
+use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 
 /**
  * Xavier Normal
@@ -32,11 +32,11 @@ class XavierNormal extends AbstractInitializer
      */
     public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        $this->validateInitParams(fanIn: $fanIn, fanOut: $fanOut);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $std = sqrt(2 / ($fanOut + $fanIn));
+        $stdDev = sqrt(2 / ($fanOut + $fanIn));
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $std);
+        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**

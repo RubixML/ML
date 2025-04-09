@@ -6,7 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers\He;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\Initializers\Base\Contracts\AbstractInitializer;
+use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 
 /**
  * He Uniform
@@ -31,7 +31,7 @@ class HeUniform extends AbstractInitializer
      */
     public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        $this->validateInitParams(fanIn: $fanIn, fanOut: $fanOut);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         $limit = sqrt(6 / $fanOut);
 

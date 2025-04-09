@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\Initializers\Base\Contracts;
+namespace Rubix\ML\NeuralNet\Initializers\Base;
 
 use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanInException;
 use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanOutException;
@@ -25,7 +25,7 @@ abstract class AbstractInitializer implements Initializer
      * @throws InvalidFanInException Initializer parameter fanIn is less than 1
      * @throws InvalidFanOutException Initializer parameter fanOut is less than 1
      */
-    protected function validateInitParams(int $fanIn, int $fanOut) : void
+    protected function validateFanInFanOut(int $fanIn, int $fanOut) : void
     {
         if ($fanIn < 1) {
             throw new InvalidFanInException(message: "Fan in cannot be less than 1, $fanIn given");

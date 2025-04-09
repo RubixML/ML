@@ -6,7 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers\LeCun;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\Initializers\Base\Contracts\AbstractInitializer;
+use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 
 /**
  * Le Cun Uniform
@@ -32,7 +32,7 @@ class LeCunUniform extends AbstractInitializer
      */
     public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        $this->validateInitParams(fanIn: $fanIn, fanOut: $fanOut);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         $limit = sqrt(3 / $fanOut);
 

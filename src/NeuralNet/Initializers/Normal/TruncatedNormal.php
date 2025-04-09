@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\Initializers\Normal;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Initializers\Base\Contracts\AbstractInitializer;
+use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 use Rubix\ML\NeuralNet\Initializers\Normal\Exceptions\InvalidStandardDeviationException;
 
 /**
@@ -42,7 +42,7 @@ class TruncatedNormal extends AbstractInitializer
      */
     public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        $this->validateInitParams(fanIn: $fanIn, fanOut: $fanOut);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
     }
@@ -54,6 +54,6 @@ class TruncatedNormal extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return "Truncated Normal (std: {$this->stdDev})";
+        return "Truncated Normal (stdDev: {$this->stdDev})";
     }
 }
