@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\Polynomial;
+use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
@@ -103,8 +103,8 @@ class OneClassSVMTest extends TestCase
     public function testParams() : void
     {
         $expected = [
-            'nu' => 0.01,
-            'kernel' => new Polynomial(4, 1e-3),
+            'nu' => 0.3,
+            'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 0.0001,
             'cache size' => 100.0,

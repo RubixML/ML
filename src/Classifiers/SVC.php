@@ -236,7 +236,13 @@ class SVC implements Estimator, Learner
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $index = $this->model->predict($sample);
+        $sampleWithOffset = [];
+
+        foreach ($sample as $key => $value) {
+            $sampleWithOffset[$key + 1] = $value;
+        }
+
+        $index = $this->model->predict($sampleWithOffset);
 
         return $this->classes[$index];
     }
