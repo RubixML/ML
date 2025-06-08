@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -10,8 +11,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Nodes\Depth;
-use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -20,137 +19,88 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function count;
-
-use const Rubix\ML\EPSILON;
+use const Rubix\ML\TWO_PI;
 
 /**
- * Isolation Forest
+ * Gaussian MLE
  *
- * An ensemble of Isolation Trees all of which specialize on a unique subset of the training
- * set. Isolation Trees are a type of randomized decision tree that assign anomaly scores
- * based on the depth a sample reaches when traversing the tree. Anomalies are isolated into
- * the shallowest leaf nodes and as such receive the highest *isolation* scores.
+ * The Gaussian Maximum Likelihood Estimator (MLE) is able to spot outliers by computing
+ * a probability density function (PDF) over the features assuming they are independently
+ * and normally (Gaussian) distributed. Samples that are assigned low probability density
+ * are more likely to be outliers.
  *
  * References:
- * [1] F. T. Liu et al. (2008). Isolation Forest.
- * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
- * [3] M. Garchery et al. (2018). On the influence of categorical features in ranking anomalies using mixed data.
+ * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing
+ * Sample Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Scoring, Persistable
+final class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 {
     use AutotrackRevisions;
 
     /**
-     * The default minimum anomaly score for a sample to be flagged.
-     *
-     * @var float
+     * The proportion of outliers that are assumed to be present in the training set.
      */
-    public const DEFAULT_THRESHOLD = 0.5;
+    protected float $contamination;
 
     /**
-     * The minimum size of each training subset.
-     *
-     * @var int
+     * The amount of epsilon smoothing added to the variance of each feature.
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected float $smoothing;
 
     /**
-     * The default sample size of each training subset.
-     *
-     * @var int
+     * The precomputed means of each feature column of the training set.
+     * @var array<float>
      */
-    protected const DEFAULT_SUBSAMPLE = 256;
+    protected array $means = [];
 
     /**
-     * The number of estimators to train in the ensemble.
-     *
-     * @var int
+     * The precomputed variances of each feature column of the training set.
+     * @var array<float>
      */
-    protected int $estimators;
+    protected array $variances = [];
 
     /**
-     * The ratio of training samples to train each estimator on.
-     *
-     * @var float|null
+     * A small portion of variance to add for smoothing.
      */
-    protected ?float $ratio = null;
+    protected ?float $epsilon = null;
 
     /**
-     * The proportion of outliers that are presumed to be present in the training set.
-     *
-     * @var float|null
+     * The number of samples that have passed through training so far.
      */
-    protected ?float $contamination = null;
+    protected int $n = 0;
 
     /**
-     * The sum of the average depth of all the isolation trees in the ensemble.
-     *
-     * @var float|null
-     */
-    protected ?float $delta = null;
-
-    /**
-     * The isolation trees that make up the forest.
-     *
-     * @var ITree[]
-     */
-    protected array $trees = [
-        //
-    ];
-
-    /**
-     * The isolation score threshold used by the decision function.
-     *
-     * @var float|null
+     * The minimum log likelihood score necessary to flag an anomaly.
      */
     protected ?float $threshold = null;
 
     /**
-     * The dimensionality of the training set.
-     *
-     * @var int|null
-     */
-    protected ?int $featureCount = null;
-
-    /**
-     * @param int $estimators
-     * @param float|null $ratio
-     * @param float|null $contamination
+     * @param float $contamination
+     * @param float $smoothing
      * @throws InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
+    public function __construct(float $contamination = 0.1, float $smoothing = 1e-9)
     {
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Number of estimators'
-                . " must be greater than 0, $estimators given.");
+        if ($contamination < 0.0 || $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be between 0 and 0.5, ' . $contamination . ' given.');
         }
 
-        if (isset($ratio) and ($ratio <= 0.0 or $ratio > 1.0)) {
-            throw new InvalidArgumentException('Ratio must be'
-                . " between 0 and 1, $ratio given.");
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be greater than 0, ' . $smoothing . ' given.');
         }
 
-        if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
-            throw new InvalidArgumentException('Contamination must be'
-                . " between 0 and 0.5, $contamination given.");
-        }
-
-        $this->estimators = $estimators;
-        $this->ratio = $ratio;
         $this->contamination = $contamination;
+        $this->smoothing = $smoothing;
     }
 
     /**
      * Return the estimator type.
      *
      * @internal
-     *
-     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -166,10 +116,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::categorical(),
-            DataType::continuous(),
-        ];
+        return [DataType::continuous()];
     }
 
     /**
@@ -177,31 +124,46 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      *
      * @internal
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function params() : array
     {
         return [
-            'estimators' => $this->estimators,
-            'ratio' => $this->ratio,
             'contamination' => $this->contamination,
+            'smoothing' => $this->smoothing,
         ];
     }
 
     /**
      * Has the learner been trained?
-     *
-     * @return bool
      */
     public function trained() : bool
     {
-        return $this->threshold and $this->trees;
+        return !empty($this->means) && !empty($this->variances);
+    }
+
+    /**
+     * Return the column means computed from the training set.
+     *
+     * @return array<float>
+     */
+    public function means() : array
+    {
+        return $this->means;
+    }
+
+    /**
+     * Return the column variances computed from the training set.
+     *
+     * @return array<float>
+     */
+    public function variances() : array
+    {
+        return $this->variances;
     }
 
     /**
      * Train the learner with a dataset.
-     *
-     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -210,53 +172,66 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
+        $this->means = $this->variances = [];
+
+        foreach ($dataset->features() as $column => $values) {
+            [$mean, $variance] = Stats::meanVar($values);
+            $this->means[$column] = $mean;
+            $this->variances[$column] = $variance;
+        }
+
+        $this->updateVariancesWithSmoothing();
+        $this->calculateThreshold($dataset);
+        $this->n = $dataset->numSamples();
+    }
+
+    /**
+     * Perform a partial train on the learner.
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (!$this->trained()) {
+            $this->train($dataset);
+            return;
+        }
+
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+            new DatasetHasDimensionality($dataset, count($this->means)),
+        ])->check();
+
         $n = $dataset->numSamples();
+        $weight = $this->n + $n;
 
-        $p = $this->ratio
-            ? max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $n))
-            : min(self::DEFAULT_SUBSAMPLE, $n);
+        foreach ($dataset->features() as $column => $values) {
+            [$mean, $variance] = Stats::meanVar($values);
+            $oldMean = $this->means[$column];
+            $oldVariance = $this->variances[$column] - $this->epsilon;
 
-        $maxHeight = (int) max(1, round(log($p, 2.0)));
-
-        $this->trees = [];
-
-        while (count($this->trees) < $this->estimators) {
-            $tree = new ITree($maxHeight);
-
-            $subset = $dataset->randomSubset($p);
-
-            $tree->grow($subset);
-
-            $this->trees[] = $tree;
+            $this->means[$column] = (($this->n * $oldMean) + ($n * $mean)) / $weight;
+            
+            $this->variances[$column] = ($this->n * $oldVariance + ($n * $variance)
+                + ($this->n / ($n * $weight)) * ($n * $oldMean - $n * $mean) ** 2) / $weight;
         }
 
-        $this->delta = $this->estimators * Depth::c($p);
-
-        if (isset($this->contamination)) {
-            $scores = array_map([$this, 'isolationScore'], $dataset->samples());
-
-            $threshold = Stats::quantile($scores, 1.0 - $this->contamination);
-        }
-
-        $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
-
-        $this->featureCount = $dataset->numFeatures();
+        $this->updateVariancesWithSmoothing();
+        $this->updateThreshold($dataset, $n, $weight);
+        $this->n = $weight;
     }
 
     /**
      * Make predictions from a dataset.
      *
-     * @param Dataset $dataset
-     * @throws RuntimeException
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->trees) or !$this->featureCount) {
+        if (!$this->trained() || $this->threshold === null) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+        DatasetHasDimensionality::with($dataset, count($this->means))->check();
 
         return array_map([$this, 'predictSample'], $dataset->samples());
     }
@@ -266,62 +241,88 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      *
      * @internal
      *
-     * @param list<string|int|float> $sample
-     * @return int
+     * @param list<int|float> $sample
      */
     public function predictSample(array $sample) : int
     {
-        return $this->isolationScore($sample) > $this->threshold ? 1 : 0;
+        return $this->logLikelihood($sample) > $this->threshold ? 1 : 0;
     }
 
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param Dataset $dataset
      * @throws RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
-        if (empty($this->trees) or !$this->featureCount) {
+        if (!$this->trained()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+        DatasetHasDimensionality::with($dataset, count($this->means))->check();
 
-        return array_map([$this, 'isolationScore'], $dataset->samples());
+        return array_map([$this, 'logLikelihood'], $dataset->samples());
     }
 
     /**
-     * Return the isolation score of a sample.
+     * Calculate the log likelihood of a sample being an outlier.
      *
-     * @param list<string|int|float> $sample
-     * @return float
+     * @param list<int|float> $sample
      */
-    protected function isolationScore(array $sample) : float
+    protected function logLikelihood(array $sample) : float
     {
-        $depth = 0.0;
+        $likelihood = 0.0;
 
-        foreach ($this->trees as $tree) {
-            $node = $tree->search($sample);
-
-            $depth += $node ? $node->depth() : EPSILON;
+        foreach ($sample as $column => $value) {
+            $mean = $this->means[$column];
+            $variance = $this->variances[$column];
+            
+            $likelihood += 0.5 * (log(TWO_PI * $variance) + (($value - $mean) ** 2) / $variance;
         }
 
-        $depth /= $this->delta;
+        return $likelihood;
+    }
 
-        return 2.0 ** -$depth;
+    /**
+     * Update variances with smoothing epsilon.
+     */
+    private function updateVariancesWithSmoothing() : void
+    {
+        $this->epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
+        
+        foreach ($this->variances as &$variance) {
+            $variance += $this->epsilon;
+        }
+    }
+
+    /**
+     * Calculate the anomaly threshold based on training data.
+     */
+    private function calculateThreshold(Dataset $dataset) : void
+    {
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
+        $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
+    }
+
+    /**
+     * Update the anomaly threshold during partial training.
+     */
+    private function updateThreshold(Dataset $dataset, int $n, int $weight) : void
+    {
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
+        $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
+        $proportion = $n / $weight;
+        $this->threshold = $proportion * $threshold + (1.0 - $proportion) * $this->threshold;
     }
 
     /**
      * Return the string representation of the object.
      *
      * @internal
-     *
-     * @return string
      */
     public function __toString() : string
     {
-        return 'Isolation Forest (' . Params::stringify($this->params()) . ')';
+        return 'Gaussian MLE (' . Params::stringify($this->params()) . ')';
     }
 }
