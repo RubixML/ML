@@ -41,82 +41,31 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
 {
     use AutotrackRevisions;
 
-    /**
-     * The default minimum anomaly score for a sample to be flagged.
-     *
-     * @var float
-     */
     protected const DEFAULT_THRESHOLD = 1.5;
 
-    /**
-     * The number of nearest neighbors to consider a local region.
-     *
-     * @var int
-     */
     protected int $k;
-
-    /**
-     * The percentage of outliers that are assumed to be present in the training set.
-     *
-     * @var float|null
-     */
-    protected ?float $contamination = null;
-
-    /**
-     * The k-d tree used for nearest neighbor queries.
-     *
-     * @var Spatial
-     */
+    protected ?float $contamination;
     protected Spatial $tree;
-
-    /**
-     * The precomputed k distances between each training sample and its k'th nearest neighbor.
-     *
-     * @var float[]
-     */
-    protected array $kdistances = [
-        //
-    ];
-
-    /**
-     * The precomputed local reachability densities of the training set.
-     *
-     * @var float[]
-     */
-    protected array $lrds = [
-        //
-    ];
-
-    /**
-     * The local outlier factor threshold used by the decision function.
-     *
-     * @var float|null
-     */
+    protected array $kdistances = [];
+    protected array $lrds = [];
     protected ?float $threshold = null;
-
-    /**
-     * The dimensionality of the training set.
-     *
-     * @var int|null
-     */
     protected ?int $featureCount = null;
 
     /**
-     * @param int $k
-     * @param float|null $contamination
-     * @param Spatial|null $tree
+     * @param int $k The number of nearest neighbors to consider
+     * @param float|null $contamination The expected proportion of outliers
+     * @param Spatial|null $tree The spatial tree to use for nearest neighbor searches
+     * 
      * @throws InvalidArgumentException
      */
     public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor'
-                . " is required to form a local region, $k given.");
+            throw new InvalidArgumentException("At least 1 neighbor is required, $k given.");
         }
 
-        if (isset($contamination) and ($contamination < 0.0 or $contamination > 0.5)) {
-            throw new InvalidArgumentException('Contamination must be'
-                . " between 0 and 0.5, $contamination given.");
+        if ($contamination !== null && ($contamination < 0.0 || $contamination > 0.5)) {
+            throw new InvalidArgumentException("Contamination must be between 0 and 0.5, $contamination given.");
         }
 
         $this->k = $k;
@@ -124,38 +73,17 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
         $this->tree = $tree ?? new KDTree();
     }
 
-    /**
-     * Return the estimator type.
-     *
-     * @internal
-     *
-     * @return EstimatorType
-     */
-    public function type() : EstimatorType
+    public function type(): EstimatorType
     {
         return EstimatorType::anomalyDetector();
     }
 
-    /**
-     * Return the data types that the estimator is compatible with.
-     *
-     * @internal
-     *
-     * @return list<\Rubix\ML\DataType>
-     */
-    public function compatibility() : array
+    public function compatibility(): array
     {
         return $this->tree->kernel()->compatibility();
     }
 
-    /**
-     * Return the settings of the hyper-parameters in an associative array.
-     *
-     * @internal
-     *
-     * @return mixed[]
-     */
-    public function params() : array
+    public function params(): array
     {
         return [
             'k' => $this->k,
@@ -164,32 +92,17 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
         ];
     }
 
-    /**
-     * Has the learner been trained?
-     *
-     * @return bool
-     */
-    public function trained() : bool
+    public function trained(): bool
     {
-        return !$this->tree->bare() and $this->kdistances and $this->lrds;
+        return !$this->tree->bare() && $this->kdistances && $this->lrds;
     }
 
-    /**
-     * Return the base spatial tree instance.
-     *
-     * @return Spatial
-     */
-    public function tree() : Spatial
+    public function tree(): Spatial
     {
         return $this->tree;
     }
 
-    /**
-     * Train the learner with a dataset.
-     *
-     * @param Dataset $dataset
-     */
-    public function train(Dataset $dataset) : void
+    public function train(Dataset $dataset): void
     {
         SpecificationChain::with([
             new DatasetIsNotEmpty($dataset),
@@ -197,46 +110,38 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
         ])->check();
 
         $labels = range(0, $dataset->numSamples() - 1);
-
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $this->tree->grow($dataset);
-
         $this->kdistances = $this->lrds = [];
 
-        $iHat = $dHat = [];
-
+        $indicesList = $distancesList = [];
         foreach ($dataset->samples() as $sample) {
-            [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
-
-            $iHat[] = $indices;
-            $dHat[] = $distances;
-
+            [,, $distances] = $this->tree->nearest($sample, $this->k);
             $this->kdistances[] = end($distances) ?: INF;
+            $indicesList[] = array_keys($distances);
+            $distancesList[] = array_values($distances);
         }
 
-        $this->lrds = array_map([$this, 'localReachabilityDensity'], $iHat, $dHat);
+        $this->lrds = array_map(
+            fn(array $indices, array $distances) => $this->localReachabilityDensity($indices, $distances),
+            $indicesList,
+            $distancesList
+        );
 
-        if (isset($this->contamination)) {
+        if ($this->contamination !== null) {
             $lofs = array_map([$this, 'localOutlierFactor'], $dataset->samples());
-
-            $threshold = Stats::quantile($lofs, 1.0 - $this->contamination);
+            $this->threshold = Stats::quantile($lofs, 1.0 - $this->contamination);
+        } else {
+            $this->threshold = self::DEFAULT_THRESHOLD;
         }
-
-        $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
 
         $this->featureCount = $dataset->numFeatures();
     }
 
-    /**
-     * Make predictions from a dataset.
-     *
-     * @param Dataset $dataset
-     * @return list<int>
-     */
-    public function predict(Dataset $dataset) : array
+    public function predict(Dataset $dataset): array
     {
-        if ($this->tree->bare() or !$this->featureCount) {
+        if (!$this->trained()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -245,88 +150,47 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
         return array_map([$this, 'predictSample'], $dataset->samples());
     }
 
-    /**
-     * Predict a single sample and return the result.
-     *
-     * @internal
-     *
-     * @param list<int|float> $sample
-     * @return int
-     */
-    public function predictSample(array $sample) : int
+    public function predictSample(array $sample): int
     {
-        return $this->localOutlierFactor($sample) > $this->threshold ? 1 : 0;
+        return $this->scoreSample($sample) > $this->threshold ? 1 : 0;
     }
 
-    /**
-     * Return the anomaly scores assigned to the samples in a dataset.
-     *
-     * @param Dataset $dataset
-     * @throws RuntimeException
-     * @return list<float>
-     */
-    public function score(Dataset $dataset) : array
+    public function score(Dataset $dataset): array
     {
-        if ($this->tree->bare() or !$this->featureCount) {
+        if (!$this->trained()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return array_map([$this, 'localOutlierFactor'], $dataset->samples());
+        return array_map([$this, 'scoreSample'], $dataset->samples());
     }
 
-    /**
-     * Calculate the local outlier factor of a given sample given its k
-     * nearest neighbors.
-     *
-     * @param list<int|float> $sample
-     * @return float
-     */
-    protected function localOutlierFactor(array $sample) : float
+    protected function scoreSample(array $sample): float
     {
-        [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
-
+        [,$indices, $distances] = $this->tree->nearest($sample, $this->k);
         $lrd = $this->localReachabilityDensity($indices, $distances) ?: EPSILON;
 
-        $ratios = [];
-
-        foreach ($indices as $index) {
-            $ratios[] = $this->lrds[$index] / $lrd;
-        }
+        $ratios = array_map(
+            fn($index) => $this->lrds[$index] / $lrd,
+            $indices
+        );
 
         return Stats::mean($ratios);
     }
 
-    /**
-     * Calculate the local reachability density of a sample given its
-     * distances to its k nearest neighbors.
-     *
-     * @param list<string|int|float> $indices
-     * @param list<float> $distances
-     * @return float
-     */
-    protected function localReachabilityDensity(array $indices, array $distances) : float
+    protected function localReachabilityDensity(array $indices, array $distances): float
     {
-        $kdistances = [];
-
-        foreach ($indices as $index) {
-            $kdistances[] = $this->kdistances[$index];
-        }
-
-        $rds = array_map('max', $distances, $kdistances);
+        $rds = array_map(
+            fn($distance, $index) => max($distance, $this->kdistances[$index]),
+            $distances,
+            $indices
+        );
 
         return 1.0 / (Stats::mean($rds) ?: EPSILON);
     }
 
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @return string
-     */
-    public function __toString() : string
+    public function __toString(): string
     {
         return 'Local Outlier Factor (' . Params::stringify($this->params()) . ')';
     }
