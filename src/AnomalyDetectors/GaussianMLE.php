@@ -7,7 +7,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Helpers\CPU;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
@@ -38,60 +37,44 @@ use const Rubix\ML\TWO_PI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
+final class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 {
     use AutotrackRevisions;
 
     /**
      * The proportion of outliers that are assumed to be present in the training set.
-     *
-     * @var float
      */
     protected float $contamination;
 
     /**
      * The amount of epsilon smoothing added to the variance of each feature.
-     *
-     * @var float
      */
     protected float $smoothing;
 
     /**
      * The precomputed means of each feature column of the training set.
-     *
-     * @var float[]
+     * @var array<float>
      */
-    protected array $means = [
-        //
-    ];
+    protected array $means = [];
 
     /**
      * The precomputed variances of each feature column of the training set.
-     *
-     * @var float[]
+     * @var array<float>
      */
-    protected array $variances = [
-        //
-    ];
+    protected array $variances = [];
 
     /**
      * A small portion of variance to add for smoothing.
-     *
-     * @var float|null
      */
     protected ?float $epsilon = null;
 
     /**
      * The number of samples that have passed through training so far.
-     *
-     * @var int
      */
     protected int $n = 0;
 
     /**
      * The minimum log likelihood score necessary to flag an anomaly.
-     *
-     * @var float|null
      */
     protected ?float $threshold = null;
 
@@ -102,14 +85,12 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      */
     public function __construct(float $contamination = 0.1, float $smoothing = 1e-9)
     {
-        if ($contamination < 0.0 or $contamination > 0.5) {
-            throw new InvalidArgumentException('Contamination must be'
-                . " between 0 and 0.5, $contamination given.");
+        if ($contamination < 0.0 || $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be between 0 and 0.5, ' . $contamination . ' given.');
         }
 
         if ($smoothing <= 0.0) {
-            throw new InvalidArgumentException('Smoothing must be'
-                . " greater than 0, $smoothing given.");
+            throw new InvalidArgumentException('Smoothing must be greater than 0, ' . $smoothing . ' given.');
         }
 
         $this->contamination = $contamination;
@@ -120,8 +101,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      * Return the estimator type.
      *
      * @internal
-     *
-     * @return EstimatorType
      */
     public function type() : EstimatorType
     {
@@ -137,9 +116,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      */
     public function compatibility() : array
     {
-        return [
-            DataType::continuous(),
-        ];
+        return [DataType::continuous()];
     }
 
     /**
@@ -147,7 +124,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @internal
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function params() : array
     {
@@ -159,18 +136,16 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
     /**
      * Has the learner been trained?
-     *
-     * @return bool
      */
     public function trained() : bool
     {
-        return $this->means and $this->variances;
+        return !empty($this->means) && !empty($this->variances);
     }
 
     /**
      * Return the column means computed from the training set.
      *
-     * @return float[]
+     * @return array<float>
      */
     public function means() : array
     {
@@ -180,7 +155,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Return the column variances computed from the training set.
      *
-     * @return float[]
+     * @return array<float>
      */
     public function variances() : array
     {
@@ -189,8 +164,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
     /**
      * Train the learner with a dataset.
-     *
-     * @param Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -203,36 +176,22 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
         foreach ($dataset->features() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
-
             $this->means[$column] = $mean;
             $this->variances[$column] = $variance;
         }
 
-        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
-
-        foreach ($this->variances as &$variance) {
-            $variance += $epsilon;
-        }
-
-        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
-
-        $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
-
-        $this->epsilon = $epsilon;
-
+        $this->updateVariancesWithSmoothing();
+        $this->calculateThreshold($dataset);
         $this->n = $dataset->numSamples();
     }
 
     /**
      * Perform a partial train on the learner.
-     *
-     * @param Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$this->means or !$this->variances or !$this->threshold) {
+        if (!$this->trained()) {
             $this->train($dataset);
-
             return;
         }
 
@@ -243,55 +202,32 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
         ])->check();
 
         $n = $dataset->numSamples();
-
         $weight = $this->n + $n;
 
         foreach ($dataset->features() as $column => $values) {
             [$mean, $variance] = Stats::meanVar($values);
-
             $oldMean = $this->means[$column];
-            $oldVariance = $this->variances[$column];
+            $oldVariance = $this->variances[$column] - $this->epsilon;
 
-            $oldVariance -= $this->epsilon;
-
-            $this->means[$column] = (($this->n * $oldMean)
-                + ($n * $mean)) / $weight;
-
-            $this->variances[$column] = ($this->n
-                * $oldVariance + ($n * $variance)
-                + ($this->n / ($n * $weight))
-                * ($n * $oldMean - $n * $mean) ** 2)
-                / $weight;
+            $this->means[$column] = (($this->n * $oldMean) + ($n * $mean)) / $weight;
+            
+            $this->variances[$column] = ($this->n * $oldVariance + ($n * $variance)
+                + ($this->n / ($n * $weight)) * ($n * $oldMean - $n * $mean) ** 2) / $weight;
         }
 
-        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
-
-        foreach ($this->variances as &$variance) {
-            $variance += $epsilon;
-        }
-
-        $this->epsilon = $epsilon;
-
+        $this->updateVariancesWithSmoothing();
+        $this->updateThreshold($dataset, $n, $weight);
         $this->n = $weight;
-
-        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
-
-        $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
-
-        $proportion = $n / $this->n;
-
-        $this->threshold = $proportion * $threshold + (1.0 - $proportion) * $this->threshold;
     }
 
     /**
      * Make predictions from a dataset.
      *
-     * @param Dataset $dataset
      * @return list<int>
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->means or !$this->variances or !$this->threshold) {
+        if (!$this->trained() || $this->threshold === null) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -306,7 +242,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      * @internal
      *
      * @param list<int|float> $sample
-     * @return int
      */
     public function predictSample(array $sample) : int
     {
@@ -316,13 +251,12 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
     /**
      * Return the anomaly scores assigned to the samples in a dataset.
      *
-     * @param Dataset $dataset
      * @throws RuntimeException
      * @return list<float>
      */
     public function score(Dataset $dataset) : array
     {
-        if (!$this->means or !$this->variances or !$this->threshold) {
+        if (!$this->trained()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -335,7 +269,6 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
      * Calculate the log likelihood of a sample being an outlier.
      *
      * @param list<int|float> $sample
-     * @return float
      */
     protected function logLikelihood(array $sample) : float
     {
@@ -344,22 +277,49 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
         foreach ($sample as $column => $value) {
             $mean = $this->means[$column];
             $variance = $this->variances[$column];
-
-            $pdf = 0.5 * log(TWO_PI * $variance);
-            $pdf += 0.5 * (($value - $mean) ** 2) / $variance;
-
-            $likelihood += $pdf;
+            
+            $likelihood += 0.5 * (log(TWO_PI * $variance) + (($value - $mean) ** 2) / $variance;
         }
 
         return $likelihood;
     }
 
     /**
+     * Update variances with smoothing epsilon.
+     */
+    private function updateVariancesWithSmoothing() : void
+    {
+        $this->epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
+        
+        foreach ($this->variances as &$variance) {
+            $variance += $this->epsilon;
+        }
+    }
+
+    /**
+     * Calculate the anomaly threshold based on training data.
+     */
+    private function calculateThreshold(Dataset $dataset) : void
+    {
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
+        $this->threshold = Stats::quantile($lls, 1.0 - $this->contamination);
+    }
+
+    /**
+     * Update the anomaly threshold during partial training.
+     */
+    private function updateThreshold(Dataset $dataset, int $n, int $weight) : void
+    {
+        $lls = array_map([$this, 'logLikelihood'], $dataset->samples());
+        $threshold = Stats::quantile($lls, 1.0 - $this->contamination);
+        $proportion = $n / $weight;
+        $this->threshold = $proportion * $threshold + (1.0 - $proportion) * $this->threshold;
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @internal
-     *
-     * @return string
      */
     public function __toString() : string
     {
