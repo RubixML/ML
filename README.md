@@ -1,66 +1,77 @@
+
 # Rubix ML
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat&colorB=red)](https://packagist.org/packages/rubix/ml) [![Code Checks](https://github.com/RubixML/ML/actions/workflows/ci.yml/badge.svg)](https://github.com/RubixML/ML/actions/workflows/ci.yml) [![GitHub](https://img.shields.io/github/license/RubixML/RubixML)](https://github.com/RubixML/ML/blob/master/LICENSE.md)
 
-A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
+A modern, high-level machine learning and deep learning library built for the [PHP 8+](https://php.net) ecosystem.
 
-- **Developer-friendly** API is delightful to use
-- **40+** supervised and unsupervised learning algorithms
-- **Support** for ETL, preprocessing, and cross-validation
-- **Open source** and free to use commercially
+- **Developer-first** API designed for clarity and ease of use
+- **40+** cutting-edge supervised and unsupervised learning algorithms
+- Comprehensive support for ETL, feature preprocessing, and cross-validation workflows
+- Fully **open source** with commercial-friendly licensing
 
 ## Installation
-Install Rubix ML into your project using [Composer](https://getcomposer.org/):
-```sh
+Add Rubix ML to your project via [Composer](https://getcomposer.org/):
+```bash
 composer require rubix/ml
-```
+````
 
 ### Requirements
-- [PHP](https://php.net/manual/en/install.php) 7.4 or above
 
-#### Recommended
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
+* [PHP](https://www.php.net/manual/en/install.php) version **8.0 or higher**
 
-#### Optional
+#### Highly Recommended
 
-- [GD extension](https://php.net/manual/en/book.image.php) for image support
-- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support
-- [GraphViz](https://graphviz.org/) for graph visualization
+* [Tensor extension](https://github.com/RubixML/Tensor) for accelerated matrix and vector computations leveraging PHP 8's JIT capabilities
+
+#### Optional Extensions
+
+* [GD extension](https://www.php.net/manual/en/book.image.php) for advanced image processing features
+* [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for efficient multibyte string handling
+* [SVM extension](https://www.php.net/manual/en/book.svm.php) to leverage libsvm as an alternative Support Vector Machine backend
+* [PDO extension](https://www.php.net/manual/en/book.pdo.php) for seamless relational database integration
+* [GraphViz](https://graphviz.org/) to generate and visualize model graphs and pipelines
 
 ## Documentation
-Read the latest docs [here](https://docs.rubixml.com).
+
+Explore the latest documentation and guides [here](https://docs.rubixml.com).
 
 ## What is Rubix ML?
-Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
+
+Rubix ML is an open-source machine learning library written entirely in PHP 8+, empowering you to build intelligent applications that learn from data. It provides a comprehensive suite of tools to support the entire ML lifecycle: from data ingestion and transformation (ETL), through model training and validation, to deployment in production. With a robust collection of over 40 supervised and unsupervised algorithms, Rubix ML is designed to fit naturally into your PHP projects, harnessing modern language features for performance and developer productivity.
 
 ## Getting Started
-If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://docs.rubixml.com/latest/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://docs.rubixml.com/latest/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
+
+If you’re new to machine learning, start with the [What is Machine Learning?](https://docs.rubixml.com/latest/what-is-machine-learning.html) section to get a solid conceptual foundation. For those familiar with ML concepts, the [basic introduction](https://docs.rubixml.com/latest/basic-introduction.html) offers a concise overview of a typical Rubix ML workflow. Then dive into the official tutorials below, tailored for all skill levels from beginner to advanced.
 
 ### Tutorials & Example Projects
-Check out these example projects using the Rubix ML library. Many come with instructions and a pre-cleaned dataset.
 
-- [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
-- [Color Clusterer](https://github.com/RubixML/Colors)
-- [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
-- [Customer Churn Predictor](https://github.com/RubixML/Churn)
-- [Divorce Predictor](https://github.com/RubixML/Divorce)
-- [DNA Taxonomer](https://github.com/RubixML/DNA)
-- [Dota 2 Game Outcome Predictor](https://github.com/RubixML/Dota2)
-- [Human Activity Recognizer](https://github.com/RubixML/HAR)
-- [Housing Price Predictor](https://github.com/RubixML/Housing)
-- [Iris Flower Classifier](https://github.com/RubixML/Iris)
-- [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
-- [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
-- [Titanic Survival Predictor](https://github.com/Jenutka/titanic_php)
+Explore real-world projects built with Rubix ML — all include setup instructions and preprocessed datasets to get you coding quickly:
 
-## Interact With The Community
+* [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
+* [Color Clusterer](https://github.com/RubixML/Colors)
+* [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
+* [Customer Churn Predictor](https://github.com/RubixML/Churn)
+* [Divorce Predictor](https://github.com/RubixML/Divorce)
+* [DNA Taxonomer](https://github.com/RubixML/DNA)
+* [Dota 2 Game Outcome Predictor](https://github.com/RubixML/Dota2)
+* [Human Activity Recognizer](https://github.com/RubixML/HAR)
+* [Housing Price Predictor](https://github.com/RubixML/Housing)
+* [Iris Flower Classifier](https://github.com/RubixML/Iris)
+* [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
+* [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
+* [Titanic Survival Predictor](https://github.com/Jenutka/titanic_php)
 
-- [Join Our Telegram Channel](https://t.me/RubixML)
+## Community
+
+Connect, collaborate, and get support from other Rubix ML users:
+
+* [Join Our Telegram Channel](https://t.me/RubixML)
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+Interested in contributing? See the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and best practices.
 
 ## License
-The code is licensed [MIT](LICENSE) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
+Rubix ML is licensed under the [MIT License](LICENSE) and the documentation is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
