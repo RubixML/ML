@@ -5,11 +5,11 @@ namespace Rubix\ML\Extractors;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
+use Generator;
 
 use function Rubix\ML\iterator_first;
 use function is_dir;
 use function is_file;
-use function is_array;
 use function is_readable;
 use function is_writable;
 use function fopen;
@@ -36,49 +36,38 @@ use function strlen;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CSV implements Extractor, Exporter
+final class CSV implements Extractor, Exporter
 {
     /**
      * The path to the file on disk.
-     *
-     * @var non-empty-string
      */
-    protected string $path;
+    private string $path;
 
     /**
      * Does the CSV document have a header as the first row?
-     *
-     * @var bool
      */
-    protected bool $header;
+    private bool $header;
 
     /**
      * The character that delineates the values of the columns of the data table.
-     *
-     * @var non-empty-string
      */
-    protected string $delimiter;
+    private string $delimiter;
 
     /**
      * The character used to enclose a cell that contains a delimiter in the body.
-     *
-     * @var non-empty-string
      */
-    protected string $enclosure;
+    private string $enclosure;
 
     /**
      * The character used as an escape character (one character only). Defaults as a backslash.
-     *
-     * @var non-empty-string
      */
-    protected string $escape;
+    private string $escape;
 
     /**
-     * @param string $path
-     * @param bool $header
-     * @param string $delimiter
-     * @param string $enclosure
-     * @param string $escape
+     * @param non-empty-string $path
+     * @param non-empty-string $delimiter
+     * @param non-empty-string $enclosure
+     * @param non-empty-string $escape
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -96,20 +85,9 @@ class CSV implements Extractor, Exporter
             throw new InvalidArgumentException('Path must be to a file, folder given.');
         }
 
-        if (strlen($delimiter) !== 1) {
-            throw new InvalidArgumentException('Delimiter must be'
-                . ' a single character, ' . strlen($delimiter) . ' given.');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new InvalidArgumentException('Enclosure must be'
-                . ' a single character, ' . strlen($enclosure) . ' given.');
-        }
-
-        if (strlen($escape) !== 1) {
-            throw new InvalidArgumentException('Escape character must be'
-                . ' a single character, ' . strlen($escape) . ' given.');
-        }
+        $this->validateCharacter($delimiter, 'Delimiter');
+        $this->validateCharacter($enclosure, 'Enclosure');
+        $this->validateCharacter($escape, 'Escape character');
 
         $this->path = $path;
         $this->header = $header;
@@ -119,71 +97,143 @@ class CSV implements Extractor, Exporter
     }
 
     /**
+     * Validate that a parameter is a single character.
+     * 
+     * @param non-empty-string $char
+     * @param non-empty-string $name
+     * @throws InvalidArgumentException
+     */
+    private function validateCharacter(string $char, string $name): void
+    {
+        if (strlen($char) !== 1) {
+            throw new InvalidArgumentException(
+                sprintf('%s must be a single character, %d given.', $name, strlen($char))
+            );
+        }
+    }
+
+    /**
      * Return the column titles of the data table.
      *
      * @return array<string|int>
      */
-    public function header() : array
+    public function header(): array
     {
-        return array_keys(iterator_first($this));
+        return array_keys(iterator_first($this->getIterator()));
     }
 
     /**
      * Export an iterable data table.
      *
-     * @param iterable<mixed[]> $iterator
+     * @param iterable<array<mixed>> $iterator
      * @throws RuntimeException
      */
-    public function export(iterable $iterator) : void
+    public function export(iterable $iterator): void
     {
-        if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
-        }
+        $this->ensureWritable();
 
-        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
-        }
-
-        $handle = fopen($this->path, 'w');
-
+        $handle = fopen($this->path, 'wb');
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 1;
+        try {
+            $line = 1;
 
-        if ($this->header) {
-            $header = array_keys(iterator_first($iterator));
-
-            $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure, $this->escape);
-
-            if ($length === false) {
-                throw new RuntimeException("Could not write header on line $line.");
+            if ($this->header) {
+                $header = array_keys(iterator_first($iterator));
+                $this->writeCsvLine($handle, $header, $line);
+                ++$line;
             }
 
-            ++$line;
-        }
-
-        foreach ($iterator as $row) {
-            $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure, $this->escape);
-
-            if ($length === false) {
-                throw new RuntimeException("Could not write row on line $line.");
+            foreach ($iterator as $row) {
+                $this->writeCsvLine($handle, $row, $line);
+                ++$line;
             }
+        } finally {
+            fclose($handle);
+        }
+    }
 
-            ++$line;
+    /**
+     * Ensure the file is writable.
+     * 
+     * @throws RuntimeException
+     */
+    private function ensureWritable(): void
+    {
+        if (is_file($this->path) && !is_writable($this->path)) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
-        fclose($handle);
+        if (!is_file($this->path) && !is_writable(dirname($this->path))) {
+            throw new RuntimeException("Path {$this->path} is not writable.");
+        }
+    }
+
+    /**
+     * Write a line to CSV file.
+     * 
+     * @param resource $handle
+     * @param array<mixed> $data
+     * @param positive-int $line
+     * @throws RuntimeException
+     */
+    private function writeCsvLine($handle, array $data, int $line): void
+    {
+        $length = fputcsv($handle, $data, $this->delimiter, $this->enclosure, $this->escape);
+        if ($length === false) {
+            throw new RuntimeException("Could not write data on line $line.");
+        }
     }
 
     /**
      * Return an iterator for the records in the data table.
      *
      * @throws RuntimeException
-     * @return \Generator<mixed[]>
+     * @return Generator<array<mixed>>
      */
-    public function getIterator() : Traversable
+    public function getIterator(): Traversable
+    {
+        $this->ensureReadable();
+
+        $handle = fopen($this->path, 'rb');
+        if (!$handle) {
+            throw new RuntimeException('Could not open file pointer.');
+        }
+
+        try {
+            $line = 1;
+            $header = $this->header ? $this->readHeader($handle, $line) : null;
+
+            while (!feof($handle)) {
+                $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
+                
+                if (empty($record)) {
+                    continue;
+                }
+
+                if ($header !== null) {
+                    $record = array_combine($header, $record);
+                    if (!is_array($record)) {
+                        throw new RuntimeException("Malformed record on line $line.");
+                    }
+                }
+
+                yield $record;
+                ++$line;
+            }
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    /**
+     * Ensure the file is readable.
+     * 
+     * @throws RuntimeException
+     */
+    private function ensureReadable(): void
     {
         if (!is_file($this->path)) {
             throw new RuntimeException("Path {$this->path} is not a file.");
@@ -192,45 +242,24 @@ class CSV implements Extractor, Exporter
         if (!is_readable($this->path)) {
             throw new RuntimeException("Path {$this->path} is not readable.");
         }
+    }
 
-        $handle = fopen($this->path, 'r');
-
-        if (!$handle) {
-            throw new RuntimeException('Could not open file pointer.');
+    /**
+     * Read the header row from CSV.
+     * 
+     * @param resource $handle
+     * @param positive-int $line
+     * @return array<string>
+     * @throws RuntimeException
+     */
+    private function readHeader($handle, int &$line): array
+    {
+        $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
+        if (!$header) {
+            throw new RuntimeException("Header not found on line $line.");
         }
-
-        $line = 1;
-
-        if ($this->header) {
-            $header = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
-
-            if (!$header) {
-                throw new RuntimeException("Header not found on line $line.");
-            }
-
-            ++$line;
-        }
-
-        while (!feof($handle)) {
-            $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
-
-            if (empty($record)) {
-                continue;
-            }
-
-            if (isset($header)) {
-                $record = array_combine($header, $record);
-
-                if (!is_array($record)) {
-                    throw new RuntimeException("Malformed record on line $line.");
-                }
-            }
-
-            yield $record;
-
-            ++$line;
-        }
-
-        fclose($handle);
+        ++$line;
+        
+        return $header;
     }
 }
