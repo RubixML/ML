@@ -105,13 +105,9 @@ class Stats
      *
      * @param mixed[] $values
      * @param float $q
-     *                 <<<<<<< HEAD
      * @throws InvalidArgumentException
      * @throws InvalidArgumentException
      * @return int|float
-     *                   =======
-     * @return float
-     *               >>>>>>> 2.5
      */
     public static function quantile(array $values, float $q) : int|float
     {
