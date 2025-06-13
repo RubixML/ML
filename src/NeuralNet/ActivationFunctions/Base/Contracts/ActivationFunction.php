@@ -30,7 +30,7 @@ interface ActivationFunction extends Stringable
      *
      * @param NDArray $input Input matrix
      * @param NDArray $output Output matrix
-     * @return NDArray Direvative matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray;
+    //public function differentiate(NDArray $input, NDArray $output) : NDArray;
 }

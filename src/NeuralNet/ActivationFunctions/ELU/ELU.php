@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
 use NumPower;
+use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAplhaException;
 
 /**
@@ -23,37 +25,66 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAplhaException;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class ELU implements ActivationFunction
+class ELU implements ActivationFunction, SingleBufferDerivative
 {
     /**
      * @param float $alpha At which negative value the ELU will saturate. For example if alpha
      *              equals 1, the leaked value will never be greater than -1.0.
      * 
-     * @throws InvalidArgumentException
+     * @throws InvalidAplhaException
      */
     public function __construct(protected float $alpha = 1.0)
     {
         if ($this->alpha < 0.0) {
             throw new InvalidAplhaException(
-                message: "lpha must be greater than 0, $alpha given."
+                message: "Alpha must be greater than 0, $alpha given."
             );
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function activate(NDArray $input) : NDArray
     {
-        return NumPower::maximum($input, 0) + NumPower::expm1(NumPower::minimum($input, 0)) * $this->alpha;
+        $a = NumPower::multiply(
+            a: NumPower::expm1(NumPower::minimum(
+                a: $input,
+                b: 0
+            )),
+            b: $this->alpha
+        );
+
+        return NumPower::add(
+            a: NumPower::maximum(
+                a: $input,
+                b: 0
+            ),
+            b: $a
+        );
     }
 
     /**
-     * @inheritdoc
+     * Calculate the derivative of the activation output
+     *
+     * @param NDArray $x Output matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(NDArray $x) : NDArray
     {
-        return NumPower::greater($output, 0) + NumPower::lessEqual($output, 0) * NumPower::exp($output) * $this->alpha;
+        $a = NumPower::multiply(
+            a: NumPower::lessEqual(a: $x, b: 0),
+            b: NumPower::exp($x)
+        );
+        $b = NumPower::multiply(
+            a: $a,
+            b: $this->alpha
+        );
+
+        return NumPower::add(
+            a: NumPower::greater(
+                a: $x,
+                b: 0
+            ),
+            b: $b
+        );
     }
 
     /**

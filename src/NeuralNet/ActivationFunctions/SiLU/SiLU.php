@@ -46,7 +46,7 @@ class SiLU implements ActivationFunction
      */
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        return $output / $input * NumPower::ones($output->shape()) / $output + $output;
+        return $output / $input * NumPower::ones($output->shape()) / $output * 2;
     }
 
     /**
