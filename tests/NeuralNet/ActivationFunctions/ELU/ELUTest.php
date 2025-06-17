@@ -14,12 +14,22 @@ use PHPUnit\Framework\TestCase;
 use Generator;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU
+ */
 #[Group('ActivationFunctions')]
 #[CoversClass(ELU::class)]
 class ELUTest extends TestCase
 {
+    /**
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU
+     */
     protected ELU $activationFn;
 
+    /**
+     * @return \Generator<array<mixed>>
+     */
     public static function computeProvider() : Generator
     {
         yield [
@@ -45,6 +55,9 @@ class ELUTest extends TestCase
         ];
     }
 
+    /**
+     * @return \Generator<array<mixed>>
+     */
     public static function differentiateProvider() : Generator
     {
         yield [
@@ -70,12 +83,29 @@ class ELUTest extends TestCase
         ];
     }
 
+    /**
+     * Set up the test case.
+     */
     protected function setUp() : void
     {
         $this->activationFn = new ELU(1.0);
     }
 
-    public function testBadAlpha() : void
+    /**
+     * @test
+     */
+    public function testConstructorWithValidAlpha() : void
+    {
+        $activationFn = new ELU(2.0);
+
+        $this->assertInstanceOf(ELU::class, $activationFn);
+        $this->assertEquals('ELU (alpha: 2)', (string) $activationFn);
+    }
+
+    /**
+     * @test
+     */
+    public function testConstructorWithInvalidAlpha() : void
     {
         $this->expectException(InvalidAlphaException::class);
 
@@ -83,8 +113,16 @@ class ELUTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function testToString() : void
+    {
+        $this->assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
+    }
+
+    /**
      * @param NDArray $input
-     * @param list<list<float>> $expected $expected
+     * @param list<list<float>> $expected
      */
     #[DataProvider('computeProvider')]
     public function testActivate(NDArray $input, array $expected) : void
@@ -96,10 +134,10 @@ class ELUTest extends TestCase
 
     /**
      * @param NDArray $input
-     * @param list<list<float>> $expected $expected
+     * @param list<list<float>> $expected
      */
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function testDifferentiate1(NDArray $input, array $expected) : void
     {
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
