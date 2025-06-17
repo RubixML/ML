@@ -98,7 +98,7 @@ class SVR implements Estimator, Learner
                 . " greater than 0, $epsilon given.");
         }
 
-        $kernel = $kernel ?? new RBF();
+        $kernel ??= new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be'

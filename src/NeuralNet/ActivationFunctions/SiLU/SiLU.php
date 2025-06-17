@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use function exp;
-
 /**
  * SiLU
  *

@@ -27,7 +27,7 @@ use function array_reverse;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FeedForward implements Network
+class FeedForward extends Network
 {
     /**
      * The input layer to the network.

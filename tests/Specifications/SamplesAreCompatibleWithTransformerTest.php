@@ -37,7 +37,7 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
         yield [
             SamplesAreCompatibleWithTransformer::with(
                 Unlabeled::quick([
-                    [1, 2, 3, 4, 5]
+                    [1, 2, 3, 4, 5],
                 ]),
                 new L1Normalizer()
             ),

@@ -61,7 +61,7 @@ class SentenceTest extends TestCase
                 'Porque cambian las cosas.',
                 'Empujan a la raza humana hacia adelante.',
                 'Y mientras que algunos pueden verlos como los locos, nosotros vemos genio.',
-                'Porque las personas que están lo suficientemente locas como para pensar que pueden cambiar el mundo, son las que lo hacen.'
+                'Porque las personas que están lo suficientemente locas como para pensar que pueden cambiar el mundo, son las que lo hacen.',
             ],
         ];
 
@@ -166,7 +166,7 @@ class SentenceTest extends TestCase
                 'آیا این برای من خوب خواهد بود؟',
                 'آیا توانستی به من کمک کنی؟',
                 'این کتاب بسیار جالب است!',
-                '"با توجه به شرایطی که الان داریم، آیا می‌توانیم به یک قرار ملاقات برسیم"؟'
+                '"با توجه به شرایطی که الان داریم، آیا می‌توانیم به یک قرار ملاقات برسیم"؟',
             ],
         ];
 

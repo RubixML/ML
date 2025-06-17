@@ -60,7 +60,7 @@ class GridSearchTest extends TestCase
                 [true],
                 [
                     new Euclidean(),
-                    new Manhattan()
+                    new Manhattan(),
                 ],
             ],
             metric: new FBeta(),

@@ -96,7 +96,7 @@ class SVC implements Estimator, Learner
                 . " than 0, $c given.");
         }
 
-        $kernel = $kernel ?? new RBF();
+        $kernel ??= new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be'

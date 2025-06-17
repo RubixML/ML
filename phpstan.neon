@@ -2,6 +2,10 @@ includes:
     - phpstan-baseline.neon
 parameters:
     level: 8
+    phpVersion: 80400
+    fileExtensions:
+        - php
+    tmpDir: ./runtime/.phpstan/
     paths:
         - 'src'
         - 'benchmarks'

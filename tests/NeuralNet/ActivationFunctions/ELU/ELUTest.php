@@ -12,19 +12,29 @@ use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
 use PHPUnit\Framework\TestCase;
 use Generator;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAplhaException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU
+ */
 #[Group('ActivationFunctions')]
 #[CoversClass(ELU::class)]
 class ELUTest extends TestCase
 {
+    /**
+     * @var ELU
+     */
     protected ELU $activationFn;
 
+    /**
+     * @return Generator<array>
+     */
     public static function computeProvider() : Generator
     {
         yield [
             NumPower::array([
-                [1.0, -0.5, 0.0, 20.0, -10.0]
+                [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
                 [1.0, -0.39346933364868164, 0.0, 20.0, -0.9999545812606812],
@@ -45,6 +55,9 @@ class ELUTest extends TestCase
         ];
     }
 
+    /**
+     * @return Generator<array>
+     */
     public static function differentiateProvider() : Generator
     {
         yield [
@@ -70,39 +83,66 @@ class ELUTest extends TestCase
         ];
     }
 
+    /**
+     * Set up the test case.
+     */
     protected function setUp() : void
     {
+        parent::setUp();
+
         $this->activationFn = new ELU(1.0);
     }
 
-    public function testBadAlpha() : void
+    /**
+     * @test
+     */
+    public function testConstructorWithValidAlpha() : void
     {
-        $this->expectException(InvalidAplhaException::class);
+        $activationFn = new ELU(2.0);
+
+        static::assertInstanceOf(ELU::class, $activationFn);
+        static::assertEquals('ELU (alpha: 2)', (string) $activationFn);
+    }
+
+    /**
+     * @test
+     */
+    public function testConstructorWithInvalidAlpha() : void
+    {
+        $this->expectException(InvalidAlphaException::class);
 
         new ELU(-346);
     }
 
     /**
+     * @test
+     */
+    public function testToString() : void
+    {
+        static::assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
+    }
+
+    /**
      * @param NDArray $input
-     * @param list<list<float>> $expected $expected
+     * @param list<list<float>> $expected
      */
     #[DataProvider('computeProvider')]
     public function testActivate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        $this->assertEquals($expected, $activations);
+        static::assertEquals($expected, $activations);
     }
 
     /**
      * @param NDArray $input
-     * @param list<list<float>> $expected $expected
+     * @param list<list<float>> $expected
      */
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function testDifferentiate1(NDArray $input, array $expected) : void
     {
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        $this->assertEquals($expected, $derivatives);
+        static::assertEquals($expected, $derivatives);
     }
 }
