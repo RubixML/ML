@@ -61,33 +61,25 @@ class GeLUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [1.0],
+                [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0839147567749023],
+                [1.0839147567749023, 0.5289157032966614, 0.5, 1.0, 0.0],
             ],
         ];
-        //        yield [
-        //            NumPower::array([
-        //                [1.0, -0.5, 0.0, 20.0, -10.0],
-        //            ]),
-        //            [
-        //                [1.0839147567749023, 0.5289157032966614, 0.5, 1.0, 0.0],
-        //            ],
-        //        ];
 
-        //        yield [
-        //            NumPower::array([
-        //                [-0.12, 0.31, -0.49],
-        //                [0.99, 0.08, -0.03],
-        //                [0.05, -0.52, 0.54],
-        //            ]),
-        //            [
-        //                [0.5218315124511719, 0.8476452827453613, 0.5337989926338196],
-        //                [1.0788949728012085, 0.5460013151168823, 0.5148338675498962],
-        //                [0.5230125784873962, 0.5249776244163513, 0.9520893096923828],
-        //            ],
-        //        ];
+        yield [
+            NumPower::array([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [0.5218315124511719, 0.8476452827453613, 0.5337989926338196],
+                [1.0788949728012085, 0.5460013151168823, 0.5148338675498962],
+                [0.5230125784873962, 0.5249776244163513, 0.9520893096923828],
+            ],
+        ];
     }
 
     /**
@@ -125,8 +117,10 @@ class GeLUTest extends TestCase
      * @param list<list<float>> $expected
      */
     #[DataProvider('differentiateProvider')]
-    public function __testDifferentiate(NDArray $input, array $expected) : void
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
+        static::markTestSkipped('Differentiation is not implemented very well');
+
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
         static::assertEquals($expected, $derivatives);
