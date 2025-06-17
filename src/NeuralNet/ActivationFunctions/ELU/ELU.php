@@ -8,7 +8,7 @@ use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidalphaException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 /**
  * ELU
