@@ -3,12 +3,20 @@
 use PhpCsFixer\Finder;
 use PhpCsFixer\Config;
 
-$finder = Finder::create()->in(__DIR__)
-    ->exclude('docs');
+$finder = Finder::create()
+    ->exclude([
+        __DIR__ . '/docs/',
+        __DIR__ . '/vendor/',
+    ])
+    ->in(__DIR__)
+    ->append([
+        __FILE__,
+    ]);
 
 $config = new Config();
-
-return $config->setRules([
+$config
+    ->setCacheFile(__DIR__ . '/runtime/.php-cs-fixer.cache')
+    ->setRules([
     '@PSR2' => true,
     '@PHP84Migration' => true,
     'align_multiline_comment' => true,
@@ -116,3 +124,5 @@ return $config->setRules([
     'unary_operator_spaces' => true,
     'whitespace_after_comma_in_array' => true,
 ])->setFinder($finder);
+
+return $config;

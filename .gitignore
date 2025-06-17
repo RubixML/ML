@@ -14,6 +14,9 @@ pyvenv.cfg
 .vscode
 .vs
 
+# Cache files
+/runtime/
+
 # Docker related files
 Dockerfile
 /docker/
