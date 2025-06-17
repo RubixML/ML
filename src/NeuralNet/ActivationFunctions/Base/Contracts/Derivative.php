@@ -12,4 +12,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-interface Derivative {}
+interface Derivative
+{
+}

@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use function exp;
-
 /**
  * SiLU
  *
@@ -33,6 +31,7 @@ class HardSiLU implements ActivationFunction
     public function activate(Matrix $input) : Matrix
     {
         $hardSigmoid = new HardSigmoid()->activate($input);
+
         return $input * $hardSigmoid;
     }
 

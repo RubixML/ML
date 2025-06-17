@@ -83,7 +83,7 @@ class MaxAbsoluteScalerTest extends TestCase
     public function testSkipsNonFinite() : void
     {
         $samples = Unlabeled::build(samples: [
-            [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001]
+            [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],
         ]);
         $this->transformer->fit($samples);
         $this->assertNan($samples[0][2]);

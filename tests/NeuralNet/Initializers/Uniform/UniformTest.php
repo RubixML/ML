@@ -32,7 +32,7 @@ final class UniformTest extends TestCase
             ],
             'zero beta' => [
                 'beta' => 0,
-            ]
+            ],
         ];
     }
 
@@ -55,7 +55,7 @@ final class UniformTest extends TestCase
             'fanIn less than fanOut' => [
                 'fanIn' => 3,
                 'fanOut' => 4,
-            ]
+            ],
         ];
     }
 
@@ -81,7 +81,7 @@ final class UniformTest extends TestCase
                 'fanIn' => 200,
                 'fanOut' => 300,
                 'beta' => 0.3,
-            ]
+            ],
         ];
     }
 

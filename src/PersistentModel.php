@@ -54,7 +54,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
      */
     public static function load(Persister $persister, ?Serializer $serializer = null) : self
     {
-        $serializer = $serializer ?? new RBX();
+        $serializer ??= new RBX();
 
         $base = $serializer->deserialize($persister->load());
 

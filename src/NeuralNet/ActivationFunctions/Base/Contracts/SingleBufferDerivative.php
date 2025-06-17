@@ -22,5 +22,5 @@ interface SingleBufferDerivative extends Derivative
      * @param NDArray $x Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $x): NDArray;
+    public function differentiate(NDArray $x) : NDArray;
 }

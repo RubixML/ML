@@ -74,7 +74,7 @@ class LeakyReLU implements ActivationFunction
     {
         $positive = NumPower::greater($input, 0);
         $negative = NumPower::lessEqual($input, 0) * $this->leakage;
-        
+
         return $positive + $negative;
     }
 

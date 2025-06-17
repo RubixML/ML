@@ -37,7 +37,7 @@ final class LeCunNormalTest extends TestCase
             'fanIn less than fanOut' => [
                 'fanIn' => 3,
                 'fanOut' => 4,
-            ]
+            ],
         ];
     }
 
@@ -60,7 +60,7 @@ final class LeCunNormalTest extends TestCase
             'big numbers' => [
                 'fanIn' => 3000,
                 'fanOut' => 1000,
-            ]
+            ],
         ];
     }
 

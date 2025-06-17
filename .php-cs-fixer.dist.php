@@ -10,6 +10,7 @@ $config = new Config();
 
 return $config->setRules([
     '@PSR2' => true,
+    '@PHP84Migration' => true,
     'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
     'backtick_to_shell_exec' => true,

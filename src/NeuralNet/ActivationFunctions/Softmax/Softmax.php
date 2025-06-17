@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Softmax
  *
@@ -34,7 +32,7 @@ class Softmax extends Sigmoid
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
         $s = 1 / (1 + NumPower::exp(-$input));
-        
+
         return NumPower::diag($s) - NumPower::outer($s, $s);
     }
 
