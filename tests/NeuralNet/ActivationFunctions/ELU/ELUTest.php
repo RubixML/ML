@@ -23,12 +23,12 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 class ELUTest extends TestCase
 {
     /**
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU
+     * @var ELU
      */
     protected ELU $activationFn;
 
     /**
-     * @return \Generator<array<mixed>>
+     * @return Generator<array<mixed>>
      */
     public static function computeProvider() : Generator
     {
@@ -56,7 +56,7 @@ class ELUTest extends TestCase
     }
 
     /**
-     * @return \Generator<array<mixed>>
+     * @return Generator<array<mixed>>
      */
     public static function differentiateProvider() : Generator
     {

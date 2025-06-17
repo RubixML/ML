@@ -32,9 +32,9 @@ class ELU implements ActivationFunction, SingleBufferDerivative
      * Class constructor.
      *
      * @param float $alpha At which negative value the ELU will saturate. For example if alpha
-     *              equals 1, the leaked value will never be greater than -1.0.
+     *                     equals 1, the leaked value will never be greater than -1.0.
      *
-     * @throws InvalidalphaException
+     * @throws InvalidAlphaException
      */
     public function __construct(protected float $alpha = 1.0)
     {
