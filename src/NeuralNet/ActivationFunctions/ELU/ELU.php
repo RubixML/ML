@@ -24,13 +24,16 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAplhaException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class ELU implements ActivationFunction, SingleBufferDerivative
 {
     /**
+     * Class constructor.
+     *
      * @param float $alpha At which negative value the ELU will saturate. For example if alpha
      *              equals 1, the leaked value will never be greater than -1.0.
-     * 
+     *
      * @throws InvalidAplhaException
      */
     public function __construct(protected float $alpha = 1.0)
@@ -42,49 +45,54 @@ class ELU implements ActivationFunction, SingleBufferDerivative
         }
     }
 
+    /**
+     * Apply the ELU activation function to the input.
+     *
+     * f(x) = x                 if x > 0
+     * f(x) = α * (e^x - 1)     if x ≤ 0
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
+     */
     public function activate(NDArray $input) : NDArray
     {
-        $a = NumPower::multiply(
-            a: NumPower::expm1(NumPower::minimum(
-                a: $input,
-                b: 0
-            )),
+        // Calculate positive part: x for x > 0
+        $positiveActivation = NumPower::maximum(a: $input, b: 0);
+
+        // Calculate negative part: alpha * (e^x - 1) for x <= 0
+        $negativeMask = NumPower::minimum(a: $input, b: 0);
+        $negativeActivation = NumPower::multiply(
+            a: NumPower::expm1($negativeMask),
             b: $this->alpha
         );
 
-        return NumPower::add(
-            a: NumPower::maximum(
-                a: $input,
-                b: 0
-            ),
-            b: $a
-        );
+        // Combine both parts
+        return NumPower::add(a: $positiveActivation, b: $negativeActivation);
     }
 
     /**
-     * Calculate the derivative of the activation output
+     * Calculate the derivative of the activation function.
+     *
+     * f'(x) = 1               if x > 0
+     * f'(x) = α * e^x         if x ≤ 0
      *
      * @param NDArray $x Output matrix
      * @return NDArray Derivative matrix
      */
     public function differentiate(NDArray $x) : NDArray
     {
-        $a = NumPower::multiply(
-            a: NumPower::lessEqual(a: $x, b: 0),
-            b: NumPower::exp($x)
-        );
-        $b = NumPower::multiply(
-            a: $a,
+        // For x > 0: 1
+        $positivePart = NumPower::greater(a: $x, b: 0);
+
+        // For x <= 0: α * e^x
+        $negativeMask = NumPower::lessEqual(a: $x, b: 0);
+        $negativePart = NumPower::multiply(
+            a: NumPower::multiply(a: $negativeMask, b: NumPower::exp($x)),
             b: $this->alpha
         );
 
-        return NumPower::add(
-            a: NumPower::greater(
-                a: $x,
-                b: 0
-            ),
-            b: $b
-        );
+        // Combine both parts
+        return NumPower::add(a: $positivePart, b: $negativePart);
     }
 
     /**
