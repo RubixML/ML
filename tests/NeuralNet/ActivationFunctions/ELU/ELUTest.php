@@ -28,7 +28,7 @@ class ELUTest extends TestCase
     protected ELU $activationFn;
 
     /**
-     * @return Generator<array<mixed>>
+     * @return Generator<array>
      */
     public static function computeProvider() : Generator
     {
@@ -56,7 +56,7 @@ class ELUTest extends TestCase
     }
 
     /**
-     * @return Generator<array<mixed>>
+     * @return Generator<array>
      */
     public static function differentiateProvider() : Generator
     {
@@ -88,6 +88,8 @@ class ELUTest extends TestCase
      */
     protected function setUp() : void
     {
+        parent::setUp();
+
         $this->activationFn = new ELU(1.0);
     }
 
@@ -98,8 +100,8 @@ class ELUTest extends TestCase
     {
         $activationFn = new ELU(2.0);
 
-        $this->assertInstanceOf(ELU::class, $activationFn);
-        $this->assertEquals('ELU (alpha: 2)', (string) $activationFn);
+        static::assertInstanceOf(ELU::class, $activationFn);
+        static::assertEquals('ELU (alpha: 2)', (string) $activationFn);
     }
 
     /**
@@ -117,7 +119,7 @@ class ELUTest extends TestCase
      */
     public function testToString() : void
     {
-        $this->assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
+        static::assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
     }
 
     /**
@@ -129,7 +131,7 @@ class ELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        $this->assertEquals($expected, $activations);
+        static::assertEquals($expected, $activations);
     }
 
     /**
@@ -141,6 +143,6 @@ class ELUTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        $this->assertEquals($expected, $derivatives);
+        static::assertEquals($expected, $derivatives);
     }
 }
