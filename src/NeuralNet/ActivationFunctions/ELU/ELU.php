@@ -8,7 +8,7 @@ use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAplhaException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidalphaException;
 
 /**
  * ELU
@@ -34,12 +34,12 @@ class ELU implements ActivationFunction, SingleBufferDerivative
      * @param float $alpha At which negative value the ELU will saturate. For example if alpha
      *              equals 1, the leaked value will never be greater than -1.0.
      *
-     * @throws InvalidAplhaException
+     * @throws InvalidalphaException
      */
     public function __construct(protected float $alpha = 1.0)
     {
         if ($this->alpha < 0.0) {
-            throw new InvalidAplhaException(
+            throw new InvalidAlphaException(
                 message: "Alpha must be greater than 0, $alpha given."
             );
         }

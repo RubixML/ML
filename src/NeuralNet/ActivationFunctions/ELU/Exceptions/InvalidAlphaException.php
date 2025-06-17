@@ -9,6 +9,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 /**
  * Invalid `alpha` parameter for ELU Activation function
  */
-class InvalidAplhaException extends InvalidArgumentException
+class InvalidAlphaException extends InvalidArgumentException
 {
 }
