@@ -16,9 +16,6 @@ use PHPUnit\Framework\TestCase;
 use Generator;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
-/**
- * @group ActivationFunctions
- */
 #[Group('ActivationFunctions')]
 #[CoversClass(ELU::class)]
 class ELUTest extends TestCase

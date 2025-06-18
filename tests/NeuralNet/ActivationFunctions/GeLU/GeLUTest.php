@@ -15,9 +15,6 @@ use Rubix\ML\NeuralNet\ActivationFunctions\GeLU\GeLU;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group ActivationFunctions
- */
 #[Group('ActivationFunctions')]
 #[CoversClass(GeLU::class)]
 class GeLUTest extends TestCase
