@@ -64,7 +64,7 @@ class GeLUTest extends TestCase
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0839147567749023, 0.5289157032966614, 0.5, 1.0, 0.0],
+                [1.0829640626907349, 0.1287703514099121, 0.5, 1.0, -0.00001316985708399443],
             ],
         ];
 
@@ -75,9 +75,9 @@ class GeLUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.5218315124511719, 0.8476452827453613, 0.5337989926338196],
-                [1.0788949728012085, 0.5460013151168823, 0.5148338675498962],
-                [0.5230125784873962, 0.5249776244163513, 0.9520893096923828],
+                [0.40266361832618713, 0.7436619400978088, 0.13489001989364624],
+                [1.0804662704467773, 0.5650942921638489, 0.47553694248199463],
+                [0.5407461524009705, 0.11674512922763824, 0.8949908018112183],
             ],
         ];
     }
@@ -119,7 +119,7 @@ class GeLUTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        static::markTestSkipped('Differentiation is not implemented very well');
+        //static::markTestSkipped('Differentiation is not implemented very well');
 
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 

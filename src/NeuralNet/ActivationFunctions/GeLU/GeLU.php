@@ -55,14 +55,22 @@ class GeLU implements ActivationFunction, SingleBufferDerivative
         $cubed = $input ** 3;
 
         // Calculate inner term: x + BETA * x^3
-        $innerTerm = NumPower::add(
-            $input,
-            NumPower::multiply(self::BETA, $cubed)
-        );
+        $innerTerm1 = NumPower::add($input, NumPower::multiply(self::BETA, $cubed));
+//
+//        print_r(count($innerTerm1->toArray()) . "\n");
+//        print_r($innerTerm1->toArray());
+//
+//
+//        $innerTerm2 = NumPower::add($input, self::BETA * $cubed);
+//
+//        print_r(count($innerTerm2->toArray()) . "\n");
+//        print_r($innerTerm2->toArray());
+//
+
 
         // Apply tanh(ALPHA * innerTerm)
         $tanhTerm = NumPower::tanh(
-            NumPower::multiply(self::ALPHA, $innerTerm)
+            NumPower::multiply(self::ALPHA, $innerTerm1)
         );
 
         // Calculate 1 + tanhTerm
@@ -92,10 +100,6 @@ class GeLU implements ActivationFunction, SingleBufferDerivative
      */
     public function differentiate(NDArray $x) : NDArray
     {
-        return NumPower::add($x, $x);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
         // Calculate x^3
         $cubed = $x ** 3;
 
