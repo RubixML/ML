@@ -7,6 +7,8 @@ namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
@@ -16,7 +18,6 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 /**
  * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU
  */
 #[Group('ActivationFunctions')]
 #[CoversClass(ELU::class)]
@@ -93,9 +94,8 @@ class ELUTest extends TestCase
         $this->activationFn = new ELU(1.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Can be constructed with valid alpha parameter')]
     public function testConstructorWithValidAlpha() : void
     {
         $activationFn = new ELU(2.0);
@@ -104,9 +104,8 @@ class ELUTest extends TestCase
         static::assertEquals('ELU (alpha: 2)', (string) $activationFn);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Throws exception when constructed with invalid alpha parameter')]
     public function testConstructorWithInvalidAlpha() : void
     {
         $this->expectException(InvalidAlphaException::class);
@@ -114,18 +113,15 @@ class ELUTest extends TestCase
         new ELU(-346);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
         static::assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
     }
 
-    /**
-     * @param NDArray $input
-     * @param list<list<float>> $expected
-     */
+    #[Test]
+    #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
     public function testActivate(NDArray $input, array $expected) : void
     {
@@ -134,12 +130,10 @@ class ELUTest extends TestCase
         static::assertEquals($expected, $activations);
     }
 
-    /**
-     * @param NDArray $input
-     * @param list<list<float>> $expected
-     */
+    #[Test]
+    #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate1(NDArray $input, array $expected) : void
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 

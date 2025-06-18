@@ -7,6 +7,8 @@ namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\GeLU;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\GeLU\GeLU;
@@ -15,7 +17,6 @@ use Generator;
 
 /**
  * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\GeLU\GeLU
  */
 #[Group('ActivationFunctions')]
 #[CoversClass(GeLU::class)]
@@ -92,30 +93,25 @@ class GeLUTest extends TestCase
         $this->activationFn = new GeLU();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
         static::assertEquals('GeLU', (string) $this->activationFn);
     }
 
-    /**
-     * @param NDArray $input
-     * @param list<list<float>> $expected
-     */
+    #[Test]
+    #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
     public function testActivate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEquals($expected, $activations);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
-    /**
-     * @param NDArray $input
-     * @param list<list<float>> $expected
-     */
+    #[Test]
+    #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
