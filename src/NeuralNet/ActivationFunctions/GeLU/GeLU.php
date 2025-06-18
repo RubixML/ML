@@ -92,10 +92,6 @@ class GeLU implements ActivationFunction, SingleBufferDerivative
      */
     public function differentiate(NDArray $x) : NDArray
     {
-        return NumPower::add($x, $x);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
         // Calculate x^3
         $cubed = $x ** 3;
 
