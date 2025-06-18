@@ -119,8 +119,6 @@ class GeLUTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        //static::markTestSkipped('Differentiation is not implemented very well');
-
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
         static::assertEquals($expected, $derivatives);

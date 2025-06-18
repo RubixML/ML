@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 /**
@@ -26,7 +26,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ELU implements ActivationFunction, SingleBufferDerivative
+class ELU implements ActivationFunction, IBufferDerivative
 {
     /**
      * Class constructor.

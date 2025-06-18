@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\GeLU;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
  * GeLU
@@ -25,7 +25,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class GeLU implements ActivationFunction, SingleBufferDerivative
+class GeLU implements ActivationFunction, IBufferDerivative
 {
     /**
      * The square root of two over pi constant sqrt(2/π).
