@@ -61,7 +61,10 @@ class ELU implements ActivationFunction, SingleBufferDerivative
 
         // Calculate negative part: alpha * (e^x - 1) for x <= 0
         $negativeMask = NumPower::minimum($input, 0);
-        $negativeActivation = $this->alpha * NumPower::expm1($negativeMask);
+        $negativeActivation = NumPower::multiply(
+            NumPower::expm1($negativeMask),
+            $this->alpha
+        );
 
         // Combine both parts
         return NumPower::add($positiveActivation, $negativeActivation);
@@ -83,7 +86,10 @@ class ELU implements ActivationFunction, SingleBufferDerivative
 
         // For x <= 0: α * e^x
         $negativeMask = NumPower::lessEqual($x, 0);
-        $negativePart = $this->alpha * NumPower::multiply($negativeMask, NumPower::exp($x));
+        $negativePart = NumPower::multiply(
+            NumPower::multiply($negativeMask, NumPower::exp($x)),
+            $this->alpha
+        );
 
         // Combine both parts
         return NumPower::add($positivePart, $negativePart);
