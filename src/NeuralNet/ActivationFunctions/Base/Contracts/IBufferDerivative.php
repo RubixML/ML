@@ -14,7 +14,7 @@ use NDArray;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-interface SingleBufferDerivative extends Derivative
+interface IBufferDerivative extends Derivative
 {
     /**
      * Calculate the derivative of the single parameter.

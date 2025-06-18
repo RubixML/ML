@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\SingleBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 /**
@@ -26,7 +26,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ELU implements ActivationFunction, SingleBufferDerivative
+class ELU implements ActivationFunction, IBufferDerivative
 {
     /**
      * Class constructor.
@@ -57,17 +57,17 @@ class ELU implements ActivationFunction, SingleBufferDerivative
     public function activate(NDArray $input) : NDArray
     {
         // Calculate positive part: x for x > 0
-        $positiveActivation = NumPower::maximum(a: $input, b: 0);
+        $positiveActivation = NumPower::maximum($input, 0);
 
         // Calculate negative part: alpha * (e^x - 1) for x <= 0
-        $negativeMask = NumPower::minimum(a: $input, b: 0);
+        $negativeMask = NumPower::minimum($input, 0);
         $negativeActivation = NumPower::multiply(
-            a: NumPower::expm1($negativeMask),
-            b: $this->alpha
+            NumPower::expm1($negativeMask),
+            $this->alpha
         );
 
         // Combine both parts
-        return NumPower::add(a: $positiveActivation, b: $negativeActivation);
+        return NumPower::add($positiveActivation, $negativeActivation);
     }
 
     /**
@@ -82,17 +82,17 @@ class ELU implements ActivationFunction, SingleBufferDerivative
     public function differentiate(NDArray $x) : NDArray
     {
         // For x > 0: 1
-        $positivePart = NumPower::greater(a: $x, b: 0);
+        $positivePart = NumPower::greater($x, 0);
 
         // For x <= 0: α * e^x
-        $negativeMask = NumPower::lessEqual(a: $x, b: 0);
+        $negativeMask = NumPower::lessEqual($x, 0);
         $negativePart = NumPower::multiply(
-            a: NumPower::multiply(a: $negativeMask, b: NumPower::exp($x)),
-            b: $this->alpha
+            NumPower::multiply($negativeMask, NumPower::exp($x)),
+            $this->alpha
         );
 
         // Combine both parts
-        return NumPower::add(a: $positivePart, b: $negativePart);
+        return NumPower::add($positivePart, $negativePart);
     }
 
     /**

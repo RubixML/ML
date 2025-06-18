@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ELU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\GeLU;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,19 +11,18 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\GeLU\GeLU;
 use PHPUnit\Framework\TestCase;
 use Generator;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(ELU::class)]
-class ELUTest extends TestCase
+#[CoversClass(GeLU::class)]
+class GeLUTest extends TestCase
 {
     /**
-     * @var ELU
+     * @var GeLU
      */
-    protected ELU $activationFn;
+    protected GeLU $activationFn;
 
     /**
      * @return Generator<array>
@@ -32,10 +31,10 @@ class ELUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [1.0, -0.5, 0.0, 20.0, -10.0],
+                [2, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, -0.39346933364868164, 0.0, 20.0, -0.9999545812606812],
+                [1.9311704635620117, 0.8411920070648193, -0.15144622325897217, 0.0, 20.0, -0.0000005960464477539062],
             ],
         ];
 
@@ -46,9 +45,9 @@ class ELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.11307956278324127, 0.3100000023841858, -0.3873736262321472],
-                [0.9900000095367432, 0.07999999821186066, -0.029554465785622597],
-                [0.05000000074505806, -0.40547943115234375, 0.5400000214576721],
+                [-0.0540182888507843, 0.19418436288833618, -0.15014779567718506],
+                [0.8305627107620239, 0.04266344755887985, -0.014624974690377712],
+                [0.02604134939610958, -0.15386739373207092, 0.3839401602745056],
             ],
         ];
     }
@@ -63,7 +62,7 @@ class ELUTest extends TestCase
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, 0.6065306663513184, 1.0, 1.0, 4.539993096841499E-5],
+                [1.0829640626907349, 0.1287703514099121, 0.5, 1.0, -0.00001316985708399443],
             ],
         ];
 
@@ -74,9 +73,9 @@ class ELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.8869204521179199, 1.0, 0.6126263737678528],
-                [1.0, 1.0, 0.9704455137252808],
-                [1.0, 0.5945205688476562, 1.0],
+                [0.40266361832618713, 0.7436619400978088, 0.13489001989364624],
+                [1.0804662704467773, 0.5650942921638489, 0.47553694248199463],
+                [0.5407461524009705, 0.11674512922763824, 0.8949908018112183],
             ],
         ];
     }
@@ -88,33 +87,14 @@ class ELUTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new ELU(1.0);
-    }
-
-    #[Test]
-    #[TestDox('Can be constructed with valid alpha parameter')]
-    public function testConstructorWithValidAlpha() : void
-    {
-        $activationFn = new ELU(2.0);
-
-        static::assertInstanceOf(ELU::class, $activationFn);
-        static::assertEquals('ELU (alpha: 2)', (string) $activationFn);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with invalid alpha parameter')]
-    public function testConstructorWithInvalidAlpha() : void
-    {
-        $this->expectException(InvalidAlphaException::class);
-
-        new ELU(-346);
+        $this->activationFn = new GeLU();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
+        static::assertEquals('GeLU', (string) $this->activationFn);
     }
 
     #[Test]
@@ -124,7 +104,7 @@ class ELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEquals($expected, $activations);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
