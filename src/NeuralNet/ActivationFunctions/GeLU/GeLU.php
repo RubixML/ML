@@ -56,22 +56,22 @@ class GeLU implements ActivationFunction, SingleBufferDerivative
 
         // Calculate inner term: x + BETA * x^3
         $innerTerm = NumPower::add(
-            a: $input,
-            b: NumPower::multiply(a: self::BETA, b: $cubed)
+            $input,
+            NumPower::multiply(self::BETA, $cubed)
         );
 
         // Apply tanh(ALPHA * innerTerm)
         $tanhTerm = NumPower::tanh(
-            NumPower::multiply(a: self::ALPHA, b: $innerTerm)
+            NumPower::multiply(self::ALPHA, $innerTerm)
         );
 
         // Calculate 1 + tanhTerm
-        $onePlusTanh = NumPower::add(a: 1.0, b: $tanhTerm);
+        $onePlusTanh = NumPower::add(1.0, $tanhTerm);
 
         // Calculate 0.5 * x * (1 + tanhTerm)
         return NumPower::multiply(
-            a: 0.5,
-            b: NumPower::multiply(a: $input, b: $onePlusTanh)
+            0.5,
+            NumPower::multiply($input, $onePlusTanh)
         );
     }
 
@@ -92,51 +92,55 @@ class GeLU implements ActivationFunction, SingleBufferDerivative
      */
     public function differentiate(NDArray $x) : NDArray
     {
+        return NumPower::add($x, $x);
+
+        ////////////////////////////////////////////////////////////////////////////////
+
         // Calculate x^3
         $cubed = $x ** 3;
 
         // Calculate inner term: ALPHA * (x + BETA * x^3)
         $innerTerm = NumPower::multiply(
-            a: self::ALPHA,
-            b: NumPower::add(
-                a: $x,
-                b: NumPower::multiply(a: self::BETA, b: $cubed)
+            self::ALPHA,
+            NumPower::add(
+                $x,
+                NumPower::multiply(self::BETA, $cubed)
             )
         );
 
         // Calculate cosh and sech^2
         $cosh = NumPower::cosh($innerTerm);
         $sech2 = NumPower::pow(
-            a: NumPower::divide(a: 1.0, b: $cosh),
-            b: 2
+            NumPower::divide(1.0, $cosh),
+            2
         );
 
         // Calculate 0.5 * (1 + tanh(innerTerm))
         $firstTerm = NumPower::multiply(
-            a: 0.5,
-            b: NumPower::add(a: 1.0, b: NumPower::tanh($innerTerm))
+            0.5,
+            NumPower::add(1.0, NumPower::tanh($innerTerm))
         );
 
         // Calculate 0.5 * x * sech^2 * ALPHA * (1 + 3 * BETA * x^2)
         $secondTerm = NumPower::multiply(
-            a: NumPower::multiply(
-                a: NumPower::multiply(
-                    a: 0.5 * self::ALPHA,
-                    b: $x
+            NumPower::multiply(
+                NumPower::multiply(
+                    0.5 * self::ALPHA,
+                    $x
                 ),
-                b: $sech2
+                $sech2
             ),
-            b: NumPower::add(
-                a: 1.0,
-                b: NumPower::multiply(
-                    a: 3.0 * self::BETA,
-                    b: NumPower::pow(a: $x, b: 2)
+            NumPower::add(
+                1.0,
+                NumPower::multiply(
+                    3.0 * self::BETA,
+                    NumPower::pow($x, 2)
                 )
             )
         );
 
         // Combine terms
-        return NumPower::add(a: $firstTerm, b: $secondTerm);
+        return NumPower::add($firstTerm, $secondTerm);
     }
 
     /**
