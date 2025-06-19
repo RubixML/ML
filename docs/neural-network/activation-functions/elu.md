@@ -12,9 +12,17 @@ $$
 |---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be less than -1.0 when inactivated. |
 
+## Size and Performance
+ELU is a simple function and is well-suited for deployment on resource-constrained devices or when working with large neural networks.
+
+## Plots
+<img src="../../images/activation-functions/elu.png" alt="ELU Function" width="500" height="auto">
+
+<img src="../../images/activation-functions/elu-derivative.png" alt="ELU Derivative" width="500" height="auto">
+
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
 $activationFunction = new ELU(2.5);
 ```
