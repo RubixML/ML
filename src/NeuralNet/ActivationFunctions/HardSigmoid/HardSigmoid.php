@@ -1,62 +1,109 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+declare(strict_types=1);
 
-use Tensor\Matrix;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\HardSigmoid;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
- * Sigmoid
+ * HardSigmoid
  *
- * A bounded S-shaped function (sometimes called the *Logistic* function) with an output value
- * between 0 and 1. The output of the sigmoid function has the advantage of being interpretable
- * as a probability, however it is not zero-centered and tends to saturate if inputs become large.
+ * A piecewise linear approximation of the sigmoid function that is computationally
+ * more efficient. The Hard Sigmoid function has an output value between 0 and 1,
+ * making it useful for binary classification problems.
+ *
+ * f(x) = max(0, min(1, 0.2 * x + 0.5))
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HardSigmoid implements ActivationFunction
+class HardSigmoid implements ActivationFunction, IBufferDerivative
 {
     /**
-     * Compute the activation.
+     * The slope of the linear region.
      *
-     * @internal
-     *
-     * @param Matrix $input
-     * @return Matrix
+     * @var float
      */
-    public function activate(Matrix $input) : Matrix
+    protected const SLOPE = 0.2;
+
+    /**
+     * The y-intercept of the linear region.
+     *
+     * @var float
+     */
+    protected const INTERCEPT = 0.5;
+
+    /**
+     * The lower bound of the linear region.
+     *
+     * @var float
+     */
+    protected const LOWER_BOUND = -2.5;
+
+    /**
+     * The upper bound of the linear region.
+     *
+     * @var float
+     */
+    protected const UPPER_BOUND = 2.5;
+
+    /**
+     * Apply the HardSigmoid activation function to the input.
+     *
+     * f(x) = max(0, min(1, 0.2 * x + 0.5))
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
+     */
+    public function activate(NDArray $input) : NDArray
     {
-        return NumPower::clip(0.2 * $input + 0.5, 0, 1);
+        // Calculate 0.2 * x + 0.5
+        $linear = NumPower::add(
+            NumPower::multiply(self::SLOPE, $input),
+            self::INTERCEPT
+        );
+
+        // Clip values between 0 and 1
+        return NumPower::clip($linear, 0.0, 1.0);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 0.2 if -2.5 < x < 2.5
+     * f'(x) = 0   otherwise
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $x Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $x) : NDArray
     {
-        $lowPart = NumPower::lessEqual($input, -2.5);
-        $highPart = NumPower::greaterEqual($input, 2.5);
-        $union = $lowPart + $highPart;
+        // For values in the linear region (-2.5 < x < 2.5): SLOPE
+        $inLinearRegion = NumPower::greater($x, self::LOWER_BOUND);
+        $inLinearRegion = NumPower::multiply($inLinearRegion, NumPower::less($x, self::UPPER_BOUND));
+        $linearPart = NumPower::multiply($inLinearRegion, self::SLOPE);
 
-        return NumPower::equal($union, 0) * 0.2;
+        // For values outside the linear region: 0
+        // Since we're multiplying by 0 for these regions, we don't need to explicitly handle them
+        // The mask $inLinearRegion already contains 0s for x <= -2.5 and x >= 2.5,
+        // so when we multiply by SLOPE, those values remain 0 in the result
+        
+        return $linearPart;
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {
-        return 'Sigmoid';
+        return 'HardSigmoid';
     }
 }
