@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\GeLU;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\GELU;
 
 use NumPower;
 use NDArray;
@@ -25,7 +25,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class GeLU implements ActivationFunction, IBufferDerivative
+class GELU implements ActivationFunction, IBufferDerivative
 {
     /**
      * The square root of two over pi constant sqrt(2/π).
