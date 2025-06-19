@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 
 use Tensor\Matrix;
 
