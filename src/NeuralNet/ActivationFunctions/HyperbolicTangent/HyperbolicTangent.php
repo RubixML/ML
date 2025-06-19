@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
 use NumPower;
 use NDArray;

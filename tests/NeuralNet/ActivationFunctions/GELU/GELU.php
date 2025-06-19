@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\GeLU\GeLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\GELU\GeLU;
 use PHPUnit\Framework\TestCase;
 use Generator;
 

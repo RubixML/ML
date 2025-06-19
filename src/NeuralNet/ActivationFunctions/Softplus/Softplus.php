@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
 
 use Tensor\Matrix;
 
@@ -17,7 +17,7 @@ use Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftPlus implements ActivationFunction
+class Softplus implements ActivationFunction
 {
     /**
      * Compute the activation.

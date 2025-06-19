@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
