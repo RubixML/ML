@@ -27,4 +27,4 @@ $activationFunction = new GELU();
 ```
 
 ### References
->- D. Hendrycks et al. (2018). Gaussian Error Linear Units (GeLUs).
+>- D. Hendrycks et al. (2018). Gaussian Error Linear Units (GELUs).

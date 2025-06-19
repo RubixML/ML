@@ -22,7 +22,7 @@ ELU is a simple function and is well-suited for deployment on resource-constrain
 
 ## Example
 ```php
-use use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
 $activationFunction = new ELU(2.5);
 ```
