@@ -4,7 +4,7 @@
 A piecewise linear approximation of the sigmoid function that is computationally more efficient. The Hard Sigmoid function has an output value between 0 and 1, making it useful for binary classification problems.
 
 $$
-{\displaystyle HardSigmoid = {\begin{aligned}&{\begin{cases}0&{\text{if }}x\leq -2.5\\0.2x+0.5&{\text{if }}-2.5 < x < 2.5\\1&{\text{if }}x \geq 2.5\end{cases}}=&\max(0, \min(1, 0.2x+0.5))\end{aligned}}}
+\text{HardSigmoid}(x) = \max\left(0,\min\left(1, 0.2x + 0.5\right)\right)
 $$
 
 ## Parameters

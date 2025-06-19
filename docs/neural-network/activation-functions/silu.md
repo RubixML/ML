@@ -3,6 +3,13 @@
 # SiLU
 Sigmoid Linear Units are smooth and non-monotonic rectified activation functions. Their inputs are weighted by the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism.
 
+$$
+\text{SiLU}(x) = x \cdot \sigma(x) = \frac{x}{1 + e^{-x}}
+$$
+
+Where
+- σ(x) is the sigmoid function.
+
 ## Parameters
 This activation function does not have any parameters.
 

@@ -4,8 +4,14 @@
 The Softmax function is a generalization of the [Sigmoid](sigmoid.md) function that squashes each activation between 0 and 1 with the addition that all activations add up to 1. Together, these properties allow the output of the Softmax function to be interpretable as a *joint* probability distribution.
 
 $$
-{\displaystyle Softmax = {\frac {e^{x_{i}}}{\sum _{j=1}^{J}e^{x_{j}}}}}
+\text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
 $$
+
+Where:
+
+- 𝑥𝑖 is the i-th element of the input vector
+- 𝑛 is the number of elements in the vector
+- The denominator ensures the outputs sum to 1
 
 ## Parameters
 This activation function does not have any parameters.

@@ -4,7 +4,11 @@
 *Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function. As such, ELU produces smoother gradients than the piecewise linear [ReLU](relu.md) function.
 
 $$
-{\displaystyle ELU = {\begin{cases}\alpha \left(e^{x}-1\right)&{\text{if }}x\leq 0\\x&{\text{if }}x>0\end{cases}}}
+\text{ELU}(x) =
+\begin{cases}
+\alpha \left(e^{x}-1\right) & \text{if } x \leq 0 \\
+x & \text{if } x > 0
+\end{cases}
 $$
 
 ## Parameters
