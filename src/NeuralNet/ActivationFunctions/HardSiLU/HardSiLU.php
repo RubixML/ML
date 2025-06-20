@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\HardSiLU;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\HardSigmoid\HardSigmoid;
 
 /**
- * SiLU
+ * HardSiLU
  *
- * Sigmoid Linear Units are smooth and non-monotonic rectified activation functions. Their inputs are weighted by
- * the [Sigmoid](sigmoid.md) activation function acting as a self-gating mechanism.
+ * Hard Sigmoid Linear Units (Hard SiLU) are a computationally efficient variant of the SiLU activation function.
  *
  * References:
  * [1] S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in
@@ -17,48 +22,72 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HardSiLU implements ActivationFunction
+class HardSiLU implements ActivationFunction, IBufferDerivative
 {
     /**
-     * Compute the activation.
+     * The Hard Sigmoid activation function.
      *
-     * @internal
-     *
-     * @param Matrix $input
-     * @return Matrix
+     * @var HardSigmoid
      */
-    public function activate(Matrix $input) : Matrix
-    {
-        $hardSigmoid = new HardSigmoid()->activate($input);
+    protected HardSigmoid $hardSigmoid;
 
-        return $input * $hardSigmoid;
+    /**
+     * Class constructor.
+     */
+    public function __construct()
+    {
+        $this->hardSigmoid = new HardSigmoid();
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Apply the HardSiLU activation function to the input.
      *
-     * @internal
+     * f(x) = x * HardSigmoid(x)
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        $hardSigmoid = new HardSigmoid()->activate($input);
-        $hardSigmoidDericative = new HardSigmoid()->differentiate($input);
+        // Calculate HardSigmoid(x)
+        $hardSigmoid = $this->hardSigmoid->activate($input);
 
-        return $hardSigmoid + $input * $hardSigmoidDericative;
+        // Calculate x * HardSigmoid(x)
+        return NumPower::multiply($input, $hardSigmoid);
     }
 
     /**
-     * Return the string representation of the object.
+     * Calculate the derivative of the activation function.
      *
-     * @return string
+     * f'(x) = HardSigmoid(x) + x * HardSigmoid'(x)
+     *
+     * @param NDArray $x Input matrix
+     * @return NDArray Derivative matrix
+     */
+    public function differentiate(NDArray $x) : NDArray
+    {
+        // Calculate HardSigmoid(x)
+        $hardSigmoid = $this->hardSigmoid->activate($x);
+
+        // Calculate HardSigmoid'(x)
+        $hardSigmoidDerivative = $this->hardSigmoid->differentiate($x);
+
+        // Calculate x * HardSigmoid'(x)
+        $xTimesDerivative = NumPower::multiply($x, $hardSigmoidDerivative);
+
+        // Calculate HardSigmoid(x) + x * HardSigmoid'(x)
+        return NumPower::add($hardSigmoid, $xTimesDerivative);
+    }
+
+    /**
+     * Return the string representation of the activation function.
+     *
+     * @return string String representation
      */
     public function __toString() : string
     {
-        return 'SiLU';
+        return 'HardSiLU';
     }
 }

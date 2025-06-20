@@ -93,7 +93,7 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
         // Since we're multiplying by 0 for these regions, we don't need to explicitly handle them
         // The mask $inLinearRegion already contains 0s for x <= -2.5 and x >= 2.5,
         // so when we multiply by SLOPE, those values remain 0 in the result
-        
+
         return $linearPart;
     }
 

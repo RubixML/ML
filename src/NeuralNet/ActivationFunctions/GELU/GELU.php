@@ -52,7 +52,7 @@ class GELU implements ActivationFunction, IBufferDerivative
     public function activate(NDArray $input) : NDArray
     {
         // Calculate x^3
-        $cubed = $input ** 3;
+        $cubed = NumPower::pow($input, 3);
 
         // Calculate inner term: x + BETA * x^3
         $innerTerm = NumPower::add(
@@ -93,7 +93,7 @@ class GELU implements ActivationFunction, IBufferDerivative
     public function differentiate(NDArray $x) : NDArray
     {
         // Calculate x^3
-        $cubed = $x ** 3;
+        $cubed = NumPower::pow($x, 3);
 
         // Calculate inner term: ALPHA * (x + BETA * x^3)
         $innerTerm = NumPower::multiply(
@@ -146,6 +146,6 @@ class GELU implements ActivationFunction, IBufferDerivative
      */
     public function __toString() : string
     {
-        return 'GeLU';
+        return 'GELU';
     }
 }
