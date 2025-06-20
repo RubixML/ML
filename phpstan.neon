@@ -7,10 +7,8 @@ parameters:
         - php
     tmpDir: ./runtime/.phpstan/
     paths:
-        - 'src/NeuralNet/ActivationFunctions/ELU'
-        - 'src/NeuralNet/ActivationFunctions/GELU'
-        - 'src/NeuralNet/ActivationFunctions/HardSigmoid'
-        - 'src/NeuralNet/ActivationFunctions/HardSiLU'
+        - 'src'
+        - 'benchmarks'
     excludePaths:
         - src/Backends/Amp.php
         - src/Backends/Swoole.php
