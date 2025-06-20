@@ -29,7 +29,7 @@ class HardSiLU implements ActivationFunction, IBufferDerivative
     /**
      * The Hard Sigmoid activation function.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\HardSigmoid\HardSigmoid
+     * @var HardSigmoid
      */
     protected HardSigmoid $hardSigmoid;
 
