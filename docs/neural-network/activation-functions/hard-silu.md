@@ -2,7 +2,7 @@
 
 # Hard SiLU
 
-Hard Sigmoid Linear Units (Hard SiLU) are a computationally efficient variant of the SiLU activation function. They use the Hard Sigmoid function as a self-gating mechanism, making them suitable for resource-constrained environments while maintaining good performance characteristics.
+Hard Sigmoid Linear Units (Hard SiLU) are a computationally efficient variant of the SiLU activation function.
 
 $$
 \displaystyle
