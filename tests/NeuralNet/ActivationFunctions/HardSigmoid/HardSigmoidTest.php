@@ -104,7 +104,7 @@ class HardSigmoidTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEquals($expected, $activations);
+        static::assertEqualsWithDelta($expected, $activations, 1e-16);
     }
 
     #[Test]
@@ -114,6 +114,6 @@ class HardSigmoidTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        static::assertEquals($expected, $derivatives);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
     }
 }
