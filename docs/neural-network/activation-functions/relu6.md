@@ -4,7 +4,7 @@
 ReLU6 is a variant of the standard Rectified Linear Unit (ReLU) that caps the maximum output value at 6. This bounded ReLU function is commonly used in mobile and quantized neural networks, where restricting the activation range can improve numerical stability and quantization efficiency.
 
 $$
-{\displaystyle ReLU6 = {\begin{aligned}&{\begin{cases}0&{\text{if }}x\leq 0\\x&{\text{if }}0 < x < 6\\6&{\text{if }}x \geq 6\end{cases}}=&\min\{6, \max\{0,x\}\}\end{aligned}}}
+\text{ReLU6}(x) = \min\left(\max(0, x), 6\right)
 $$
 
 ## Parameters

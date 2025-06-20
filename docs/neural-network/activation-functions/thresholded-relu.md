@@ -4,7 +4,11 @@
 A version of the [ReLU](relu.md) function that activates only if the input is above some user-specified threshold level.
 
 $$
-{\displaystyle ThresholdedReLU = {\begin{aligned}&{\begin{cases}0&{\text{if }}x\leq \theta \\x&{\text{if }}x>\theta\end{cases}}\end{aligned}}}
+\text{ThresholdedReLU}(x) =
+\begin{cases}
+x & \text{if } x > \theta \\
+0 & \text{if } x \leq \theta
+\end{cases}
 $$
 
 ## Parameters

@@ -4,7 +4,11 @@
 Leaky Rectified Linear Units are activation functions that output `x` when x is greater or equal to 0 or `x` scaled by a small *leakage* coefficient when the input is less than 0. Leaky rectifiers have the benefit of allowing a small gradient to flow through during backpropagation even though they might not have activated during the forward pass.
 
 $$
-{\displaystyle LeakyReLU = {\begin{cases}\lambda x&{\text{if }}x<0\\x&{\text{if }}x\geq 0\end{cases}}}
+\text{LeakyReLU}(x) =
+\begin{cases}
+x & \text{if } x \geq 0 \\
+\alpha x & \text{if } x < 0
+\end{cases}
 $$
 
 ## Parameters
