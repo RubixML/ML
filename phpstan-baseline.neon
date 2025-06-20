@@ -1577,3 +1577,9 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Helpers/ParamsTest.php
+
+		-
+		    message: '#^Binary operation "\*\*" between NDArray and .* results in an error.#'
+		    identifier: binaryOp.invalid
+		    count: 2
+		    path: src/NeuralNet/ActivationFunctions/*
