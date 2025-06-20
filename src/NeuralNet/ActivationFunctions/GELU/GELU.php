@@ -146,6 +146,6 @@ class GELU implements ActivationFunction, IBufferDerivative
      */
     public function __toString() : string
     {
-        return 'GeLU';
+        return 'GELU';
     }
 }

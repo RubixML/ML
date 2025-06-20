@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\GeLU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\GELU;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,18 +11,18 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\GELU\GeLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\GELU\GELU;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(GeLU::class)]
-class GeLUTest extends TestCase
+#[CoversClass(GELU::class)]
+class GELUTest extends TestCase
 {
     /**
-     * @var GeLU
+     * @var GELU
      */
-    protected GeLU $activationFn;
+    protected GELU $activationFn;
 
     /**
      * @return Generator<array>
@@ -87,14 +87,14 @@ class GeLUTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new GeLU();
+        $this->activationFn = new GELU();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('GeLU', (string) $this->activationFn);
+        static::assertEquals('GELU', (string) $this->activationFn);
     }
 
     #[Test]
