@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\Exceptions;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
- * Invalid `alpha` parameter for ELU Activation function
+ * Invalid `Leakage` parameter for LeakyReLU Activation function
  */
 class InvalidLeakageException extends InvalidArgumentException
 {
