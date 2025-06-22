@@ -4,16 +4,16 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\HardSiLU;
 
+use Generator;
+use NDArray;
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\HardSiLU\HardSiLU;
 use PHPUnit\Framework\TestCase;
-use Generator;
+use Rubix\ML\NeuralNet\ActivationFunctions\HardSiLU\HardSiLU;
 
 #[Group('ActivationFunctions')]
 #[CoversClass(HardSiLU::class)]
