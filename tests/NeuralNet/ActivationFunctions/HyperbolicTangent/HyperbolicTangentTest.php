@@ -4,16 +4,16 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
+use Generator;
+use NumPower;
+use NDArray;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent\HyperbolicTangent;
 use PHPUnit\Framework\TestCase;
-use Generator;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent\HyperbolicTangent;
 
 #[Group('ActivationFunctions')]
 #[CoversClass(HyperbolicTangent::class)]
