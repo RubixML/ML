@@ -64,16 +64,16 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
     public function activate(NDArray $input) : NDArray
     {
         // Calculate positive part: x for x > 0
-        $positive = NumPower::maximum($input, 0);
+        $positiveActivation = NumPower::maximum($input, 0);
 
         // Calculate negative part: leakage * x for x <= 0
-        $negative = NumPower::multiply(
+        $negativeActivation = NumPower::multiply(
             NumPower::minimum($input, 0),
             $this->leakage
         );
 
         // Combine both parts
-        return NumPower::add($positive, $negative);
+        return NumPower::add($positiveActivation, $negativeActivation);
     }
 
     /**
@@ -88,16 +88,16 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
     public function differentiate(NDArray $x) : NDArray
     {
         // For x > 0: 1
-        $positive = NumPower::greater($x, 0);
+        $positivePart = NumPower::greater($x, 0);
 
         // For x <= 0: leakage
-        $negative = NumPower::multiply(
+        $negativePart = NumPower::multiply(
             NumPower::lessEqual($x, 0),
             $this->leakage
         );
 
         // Combine both parts
-        return NumPower::add($positive, $negative);
+        return NumPower::add($positivePart, $negativePart);
     }
 
     /**
