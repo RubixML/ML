@@ -6,6 +6,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
  * Hyperbolic Tangent
@@ -16,11 +18,17 @@ use NDArray;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HyperbolicTangent implements ActivationFunction
+class HyperbolicTangent implements ActivationFunction, IBufferDerivative
 {
     /**
-     * @inheritdoc
+     * Apply the Hyperbolic Tangent activation function to the input.
+     *
+     * f(x) = tanh(x)
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
     public function activate(NDArray $input) : NDArray
     {
@@ -28,19 +36,26 @@ class HyperbolicTangent implements ActivationFunction
     }
 
     /**
-     * @inheritdoc
+     * Calculate the derivative of the activation function.
+     *
+     * f'(x) = 1 - tanh^2(x)
+     *
+     * @param NDArray $x Output matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $x) : NDArray
     {
-        return 1 - ($output ** 2);
+        // Calculate tanh^2(x)
+        $squared = NumPower::pow($x, 2);
+
+        // Calculate 1 - tanh^2(x)
+        return NumPower::subtract(1.0, $squared);
     }
 
     /**
      * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {
