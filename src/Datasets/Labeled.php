@@ -178,7 +178,7 @@ class Labeled extends Dataset
     /**
      * Return the labels.
      *
-     * @return list<float|int|string>
+     * @return mixed[]
      */
     public function labels() : array
     {
