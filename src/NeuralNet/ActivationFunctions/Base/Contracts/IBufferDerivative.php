@@ -13,14 +13,15 @@ use NDArray;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface IBufferDerivative extends Derivative
 {
     /**
      * Calculate the derivative of the single parameter.
      *
-     * @param NDArray $x Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $x) : NDArray;
+    public function differentiate(NDArray $output) : NDArray;
 }

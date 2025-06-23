@@ -76,18 +76,18 @@ class ELU implements ActivationFunction, IBufferDerivative
      * f'(x) = 1               if x > 0
      * f'(x) = α * e^x         if x ≤ 0
      *
-     * @param NDArray $x Output matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $x) : NDArray
+    public function differentiate(NDArray $output) : NDArray
     {
         // For x > 0: 1
-        $positivePart = NumPower::greater($x, 0);
+        $positivePart = NumPower::greater($output, 0);
 
         // For x <= 0: α * e^x
-        $negativeMask = NumPower::lessEqual($x, 0);
+        $negativeMask = NumPower::lessEqual($output, 0);
         $negativePart = NumPower::multiply(
-            NumPower::multiply($negativeMask, NumPower::exp($x)),
+            NumPower::multiply($negativeMask, NumPower::exp($output)),
             $this->alpha
         );
 
