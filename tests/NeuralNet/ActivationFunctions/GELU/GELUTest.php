@@ -108,11 +108,11 @@ class GELUTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the input')]
+    #[TestDox('Correctly differentiates the output')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function testDifferentiate(NDArray $output, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $derivatives = $this->activationFn->differentiate($output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
     }

@@ -165,16 +165,6 @@ class LeakyReLUTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the input')]
-    #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
-
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
-    }
-
-    #[Test]
     #[TestDox('Correctly handles boundary values during activation')]
     #[DataProvider('boundaryProvider')]
     public function testBoundaryActivate(NDArray $input, array $expected) : void
@@ -182,5 +172,15 @@ class LeakyReLUTest extends TestCase
         $activations = $this->activationFn->activate($input)->toArray();
 
         static::assertEqualsWithDelta($expected, $activations, 1e-16);
+    }
+
+    #[Test]
+    #[TestDox('Correctly differentiates the output')]
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(NDArray $output, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate($output)->toArray();
+
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
     }
 }
