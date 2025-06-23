@@ -40,13 +40,13 @@ class HyperbolicTangent implements ActivationFunction, IBufferDerivative
      *
      * f'(x) = 1 - tanh^2(x)
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $x Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $x) : NDArray
     {
         // Calculate tanh^2(x)
-        $squared = NumPower::pow($output, 2);
+        $squared = NumPower::pow($x, 2);
 
         // Calculate 1 - tanh^2(x)
         return NumPower::subtract(1.0, $squared);
