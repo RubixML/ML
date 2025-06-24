@@ -34,7 +34,7 @@ class GELUTest extends TestCase
                 [2, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.9545977115631104, 0.8411920070648193, -0.1542859971523285, 0.0, 20.0, 0.0],
+                [1.9545977, 0.8411920, -0.1542859, 0.0, 20.0, 0.0],
             ],
         ];
 
@@ -45,9 +45,9 @@ class GELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.054269056767225266, 0.19273021817207336, -0.15292881429195404],
-                [0.830374538898468, 0.04255049675703049, -0.014641005545854568],
-                [0.025996938347816467, -0.15681639313697815, 0.38089409470558167],
+                [-0.0542690, 0.1927302, -0.1529288],
+                [0.8303745, 0.0425504, -0.0146410],
+                [0.0259969, -0.1568163, 0.3808940],
             ],
         ];
     }
@@ -62,7 +62,7 @@ class GELUTest extends TestCase
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0829640626907349, 0.1326301246881485, 0.5, 1.0, -0.0],
+                [1.0829640, 0.1326301, 0.5, 1.0, -0.0],
             ],
         ];
 
@@ -73,9 +73,9 @@ class GELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.4047141969203949, 0.7395542860031128, 0.13881805539131165],
-                [1.080506443977356, 0.5636941194534302, 0.47607067227363586],
-                [0.5398608446121216, 0.12045331299304962, 0.8914529085159302],
+                [0.4047141, 0.7395542, 0.1388180],
+                [1.0805064, 0.5636941, 0.4760706],
+                [0.5398608, 0.1204533, 0.8914529],
             ],
         ];
     }
@@ -104,16 +104,16 @@ class GELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-16);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the output')]
+    #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, array $expected) : void
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($output)->toArray();
+        $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }

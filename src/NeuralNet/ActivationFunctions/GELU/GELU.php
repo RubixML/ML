@@ -87,19 +87,19 @@ class GELU implements ActivationFunction, IBufferDerivative
      * - β = 0.044715
      * - sech^2(z) = (1/cosh(z))^2
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $input Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
         // Calculate x^3
-        $cubed = NumPower::pow($output, 3);
+        $cubed = NumPower::pow($input, 3);
 
         // Calculate inner term: ALPHA * (x + BETA * x^3)
         $innerTerm = NumPower::multiply(
             self::ALPHA,
             NumPower::add(
-                $output,
+                $input,
                 NumPower::multiply(self::BETA, $cubed)
             )
         );
@@ -122,7 +122,7 @@ class GELU implements ActivationFunction, IBufferDerivative
             NumPower::multiply(
                 NumPower::multiply(
                     0.5 * self::ALPHA,
-                    $output
+                    $input
                 ),
                 $sech2
             ),
@@ -130,7 +130,7 @@ class GELU implements ActivationFunction, IBufferDerivative
                 1.0,
                 NumPower::multiply(
                     3.0 * self::BETA,
-                    NumPower::pow($output, 2)
+                    NumPower::pow($input, 2)
                 )
             )
         );
