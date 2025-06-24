@@ -20,8 +20,8 @@ interface IBufferDerivative extends Derivative
     /**
      * Calculate the derivative of the single parameter.
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $input Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray;
+    public function differentiate(NDArray $input) : NDArray;
 }
