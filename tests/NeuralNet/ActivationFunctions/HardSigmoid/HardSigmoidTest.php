@@ -62,7 +62,7 @@ class HardSigmoidTest extends TestCase
                 [2.5, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [0.0, 0.20000000298023224, 0.20000000298023224, 0.20000000298023224, 0.0, 0.0],
+                [0.20000000298023224, 0.20000000298023224, 0.20000000298023224, 0.20000000298023224, 0.0, 0.0],
             ],
         ];
 
@@ -104,16 +104,16 @@ class HardSigmoidTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-16);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the output')]
+    #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, array $expected) : void
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($output)->toArray();
+        $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }

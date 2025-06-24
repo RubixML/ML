@@ -79,14 +79,14 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
      * f'(x) = 0.2 if -2.5 < x < 2.5
      * f'(x) = 0   otherwise
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $input Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
         // For values in the linear region (-2.5 < x < 2.5): SLOPE
-        $inLinearRegion = NumPower::greater($output, self::LOWER_BOUND);
-        $inLinearRegion = NumPower::multiply($inLinearRegion, NumPower::less($output, self::UPPER_BOUND));
+        $inLinearRegion = NumPower::greaterEqual($input, self::LOWER_BOUND);
+        $inLinearRegion = NumPower::multiply($inLinearRegion, NumPower::lessEqual($input, self::UPPER_BOUND));
         $linearPart = NumPower::multiply($inLinearRegion, self::SLOPE);
 
         // For values outside the linear region: 0
