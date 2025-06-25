@@ -40,7 +40,7 @@ class ELU implements ActivationFunction, IOBufferDerivative
     {
         if ($this->alpha < 0.0) {
             throw new InvalidAlphaException(
-                message: "Alpha must be greater than 0, $alpha given."
+                message: "Alpha must be greater than 0, {$this->alpha} given."
             );
         }
     }
