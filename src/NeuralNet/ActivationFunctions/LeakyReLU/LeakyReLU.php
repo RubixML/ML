@@ -82,17 +82,17 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
      * f'(x) = 1         if x > 0
      * f'(x) = leakage   if x ≤ 0
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $input Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
         // For x > 0: 1
-        $positivePart = NumPower::greater($output, 0);
+        $positivePart = NumPower::greater($input, 0);
 
         // For x <= 0: leakage
         $negativePart = NumPower::multiply(
-            NumPower::lessEqual($output, 0),
+            NumPower::lessEqual($input, 0),
             $this->leakage
         );
 

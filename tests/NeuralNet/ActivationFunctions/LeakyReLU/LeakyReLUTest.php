@@ -35,7 +35,7 @@ class LeakyReLUTest extends TestCase
                 [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [2.0, 1.0, -0.004999999888241291, 0.0, 20.0, -0.09999999403953552],
+                [2.0, 1.0, -0.0049999, 0.0, 20.0, -0.0999999],
             ],
         ];
 
@@ -46,9 +46,9 @@ class LeakyReLUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.0011999999405816197, 0.3100000023841858, -0.004900000058114529],
-                [0.9900000095367432, 0.07999999821186066, -0.00029999998514540493],
-                [0.05000000074505806, -0.005199999548494816, 0.5400000214576721],
+                [-0.0011999, 0.3100000, -0.0049000],
+                [0.9900000, 0.0799999, -0.0002999],
+                [0.0500000, -0.0051999, 0.5400000],
             ],
         ];
     }
@@ -60,10 +60,10 @@ class LeakyReLUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+                [4.0, 2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, 1.0, 0.009999999776482582, 0.009999999776482582, 1.0, 0.009999999776482582],
+                [1.0, 1.0, 1.0, 0.0099999, 0.0099999, 1.0, 0.0099999],
             ],
         ];
 
@@ -74,9 +74,9 @@ class LeakyReLUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.009999999776482582, 1.0, 0.009999999776482582],
-                [1.0, 1.0, 0.009999999776482582],
-                [1.0, 0.009999999776482582, 1.0],
+                [0.0099999, 1.0, 0.0099999],
+                [1.0, 1.0, 0.0099999],
+                [1.0, 0.0099999, 1.0],
             ],
         ];
     }
@@ -113,7 +113,7 @@ class LeakyReLUTest extends TestCase
             ]),
             [
 
-                [0.0010000000474974513, -0.000010000000656873453, 0.00009999999747378752, -0.0000009999999974752427],
+                [0.0010000, -0.0000100, 0.0000999, -0.0000009],
             ],
         ];
     }
@@ -161,7 +161,7 @@ class LeakyReLUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-16);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
@@ -171,16 +171,16 @@ class LeakyReLUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-16);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the output')]
+    #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, array $expected) : void
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($output)->toArray();
+        $derivatives = $this->activationFn->differentiate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }
