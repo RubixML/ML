@@ -63,19 +63,19 @@ class HardSiLU implements ActivationFunction, IBufferDerivative
      *
      * f'(x) = HardSigmoid(x) + x * HardSigmoid'(x)
      *
-     * @param NDArray $output Output matrix
+     * @param NDArray $input Input matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
         // Calculate HardSigmoid(x)
-        $hardSigmoid = $this->hardSigmoid->activate($output);
+        $hardSigmoid = $this->hardSigmoid->activate($input);
 
         // Calculate HardSigmoid'(x)
-        $hardSigmoidDerivative = $this->hardSigmoid->differentiate($output);
+        $hardSigmoidDerivative = $this->hardSigmoid->differentiate($input);
 
         // Calculate x * HardSigmoid'(x)
-        $xTimesDerivative = NumPower::multiply($x, $hardSigmoidDerivative);
+        $xTimesDerivative = NumPower::multiply($input, $hardSigmoidDerivative);
 
         // Calculate HardSigmoid(x) + x * HardSigmoid'(x)
         return NumPower::add($hardSigmoid, $xTimesDerivative);
