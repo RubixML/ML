@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ReLU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ReLU6;
 
 use Generator;
 use NDArray;
@@ -13,16 +13,16 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU6\ReLU6;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(ReLU::class)]
-class ReLUTest extends TestCase
+#[CoversClass(ReLU6::class)]
+class ReLU6Test extends TestCase
 {
     /**
-     * @var ReLU
+     * @var ReLU6
      */
-    protected ReLU $activationFn;
+    protected ReLU6 $activationFn;
 
     /**
      * @return Generator<array>
@@ -31,10 +31,10 @@ class ReLUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0, 6.0, 5.9, 7.0],
             ]),
             [
-                [2.0, 1.0, 0.0, 0.0, 20.0, 0.0],
+                [2.0, 1.0, 0.0, 0.0, 6.0, 0.0, 6.0, 5.9, 6.0],
             ],
         ];
 
@@ -57,13 +57,13 @@ class ReLUTest extends TestCase
      */
     public static function boundaryProvider() : Generator
     {
-        // Test very large positive values (should be equal to input)
+        // Test very large positive values (should be capped at 6)
         yield [
             NumPower::array([
                 [100.0, 500.0, 1000.0],
             ]),
             [
-                [100.0, 500.0, 1000.0],
+                [6.0, 6.0, 6.0],
             ],
         ];
 
@@ -77,13 +77,13 @@ class ReLUTest extends TestCase
             ],
         ];
 
-        // Test values close to zero
+        // Test values close to zero and close to 6
         yield [
             NumPower::array([
-                [0.001, -0.001, 0.0001, -0.0001],
+                [0.001, -0.001, 0.0001, -0.0001, 5.999, 6.001],
             ]),
             [
-                [0.001, 0.0, 0.0001, 0.0],
+                [0.001, 0.0, 0.0001, 0.0, 5.999, 6.0],
             ],
         ];
     }
@@ -95,10 +95,10 @@ class ReLUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0, 6.0, 5.9, 7.0],
             ]),
             [
-                [1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
+                [1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
             ],
         ];
 
@@ -123,14 +123,14 @@ class ReLUTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new ReLU();
+        $this->activationFn = new ReLU6();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('ReLU', (string) $this->activationFn);
+        static::assertEquals('ReLU6', (string) $this->activationFn);
     }
 
     #[Test]

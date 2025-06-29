@@ -56,34 +56,6 @@ class LeakyReLUTest extends TestCase
     /**
      * @return Generator<array>
      */
-    public static function differentiateProvider() : Generator
-    {
-        yield [
-            NumPower::array([
-                [4.0, 2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            [
-                [1.0, 1.0, 1.0, 0.0099999, 0.0099999, 1.0, 0.0099999],
-            ],
-        ];
-
-        yield [
-            NumPower::array([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
-            ]),
-            [
-                [0.0099999, 1.0, 0.0099999],
-                [1.0, 1.0, 0.0099999],
-                [1.0, 0.0099999, 1.0],
-            ],
-        ];
-    }
-
-    /**
-     * @return Generator<array>
-     */
     public static function boundaryProvider() : Generator
     {
         // Test very large positive values (should be equal to input)
@@ -114,6 +86,34 @@ class LeakyReLUTest extends TestCase
             [
 
                 [0.0010000, -0.0000100, 0.0000999, -0.0000009],
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function differentiateProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [4.0, 2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            [
+                [1.0, 1.0, 1.0, 0.0099999, 0.0099999, 1.0, 0.0099999],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [0.0099999, 1.0, 0.0099999],
+                [1.0, 1.0, 0.0099999],
+                [1.0, 0.0099999, 1.0],
             ],
         ];
     }
