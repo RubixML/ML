@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-use Tensor\Matrix;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\Exceptions\InvalidLeakageException;
 
 /**
  * Leaky ReLU
@@ -19,8 +24,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class LeakyReLU implements ActivationFunction
+class LeakyReLU implements ActivationFunction, IBufferDerivative
 {
     /**
      * The amount of leakage as a ratio of the input value to allow to pass through when inactivated.
@@ -30,73 +36,74 @@ class LeakyReLU implements ActivationFunction
     protected float $leakage;
 
     /**
-     * @param float $leakage
-     * @throws InvalidArgumentException
+     * Class constructor.
+     *
+     * @param float $leakage The amount of leakage as a ratio of the input value to allow to pass through when inactivated.
+     * @throws InvalidLeakageException
      */
     public function __construct(float $leakage = 0.1)
     {
-        if ($leakage <= 0.0 or $leakage >= 1.0) {
-            throw new InvalidArgumentException('Leakage must be between'
-                . " 0 and 1, $leakage given.");
+        if ($leakage <= 0.0 || $leakage >= 1.0) {
+            throw new InvalidLeakageException(
+                message: "Leakage must be between 0 and 1, $leakage given."
+            );
         }
 
         $this->leakage = $leakage;
     }
 
     /**
-     * Compute the activation.
+     * Apply the Leaky ReLU activation function to the input.
      *
-     * @internal
+     * f(x) = x           if x > 0
+     * f(x) = leakage * x if x ≤ 0
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
     public function activate(NDArray $input) : NDArray
     {
-        $positive = NumPower::maximum($input, 0);
+        // Calculate positive part: x for x > 0
+        $positiveActivation = NumPower::maximum($input, 0);
 
-        $negative = NumPower::minimum($input, 0);
-        $negativeLeakage = $negative * $this->leakage;
+        // Calculate negative part: leakage * x for x <= 0
+        $negativeActivation = NumPower::multiply(
+            NumPower::minimum($input, 0),
+            $this->leakage
+        );
 
-        return $positive + $negativeLeakage;
+        // Combine both parts
+        return NumPower::add($positiveActivation, $negativeActivation);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 1         if x > 0
+     * f'(x) = leakage   if x ≤ 0
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        $positive = NumPower::greater($input, 0);
-        $negative = NumPower::lessEqual($input, 0) * $this->leakage;
+        // For x > 0: 1
+        $positivePart = NumPower::greater($input, 0);
 
-        return $positive + $negative;
+        // For x <= 0: leakage
+        $negativePart = NumPower::multiply(
+            NumPower::lessEqual($input, 0),
+            $this->leakage
+        );
+
+        // Combine both parts
+        return NumPower::add($positivePart, $negativePart);
     }
 
     /**
-     * @internal
+     * Return the string representation of the activation function.
      *
-     * @param float $input
-     * @return float
-     */
-    public function _differentiate(float $input) : float
-    {
-        return $input > 0.0
-            ? 1.0
-            : $this->leakage;
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

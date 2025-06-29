@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IOBufferDerivative;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 /**
@@ -26,7 +26,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ELU implements ActivationFunction, IBufferDerivative
+class ELU implements ActivationFunction, IOBufferDerivative
 {
     /**
      * Class constructor.
@@ -40,7 +40,7 @@ class ELU implements ActivationFunction, IBufferDerivative
     {
         if ($this->alpha < 0.0) {
             throw new InvalidAlphaException(
-                message: "Alpha must be greater than 0, $alpha given."
+                message: "Alpha must be greater than 0, {$this->alpha} given."
             );
         }
     }
@@ -71,28 +71,29 @@ class ELU implements ActivationFunction, IBufferDerivative
     }
 
     /**
-     * Calculate the derivative of the activation function.
+     * Calculate the derivative of the ELU activation function using input and output.
      *
-     * f'(x) = 1               if x > 0
-     * f'(x) = α * e^x         if x ≤ 0
+     * f'(x) = 1             if x > 0
+     * f'(x) = f(x) + α      if x ≤ 0, where f(x) is the ELU output
      *
-     * @param NDArray $x Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input  Input matrix (used to determine x > 0 mask)
+     * @param NDArray $output Output from the ELU activation function
+     * @return NDArray        Derivative matrix
      */
-    public function differentiate(NDArray $x) : NDArray
+    public function differentiate(NDArray $input, NDArray $output): NDArray
     {
         // For x > 0: 1
-        $positivePart = NumPower::greater($x, 0);
+        $positiveMask = NumPower::greater($input, 0);
 
-        // For x <= 0: α * e^x
-        $negativeMask = NumPower::lessEqual($x, 0);
+        // For x <= 0: output + α
+        $negativeMask = NumPower::lessEqual($input, 0);
         $negativePart = NumPower::multiply(
-            NumPower::multiply($negativeMask, NumPower::exp($x)),
-            $this->alpha
+            NumPower::add($output, $this->alpha),
+            $negativeMask
         );
 
         // Combine both parts
-        return NumPower::add($positivePart, $negativePart);
+        return NumPower::add($positiveMask, $negativePart);
     }
 
     /**

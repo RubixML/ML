@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\OBufferDerivative;
 
 /**
  * Hyperbolic Tangent
@@ -20,7 +20,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HyperbolicTangent implements ActivationFunction, IBufferDerivative
+class HyperbolicTangent implements ActivationFunction, OBufferDerivative
 {
     /**
      * Apply the Hyperbolic Tangent activation function to the input.

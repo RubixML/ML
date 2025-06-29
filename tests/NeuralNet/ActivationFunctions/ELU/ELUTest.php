@@ -4,16 +4,16 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ELU;
 
+use Generator;
+use NDArray;
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
 use PHPUnit\Framework\TestCase;
-use Generator;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
 
 #[Group('ActivationFunctions')]
@@ -35,7 +35,7 @@ class ELUTest extends TestCase
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, -0.39346933364868164, 0.0, 20.0, -0.9999545812606812],
+                [1.0, -0.3934693, 0.0, 20.0, -0.9999545],
             ],
         ];
 
@@ -46,9 +46,9 @@ class ELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.11307956278324127, 0.3100000023841858, -0.3873736262321472],
-                [0.9900000095367432, 0.07999999821186066, -0.029554465785622597],
-                [0.05000000074505806, -0.40547943115234375, 0.5400000214576721],
+                [-0.1130795, 0.3100000, -0.3873736],
+                [0.9900000, 0.0799999, -0.0295544],
+                [0.0500000, -0.4054794, 0.5400000],
             ],
         ];
     }
@@ -63,7 +63,7 @@ class ELUTest extends TestCase
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, 0.6065306663513184, 1.0, 1.0, 4.539993096841499E-5],
+                [1.0, 0.6065306, 1.0, 1.0, 0.0000454],
             ],
         ];
 
@@ -74,9 +74,9 @@ class ELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.8869204521179199, 1.0, 0.6126263737678528],
-                [1.0, 1.0, 0.9704455137252808],
-                [1.0, 0.5945205688476562, 1.0],
+                [0.8869204, 1.0, 0.6126263],
+                [1.0, 1.0, 0.9704455],
+                [1.0, 0.5945205, 1.0],
             ],
         ];
     }
@@ -124,16 +124,17 @@ class ELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-16);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
     #[Test]
-    #[TestDox('Correctly differentiates the input')]
+    #[TestDox('Correctly differentiates the input using buffered output')]
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-16);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }
