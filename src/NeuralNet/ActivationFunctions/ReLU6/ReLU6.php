@@ -1,61 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\ReLU6;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
- * ReLU
+ * ReLU6
  *
- * ReLU (Rectified Linear Unit) is an activation function that only outputs
- * the positive signal of the input.
+ * ReLU6 is a variant of the Rectified Linear Unit that caps the maximum
+ * activation at 6. This helps with quantized networks and promotes
+ * sparsity in the activations.
  *
  * References:
- * [1] A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural
- * Network Acoustic Models.
+ * [1] A. Howard et al. (2017). MobileNets: Efficient Convolutional Neural
+ * Networks for Mobile Vision Applications.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ReLU implements ActivationFunction
+class ReLU6 implements ActivationFunction, IBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = min(max(0, x), 6)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
     public function activate(NDArray $input) : NDArray
     {
-        return NumPower::minimim(new ReLU()->activate($input), 6);
+        // First apply ReLU: max(0, x)
+        $reluActivation = NumPower::maximum($input, 0.0);
+
+        // Then cap at 6: min(relu(x), 6)
+        return NumPower::minimum($reluActivation, 6.0);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 1 if 0 < x < 6, else 0
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
-        return NumPower::greaterEqual($input);
+        // 1 where 0 < x < 6, 0 elsewhere
+        $greaterThanZero = NumPower::greater($input, 0.0);
+        $lessThanSix = NumPower::less($input, 6.0);
+
+        // Combine conditions with logical AND
+        return NumPower::multiply($greaterThanZero, $lessThanSix);
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {
-        return 'ReLU';
+        return 'ReLU6';
     }
 }

@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
  * ReLU
@@ -17,42 +22,40 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ReLU implements ActivationFunction
+class ReLU implements ActivationFunction, IBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = max(0, x)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
     public function activate(NDArray $input) : NDArray
     {
-        return NumPower::maximum($input, 0);
+        return NumPower::maximum($input, 0.0);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 1 if x > 0, else 0
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(NDArray $input) : NDArray
     {
-        return NumPower::greaterEqual($input);
+        return NumPower::greater($input, 0.0);
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

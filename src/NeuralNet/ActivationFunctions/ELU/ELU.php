@@ -76,11 +76,11 @@ class ELU implements ActivationFunction, IOBufferDerivative
      * f'(x) = 1             if x > 0
      * f'(x) = f(x) + α      if x ≤ 0, where f(x) is the ELU output
      *
-     * @param NDArray $input  Input matrix (used to determine x > 0 mask)
+     * @param NDArray $input Input matrix (used to determine x > 0 mask)
      * @param NDArray $output Output from the ELU activation function
-     * @return NDArray        Derivative matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input, NDArray $output): NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         // For x > 0: 1
         $positiveMask = NumPower::greater($input, 0);

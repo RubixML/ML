@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\LeakyReLU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ReLU;
 
 use Generator;
 use NDArray;
@@ -13,17 +13,16 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\LeakyReLU;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\Exceptions\InvalidLeakageException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(LeakyReLU::class)]
-class LeakyReLUTest extends TestCase
+#[CoversClass(ReLU::class)]
+class ReLUTest extends TestCase
 {
     /**
-     * @var LeakyReLU
+     * @var ReLU
      */
-    protected LeakyReLU $activationFn;
+    protected ReLU $activationFn;
 
     /**
      * @return Generator<array>
@@ -35,7 +34,7 @@ class LeakyReLUTest extends TestCase
                 [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [2.0, 1.0, -0.0049999, 0.0, 20.0, -0.0999999],
+                [2.0, 1.0, 0.0, 0.0, 20.0, 0.0],
             ],
         ];
 
@@ -46,9 +45,9 @@ class LeakyReLUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.0011999, 0.3100000, -0.0049000],
-                [0.9900000, 0.0799999, -0.0002999],
-                [0.0500000, -0.0051999, 0.5400000],
+                [0.0, 0.31, 0.0],
+                [0.99, 0.08, 0.0],
+                [0.05, 0.0, 0.54],
             ],
         ];
     }
@@ -68,13 +67,13 @@ class LeakyReLUTest extends TestCase
             ],
         ];
 
-        // Test very large negative values (should be input * leakage)
+        // Test very large negative values (should be zero)
         yield [
             NumPower::array([
                 [-100.0, -500.0, -1000.0],
             ]),
             [
-                [-1.0, -5.0, -10.0],
+                [0.0, 0.0, 0.0],
             ],
         ];
 
@@ -84,8 +83,7 @@ class LeakyReLUTest extends TestCase
                 [0.001, -0.001, 0.0001, -0.0001],
             ]),
             [
-
-                [0.0010000, -0.0000100, 0.0000999, -0.0000009],
+                [0.001, 0.0, 0.0001, 0.0],
             ],
         ];
     }
@@ -97,10 +95,10 @@ class LeakyReLUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [4.0, 2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, 1.0, 1.0, 0.0099999, 0.0099999, 1.0, 0.0099999],
+                [1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
             ],
         ];
 
@@ -111,9 +109,9 @@ class LeakyReLUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.0099999, 1.0, 0.0099999],
-                [1.0, 1.0, 0.0099999],
-                [1.0, 0.0099999, 1.0],
+                [0.0, 1.0, 0.0],
+                [1.0, 1.0, 0.0],
+                [1.0, 0.0, 1.0],
             ],
         ];
     }
@@ -125,33 +123,14 @@ class LeakyReLUTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new LeakyReLU(0.01);
-    }
-
-    #[Test]
-    #[TestDox('Can be constructed with valid leakage parameter')]
-    public function testConstructorWithValidLeakage() : void
-    {
-        $activationFn = new LeakyReLU(0.2);
-
-        static::assertInstanceOf(LeakyReLU::class, $activationFn);
-        static::assertEquals('Leaky ReLU (leakage: 0.2)', (string) $activationFn);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with invalid leakage parameter')]
-    public function testConstructorWithInvalidLeakage() : void
-    {
-        $this->expectException(InvalidLeakageException::class);
-
-        new LeakyReLU(1.5);
+        $this->activationFn = new ReLU();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('Leaky ReLU (leakage: 0.01)', (string) $this->activationFn);
+        static::assertEquals('ReLU', (string) $this->activationFn);
     }
 
     #[Test]
