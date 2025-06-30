@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\OBufferDerivative;
 
 /**
  * Sigmoid
@@ -14,40 +19,51 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Sigmoid implements ActivationFunction
+class Sigmoid implements ActivationFunction, OBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = 1 / (1 + e^(-x))
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return 1 / (1 + NumPower::exp(-$input));
+        // Calculate e^(-x)
+        $negExp = NumPower::exp(NumPower::multiply(-1.0, $input));
+        
+        // Calculate 1 + e^(-x)
+        $denominator = NumPower::add(1.0, $negExp);
+        
+        // Calculate 1 / (1 + e^(-x))
+        return NumPower::divide(1.0, $denominator);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @internal
+     * For Sigmoid, the derivative can be calculated using only the output:
+     * f'(x) = f(x) * (1 - f(x))
+     * where f(x) is the output of the sigmoid function
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $output
+     * @return NDArray
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $output) : NDArray
     {
-        return $output * (1.0 - $output);
+        // Calculate (1 - output)
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
+        
+        // Calculate output * (1 - output)
+        return NumPower::multiply($output, $oneMinusOutput);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */
