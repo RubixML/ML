@@ -28,5 +28,5 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 $activationFunction = new SiLU();
 ```
 
-### References
-[^1]: S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in Reinforcement Learning.
+## References
+[1]: S. Elwing et al. (2017). Sigmoid-Weighted Linear Units for Neural Network Function Approximation in Reinforcement Learning.

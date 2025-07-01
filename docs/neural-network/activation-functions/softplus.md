@@ -26,4 +26,4 @@ $activationFunction = new Softplus();
 ```
 
 ## References
-[^1]: X. Glorot et al. (2011). Deep Sparse Rectifier Neural Networks.
+[1]: X. Glorot et al. (2011). Deep Sparse Rectifier Neural Networks.

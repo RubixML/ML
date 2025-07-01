@@ -26,4 +26,4 @@ $activationFunction = new HardSigmoid();
 ```
 
 ## References
-[^1]: https://en.wikipedia.org/wiki/Hard_sigmoid
+[1]: https://en.wikipedia.org/wiki/Hard_sigmoid
