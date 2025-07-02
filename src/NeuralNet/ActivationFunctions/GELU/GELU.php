@@ -33,6 +33,8 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const ALPHA = 0.7978845608;
+    /** @var float  */
+    protected const HALF_ALPHA = 0.3989422804;
 
     /**
      * Gaussian error function approximation term.
@@ -40,6 +42,8 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const BETA = 0.044715;
+    /** @var float  */
+    protected const TRIPLE_BETA = 0.134145;
 
     /**
      * Apply the GeLU activation function to the input.
@@ -122,7 +126,7 @@ class GELU implements ActivationFunction, IBufferDerivative
             NumPower::multiply(
                 NumPower::multiply(
                     $input,
-                    0.5 * self::ALPHA
+                    self::HALF_ALPHA
                 ),
                 $sech2
             ),
@@ -130,7 +134,7 @@ class GELU implements ActivationFunction, IBufferDerivative
                 1.0,
                 NumPower::multiply(
                     NumPower::pow($input, 2),
-                    3.0 * self::BETA
+                    self::TRIPLE_BETA
                 )
             )
         );
