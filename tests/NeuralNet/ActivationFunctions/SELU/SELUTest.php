@@ -20,11 +20,6 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SELU\SELU;
 class SELUTest extends TestCase
 {
     /**
-     * @var SELU
-     */
-    protected SELU $activationFn;
-
-    /**
      * The value at which leakage starts to saturate.
      *
      * @var float
@@ -44,6 +39,11 @@ class SELUTest extends TestCase
      * @var float
      */
     protected const BETA = self::LAMBDA * self::ALPHA;
+
+    /**
+     * @var SELU
+     */
+    protected SELU $activationFn;
 
     /**
      * @return Generator<array>
@@ -69,17 +69,17 @@ class SELUTest extends TestCase
                 [
                     self::BETA * (exp(-0.12) - 1.0),
                     0.31 * self::LAMBDA,
-                    self::BETA * (exp(-0.49) - 1.0)
+                    self::BETA * (exp(-0.49) - 1.0),
                 ],
                 [
                     0.99 * self::LAMBDA,
                     0.08 * self::LAMBDA,
-                    self::BETA * (exp(-0.03) - 1.0)
+                    self::BETA * (exp(-0.03) - 1.0),
                 ],
                 [
                     0.05 * self::LAMBDA,
                     self::BETA * (exp(-0.52) - 1.0),
-                    0.54 * self::LAMBDA
+                    0.54 * self::LAMBDA,
                 ],
             ],
         ];
@@ -95,15 +95,7 @@ class SELUTest extends TestCase
                 [2.0, 1.0, -0.5, 0.0, 20.0, -10.0, -20],
             ]),
             [
-                [
-                    self::LAMBDA,
-                    self::LAMBDA,
-                    1.0663410,
-                    1.7580991,
-                    self::LAMBDA,
-                    0.0000798,
-                    0.0
-                ],
+                [self::LAMBDA, self::LAMBDA, 1.0663410, 1.7580991, self::LAMBDA, 0.0000798, 0.0],
             ],
         ];
 
@@ -114,21 +106,9 @@ class SELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [
-                    self::BETA * exp(-0.12),
-                    self::LAMBDA,
-                    self::BETA * exp(-0.49)
-                ],
-                [
-                    self::LAMBDA,
-                    self::LAMBDA,
-                    self::BETA * exp(-0.03)
-                ],
-                [
-                    self::LAMBDA,
-                    self::BETA * exp(-0.52),
-                    self::LAMBDA
-                ],
+                [self::BETA * exp(-0.12), self::LAMBDA, self::BETA * exp(-0.49)],
+                [self::LAMBDA, self::LAMBDA, self::BETA * exp(-0.03)],
+                [self::LAMBDA, self::BETA * exp(-0.52), self::LAMBDA],
             ],
         ];
     }
@@ -156,18 +136,10 @@ class SELUTest extends TestCase
         yield [
             NumPower::array([[-1e-15, -1e-10, -1e-7]]),
             [
-                [
-                    self::BETA * (exp(-1e-15) - 1.0),
-                    self::BETA * (exp(-1e-10) - 1.0),
-                    self::BETA * (exp(-1e-7) - 1.0),
-                ],
+                [self::BETA * (exp(-1e-15) - 1.0), self::BETA * (exp(-1e-10) - 1.0), self::BETA * (exp(-1e-7) - 1.0)],
             ],
             [
-                [
-                    self::BETA * exp(-1e-15),
-                    self::BETA * exp(-1e-10),
-                    self::BETA * exp(-1e-7),
-                ],
+                [self::BETA * exp(-1e-15), self::BETA * exp(-1e-10), self::BETA * exp(-1e-7)],
             ],
         ];
 

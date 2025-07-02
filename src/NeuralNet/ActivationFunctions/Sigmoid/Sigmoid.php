@@ -35,10 +35,10 @@ class Sigmoid implements ActivationFunction, OBufferDerivative
     {
         // Calculate e^(-x)
         $negExp = NumPower::exp(NumPower::multiply(-1.0, $input));
-        
+
         // Calculate 1 + e^(-x)
         $denominator = NumPower::add(1.0, $negExp);
-        
+
         // Calculate 1 / (1 + e^(-x))
         return NumPower::divide(1.0, $denominator);
     }
@@ -57,7 +57,7 @@ class Sigmoid implements ActivationFunction, OBufferDerivative
     {
         // Calculate (1 - output)
         $oneMinusOutput = NumPower::subtract(1.0, $output);
-        
+
         // Calculate output * (1 - output)
         return NumPower::multiply($output, $oneMinusOutput);
     }

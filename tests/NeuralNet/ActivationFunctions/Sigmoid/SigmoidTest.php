@@ -109,7 +109,7 @@ class SigmoidTest extends TestCase
         // Test values around machine epsilon
         yield [
             NumPower::array([[PHP_FLOAT_EPSILON, -PHP_FLOAT_EPSILON]]),
-            [[0.5 + PHP_FLOAT_EPSILON/2, 0.5 - PHP_FLOAT_EPSILON/2]],
+            [[0.5 + PHP_FLOAT_EPSILON / 2, 0.5 - PHP_FLOAT_EPSILON / 2]],
             [[0.25, 0.25]],
         ];
     }
