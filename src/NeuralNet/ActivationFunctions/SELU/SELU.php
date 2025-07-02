@@ -61,15 +61,15 @@ class SELU implements ActivationFunction, IBufferDerivative
     {
         // Calculate positive part: λ * x for x > 0
         $positive = NumPower::multiply(
-            self::LAMBDA,
-            NumPower::maximum($input, 0)
+            NumPower::maximum($input, 0),
+            self::LAMBDA
         );
 
         // Calculate negative part: λ * α * (e^x - 1) for x <= 0
         $negativeMask = NumPower::minimum($input, 0);
         $negative = NumPower::multiply(
-            self::BETA,
-            NumPower::expm1($negativeMask)
+            NumPower::expm1($negativeMask),
+            self::BETA
         );
 
         // Combine both parts

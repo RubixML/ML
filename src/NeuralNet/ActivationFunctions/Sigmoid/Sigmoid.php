@@ -34,7 +34,7 @@ class Sigmoid implements ActivationFunction, OBufferDerivative
     public function activate(NDArray $input) : NDArray
     {
         // Calculate e^(-x)
-        $negExp = NumPower::exp(NumPower::multiply(-1.0, $input));
+        $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
 
         // Calculate 1 + e^(-x)
         $denominator = NumPower::add(1.0, $negExp);
