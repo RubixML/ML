@@ -65,7 +65,7 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
     {
         // Calculate 0.2 * x + 0.5
         $linear = NumPower::add(
-            NumPower::multiply(self::SLOPE, $input),
+            NumPower::multiply($input, self::SLOPE),
             self::INTERCEPT
         );
 

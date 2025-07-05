@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\SELU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\SiLU;
 
 use Generator;
 use NDArray;
@@ -13,37 +13,16 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU\SELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU\SiLU;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(SELU::class)]
-class SELUTest extends TestCase
+#[CoversClass(SiLU::class)]
+class SiLUTest extends TestCase
 {
     /**
-     * The value at which leakage starts to saturate.
-     *
-     * @var float
+     * @var SiLU
      */
-    public const ALPHA = 1.6732632;
-
-    /**
-     * The scaling coefficient.
-     *
-     * @var float
-     */
-    public const LAMBDA = 1.0507009;
-
-    /**
-     * The scaling coefficient multiplied by alpha.
-     *
-     * @var float
-     */
-    protected const BETA = self::LAMBDA * self::ALPHA;
-
-    /**
-     * @var SELU
-     */
-    protected SELU $activationFn;
+    protected SiLU $activationFn;
 
     /**
      * @return Generator<array>
@@ -55,7 +34,7 @@ class SELUTest extends TestCase
                 [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [2.10140180, 1.05070090, -0.6917580, 0.0, 21.0140190, -1.7580193],
+                [1.7615940, 0.7310585, -0.1887703, 0.0, 20.0, -0.0004539],
             ],
         ];
 
@@ -66,21 +45,9 @@ class SELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [
-                    self::BETA * (exp(-0.12) - 1.0),
-                    0.31 * self::LAMBDA,
-                    self::BETA * (exp(-0.49) - 1.0),
-                ],
-                [
-                    0.99 * self::LAMBDA,
-                    0.08 * self::LAMBDA,
-                    self::BETA * (exp(-0.03) - 1.0),
-                ],
-                [
-                    0.05 * self::LAMBDA,
-                    self::BETA * (exp(-0.52) - 1.0),
-                    0.54 * self::LAMBDA,
-                ],
+                [-0.0564043, 0.1788344, -0.1861478],
+                [0.7217970, 0.0415991, -0.0147750],
+                [0.0256249, -0.1938832, 0.3411787],
             ],
         ];
     }
@@ -92,10 +59,10 @@ class SELUTest extends TestCase
     {
         yield [
             NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0, -20],
+                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [self::LAMBDA, self::LAMBDA, 1.0663410, 1.7580991, self::LAMBDA, 0.0000798, 0.0],
+                [1.0907843, 0.9276705, 0.2600388, 0.5000000, 1.0000000, -0.0004085],
             ],
         ];
 
@@ -106,9 +73,9 @@ class SELUTest extends TestCase
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [self::BETA * exp(-0.12), self::LAMBDA, self::BETA * exp(-0.49)],
-                [self::LAMBDA, self::LAMBDA, self::BETA * exp(-0.03)],
-                [self::LAMBDA, self::BETA * exp(-0.52), self::LAMBDA],
+                [0.4401437, 0.6525527, 0.2644620],
+                [0.9246314, 0.5399574, 0.4850022],
+                [0.5249895, 0.2512588, 0.7574301],
             ],
         ];
     }
@@ -122,42 +89,41 @@ class SELUTest extends TestCase
         yield [
             NumPower::array([[0.0]]),
             [[0.0]],
-            [[1.7580991983413696]],
+            [[0.5]],
         ];
 
         // Test very small positive values
         yield [
             NumPower::array([[1e-15, 1e-10, 1e-7]]),
-            [[1e-15 * self::LAMBDA, 1e-10 * self::LAMBDA, 1e-7 * self::LAMBDA]],
-            [[self::LAMBDA, self::LAMBDA, self::LAMBDA]],
+            [[5e-16, 5e-11, 5e-8]],
+            [[0.5, 0.5, 0.5]],
         ];
 
         // Test very small negative values
         yield [
             NumPower::array([[-1e-15, -1e-10, -1e-7]]),
-            [
-                [self::BETA * (exp(-1e-15) - 1.0), self::BETA * (exp(-1e-10) - 1.0), self::BETA * (exp(-1e-7) - 1.0)],
-            ],
-            [
-                [self::BETA * exp(-1e-15), self::BETA * exp(-1e-10), self::BETA * exp(-1e-7)],
-            ],
+            [[-5e-16, -5e-11, -5e-8]],
+            [[0.5, 0.5, 0.5]],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function extremeValuesProvider() : Generator
+    {
+        // Test with large positive values
+        yield [
+            NumPower::array([[10.0, 20.0, 50.0]]),
+            [[9.9995460, 20.0, 50.0]],
+            [[1.0004087, 1.0, 1.0]],
         ];
 
-        // Test values around machine epsilon
+        // Test with large negative values
         yield [
-            NumPower::array([[PHP_FLOAT_EPSILON, -PHP_FLOAT_EPSILON]]),
-            [
-                [
-                    PHP_FLOAT_EPSILON * self::LAMBDA,
-                    self::BETA * (exp(-PHP_FLOAT_EPSILON) - 1.0),
-                ],
-            ],
-            [
-                [
-                    self::LAMBDA,
-                    self::BETA * exp(-PHP_FLOAT_EPSILON),
-                ],
-            ],
+            NumPower::array([[-10.0, -20.0, -50.0]]),
+            [[-0.0004539, -0.0, -0.0]],
+            [[-0.0004085, -0.0, -0.0]],
         ];
     }
 
@@ -168,14 +134,14 @@ class SELUTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new SELU();
+        $this->activationFn = new SiLU();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('SELU', (string) $this->activationFn);
+        static::assertEquals('SiLU', (string) $this->activationFn);
     }
 
     #[Test]
@@ -203,7 +169,21 @@ class SELUTest extends TestCase
     #[DataProvider('zeroRegionProvider')]
     public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input)->toArray();
+
+        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
+        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Correctly handles extreme values')]
+    #[DataProvider('extremeValuesProvider')]
+    public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    {
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
         $derivatives = $this->activationFn->differentiate($input)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);

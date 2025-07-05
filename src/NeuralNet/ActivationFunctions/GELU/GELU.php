@@ -33,6 +33,8 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const ALPHA = 0.7978845608;
+    /** @var float 0.5 * ALPHA */
+    protected const HALF_ALPHA = 0.3989422804;
 
     /**
      * Gaussian error function approximation term.
@@ -40,6 +42,8 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const BETA = 0.044715;
+    /** @var float 3 * BETA */
+    protected const TRIPLE_BETA = 0.134145;
 
     /**
      * Apply the GeLU activation function to the input.
@@ -57,12 +61,12 @@ class GELU implements ActivationFunction, IBufferDerivative
         // Calculate inner term: x + BETA * x^3
         $innerTerm = NumPower::add(
             $input,
-            NumPower::multiply(self::BETA, $cubed)
+            NumPower::multiply($cubed, self::BETA)
         );
 
         // Apply tanh(ALPHA * innerTerm)
         $tanhTerm = NumPower::tanh(
-            NumPower::multiply(self::ALPHA, $innerTerm)
+            NumPower::multiply($innerTerm, self::ALPHA)
         );
 
         // Calculate 1 + tanhTerm
@@ -70,8 +74,8 @@ class GELU implements ActivationFunction, IBufferDerivative
 
         // Calculate 0.5 * x * (1 + tanhTerm)
         return NumPower::multiply(
-            0.5,
-            NumPower::multiply($input, $onePlusTanh)
+            NumPower::multiply($input, $onePlusTanh),
+            0.5
         );
     }
 
@@ -97,11 +101,11 @@ class GELU implements ActivationFunction, IBufferDerivative
 
         // Calculate inner term: ALPHA * (x + BETA * x^3)
         $innerTerm = NumPower::multiply(
-            self::ALPHA,
             NumPower::add(
                 $input,
-                NumPower::multiply(self::BETA, $cubed)
-            )
+                NumPower::multiply($cubed, self::BETA)
+            ),
+            self::ALPHA
         );
 
         // Calculate cosh and sech^2
@@ -113,24 +117,24 @@ class GELU implements ActivationFunction, IBufferDerivative
 
         // Calculate 0.5 * (1 + tanh(innerTerm))
         $firstTerm = NumPower::multiply(
-            0.5,
-            NumPower::add(1.0, NumPower::tanh($innerTerm))
+            NumPower::add(1.0, NumPower::tanh($innerTerm)),
+            0.5
         );
 
         // Calculate 0.5 * x * sech^2 * ALPHA * (1 + 3 * BETA * x^2)
         $secondTerm = NumPower::multiply(
             NumPower::multiply(
                 NumPower::multiply(
-                    0.5 * self::ALPHA,
-                    $input
+                    $input,
+                    self::HALF_ALPHA
                 ),
                 $sech2
             ),
             NumPower::add(
                 1.0,
                 NumPower::multiply(
-                    3.0 * self::BETA,
-                    NumPower::pow($input, 2)
+                    NumPower::pow($input, 2),
+                    self::TRIPLE_BETA
                 )
             )
         );
