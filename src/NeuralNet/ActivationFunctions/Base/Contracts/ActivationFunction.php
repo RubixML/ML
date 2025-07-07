@@ -24,13 +24,4 @@ interface ActivationFunction extends Stringable
      * @return NDArray Output matrix
      */
     public function activate(NDArray $input) : NDArray;
-
-    /**
-     * Calculate the derivative of the activation.
-     *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
-     */
-    //public function differentiate(NDArray $input, NDArray $output) : NDArray;
 }

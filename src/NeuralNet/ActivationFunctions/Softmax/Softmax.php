@@ -31,6 +31,10 @@ class Softmax implements ActivationFunction, OBufferDerivative
      * The Softmax function is a generalization of the Sigmoid function that squashes
      * each activation between 0 and 1, and all activations add up to 1.
      *
+     * > **Note:** This function can be rewritten in a more efficient way,
+     * using NumPower::exp(), NumPower::sum(), and NumPower::divide().
+     * Currently blocked by implementation of 2nd parameter "axis" for NumPower::sum()
+     *
      * @param NDArray $input
      * @return NDArray
      */
@@ -55,17 +59,6 @@ class Softmax implements ActivationFunction, OBufferDerivative
         }
 
         return NumPower::array($result);
-    }
-
-    public function activate_TO_FIX(NDArray $input) : NDArray
-    {
-        // Calculate exp(x)
-        $expValues = NumPower::exp($input);
-
-        // Calculate sum(exp(x)) along rows
-        $sumExp = NumPower::sum($expValues, axis: 1);
-        // Calculate softmax: exp(x) / sum(exp(x))
-        return NumPower::divide($expValues, $sumExp);
     }
 
     /**
