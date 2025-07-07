@@ -26,7 +26,7 @@ Thresholded ReLU maintains the computational efficiency of standard ReLU while a
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU\ThresholdedReLU;
 
 $activationFunction = new ThresholdedReLU(2.0);
 ```

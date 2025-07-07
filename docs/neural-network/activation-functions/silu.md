@@ -23,7 +23,7 @@ SiLU is computationally more expensive than simpler activation functions like Re
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU\SiLU;
 
 $activationFunction = new SiLU();
 ```

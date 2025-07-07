@@ -26,7 +26,7 @@ Leaky ReLU is computationally efficient, requiring only simple comparison operat
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\LeakyReLU;
 
 $activationFunction = new LeakyReLU(0.3);
 ```

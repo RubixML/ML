@@ -20,7 +20,7 @@ GELU is computationally more expensive than simpler activation functions like Re
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\GELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\GELU\GELU;
 
 $activationFunction = new GELU();
 ```

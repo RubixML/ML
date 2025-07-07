@@ -24,7 +24,7 @@ ReLU is one of the most computationally efficient activation functions, requirin
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 
 $activationFunction = new ReLU(0.1);
 ```

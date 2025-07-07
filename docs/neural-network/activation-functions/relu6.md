@@ -20,7 +20,7 @@ ReLU6 maintains the computational efficiency of standard ReLU while adding an up
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU6;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU6\ReLU6;
 
 $activationFunction = new ReLU6();
 ```

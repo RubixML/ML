@@ -28,7 +28,7 @@ SELU is computationally more expensive than simpler activation functions like Re
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU\SELU;
 
 $activationFunction = new SELU();
 ```

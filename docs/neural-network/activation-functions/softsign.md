@@ -20,7 +20,7 @@ Softsign is computationally more efficient than functions that use exponential c
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softsign\Softsign;
 
 $activationFunction = new Softsign();
 ```

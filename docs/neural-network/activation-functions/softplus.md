@@ -20,7 +20,7 @@ Softplus is computationally more expensive than ReLU due to its use of both expo
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softplus\Softplus;
 
 $activationFunction = new Softplus();
 ```

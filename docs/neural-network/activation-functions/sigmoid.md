@@ -20,7 +20,7 @@ Sigmoid is computationally more expensive than simpler activation functions like
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
 
 $activationFunction = new Sigmoid();
 ```
