@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
  * Soft Plus
@@ -16,40 +21,52 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Softplus implements ActivationFunction
+class Softplus implements ActivationFunction, IBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = log(1 + e^x)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return NumPower::log(NumPower::exp($input) + 1);
+        // Calculate e^x
+        $exp = NumPower::exp($input);
+
+        // Calculate 1 + e^x
+        $onePlusExp = NumPower::add(1.0, $exp);
+
+        // Calculate log(1 + e^x)
+        return NumPower::log($onePlusExp);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @internal
+     * f'(x) = 1 / (1 + e^(-x))
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        return 1 / (1 + NumPower::exp(-$output));
+        // Calculate e^(-x)
+        $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
+
+        // Calculate 1 + e^(-x)
+        $denominator = NumPower::add(1.0, $negExp);
+
+        // Calculate 1 / (1 + e^(-x))
+        return NumPower::divide(1.0, $denominator);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */

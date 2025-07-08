@@ -26,7 +26,7 @@ Softmax is computationally more expensive than many other activation functions d
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax\Softmax;
 
 $activationFunction = new Softmax();
 ```

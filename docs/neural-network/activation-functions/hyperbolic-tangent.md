@@ -20,7 +20,7 @@ Hyperbolic Tangent requires more computational resources compared to simpler act
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent\HyperbolicTangent;
 
 $activationFunction = new HyperbolicTangent();
 ```
