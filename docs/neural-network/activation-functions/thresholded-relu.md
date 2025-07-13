@@ -22,7 +22,7 @@ Thresholded ReLU maintains the computational efficiency of standard ReLU while a
 ## Plots
 <img src="../../images/activation-functions/thresholded-relu.png" alt="Thresholded ReLU Function" width="500" height="auto">
 
-<img src="../../images/activation-functions/thresholded-derivative.png" alt="Thresholded ReLU Derivative" width="500" height="auto">
+<img src="../../images/activation-functions/thresholded-relu-derivative.png" alt="Thresholded ReLU Derivative" width="500" height="auto">
 
 ## Example
 ```php
