@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 
-use Tensor\Matrix;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU\Exceptions\InvalidThresholdException;
 
 /**
  * Thresholded ReLU
@@ -18,8 +23,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ThresholdedReLU implements ActivationFunction
+class ThresholdedReLU implements ActivationFunction, IBufferDerivative
 {
     /**
      * The input value necessary to trigger an activation.
@@ -29,14 +35,17 @@ class ThresholdedReLU implements ActivationFunction
     protected float $threshold;
 
     /**
-     * @param float $threshold
-     * @throws InvalidArgumentException
+     * Class constructor.
+     *
+     * @param float $threshold The input value necessary to trigger an activation.
+     * @throws InvalidThresholdException
      */
     public function __construct(float $threshold = 1.0)
     {
         if ($threshold < 0.0) {
-            throw new InvalidArgumentException('Threshold must be'
-                . " positive, $threshold given.");
+            throw new InvalidThresholdException(
+                message: "Threshold must be positive, $threshold given."
+            );
         }
 
         $this->threshold = $threshold;
@@ -45,34 +54,36 @@ class ThresholdedReLU implements ActivationFunction
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = x if x > threshold, 0 otherwise
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return NumPower::greater($input, $this->threshold) * $input;
+        // Create a mask where input > threshold
+        $mask = NumPower::greater($input, $this->threshold);
+
+        // Apply the mask to the input
+        return NumPower::multiply($input, $mask);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @internal
+     * f'(x) = 1 if x > threshold, 0 otherwise
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
+        // The derivative is 1 where input > threshold, 0 otherwise
         return NumPower::greater($input, $this->threshold);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */
