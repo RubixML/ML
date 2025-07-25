@@ -39,7 +39,7 @@ Training time depends on a number of factors including size of the dataset and c
 - You have enough RAM to hold the dataset and model in memory without swapping to disk.
 
 ## Does Rubix ML support multiprocessing/multithreading?
-Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend such as [Amp](https://docs.rubixml.com/latest/backends/amp.html) or extension such as [Tensor](https://github.com/RubixML/Tensor) under the hood.
+Yes, learners that support parallel processing (multiprocessing or multithreading) do so by utilizing a pluggable parallel computing backend such as [Amp](https://rubixml.github.io/ML/latest/backends/amp.html) or extension such as [Tensor](https://github.com/RubixML/Tensor) under the hood.
 
 ## Does Rubix ML support Deep Learning?
 Yes, a number of learners in the library support Deep Learning including the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).

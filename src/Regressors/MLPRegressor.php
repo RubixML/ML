@@ -540,7 +540,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }
