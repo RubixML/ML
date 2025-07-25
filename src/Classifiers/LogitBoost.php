@@ -305,7 +305,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -657,7 +657,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }

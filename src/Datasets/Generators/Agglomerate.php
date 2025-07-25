@@ -24,7 +24,7 @@ class Agglomerate implements Generator
     /**
      * An array of generators.
      *
-     * @var \Rubix\ML\Datasets\Generators\Generator[]
+     * @var Generator[]
      */
     protected array $generators;
 
@@ -44,7 +44,7 @@ class Agglomerate implements Generator
     protected int $dimensions;
 
     /**
-     * @param \Rubix\ML\Datasets\Generators\Generator[] $generators
+     * @param Generator[] $generators
      * @param (int|float)[]|null $weights
      * @throws InvalidArgumentException
      */
@@ -104,7 +104,7 @@ class Agglomerate implements Generator
         }
 
         $this->generators = $generators;
-        $this->weights = array_combine(array_keys($generators), $weights) ?: [];
+        $this->weights = array_combine(array_keys($generators), $weights);
         $this->dimensions = $dimensions;
     }
 

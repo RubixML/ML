@@ -43,7 +43,7 @@ class SVRTest extends TestCase
      *
      * @var float
      */
-    protected const MIN_SCORE = -INF;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.

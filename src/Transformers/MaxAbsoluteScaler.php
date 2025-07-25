@@ -37,7 +37,7 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

@@ -32,7 +32,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
     /**
      * A list of transformers to be applied in series.
      *
-     * @var list<\Rubix\ML\Transformers\Transformer>
+     * @var list<Transformer>
      */
     protected array $transformers = [
         //
@@ -53,7 +53,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
     protected bool $elastic;
 
     /**
-     * @param \Rubix\ML\Transformers\Transformer[] $transformers
+     * @param Transformer[] $transformers
      * @param Estimator $base
      * @param bool $elastic
      * @throws InvalidArgumentException
@@ -89,7 +89,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

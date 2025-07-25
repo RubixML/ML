@@ -65,7 +65,7 @@ class ImageResizer implements Transformer
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -92,8 +92,8 @@ class ImageResizer implements Transformer
     {
         foreach ($sample as &$value) {
             if (DataType::detect($value)->isImage()) {
-                $width = imagesx($value) ?: 0;
-                $height = imagesy($value) ?: 0;
+                $width = imagesx($value);
+                $height = imagesy($value);
 
                 if ($width === $this->width and $height === $this->height) {
                     continue;

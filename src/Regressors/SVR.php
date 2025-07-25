@@ -154,7 +154,7 @@ class SVR implements Estimator, Learner
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -235,8 +235,14 @@ class SVR implements Estimator, Learner
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+        //As SVM needs to have the same keys and order between training samples and those to predict we need to put an offset to the keys
+        $sampleWithOffset = [];
 
-        return $this->model->predict($sample);
+        foreach ($sample as $key => $value) {
+            $sampleWithOffset[$key + 1] = $value;
+        }
+
+        return $this->model->predict($sampleWithOffset);
     }
 
     /**

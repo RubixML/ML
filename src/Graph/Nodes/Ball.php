@@ -44,7 +44,7 @@ class Ball implements Hypersphere, HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @var array{Labeled,Labeled}
      */
     protected array $subsets;
 
@@ -93,7 +93,7 @@ class Ball implements Hypersphere, HasBinaryChildren
     /**
      * @param list<string|int|float> $center
      * @param float $radius
-     * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
+     * @param array{Labeled,Labeled} $subsets
      */
     public function __construct(array $center, float $radius, array $subsets)
     {
@@ -136,7 +136,7 @@ class Ball implements Hypersphere, HasBinaryChildren
      * Return the left and right subsets of the training data.
      *
      * @throws RuntimeException
-     * @return array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @return array{Labeled,Labeled}
      */
     public function subsets() : array
     {

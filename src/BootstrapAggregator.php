@@ -83,7 +83,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * The ensemble of estimators.
      *
-     * @var list<\Rubix\ML\Learner>
+     * @var list<Learner>
      */
     protected array $ensemble = [
         //
@@ -136,7 +136,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

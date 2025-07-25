@@ -192,7 +192,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -234,7 +234,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -439,7 +439,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

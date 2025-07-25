@@ -1,3 +1,9 @@
+- 2.5.2
+    - Fix bug in One-class SVM inferencing
+
+- 2.5.1
+    - Fix bug in SVM (SVC and SVR) inferencing
+
 - 2.5.0
     - Added Vantage Point Spatial tree
     - Blob Generator can now `simulate()` a Dataset object

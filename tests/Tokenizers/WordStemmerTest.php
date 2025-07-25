@@ -52,7 +52,7 @@ class WordStemmerTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function tokenizeProvider() : Generator
     {

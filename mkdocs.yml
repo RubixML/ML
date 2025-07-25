@@ -10,7 +10,7 @@ theme:
     - navigation.tabs
 
 nav:
-  - Home: https://rubixml.com
+  - Home: https://rubixml.github.io/ML
   - Getting Started:
     - Welcome: index.md
     - What is Machine Learning?: what-is-machine-learning.md
@@ -322,7 +322,6 @@ markdown_extensions:
   - footnotes
 
 extra_javascript:
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - js/custom.js
 
@@ -330,7 +329,7 @@ extra_css:
   - css/custom.css
 
 repo_url: https://github.com/RubixML/ML
-site_url: https://rubixml.com
+site_url: https://rubixml.github.io/ML
 site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 
 copyright: '&copy; 2022 The Rubix ML Community'

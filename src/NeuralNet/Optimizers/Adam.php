@@ -54,7 +54,7 @@ class Adam implements Optimizer, Adaptive
     /**
      * The parameter cache of running velocity and squared gradients.
      *
-     * @var array<\Tensor\Tensor[]>
+     * @var array<Tensor[]>
      */
     protected array $cache = [
         //
@@ -115,8 +115,8 @@ class Adam implements Optimizer, Adaptive
      * @internal
      *
      * @param Parameter $param
-     * @param \Tensor\Tensor<int|float|array> $gradient
-     * @return \Tensor\Tensor<int|float|array>
+     * @param Tensor<int|float|array> $gradient
+     * @return Tensor<int|float|array>
      */
     public function step(Parameter $param, Tensor $gradient) : Tensor
     {

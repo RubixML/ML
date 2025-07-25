@@ -188,7 +188,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return the data types that the estimator is compatible with.
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -256,7 +256,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -591,7 +591,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

@@ -112,7 +112,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var \Rubix\ML\Learner[]|null
+     * @var Learner[]|null
      */
     protected ?array $ensemble = null;
 
@@ -255,7 +255,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -421,7 +421,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<int|string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -494,7 +494,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses']);
+        unset($properties['losses'], $properties['logger']);
 
         return $properties;
     }

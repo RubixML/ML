@@ -302,7 +302,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -587,7 +587,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }

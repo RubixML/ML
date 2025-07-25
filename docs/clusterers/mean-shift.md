@@ -23,7 +23,7 @@ use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 
-$estimator = new MeanShift(2.5, 2000, 1e-6, 0.05, new BallTree(100), new KMC2());
+$estimator = new MeanShift(2.5, 0.05, 2000, 1e-6, new BallTree(100), new KMC2());
 ```
 
 ## Additional Methods

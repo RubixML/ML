@@ -29,7 +29,7 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function passesProvider() : Generator
     {

@@ -69,7 +69,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * An array composing the user-specified hidden layers of the network in order.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @var Hidden[]
      */
     protected array $hiddenLayers;
 
@@ -165,7 +165,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?array $losses = null;
 
     /**
-     * @param \Rubix\ML\NeuralNet\Layers\Hidden[] $hiddenLayers
+     * @param Hidden[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
@@ -259,7 +259,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -304,7 +304,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return an iterable progress table with the steps from the last training session.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function steps() : Generator
     {
@@ -574,7 +574,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }

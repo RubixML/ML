@@ -78,7 +78,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
     /**
      * The data types of the fitted feature columns.
      *
-     * @var \Rubix\ML\DataType[]|null
+     * @var DataType[]|null
      */
     protected ?array $types = null;
 
@@ -124,7 +124,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {

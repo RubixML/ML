@@ -104,7 +104,7 @@ class Amp implements Backend
      * @param AmpTask $task
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
-     * @return \Generator<\Amp\Promise>
+     * @return Generator<\Amp\Promise>
      */
     public function coroutine(AmpTask $task, ?callable $after = null, $context = null) : Generator
     {
@@ -138,7 +138,7 @@ class Amp implements Backend
      *
      * @internal
      *
-     * @return \Generator<\Amp\Promise>
+     * @return Generator<\Amp\Promise>
      */
     public function gather() : Generator
     {

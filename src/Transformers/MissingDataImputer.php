@@ -53,14 +53,14 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The fitted guessing strategy for each feature column.
      *
-     * @var list<\Rubix\ML\Strategies\Strategy>|null
+     * @var list<Strategy>|null
      */
     protected ?array $strategies = null;
 
     /**
      * The data types of the fitted feature columns.
      *
-     * @var list<\Rubix\ML\DataType>|null
+     * @var list<DataType>|null
      */
     protected ?array $types = null;
 
@@ -95,7 +95,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
@@ -155,11 +155,6 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
 
             if (!isset($strategy)) {
                 continue;
-            }
-
-            if (empty($donors)) {
-                throw new InvalidArgumentException('Dataset must contain'
-                    . ' at least 1 donor per feature column.');
             }
 
             $strategy->fit($donors);
