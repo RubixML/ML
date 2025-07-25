@@ -2,7 +2,7 @@
     "name": "rubix/ml",
     "type": "library",
     "description": "A high-level machine learning and deep learning library for the PHP language.",
-    "homepage": "https://rubixml.com",
+    "homepage": "https://rubixml.github.io/ML/latest/",
     "license": "MIT",
     "readme": "README.md",
     "keywords": [
@@ -106,7 +106,7 @@
         }
     ],
     "support": {
-        "docs": "https://docs.rubixml.com",
+        "docs": "https://rubixml.github.io/ML/latest/",
         "issues": "https://github.com/RubixML/ML/issues",
         "source": "https://github.com/RubixML/ML",
         "chat": "https://t.me/RubixML"
