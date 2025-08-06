@@ -36,7 +36,6 @@ class Softsign implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate |x|
         $absInput = NumPower::abs($input);
 
         // Calculate 1 + |x|
