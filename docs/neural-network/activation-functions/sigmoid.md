@@ -10,9 +10,6 @@ $$
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-Sigmoid is computationally more expensive than simpler activation functions like ReLU due to its use of exponential calculations. It requires computing an exponential term and a division operation for each neuron activation. For deep networks, this computational cost can become significant. Additionally, sigmoid activations can cause the vanishing gradient problem during backpropagation when inputs are large in magnitude, potentially slowing down training. Despite these limitations, sigmoid remains valuable in output layers of networks performing binary classification or when probability interpretations are needed.
-
 ## Plots
 <img src="../../images/activation-functions/sigmoid.png" alt="Sigmoid Function" width="500" height="auto">
 

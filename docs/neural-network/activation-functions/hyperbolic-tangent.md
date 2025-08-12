@@ -10,9 +10,6 @@ $$
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-Hyperbolic Tangent requires more computational resources compared to simpler activation functions like ReLU due to its exponential calculations. While not as computationally efficient as piecewise linear functions, it provides important zero-centered outputs that can be critical for certain network architectures, particularly in recurrent neural networks where gradient flow is important.
-
 ## Plots
 <img src="../../images/activation-functions/hyperbolic-tangent.png" alt="Hyperbolic Tangent Function" width="500" height="auto">
 

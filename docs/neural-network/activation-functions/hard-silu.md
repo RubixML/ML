@@ -12,9 +12,6 @@ $$
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-Hard SiLU is designed to be computationally efficient compared to the standard SiLU (Swish) activation function. By using the piecewise linear Hard Sigmoid approximation instead of the standard Sigmoid function, it reduces the computational complexity while maintaining similar functional properties. This makes it particularly suitable for deployment on resource-constrained devices or when working with large neural networks.
-
 ## Plots
 <img src="../../images/activation-functions/hard-silu.png" alt="Hard SiLU Function" width="500" height="auto">
 
