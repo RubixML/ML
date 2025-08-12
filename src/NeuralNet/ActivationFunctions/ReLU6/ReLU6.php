@@ -37,10 +37,8 @@ class ReLU6 implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // First apply ReLU: max(0, x)
         $reluActivation = NumPower::maximum($input, 0.0);
 
-        // Then cap at 6: min(relu(x), 6)
         return NumPower::minimum($reluActivation, 6.0);
     }
 
@@ -54,11 +52,9 @@ class ReLU6 implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // 1 where 0 < x < 6, 0 elsewhere
         $greaterThanZero = NumPower::greater($input, 0.0);
         $lessThanSix = NumPower::less($input, 6.0);
 
-        // Combine conditions with logical AND
         return NumPower::multiply($greaterThanZero, $lessThanSix);
     }
 

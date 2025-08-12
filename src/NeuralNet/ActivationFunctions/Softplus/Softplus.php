@@ -35,13 +35,9 @@ class Softplus implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate e^x
         $exp = NumPower::exp($input);
-
-        // Calculate 1 + e^x
         $onePlusExp = NumPower::add(1.0, $exp);
 
-        // Calculate log(1 + e^x)
         return NumPower::log($onePlusExp);
     }
 
@@ -55,13 +51,9 @@ class Softplus implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // Calculate e^(-x)
         $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
-
-        // Calculate 1 + e^(-x)
         $denominator = NumPower::add(1.0, $negExp);
 
-        // Calculate 1 / (1 + e^(-x))
         return NumPower::divide(1.0, $denominator);
     }
 

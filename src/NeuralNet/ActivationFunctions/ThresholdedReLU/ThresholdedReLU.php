@@ -61,10 +61,8 @@ class ThresholdedReLU implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Create a mask where input > threshold
         $mask = NumPower::greater($input, $this->threshold);
 
-        // Apply the mask to the input
         return NumPower::multiply($input, $mask);
     }
 
@@ -78,7 +76,6 @@ class ThresholdedReLU implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // The derivative is 1 where input > threshold, 0 otherwise
         return NumPower::greater($input, $this->threshold);
     }
 

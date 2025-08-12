@@ -37,11 +37,8 @@ class Softsign implements ActivationFunction, IBufferDerivative
     public function activate(NDArray $input) : NDArray
     {
         $absInput = NumPower::abs($input);
-
-        // Calculate 1 + |x|
         $denominator = NumPower::add(1.0, $absInput);
 
-        // Calculate x / (1 + |x|)
         return NumPower::divide($input, $denominator);
     }
 
@@ -55,16 +52,10 @@ class Softsign implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // Calculate |x|
         $absInput = NumPower::abs($input);
-
-        // Calculate 1 + |x|
         $onePlusAbs = NumPower::add(1.0, $absInput);
-
-        // Calculate (1 + |x|)²
         $denominator = NumPower::multiply($onePlusAbs, $onePlusAbs);
 
-        // Calculate 1 / (1 + |x|)²
         return NumPower::divide(1.0, $denominator);
     }
 

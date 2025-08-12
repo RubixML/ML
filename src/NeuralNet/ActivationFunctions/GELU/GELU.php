@@ -55,24 +55,11 @@ class GELU implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate x^3
         $cubed = NumPower::pow($input, 3);
-
-        // Calculate inner term: x + BETA * x^3
-        $innerTerm = NumPower::add(
-            $input,
-            NumPower::multiply($cubed, self::BETA)
-        );
-
-        // Apply tanh(ALPHA * innerTerm)
-        $tanhTerm = NumPower::tanh(
-            NumPower::multiply($innerTerm, self::ALPHA)
-        );
-
-        // Calculate 1 + tanhTerm
+        $innerTerm = NumPower::add($input, NumPower::multiply($cubed, self::BETA));
+        $tanhTerm = NumPower::tanh(NumPower::multiply($innerTerm, self::ALPHA));
         $onePlusTanh = NumPower::add(1.0, $tanhTerm);
 
-        // Calculate 0.5 * x * (1 + tanhTerm)
         return NumPower::multiply(
             NumPower::multiply($input, $onePlusTanh),
             0.5
@@ -96,10 +83,8 @@ class GELU implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // Calculate x^3
         $cubed = NumPower::pow($input, 3);
 
-        // Calculate inner term: ALPHA * (x + BETA * x^3)
         $innerTerm = NumPower::multiply(
             NumPower::add(
                 $input,
@@ -108,20 +93,17 @@ class GELU implements ActivationFunction, IBufferDerivative
             self::ALPHA
         );
 
-        // Calculate cosh and sech^2
         $cosh = NumPower::cosh($innerTerm);
         $sech2 = NumPower::pow(
             NumPower::divide(1.0, $cosh),
             2
         );
 
-        // Calculate 0.5 * (1 + tanh(innerTerm))
         $firstTerm = NumPower::multiply(
             NumPower::add(1.0, NumPower::tanh($innerTerm)),
             0.5
         );
 
-        // Calculate 0.5 * x * sech^2 * ALPHA * (1 + 3 * BETA * x^2)
         $secondTerm = NumPower::multiply(
             NumPower::multiply(
                 NumPower::multiply(
@@ -139,7 +121,6 @@ class GELU implements ActivationFunction, IBufferDerivative
             )
         );
 
-        // Combine terms
         return NumPower::add($firstTerm, $secondTerm);
     }
 

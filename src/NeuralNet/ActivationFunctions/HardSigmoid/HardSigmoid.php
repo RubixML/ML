@@ -63,13 +63,11 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate 0.2 * x + 0.5
         $linear = NumPower::add(
             NumPower::multiply($input, self::SLOPE),
             self::INTERCEPT
         );
 
-        // Clip values between 0 and 1
         return NumPower::clip($linear, 0.0, 1.0);
     }
 
@@ -88,11 +86,6 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
         $inLinearRegion = NumPower::greaterEqual($input, self::LOWER_BOUND);
         $inLinearRegion = NumPower::multiply($inLinearRegion, NumPower::lessEqual($input, self::UPPER_BOUND));
         $linearPart = NumPower::multiply($inLinearRegion, self::SLOPE);
-
-        // For values outside the linear region: 0
-        // Since we're multiplying by 0 for these regions, we don't need to explicitly handle them
-        // The mask $inLinearRegion already contains 0s for x <= -2.5 and x >= 2.5,
-        // so when we multiply by SLOPE, those values remain 0 in the result
 
         return $linearPart;
     }
