@@ -14,9 +14,6 @@ $$
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-ReLU is one of the most computationally efficient activation functions, requiring only a simple comparison operation and conditional assignment. It has minimal memory requirements and executes very quickly compared to activation functions that use exponential or hyperbolic calculations. This efficiency makes ReLU particularly well-suited for deep networks with many layers, where the computational savings compound significantly.
-
 ## Plots
 <img src="../../images/activation-functions/relu.png" alt="ReLU Function" width="500" height="auto">
 

@@ -16,9 +16,6 @@ Where:
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-Softmax is computationally more expensive than many other activation functions due to its need to process all neurons in a layer collectively rather than independently. It requires exponential calculations for each neuron, followed by a normalization step that involves summing all exponential values and dividing each by this sum. This creates a computational dependency between all neurons in the layer. Despite this cost, Softmax is essential for multi-class classification output layers where probability distributions are required. The implementation uses optimized matrix operations to improve performance, but the computational complexity still scales with the number of neurons in the layer.
-
 ## Plots
 <img src="../../images/activation-functions/softmax.png" alt="Softmax Function" width="500" height="auto">
 

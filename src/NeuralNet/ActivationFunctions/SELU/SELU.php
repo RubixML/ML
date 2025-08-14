@@ -59,20 +59,17 @@ class SELU implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate positive part: λ * x for x > 0
         $positive = NumPower::multiply(
             NumPower::maximum($input, 0),
             self::LAMBDA
         );
 
-        // Calculate negative part: λ * α * (e^x - 1) for x <= 0
         $negativeMask = NumPower::minimum($input, 0);
         $negative = NumPower::multiply(
             NumPower::expm1($negativeMask),
             self::BETA
         );
 
-        // Combine both parts
         return NumPower::add($positive, $negative);
     }
 
@@ -87,11 +84,9 @@ class SELU implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // For x > 0: λ
         $positiveMask = NumPower::greater($input, 0);
         $positivePart = NumPower::multiply($positiveMask, self::LAMBDA);
 
-        // For x <= 0: λ * α * e^x
         $negativeMask = NumPower::lessEqual($input, 0);
         $negativePart = NumPower::multiply(
             NumPower::multiply(
@@ -103,7 +98,6 @@ class SELU implements ActivationFunction, IBufferDerivative
             $negativeMask
         );
 
-        // Combine both parts
         return NumPower::add($positivePart, $negativePart);
     }
 

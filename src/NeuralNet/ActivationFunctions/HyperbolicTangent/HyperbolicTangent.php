@@ -45,10 +45,8 @@ class HyperbolicTangent implements ActivationFunction, OBufferDerivative
      */
     public function differentiate(NDArray $x) : NDArray
     {
-        // Calculate tanh^2(x)
         $squared = NumPower::pow($x, 2);
 
-        // Calculate 1 - tanh^2(x)
         return NumPower::subtract(1.0, $squared);
     }
 

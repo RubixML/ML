@@ -56,17 +56,14 @@ class ELU implements ActivationFunction, IOBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate positive part: x for x > 0
         $positiveActivation = NumPower::maximum($input, 0);
 
-        // Calculate negative part: alpha * (e^x - 1) for x <= 0
         $negativeMask = NumPower::minimum($input, 0);
         $negativeActivation = NumPower::multiply(
             NumPower::expm1($negativeMask),
             $this->alpha
         );
 
-        // Combine both parts
         return NumPower::add($positiveActivation, $negativeActivation);
     }
 
@@ -82,17 +79,14 @@ class ELU implements ActivationFunction, IOBufferDerivative
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        // For x > 0: 1
         $positiveMask = NumPower::greater($input, 0);
 
-        // For x <= 0: output + α
         $negativeMask = NumPower::lessEqual($input, 0);
         $negativePart = NumPower::multiply(
             NumPower::add($output, $this->alpha),
             $negativeMask
         );
 
-        // Combine both parts
         return NumPower::add($positiveMask, $negativePart);
     }
 

@@ -10,9 +10,6 @@ $$
 ## Parameters
 This activation function does not have any parameters.
 
-## Size and Performance
-Hard Sigmoid has a minimal memory footprint compared to the standard Sigmoid function, as it uses simple arithmetic operations (multiplication, addition) and comparisons instead of expensive exponential calculations. This makes it particularly well-suited for mobile and embedded applications or when computational resources are limited.
-
 ## Plots
 <img src="../../images/activation-functions/hard-sigmoid.png" alt="Hard Sigmoid Function" width="500" height="auto">
 

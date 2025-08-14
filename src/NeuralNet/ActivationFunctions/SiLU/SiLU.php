@@ -52,10 +52,8 @@ class SiLU implements ActivationFunction, IBufferDerivative
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Calculate sigmoid(x) using the Sigmoid activation function
         $sigmoid = $this->sigmoid->activate($input);
 
-        // Calculate x * sigmoid(x)
         return NumPower::multiply($input, $sigmoid);
     }
 
@@ -70,16 +68,10 @@ class SiLU implements ActivationFunction, IBufferDerivative
      */
     public function differentiate(NDArray $input) : NDArray
     {
-        // Calculate sigmoid(x) using the Sigmoid activation function
         $sigmoid = $this->sigmoid->activate($input);
-
-        // Calculate sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
         $sigmoidDerivative = $this->sigmoid->differentiate($sigmoid);
-
-        // Calculate x * sigmoid'(x)
         $xTimesSigmoidDerivative = NumPower::multiply($input, $sigmoidDerivative);
 
-        // Calculate sigmoid(x) + x * sigmoid'(x)
         return NumPower::add($sigmoid, $xTimesSigmoidDerivative);
     }
 
