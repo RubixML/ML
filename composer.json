@@ -44,6 +44,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.73",
         "phpbench/phpbench": "^1.0",
+        "overtrue/phplint": "^9.6.2",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
@@ -89,6 +90,7 @@
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
         ],
+        "phplint": "phplint",
         "test": "phpunit"
     },
     "config": {

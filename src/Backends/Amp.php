@@ -63,7 +63,7 @@ class Amp implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
-        $workers = $workers ?? CPU::cores();
+        $workers ??= CPU::cores();
 
         $this->pool = new DefaultPool($workers);
     }

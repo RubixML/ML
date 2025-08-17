@@ -15,7 +15,7 @@ use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
  * first published attempts to control the variance of activations between
  * layers through weight initialization. It remains a good default choice for
  * many hidden layer configurations. It draws from a truncated
- * normal distribution with mean 0 and standart deviation sqrt(1 / fanOut).
+ * normal distribution with mean 0 and standard deviation sqrt(1 / fanOut).
  *
  * References:
  * [1] Y. Le Cun et al. (1998). Efficient Backprop.
@@ -36,7 +36,7 @@ class LeCunNormal extends AbstractInitializer
 
         $stdDev = sqrt(1 / $fanOut);
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], scale: $stdDev);
     }
 
     /**

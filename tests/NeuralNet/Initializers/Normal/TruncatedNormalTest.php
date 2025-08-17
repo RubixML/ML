@@ -32,7 +32,7 @@ final class TruncatedNormalTest extends TestCase
             ],
             'zero stdDev' => [
                 'stdDev' => 0,
-            ]
+            ],
         ];
     }
 
@@ -55,7 +55,7 @@ final class TruncatedNormalTest extends TestCase
             'fanIn less than fanOut' => [
                 'fanIn' => 3,
                 'fanOut' => 4,
-            ]
+            ],
         ];
     }
 
@@ -70,7 +70,7 @@ final class TruncatedNormalTest extends TestCase
             'small numbers' => [
                 'fanIn' => 30,
                 'fanOut' => 10,
-                'stdDev' => 0.25
+                'stdDev' => 0.25,
             ],
             'medium numbers' => [
                 'fanIn' => 300,
@@ -80,8 +80,8 @@ final class TruncatedNormalTest extends TestCase
             'big numbers' => [
                 'fanIn' => 3000,
                 'fanOut' => 1000,
-                'stdDev' => 1.75
-            ]
+                'stdDev' => 1.75,
+            ],
         ];
     }
 

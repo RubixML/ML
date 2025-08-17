@@ -13,3 +13,12 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
+
+# Cache files
+/runtime/
+
+# Docker related files
+Dockerfile
+/docker/
+docker-compose.yml
+Makefile

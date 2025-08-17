@@ -1,0 +1,102 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IOBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
+
+/**
+ * ELU
+ *
+ * Exponential Linear Units are a type of rectifier that soften the transition
+ * from non-activated to activated using the exponential function.
+ *
+ * References:
+ * [1] D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by
+ * Exponential Linear Units.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
+ */
+class ELU implements ActivationFunction, IOBufferDerivative
+{
+    /**
+     * Class constructor.
+     *
+     * @param float $alpha At which negative value the ELU will saturate. For example if alpha
+     *                     equals 1, the leaked value will never be greater than -1.0.
+     *
+     * @throws InvalidAlphaException
+     */
+    public function __construct(protected float $alpha = 1.0)
+    {
+        if ($this->alpha < 0.0) {
+            throw new InvalidAlphaException(
+                message: "Alpha must be greater than 0, {$this->alpha} given."
+            );
+        }
+    }
+
+    /**
+     * Apply the ELU activation function to the input.
+     *
+     * f(x) = x                 if x > 0
+     * f(x) = α * (e^x - 1)     if x ≤ 0
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
+     */
+    public function activate(NDArray $input) : NDArray
+    {
+        $positiveActivation = NumPower::maximum($input, 0);
+
+        $negativeMask = NumPower::minimum($input, 0);
+        $negativeActivation = NumPower::multiply(
+            NumPower::expm1($negativeMask),
+            $this->alpha
+        );
+
+        return NumPower::add($positiveActivation, $negativeActivation);
+    }
+
+    /**
+     * Calculate the derivative of the ELU activation function using input and output.
+     *
+     * f'(x) = 1             if x > 0
+     * f'(x) = f(x) + α      if x ≤ 0, where f(x) is the ELU output
+     *
+     * @param NDArray $input Input matrix (used to determine x > 0 mask)
+     * @param NDArray $output Output from the ELU activation function
+     * @return NDArray Derivative matrix
+     */
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    {
+        $positiveMask = NumPower::greater($input, 0);
+
+        $negativeMask = NumPower::lessEqual($input, 0);
+        $negativePart = NumPower::multiply(
+            NumPower::add($output, $this->alpha),
+            $negativeMask
+        );
+
+        return NumPower::add($positiveMask, $negativePart);
+    }
+
+    /**
+     * Return the string representation of the activation function.
+     *
+     * @return string String representation
+     */
+    public function __toString() : string
+    {
+        return "ELU (alpha: {$this->alpha})";
+    }
+}

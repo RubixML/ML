@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\OBufferDerivative;
+
+/**
+ * Hyperbolic Tangent
+ *
+ * S-shaped function that squeezes the input value into an output space between
+ * -1 and 1 centered at 0.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
+ */
+class HyperbolicTangent implements ActivationFunction, OBufferDerivative
+{
+    /**
+     * Apply the Hyperbolic Tangent activation function to the input.
+     *
+     * f(x) = tanh(x)
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
+     */
+    public function activate(NDArray $input) : NDArray
+    {
+        return NumPower::tanh($input);
+    }
+
+    /**
+     * Calculate the derivative of the activation function.
+     *
+     * f'(x) = 1 - tanh^2(x)
+     *
+     * @param NDArray $x Output matrix
+     * @return NDArray Derivative matrix
+     */
+    public function differentiate(NDArray $x) : NDArray
+    {
+        $squared = NumPower::pow($x, 2);
+
+        return NumPower::subtract(1.0, $squared);
+    }
+
+    /**
+     * Return the string representation of the activation function.
+     *
+     * @return string String representation
+     */
+    public function __toString() : string
+    {
+        return 'Hyperbolic Tangent';
+    }
+}

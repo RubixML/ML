@@ -32,7 +32,7 @@ final class NormalTest extends TestCase
             ],
             'zero stdDev' => [
                 'stdDev' => 0,
-            ]
+            ],
         ];
     }
 
@@ -55,7 +55,7 @@ final class NormalTest extends TestCase
             'fanIn less than fanOut' => [
                 'fanIn' => 3,
                 'fanOut' => 4,
-            ]
+            ],
         ];
     }
 
@@ -70,7 +70,7 @@ final class NormalTest extends TestCase
             'small matrix' => [
                 'fanIn' => 80,
                 'fanOut' => 50,
-                'stdDev' => 0.25
+                'stdDev' => 0.25,
             ],
             'medium matrix' => [
                 'fanIn' => 300,
@@ -80,8 +80,8 @@ final class NormalTest extends TestCase
             'large matrix' => [
                 'fanIn' => 3000,
                 'fanOut' => 1000,
-                'stdDev' => 1.75
-            ]
+                'stdDev' => 1.75,
+            ],
         ];
     }
 

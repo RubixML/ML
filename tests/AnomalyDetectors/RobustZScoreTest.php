@@ -61,7 +61,7 @@ class RobustZScoreTest extends TestCase
                     y: 0.0,
                     scale: 8.0,
                     noise: 1.0
-                )
+                ),
             ],
             weights: [0.9, 0.1]
         );

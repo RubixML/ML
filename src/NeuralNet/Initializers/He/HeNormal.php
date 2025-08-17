@@ -35,7 +35,7 @@ class HeNormal extends AbstractInitializer
 
         $stdDev = sqrt(2 / $fanOut);
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], scale: $stdDev);
     }
 
     /**

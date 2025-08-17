@@ -153,7 +153,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " between 0 and 100, $percentile given.");
         }
 
-        $kernel = $kernel ?? new Euclidean();
+        $kernel ??= new Euclidean();
 
         $samples = $dataset->samples();
 
