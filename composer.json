@@ -39,7 +39,10 @@
         "psr/log": "^1.1|^2.0|^3.0",
         "rubix/tensor": "^3.0",
         "symfony/polyfill-mbstring": "^1.0",
-        "wamania/php-stemmer": "^3.0"
+        "symfony/polyfill-php80": "^1.17",
+        "symfony/polyfill-php82": "^1.27",
+        "symfony/polyfill-php83": "^1.27",
+        "wamania/php-stemmer": "^4.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.73",
