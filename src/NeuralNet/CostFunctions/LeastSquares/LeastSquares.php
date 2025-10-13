@@ -36,13 +36,10 @@ class LeastSquares implements RegressionLoss
         $diff = NumPower::subtract($output, $target);
 
         // Square the difference: diff^2
-        $squared = NumPower::multiply($diff, $diff);
+        $squared = NumPower::pow($diff, 2);
 
         // Compute mean of all elements
-        $sum = NumPower::sum($squared);
-        $size = $output->size();
-
-        return $sum / $size;
+        return NumPower::mean($squared);
     }
 
     /**
