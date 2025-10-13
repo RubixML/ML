@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions\LeastSquares;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -29,6 +30,12 @@ class LeastSquaresTest extends TestCase
      */
     public static function computeProvider() : Generator
     {
+        yield [
+            NumPower::array([]),
+            NumPower::array([]),
+            NAN,
+        ];
+
         yield [
             NumPower::array([
                 [0.99],
@@ -134,6 +141,32 @@ class LeastSquaresTest extends TestCase
         static::assertEquals('Least Squares', (string) $this->costFn);
     }
 
+    #[Test]
+    #[TestDox('Throws exception when output and target shapes do not match in compute')]
+    public function testComputeThrowsExceptionOnShapeMismatch() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Output and target must have the same shape.');
+
+        $output = NumPower::array([[1.0, 2.0, 3.0]]);
+        $target = NumPower::array([[1.0, 2.0]]);
+
+        $this->costFn->compute($output, $target);
+    }
+
+    #[Test]
+    #[TestDox('Throws exception when output and target shapes do not match in differentiate')]
+    public function testDifferentiateThrowsExceptionOnShapeMismatch() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Output and target must have the same shape.');
+
+        $output = NumPower::array([[1.0, 2.0, 3.0]]);
+        $target = NumPower::array([[1.0, 2.0]]);
+
+        $this->costFn->differentiate($output, $target);
+    }
+
     /**
      * @param NDArray $output
      * @param NDArray $target
@@ -146,7 +179,11 @@ class LeastSquaresTest extends TestCase
     {
         $loss = $this->costFn->compute($output, $target);
 
-        self::assertEqualsWithDelta($expected, $loss, 1e-7);
+        if (is_nan($expected)) {
+            self::assertNan($loss);
+        } else {
+            self::assertEqualsWithDelta($expected, $loss, 1e-7);
+        }
     }
 
     /**

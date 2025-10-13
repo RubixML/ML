@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
+use InvalidArgumentException;
 use NumPower;
 use NDArray;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\Base\Contracts\RegressionLoss;
-
 
 /**
  * Least Squares
@@ -24,6 +24,8 @@ class LeastSquares implements RegressionLoss
     /**
      * Compute the loss score.
      *
+     * L(y, ŷ) = Σ(y - ŷ)^2 / n
+     *
      * @internal
      *
      * @param NDArray $output The output of the network
@@ -32,6 +34,10 @@ class LeastSquares implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
+
         // Compute difference: output - target
         $diff = NumPower::subtract($output, $target);
 
@@ -45,6 +51,8 @@ class LeastSquares implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
+     * ∂L/∂ŷ = y - ŷ
+     *
      * @internal
      *
      * @param NDArray $output The output of the network
@@ -53,6 +61,10 @@ class LeastSquares implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
+
         // Gradient is simply: output - target
         return NumPower::subtract($output, $target);
     }
