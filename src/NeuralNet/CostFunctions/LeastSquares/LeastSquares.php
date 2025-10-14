@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
 use InvalidArgumentException;
-use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\Base\Contracts\RegressionLoss;
+use NumPower;
+use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
 
 /**
  * Least Squares
@@ -36,11 +36,8 @@ class LeastSquares implements RegressionLoss
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        // Compute difference: output - target
-        $diff = NumPower::subtract($output, $target);
-
-        // Square the difference: diff^2
-        $squared = NumPower::pow($diff, 2);
+        $difference = NumPower::subtract($output, $target);
+        $squared = NumPower::pow($difference, 2);
 
         // Compute mean of all elements
         return NumPower::mean($squared);
@@ -61,7 +58,6 @@ class LeastSquares implements RegressionLoss
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        // Gradient is simply: output - target
         return NumPower::subtract($output, $target);
     }
 

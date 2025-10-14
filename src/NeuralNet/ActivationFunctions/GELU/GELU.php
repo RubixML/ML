@@ -33,7 +33,10 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const ALPHA = 0.7978845608;
-    /** @var float 0.5 * ALPHA */
+
+    /**
+     * @var float 0.5 * ALPHA
+     */
     protected const HALF_ALPHA = 0.3989422804;
 
     /**
@@ -42,7 +45,10 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const BETA = 0.044715;
-    /** @var float 3 * BETA */
+
+    /**
+     * @var float 3 * BETA
+     */
     protected const TRIPLE_BETA = 0.134145;
 
     /**
