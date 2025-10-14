@@ -26,8 +26,6 @@ class LeastSquares implements RegressionLoss
      *
      * L(y, ŷ) = Σ(y - ŷ)^2 / n
      *
-     * @internal
-     *
      * @param NDArray $output The output of the network
      * @param NDArray $target The target values
      * @return float
@@ -53,8 +51,6 @@ class LeastSquares implements RegressionLoss
      *
      * ∂L/∂ŷ = y - ŷ
      *
-     * @internal
-     *
      * @param NDArray $output The output of the network
      * @param NDArray $target The target values
      * @return NDArray
@@ -71,8 +67,6 @@ class LeastSquares implements RegressionLoss
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */
