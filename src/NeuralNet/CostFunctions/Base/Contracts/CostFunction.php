@@ -19,8 +19,6 @@ interface CostFunction extends Stringable
     /**
      * Compute the loss score.
      *
-     * @internal
-     *
      * @param NDArray $output
      * @param NDArray $target
      * @return float
@@ -29,8 +27,6 @@ interface CostFunction extends Stringable
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
-     *
-     * @internal
      *
      * @param NDArray $output
      * @param NDArray $target
