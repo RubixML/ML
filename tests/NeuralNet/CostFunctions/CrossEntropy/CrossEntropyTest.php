@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\CostFunctions\RelativeEntropy;
+namespace Rubix\ML\Tests\NeuralNet\CostFunctions\CrossEntropy;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -12,15 +12,15 @@ use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy\RelativeEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 #[Group('CostFunctions')]
-#[CoversClass(RelativeEntropy::class)]
-class RelativeEntropyTest extends TestCase
+#[CoversClass(CrossEntropy::class)]
+class CrossEntropyTest extends TestCase
 {
-    protected RelativeEntropy $costFn;
+    protected CrossEntropy $costFn;
 
     public static function computeProvider() : Generator
     {
@@ -37,7 +37,7 @@ class RelativeEntropyTest extends TestCase
             NumPower::array([
                 [1.0, 0.0, 0.0],
             ]),
-            0.0033500,
+            0.0033501,
         ];
 
         yield [
@@ -47,7 +47,7 @@ class RelativeEntropyTest extends TestCase
             NumPower::array([
                 [0.0, 1.0, 0.0],
             ]),
-            0.3054301,
+            0.3054302,
         ];
 
         yield [
@@ -71,7 +71,7 @@ class RelativeEntropyTest extends TestCase
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
             ]),
-            0.1080955,
+            0.1080956,
         ];
     }
 
@@ -85,7 +85,7 @@ class RelativeEntropyTest extends TestCase
                 [1.0, 0.0, 0.0],
             ]),
             [
-                [-0.0101010, 0.999999, 0.0],
+                [-1.0101009, 1.0101009, 0.0],
             ],
         ];
 
@@ -97,7 +97,7 @@ class RelativeEntropyTest extends TestCase
                 [0.0, 1.0, 0.0],
             ]),
             [
-                [0.9999999, -1.5, 0.9999999],
+                [1.2499999, -2.5, 1.6666666],
             ],
         ];
 
@@ -109,7 +109,7 @@ class RelativeEntropyTest extends TestCase
                 [1.0, 0.0, 0.0],
             ]),
             [
-                [-100000000.0, 0.9999999, 0.9999999],
+                [-100000000.0, 1.1111111, 9.9999981],
             ],
         ];
 
@@ -125,23 +125,23 @@ class RelativeEntropyTest extends TestCase
                 [0.0, 0.0, 1.0],
             ]),
             [
-                [0.9999999, 0.9999999, -0.4285714],
-                [0.0, -0.1111111, 0.9999999],
-                [0.9999999, 0.9999999, -0.6666666],
+                [1.2499999, 1.1111111, -1.4285714],
+                [0.0, -1.1111111, 1.1111111],
+                [1.1111111, 1.4285714, -1.6666666],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->costFn = new RelativeEntropy();
+        $this->costFn = new CrossEntropy();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('Relative Entropy', (string) $this->costFn);
+        static::assertEquals('Cross Entropy', (string) $this->costFn);
     }
 
     #[Test]

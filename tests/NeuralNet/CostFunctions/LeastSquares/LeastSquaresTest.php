@@ -167,11 +167,6 @@ class LeastSquaresTest extends TestCase
         $this->costFn->differentiate($output, $target);
     }
 
-    /**
-     * @param NDArray $output
-     * @param NDArray $target
-     * @param float $expected
-     */
     #[Test]
     #[TestDox('Compute loss score')]
     #[DataProvider('computeProvider')]
@@ -186,11 +181,6 @@ class LeastSquaresTest extends TestCase
         }
     }
 
-    /**
-     * @param NDArray $output
-     * @param NDArray $target
-     * @param list<list<float>> $expected
-     */
     #[Test]
     #[TestDox('Calculate gradient of cost function')]
     #[DataProvider('differentiateProvider')]
