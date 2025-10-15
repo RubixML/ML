@@ -12,7 +12,7 @@ This cost function does not have any parameters.
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
 
 $costFunction = new CrossEntropy();
 ```
