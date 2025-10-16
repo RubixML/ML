@@ -19,6 +19,7 @@ use const Rubix\ML\EPSILON;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
+ * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class RelativeEntropy implements ClassificationLoss

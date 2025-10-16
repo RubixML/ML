@@ -17,6 +17,7 @@ use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
+ * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class LeastSquares implements RegressionLoss
