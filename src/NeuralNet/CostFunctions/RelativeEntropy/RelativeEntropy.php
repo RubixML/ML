@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 
-use NumPower;
 use NDArray;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
-
+use Rubix\ML\Traits\ValidatesShapes;
 use const Rubix\ML\EPSILON;
 
 /**
@@ -24,6 +23,8 @@ use const Rubix\ML\EPSILON;
  */
 class RelativeEntropy implements ClassificationLoss
 {
+    use ValidatesShapes;
+
     /**
      * Compute the loss.
      *
@@ -37,9 +38,7 @@ class RelativeEntropy implements ClassificationLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         // Clip values to avoid log(0)
         $target = NumPower::clip($target, EPSILON, 1.0);
@@ -65,9 +64,7 @@ class RelativeEntropy implements ClassificationLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         // Clip values to avoid division by zero
         $target = NumPower::clip($target, EPSILON, 1.0);

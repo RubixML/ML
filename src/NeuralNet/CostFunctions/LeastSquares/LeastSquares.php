@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
-use InvalidArgumentException;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
+use Rubix\ML\Traits\ValidatesShapes;
 
 /**
  * Least Squares
@@ -22,6 +22,8 @@ use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
  */
 class LeastSquares implements RegressionLoss
 {
+    use ValidatesShapes;
+
     /**
      * Compute the loss score.
      *
@@ -33,9 +35,7 @@ class LeastSquares implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         $difference = NumPower::subtract($output, $target);
         $squared = NumPower::pow($difference, 2);
@@ -55,9 +55,7 @@ class LeastSquares implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         return NumPower::subtract($output, $target);
     }

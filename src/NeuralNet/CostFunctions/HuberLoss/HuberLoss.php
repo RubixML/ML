@@ -7,8 +7,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\Exceptions\InvalidAlphaException;
+use Rubix\ML\Traits\ValidatesShapes;
 
 /**
  * Huber Loss
@@ -25,6 +25,8 @@ use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\Exceptions\InvalidAlphaException;
  */
 class HuberLoss implements RegressionLoss
 {
+    use ValidatesShapes;
+
     /**
      * The alpha quantile i.e the pivot point at which numbers larger will be
      * evalutated with an L1 loss while number smaller will be evalutated with
@@ -68,9 +70,7 @@ class HuberLoss implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         $difference = NumPower::subtract($target, $output);
         $scaled = NumPower::divide($difference, $this->alpha);
@@ -94,9 +94,7 @@ class HuberLoss implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         $difference = NumPower::subtract($output, $target);
         $squared = NumPower::pow($difference, 2);

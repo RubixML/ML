@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions\MeanAbsoluteError;
 
-use InvalidArgumentException;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
+use Rubix\ML\Traits\ValidatesShapes;
 
 /**
  * Mean Absolute Error
@@ -23,6 +23,8 @@ use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
  */
 class MeanAbsoluteError implements RegressionLoss
 {
+    use ValidatesShapes;
+
     /**
      * Compute the loss score.
      *
@@ -34,9 +36,7 @@ class MeanAbsoluteError implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         $difference = NumPower::subtract($output, $target);
         $absolute = NumPower::abs($difference);
@@ -55,9 +55,7 @@ class MeanAbsoluteError implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         $difference = NumPower::subtract($output, $target);
 

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-use NumPower;
 use NDArray;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
-
+use Rubix\ML\Traits\ValidatesShapes;
 use const Rubix\ML\EPSILON;
 
 /**
@@ -28,6 +27,8 @@ use const Rubix\ML\EPSILON;
  */
 class CrossEntropy implements ClassificationLoss
 {
+    use ValidatesShapes;
+
     /**
      * Compute the loss score.
      *
@@ -39,9 +40,7 @@ class CrossEntropy implements ClassificationLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         // Clip values to avoid log(0)
         $output = NumPower::clip($output, EPSILON, 1.0);
@@ -64,9 +63,7 @@ class CrossEntropy implements ClassificationLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have the same shape.');
-        }
+        $this->validateShapes($output, $target);
 
         // Numerator = ŷ - y (calculate before clipping to preserve zeros)
         $numerator = NumPower::subtract($output, $target);
