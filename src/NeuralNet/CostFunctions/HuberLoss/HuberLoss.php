@@ -103,7 +103,6 @@ class HuberLoss implements RegressionLoss
         return NumPower::divide($difference, $denominator);
     }
 
-
     /**
      * Return the string representation of the object.
      *
