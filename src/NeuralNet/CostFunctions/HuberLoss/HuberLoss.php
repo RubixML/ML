@@ -8,7 +8,7 @@ use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\Exceptions\InvalidAlphaException;
-use Rubix\ML\Traits\ValidatesShapes;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Huber Loss
@@ -25,7 +25,7 @@ use Rubix\ML\Traits\ValidatesShapes;
  */
 class HuberLoss implements RegressionLoss
 {
-    use ValidatesShapes;
+    use AssertsShapes;
 
     /**
      * The alpha quantile i.e the pivot point at which numbers larger will be
@@ -70,7 +70,7 @@ class HuberLoss implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         $difference = NumPower::subtract($target, $output);
         $scaled = NumPower::divide($difference, $this->alpha);
@@ -94,7 +94,7 @@ class HuberLoss implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         $difference = NumPower::subtract($output, $target);
         $squared = NumPower::pow($difference, 2);

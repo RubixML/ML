@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
-use Rubix\ML\Traits\ValidatesShapes;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Least Squares
@@ -22,7 +22,7 @@ use Rubix\ML\Traits\ValidatesShapes;
  */
 class LeastSquares implements RegressionLoss
 {
-    use ValidatesShapes;
+    use AssertsShapes;
 
     /**
      * Compute the loss score.
@@ -35,7 +35,7 @@ class LeastSquares implements RegressionLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         $difference = NumPower::subtract($output, $target);
         $squared = NumPower::pow($difference, 2);
@@ -55,7 +55,7 @@ class LeastSquares implements RegressionLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         return NumPower::subtract($output, $target);
     }

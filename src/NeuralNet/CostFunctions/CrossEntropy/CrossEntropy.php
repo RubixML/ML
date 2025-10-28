@@ -7,7 +7,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
-use Rubix\ML\Traits\ValidatesShapes;
+use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
 /**
@@ -27,7 +27,7 @@ use const Rubix\ML\EPSILON;
  */
 class CrossEntropy implements ClassificationLoss
 {
-    use ValidatesShapes;
+    use AssertsShapes;
 
     /**
      * Compute the loss score.
@@ -40,7 +40,7 @@ class CrossEntropy implements ClassificationLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         // Clip values to avoid log(0)
         $output = NumPower::clip($output, EPSILON, 1.0);
@@ -63,7 +63,7 @@ class CrossEntropy implements ClassificationLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $this->validateShapes($output, $target);
+        $this->assertSameShape($output, $target);
 
         // Numerator = ŷ - y (calculate before clipping to preserve zeros)
         $numerator = NumPower::subtract($output, $target);
