@@ -11,7 +11,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 /**
  * Stochastic
  *
- * A constant learning rate gradient descent optimizer.
+ * SGD (Stochastic Gradient Descent) optimizer -
+ * a constant learning rate gradient descent optimizer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

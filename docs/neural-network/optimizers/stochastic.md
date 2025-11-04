@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/Stochastic/Stochastic.php">[source]</a></span>
 
 # Stochastic
-A constant learning rate optimizer based on vanilla Stochastic Gradient Descent.
+A constant learning rate optimizer based on vanilla Stochastic Gradient Descent (SGD).
 
 ## Parameters
 | # | Name | Default | Type | Description |
