@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 
@@ -46,6 +47,15 @@ class StochasticTest extends TestCase
     protected function setUp() : void
     {
         $this->optimizer = new Stochastic(0.001);
+    }
+
+    #[Test]
+    #[TestDox('Throws exception when constructed with invalid learning rate')]
+    public function testConstructorWithInvalidRate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Stochastic(0.0);
     }
 
     #[Test]
