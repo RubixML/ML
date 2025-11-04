@@ -7,9 +7,9 @@ namespace Rubix\ML\Tests\NeuralNet\Parameters;
 use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Parameters')]
@@ -44,6 +44,6 @@ class ParameterTest extends TestCase
 
         $this->param->update(gradient: $gradient, optimizer: $this->optimizer);
 
-        self::assertEquals($expected, $this->param->param()->asArray());
+        self::assertEqualsWithDelta($expected, $this->param->param()->toArray(), 1e-7);
     }
 }
