@@ -12,7 +12,7 @@ A learning rate decay optimizer that reduces the global learning rate by a facto
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\StepDecay;
+use Rubix\ML\NeuralNet\Optimizers\StepDecay\StepDecay;
 
 $optimizer = new StepDecay(0.1, 50, 1e-3);
 ```
