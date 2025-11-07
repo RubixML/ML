@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\RMSProp;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\Momentum;
 
 use Generator;
 use NDArray;
@@ -14,14 +14,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\Momentum\Momentum;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
 
 #[Group('Optimizers')]
-#[CoversClass(RMSProp::class)]
-class RMSPropTest extends TestCase
+#[CoversClass(Momentum::class)]
+class MomentumTest extends TestCase
 {
-    protected RMSProp $optimizer;
+    protected Momentum $optimizer;
 
     public static function stepProvider() : Generator
     {
@@ -37,16 +37,16 @@ class RMSPropTest extends TestCase
                 [0.04, -0.01, -0.5],
             ]),
             [
-                [0.0031622, 0.0031622, -0.0031622],
-                [-0.0031622, 0.0031622, 0.0031622],
-                [0.0031622, -0.0031622, -0.0031622],
+                [0.00001, 0.00005, -0.00002],
+                [-0.00001, 0.00002, 0.00003],
+                [0.00004, -0.00001, -0.0005],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->optimizer = new RMSProp(rate: 0.001, decay: 0.1);
+        $this->optimizer = new Momentum(rate: 0.001, decay: 0.1, lookahead: false);
     }
 
     #[Test]
@@ -55,7 +55,7 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: 0.0);
+        new Momentum(rate: 0.0);
     }
 
     #[Test]
@@ -64,7 +64,7 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: -0.001);
+        new Momentum(rate: -0.001);
     }
 
     #[Test]
@@ -73,7 +73,7 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: 0.001, decay: 0.0);
+        new Momentum(rate: 0.001, decay: 0.0);
     }
 
     #[Test]
@@ -82,7 +82,7 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: 0.001, decay: 1.0);
+        new Momentum(rate: 0.001, decay: 1.0);
     }
 
     #[Test]
@@ -91,7 +91,7 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: 0.001, decay: 1.5);
+        new Momentum(rate: 0.001, decay: 1.5);
     }
 
     #[Test]
@@ -100,14 +100,14 @@ class RMSPropTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RMSProp(rate: 0.001, decay: -0.1);
+        new Momentum(rate: 0.001, decay: -0.1);
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('RMS Prop (rate: 0.001, decay: 0.1)', (string) $this->optimizer);
+        self::assertEquals('Momentum (rate: 0.001, decay: 0.1, lookahead: false)', (string) $this->optimizer);
     }
 
     #[Test]

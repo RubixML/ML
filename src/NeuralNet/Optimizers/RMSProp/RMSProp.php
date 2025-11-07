@@ -56,7 +56,7 @@ class RMSProp implements Optimizer, Adaptive
     /**
      * The cache of running squared gradients.
      *
-     * @var array<NDArray|array>
+     * @var NDArray[]
      */
     protected array $cache = [
         //

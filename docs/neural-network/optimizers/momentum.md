@@ -12,7 +12,7 @@ Momentum accelerates each update step by accumulating velocity from past updates
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\Momentum;
+use Rubix\ML\NeuralNet\Optimizers\Momentum\Momentum;
 
 $optimizer = new Momentum(0.01, 0.1, true);
 ```
