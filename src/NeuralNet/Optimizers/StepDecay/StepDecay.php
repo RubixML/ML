@@ -84,6 +84,18 @@ class StepDecay implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * Step Decay update (element-wise):
+     *   floor = ⌊t / k⌋
+     *   η_t = η₀ / (1 + floor · λ)
+     *   Δθ_t = η_t · g_t
+     *
+     * where:
+     *   - t is the current step number,
+     *   - k is the number of steps per floor,
+     *   - η₀ is the initial learning rate,
+     *   - λ is the decay factor,
+     *   - g_t is the current gradient.
+     *
      * @internal
      *
      * @param Parameter $param

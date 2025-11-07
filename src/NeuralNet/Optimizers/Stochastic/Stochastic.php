@@ -44,6 +44,13 @@ class Stochastic implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * SGD update (element-wise):
+     *   Δθ_t = η · g_t
+     *
+     * where:
+     *   - g_t is the current gradient,
+     *   - η is the learning rate.
+     *
      * @internal
      *
      * @param Parameter $param
