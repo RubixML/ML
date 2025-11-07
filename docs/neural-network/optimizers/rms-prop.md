@@ -11,7 +11,7 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
 
 $optimizer = new RMSProp(0.01, 0.1);
 ```
