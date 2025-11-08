@@ -23,10 +23,10 @@ v_t &\leftarrow \beta\,v_t + \eta\,g_t
 $$
 
 where:
-- `g_t` is the current gradient,
-- `v_t` is the velocity (accumulated update),
-- `\beta` is the momentum coefficient (`1 − decay`),
-- `\eta` is the learning rate (`rate`).
+- $g_t$ is the current gradient,
+- $v_t$ is the velocity (accumulated update),
+- $\beta$ is the momentum coefficient ($1 − decay$),
+- $\eta$ is the learning rate ($rate$).
 
 ## Parameters
 | # | Name | Default | Type | Description |

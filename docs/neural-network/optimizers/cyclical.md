@@ -17,11 +17,11 @@ x &= \left| \frac{t}{\text{steps}} - 2\,\text{cycle} + 1 \right| \\
 $$
 
 where:
-- `t` is the current step counter,
-- `steps` is the number of steps in every half cycle,
-- `lower` and `upper` are the learning rate bounds,
-- `decay` is the multiplicative decay applied each step,
-- `g_t` is the current gradient.
+- $t$ is the current step counter,
+- $steps$ is the number of steps in every half cycle,
+- $lower$ and $upper$ are the learning rate bounds,
+- $decay$ is the multiplicative decay applied each step,
+- $g_t$ is the current gradient.
 
 ## Parameters
 | # | Name | Default | Type | Description |
