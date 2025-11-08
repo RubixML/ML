@@ -3,6 +3,20 @@
 # Stochastic
 A constant learning rate optimizer based on vanilla Stochastic Gradient Descent (SGD).
 
+## Mathematical formulation
+Per step (element-wise), the SGD update scales the gradient by a constant learning rate:
+
+$$
+\begin{aligned}
+\eta &= \text{rate} \\
+\Delta\theta_t &= \eta\,g_t
+\end{aligned}
+$$
+
+where:
+- $g_t$ is the current gradient,
+- $\eta$ is the learning rate ($rate$).
+
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
