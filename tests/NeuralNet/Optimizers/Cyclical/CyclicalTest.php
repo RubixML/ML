@@ -95,7 +95,9 @@ class CyclicalTest extends TestCase
      * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
+    #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
