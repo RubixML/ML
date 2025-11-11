@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use NDArray;
 use NumPower;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
@@ -25,20 +27,20 @@ class AdamTest extends TestCase
     public static function invalidConstructorProvider() : Generator
     {
         // Invalid rates (<= 0)
-        yield [0.0, 0.1, 0.001];
-        yield [-0.5, 0.1, 0.001];
+        yield 'zero rate' => [0.0, 0.1, 0.001];
+        yield 'negative rate' => [-0.5, 0.1, 0.001];
 
         // Invalid momentumDecay (<= 0 or >= 1)
-        yield [0.001, 0.0, 0.001];
-        yield [0.001, -0.1, 0.001];
-        yield [0.001, 1.0, 0.001];
-        yield [0.001, 1.1, 0.001];
+        yield 'zero momentumDecay' => [0.001, 0.0, 0.001];
+        yield 'negative momentumDecay' => [0.001, -0.1, 0.001];
+        yield 'momentumDecay == 1' => [0.001, 1.0, 0.001];
+        yield 'momentumDecay > 1' => [0.001, 1.1, 0.001];
 
         // Invalid normDecay (<= 0 or >= 1)
-        yield [0.001, 0.1, 0.0];
-        yield [0.001, 0.1, -0.1];
-        yield [0.001, 0.1, 1.0];
-        yield [0.001, 0.1, 1.1];
+        yield 'zero normDecay' => [0.001, 0.1, 0.0];
+        yield 'negative normDecay' => [0.001, 0.1, -0.1];
+        yield 'normDecay == 1' => [0.001, 0.1, 1.0];
+        yield 'normDecay > 1' => [0.001, 0.1, 1.1];
     }
 
     public static function stepProvider() : Generator
@@ -71,13 +73,23 @@ class AdamTest extends TestCase
         );
     }
 
+    #[Test]
+    #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
         $expected = 'Adam (rate: 0.001, momentum decay: 0.1, norm decay: 0.001)';
         self::assertSame($expected, (string) $this->optimizer);
     }
 
+    /**
+     * @param float $rate
+     * @param float $momentumDecay
+     * @param float $normDecay
+     * @return void
+     */
+    #[Test]
     #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
     public function testInvalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -89,7 +101,9 @@ class AdamTest extends TestCase
      * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
+    #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
