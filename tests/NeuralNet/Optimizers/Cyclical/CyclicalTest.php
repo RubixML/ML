@@ -23,6 +23,19 @@ class CyclicalTest extends TestCase
 {
     protected Cyclical $optimizer;
 
+    public static function invalidConstructorProvider() : Generator
+    {
+        yield 'zero lower' => [0.0, 0.006, 2000, null];
+        yield 'negative lower' => [-0.001, 0.006, 2000, null];
+        yield 'lower > upper' => [0.01, 0.006, 2000, null];
+        yield 'zero steps' => [0.001, 0.006, 0, null];
+        yield 'negative steps' => [0.001, 0.006, -5, null];
+        yield 'zero decay' => [0.001, 0.006, 2000, 0.0];
+        yield 'decay == 1' => [0.001, 0.006, 2000, 1.0];
+        yield 'decay > 1' => [0.001, 0.006, 2000, 1.5];
+        yield 'negative decay' => [0.001, 0.006, 2000, -0.1];
+    }
+
     public static function stepProvider() : Generator
     {
         yield [
@@ -50,82 +63,31 @@ class CyclicalTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Throws exception when constructed with zero lower bound')]
-    public function testConstructorWithZeroLower() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.0, upper: 0.006, losses: 2000);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with negative lower bound')]
-    public function testConstructorWithNegativeLower() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: -0.001, upper: 0.006, losses: 2000);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when lower bound is greater than upper bound')]
-    public function testConstructorWithLowerGreaterThanUpper() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.01, upper: 0.006, losses: 2000);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with zero steps per cycle')]
-    public function testConstructorWithZeroSteps() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: 0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with negative steps per cycle')]
-    public function testConstructorWithNegativeSteps() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: -5);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with zero decay')]
-    public function testConstructorWithZeroDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: 2000, decay: 0.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with decay equal to 1')]
-    public function testConstructorWithDecayEqualToOne() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: 2000, decay: 1.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with decay greater than 1')]
-    public function testConstructorWithDecayGreaterThanOne() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: 2000, decay: 1.5);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with negative decay')]
-    public function testConstructorWithNegativeDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Cyclical(lower: 0.001, upper: 0.006, losses: 2000, decay: -0.1);
-    }
-
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
         self::assertEquals('Cyclical (lower: 0.001, upper: 0.006, steps: 2000, decay: 0.99994)', (string) $this->optimizer);
+    }
+
+    /**
+     * @param float $lower
+     * @param float $upper
+     * @param int $losses
+     * @param float|null $decay
+     * @return void
+     */
+    #[Test]
+    #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
+    public function testConstructorInvalidArgs(float $lower, float $upper, int $losses, ?float $decay) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        if ($decay === null) {
+            new Cyclical(lower: $lower, upper: $upper, losses: $losses);
+        } else {
+            new Cyclical(lower: $lower, upper: $upper, losses: $losses, decay: $decay);
+        }
     }
 
     /**
