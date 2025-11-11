@@ -23,6 +23,12 @@ class StochasticTest extends TestCase
 {
     protected Stochastic $optimizer;
 
+    public static function invalidConstructorProvider() : Generator
+    {
+        yield 'zero rate' => [0.0];
+        yield 'negative rate' => [-0.001];
+    }
+
     public static function stepProvider() : Generator
     {
         yield [
@@ -50,15 +56,6 @@ class StochasticTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Throws exception when constructed with invalid learning rate')]
-    public function testConstructorWithInvalidRate() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Stochastic(0.0);
-    }
-
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -66,11 +63,27 @@ class StochasticTest extends TestCase
     }
 
     /**
+     * @param float $rate
+     * @return void
+     */
+    #[Test]
+    #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
+    public function testInvalidConstructorParams(float $rate) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Stochastic($rate);
+    }
+
+    /**
      * @param Parameter $param
      * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
+    #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
