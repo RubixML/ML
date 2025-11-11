@@ -23,6 +23,16 @@ class RMSPropTest extends TestCase
 {
     protected RMSProp $optimizer;
 
+    public static function invalidConstructorProvider() : Generator
+    {
+        yield 'zero rate' => [0.0, 0.1];
+        yield 'negative rate' => [-0.001, 0.1];
+        yield 'zero decay' => [0.001, 0.0];
+        yield 'decay == 1' => [0.001, 1.0];
+        yield 'decay > 1' => [0.001, 1.5];
+        yield 'negative decay' => [0.001, -0.1];
+    }
+
     public static function stepProvider() : Generator
     {
         yield [
@@ -50,64 +60,20 @@ class RMSPropTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Throws exception when constructed with zero rate')]
-    public function testConstructorWithZeroRate() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: 0.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with negative rate')]
-    public function testConstructorWithNegativeRate() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: -0.001);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with zero decay')]
-    public function testConstructorWithZeroDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: 0.001, decay: 0.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with decay equal to 1')]
-    public function testConstructorWithDecayEqualToOne() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: 0.001, decay: 1.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with decay greater than 1')]
-    public function testConstructorWithDecayGreaterThanOne() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: 0.001, decay: 1.5);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with negative decay')]
-    public function testConstructorWithNegativeDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RMSProp(rate: 0.001, decay: -0.1);
-    }
-
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
         self::assertEquals('RMS Prop (rate: 0.001, decay: 0.1)', (string) $this->optimizer);
+    }
+
+    #[Test]
+    #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
+    public function testInvalidConstructorParams(float $rate, float $decay) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RMSProp(rate: $rate, decay: $decay);
     }
 
     #[Test]
@@ -142,7 +108,9 @@ class RMSPropTest extends TestCase
      * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
+    #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
