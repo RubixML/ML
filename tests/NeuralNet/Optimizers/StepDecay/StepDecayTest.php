@@ -24,6 +24,15 @@ class StepDecayTest extends TestCase
 {
     protected StepDecay $optimizer;
 
+    public static function invalidConstructorProvider() : Generator
+    {
+        yield 'zero rate' => [0.0, 100, 0.001];
+        yield 'negative rate' => [-0.001, 100, 0.001];
+        yield 'zero losses' => [0.01, 0, 0.001];
+        yield 'negative losses' => [0.01, -5, 0.001];
+        yield 'negative decay' => [0.01, 100, -0.1];
+    }
+
     public static function stepProvider() : Generator
     {
         yield [
@@ -51,33 +60,6 @@ class StepDecayTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Throws exception when constructed with invalid learning rate')]
-    public function testConstructorWithInvalidRate() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new StepDecay(rate: 0.0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with invalid losses')]
-    public function testConstructorWithInvalidLosses() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new StepDecay(rate: 0.01, losses: 0);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when constructed with invalid decay')]
-    public function testConstructorWithInvalidDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new StepDecay(rate: 0.01, losses: 100, decay: -0.1);
-    }
-
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -85,11 +67,29 @@ class StepDecayTest extends TestCase
     }
 
     /**
+     * @param float $rate
+     * @param int $losses
+     * @param float $decay
+     * @return void
+     */
+    #[Test]
+    #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
+    public function testInvalidConstructorParams(float $rate, int $losses, float $decay) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new StepDecay(rate: $rate, losses: $losses, decay: $decay);
+    }
+
+    /**
      * @param Parameter $param
      * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
+    #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
