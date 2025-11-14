@@ -112,7 +112,6 @@ class AdamTest extends TestCase
      * @param float $rate
      * @param float $momentumDecay
      * @param float $normDecay
-     * @return void
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
@@ -140,4 +139,3 @@ class AdamTest extends TestCase
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
     }
 }
-

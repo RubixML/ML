@@ -22,7 +22,6 @@ use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 
 /**
  * Parameter
- *
  */
 class Parameter
 {
@@ -61,7 +60,7 @@ class Parameter
      *
      * @return int
      */
-    public function id(): int
+    public function id() : int
     {
         return $this->id;
     }
@@ -71,7 +70,7 @@ class Parameter
      *
      * @return NDArray
      */
-    public function param(): NDArray
+    public function param() : NDArray
     {
         return $this->param;
     }
@@ -79,10 +78,10 @@ class Parameter
     /**
      * Update the parameter with the gradient and optimizer.
      *
-     * @param NDArray    $gradient
-     * @param Optimizer  $optimizer
+     * @param NDArray $gradient
+     * @param Optimizer $optimizer
      */
-    public function update(NDArray $gradient, Optimizer $optimizer): void
+    public function update(NDArray $gradient, Optimizer $optimizer) : void
     {
         $step = $optimizer->step($this, $gradient);
 
@@ -92,7 +91,7 @@ class Parameter
     /**
      * Perform a deep copy of the object upon cloning.
      */
-    public function __clone(): void
+    public function __clone() : void
     {
         $this->param = clone $this->param;
     }

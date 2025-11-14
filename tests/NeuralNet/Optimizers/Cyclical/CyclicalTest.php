@@ -53,7 +53,7 @@ class CyclicalTest extends TestCase
                 [0.00001, 0.00005, -0.00002],
                 [-0.00001, 0.00002, 0.00003],
                 [0.00004, -0.00001, -0.0005],
-            ]
+            ],
         ];
     }
 
@@ -74,7 +74,6 @@ class CyclicalTest extends TestCase
      * @param float $upper
      * @param int $losses
      * @param float|null $decay
-     * @return void
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]

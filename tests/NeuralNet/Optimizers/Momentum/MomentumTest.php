@@ -69,7 +69,6 @@ class MomentumTest extends TestCase
     /**
      * @param float $rate
      * @param float $decay
-     * @return void
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]

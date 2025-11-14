@@ -13,7 +13,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\StepDecay\StepDecay;
 use PHPUnit\Framework\TestCase;
@@ -70,7 +69,6 @@ class StepDecayTest extends TestCase
      * @param float $rate
      * @param int $losses
      * @param float $decay
-     * @return void
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
@@ -97,4 +95,3 @@ class StepDecayTest extends TestCase
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
     }
 }
-

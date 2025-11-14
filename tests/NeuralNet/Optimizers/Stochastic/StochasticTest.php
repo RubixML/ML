@@ -64,7 +64,6 @@ class StochasticTest extends TestCase
 
     /**
      * @param float $rate
-     * @return void
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
