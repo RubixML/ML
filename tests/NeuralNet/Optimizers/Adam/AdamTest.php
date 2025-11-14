@@ -81,6 +81,33 @@ class AdamTest extends TestCase
         self::assertSame($expected, (string) $this->optimizer);
     }
 
+    #[Test]
+    #[TestDox('Warm initializes zeroed velocity and norm caches with the parameter\'s shape')]
+    public function testWarmInitializesZeroedCache() : void
+    {
+        $param = new Parameter(NumPower::array([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]));
+
+        // Warm the optimizer for this parameter
+        $this->optimizer->warm($param);
+
+        // Inspect protected cache via reflection
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+        $cache = $prop->getValue($this->optimizer);
+
+        self::assertArrayHasKey($param->id(), $cache);
+
+        [$velocity, $norm] = $cache[$param->id()];
+
+        $zeros = NumPower::zeros($param->param()->shape());
+        self::assertEqualsWithDelta($zeros->toArray(), $velocity->toArray(), 0.0);
+        self::assertEqualsWithDelta($zeros->toArray(), $norm->toArray(), 0.0);
+    }
+
     /**
      * @param float $rate
      * @param float $momentumDecay
@@ -113,3 +140,4 @@ class AdamTest extends TestCase
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
     }
 }
+
