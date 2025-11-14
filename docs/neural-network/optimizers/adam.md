@@ -22,8 +22,6 @@ where:
 - $\mathbf{g}_t$ is the current gradient, and $\mathbf{g}_t^{2}$ denotes element-wise square,
 - $\varepsilon$ is a small constant for numerical stability (in the implementation, the denominator is clipped from below by `EPSILON`).
 
-Note: This formulation follows the implementation in Rubix ML and does not include bias-correction terms.
-
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
