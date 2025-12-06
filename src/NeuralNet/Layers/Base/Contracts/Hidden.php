@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
 
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 
 /**
