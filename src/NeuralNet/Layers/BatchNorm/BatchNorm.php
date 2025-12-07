@@ -106,6 +106,13 @@ class BatchNorm implements Hidden, Parametric
     protected ?NDArray $xHat = null;
 
     /**
+     * Row-wise or column-wise normalization.
+     *
+     * @var int
+     */
+    protected const int COLUMN_WISE = 1;
+
+    /**
      * @param float $decay
      * @param Initializer|null $betaInitializer
      * @param Initializer|null $gammaInitializer
@@ -246,20 +253,21 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
+        // Number of rows
+        $m = $input->shape()[0];
+
         $xHat = NumPower::divide(
-            NumPower::subtract($input, $this->mean),
-            NumPower::sqrt($this->variance)
+            NumPower::subtract($input, NumPower::reshape($this->mean, [$m, 1])),
+            NumPower::reshape(NumPower::sqrt($this->variance), [$m, 1])
         );
 
-
-        $return = NumPower::add(
+        return NumPower::add(
             NumPower::multiply(
                 $xHat,
                 $this->gamma->param()
             ),
             $this->beta->param()
         );
-        //pp("xxxxxxxxxxxxxxxxxxxxxxxxxx", $return->toArray());
 
         return $return;
     }
@@ -286,16 +294,9 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $dOut = $prevGradient();
-//        pp('New dOut: ', $dOut->toArray());
-
-        $dBeta = NumPower::sum($dOut, 1);
-//        pp('New dBeta: ', $dBeta->toArray());
-
-        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), 1);
-//        pp('New dGamma: ', $dGamma->toArray());
-
+        $dBeta = NumPower::sum($dOut, self::COLUMN_WISE);
+        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), self::COLUMN_WISE);
         $gamma = $this->gamma->param();
-        //pp('New Gamma: ', $gamma->toArray());
 
         $this->beta->update($dBeta, $optimizer);
         $this->gamma->update($dGamma, $optimizer);
@@ -305,12 +306,10 @@ class BatchNorm implements Hidden, Parametric
 
         $this->stdInv = $this->xHat = null;
 
-        $return  = new Deferred(
+        return new Deferred(
             [$this, 'gradient'],
             [$dOut, $gamma, $stdInv, $xHat]
         );
-
-        //pp('New back: ', $dOut->toArray(), $gamma->toArray(), $stdInv->toArray(), $xHat->toArray(), end: "\n");
 
         return $return;
     }
@@ -328,54 +327,26 @@ class BatchNorm implements Hidden, Parametric
      */
     public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
-        // Implement the same formula using PHP arrays
-        $dOutArr = $dOut->toArray();
-        $gammaArr = $gamma->toArray(); // 1-D length n
-        $stdInvArr = $stdInv->toArray(); // 1-D length n
-        $xHatArr = $xHat->toArray(); // [m, n]
+        $dXHat = NumPower::multiply($dOut, $gamma);
+        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::COLUMN_WISE);
+        $dXHatSigma = NumPower::sum($dXHat, self::COLUMN_WISE);
 
-        $m = count($dOutArr);
-        $n = $m > 0 ? count($dOutArr[0]) : 0;
+        // Number of rows
+        $m = $dOut->shape()[0];
 
-        // dXHat = dOut * gamma (per column)
-        $dXHatArr = [];
-        for ($i = 0; $i < $m; $i++) {
-            $row = [];
-            for ($j = 0; $j < $n; $j++) {
-                $row[] = $dOutArr[$i][$j] * $gammaArr[$j];
-            }
-            $dXHatArr[] = $row;
-        }
+        // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
+        return NumPower::multiply(
+            NumPower::subtract(
+                NumPower::subtract(
+                    NumPower::multiply($dXHat, $m),
+                    NumPower::reshape($dXHatSigma, [$m, 1])
+                ),
+                NumPower::multiply($xHat, NumPower::reshape($xHatSigma, [$m, 1]))
+            ),
+            NumPower::reshape(NumPower::divide($stdInv, $m), [$m, 1])
+        );
 
-        // xHatSigma = sum(dXHat * xHat) per column
-        $xHatSigma = array_fill(0, $n, 0.0);
-        $dXHatSigma = array_fill(0, $n, 0.0);
-        for ($j = 0; $j < $n; $j++) {
-            $sum1 = 0.0;
-            $sum2 = 0.0;
-            for ($i = 0; $i < $m; $i++) {
-                $sum1 += $dXHatArr[$i][$j] * $xHatArr[$i][$j];
-                $sum2 += $dXHatArr[$i][$j];
-            }
-            $xHatSigma[$j] = $sum1;
-            $dXHatSigma[$j] = $sum2;
-        }
-
-        // Compute gradient for previous layer per formula:
-        // dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
-        $dXArr = [];
-        for ($i = 0; $i < $m; $i++) {
-            $row = [];
-            for ($j = 0; $j < $n; $j++) {
-                $val = ($dXHatArr[$i][$j] * $m)
-                    - $dXHatSigma[$j]
-                    - ($xHatArr[$i][$j] * $xHatSigma[$j]);
-                $row[] = $val * ($stdInvArr[$j] / ($m ?: 1));
-            }
-            $dXArr[] = $row;
-        }
-
-        return NumPower::array($dXArr);
+        return $return;
     }
 
     /**
