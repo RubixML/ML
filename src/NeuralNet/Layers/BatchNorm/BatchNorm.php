@@ -190,29 +190,27 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $rows = $input->shape()[0];
-        $meanArr = [];
-        $varArr = [];
-        $stdInvArr = [];
+        // Shape: [m, n]
+        [$m, $n] = $input->shape();
 
-        for ($i = 0; $i < $rows; $i++) {
-            $meanArr[$i] = NumPower::mean($input->toArray()[$i]);
-            $varArr[$i] = NumPower::variance($input->toArray()[$i]);
-            $stdInvArr[$i] = 1.0 / sqrt($varArr[$i]);
-        }
+        // Row-wise mean across features (axis 1), length m
+        $sum = NumPower::sum($input, 1);
+        $mean = NumPower::divide($sum, $n);
 
-        $mean = NumPower::array($meanArr);
+        // Center the input: broadcast mean to [m, n]
+        $centered = NumPower::subtract($input, NumPower::reshape($mean, [$m, 1]));
 
-        $variance = NumPower::array($varArr);
+        // Row-wise variance across features (axis 1)
+        $centeredSq = NumPower::multiply($centered, $centered);
+        $varSum = NumPower::sum($centeredSq, 1);
+        $variance = NumPower::divide($varSum, $n);
         $variance = NumPower::clip($variance, EPSILON, PHP_FLOAT_MAX);
 
-        $stdInv = NumPower::array($stdInvArr);
+        // Inverse std from clipped variance
+        $stdInv = NumPower::reciprocal(NumPower::sqrt($variance));
 
-        $xHat = NumPower::multiply(
-            NumPower::subtract(NumPower::transpose($input, [1, 0]), $mean),
-            $stdInv
-        );
-        $xHat = NumPower::transpose($xHat, [1, 0]);
+        // Normalize: (x - mean) * stdInv
+        $xHat = NumPower::multiply($centered, NumPower::reshape($stdInv, [$m, 1]));
 
         // Initialize running stats if needed
         if (!$this->mean or !$this->variance) {
