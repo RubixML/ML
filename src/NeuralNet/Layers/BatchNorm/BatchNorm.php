@@ -110,7 +110,8 @@ class BatchNorm implements Hidden, Parametric
      *
      * @var int
      */
-    protected const int COLUMN_WISE = 1;
+    protected const int AXIS_SAMPLES = 0;
+    protected const int AXIS_FEATURES = 1;
 
     /**
      * @param float $decay
@@ -218,7 +219,8 @@ class BatchNorm implements Hidden, Parametric
             $this->variance = $variance;
         }
 
-        // Update running mean/variance: running = running*(1-decay) + current*decay
+        // Update running mean/variance using exponential moving average (EMA)
+        // Convention: running = running*(1 - decay) + current*decay
         $this->mean = NumPower::add(
             NumPower::multiply($this->mean, 1.0 - $this->decay),
             NumPower::multiply($mean, $this->decay)
@@ -254,9 +256,11 @@ class BatchNorm implements Hidden, Parametric
         // Number of rows
         $m = $input->shape()[0];
 
+        // Use clipped variance for numerical stability during inference
+        $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
         $xHat = NumPower::divide(
             NumPower::subtract($input, NumPower::reshape($this->mean, [$m, 1])),
-            NumPower::reshape(NumPower::sqrt($this->variance), [$m, 1])
+            NumPower::reshape(NumPower::sqrt($varianceClipped), [$m, 1])
         );
 
         return NumPower::add(
@@ -266,8 +270,6 @@ class BatchNorm implements Hidden, Parametric
             ),
             $this->beta->param()
         );
-
-        return $return;
     }
 
     /**
@@ -287,13 +289,13 @@ class BatchNorm implements Hidden, Parametric
         }
 
         if (!$this->stdInv or !$this->xHat) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
         $dOut = $prevGradient();
-        $dBeta = NumPower::sum($dOut, self::COLUMN_WISE);
-        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), self::COLUMN_WISE);
+        // Sum across samples (axis 0) for parameter gradients
+        $dBeta = NumPower::sum($dOut, self::AXIS_SAMPLES);
+        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), self::AXIS_SAMPLES);
         $gamma = $this->gamma->param();
 
         $this->beta->update($dBeta, $optimizer);
@@ -308,8 +310,6 @@ class BatchNorm implements Hidden, Parametric
             [$this, 'gradient'],
             [$dOut, $gamma, $stdInv, $xHat]
         );
-
-        return $return;
     }
 
     /**
@@ -326,8 +326,8 @@ class BatchNorm implements Hidden, Parametric
     public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
         $dXHat = NumPower::multiply($dOut, $gamma);
-        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::COLUMN_WISE);
-        $dXHatSigma = NumPower::sum($dXHat, self::COLUMN_WISE);
+        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::AXIS_FEATURES);
+        $dXHatSigma = NumPower::sum($dXHat, self::AXIS_FEATURES);
 
         // Number of rows
         $m = $dOut->shape()[0];
@@ -343,8 +343,6 @@ class BatchNorm implements Hidden, Parametric
             ),
             NumPower::reshape(NumPower::divide($stdInv, $m), [$m, 1])
         );
-
-        return $return;
     }
 
     /**
