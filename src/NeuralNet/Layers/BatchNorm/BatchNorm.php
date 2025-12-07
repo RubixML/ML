@@ -190,8 +190,7 @@ class BatchNorm implements Hidden, Parametric
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
-
-        // Shape: [m, n]
+        
         [$m, $n] = $input->shape();
 
         // Row-wise mean across features (axis 1), length m
@@ -253,8 +252,7 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        // Number of rows
-        $m = $input->shape()[0];
+        [$m, $n] = $input->shape();
 
         // Use clipped variance for numerical stability during inference
         $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
@@ -329,8 +327,7 @@ class BatchNorm implements Hidden, Parametric
         $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::AXIS_FEATURES);
         $dXHatSigma = NumPower::sum($dXHat, self::AXIS_FEATURES);
 
-        // Number of rows
-        $m = $dOut->shape()[0];
+        [$m, $n] = $dOut->shape();
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
         return NumPower::multiply(
