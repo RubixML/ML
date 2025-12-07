@@ -11,6 +11,7 @@ use NumPower;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\BatchNorm\BatchNorm;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
@@ -383,7 +384,7 @@ class BatchNormTest extends TestCase
             }
 
             if ($expectedVar === 0.0) {
-                self::assertLessThan(5e-3, $var);
+                self::assertLessThan(1e-6, $var);
             } else {
                 self::assertEqualsWithDelta(1.0, $var, 1e-6);
             }
