@@ -91,6 +91,30 @@ class BatchNormTest extends TestCase
     }
 
     /**
+     * Additional inputs to validate behavior across different batch sizes.
+     *
+     * @return array<string, array{0:array}>
+     */
+    public static function batchInputsProvider() : array
+    {
+        return [
+            'batch1x3' => [[
+                [2.0, -1.0, 0.0],
+            ]],
+            'batch2x3' => [[
+                [1.0, 2.0, 3.0],
+                [3.0, 3.0, 3.0],
+            ]],
+            'batch4x3' => [[
+                [0.5, -0.5, 1.5],
+                [10.0, -10.0, 0.0],
+                [7.2, 3.3, -2.4],
+                [-1.0, -2.0, 4.0],
+            ]],
+        ];
+    }
+
+    /**
      * @return array<string, array{0:array}>
      */
     public static function gradientProvider() : array
@@ -206,6 +230,36 @@ class BatchNormTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Computes forward pass (row-wise) with zero mean and unit variance per sample for various batch sizes')]
+    #[DataProvider('batchInputsProvider')]
+    public function testForwardStatsMultipleBatches(array $input) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        $forward = $this->layer->forward(NumPower::array($input));
+        $out = $forward->toArray();
+
+        // Check per-row mean ~ 0 and variance ~ 1 (allow 0 for degenerate rows)
+        $this->assertRowwiseStats($input, $out, true);
+    }
+
+    #[Test]
+    #[TestDox('Infers (row-wise) with zero mean and unit variance per sample for various batch sizes')]
+    #[DataProvider('batchInputsProvider')]
+    public function testInferStatsMultipleBatches(array $input) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        // Perform a forward pass on the same input to initialize running stats
+        $this->layer->forward(NumPower::array($input));
+
+        $infer = $this->layer->infer(NumPower::array($input));
+        $out = $infer->toArray();
+
+        $this->assertRowwiseStats($input, $out, false);
+    }
+
+    #[Test]
     #[TestDox('Throws when width is requested before initialization')]
     public function testWidthThrowsBeforeInitialize() : void
     {
@@ -298,5 +352,41 @@ class BatchNormTest extends TestCase
         $gradient = $this->layer->gradient($dOut, $gamma, $stdInv, $xHat);
 
         self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
+    }
+
+    /**
+     * @param array<int, array<int, float>> $inputRows
+     * @param array<int, array<int, float>> $outRows
+     */
+    private function assertRowwiseStats(array $inputRows, array $outRows, bool $checkMean) : void
+    {
+        foreach ($outRows as $i => $row) {
+            $mean = array_sum($row) / count($row);
+            $var = 0.0;
+            foreach ($row as $v) {
+                $var += ($v - $mean) * ($v - $mean);
+            }
+            $var /= count($row);
+
+            $orig = $inputRows[$i];
+            $origMean = array_sum($orig) / count($orig);
+            $origVar = 0.0;
+            foreach ($orig as $ov) {
+                $origVar += ($ov - $origMean) * ($ov - $origMean);
+            }
+            $origVar /= count($orig);
+
+            $expectedVar = $origVar < 1e-12 ? 0.0 : 1.0;
+
+            if ($checkMean) {
+                self::assertEqualsWithDelta(0.0, $mean, 1e-7);
+            }
+
+            if ($expectedVar === 0.0) {
+                self::assertLessThan(5e-3, $var);
+            } else {
+                self::assertEqualsWithDelta(1.0, $var, 1e-6);
+            }
+        }
     }
 }

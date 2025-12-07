@@ -32,6 +32,7 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class BatchNorm implements Hidden, Parametric
 {
@@ -190,7 +191,7 @@ class BatchNorm implements Hidden, Parametric
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
-        
+
         [$m, $n] = $input->shape();
 
         // Row-wise mean across features (axis 1), length m
@@ -252,7 +253,7 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        [$m, $n] = $input->shape();
+        $m = $input->shape()[0];
 
         // Use clipped variance for numerical stability during inference
         $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
@@ -327,7 +328,7 @@ class BatchNorm implements Hidden, Parametric
         $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::AXIS_FEATURES);
         $dXHatSigma = NumPower::sum($dXHat, self::AXIS_FEATURES);
 
-        [$m, $n] = $dOut->shape();
+        $m = $dOut->shape()[0];
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
         return NumPower::multiply(
