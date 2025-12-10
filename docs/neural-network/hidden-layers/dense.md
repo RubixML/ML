@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dense.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dense/Dense.php">[source]</a></span>
 
 # Dense
 Dense (or *fully connected*) hidden layers are layers of neurons that connect to each node in the previous layer by a parameterized synapse. They perform a linear transformation on their input and are usually followed by an [Activation](activation.md) layer. The majority of the trainable parameters in a standard feed forward neural network are contained within Dense hidden layers.
@@ -14,7 +14,7 @@ Dense (or *fully connected*) hidden layers are layers of neurons that connect to
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
