@@ -111,28 +111,20 @@ class Dropout implements Hidden
      * @internal
      *
      * @param NDArray $input
-     * @param NDArray|null $mask Custom dropout mask to use instead of generating one.
      * @return NDArray
      */
-    public function forward(NDArray $input, ?NDArray $mask = null) : NDArray
+    public function forward(NDArray $input) : NDArray
     {
-        if ($mask === null) {
-            // Build dropout mask using PHP's RNG. Each unit is kept with
-            // probability (1 - ratio) and scaled by $this->scale.
-            $inputArray = $input->toArray();
+        // Build dropout mask using NumPower's uniform RNG. Each unit is kept
+        // with probability (1 - ratio) and scaled by $this->scale.
+        $shape = $input->shape();
 
-            $maskArray = [];
+        // Uniform random numbers in [0, 1) with same shape as input
+        $rand = NumPower::uniform($shape, 0.0, 1.0);
 
-            foreach ($inputArray as $i => $row) {
-                foreach ($row as $j => $_value) {
-                    $u = rand() / getrandmax();
-
-                    $maskArray[$i][$j] = $u > $this->ratio ? $this->scale : 0.0;
-                }
-            }
-
-            $mask = NumPower::array($maskArray);
-        }
+        // mask = (rand > ratio) * scale
+        $mask = NumPower::greater($rand, $this->ratio);
+        $mask = NumPower::multiply($mask, $this->scale);
 
         $output = NumPower::multiply($input, $mask);
 
