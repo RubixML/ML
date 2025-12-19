@@ -83,5 +83,6 @@
   </testsuites>
   <php>
     <env name="ENV" value="testing"/>
+    <ini name="memory_limit" value="256M"/>
   </php>
 </phpunit>
