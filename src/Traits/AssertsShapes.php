@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Traits;
 
-use InvalidArgumentException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use NDArray;
 
 /**
@@ -29,7 +29,7 @@ trait AssertsShapes
     protected function assertSameShape(NDArray $output, NDArray $target) : void
     {
         if ($output->shape() !== $target->shape()) {
-            throw new InvalidArgumentException('Output and target must have identical shapes.');
+            throw new InvalidArgumentException('Output and target must have the same shape.');
         }
     }
 }
