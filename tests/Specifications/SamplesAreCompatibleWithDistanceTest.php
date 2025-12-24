@@ -7,6 +7,8 @@ namespace Rubix\ML\Tests\Specifications;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Hamming;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -61,11 +63,9 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
         ];
     }
 
-    /**
-     * @param SamplesAreCompatibleWithDistance $specification
-     * @param bool $expected
-     */
     #[DataProvider('passesProvider')]
+    #[Test]
+    #[TestDox('Checks whether samples are compatible with the given distance metric')]
     public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void
     {
         $this->assertSame($expected, $specification->passes());

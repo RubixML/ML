@@ -14,11 +14,14 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 
-/**
- * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\FeedForward
- */
+#[Group('NeuralNet')]
+#[CoversClass(FeedForward::class)]
 class FeedForwardTest extends TestCase
 {
     /**
@@ -46,9 +49,7 @@ class FeedForwardTest extends TestCase
      */
     protected $output;
 
-    /**
-     * @before
-     */
+    #[Before]
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([
@@ -72,50 +73,44 @@ class FeedForwardTest extends TestCase
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Builds a feed-forward network instance')]
     public function build() : void
     {
         $this->assertInstanceOf(FeedForward::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Returns all hidden and output layers')]
     public function layers() : void
     {
         $this->assertCount(5, iterator_to_array($this->network->layers()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Returns the input layer')]
     public function input() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Returns the hidden layers')]
     public function hidden() : void
     {
         $this->assertCount(5, $this->network->hidden());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Returns the output layer')]
     public function networkOutput() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Reports the correct number of parameters after initialization')]
     public function numParams() : void
     {
         $this->network->initialize();
@@ -123,9 +118,8 @@ class FeedForwardTest extends TestCase
         $this->assertEquals(103, $this->network->numParams());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Performs a roundtrip pass and returns a loss value')]
     public function roundtrip() : void
     {
         $this->network->initialize();
