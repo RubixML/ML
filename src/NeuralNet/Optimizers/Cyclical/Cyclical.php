@@ -90,7 +90,7 @@ class Cyclical implements Optimizer
 
         if ($lower > $upper) {
             throw new InvalidArgumentException(
-                'Lower bound cannot be reater than the upper bound.'
+                'Lower bound cannot be greater than the upper bound.'
             );
         }
 

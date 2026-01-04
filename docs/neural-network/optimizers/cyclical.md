@@ -11,7 +11,7 @@ $$
 \text{cycle} &= \left\lfloor 1 + \frac{t}{2\,\text{steps}} \right\rfloor \\
 x &= \left| \frac{t}{\text{steps}} - 2\,\text{cycle} + 1 \right| \\
 \text{scale} &= \text{decay}^{\,t} \\
-\eta_t &= \text{lower} + (\text{upper} - \text{lower})\,\max\bigl(0\,1 - x\bigr)\,\text{scale} \\
+\eta_t &= \text{lower} + (\text{upper} - \text{lower})\,\max\bigl(0,1 - x\bigr)\,\text{scale} \\
 \Delta\theta_t &= \eta_t\,g_t
 \end{aligned}
 $$
