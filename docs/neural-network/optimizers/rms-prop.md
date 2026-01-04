@@ -15,11 +15,11 @@ $$
 $$
 
 where:
-- $g_t$ - is the current gradient,
-- $v_t$ - is the running average of squared gradients,
-- $\rho$ - is the averaging coefficient ($1 − decay$),
-- $\eta$ - is the learning rate ($rate$),
-- $\varepsilon$ - is a small constant to avoid division by zero (implemented by clipping $\sqrt{v_t}$ to $[ε, +∞)$).
+- $g_t$ is the current gradient,
+- $v_t$ is the running average of squared gradients,
+- $\rho$ is the averaging coefficient ($1 − decay$),
+- $\eta$ is the learning rate ($rate$),
+- $\varepsilon$ is a small constant to avoid division by zero (implemented by clipping $\sqrt{v_t}$ to $[ε, +∞)$).
 
 ## Parameters
 | # | Name | Default | Type | Description |
