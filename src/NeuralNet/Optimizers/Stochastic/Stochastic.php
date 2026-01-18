@@ -35,7 +35,9 @@ class Stochastic implements Optimizer
     public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException("Learning rate must be greater than 0, $rate given.");
+            throw new InvalidArgumentException(
+                "Learning rate must be greater than 0, $rate given."
+            );
         }
 
         $this->rate = $rate;
@@ -43,6 +45,13 @@ class Stochastic implements Optimizer
 
     /**
      * Take a step of gradient descent for a given parameter.
+     *
+     * SGD update (element-wise):
+     *   Δθ_t = η · g_t
+     *
+     * where:
+     *   - g_t is the current gradient,
+     *   - η is the learning rate.
      *
      * @internal
      *

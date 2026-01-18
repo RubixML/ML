@@ -1,9 +1,11 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\Cyclical;
 
-use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameter;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
@@ -21,6 +23,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Cyclical implements Optimizer
 {
@@ -80,23 +83,27 @@ class Cyclical implements Optimizer
         float $decay = 0.99994
     ) {
         if ($lower <= 0.0) {
-            throw new InvalidArgumentException('Lower bound must be'
-                . " greater than 0, $lower given.");
+            throw new InvalidArgumentException(
+                "Lower bound must be greater than 0, $lower given."
+            );
         }
 
         if ($lower > $upper) {
-            throw new InvalidArgumentException('Lower bound cannot be'
-                . ' greater than the upper bound.');
+            throw new InvalidArgumentException(
+                'Lower bound cannot be greater than the upper bound.'
+            );
         }
 
         if ($losses < 1) {
-            throw new InvalidArgumentException('The number of steps per'
-                . " cycle must be greater than 0, $losses given.");
+            throw new InvalidArgumentException(
+                "The number of steps per cycle must be greater than 0, $losses given."
+            );
         }
 
         if ($decay <= 0.0 or $decay >= 1.0) {
-            throw new InvalidArgumentException('Decay must be between'
-                . " 0 and 1, $decay given.");
+            throw new InvalidArgumentException(
+                "Decay must be between 0 and 1, $decay given."
+            );
         }
 
         $this->lower = $lower;
@@ -109,13 +116,27 @@ class Cyclical implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * Cyclical learning rate schedule (per-step, element-wise update):
+     *   - Cycle index:           cycle = floor(1 + t / (2 · losses))
+     *   - Triangular position:   x     = | t / losses − 2 · cycle + 1 |
+     *   - Exponential decay:     scale = decay^t
+     *   - Learning rate at t:    η_t   = lower + (upper − lower) · max(0, 1 − x) · scale
+     *   - Returned step:         Δθ_t  = η_t · g_t
+     *
+     * where:
+     *   - t is the current step counter (incremented after computing η_t),
+     *   - losses is the number of steps per cycle,
+     *   - lower and upper are the learning rate bounds,
+     *   - decay is the multiplicative decay applied each step,
+     *   - g_t is the current gradient.
+     *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
         $cycle = floor(1 + $this->t / (2 * $this->losses));
 
@@ -127,7 +148,7 @@ class Cyclical implements Optimizer
 
         ++$this->t;
 
-        return $gradient->multiply($rate);
+        return NumPower::multiply($gradient, $rate);
     }
 
     /**

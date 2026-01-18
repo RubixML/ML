@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\Stochastic;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\Momentum;
 
 use Generator;
 use NDArray;
@@ -14,19 +14,23 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\Momentum\Momentum;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 
 #[Group('Optimizers')]
-#[CoversClass(Stochastic::class)]
-class StochasticTest extends TestCase
+#[CoversClass(Momentum::class)]
+class MomentumTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    protected Momentum $optimizer;
 
     public static function invalidConstructorProvider() : Generator
     {
-        yield 'zero rate' => [0.0];
-        yield 'negative rate' => [-0.001];
+        yield 'zero rate' => [0.0, 0.1];
+        yield 'negative rate' => [-0.001, 0.1];
+        yield 'zero decay' => [0.001, 0.0];
+        yield 'decay == 1' => [0.001, 1.0];
+        yield 'decay > 1' => [0.001, 1.5];
+        yield 'negative decay' => [0.001, -0.1];
     }
 
     public static function stepProvider() : Generator
@@ -52,27 +56,55 @@ class StochasticTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Momentum(rate: 0.001, decay: 0.1, lookahead: false);
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
+        self::assertEquals('Momentum (rate: 0.001, decay: 0.1, lookahead: false)', (string) $this->optimizer);
     }
 
     /**
      * @param float $rate
+     * @param float $decay
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate) : void
+    public function testInvalidConstructorParams(float $rate, float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Stochastic($rate);
+        new Momentum(rate: $rate, decay: $decay);
+    }
+
+    #[Test]
+    #[TestDox('Warm initializes a zeroed velocity cache with the parameter\'s shape')]
+    public function testWarmInitializesZeroedCache() : void
+    {
+        $param = new Parameter(NumPower::array([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]));
+
+        // Warm the optimizer for this parameter
+        $this->optimizer->warm($param);
+
+        // Use reflection to read the protected cache
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+        $cache = $prop->getValue($this->optimizer);
+
+        self::assertArrayHasKey($param->id(), $cache);
+
+        $velocity = $cache[$param->id()];
+
+        // Verify the velocity is an all-zeros tensor of the correct shape
+        $zeros = NumPower::zeros($param->param()->shape());
+        self::assertEqualsWithDelta($zeros->toArray(), $velocity->toArray(), 0.0);
     }
 
     /**
@@ -85,6 +117,8 @@ class StochasticTest extends TestCase
     #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
+        $this->optimizer->warm($param);
+
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);

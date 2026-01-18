@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\Stochastic;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\StepDecay;
 
 use Generator;
 use NDArray;
@@ -12,21 +12,24 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\StepDecay\StepDecay;
+use PHPUnit\Framework\TestCase;
 
 #[Group('Optimizers')]
-#[CoversClass(Stochastic::class)]
-class StochasticTest extends TestCase
+#[CoversClass(StepDecay::class)]
+class StepDecayTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    protected StepDecay $optimizer;
 
     public static function invalidConstructorProvider() : Generator
     {
-        yield 'zero rate' => [0.0];
-        yield 'negative rate' => [-0.001];
+        yield 'zero rate' => [0.0, 100, 0.001];
+        yield 'negative rate' => [-0.001, 100, 0.001];
+        yield 'zero losses' => [0.01, 0, 0.001];
+        yield 'negative losses' => [0.01, -5, 0.001];
+        yield 'negative decay' => [0.01, 100, -0.1];
     }
 
     public static function stepProvider() : Generator
@@ -52,27 +55,29 @@ class StochasticTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new StepDecay(rate: 0.001);
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
+        self::assertEquals('Step Decay (rate: 0.001, steps: 100, decay: 0.001)', (string) $this->optimizer);
     }
 
     /**
      * @param float $rate
+     * @param int $losses
+     * @param float $decay
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate) : void
+    public function testInvalidConstructorParams(float $rate, int $losses, float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Stochastic($rate);
+        new StepDecay(rate: $rate, losses: $losses, decay: $decay);
     }
 
     /**

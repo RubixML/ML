@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\Stochastic;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\AdaGrad;
 
 use Generator;
 use NDArray;
@@ -14,14 +14,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\AdaGrad\AdaGrad;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 
 #[Group('Optimizers')]
-#[CoversClass(Stochastic::class)]
-class StochasticTest extends TestCase
+#[CoversClass(AdaGrad::class)]
+class AdaGradTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    protected AdaGrad $optimizer;
 
     public static function invalidConstructorProvider() : Generator
     {
@@ -43,23 +43,23 @@ class StochasticTest extends TestCase
                 [0.04, -0.01, -0.5],
             ]),
             [
-                [0.00001, 0.00005, -0.00002],
-                [-0.00001, 0.00002, 0.00003],
-                [0.00004, -0.00001, -0.0005],
+                [0.001, 0.001, -0.001],
+                [-0.001, 0.001, 0.001],
+                [0.001, -0.001, -0.001],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new AdaGrad(0.001);
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
+        self::assertSame('AdaGrad (rate: 0.01)', (string) (new AdaGrad()));
     }
 
     /**
@@ -72,7 +72,7 @@ class StochasticTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Stochastic($rate);
+        new AdaGrad(rate: $rate);
     }
 
     /**
@@ -85,6 +85,8 @@ class StochasticTest extends TestCase
     #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
+        $this->optimizer->warm($param);
+
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);

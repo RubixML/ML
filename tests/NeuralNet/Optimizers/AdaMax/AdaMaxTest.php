@@ -2,31 +2,39 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\Stochastic;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\AdaMax;
 
-use Generator;
-use NDArray;
-use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
+use NDArray;
+use NumPower;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\AdaMax\AdaMax;
+use PHPUnit\Framework\TestCase;
+use Generator;
 
 #[Group('Optimizers')]
-#[CoversClass(Stochastic::class)]
-class StochasticTest extends TestCase
+#[CoversClass(AdaMax::class)]
+class AdaMaxTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    protected AdaMax $optimizer;
 
     public static function invalidConstructorProvider() : Generator
     {
-        yield 'zero rate' => [0.0];
-        yield 'negative rate' => [-0.001];
+        yield 'zero rate' => [0.0, 0.1, 0.001];
+        yield 'negative rate' => [-0.001, 0.1, 0.001];
+        yield 'zero momentum decay' => [0.001, 0.0, 0.001];
+        yield 'momentum decay == 1' => [0.001, 1.0, 0.001];
+        yield 'momentum decay > 1' => [0.001, 1.5, 0.001];
+        yield 'negative momentum decay' => [0.001, -0.1, 0.001];
+        yield 'zero norm decay' => [0.001, 0.1, 0.0];
+        yield 'norm decay == 1' => [0.001, 0.1, 1.0];
+        yield 'norm decay > 1' => [0.001, 0.1, 1.5];
+        yield 'negative norm decay' => [0.001, 0.1, -0.1];
     }
 
     public static function stepProvider() : Generator
@@ -43,36 +51,42 @@ class StochasticTest extends TestCase
                 [0.04, -0.01, -0.5],
             ]),
             [
-                [0.00001, 0.00005, -0.00002],
-                [-0.00001, 0.00002, 0.00003],
-                [0.00004, -0.00001, -0.0005],
+                [0.0001, 0.0001, -0.0001],
+                [-0.0001, 0.0001, 0.0001],
+                [0.0001, -0.0001, -0.0001],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new AdaMax(
+            rate: 0.001,
+            momentumDecay: 0.1,
+            normDecay: 0.001
+        );
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
+        self::assertEquals('AdaMax (rate: 0.001, momentum decay: 0.1, norm decay: 0.001)', (string) $this->optimizer);
     }
 
     /**
      * @param float $rate
+     * @param float $momentumDecay
+     * @param float $normDecay
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate) : void
+    public function testInvalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Stochastic($rate);
+        new AdaMax(rate: $rate, momentumDecay: $momentumDecay, normDecay: $normDecay);
     }
 
     /**
@@ -85,6 +99,8 @@ class StochasticTest extends TestCase
     #[TestDox('Can compute the step')]
     public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
+        $this->optimizer->warm($param);
+
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);

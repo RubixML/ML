@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\Stochastic;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers\Cyclical;
 
 use Generator;
 use NDArray;
@@ -14,19 +14,26 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\Cyclical\Cyclical;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 
 #[Group('Optimizers')]
-#[CoversClass(Stochastic::class)]
-class StochasticTest extends TestCase
+#[CoversClass(Cyclical::class)]
+class CyclicalTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    protected Cyclical $optimizer;
 
     public static function invalidConstructorProvider() : Generator
     {
-        yield 'zero rate' => [0.0];
-        yield 'negative rate' => [-0.001];
+        yield 'zero lower' => [0.0, 0.006, 2000, null];
+        yield 'negative lower' => [-0.001, 0.006, 2000, null];
+        yield 'lower > upper' => [0.01, 0.006, 2000, null];
+        yield 'zero steps' => [0.001, 0.006, 0, null];
+        yield 'negative steps' => [0.001, 0.006, -5, null];
+        yield 'zero decay' => [0.001, 0.006, 2000, 0.0];
+        yield 'decay == 1' => [0.001, 0.006, 2000, 1.0];
+        yield 'decay > 1' => [0.001, 0.006, 2000, 1.5];
+        yield 'negative decay' => [0.001, 0.006, 2000, -0.1];
     }
 
     public static function stepProvider() : Generator
@@ -52,27 +59,34 @@ class StochasticTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Cyclical(lower: 0.001, upper: 0.006, losses: 2000);
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
+        self::assertEquals('Cyclical (lower: 0.001, upper: 0.006, steps: 2000, decay: 0.99994)', (string) $this->optimizer);
     }
 
     /**
-     * @param float $rate
+     * @param float $lower
+     * @param float $upper
+     * @param int $losses
+     * @param float|null $decay
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate) : void
+    public function testConstructorInvalidArgs(float $lower, float $upper, int $losses, ?float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Stochastic($rate);
+        if ($decay === null) {
+            new Cyclical(lower: $lower, upper: $upper, losses: $losses);
+        } else {
+            new Cyclical(lower: $lower, upper: $upper, losses: $losses, decay: $decay);
+        }
     }
 
     /**
