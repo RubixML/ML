@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Layers\Activation\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
+use Rubix\ML\NeuralNet\Networks\Network;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
@@ -79,6 +80,7 @@ class FeedForwardTest extends TestCase
     public function build() : void
     {
         self::assertInstanceOf(FeedForward::class, $this->network);
+        self::assertInstanceOf(Network::class, $this->network);
     }
 
     #[Test]

@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
 use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Networks\Network;
 use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
@@ -30,7 +31,7 @@ use function array_reverse;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class FeedForward
+class FeedForward extends Network
 {
     /**
      * The input layer to the network.
