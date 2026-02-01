@@ -15,6 +15,8 @@ use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Generator;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Swish
  *
@@ -266,6 +268,7 @@ class Swish implements Hidden, Parametric
 
     /**
      * Calculate the derivative of the activation function at a given output.
+     * Formulation: derivative = (output / input) * (1 - output) + output
      *
      * @param NDArray $input
      * @param NDArray $output
@@ -278,12 +281,11 @@ class Swish implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        // Original formulation:
-        // derivative = (output / input) * (1 - output) + output
-        // Implemented using NumPower operations to avoid explicit ones matrix.
-        $term1 = NumPower::divide($output, $input);
-        $oneMinusOutput = NumPower::subtract(1.0, $output);
+        // Prevent division by zero if the input contains zero values
+        $denominator = NumPower::add($input, EPSILON);
+        $term1 = NumPower::divide($output, $denominator);
 
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
         $product = NumPower::multiply($term1, $oneMinusOutput);
 
         return NumPower::add($product, $output);

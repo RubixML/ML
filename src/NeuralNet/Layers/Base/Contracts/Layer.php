@@ -6,7 +6,7 @@ use NDArray;
 use Stringable;
 
 /**
- * Hidden
+ * Layer
  *
  * @category    Machine Learning
  * @package     Rubix/ML

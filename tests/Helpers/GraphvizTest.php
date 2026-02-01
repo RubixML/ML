@@ -13,7 +13,7 @@ use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Helpers')]
-#[CoversClass(GraphvizTest::class)]
+#[CoversClass(Graphviz::class)]
 class GraphvizTest extends TestCase
 {
     #[Test]

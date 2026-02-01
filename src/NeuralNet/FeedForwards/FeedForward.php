@@ -6,6 +6,7 @@ use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
 use Rubix\ML\Encoding;
@@ -104,7 +105,7 @@ class FeedForward extends Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return list<Layers\Hidden>
+     * @return list<Hidden>
      */
     public function hidden() : array
     {
@@ -124,7 +125,7 @@ class FeedForward extends Network
     /**
      * Return all the layers in the network.
      *
-     * @return Traversable<Layers\Layer>
+     * @return Traversable<Layer>
      */
     public function layers() : Traversable
     {
