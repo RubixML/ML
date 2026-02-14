@@ -109,4 +109,29 @@ class NetworkTest extends TestCase
 
         self::assertEquals(103, $this->network->numParams());
     }
+
+    #[Test]
+    #[TestDox('Normalize samples returns packed list-of-lists for NumPower')]
+    public function testNormalizeSamplesReturnsPackedListOfLists() : void
+    {
+        $samples = [
+            10 => [2 => 1.0, 5 => 2.0, 9 => 10],
+            20 => [2 => 3.0, 7 => 4.0, 1 => 1.0],
+        ];
+
+        $method = new ReflectionMethod(Network::class, 'normalizeSamples');
+        $method->setAccessible(true);
+
+        /** @var array $normalized */
+        $normalized = $method->invoke($this->network, $samples);
+
+        self::assertTrue(array_is_list($normalized));
+        self::assertCount(2, $normalized);
+
+        foreach ($normalized as $row) {
+            self::assertTrue(array_is_list($row));
+        }
+
+        self::assertSame([[1.0, 2.0, 10], [3.0, 4.0, 1.0]], $normalized);
+    }
 }

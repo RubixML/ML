@@ -38,6 +38,7 @@
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
         "rubix/tensor": "^3.0",
+        "rubixml/numpower": "dev-main",
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/polyfill-php80": "^1.17",
         "symfony/polyfill-php82": "^1.27",
@@ -52,7 +53,8 @@
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^12.0",
-        "swoole/ide-helper": "^5.1"
+        "swoole/ide-helper": "^5.1",
+        "apphp/pretty-print": "^0.5.1"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",

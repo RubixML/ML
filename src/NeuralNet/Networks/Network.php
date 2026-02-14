@@ -73,8 +73,6 @@ class Network
      */
     protected Optimizer $optimizer;
 
-    protected const USE_NUMPOWER_TRANSPOSE = false;
-
     /**
      * @param Input $input
      * @param Hidden[] $hidden
@@ -192,11 +190,8 @@ class Network
             return NumPower::array([]);
         }
 
-        if (self::USE_NUMPOWER_TRANSPOSE) {
-            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
-        } else {
-            $input = NumPower::array($this->rowsToColumns($dataset->samples()));
-        }
+        $normalizedSamples = $this->normalizeSamples($dataset->samples());
+        $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
@@ -208,11 +203,7 @@ class Network
             $input = NumPower::reshape($input, [1, $shape[0]]);
         }
 
-        if (self::USE_NUMPOWER_TRANSPOSE) {
-            return NumPower::transpose($input, [1, 0]);
-        } else {
-            return NumPower::array($this->columnsToRows($input->toArray()));
-        }
+        return NumPower::transpose($input, [1, 0]);
     }
 
     /**
@@ -228,11 +219,8 @@ class Network
             return 0.0;
         }
 
-        if (self::USE_NUMPOWER_TRANSPOSE) {
-            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
-        } else {
-            $input = NumPower::array($this->rowsToColumns($dataset->samples()));
-        }
+        $normalizedSamples = $this->normalizeSamples($dataset->samples());
+        $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
 
         $this->feed($input);
 
@@ -324,6 +312,18 @@ class Network
         }
 
         return $columns;
+    }
+
+    /**
+     * Normalize samples to a strict list-of-lists with sequential numeric keys.
+     * NumPower's C extension expects packed arrays and can error or behave unpredictably
+     * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
+     * @param array $samples
+     * @return array
+     */
+    private function normalizeSamples(array $samples) : array
+    {
+        return array_map('array_values', array_values($samples));
     }
 
     /**
