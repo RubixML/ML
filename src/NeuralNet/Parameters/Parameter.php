@@ -90,9 +90,14 @@ class Parameter
 
     /**
      * Perform a deep copy of the object upon cloning.
+     *
+     * Cloning an NDArray directly may trigger native memory corruption in some
+     * NumPower builds (e.g. heap corruption/segfaults when parameters are
+     * snapshotted during training). To make cloning deterministic and stable we
+     * deep-copy through a PHP array roundtrip: NDArray -> PHP array -> NDArray.
      */
     public function __clone() : void
     {
-        $this->param = clone $this->param;
+        $this->param = NumPower::array($this->param->toArray());
     }
 }

@@ -17,6 +17,7 @@ use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
 
 use function array_reverse;
+use function array_is_list;
 
 /**
  * Network
@@ -185,10 +186,20 @@ class Network
      */
     public function infer(Dataset $dataset) : NDArray
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
+
+        $input = NumPower::transpose($this->samplesToInput($dataset->samples()), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
+        }
+
+        $shape = $input->shape();
+
+        if (count($shape) === 1) {
+            $input = NumPower::reshape($input, [1, $shape[0]]);
         }
 
         return NumPower::transpose($input, [1, 0]);
@@ -203,7 +214,11 @@ class Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        if ($dataset->empty()) {
+            return 0.0;
+        }
+
+        $input = NumPower::transpose($this->samplesToInput($dataset->samples()), [1, 0]);
 
         $this->feed($input);
 
@@ -271,5 +286,62 @@ class Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Convert dataset samples (row-major PHP arrays) to a stable 2D NDArray.
+     *
+     * This method exists because dataset samples originate as PHP arrays and are
+     * not guaranteed to be in a form that NumPower can always infer as a dense
+     * 2D numeric matrix. For example:
+     *
+     * - PHP arrays can have non-packed keys (e.g. 3, 7, 8 instead of 0, 1, 2).
+     * - Rows can have non-packed keys (e.g. 1, 2 instead of 0, 1).
+     * - In some edge cases (such as a single row/column), NumPower may infer a
+     *   rank-1 array.
+     *
+     * If the resulting NDArray is not rank-2, calling NumPower::transpose(..., [1, 0])
+     * will throw "axes don't match array". To make transpose stable we:
+     *
+     * - Reindex the outer and inner arrays with array_values() to force packed
+     *   row/column ordering.
+     * - Ensure the NDArray is 2D by reshaping rank-1 arrays to [1, n].
+     *
+     * The returned NDArray is row-major with shape [nSamples, nFeatures].
+     *
+     * @param list<array> $samples
+     * @return NDArray
+     */
+    protected function samplesToInput(array $samples) : NDArray
+    {
+        $packed = array_is_list($samples);
+
+        if ($packed) {
+            foreach ($samples as $sample) {
+                if (!array_is_list($sample)) {
+                    $packed = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (!$packed) {
+            $samples = array_values($samples);
+
+            foreach ($samples as $i => $sample) {
+                $samples[$i] = array_values($sample);
+            }
+        }
+
+        $input = NumPower::array($samples);
+
+        $shape = $input->shape();
+
+        if (count($shape) === 1) {
+            $input = NumPower::reshape($input, [1, $shape[0]]);
+        }
+
+        return $input;
     }
 }

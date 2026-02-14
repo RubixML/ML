@@ -6,6 +6,8 @@ namespace Rubix\ML\Tests\NeuralNet\Networks;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
@@ -19,6 +21,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 #[Group('NeuralNet')]
 #[CoversClass(Network::class)]
@@ -71,6 +74,8 @@ class NetworkTest extends TestCase
         );
     }
 
+    #[Test]
+    #[TestDox('Layers iterator yields all layers')]
     public function testLayers() : void
     {
         $count = 0;
@@ -82,20 +87,66 @@ class NetworkTest extends TestCase
         self::assertSame(7, $count);
     }
 
+    #[Test]
+    #[TestDox('Input layer is Placeholder1D')]
     public function testInput() : void
     {
         self::assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
+    #[Test]
+    #[TestDox('Hidden layers count')]
     public function testHidden() : void
     {
         self::assertCount(5, $this->network->hidden());
     }
 
+    #[Test]
+    #[TestDox('Num params')]
     public function testNumParams() : void
     {
         $this->network->initialize();
 
         self::assertEquals(103, $this->network->numParams());
+    }
+
+    #[Test]
+    #[TestDox('samplesToInput normalizes samples into 2D NDArray')]
+    public function testSamplesToInput() : void
+    {
+        $method = new ReflectionMethod(Network::class, 'samplesToInput');
+        $method->setAccessible(true);
+
+        $input = $method->invoke($this->network, $this->dataset->samples());
+
+        self::assertEquals([3, 2], $input->shape());
+
+        $samples = [
+            3 => [
+                1 => 1.0,
+                2 => 2.5,
+            ],
+            7 => [
+                1 => 0.1,
+                2 => 0.0,
+            ],
+            8 => [
+                1 => 0.002,
+                2 => -6.0,
+            ],
+        ];
+
+        $input = $method->invoke($this->network, $samples);
+
+        self::assertEquals([3, 2], $input->shape());
+
+        $samples = [
+            [1.0],
+            [2.5],
+        ];
+
+        $input = $method->invoke($this->network, $samples);
+
+        self::assertEquals([2, 1], $input->shape());
     }
 }
