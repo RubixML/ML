@@ -26,7 +26,6 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use function Apphp\PrettyPrint\pp;
 
 #[Group('Regressors')]
 #[CoversClass(MLPRegressor::class)]
