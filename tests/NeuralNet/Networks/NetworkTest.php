@@ -109,44 +109,4 @@ class NetworkTest extends TestCase
 
         self::assertEquals(103, $this->network->numParams());
     }
-
-    #[Test]
-    #[TestDox('samplesToInput normalizes samples into 2D NDArray')]
-    public function testSamplesToInput() : void
-    {
-        $method = new ReflectionMethod(Network::class, 'samplesToInput');
-        $method->setAccessible(true);
-
-        $input = $method->invoke($this->network, $this->dataset->samples());
-
-        self::assertEquals([3, 2], $input->shape());
-
-        $samples = [
-            3 => [
-                1 => 1.0,
-                2 => 2.5,
-            ],
-            7 => [
-                1 => 0.1,
-                2 => 0.0,
-            ],
-            8 => [
-                1 => 0.002,
-                2 => -6.0,
-            ],
-        ];
-
-        $input = $method->invoke($this->network, $samples);
-
-        self::assertEquals([3, 2], $input->shape());
-
-        $samples = [
-            [1.0],
-            [2.5],
-        ];
-
-        $input = $method->invoke($this->network, $samples);
-
-        self::assertEquals([2, 1], $input->shape());
-    }
 }

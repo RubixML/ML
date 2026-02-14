@@ -73,6 +73,8 @@ class Network
      */
     protected Optimizer $optimizer;
 
+    protected const USE_NUMPOWER_TRANSPOSE = false;
+
     /**
      * @param Input $input
      * @param Hidden[] $hidden
@@ -190,7 +192,11 @@ class Network
             return NumPower::array([]);
         }
 
-        $input = NumPower::transpose($this->samplesToInput($dataset->samples()), [1, 0]);
+        if (self::USE_NUMPOWER_TRANSPOSE) {
+            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        } else {
+            $input = NumPower::array($this->rowsToColumns($dataset->samples()));
+        }
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
@@ -202,7 +208,11 @@ class Network
             $input = NumPower::reshape($input, [1, $shape[0]]);
         }
 
-        return NumPower::transpose($input, [1, 0]);
+        if (self::USE_NUMPOWER_TRANSPOSE) {
+            return NumPower::transpose($input, [1, 0]);
+        } else {
+            return NumPower::array($this->columnsToRows($input->toArray()));
+        }
     }
 
     /**
@@ -218,7 +228,11 @@ class Network
             return 0.0;
         }
 
-        $input = NumPower::transpose($this->samplesToInput($dataset->samples()), [1, 0]);
+        if (self::USE_NUMPOWER_TRANSPOSE) {
+            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        } else {
+            $input = NumPower::array($this->rowsToColumns($dataset->samples()));
+        }
 
         $this->feed($input);
 
@@ -289,59 +303,50 @@ class Network
     }
 
     /**
-     * Convert dataset samples (row-major PHP arrays) to a stable 2D NDArray.
-     *
-     * This method exists because dataset samples originate as PHP arrays and are
-     * not guaranteed to be in a form that NumPower can always infer as a dense
-     * 2D numeric matrix. For example:
-     *
-     * - PHP arrays can have non-packed keys (e.g. 3, 7, 8 instead of 0, 1, 2).
-     * - Rows can have non-packed keys (e.g. 1, 2 instead of 0, 1).
-     * - In some edge cases (such as a single row/column), NumPower may infer a
-     *   rank-1 array.
-     *
-     * If the resulting NDArray is not rank-2, calling NumPower::transpose(..., [1, 0])
-     * will throw "axes don't match array". To make transpose stable we:
-     *
-     * - Reindex the outer and inner arrays with array_values() to force packed
-     *   row/column ordering.
-     * - Ensure the NDArray is 2D by reshaping rank-1 arrays to [1, n].
-     *
-     * The returned NDArray is row-major with shape [nSamples, nFeatures].
-     *
-     * @param list<array> $samples
-     * @return NDArray
+     * @param list<list<int|float|string>> $rows
+     * @return list<list<int|float|string>>
      */
-    protected function samplesToInput(array $samples) : NDArray
+    private function rowsToColumns(array $rows) : array
     {
-        $packed = array_is_list($samples);
+        $numSamples = count($rows);
+        $numFeatures = isset($rows[0]) && is_array($rows[0]) ? count($rows[0]) : 0;
 
-        if ($packed) {
-            foreach ($samples as $sample) {
-                if (!array_is_list($sample)) {
-                    $packed = false;
+        $columns = [];
 
-                    break;
-                }
+        for ($j = 0; $j < $numFeatures; ++$j) {
+            $column = [];
+
+            for ($i = 0; $i < $numSamples; ++$i) {
+                $column[] = $rows[$i][$j];
             }
+
+            $columns[] = $column;
         }
 
-        if (!$packed) {
-            $samples = array_values($samples);
+        return $columns;
+    }
 
-            foreach ($samples as $i => $sample) {
-                $samples[$i] = array_values($sample);
+    /**
+     * @param list<list<int|float|string>> $columns
+     * @return list<list<int|float|string>>
+     */
+    private function columnsToRows(array $columns) : array
+    {
+        $numFeatures = count($columns);
+        $numSamples = isset($columns[0]) && is_array($columns[0]) ? count($columns[0]) : 0;
+
+        $rows = [];
+
+        for ($i = 0; $i < $numSamples; ++$i) {
+            $row = [];
+
+            for ($j = 0; $j < $numFeatures; ++$j) {
+                $row[] = $columns[$j][$i];
             }
+
+            $rows[] = $row;
         }
 
-        $input = NumPower::array($samples);
-
-        $shape = $input->shape();
-
-        if (count($shape) === 1) {
-            $input = NumPower::reshape($input, [1, $shape[0]]);
-        }
-
-        return $input;
+        return $rows;
     }
 }

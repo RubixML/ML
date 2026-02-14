@@ -26,6 +26,7 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use function Apphp\PrettyPrint\pp;
 
 #[Group('Regressors')]
 #[CoversClass(MLPRegressor::class)]
@@ -159,9 +160,15 @@ class MLPRegressorTest extends TestCase
 
         $testing = $dataset->randomize()->take(self::TEST_SIZE);
 
+        $testingSamplesBefore = $testing->samples();
+        $testingLabelsBefore = $testing->labels();
+
         $folds = $dataset->fold(3);
 
         $this->estimator->train($folds[0]);
+
+        $predictionsBefore = $this->estimator->predict($testing);
+
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
@@ -177,13 +184,68 @@ class MLPRegressorTest extends TestCase
 
         self::assertIsArray($losses);
         self::assertContainsOnlyFloat($losses);
+        self::assertNotEmpty($losses);
+
+        foreach ($losses as $epoch => $loss) {
+            self::assertIsInt($epoch);
+            self::assertGreaterThanOrEqual(1, $epoch);
+            self::assertFalse(is_nan($loss));
+            self::assertTrue(is_finite($loss));
+        }
 
         $scores = $this->estimator->scores();
 
         self::assertIsArray($scores);
         self::assertContainsOnlyFloat($scores);
+        self::assertNotEmpty($scores);
+
+        foreach ($scores as $epoch => $value) {
+            self::assertIsInt($epoch);
+            self::assertGreaterThanOrEqual(1, $epoch);
+            self::assertFalse(is_nan($value));
+            self::assertTrue(is_finite($value));
+            self::assertSame(0, $epoch % 3);
+        }
 
         $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+            self::assertFalse(is_nan((float) $prediction));
+            self::assertTrue(is_finite((float) $prediction));
+        }
+
+        $predictions2 = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions2);
+
+        foreach ($predictions2 as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $predictions[$i], (float) $prediction, 1e-12);
+        }
+
+        self::assertEquals($testingSamplesBefore, $testing->samples());
+        self::assertEquals($testingLabelsBefore, $testing->labels());
+
+        $delta = 0.0;
+
+        foreach ($predictions as $i => $prediction) {
+            $delta += abs((float) $prediction - (float) $predictionsBefore[$i]);
+        }
+
+        self::assertGreaterThan(0.0, $delta);
+
+        $min = (float) $predictions[0];
+        $max = (float) $predictions[0];
+
+        foreach ($predictions as $prediction) {
+            $p = (float) $prediction;
+            $min = min($min, $p);
+            $max = max($max, $p);
+        }
+
+        self::assertGreaterThan(0.0, $max - $min);
 
         /** @var list<int|float> $labels */
         $labels = $testing->labels();
@@ -192,7 +254,127 @@ class MLPRegressorTest extends TestCase
             labels: $labels
         );
 
+        self::assertFalse(is_nan($score));
+        self::assertTrue(is_finite($score));
+        self::assertGreaterThan(-10.0, $score);
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(MLPRegressor::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictionsAfter = $copy->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictionsAfter);
+
+        foreach ($predictionsAfter as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $predictions[$i], (float) $prediction, 1e-8);
+        }
+
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Predict count matches number of samples')]
+    public function testPredictCountMatchesNumberOfSamples() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+    }
+
+    #[Test]
+    #[TestDox('Predict returns numeric finite values')]
+    public function testPredictReturnsNumericFiniteValues() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+            self::assertFalse(is_nan((float) $prediction));
+            self::assertTrue(is_finite((float) $prediction));
+        }
+    }
+
+    #[Test]
+    #[TestDox('Predict is repeatable for same model and dataset')]
+    public function testPredictIsRepeatableForSameModelAndDataset() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions1 = $this->estimator->predict($testing);
+        $predictions2 = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions1);
+        self::assertCount($testing->numSamples(), $predictions2);
+
+        foreach ($predictions1 as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $prediction, (float) $predictions2[$i], 1e-12);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Predict does not mutate dataset samples or labels')]
+    public function testPredictDoesNotMutateDataset() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $samplesBefore = $testing->samples();
+        $labelsBefore = $testing->labels();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+        self::assertEquals($samplesBefore, $testing->samples());
+        self::assertEquals($labelsBefore, $testing->labels());
+    }
+
+    #[Test]
+    #[TestDox('Serialization preserves predict output')]
+    public function testSerializationPreservesPredictOutput() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictionsBefore = $this->estimator->predict($testing);
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(MLPRegressor::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictionsAfter = $copy->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictionsAfter);
+
+        foreach ($predictionsAfter as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $predictionsBefore[$i], (float) $prediction, 1e-8);
+        }
+    }
+
+    /**
+     * @return array{0: Unlabeled}
+     */
+    private function trainEstimatorAndGetTestingSet() : array
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $folds = $dataset->fold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        return [$testing];
     }
 
     #[Test]
