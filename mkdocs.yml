@@ -97,6 +97,7 @@ nav:
       - Fuzzy C Means: clusterers/fuzzy-c-means.md
       - Gaussian Mixture: clusterers/gaussian-mixture.md
       - K Means: clusterers/k-means.md
+      - K Medoids: clusterers/k-medoids.md
       - Mean Shift: clusterers/mean-shift.md
     - Anomaly Detectors:
       - Gaussian MLE: anomaly-detectors/gaussian-mle.md

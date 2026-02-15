@@ -11,7 +11,7 @@
         "data science", "data mining", "dbscan", "deep learning", "dimensionality reduction",
         "ensemble", "estimator", "etl", "feature extraction", "feature selection", "feature importance",
         "gaussian mixture", "gbm", "gmm", "gradient boost", "grid search", "image recognition",
-        "imputation", "inference", "isolation forest", "k-means", "kmeans", "k-nearest neighbors",
+        "imputation", "inference", "isolation forest", "k-means", "kmeans", "k-medoids", "kmedoids", "k-nearest neighbors",
         "knn", "linear regression", "loda", "local outlier factor", "lof", "logistic regression",
         "machine learning", "manifold learning", "mean shift", "ml", "mlp", "multilayer perceptron",
         "naive bayes", "neural network", "natural language processing", "nearest neighbors", "nlp",

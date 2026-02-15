@@ -1,3 +1,6 @@
+- 2.5.3
+    - Added K Medoids clusterer
+
 - 2.5.2
     - Fix bug in One-class SVM inferencing
 
