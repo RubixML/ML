@@ -107,14 +107,6 @@ class BatchNorm implements Hidden, Parametric
     protected ?NDArray $xHat = null;
 
     /**
-     * Row-wise or column-wise normalization.
-     *
-     * @var int
-     */
-    protected const int AXIS_SAMPLES = 0;
-    protected const int AXIS_FEATURES = 1;
-
-    /**
      * @param float $decay
      * @param Initializer|null $betaInitializer
      * @param Initializer|null $gammaInitializer
@@ -192,26 +184,26 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        [$m, $n] = $input->shape();
+        [$n, $m] = $input->shape();
 
-        // Row-wise mean across features (axis 1), length m
-        $sum = NumPower::sum($input, axis: self::AXIS_FEATURES);
-        $mean = NumPower::divide($sum, $n);
+        // Column-wise mean across samples (axis 1), length n
+        $sum = NumPower::sum($input, axis: 1);
+        $mean = NumPower::divide($sum, $m);
 
-        // Center the input: broadcast mean to [m, n]
-        $centered = NumPower::subtract($input, NumPower::reshape($mean, [$m, 1]));
+        // Center the input: broadcast mean to [n, m]
+        $centered = NumPower::subtract($input, NumPower::reshape($mean, [$n, 1]));
 
-        // Row-wise variance across features (axis 1)
+        // Column-wise variance across samples (axis 1)
         $centeredSq = NumPower::multiply($centered, $centered);
-        $varSum = NumPower::sum($centeredSq, axis: self::AXIS_FEATURES);
-        $variance = NumPower::divide($varSum, $n);
+        $varSum = NumPower::sum($centeredSq, axis: 1);
+        $variance = NumPower::divide($varSum, $m);
         $variance = NumPower::clip($variance, EPSILON, PHP_FLOAT_MAX);
 
         // Inverse std from clipped variance
         $stdInv = NumPower::reciprocal(NumPower::sqrt($variance));
 
         // Normalize: (x - mean) * stdInv
-        $xHat = NumPower::multiply($centered, NumPower::reshape($stdInv, [$m, 1]));
+        $xHat = NumPower::multiply($centered, NumPower::reshape($stdInv, [$n, 1]));
 
         // Initialize running stats if needed
         if (!$this->mean or !$this->variance) {
@@ -253,13 +245,13 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $m = $input->shape()[0];
+        $n = $input->shape()[0];
 
         // Use clipped variance for numerical stability during inference
         $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
         $xHat = NumPower::divide(
-            NumPower::subtract($input, NumPower::reshape($this->mean, [$m, 1])),
-            NumPower::reshape(NumPower::sqrt($varianceClipped), [$m, 1])
+            NumPower::subtract($input, NumPower::reshape($this->mean, [$n, 1])),
+            NumPower::reshape(NumPower::sqrt($varianceClipped), [$n, 1])
         );
 
         return NumPower::add(
@@ -292,9 +284,9 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $dOut = $prevGradient();
-        // Sum across samples (axis 0) for parameter gradients
-        $dBeta = NumPower::sum($dOut, axis: self::AXIS_SAMPLES);
-        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), axis: self::AXIS_SAMPLES);
+        // Sum across samples (axis 1) for parameter gradients
+        $dBeta = NumPower::sum($dOut, axis: 1);
+        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), axis: 1);
         $gamma = $this->gamma->param();
 
         $this->beta->update($dBeta, $optimizer);
@@ -325,15 +317,16 @@ class BatchNorm implements Hidden, Parametric
     public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
         $dXHat = NumPower::multiply($dOut, $gamma);
-        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: self::AXIS_FEATURES);
-        $dXHatSigma = NumPower::sum($dXHat, axis: self::AXIS_FEATURES);
+        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: 1);
+        $dXHatSigma = NumPower::sum($dXHat, axis: 1);
 
-        $m = $dOut->shape()[0];
+        $m = $dOut->shape()[1];
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
         $dXHatTimesM = NumPower::multiply($dXHat, $m);
-        $dXHatSigmaColumn = NumPower::reshape($dXHatSigma, [$m, 1]);
-        $xHatSigmaColumn = NumPower::reshape($xHatSigma, [$m, 1]);
+        $n = $dOut->shape()[0];
+        $dXHatSigmaColumn = NumPower::reshape($dXHatSigma, [$n, 1]);
+        $xHatSigmaColumn = NumPower::reshape($xHatSigma, [$n, 1]);
         $xHatTimesXHatSigma = NumPower::multiply($xHat, $xHatSigmaColumn);
 
         $numerator = NumPower::subtract(
@@ -341,7 +334,7 @@ class BatchNorm implements Hidden, Parametric
             $xHatTimesXHatSigma
         );
 
-        $stdInvOverMColumn = NumPower::reshape(NumPower::divide($stdInv, $m), [$m, 1]);
+        $stdInvOverMColumn = NumPower::reshape(NumPower::divide($stdInv, $m), [$n, 1]);
 
         return NumPower::multiply($numerator, $stdInvOverMColumn);
 
