@@ -195,7 +195,7 @@ class BatchNorm implements Hidden, Parametric
         [$m, $n] = $input->shape();
 
         // Row-wise mean across features (axis 1), length m
-        $sum = NumPower::sum($input, 1);
+        $sum = NumPower::sum($input, axis: self::AXIS_FEATURES);
         $mean = NumPower::divide($sum, $n);
 
         // Center the input: broadcast mean to [m, n]
@@ -203,7 +203,7 @@ class BatchNorm implements Hidden, Parametric
 
         // Row-wise variance across features (axis 1)
         $centeredSq = NumPower::multiply($centered, $centered);
-        $varSum = NumPower::sum($centeredSq, 1);
+        $varSum = NumPower::sum($centeredSq, axis: self::AXIS_FEATURES);
         $variance = NumPower::divide($varSum, $n);
         $variance = NumPower::clip($variance, EPSILON, PHP_FLOAT_MAX);
 
@@ -293,8 +293,8 @@ class BatchNorm implements Hidden, Parametric
 
         $dOut = $prevGradient();
         // Sum across samples (axis 0) for parameter gradients
-        $dBeta = NumPower::sum($dOut, self::AXIS_SAMPLES);
-        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), self::AXIS_SAMPLES);
+        $dBeta = NumPower::sum($dOut, axis: self::AXIS_SAMPLES);
+        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), axis: self::AXIS_SAMPLES);
         $gamma = $this->gamma->param();
 
         $this->beta->update($dBeta, $optimizer);
@@ -325,8 +325,8 @@ class BatchNorm implements Hidden, Parametric
     public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
         $dXHat = NumPower::multiply($dOut, $gamma);
-        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), self::AXIS_FEATURES);
-        $dXHatSigma = NumPower::sum($dXHat, self::AXIS_FEATURES);
+        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: self::AXIS_FEATURES);
+        $dXHatSigma = NumPower::sum($dXHat, axis: self::AXIS_FEATURES);
 
         $m = $dOut->shape()[0];
 
