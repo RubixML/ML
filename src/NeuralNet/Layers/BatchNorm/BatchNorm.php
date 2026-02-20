@@ -331,16 +331,20 @@ class BatchNorm implements Hidden, Parametric
         $m = $dOut->shape()[0];
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
-        return NumPower::multiply(
-            NumPower::subtract(
-                NumPower::subtract(
-                    NumPower::multiply($dXHat, $m),
-                    NumPower::reshape($dXHatSigma, [$m, 1])
-                ),
-                NumPower::multiply($xHat, NumPower::reshape($xHatSigma, [$m, 1]))
-            ),
-            NumPower::reshape(NumPower::divide($stdInv, $m), [$m, 1])
+        $dXHatTimesM = NumPower::multiply($dXHat, $m);
+        $dXHatSigmaColumn = NumPower::reshape($dXHatSigma, [$m, 1]);
+        $xHatSigmaColumn = NumPower::reshape($xHatSigma, [$m, 1]);
+        $xHatTimesXHatSigma = NumPower::multiply($xHat, $xHatSigmaColumn);
+
+        $numerator = NumPower::subtract(
+            NumPower::subtract($dXHatTimesM, $dXHatSigmaColumn),
+            $xHatTimesXHatSigma
         );
+
+        $stdInvOverMColumn = NumPower::reshape(NumPower::divide($stdInv, $m), [$m, 1]);
+
+        return NumPower::multiply($numerator, $stdInvOverMColumn);
+
     }
 
     /**
